@@ -89,11 +89,9 @@ HRESULT CBoss_Juggulus::Add_Components()
 	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 	//	TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 	//	return E_FAIL;;
-		
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
-		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
+	if (FAILED(Add_BehaviorTree()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 
@@ -130,30 +128,29 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
 
-	//m_pBehaviorCom->Add_CoolDown(TEXT("SecOnePhaseAttacks"), TEXT("TwoP_AttackCool"), 3.f); 	// Attack 간 coolTime
-	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_CoolDown(TEXT("Top_Selector"), TEXT("AttackCool"), 3.f); 	// Attack 간 coolTime
+	m_pBehaviorCom->Add_Composit_Node(TEXT("AttackCool"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 
-	//m_pBehaviorCom->Add_Condition(TEXT("Top_Selector"), TEXT("SecTwoPhaseAttacks", &m_isPhaseChanged));
-	//m_pBehaviorCom->Add_CoolDown(TEXT("SecTwoPhaseAttacks"), TEXT("OneP_AttackCool"), 3.f); 	// Attack 간 coolTime
-	//m_pBehaviorCom->Add_Composit_Node(TEXT("OneP_AttackCool"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
-	//m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("IDLE_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("OneP_Attack"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("TwoP_Attack"), CBehaviorTree::Selector);
 
-	/*m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CBoss_Juggulus::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("IDLE_Selector"), CBehaviorTree::Selector);
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CBoss_Juggulus::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("NextPhase"), bind(&CBoss_Juggulus::NextPhase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
 
 
-
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("HammerCool"), 8.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("HammerCool"), 8.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HammerCool"), TEXT("HammerAttack"), bind(&CBoss_Juggulus::HammerAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("FlameCool"), 5.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("FlameCool"), 5.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("FlameCool"), TEXT("FlameAttack"), bind(&CBoss_Juggulus::FlameAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("SphereCool"), 4.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("SphereCool"), 4.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("SphereCool"), TEXT("SphereAttack"), bind(&CBoss_Juggulus::SphereAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("ThunderCool"), 3.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("ThunderCool"), 3.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ThunderCool"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_Action_Node(TEXT("IDLE_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));*/
+	m_pBehaviorCom->Add_Action_Node(TEXT("IDLE_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -236,7 +233,7 @@ NodeStates CBoss_Juggulus::CreateHammer(_float fTimedelta)
 
 		// Hammer가 nullptr이라면 하나 만들어주기
 		map<string, CGameObject*>::iterator weapon = m_PartObjects.find("Hammer");
-		if(m_PartObjects.end() == weapon)
+		if (m_PartObjects.end() == weapon)
 			Create_Hammer();
 
 		if (m_isAnimFinished)
@@ -291,7 +288,7 @@ NodeStates CBoss_Juggulus::HandThree_Attack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)
 {
-	if (STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
+	if (PHASE_ONE == m_ePhase || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -309,7 +306,7 @@ NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 {
-	if (STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
+	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -327,7 +324,7 @@ NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::SphereAttack(_float fTimeDelta)
 {
-	if (STATE_THUNDER_ATTACK == m_iState)
+	if (PHASE_ONE == m_ePhase || STATE_THUNDER_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -345,6 +342,9 @@ NodeStates CBoss_Juggulus::SphereAttack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 {
+	if (PHASE_ONE == m_ePhase)
+		return FAILURE;
+
 	if (!m_isAnimFinished)
 	{
 		m_iState = STATE_THUNDER_ATTACK;

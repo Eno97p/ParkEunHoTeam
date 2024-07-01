@@ -141,7 +141,7 @@ HRESULT CLoader::Loading_Map()
 	case LEVEL_GAMEPLAY:
 	{
 		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
-			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TronesT03/TronesT03.fbx", TEXT("../Bin/MapData/Test.bin")))))
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/AndrasTEST/AndrasTEST.fbx", TEXT("../Bin/MapData/Stage.bin")))))
 			return hr = E_FAIL;
 		break;
 	}

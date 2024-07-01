@@ -160,6 +160,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/NPC_Valnir/Valnir.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	// Arrow_Jobmob
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Arrow_Jobmob"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixScaling(1.f, 1.f, 1.f);
 	// Bone Sphere
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Bone_Sphere"),

@@ -600,6 +600,9 @@
     <ClInclude Include="..\public\MantariSword.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Juggulus_HandTwo.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -880,6 +883,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MantariSword.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Juggulus_HandTwo.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

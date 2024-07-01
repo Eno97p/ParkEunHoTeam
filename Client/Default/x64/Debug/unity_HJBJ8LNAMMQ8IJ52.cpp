@@ -75,6 +75,9 @@
 #include "C:\Real3DProject\Client\Private\Juggulus_HandOne.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Juggulus_HandTwo.cpp"
+
+
 #include "C:\Real3DProject\Client\private\LandObject.cpp"
 
 
@@ -91,6 +94,12 @@
 
 
 #include "C:\Real3DProject\Client\private\MainApp.cpp"
+
+
+#include "C:\Real3DProject\Client\private\Mantari.cpp"
+
+
+#include "C:\Real3DProject\Client\private\MantariSword.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Map_Element.cpp"

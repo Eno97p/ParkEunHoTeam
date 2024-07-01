@@ -347,6 +347,8 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		ImGui::End();
 	}
 
+	//Test
+
 	//void* pComponentData = nullptr;
 
 //pComponentData=	Components[ComponentTag]->GetData();

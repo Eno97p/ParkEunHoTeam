@@ -89,11 +89,9 @@ HRESULT CBoss_Juggulus::Add_Components()
 	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 	//	TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 	//	return E_FAIL;;
-		
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
-		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
+	if (FAILED(Add_BehaviorTree()))
 		return E_FAIL;
-	
+
 	return S_OK;
 }
 

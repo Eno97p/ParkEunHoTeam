@@ -295,6 +295,12 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three">
       <UniqueIdentifier>{579a12e6-2708-46fe-8ea4-de3691bfd05e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari">
+      <UniqueIdentifier>{8066cd2f-c87b-4d80-bc24-803f18701313}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword">
+      <UniqueIdentifier>{301c332e-f555-403a-85db-d893d905baf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -588,6 +594,12 @@
     <ClInclude Include="..\Public\Juggulus_HandOne.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\One</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Mantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MantariSword.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -862,6 +874,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\One</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Mantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MantariSword.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

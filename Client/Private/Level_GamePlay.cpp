@@ -159,8 +159,8 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
-		return E_FAIL;*/
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -189,6 +189,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
 		return E_FAIL;
+
+
 	
 
 	return S_OK;

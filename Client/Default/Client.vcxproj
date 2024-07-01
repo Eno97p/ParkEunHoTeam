@@ -212,6 +212,8 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\public\Mantari.h" />
+    <ClInclude Include="..\public\MantariSword.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\Public\NaruehSword.h" />
@@ -306,6 +308,8 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\private\Mantari.cpp" />
+    <ClCompile Include="..\private\MantariSword.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\Private\NaruehSword.cpp" />

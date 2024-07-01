@@ -53,6 +53,15 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+HRESULT CMonster::Add_BehaviorTree()
+{
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
+		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CMonster::Add_Nodes()
 {
 	return S_OK;

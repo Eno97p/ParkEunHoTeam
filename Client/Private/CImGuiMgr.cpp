@@ -340,12 +340,18 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		string ComponentName = string(szComponentName)+ " Properties";
 
 		ImGui::Begin(ComponentName.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
+
+		pComponent->GetData();
+
+
 		if (ImGui::Button("Close"))
 		{
 			m_bComponentPanel = false;
 		}
 		ImGui::End();
 	}
+
+	//Test
 
 	//void* pComponentData = nullptr;
 

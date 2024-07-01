@@ -31,7 +31,7 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
 
     MAP_ELEMENT_DESC* desc = (MAP_ELEMENT_DESC*)(pArg);
-    //m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
+    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 
     if (FAILED(Add_Components((MAP_ELEMENT_DESC*)(pArg))))
         return E_FAIL;
@@ -44,7 +44,7 @@ HRESULT CPassive_Element::Initialize(void* pArg)
     CVIBuffer_Instance::INSTANCE_DESC instanceDesc{};
     instanceDesc.WorldMats = desc->WorldMats;
     instanceDesc.iNumInstance = desc->iInstanceCount;
-    m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
+    //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
 
     return S_OK;
@@ -89,7 +89,7 @@ HRESULT CPassive_Element::Render()
         {
             m_pShaderCom->Unbind_SRVs();
 
-            if (FAILED(m_pModelCom->Bind_Material_Instance(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;
 
 
@@ -131,9 +131,11 @@ HRESULT CPassive_Element::Render()
 
         m_pShaderCom->Begin(0);
 
-        // 모든 객체의 인스턴스를 한 번에 렌더링
-        if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
+        if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;
+        // 모든 객체의 인스턴스를 한 번에 렌더링
+        //if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
+        //    return E_FAIL;
     }
 
 
@@ -156,7 +158,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 

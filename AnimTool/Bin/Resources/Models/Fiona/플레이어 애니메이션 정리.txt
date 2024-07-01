@@ -1,0 +1,5 @@
+idle 15
+fight_idle 14
+walk 44
+run 38
+roll 32

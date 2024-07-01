@@ -1,0 +1,71 @@
+#include "UI.h"
+
+#include "GameInstance.h"
+
+CUI::CUI(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CGameObject{pDevice, pContext}
+{
+}
+
+CUI::CUI(const CUI& rhs)
+	: CGameObject{rhs}
+{
+}
+
+HRESULT CUI::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CUI::Initialize(void* pArg)
+{
+    UI_DESC* pDesc = static_cast<UI_DESC*>(pArg);
+
+    if (nullptr != pArg)
+    {
+        m_fX = pDesc->fX;
+        m_fY = pDesc->fY;
+        m_fSizeX = pDesc->fSizeX;
+        m_fSizeY = pDesc->fSizeY;
+    }
+
+    if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+void CUI::Priority_Tick(_float fTimeDelta)
+{
+}
+
+void CUI::Tick(_float fTimeDelta)
+{
+}
+
+void CUI::Late_Tick(_float fTimeDelta)
+{
+}
+
+HRESULT CUI::Render()
+{
+	return S_OK;
+}
+
+void CUI::Setting_Position()
+{
+    m_pTransformCom->Set_Scale(m_fSizeX, m_fSizeY, 1.f);
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
+
+    XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+    XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
+}
+
+void CUI::Free()
+{
+    __super::Free();
+
+    Safe_Release(m_pVIBufferCom);
+    Safe_Release(m_pTextureCom);
+    Safe_Release(m_pShaderCom);
+}

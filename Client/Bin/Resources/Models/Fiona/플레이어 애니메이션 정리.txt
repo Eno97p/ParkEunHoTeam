@@ -1,0 +1,11 @@
+idle 15
+fight_idle 14
+walk 44
+run 38
+roll 32
+왼꾹공격 86
+던지기 19
+공중피격  29 = 31
+magic 21
+패링(실패) 26~28
+rollattack 33~37

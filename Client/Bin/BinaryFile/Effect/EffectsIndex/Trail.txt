@@ -1,0 +1,6 @@
+0. DefaultEternalSword
+1. EspadaTrail
+2. Wander1
+3. Wander2
+4. Wander3
+5. Wander4

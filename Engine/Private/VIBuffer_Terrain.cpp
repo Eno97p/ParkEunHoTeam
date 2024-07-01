@@ -1,0 +1,789 @@
+#include "..\Public\VIBuffer_Terrain.h"
+
+#include "GameInstance.h"
+#include "QuadTree.h"
+
+#include <omp.h>
+#include <immintrin.h> // SSE/AVX 명령어를 위한 헤더
+
+CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CVIBuffer{ pDevice, pContext }
+{
+}
+
+CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
+	: CVIBuffer{ rhs }
+	, m_iNumVerticesX{ rhs.m_iNumVerticesX }
+	, m_iNumVerticesZ{ rhs.m_iNumVerticesZ }
+	, m_pQuadTree { rhs.m_pQuadTree }
+{
+	Safe_AddRef(m_pQuadTree);
+}
+
+
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFilePath)
+{
+	_ulong			dwByte = { 0 };
+	
+	HANDLE			hFile = CreateFile(strHeightMapFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
+
+	BITMAPFILEHEADER		fh;
+	ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
+
+
+	BITMAPINFOHEADER		ih;
+	ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
+
+	_uint*					pPixel = new _uint[ih.biWidth * ih.biHeight];
+	ReadFile(hFile, pPixel, sizeof(_uint) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
+
+	CloseHandle(hFile);	
+
+	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_iIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_iNumVertexBuffers = 1;
+	m_iVertexStride = sizeof(VTXNORTEX);
+	m_iNumVertices = ih.biWidth * ih.biHeight;
+	m_iNumVerticesX = ih.biWidth;
+	m_iNumVerticesZ = ih.biHeight;
+
+	m_iIndexStride = 4;
+	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
+
+#pragma region VERTEX_BUFFER 
+	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
+
+	m_pVertexPositions = new _float4[m_iNumVertices];
+	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
+	
+	for (size_t i = 0; i < m_iNumVerticesZ; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = _float3(j, (pPixel[iIndex] & 0x000000ff) / 10.f, i);
+			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
+			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
+			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
+		}				
+	}
+#pragma endregion
+
+#pragma region INDEX_BUFFER 
+
+
+	_uint*		pIndices = new _uint[m_iNumIndices];
+	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
+
+	_uint		iNumIndices = { 0 };
+
+	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			_uint		iIndices[4] = {
+				iIndex + m_iNumVerticesX, 
+				iIndex + m_iNumVerticesX + 1, 
+				iIndex + 1, 
+				iIndex		
+			};
+
+			_vector		vSour, vDest, vNormal;
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[1];
+			pIndices[iNumIndices++] = iIndices[2];
+
+			vSour = XMLoadFloat3(&pVertices[iIndices[1]].vPosition) - XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+			vDest = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - XMLoadFloat3(&pVertices[iIndices[1]].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[iIndices[0]].vNormal, XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[1]].vNormal, XMLoadFloat3(&pVertices[iIndices[1]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[2]].vNormal, XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[2];
+			pIndices[iNumIndices++] = iIndices[3];
+
+			vSour = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+			vDest = XMLoadFloat3(&pVertices[iIndices[3]].vPosition) - XMLoadFloat3(&pVertices[iIndices[2]].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[iIndices[0]].vNormal, XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[2]].vNormal, XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[3]].vNormal, XMLoadFloat3(&pVertices[iIndices[3]].vNormal) + vNormal);
+		}
+	}
+
+	for (size_t i = 0; i < m_iNumVertices; i++)	
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+
+	m_BufferDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_BufferDesc.CPUAccessFlags = 0;
+	m_BufferDesc.MiscFlags = 0;
+	m_BufferDesc.StructureByteStride = m_iVertexStride;
+
+	m_InitialData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_Buffer(&m_pVB)))
+		return E_FAIL;
+
+	m_BufferDesc.ByteWidth = m_iIndexStride * m_iNumIndices;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_BufferDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+	m_BufferDesc.MiscFlags = 0;
+	m_BufferDesc.StructureByteStride = 0;
+
+	m_InitialData.pSysMem = pIndices;
+
+	if (FAILED(__super::Create_Buffer(&m_pIB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pPixel);
+	Safe_Delete_Array(pVertices);
+	Safe_Delete_Array(pIndices);
+#pragma endregion
+
+	m_pQuadTree = CQuadTree::Create(m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX, m_iNumVerticesX * m_iNumVerticesZ - 1, m_iNumVerticesX - 1, 0);
+	if (nullptr == m_pQuadTree)
+		return E_FAIL;
+
+	m_pQuadTree->Make_Neighbors();
+
+	return S_OK;
+}
+
+
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFilePath, _bool realmap)
+{
+	_ulong			dwByte = { 0 };
+
+	HANDLE			hFile = CreateFile(strHeightMapFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	if (0 == hFile)
+		return E_FAIL;
+
+	BITMAPFILEHEADER		fh;
+	ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
+
+
+	BITMAPINFOHEADER		ih;
+	ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
+
+	_uint* pPixel = new _uint[ih.biWidth * ih.biHeight];
+	ReadFile(hFile, pPixel, sizeof(_uint) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
+
+	CloseHandle(hFile);
+
+	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_iIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_iNumVertexBuffers = 1;
+	m_iVertexStride = sizeof(VTXNORTEX);
+	m_iNumVertices = ih.biWidth * ih.biHeight;
+	m_iNumVerticesX = ih.biWidth;
+	m_iNumVerticesZ = ih.biHeight;
+
+	m_iIndexStride = 4;
+	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
+
+#pragma region VERTEX_BUFFER 
+	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
+
+	m_pVertexPositions = new _float4[m_iNumVertices];
+	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
+
+	const float terrainScale = 4.0f; // xz 간격을 2배로 설정
+
+	for (size_t i = 0; i < m_iNumVerticesZ; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			pVertices[iIndex].vPosition = _float3(j * terrainScale, (pPixel[iIndex] & 0x000000ff) / 4.f, i * terrainScale);
+			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
+			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
+			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
+		}
+	}
+#pragma endregion
+
+#pragma region INDEX_BUFFER 
+
+
+	_uint* pIndices = new _uint[m_iNumIndices];
+	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
+
+	_uint		iNumIndices = { 0 };
+
+	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			_uint		iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			_vector		vSour, vDest, vNormal;
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[1];
+			pIndices[iNumIndices++] = iIndices[2];
+
+			vSour = XMLoadFloat3(&pVertices[iIndices[1]].vPosition) - XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+			vDest = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - XMLoadFloat3(&pVertices[iIndices[1]].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[iIndices[0]].vNormal, XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[1]].vNormal, XMLoadFloat3(&pVertices[iIndices[1]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[2]].vNormal, XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
+
+			pIndices[iNumIndices++] = iIndices[0];
+			pIndices[iNumIndices++] = iIndices[2];
+			pIndices[iNumIndices++] = iIndices[3];
+
+			vSour = XMLoadFloat3(&pVertices[iIndices[2]].vPosition) - XMLoadFloat3(&pVertices[iIndices[0]].vPosition);
+			vDest = XMLoadFloat3(&pVertices[iIndices[3]].vPosition) - XMLoadFloat3(&pVertices[iIndices[2]].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[iIndices[0]].vNormal, XMLoadFloat3(&pVertices[iIndices[0]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[2]].vNormal, XMLoadFloat3(&pVertices[iIndices[2]].vNormal) + vNormal);
+			XMStoreFloat3(&pVertices[iIndices[3]].vNormal, XMLoadFloat3(&pVertices[iIndices[3]].vNormal) + vNormal);
+		}
+	}
+
+	/*for (size_t i = 0; i < m_iNumVertices; i++)
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+
+	m_BufferDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_BufferDesc.CPUAccessFlags = 0;
+	m_BufferDesc.MiscFlags = 0;
+	m_BufferDesc.StructureByteStride = m_iVertexStride;
+
+	m_InitialData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_Buffer(&m_pVB)))
+		return E_FAIL;*/
+
+	for (size_t i = 0; i < m_iNumVertices; i++)
+		XMStoreFloat3(&pVertices[i].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[i].vNormal)));
+
+	m_BufferDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_BufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_BufferDesc.MiscFlags = 0;
+	m_BufferDesc.StructureByteStride = m_iVertexStride;
+
+	m_InitialData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_Buffer(&m_pVB)))
+		return E_FAIL;
+
+	m_BufferDesc.ByteWidth = m_iIndexStride * m_iNumIndices;
+	m_BufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_BufferDesc.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
+	m_BufferDesc.MiscFlags = 0;
+	m_BufferDesc.StructureByteStride = 0;
+
+	m_InitialData.pSysMem = pIndices;
+
+	if (FAILED(__super::Create_Buffer(&m_pIB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pPixel);
+	Safe_Delete_Array(pVertices);
+	Safe_Delete_Array(pIndices);
+#pragma endregion
+
+	m_pQuadTree = CQuadTree::Create(m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX, m_iNumVerticesX * m_iNumVerticesZ - 1, m_iNumVerticesX - 1, 0);
+	if (nullptr == m_pQuadTree)
+		return E_FAIL;
+
+	m_pQuadTree->Make_Neighbors();
+
+	return S_OK;
+
+}
+
+HRESULT CVIBuffer_Terrain::Initialize(void * pArg)
+{
+	return S_OK;
+}
+
+_float CVIBuffer_Terrain::Compute_Height(const _float3 & vLocalPos)
+{
+	_uint			iIndex = _uint(vLocalPos.z) * m_iNumVerticesX + _uint(vLocalPos.x);
+	if (iIndex > m_iNumVertices)
+		return 0.f;
+
+	_uint			iIndices[] = {
+		iIndex + m_iNumVerticesX, 
+		iIndex + m_iNumVerticesX + 1,
+		iIndex + 1, 
+		iIndex
+	};
+
+	_float		fWidth = vLocalPos.x - m_pVertexPositions[iIndices[0]].x;
+	_float		fDepth = m_pVertexPositions[iIndices[0]].z - vLocalPos.z;
+
+	_vector		vPlane = XMVectorZero();
+
+	/* 오른쪽 위 삼각형 안. */
+	if (fWidth > fDepth)
+	{
+		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]), 			
+			XMLoadFloat4(&m_pVertexPositions[iIndices[1]]), 
+			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]));
+	}
+	/* 왼쪽 아래 삼각형 안. */
+	else
+	{
+		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]));
+	}
+
+	/*
+	ax + by + cz + d = 0
+	y = (-ax - cz - d) / b
+	*/
+	return (-XMVectorGetX(vPlane) * vLocalPos.x - XMVectorGetZ(vPlane) * vLocalPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
+}
+
+void CVIBuffer_Terrain::Culling(_fmatrix WorldMatrixInv)
+{
+	/* 로컬스페이스상의 평면을 구성한다. */
+	m_pGameInstance->Transform_ToLocalSpace(WorldMatrixInv);
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	_uint*		pIndices = ((_uint*)SubResource.pData);
+
+	_uint		iNumIndices = { 0 };
+
+	m_pQuadTree->Culling(m_pVertexPositions, pIndices, &iNumIndices);
+
+	/*
+	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			_uint		iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			_bool		isIn[4] = {
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[0]])), 
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[1]])),
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[2]])),
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[3]]))
+			};
+
+			
+			if (true == isIn[0] &&
+				true == isIn[1] &&
+				true == isIn[2])
+			{
+				pIndices[iNumIndices++] = iIndices[0];
+				pIndices[iNumIndices++] = iIndices[1];
+				pIndices[iNumIndices++] = iIndices[2];
+			}
+
+		
+			if (true == isIn[0] &&
+				true == isIn[2] &&
+				true == isIn[3])
+			{
+				pIndices[iNumIndices++] = iIndices[0];
+				pIndices[iNumIndices++] = iIndices[2];
+				pIndices[iNumIndices++] = iIndices[3];
+			}
+		}
+	}	
+	*/
+
+	m_iNumIndices = iNumIndices;
+
+	m_pContext->Unmap(m_pIB, 0);
+}
+
+void CVIBuffer_Terrain::Update_Height(float fDeltaTime)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (SUCCEEDED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
+	{
+		VTXNORTEX* pVertices = (VTXNORTEX*)mappedResource.pData;
+
+		for (size_t i = 0; i < m_iNumVertices; ++i)
+		{
+			// 높이 업데이트 로직 추가
+			pVertices[i].vPosition.y += sinf(fDeltaTime * 0.1f + pVertices[i].vPosition.x * 0.1f + pVertices[i].vPosition.z * 0.1f) * 0.1f;
+		}
+
+		m_pContext->Unmap(m_pVB, 0);
+	}
+}
+
+void CVIBuffer_Terrain::AdjustHeight(const _float4& vBrushPos, float fBrushSize, float fBrushStrength, float fMaxHeight, bool bRaise)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource)))
+		return;
+
+	VTXNORTEX* pVertices = (VTXNORTEX*)mappedResource.pData;
+
+	for (UINT i = 0; i < m_iNumVertices; ++i)
+	{
+		_float3 vVertexPos = pVertices[i].vPosition;
+		_float2 vDiff = _float2(vVertexPos.x - vBrushPos.x, vVertexPos.z - vBrushPos.z);
+		float fDistance = sqrt(vDiff.x * vDiff.x + vDiff.y * vDiff.y);
+
+		if (fDistance <= fBrushSize)
+		{
+			float fInfluence = (fBrushSize - fDistance) / fBrushSize;
+			float fAdjustment = fBrushStrength * fInfluence;
+
+			if (bRaise)
+				vVertexPos.y += fAdjustment;
+			else
+				vVertexPos.y -= fAdjustment;
+
+			vVertexPos.y = max(0.0f, min(vVertexPos.y, fMaxHeight));
+			pVertices[i].vPosition = vVertexPos;
+		}
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	//Recalculate_Normals();
+}
+
+HRESULT CVIBuffer_Terrain::UpdateHeightMap(ID3D11Texture2D* pHeightMapTexture)
+{
+	if (!pHeightMapTexture) return E_FAIL;
+
+	D3D11_TEXTURE2D_DESC heightMapDesc;
+	pHeightMapTexture->GetDesc(&heightMapDesc);
+
+	// 스테이징 텍스처 생성
+	ID3D11Texture2D* pStagingTexture = nullptr;
+	D3D11_TEXTURE2D_DESC stagingDesc = heightMapDesc;
+	stagingDesc.Usage = D3D11_USAGE_STAGING;
+	stagingDesc.BindFlags = 0;
+	stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	stagingDesc.MiscFlags = 0;
+
+	HRESULT hr = m_pDevice->CreateTexture2D(&stagingDesc, nullptr, &pStagingTexture);
+	if (FAILED(hr))
+		return hr;
+
+	// 높이맵 텍스처를 스테이징 텍스처로 복사
+	m_pContext->CopyResource(pStagingTexture, pHeightMapTexture);
+
+	D3D11_MAPPED_SUBRESOURCE mappedTexture;
+	hr = m_pContext->Map(pStagingTexture, 0, D3D11_MAP_READ, 0, &mappedTexture);
+	if (FAILED(hr))
+	{
+		Safe_Release(pStagingTexture);
+		return hr;
+	}
+
+	// 임시 버텍스 데이터 생성
+	vector<VTXNORTEX> vertices(m_iNumVertices);
+
+	BYTE* pHeightMap = (BYTE*)mappedTexture.pData;
+	float maxHeight = 0.0f;  // 디버깅을 위한 최대 높이 추적
+
+	for (UINT z = 0; z < m_iNumVerticesZ; ++z)
+	{
+		for (UINT x = 0; x < m_iNumVerticesX; ++x)
+		{
+			UINT terrainIndex = z * m_iNumVerticesX + x;
+			UINT heightMapX = (UINT)((float)x / m_iNumVerticesX * heightMapDesc.Width);
+			UINT heightMapZ = (UINT)((float)z / m_iNumVerticesZ * heightMapDesc.Height);
+			UINT heightMapIndex = heightMapZ * mappedTexture.RowPitch + heightMapX * 4;
+
+			// R8G8B8A8_UNORM 포맷 가정
+			float height = pHeightMap[heightMapIndex] / 255.0f * 100.0f;  // 스케일을 100으로 증가
+
+			vertices[terrainIndex].vPosition.y = height;
+			m_pVertexPositions[terrainIndex].y = height;
+
+			maxHeight = max(maxHeight, height);  // 최대 높이 추적
+
+			// 디버깅 출력 (필요한 경우)
+			// OutputDebugStringA(("Height at (" + std::to_string(x) + "," + std::to_string(z) + "): " + std::to_string(height) + "\n").c_str());
+		}
+	}
+
+	m_pContext->Unmap(pStagingTexture, 0);
+	Safe_Release(pStagingTexture);
+
+	// 최대 높이 출력 (디버깅용)
+	OutputDebugStringA(("Max Height: " + std::to_string(maxHeight) + "\n").c_str());
+
+	// 버텍스 버퍼 업데이트
+	D3D11_MAPPED_SUBRESOURCE mappedVB;
+	hr = m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedVB);
+	if (FAILED(hr))
+		return hr;
+
+	memcpy(mappedVB.pData, vertices.data(), sizeof(VTXNORTEX) * m_iNumVertices);
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	Recalculate_Normals();
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Terrain::UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, int iHeight, float terrainScale)
+{
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
+		return E_FAIL;
+
+	VTXNORTEX* pVertices = (VTXNORTEX*)mappedResource.pData;
+
+	for (int z = 0; z < m_iNumVerticesZ; ++z)
+	{
+		for (int x = 0; x < m_iNumVerticesX; ++x)
+		{
+			int iIndex = z * m_iNumVerticesX + x;
+			int iHeightMapX = min(x * (iWidth - 1) / (m_iNumVerticesX - 1), iWidth - 1);
+			int iHeightMapZ = min(z * (iHeight - 1) / (m_iNumVerticesZ - 1), iHeight - 1);
+			int iHeightMapIndex = iHeightMapZ * iWidth + iHeightMapX;
+
+			float fHeight = pHeightMapData[iHeightMapIndex] / 255.0f * 20.0f; // 높이 범위를 0~20으로 조정
+			pVertices[iIndex].vPosition = _float3(x * terrainScale, fHeight, z * terrainScale);
+			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
+		}
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	//Recalculate_Normals();
+
+	return S_OK;
+}
+
+void CVIBuffer_Terrain::SplatBrushOnHeightMap(ID3D11Texture2D* pHeightMapTexture, const _float4& vBrushPos, float fBrushSize, float fBrushStrength, CTexture* pBrushTexture)
+{
+	if (!pHeightMapTexture) return;
+
+	D3D11_TEXTURE2D_DESC texDesc;
+	pHeightMapTexture->GetDesc(&texDesc);
+
+	// 스테이징 텍스처 생성 (이전과 동일)
+	ID3D11Texture2D* pStagingTexture = nullptr;
+	D3D11_TEXTURE2D_DESC stagingDesc = texDesc;
+	stagingDesc.Usage = D3D11_USAGE_STAGING;
+	stagingDesc.BindFlags = 0;
+	stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+	stagingDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&stagingDesc, nullptr, &pStagingTexture)))
+		return;
+
+	// 원본 텍스처 내용을 스테이징 텍스처로 복사
+	m_pContext->CopyResource(pStagingTexture, pHeightMapTexture);
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (SUCCEEDED(m_pContext->Map(pStagingTexture, 0, D3D11_MAP_READ_WRITE, 0, &mappedResource)))
+	{
+		BYTE* pHeightMap = (BYTE*)mappedResource.pData;
+
+		// 브러시 영향 영역 계산
+		int brushMinX = max(0, (int)(vBrushPos.x - fBrushSize));
+		int brushMaxX = min(texDesc.Width - 1, (int)(vBrushPos.x + fBrushSize));
+		int brushMinY = max(0, (int)(vBrushPos.z - fBrushSize));
+		int brushMaxY = min(texDesc.Height - 1, (int)(vBrushPos.z + fBrushSize));
+
+		float fBrushSizeSquared = fBrushSize * fBrushSize;
+		__m128 vBrushCenter = _mm_set_ps(0, vBrushPos.z, vBrushPos.x, 0);
+		__m128 vBrushStrength = _mm_set1_ps(fBrushStrength);
+		__m128 vMaxHeight = _mm_set1_ps(255.0f);
+
+#pragma omp parallel for
+		for (int y = brushMinY; y <= brushMaxY; ++y)
+		{
+			for (int x = brushMinX; x <= brushMaxX; x += 4)
+			{
+				__m128 vPixelPos = _mm_set_ps(0, y, x + 3, x + 2);
+				__m128 vDiff = _mm_sub_ps(vPixelPos, vBrushCenter);
+				__m128 vDistSquared = _mm_mul_ps(vDiff, vDiff);
+				__m128 vDist = _mm_hadd_ps(vDistSquared, vDistSquared);
+
+				__m128 vMask = _mm_cmplt_ps(vDist, _mm_set1_ps(fBrushSizeSquared));
+
+				if (_mm_movemask_ps(vMask))
+				{
+					for (int i = 0; i < 4; ++i)
+					{
+						if (x + i <= brushMaxX)
+						{
+							UINT index = y * mappedResource.RowPitch + (x + i) * 4;
+							//_float2 vTexCoord = _float2((float)(x + i) / texDesc.Width, (float)y / texDesc.Height);
+							_float2 vTexCoord = _float2((float)(x + i) / (m_iNumVerticesX - 1), (float)y / (m_iNumVerticesZ - 1));
+
+
+							_float4 vBrushColor;
+							pBrushTexture->Fetch_Pixel_FromPixelShader(vTexCoord, &vBrushColor, 0);
+
+							float fHeightChange = vBrushColor.w * fBrushStrength;
+							int newHeight = pHeightMap[index] + (int)(fHeightChange * 255.0f);
+							pHeightMap[index] = (BYTE)max(0, min(255, newHeight));
+						}
+					}
+				}
+			}
+		}
+
+		m_pContext->Unmap(pStagingTexture, 0);
+
+		// 수정된 내용을 다시 원본 텍스처로 복사
+		m_pContext->CopyResource(pHeightMapTexture, pStagingTexture);
+	}
+
+	Safe_Release(pStagingTexture);
+}
+
+void CVIBuffer_Terrain::Recalculate_Normals()
+{
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource)))
+		return;
+
+	VTXNORTEX* pVertices = (VTXNORTEX*)mappedResource.pData;
+
+	for (UINT z = 0; z < m_iNumVerticesZ; ++z)
+	{
+		for (UINT x = 0; x < m_iNumVerticesX; ++x)
+		{
+			UINT index = z * m_iNumVerticesX + x;
+			XMVECTOR normal = XMVectorZero();
+			UINT numTriangles = 0;
+
+			// 주변 삼각형들의 법선을 계산하고 평균을 냅니다.
+			for (int dz = -1; dz <= 1; ++dz)
+			{
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (x + dx >= 0 && x + dx < m_iNumVerticesX && z + dz >= 0 && z + dz < m_iNumVerticesZ)
+					{
+						UINT neighborIndex = (z + dz) * m_iNumVerticesX + (x + dx);
+						XMVECTOR v1 = XMLoadFloat3(&pVertices[index].vPosition);
+						XMVECTOR v2 = XMLoadFloat3(&pVertices[neighborIndex].vPosition);
+						XMVECTOR v3 = XMLoadFloat3(&pVertices[index].vPosition);
+
+						if (dx != 0 && dz != 0)
+						{
+							v3 = XMLoadFloat3(&pVertices[(z + dz) * m_iNumVerticesX + x].vPosition);
+						}
+						else if (dx != 0)
+						{
+							v3 = XMLoadFloat3(&pVertices[z * m_iNumVerticesX + (x + dx)].vPosition);
+						}
+						else if (dz != 0)
+						{
+							v3 = XMLoadFloat3(&pVertices[(z + dz) * m_iNumVerticesX + x].vPosition);
+						}
+						else
+						{
+							continue;
+						}
+
+						XMVECTOR edge1 = XMVectorSubtract(v2, v1);
+						XMVECTOR edge2 = XMVectorSubtract(v3, v1);
+						XMVECTOR triangleNormal = XMVector3Cross(edge1, edge2);
+						normal = XMVectorAdd(normal, XMVector3Normalize(triangleNormal));
+						++numTriangles;
+					}
+				}
+			}
+
+			if (numTriangles > 0)
+			{
+				normal = XMVector3Normalize(XMVectorDivide(normal, XMVectorReplicate((float)numTriangles)));
+				XMStoreFloat3(&pVertices[index].vNormal, normal);
+			}
+		}
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+}
+
+
+CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strHeightMapFilePath)
+{
+	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(strHeightMapFilePath)))
+	{
+		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath, _bool realmap)
+{
+	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(strHeightMapFilePath, realmap)))
+	{
+		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CComponent* CVIBuffer_Terrain::Clone(void * pArg)
+{
+	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CVIBuffer_Terrain");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+
+void CVIBuffer_Terrain::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pQuadTree);
+}
+

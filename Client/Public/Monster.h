@@ -35,6 +35,9 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
+	HRESULT Add_BehaviorTree();
+
+protected:
 	_bool							m_isAnimFinished = { false };
 
 	_uint							m_iHP = { 0 };

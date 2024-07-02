@@ -147,7 +147,8 @@ HRESULT CTutorialMapBridge::Add_Components(void* pArg)
 
 	PhysXDesc.pComponent = m_pModelCom;
 	PhysXDesc.eGeometryType = PxGeometryType::eBOX;
-
+	PhysXDesc.pName = "Bridge";
+	PhysXDesc.fBoxProperty = _float3(1.f, 1.f, 1.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;

@@ -160,7 +160,7 @@ PS_OUT PS_COLORED(PS_IN In)
 
 	//float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 
-	Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
+	//Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
 
 	Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
 

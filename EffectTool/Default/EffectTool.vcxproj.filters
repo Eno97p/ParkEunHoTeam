@@ -240,9 +240,6 @@
     <ClCompile Include="..\Private\Particle_Trail.cpp">
       <Filter>Objects\02. Particle\03. Trail</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Client\Private\WhisperSword_Anim.cpp">
-      <Filter>Objects\03. Player\PartObj\Weapons\WhisperSword</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
       <Filter>Objects\03. Player\PartObj\Weapons</Filter>
     </ClCompile>
@@ -251,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="..\private\TextureFrame.cpp">
       <Filter>Objects\04. TextureFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\WhisperSword_Anim.cpp">
+      <Filter>Objects\03. Player\PartObj\Weapons\WhisperSword</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

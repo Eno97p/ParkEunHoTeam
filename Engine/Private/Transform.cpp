@@ -1,7 +1,7 @@
 #include "..\Public\Transform.h"
 #include "Shader.h"
-
 #include "Navigation.h"
+#include "GameInstance.h"
 
 
 CTransform::CTransform(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -28,7 +28,6 @@ void CTransform::Set_State(STATE eState, _fvector vState)
 HRESULT CTransform::Initialize_Prototype()
 {
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
-
 	return S_OK;
 }
 
@@ -47,8 +46,10 @@ HRESULT CTransform::Initialize(void * pArg)
 	//수정 가능하게 할 항목 값 참조
 	m_OutDesc.pWorldMatrix = &m_WorldMatrix;
 
-
-
+	m_Matrix[MAT_VIEW] = CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+	m_Matrix[MAT_PROJ] = CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ);
+	m_Matrix[MAT_VIEWINV] = CGameInstance::GetInstance()->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+	m_Matrix[MAT_PROJINV] = CGameInstance::GetInstance()->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ);
 
 	return S_OK;
 }
@@ -255,6 +256,19 @@ void CTransform::TurnToTarget(_float fTimeDelta, _fvector vTargetPosition)
 
 	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScaled.x);
 	Set_State(STATE_LOOK, XMVector3Normalize(vCurLook) * vScaled.z);
+}
+
+void CTransform::BillBoard()
+{
+	XMVECTOR vPosition = Get_State(STATE_POSITION);
+	XMFLOAT4 pos;
+	XMStoreFloat4(&pos, vPosition);
+
+	XMFLOAT4X4 matView = *m_Matrix[MAT_VIEWINV];
+	matView._41 = pos.x;
+	matView._42 = pos.y;
+	matView._43 = pos.z;
+	Set_WorldMatrix(XMLoadFloat4x4(&matView));
 }
 
 

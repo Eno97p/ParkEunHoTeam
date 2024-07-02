@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "LandObject.h"
+#include "Player.h"
 
 BEGIN(Engine)
 class CCollider;
@@ -15,7 +16,6 @@ BEGIN(Client)
 class CMonster abstract : public CLandObject
 {
 public:
-	enum COLLIDERTYPE { COLLIDER_AABB, COLLIDER_OBB, COLLIDER_END};
 	typedef struct Mst_Desc : public LANDOBJ_DESC
 	{
 		LEVEL		eLevel;
@@ -45,11 +45,13 @@ protected:
 
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
-	CCollider*						m_pColliderCom[COLLIDER_END];
-	CPhysXComponent*				m_pPhysXCom = { nullptr }; // ??
+	class CPhysXComponent_Character*				m_pPhysXCom = { nullptr };
 	CBehaviorTree*					m_pBehaviorCom = { nullptr };
 
 	LEVEL							m_eLevel = { LEVEL_END };
+
+	CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
 
 protected:
 	virtual HRESULT		Add_Nodes();

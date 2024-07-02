@@ -119,8 +119,8 @@ HRESULT CToolObj::Render()
 			return E_FAIL;
 
 		//if ( i != 29)
-		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-		//	return E_FAIL;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
 
 		
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColorOffset", &m_vColorOffset, sizeof(_uint))))

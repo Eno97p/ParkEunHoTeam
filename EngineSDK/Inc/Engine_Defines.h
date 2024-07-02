@@ -56,13 +56,13 @@ using namespace physx;
 #include<cstring>
 #include<cassert>
 #include<locale>
-
+#include<mutex>
 
 
 #include "fmod.hpp"
 #pragma comment(lib, "fmod_vc.lib")
 #include <io.h>
-#include <vld.h>
+
 
 
 
@@ -84,7 +84,17 @@ namespace Engine
 		CREATE_OBJECT,		// CreateObject
 		DELETE_OBJECT,		// DeleteObject
 		SCENE_CHANGE,		// SceneChange
-		NONE,
+		NONE
+	};
+
+
+	enum CollisionGropuID
+	{
+
+		GROUP_PLAYER = (1 << 0),
+		GROUP_WEAPON = (1 << 1),
+		GROUP_ENVIRONMENT = (1 << 2),
+		GROUP_ENEMY = (1 << 3)
 	};
 
 }

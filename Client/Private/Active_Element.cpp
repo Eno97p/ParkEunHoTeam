@@ -110,9 +110,9 @@ HRESULT CActive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
+	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -160,6 +160,5 @@ void CActive_Element::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 }

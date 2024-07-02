@@ -29,6 +29,7 @@ public:
 	PxPhysics* GetPhysics()const  { return m_pPhysics; }
 	PxScene* GetScene()const { return m_pScene; }
 	PxControllerManager* GetControllerManager()const { return m_pControllerManager; }
+	static PxFilterFlags FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

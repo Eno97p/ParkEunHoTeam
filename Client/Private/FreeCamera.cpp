@@ -37,13 +37,13 @@ void CFreeCamera::Priority_Tick(_float fTimeDelta)
 void CFreeCamera::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		m_pTransformCom->Go_Left(fTimeDelta);
+		m_pTransformCom->Go_Left(fTimeDelta * m_fCamSpeed);
 	if (GetKeyState('D') & 0x8000)
-		m_pTransformCom->Go_Right(fTimeDelta);
+		m_pTransformCom->Go_Right(fTimeDelta * m_fCamSpeed);
 	if (GetKeyState('W') & 0x8000)
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		m_pTransformCom->Go_Straight(fTimeDelta * m_fCamSpeed);
 	if (GetKeyState('S') & 0x8000)
-		m_pTransformCom->Go_Backward(fTimeDelta);
+		m_pTransformCom->Go_Backward(fTimeDelta * m_fCamSpeed);
 
 	_long		MouseMove = { 0 };
 
@@ -70,6 +70,23 @@ void CFreeCamera::Tick(_float fTimeDelta)
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
 		}
 
+
+	}
+
+	//Up, Down으로 캠 스피드 조정
+	if (m_pGameInstance->CheckMouseWheel() == WHEEL_UP)
+	{
+		m_fCamSpeed += 0.1f;
+	}
+	if (m_pGameInstance->CheckMouseWheel() == WHEEL_DOWN)
+	{
+
+		m_fCamSpeed -= 0.1f;
+
+		if (m_fCamSpeed < 0.f)
+		{
+			m_fCamSpeed = 0.f;
+		}
 
 	}
 	__super::Tick(fTimeDelta);

@@ -56,7 +56,7 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
+protected:
 	_char				m_szName[MAX_PATH] = "";
 	_char				m_szLayer[MAX_PATH] = "";
 	_char				m_szModelName[MAX_PATH] = "";

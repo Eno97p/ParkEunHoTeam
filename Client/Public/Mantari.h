@@ -1,12 +1,33 @@
 #pragma once
+
+#include "Client_Defines.h"
 #include "Monster.h"
 
+BEGIN(Engine)
+class CCollider;
+class CNavigation;
+class CBehaviorTree;
+END
+
+/* 플레이어를 구성하는 객체들을 들고 있는 객체이다. */
+
 BEGIN(Client)
+
 class CMantari final : public CMonster
 {
+#define DETECTRANGE 30.f
+#define JUMPATTACKRANGE 20.f
+#define ATTACKRANGE 5.f
+
+public:
+	enum PART { PART_BODY, PART_WEAPON, PART_END };
+	enum STATE {
+		STATE_IDLE, STATE_WALKLEFT, STATE_WALKRIGHT, STATE_WALKBACK, STATE_WALKFRONT, STATE_JUMPATTACK, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_CIRCLEATTACK, STATE_HIT, STATE_DEAD, STATE_REVIVE, STATE_END
+	};
+
 private:
 	CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CMantari(const CMonster& rhs);
+	CMantari(const CMantari& rhs);
 	virtual ~CMantari() = default;
 
 public:
@@ -17,19 +38,55 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
-	HRESULT				Add_Components();
-	HRESULT				Add_PartObjects();
-	virtual HRESULT		Add_Nodes() override;
+public:
+	HRESULT Add_Components();
+	HRESULT Add_PartObjects();
+	_bool Intersect(PART ePartObjID, const wstring& strComponetTag, CCollider* pTargetCollider);
 
 private:
-	vector<CGameObject*>	m_vPartObjects;
+	HRESULT Add_Nodes();
+
+private:
+	NodeStates Revive(_float fTimeDelta);
+	NodeStates Dead(_float fTimeDelta);
+	NodeStates Hit(_float fTimeDelta);
+	NodeStates JumpAttack(_float fTimeDelta);
+	NodeStates Attack(_float fTimeDelta);
+	NodeStates CircleAttack(_float fTimeDelta);
+	NodeStates Detect(_float fTimeDelta);
+	NodeStates Move(_float fTimeDelta);
+	NodeStates Idle(_float fTimeDelta);
+	void Get_Hp(_float iValue);
+
+private:
+	vector<class CGameObject*>					m_PartObjects;
+	_uint										m_iState = { 0 };
+	CBehaviorTree* m_pBehaviorCom = { nullptr };
+
+#pragma region 상태제어 bool변수
+	_bool										m_bDying = false;
+	_bool										m_bReviving = false;
+	_bool										m_bChasing = true;
+#pragma endregion 상태제어 bool변수
+
+	_float										m_fChasingDelay = 0.5f;
+	_bool										m_bAnimFinished = false;
+	_float										m_fLengthFromPlayer = 0.f;
+	_uint										m_iAttackCount = 0;
+	_bool										m_bCanCombo = false;
+
+#pragma region mantari 스탯
+	_uint m_iMaxHp = 100;
+	_uint m_iCurHp = m_iMaxHp;
+#pragma endregion mantari 스탯
+
+
+
 
 public:
 	static CMantari* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
-	virtual void		Free() override;
-
+	virtual void Free() override;
 };
 
 END

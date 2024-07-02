@@ -44,7 +44,7 @@ struct VS_OUT
 	float4		vProjPos : TEXCOORD1;
 };
 
-/* 정점 셰이더 :  /* 
+/* 정점 셰이더 :  /*
 /* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
 /* 2. 정점의 구성정보를 변경한다. */
 VS_OUT VS_MAIN(VS_IN In)
@@ -99,7 +99,7 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
 
-	Out.vPosition = mul(vPosition, matWVP);	
+	Out.vPosition = mul(vPosition, matWVP);
 	Out.vTexcoord = In.vTexcoord;
 	Out.vProjPos = Out.vPosition;
 
@@ -125,33 +125,33 @@ struct PS_OUT
 	vector		vDiffuse : SV_TARGET0;
 	vector		vNormal : SV_TARGET1;
 	vector		vDepth : SV_TARGET2;
-    vector		vSpecular : SV_TARGET3;
-    vector		vEmissive : SV_TARGET4;
+	vector		vSpecular : SV_TARGET3;
+	vector		vEmissive : SV_TARGET4;
 	vector		vRoughness : SV_TARGET5;
 	vector		vMetalic : SV_TARGET6;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+	PS_OUT Out = (PS_OUT)0;
 
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 
 	if (g_bOpacity) vDiffuse.a *= vOpacity.r;
-    if (vDiffuse.a < 0.1f)
-        discard;
+	if (vDiffuse.a < 0.1f)
+		discard;
 
 	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 0.f);
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 0.f);
 	if (g_bEmissive) Out.vEmissive = vEmissive;
 
-    if (g_Hit)
-    {
-        Out.vDiffuse = float4(1.f, 0.f, 0.f, 0.3f);
-    }
+	if (g_Hit)
+	{
+		Out.vDiffuse = float4(1.f, 0.f, 0.f, 0.3f);
+	}
 
 	vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
 	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
@@ -159,7 +159,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (g_bRoughness) Out.vRoughness = vRoughness;
 	if (g_bMetalic) Out.vMetalic = vMetalic;
 
-    return Out;
+	return Out;
 }
 
 PS_OUT PS_WHISPERSWORD(PS_IN In)
@@ -186,7 +186,7 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 	Out.vMetalic = vector(1.f, 1.f, 1.f, 1.f);
 
 
-	if (In.vTexcoord.y > 757.f/2048.f && In.vTexcoord.x > 435.f/2048.f && In.vTexcoord.x < 821.f/2048.f)
+	if (In.vTexcoord.y > 757.f / 2048.f && In.vTexcoord.x > 435.f / 2048.f && In.vTexcoord.x < 821.f / 2048.f)
 	{
 		Out.vDiffuse.a = (Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b) / 3.f;
 		if (Out.vDiffuse.a < 0.25f) discard;
@@ -223,56 +223,24 @@ PS_OUT_BLEND PS_ALPHA(PS_IN In)
 	return Out;
 }
 
-//PS_OUT_BLEND PS_CLONE(PS_IN In)
-//{
-//	PS_OUT_BLEND Out = (PS_OUT_BLEND)0;
-//
-//	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-//
-//	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
-//
-//	Out.vDiffuse.a = g_Alpha;
-//
-//	int diffCount = 0;
-//	for (int i = 0; i < 3; i++)
-//	{
-//		for (int j = 0; j < 3; j++)
-//		{
-//			float2 UV = float2(In.vTexcoord.x + (i - 1) / 1280.f, In.vTexcoord.y + (i - 1) / 720.f);
-//			vector vAround = g_DiffuseTexture.Sample(LinearSampler, UV);
-//			if (vAround.a != 0.f)
-//			{
-//				diffCount++;
-//			}
-//		}
-//	}
-//	if (diffCount > 3)
-//	{
-//		Out.vDiffuse.rgb = float3(0.3f, 0.3f, 1.f);
-//	}
-//	else
-//	{
-//		Out.vDiffuse.a = 0.f;
-//	}
-//
-//	return Out;
-//}
-
 PS_OUT_BLEND PS_CLONE(PS_IN In)
 {
 	PS_OUT_BLEND Out = (PS_OUT_BLEND)0;
 
 	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vDiffuse.a *= vOpacity.r;
 
 	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
-	Out.vDiffuse.a = g_Alpha;
+	Out.vDiffuse.a = g_Alpha * 0.5f;
 
-	float3 LightDir = float3(0.0f, 1.0f, 0.0f); // 빛의 방향
-	float3 RimColor = float3(1.0f, 1.0f, 1.0f); // 림라이트 색상
+	float3 LightDir = float3(0.f, -1.f, 0.f); // 빛의 방향
+	float3 RimColor = float3(0.5f, 0.5f, 1.f); // 림라이트 색상
 	float RimPower = 2.0f; // 림라이트 강도
 
 	float3 normal = normalize(In.vNormal);
-	float NdotL = dot(normal, LightDir);
+	float NdotL = dot(normal, -LightDir);
 
 	// 림라이트 계산
 	float rim = 1.0f - saturate(NdotL);
@@ -292,7 +260,7 @@ struct PS_IN_LIGHTDEPTH
 };
 
 struct PS_OUT_LIGHTDEPTH
-{	
+{
 	vector		vLightDepth : SV_TARGET0;
 };
 
@@ -303,8 +271,8 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
 	if (vDiffuse.a < 0.1f)
-		discard;	
-	
+		discard;
+
 	Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.0f, 0.f, 0.f);
 
 	return Out;

@@ -3,6 +3,7 @@
 #include "Base.h"
 #include "AnimTool_Defines.h"
 #include "ToolObj.h"
+#include "ToolPartObj.h"
 
 // ToolObj의 생성, 관리, 저장의 기능
 // 인자로 받은 Index로 분기 처리 하여 조건에 맞는 Tool Obj 생성
@@ -39,9 +40,11 @@ public:
 public:
 	HRESULT	Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector vPosition); // Tool에서 Obj 생성
 	HRESULT	Add_AnimModel(_int iSelectIdx);
+	HRESULT	Add_PartObj(_int iSelectIdx, _int iBoneIdx);
 
 	HRESULT	Delete_Obj(_int iSelectIdx);
 	HRESULT	Delete_AnimModel();
+	HRESULT	Delete_PartObj();
 
 	void	Setting_ChannelList();
 
@@ -49,7 +52,8 @@ public:
 	void	Set_Animation(_uint iAnimIdx, _bool isLoop);
 	void	Setting_KeyFrameSliders(_uint iAnimIdx, _uint iChannelIdx);
 
-	const _tchar* Setting_FileName();
+	const _tchar*	Setting_FileName();
+	string			Setting_PartObjName(_int iSelectIdx);
 
 	HRESULT	Save_Data();
 	HRESULT	Load_Data();
@@ -57,7 +61,9 @@ public:
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
-	vector<CToolObj*>	m_ToolObjs;
+	vector<CToolObj*>		m_ToolObjs;
+	vector<CToolPartObj*>	m_ToolPartObjs;
+
 	vector<wstring>		m_MonsterName;		// Monster
 	vector<wstring>		m_MapElement;		// Map Element(맵 조형물)
 	vector<wstring>		m_MapObj;			// Map Obj

@@ -17,7 +17,10 @@ public:
 		_float4x4 fWorldMatrix = {};
 		CComponent* pComponent = nullptr;
 		PxGeometryType::Enum eGeometryType = PxGeometryType::eINVALID;
-		
+		const char* pName = nullptr;
+		_float2 fCapsuleProperty = { 0.f, 0.f };
+		_float3 fBoxProperty = { 0.f, 0.f, 0.f };
+		PxFilterData filterData = {};
 	}PHYSX_DESC;
 
 
@@ -41,7 +44,7 @@ public:
 public:
 	virtual void Tick(const _float4x4* pWorldMatrix);
 	virtual void Late_Tick(_float4x4* pWorldMatrix);
-
+	virtual void SetFilterData(PxFilterData  filterData);
 
 protected:
 	virtual tuple<vector<PxVec3>, vector<PxU32>> CreateTriangleMeshDesc(void* pvoid);
@@ -49,7 +52,7 @@ protected:
 public:
 	vector<_float3> CreateCapsuleVertices(float radius, float halfHeight, int segments = 32, int rings = 32);
 	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans);
-
+	PxActor* Get_Actor() { return m_pActor; }
 
 
 
@@ -68,18 +71,18 @@ protected:
 	class CShader*								m_pShader = { nullptr };	
 #endif
 	vector <class CVIBuffer_PhysXBuffer*>		m_pBuffer = {};
-
 	PxMaterial* m_pMaterial = { nullptr };
 	PxRigidActor* m_pActor = { nullptr };
 	PxShape* m_pShape = { nullptr };
-
 	_float4x4 m_WorldMatrix = {};
-
+	
 private:
+	class CModel* m_pModelCom = { nullptr };
 	vector<_float3> m_vecVertices;
 
+	_float3 m_fBoxProperty = { 0.f, 0.f, 0.f };
+	_float2 m_fCapsuleProperty = { 0.f, 0.f };
 
-	class CModel* m_pModelCom = { nullptr };
 public:
 	static CPhysXComponent* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

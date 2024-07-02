@@ -61,7 +61,7 @@ HRESULT CPhysX::Initialize()
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(6);
 	sceneDesc.cpuDispatcher = m_pCPUDispatcher;
-	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	sceneDesc.filterShader = FilterShaderExample;
 	
 	sceneDesc.cudaContextManager = m_pCudaContextManager;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
@@ -127,6 +127,19 @@ HRESULT CPhysX::AddActor(PxActor* pActor)
 	
 	return S_OK;
 }
+
+PxFilterFlags CPhysX::FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+{
+	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+	{
+		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+		return PxFilterFlag::eDEFAULT;
+	}
+
+	return PxFilterFlag::eSUPPRESS;
+}
+
+
 
 CPhysX* CPhysX::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

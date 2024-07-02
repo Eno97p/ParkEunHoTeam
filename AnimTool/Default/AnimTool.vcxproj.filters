@@ -85,6 +85,9 @@
     <ClCompile Include="..\Private\ToolEffect.cpp">
       <Filter>02. GameObject\ToolEffect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ToolPartObj.cpp">
+      <Filter>02. GameObject\ToolObj\PartObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -189,6 +192,9 @@
     <ClInclude Include="..\Public\ToolEffect.h">
       <Filter>02. GameObject\ToolEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ToolPartObj.h">
+      <Filter>02. GameObject\ToolObj\PartObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -264,6 +270,9 @@
     </Filter>
     <Filter Include="999. ParticleMgr">
       <UniqueIdentifier>{11153503-51f4-4eb4-965e-ad78397860b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\ToolObj\PartObject">
+      <UniqueIdentifier>{1b0c2a94-7082-4f7c-b021-c17bfb9f5476}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

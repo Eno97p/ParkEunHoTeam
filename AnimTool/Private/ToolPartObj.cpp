@@ -13,6 +13,13 @@ CToolPartObj::CToolPartObj(const CToolPartObj& rhs)
 {
 }
 
+void CToolPartObj::Set_Radian(_float fRight, _float fLook, _float fUp)
+{
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(fRight));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(fLook));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(fUp));
+}
+
 HRESULT CToolPartObj::Initialize_Prototype()
 {
 	return S_OK;
@@ -40,10 +47,10 @@ HRESULT CToolPartObj::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	/*m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-80.f));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -6.5f, -1.f, 1.f));*/
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fRightRadian));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(m_fLookRadian));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(m_fUpRadian));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPos);
 	//m_vPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 
 	// 여기서 Imgui에 넣어주기
@@ -58,13 +65,7 @@ void CToolPartObj::Priority_Tick(_float fTimeDelta)
 
 void CToolPartObj::Tick(_float fTimeDelta)
 {
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(m_fRightRadian));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(m_fLookRadian));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(m_fUpRadian));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPos);
-
-
-
 
 	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 

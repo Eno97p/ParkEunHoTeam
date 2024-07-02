@@ -1098,6 +1098,8 @@ void CImgui_Manager::Setting_PartObj()
         (*iter)->Set_UpRadian(fUpRadian);
         _vector vecPos = XMVectorSet(fVecX, fVecY, fVecZ, 1.f);
         (*iter)->Set_Pos(vecPos);
+
+        (*iter)->Set_Radian(fRightRadian, fLookRadian, fUpRadian);
     }
 }
 
@@ -1159,6 +1161,11 @@ void CImgui_Manager::Load_EndKeyframe(_uint iAnimIdx, _float fEndKeyframe)
     map<string, string>::iterator iterValue = (*iter).second.find("EndKeyFrame");
     m_fEndKeyframe = fEndKeyframe;
     (*iterValue).second = to_string(m_fEndKeyframe);
+}
+
+void CImgui_Manager::Load_PartObj(const _char* szName)
+{
+    m_vecAddPartObj.emplace_back(szName);
 }
 
 _bool CImgui_Manager::IsColliderSave(_uint iAnimIdx)

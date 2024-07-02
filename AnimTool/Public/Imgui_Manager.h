@@ -55,6 +55,7 @@ public:
 	void	Load_ColliderIdx(_uint iAnimIdx, _uint iColliderBoneIdx);
 	void	Load_StartKeyframe(_uint iAnimIdx, _float fStartKeyframe);
 	void	Load_EndKeyframe(_uint iAnimIdx, _float fEndKeyframe);
+	void	Load_PartObj(const _char* szName);
 
 
 	_bool	IsColliderSave(_uint iAnimIdx);

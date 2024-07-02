@@ -42,6 +42,8 @@ public:
 	_vector			Get_Pos() { return m_vPos; }
 	void			Set_Pos(_vector vPos) { m_vPos = vPos; }
 
+	void			Set_Radian(_float fRight, _float fLook, _float fUp);
+
 	// Load
 	wstring			Get_Name() { return m_wstrModelName; }
 	_uint			Get_BoneIdx() { return m_iSocketBoneIdx; }

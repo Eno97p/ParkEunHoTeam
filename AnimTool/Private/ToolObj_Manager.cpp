@@ -570,6 +570,11 @@ HRESULT CToolObj_Manager::Load_Data()
 
         if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_PartObj"), TEXT("Prototype_GameObject_PartObj"), &pPartObjDesc)))
             return E_FAIL;
+
+        // Imgui의 m_vecAddPartObj에도 넣어주어야 함
+        // string을 넣어주어야 하는디
+        Setting_AddPartObj(szPartObj);
+
     }
 
     CloseHandle(hFile);
@@ -577,6 +582,13 @@ HRESULT CToolObj_Manager::Load_Data()
     MSG_BOX("Animation Data Load");
 
     return S_OK;
+}
+
+void CToolObj_Manager::Setting_AddPartObj(const _char* szName)
+{
+    if (!strcmp(szName, "Prototype_GameObject_Bone_JobMob_Gun"))
+        CImgui_Manager::GetInstance()->Load_PartObj("Gun");
+        
 }
 
 void CToolObj_Manager::Free()

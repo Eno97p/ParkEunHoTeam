@@ -62,6 +62,8 @@ public:
 	HRESULT	Save_Data();
 	HRESULT	Load_Data();
 
+	void	Setting_AddPartObj(const _char* szName);
+
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 

@@ -135,9 +135,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Job_Mob/Job_Mob1.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	// Juggulus >>>>> 애니메이션 이슈 있음
+	// Juggulus
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Juggulus"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Jugulus/Jugglus.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Juggulus/Juggulus.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	// Malkhel
@@ -147,7 +147,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Mantari
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mantari"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Mantari/Mantari.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/NewMantari/Mantari.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	// Npc_Choron
@@ -160,11 +160,24 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/NPC_Valnir/Valnir.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	// Arrow_Jobmob
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Arrow_Jobmob"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixScaling(1.f, 1.f, 1.f);
 	// Bone Sphere
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Bone_Sphere"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+#pragma region PartObj
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	// Gun
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Bone_JobMob_Gun"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion PartObj
 
 	// Prototype_Component_VIBuffer_Terrain
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),

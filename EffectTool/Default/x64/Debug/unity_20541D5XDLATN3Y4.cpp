@@ -74,6 +74,9 @@
 #include "C:\NewRepository\EffectTool\Private\QuarterCamera.cpp"
 
 
+#include "C:\NewRepository\EffectTool\private\TextureFrame.cpp"
+
+
 #include "C:\NewRepository\EffectTool\Private\Weapon.cpp"
 
 

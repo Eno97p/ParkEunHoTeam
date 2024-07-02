@@ -211,6 +211,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\ToolObj.h" />
     <ClInclude Include="..\Public\ToolObj_Manager.h" />
+    <ClInclude Include="..\Public\TutorialMapBridge.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\ToolObj.cpp" />
     <ClCompile Include="..\Private\ToolObj_Manager.cpp" />
+    <ClCompile Include="..\Private\TutorialMapBridge.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -300,7 +300,10 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         if (ImGui::Button("Delete PartObj"))
         {
             CToolObj_Manager::GetInstance()->Delete_PartObj(m_iAddPartObjIdx);
-            
+            vector<string>::iterator partObj = m_vecAddPartObj.begin();
+            for (size_t i = 0; i < m_iAddPartObjIdx; ++i)
+                ++partObj;
+            m_vecAddPartObj.erase(partObj);
         }
 
         // 생성된 PartObj List 필요
@@ -1096,7 +1099,6 @@ void CImgui_Manager::Setting_PartObj()
         _vector vecPos = XMVectorSet(fVecX, fVecY, fVecZ, 1.f);
         (*iter)->Set_Pos(vecPos);
     }
-
 }
 
 #pragma region LoadFunction

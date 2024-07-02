@@ -981,30 +981,16 @@ void CImgui_Manager::Setting_Collider(_uint iType)
 
 void CImgui_Manager::Initialize_PartObj()
 {
+
 }
 
 void CImgui_Manager::Select_List_PartObj()
 {
-    ImGui::Text("PartObj List");
+    const char* PartObjs[] = { "Gun" };
+    static _int iSelectIdex = 0;
+    ImGui::ListBox("###PartObjs", &iSelectIdex, PartObjs, IM_ARRAYSIZE(PartObjs));
 
-    static int partObj_current = 0;
-
-    if (ImGui::BeginListBox("###PartObjList", ImVec2(300, 50)))
-    {
-        for (int n = 0; n < m_vecPartObj.size(); n++)
-        {
-            const bool is_selected = (partObj_current == n);
-            if (ImGui::Selectable(m_vecPartObj[n].c_str(), is_selected))
-            {
-                partObj_current = n;
-                m_iPartObjIdx = partObj_current;
-            }
-
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndListBox();
-    }
+    m_iFileIdx = iSelectIdex;
 }
 
 void CImgui_Manager::Select_List_AddPartObj()

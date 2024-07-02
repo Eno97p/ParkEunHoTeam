@@ -1,6 +1,7 @@
 #include "ToolPartObj.h"
 
 #include "GameInstance.h"
+#include "ToolObj_Manager.h"
 
 CToolPartObj::CToolPartObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -21,6 +22,10 @@ HRESULT CToolPartObj::Initialize(void* pArg)
 {
 	PARTOBJ_DESC* pPartObjDesc = (PARTOBJ_DESC*)pArg;
 
+	_tchar wstrModelName[MAX_PATH] = TEXT("");
+	MultiByteToWideChar(CP_ACP, 0, pPartObjDesc->strModelName.c_str(), strlen(pPartObjDesc->strModelName.c_str()), wstrModelName, MAX_PATH);
+
+	m_wstrModelName = wstrModelName;
 	m_pParentMatrix = pPartObjDesc->pParentMatrix;
 	m_pSocketMatrix = pPartObjDesc->pCombinedTransformationMatrix;
 
@@ -34,6 +39,9 @@ HRESULT CToolPartObj::Initialize(void* pArg)
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -6.5f, -1.f, 1.f));*/
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+
+	// 여기서 Imgui에 넣어주기
+	CToolObj_Manager::GetInstance()->Get_ToolPartObjs().emplace_back(this);
 
 	return S_OK;
 }
@@ -83,7 +91,7 @@ HRESULT CToolPartObj::Render()
 HRESULT CToolPartObj::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT(""),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

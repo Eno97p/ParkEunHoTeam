@@ -24,6 +24,7 @@ private:
 
 public:
 	vector<CToolObj*>& Get_ToolObjs() { return m_ToolObjs; }
+	vector<CToolPartObj*>& Get_ToolPartObjs() { return m_ToolPartObjs; }
 	const _float4x4* Get_Obj_WorldMatrix(_int iIndex);	// 해당 Index Obj의 WorldMatrix를 반환하는 함수
 
 	_uint	Get_CurKeyFrame(_uint iAnimIdx, _uint iChannelIdx);

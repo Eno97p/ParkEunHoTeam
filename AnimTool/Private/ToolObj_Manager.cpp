@@ -95,10 +95,27 @@ HRESULT CToolObj_Manager::Add_AnimModel(_int iSelectIdx)
 HRESULT CToolObj_Manager::Add_PartObj(_int iSelectIdx, _int iBoneIdx)
 {
     CToolPartObj::PARTOBJ_DESC pDesc{};
+    string strModelName = Setting_PartObjName(iSelectIdx);
 
     // 컴바인드 행렬과 부모 행렬을 넣어주어야 함
 
+    vector<CToolObj*>::iterator obj = m_ToolObjs.begin();
 
+    pDesc.pParentMatrix = dynamic_cast<CTransform*>((*obj)->Get_Component(TEXT("Com_Transform")))->Get_WorldFloat4x4();
+
+    string BoneName = (*obj)->Get_BoneName(iBoneIdx);
+    pDesc.pCombinedTransformationMatrix =
+        dynamic_cast<CModel*>((*obj)->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix(BoneName.c_str());
+
+    pDesc.strModelName = strModelName;
+
+    /*CToolPartObj* PartObj = dynamic_cast<CToolPartObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_PartObj"), &pDesc));
+    if (nullptr == PartObj)
+        return E_FAIL;
+    m_ToolPartObjs.emplace_back(PartObj);*/
+
+    if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_PartObj"), TEXT("Prototype_GameObject_PartObj"), &pDesc)))
+        return E_FAIL;
 
     return S_OK;
 }

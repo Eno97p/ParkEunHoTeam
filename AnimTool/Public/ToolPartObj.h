@@ -16,6 +16,7 @@ class CToolPartObj final : public CGameObject
 public:
 	typedef struct PartObj_Desc : public GAMEOBJECT_DESC
 	{
+		string				strModelName;
 		const _float4x4*	pCombinedTransformationMatrix;
 		const _float4x4*	pParentMatrix;
 	}PARTOBJ_DESC;
@@ -40,6 +41,8 @@ private:
 	CShader*				m_pShaderCom = { nullptr };
 	CModel*					m_pModelCom = { nullptr };
 	const _float4x4*		m_pSocketMatrix = { nullptr };
+
+	wstring					m_wstrModelName;
 
 private:
 	HRESULT			Add_Components();

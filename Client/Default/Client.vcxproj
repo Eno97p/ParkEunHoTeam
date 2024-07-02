@@ -207,6 +207,7 @@
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
+    <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -304,6 +305,7 @@
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
+    <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -387,6 +389,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />

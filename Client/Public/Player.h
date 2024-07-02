@@ -107,6 +107,9 @@ private:
 
 
 
+private:
+	void OnShapeHit(const PxControllerShapeHit& hit);
+
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

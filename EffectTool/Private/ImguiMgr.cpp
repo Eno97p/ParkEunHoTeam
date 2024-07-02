@@ -500,7 +500,7 @@ void CImguiMgr::Visible_Data()
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
 
-	static _bool bShow[3] = { false,false,false };
+	static _bool bShow[4] = { false,false,false,false };
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -520,6 +520,12 @@ void CImguiMgr::Visible_Data()
 			Trail_Tool();
 		}
 	}
+	ImGui::Checkbox("FrameTextureTool", &bShow[3]);
+	if (bShow[3] == true)
+	{
+		FrameTextureTool();
+	}
+
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
 		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
@@ -1192,6 +1198,60 @@ HRESULT CImguiMgr::Load_TrailList()
 	}
 	NameFile.close();
 	return S_OK;
+}
+
+void CImguiMgr::FrameTextureTool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("FrameTexture_Editor");
+
+	static CTextureFrame::TEXFRAMEDESC classdesc{};
+
+	ImGui::InputInt("Division", &classdesc.iDivision);
+	classdesc.Texture = m_pTextureProtoName;
+	classdesc.TexturePath = m_pTextureFilePath;
+	ImGui::Checkbox("Color", &classdesc.State[0]);
+	if (classdesc.State[0] == true)
+	{
+		ImGui::ColorEdit3("StartColor", reinterpret_cast<float*>(&classdesc.Color[0]));
+		ImGui::ColorEdit3("EndColor", reinterpret_cast<float*>(&classdesc.Color[1]));
+	}
+	ImGui::Checkbox("Desolve", &classdesc.State[1]);
+	if (classdesc.State[1] == true)
+	{
+		if (ImGui::InputInt("DesolveNum", &classdesc.iNumDesolve))
+		{
+			if (classdesc.iNumDesolve < 0)
+				classdesc.iNumDesolve = 0;
+			else if (classdesc.iNumDesolve > 15)
+				classdesc.iNumDesolve = 15;
+		}
+	}
+	ImGui::Checkbox("Blur", &classdesc.State[2]);
+	if (classdesc.State[2] == true)
+	{
+		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&classdesc.Color[2]));
+		ImGui::InputFloat("Bloompower", &classdesc.Frame[2]);
+	}
+	ImGui::Checkbox("Billboard", &classdesc.State[3]);
+
+	ImGui::InputFloat("MaxFrame", &classdesc.Frame[0]);
+	ImGui::InputFloat("FrameSpeed", &classdesc.Frame[1]);
+
+	ImGui::InputFloat2("Size", reinterpret_cast<float*>(&classdesc.vSize));
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&classdesc.vStartPos));
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (classdesc.Texture == TEXT("") || classdesc.TexturePath == TEXT(""))
+			MSG_BOX("텍스쳐를 먼저 선택해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FrameTex"),
+				TEXT("Prototype_GameObject_FrameTexture"), &classdesc);
+		}
+	}
+	ImGui::End();
 }
 
 vector<string> CImguiMgr::GetFilesInDirectory(const string& path)

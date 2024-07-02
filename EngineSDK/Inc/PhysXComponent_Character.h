@@ -16,6 +16,8 @@ public:
 		_float3 fMatterial;
 		CTransform* pTransform = nullptr;
 		_float fJumpSpeed = 0.f;
+		const char* pName = nullptr;
+		PxFilterData filterData = {};
 	}ControllerDesc;
 
 
@@ -28,6 +30,9 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
+
+public:
+	virtual void SetFilterData(PxFilterData  filterData)override;
 
 
 #ifdef _DEBUG
@@ -63,6 +68,8 @@ private:
 	const _float m_fGravity = -30.f;
 	_float m_fSpeed = 3.f;
 
+
+	
 public:
 	static CPhysXComponent_Character* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

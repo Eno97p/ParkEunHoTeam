@@ -54,7 +54,9 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	
 	m_pModelCom =dynamic_cast<CModel*>(pDesc->pComponent);
 	m_WorldMatrix = pDesc->fWorldMatrix;
-
+	m_fBoxProperty= pDesc->fBoxProperty;
+	m_fCapsuleProperty = pDesc->fCapsuleProperty;
+	
 
 	
 	PxTransform pxTrans =Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
@@ -63,7 +65,8 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 
 	
 	CreateActor(pDesc->eGeometryType, pxTrans);
-
+	//pDesc
+	m_pActor->setName(pDesc->pName);
 
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
 	m_pGameInstance->AddActor(m_pActor);
@@ -234,7 +237,7 @@ HRESULT CPhysXComponent::Init_Buffer()
 	
 
 	delete[] Shapes;
-
+	Shapes = nullptr;
 
 	return S_OK;
 }
@@ -287,6 +290,24 @@ void CPhysXComponent::Late_Tick(_float4x4* pWorldMatrix)
 	m_WorldMatrix = *pWorldMatrix;
 	
 	
+}
+
+void CPhysXComponent::SetFilterData(PxFilterData filterData)
+{
+	if (nullptr != m_pActor)
+	{
+		PxShape* pShape = nullptr;
+		m_pActor->getShapes(&pShape, 1);
+		pShape->setSimulationFilterData(filterData);
+		pShape->setQueryFilterData(filterData);
+		
+
+
+	}
+
+
+
+
 }
 
 #ifdef _DEBUG
@@ -430,14 +451,16 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 		break;
 	case physx::PxGeometryType::eCAPSULE:
 	{
-		PxCapsuleGeometry temp = PxCapsuleGeometry(1, 1);
+		
+		PxCapsuleGeometry temp = PxCapsuleGeometry(m_fCapsuleProperty.x, m_fCapsuleProperty.y);
 		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f);
 
 		break;
 	}
 	case physx::PxGeometryType::eBOX:
 	{
-		PxBoxGeometry temp = PxBoxGeometry(0.5, 0.5, 0.5);
+
+		PxBoxGeometry temp = PxBoxGeometry(m_fBoxProperty.x, m_fBoxProperty.y, m_fBoxProperty.z);
 		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f);
 		break;
 	}

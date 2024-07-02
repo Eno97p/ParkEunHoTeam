@@ -38,6 +38,8 @@
 #include "Mantari.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
+#include "Juggulus_HandTwo.h"
+
 #pragma endregion Monster
 
 
@@ -677,6 +679,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CJuggulus_HandOne::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
 	/* For.Prototype_GameObject_Mantari */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
 		CMantari::Create(m_pDevice, m_pContext))))
@@ -690,6 +693,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Weapon_Mantari */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Mantari"),
 		CWeapon_Mantari::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Juggulus_HandTwo */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandTwo"),
+		CJuggulus_HandTwo::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Monster
 

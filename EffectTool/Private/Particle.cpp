@@ -22,7 +22,7 @@ HRESULT CParticle::Initialize(void* pArg)
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDesolveTexture))))
+		TEXT("Com_DesolveTexture"), reinterpret_cast<CComponent**>(&m_pDesolveTexture))))
 		return E_FAIL;
 	//a
 	return S_OK;

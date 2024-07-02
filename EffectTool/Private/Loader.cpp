@@ -9,6 +9,7 @@
 #include "Particle_Rect.h"
 #include "Particle_Trail.h"
 #include "Player.h"
+#include "TextureFrame.h"
 #include "WhisperSword_Anim.h"
 
 
@@ -238,6 +239,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CWhisperSword_Anim::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FrameTexture"),
+		CTextureFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

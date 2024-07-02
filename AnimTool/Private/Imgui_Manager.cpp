@@ -307,6 +307,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Text("");
         Select_List_AddPartObj();
 
+        Setting_PartObj();
 
         ImGui::End();
     }
@@ -1045,6 +1046,57 @@ void CImgui_Manager::Add_PartObject()
         ++iter;
 
     m_vecAddPartObj.emplace_back((*iter));
+}
+
+void CImgui_Manager::Setting_PartObj()
+{
+    ImGui::Text("");
+    ImGui::Text("Data Setting");
+
+    ImGui::Text("Right Radian");
+    ImGui::SameLine();
+    static _float fRightRadian = 0.f;
+    ImGui::InputFloat("###Right Radian", &fRightRadian);
+
+    ImGui::Text("Look Radian");
+    ImGui::SameLine();
+    static _float fLookRadian = 0.f;
+    ImGui::InputFloat("###Look Radian", &fLookRadian);
+
+    ImGui::Text("Up Radian");
+    ImGui::SameLine();
+    static _float fUpRadian = 0.f;
+    ImGui::InputFloat("###Up Radian", &fUpRadian);
+
+    ImGui::Text("Vector Pos");
+    ImGui::Text("X : ");
+    ImGui::SameLine();
+    static _float fVecX = 0.f;
+    ImGui::InputFloat("###Vector PosX", &fVecX);
+    ImGui::Text("Y : ");
+    ImGui::SameLine();
+    static _float fVecY = 0.f;
+    ImGui::InputFloat("###Vector PosY", &fVecY);
+    ImGui::Text("Z : ");
+    ImGui::SameLine();
+    static _float fVecZ = 0.f;
+    ImGui::InputFloat("###Vector PosZ", &fVecZ);
+
+    if (ImGui::Button("Data Apply"))
+    {
+        // 입력된 값들 PartObj에 적용해주기
+        //Tool Obj 에 접근
+        vector<CToolPartObj*>::iterator iter = (CToolObj_Manager::GetInstance()->Get_ToolPartObjs()).begin();
+        for (size_t i = 0; i < m_iAddPartObjIdx; ++i)
+            ++iter;
+
+        (*iter)->Set_RightRadian(fRightRadian);
+        (*iter)->Set_LookRadian(fLookRadian);
+        (*iter)->Set_UpRadian(fUpRadian);
+        _vector vecPos = XMVectorSet(fVecX, fVecY, fVecZ, 1.f);
+        (*iter)->Set_Pos(vecPos);
+    }
+
 }
 
 #pragma region LoadFunction

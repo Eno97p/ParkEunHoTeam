@@ -258,6 +258,7 @@ HRESULT CToolObj_Manager::Delete_PartObj(_int iSelectIdx)
     for (size_t i = 0; i < iSelectIdx; ++i)
         ++iter;
 
+    Safe_Release(*iter);
     m_ToolPartObjs.erase(iter);
 
     return S_OK;

@@ -38,6 +38,9 @@ public:
 			return false;
 	}
 
+	// PartObj
+
+
 public:
 	HRESULT	Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector vPosition); // Tool에서 Obj 생성
 	HRESULT	Add_AnimModel(_int iSelectIdx);

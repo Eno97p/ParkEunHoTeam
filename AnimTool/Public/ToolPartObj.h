@@ -17,14 +17,27 @@ public:
 	typedef struct PartObj_Desc : public GAMEOBJECT_DESC
 	{
 		string				strModelName;
-		const _float4x4*	pCombinedTransformationMatrix;
-		const _float4x4*	pParentMatrix;
+		const _float4x4* pCombinedTransformationMatrix;
+		const _float4x4* pParentMatrix;
 	}PARTOBJ_DESC;
 
 private:
 	CToolPartObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CToolPartObj(const CToolPartObj& rhs);
 	virtual ~CToolPartObj() = default;
+
+public:
+	_float			Get_RightRadian() { return m_fRightRadian; }
+	void			Set_RightRadian(_float fRightRadian) { m_fRightRadian = fRightRadian; }
+
+	_float			Get_LookRadian() { return m_fLookRadian; }
+	void			Set_LookRadian(_float fLookRadian) { m_fLookRadian = fLookRadian; }
+
+	_float			Get_UpRadian() { return m_fUpRadian; }
+	void			Set_UpRadian(_float fUpRadian) { m_fUpRadian = fUpRadian; }
+
+	_vector			Get_Pos() { return m_vPos; }
+	void			Set_Pos(_vector vPos) { m_vPos = vPos; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -35,6 +48,11 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_float					m_fRightRadian = { 0.f };
+	_float					m_fLookRadian = { 0.f };
+	_float					m_fUpRadian = { 0.f };
+	_vector					m_vPos;
+
 	_float4x4				m_WorldMatrix;
 	const _float4x4*		m_pParentMatrix = { nullptr };
 

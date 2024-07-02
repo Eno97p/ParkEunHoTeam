@@ -91,12 +91,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element">
       <UniqueIdentifier>{69ece9b8-2d30-4cff-b14e-3b2247dfafe2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\Active_Element">
-      <UniqueIdentifier>{3ed72453-e097-48c8-af7f-66659bbfb60f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\Passive_Element">
-      <UniqueIdentifier>{2c808c05-f24a-4a20-8596-ecc6b1eddd59}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword">
       <UniqueIdentifier>{809fd46f-0ffb-49da-b590-4219978ac3dd}</UniqueIdentifier>
     </Filter>
@@ -301,6 +295,21 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword">
       <UniqueIdentifier>{301c332e-f555-403a-85db-d893d905baf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element">
+      <UniqueIdentifier>{3ed72453-e097-48c8-af7f-66659bbfb60f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element">
+      <UniqueIdentifier>{2c808c05-f24a-4a20-8596-ecc6b1eddd59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\00. Grass">
+      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge">
+      <UniqueIdentifier>{f2c6ea6c-eaf0-42d7-8370-8c60459eb823}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
+      <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -383,7 +392,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
-    <ClInclude Include="..\Public\Passive_Element.h" />
     <ClInclude Include="..\Public\WhisperSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
     </ClInclude>
@@ -597,8 +605,20 @@
     <ClInclude Include="..\public\Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MantariSword.h">
+    <ClInclude Include="..\public\Weapon_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialMapBridge.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Body_Mantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Juggulus_HandTwo.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -673,7 +693,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
-    <ClCompile Include="..\Private\Passive_Element.cpp" />
     <ClCompile Include="..\Private\WhisperSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
     </ClCompile>
@@ -878,8 +897,20 @@
     <ClCompile Include="..\private\Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MantariSword.cpp">
+    <ClCompile Include="..\private\Weapon_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialMapBridge.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Passive_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Body_Mantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Juggulus_HandTwo.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -941,6 +972,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl">
+	  <Filter>97.ShaderFiles</Filter>
+	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

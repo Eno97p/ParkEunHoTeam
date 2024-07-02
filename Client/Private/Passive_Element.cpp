@@ -31,7 +31,7 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
 
     MAP_ELEMENT_DESC* desc = (MAP_ELEMENT_DESC*)(pArg);
-    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
+     m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 
     if (FAILED(Add_Components((MAP_ELEMENT_DESC*)(pArg))))
         return E_FAIL;
@@ -41,9 +41,9 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
     //m_pTransformCom->Scaling(100.f, 100.f, 100.f);
     
-    CVIBuffer_Instance::INSTANCE_DESC instanceDesc{};
-    instanceDesc.WorldMats = desc->WorldMats;
-    instanceDesc.iNumInstance = desc->iInstanceCount;
+    //CVIBuffer_Instance::INSTANCE_DESC instanceDesc{};
+    //instanceDesc.WorldMats = desc->WorldMats;
+    //instanceDesc.iNumInstance = desc->iInstanceCount;
     //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
 
@@ -180,7 +180,6 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
         TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
         return E_FAIL;
-
 
 
 

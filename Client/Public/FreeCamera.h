@@ -28,6 +28,7 @@ public:
 private:
 	_float		m_fSensor = { 0.0f };
 	bool		m_bIsNoMove = false;
+	_float		m_fCamSpeed = 1.f;
 public:
 	static CFreeCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

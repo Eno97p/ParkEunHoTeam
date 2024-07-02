@@ -87,7 +87,9 @@ void CToolObj_Manager::Initialize()
 
     m_PassiveElements = { TEXT("Prototype_Component_Model_TronesT02"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), TEXT("Prototype_Component_Model_RasSamrahCastle"),
-                        TEXT("Prototype_Component_Model_RasSamrahCastle2"), TEXT("Prototype_Component_Model_Mountain_2"), TEXT("Prototype_Component_Model_Mountain_3"), TEXT("Prototype_Component_Model_Mountain_4"), TEXT("Prototype_Component_Model_Mountain_5"),
+                        TEXT("Prototype_Component_Model_RasSamrahCastle2"),
+        //TUTORIAL
+        TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
                         TEXT("Prototype_Component_Model_box_1"), TEXT("Prototype_Component_Model_box_2"),
                         TEXT("Prototype_Component_Model_fire_wood"), TEXT("Prototype_Component_Model_fireframe"),
                         TEXT("Prototype_Component_Model_woodBridge"), TEXT("Prototype_Component_Model_woodBridge_2"), 
@@ -104,7 +106,7 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_JailDoor"), TEXT("Prototype_Component_Model_FireIron"), TEXT("Prototype_Component_Model_Ship_2")
     };
 
-    m_ActiveElements = { TEXT("Prototype_Component_Model_Npc_Owner"), TEXT("Prototype_Component_Model_Npc_Shop"), TEXT("Prototype_Component_Model_Npc_Smith"), TEXT("Prototype_Component_Model_Npc_Elite_Quest"),
+    m_ActiveElements = { TEXT("Prototype_Component_Model_Npc_Owner"), TEXT("Prototype_Component_Model_TutorialMapBridge"), TEXT("Prototype_Component_Model_Npc_Smith"), TEXT("Prototype_Component_Model_Npc_Elite_Quest"),
                 TEXT("Prototype_Component_Model_RewardBox"),
                 TEXT("Prototype_Component_Model_Item_Gloves"), TEXT("Prototype_Component_Model_Item_Hell"),
                 TEXT("Prototype_Component_Model_Boss_Gun"), TEXT("Prototype_Component_Model_Cannon") };
@@ -238,7 +240,7 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 0:
             return "Prototype_GameObject_Grass";
         case 1:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_TutorialMapBridge";
         case 2:
             return "Prototype_GameObject_Active_Element";
         case 3:

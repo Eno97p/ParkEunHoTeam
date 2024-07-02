@@ -7,7 +7,7 @@ BEGIN(Client)
 
 class CActive_Element : public CMap_Element
 {
-private:
+protected:
 	CActive_Element(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CActive_Element(const CActive_Element& rhs);
 	virtual ~CActive_Element() = default;

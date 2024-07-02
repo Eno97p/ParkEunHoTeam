@@ -26,11 +26,11 @@ HRESULT CJuggulus_HandOne::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(3, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
 	/*m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-80.f));
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));*/
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 10.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, -3.f, 1.f));
 
 	return S_OK;
 }
@@ -43,6 +43,7 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 {
 	Change_Animation(fTimeDelta);
 
+	// 손들은 부모의 위치와 이을 필요는 없을 수도
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 }
 
@@ -135,25 +136,25 @@ HRESULT CJuggulus_HandOne::Bind_ShaderResources()
 
 void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
+	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
-	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_ATTACK)
+	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_TARGETING)
 	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 16;
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 1.f;
 	}
-
+	else if (*m_pState == CBoss_Juggulus::STATE_HANDONE_ATTACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
+		fAnimSpeed = 0.5f;
+	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = true; // false
-	//// 여러 애니메이션을 재생할 때 마지막 애니메이션은 보간 필요
-	//if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || (m_iPastAnimIndex == 0 && *m_pState != CPlayer::STATE_ATTACK))
-	//{
-	//	isLerp = true;
-	//}
+	_bool isLerp = false; // false
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 

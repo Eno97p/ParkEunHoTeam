@@ -114,6 +114,9 @@
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TutorialMapBridge.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -222,6 +225,9 @@
       <Filter>02. GameObjects\99. Camera\02. DollyTrack</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Grass.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialMapBridge.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
   </ItemGroup>

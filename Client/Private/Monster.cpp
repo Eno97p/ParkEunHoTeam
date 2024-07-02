@@ -3,7 +3,6 @@
 
 #include "GameInstance.h"
 
-#include "Player.h"
 #include "Particle_Rect.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -32,6 +31,10 @@ HRESULT CMonster::Initialize(void * pArg)
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 
 	return S_OK;
 }
@@ -70,10 +73,6 @@ HRESULT CMonster::Add_Nodes()
 void CMonster::Free()
 {
 	__super::Free();
-
-	for (size_t i = 0; i < 2; i++)
-		Safe_Release(m_pColliderCom[i]);
-
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

@@ -8,13 +8,15 @@
 #include"Mesh.h"
 
 #include"Transform.h"
+
 #include"CHitReport.h"
-CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+
+CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPhysXComponent{ pDevice, pContext }
 {
 }
 
-CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Character & rhs)
+CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Character& rhs)
 	: CPhysXComponent{ rhs }
 
 {
@@ -22,19 +24,19 @@ CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Chara
 
 HRESULT CPhysXComponent_Character::Initialize_Prototype()
 {
-	if(FAILED(__super::Initialize_Prototype()))
+	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CPhysXComponent_Character::Initialize(void * pArg)
+HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 {
-	ControllerDesc* pObjectdesc	=static_cast<ControllerDesc*>(pArg);
-	
+	ControllerDesc* pObjectdesc = static_cast<ControllerDesc*>(pArg);
 
 
-	m_pTransform= pObjectdesc->pTransform;
+
+	m_pTransform = pObjectdesc->pTransform;
 	Safe_AddRef(m_pTransform);
 
 
@@ -58,12 +60,7 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 	desc.reportCallback = CHitReport::GetInstance();
 	
 
-	
 
-	
-	
-
-	
 	m_pController = m_pGameInstance->GetControllerManager()->createController(desc);
 	if (m_pController == nullptr)
 	{
@@ -96,7 +93,7 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 
 
 
-	
+
 
 	return S_OK;
 }
@@ -136,7 +133,7 @@ void CPhysXComponent_Character::SetFilterData(PxFilterData filterData)
 HRESULT CPhysXComponent_Character::Init_Buffer()
 {
 
-	
+
 	PxShape** Shapes = new PxShape * [10];
 
 	//여기서 문제인듯? //받아오려는 갯수가 많으면 속도가 느린가?
@@ -149,17 +146,17 @@ HRESULT CPhysXComponent_Character::Init_Buffer()
 		const PxGeometryHolder geometry = shape->getGeometry();
 		switch (geometry.getType())
 		{
-			case PxGeometryType::eCAPSULE:
-			{
+		case PxGeometryType::eCAPSULE:
+		{
 			PxCapsuleGeometry capsuleGeometry = geometry.capsule();
-			
+
 			_float fRadius = capsuleGeometry.radius;
 			_float fHalfHeight = capsuleGeometry.halfHeight;
 
 			vector<_float3> vecVertices = CreateCapsuleVertices(fRadius, fHalfHeight);
 			m_pBuffer.push_back(CVIBuffer_PhysXBuffer::Create(m_pDevice, m_pContext, vecVertices));
 			break;
-			}
+		}
 
 		}
 
@@ -199,11 +196,6 @@ HRESULT CPhysXComponent_Character::Render()
 
 	return S_OK;
 }
-void* CPhysXComponent_Character::GetData()
-{
-
-	return nullptr;
-}
 #endif // _DEBUG
 
 HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
@@ -219,11 +211,11 @@ HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
-	
+
 
 	//m_pController->move(PxVec3(0,0,1),)
 
-		
+
 
 
 
@@ -246,17 +238,67 @@ HRESULT CPhysXComponent_Character::Go_BackWard(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CPhysXComponent_Character::Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform)
+{
+	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 fRight;
+	vRight = XMVector3Normalize(vRight);
+	XMStoreFloat3(&fRight, vRight);
+	PxVec3 moveVector = PxVec3(-fRight.x, 0.f, -fRight.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+
+	_float3 fScale = m_pTransform->Get_Scaled();
+	vLook = pTargetTransform->Get_State(CTransform::STATE_POSITION) - vPos;
+	vLook.m128_f32[1] = 0.f;
+
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+	m_pTransform->Set_Scale(fScale.x, fScale.y, fScale.z);
+
+	return S_OK;
+}
+
+HRESULT CPhysXComponent_Character::Go_OrbitCCW(_float fTimeDelta, CTransform* pTargetTransform)
+{
+	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_vector vUp = m_pTransform->Get_State(CTransform::STATE_UP);
+	_vector vLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vPos = m_pTransform->Get_State(CTransform::STATE_POSITION);
+	_float3 fRight;
+	vRight = XMVector3Normalize(vRight);
+	XMStoreFloat3(&fRight, vRight);
+	PxVec3 moveVector = PxVec3(fRight.x, 0.f, fRight.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+
+	_float3 fScale = m_pTransform->Get_Scaled();
+	vLook = pTargetTransform->Get_State(CTransform::STATE_POSITION) - vPos;
+	vLook.m128_f32[1] = 0.f;
+
+	m_pTransform->Set_State(CTransform::STATE_LOOK, vLook);
+	m_pTransform->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
+	m_pTransform->Set_State(CTransform::STATE_UP, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+	m_pTransform->Set_Scale(fScale.x, fScale.y, fScale.z);
+
+	return S_OK;
+}
+
+
 HRESULT CPhysXComponent_Character::Go_Jump(_float fTimeDelta, _float fJumpSpeed)
 {
-	if (fJumpSpeed == 0.f)
-	{
-		m_fCurrentY_Velocity = m_fJumpSpeed;
-	}
-	else
-	{
-		m_fCurrentY_Velocity = fJumpSpeed;
-	}
-	
+	m_fCurrentY_Velocity = m_fJumpSpeed;
+
 	m_bIsJump = true;
 
 	return S_OK;
@@ -265,23 +307,23 @@ HRESULT CPhysXComponent_Character::Go_Jump(_float fTimeDelta, _float fJumpSpeed)
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {
 
-		m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
-		// 변위 계산: s = ut + 0.5 * a * t^2
-		float displacement = m_fCurrentY_Velocity * fTimeDelta + 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
+	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
+	// 변위 계산: s = ut + 0.5 * a * t^2
+	float displacement = m_fCurrentY_Velocity * fTimeDelta + 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
 
 
-		PxVec3 moveVector = PxVec3(0, displacement, 0);
+	PxVec3 moveVector = PxVec3(0, displacement, 0);
 
 
-		PxControllerFilters filters;
-		PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 
-		if (flags & PxControllerCollisionFlag::eCOLLISION_DOWN)
-		{
-			m_bIsJump = false;
-			m_fCurrentY_Velocity = 0.f;
-		}
+	if (flags & PxControllerCollisionFlag::eCOLLISION_DOWN)
+	{
+		m_bIsJump = false;
+		m_fCurrentY_Velocity = 0.f;
+	}
 
 
 
@@ -292,10 +334,10 @@ void CPhysXComponent_Character::Late_Tick(_float fTimeDelta)
 {
 	PxExtendedVec3 vFootPositipn = m_pController->getFootPosition();
 
-	_float3 fPos = { static_cast<_float>( vFootPositipn.x),static_cast<_float>( vFootPositipn.y), static_cast<_float>(vFootPositipn.z) };
+	_float3 fPos = { static_cast<_float>(vFootPositipn.x),static_cast<_float>(vFootPositipn.y), static_cast<_float>(vFootPositipn.z) };
 
 
-	_vector PhysxPosition =XMVectorSet(fPos.x, fPos.y, fPos.z, 1.0f);
+	_vector PhysxPosition = XMVectorSet(fPos.x, fPos.y, fPos.z, 1.0f);
 
 	m_pTransform->Set_State(CTransform::STATE_POSITION, PhysxPosition);
 
@@ -304,9 +346,9 @@ void CPhysXComponent_Character::Late_Tick(_float fTimeDelta)
 }
 
 
-CPhysXComponent_Character* CPhysXComponent_Character::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CPhysXComponent_Character* CPhysXComponent_Character::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CPhysXComponent_Character*		pInstance = new CPhysXComponent_Character(pDevice, pContext);
+	CPhysXComponent_Character* pInstance = new CPhysXComponent_Character(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -317,9 +359,9 @@ CPhysXComponent_Character* CPhysXComponent_Character::Create(ID3D11Device * pDev
 	return pInstance;
 }
 
-CComponent * CPhysXComponent_Character::Clone(void * pArg)
+CComponent* CPhysXComponent_Character::Clone(void* pArg)
 {
-	CPhysXComponent_Character*		pInstance = new CPhysXComponent_Character(*this);
+	CPhysXComponent_Character* pInstance = new CPhysXComponent_Character(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{

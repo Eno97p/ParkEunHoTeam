@@ -158,6 +158,7 @@ private:
 	void	Initialize_PartObj();
 	void	Select_List_PartObj();
 	void	Select_List_AddPartObj();
+	void	Add_PartObject();
 
 public:
 	virtual void Free() override;

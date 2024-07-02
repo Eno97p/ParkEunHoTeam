@@ -97,8 +97,6 @@ HRESULT CToolObj_Manager::Add_PartObj(_int iSelectIdx, _int iBoneIdx)
     CToolPartObj::PARTOBJ_DESC pDesc{};
     string strModelName = Setting_PartObjName(iSelectIdx);
 
-    // 컴바인드 행렬과 부모 행렬을 넣어주어야 함
-
     vector<CToolObj*>::iterator obj = m_ToolObjs.begin();
 
     pDesc.pParentMatrix = dynamic_cast<CTransform*>((*obj)->Get_Component(TEXT("Com_Transform")))->Get_WorldFloat4x4();
@@ -252,8 +250,16 @@ HRESULT CToolObj_Manager::Delete_AnimModel()
         return E_FAIL;
 }
 
-HRESULT CToolObj_Manager::Delete_PartObj()
+HRESULT CToolObj_Manager::Delete_PartObj(_int iSelectIdx)
 {
+    // iSelectIdx : 삭제 예정 객체
+    vector<CToolPartObj*>::iterator iter = m_ToolPartObjs.begin();
+
+    for (size_t i = 0; i < iSelectIdx; ++i)
+        ++iter;
+
+    m_ToolPartObjs.erase(iter);
+
     return S_OK;
 }
 

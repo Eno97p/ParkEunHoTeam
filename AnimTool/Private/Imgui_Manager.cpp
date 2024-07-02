@@ -142,6 +142,7 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
     Initialize_vecSound();
     Initialize_vecEffect();
+    Initialize_PartObj();
 
     return S_OK;
 }
@@ -291,10 +292,16 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Select_List_PartObj();
 
         if (ImGui::Button("Add PartObj"))
+        {
             CToolObj_Manager::GetInstance()->Add_PartObj(m_iPartObjIdx, m_iBoneIdx); // Bone Idx를 같이 넣어줌
+            Add_PartObject();
+        }
         ImGui::SameLine();
         if (ImGui::Button("Delete PartObj"))
-            CToolObj_Manager::GetInstance()->Delete_PartObj();
+        {
+            CToolObj_Manager::GetInstance()->Delete_PartObj(m_iAddPartObjIdx);
+            
+        }
 
         // 생성된 PartObj List 필요
         ImGui::Text("");
@@ -981,16 +988,29 @@ void CImgui_Manager::Setting_Collider(_uint iType)
 
 void CImgui_Manager::Initialize_PartObj()
 {
-
+    m_vecPartObj.emplace_back("Gun");
 }
 
 void CImgui_Manager::Select_List_PartObj()
 {
-    const char* PartObjs[] = { "Gun" };
-    static _int iSelectIdex = 0;
-    ImGui::ListBox("###PartObjs", &iSelectIdex, PartObjs, IM_ARRAYSIZE(PartObjs));
+    static int partObj_current = 0;
 
-    m_iFileIdx = iSelectIdex;
+    if (ImGui::BeginListBox("###PartObjList", ImVec2(300, 50)))
+    {
+        for (int n = 0; n < m_vecPartObj.size(); n++)
+        {
+            const bool is_selected = (partObj_current == n);
+            if (ImGui::Selectable(m_vecPartObj[n].c_str(), is_selected))
+            {
+                partObj_current = n;
+                m_iPartObjIdx = partObj_current;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndListBox();
+    }
 }
 
 void CImgui_Manager::Select_List_AddPartObj()
@@ -1017,6 +1037,17 @@ void CImgui_Manager::Select_List_AddPartObj()
     }
 }
 
+void CImgui_Manager::Add_PartObject()
+{
+    vector<string>::iterator iter = m_vecPartObj.begin();
+
+    for (size_t i = 0; i < m_iPartObjIdx; ++i)
+        ++iter;
+
+    m_vecAddPartObj.emplace_back((*iter));
+}
+
+#pragma region LoadFunction
 void CImgui_Manager::Load_ApplySound(_uint iAnimIdx, string pSoundFile)
 {
     map<_int, vector<string>>::iterator applysound = m_mapApplySound.find(iAnimIdx);
@@ -1092,6 +1123,7 @@ _bool CImgui_Manager::IsColliderSave(_uint iAnimIdx)
         return true;;
     }
 }
+#pragma endregion LoadFunction
 
 void CImgui_Manager::Add_ApplySound()
 {

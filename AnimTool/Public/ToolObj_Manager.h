@@ -45,7 +45,7 @@ public:
 
 	HRESULT	Delete_Obj(_int iSelectIdx);
 	HRESULT	Delete_AnimModel();
-	HRESULT	Delete_PartObj();
+	HRESULT	Delete_PartObj(_int iSelectIdx);
 
 	void	Setting_ChannelList();
 

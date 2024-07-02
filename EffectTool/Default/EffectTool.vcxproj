@@ -184,7 +184,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Client\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="..\Backend\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\Backend\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Imgui\imgui.cpp" />
@@ -211,6 +210,7 @@
     <ClCompile Include="..\Private\QuarterCamera.cpp" />
     <ClCompile Include="..\private\TextureFrame.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="EffectTool.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -66,7 +66,8 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	
 	CreateActor(pDesc->eGeometryType, pxTrans);
 	//pDesc
-	m_pActor->setName(pDesc->pName);
+	if(pDesc->pName)
+		m_pActor->setName(pDesc->pName);
 
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
 	m_pGameInstance->AddActor(m_pActor);

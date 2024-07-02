@@ -89,6 +89,12 @@ HRESULT CPhysX::Initialize()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, false);
 	}
 
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
+	m_pScene->addActor(*groundPlane);
+
+
 
 
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);

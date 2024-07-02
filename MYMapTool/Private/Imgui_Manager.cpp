@@ -409,7 +409,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapElement[] = { "TronesT02",
             "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
-            "RasSamrahCastle2", "Mountain_2", "Mountain_3", "Mountain_4", "Mountain_5",
+            "RasSamrahCastle2", "TutorialMap", "TutorialDecoStructure", "Mountain_4", "Mountain_5",
             "box_1", "box_2", "fire_wood", "fireframe",
             "woodBridge", "woodBridge_2", "woodElement_1", "woodElement_2", "woodElement_3", "woodFloor_1", "woodFloor_2", "woodObstacle",
             "Obstacle", "Obstacle_2", "StrawObstacle_1", "StrawObstacle_2", "Spike",
@@ -425,7 +425,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     }
     case LAYER_ACTIVE_ELEMENT:
     {
-        const char* items_MapObj[] = { "Grass", "Npc_Shop", "Npc_Smith", "Npc_EliteQuest", "RewardBox",
+        const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Npc_Smith", "Npc_EliteQuest", "RewardBox",
                                         "Item_Gloves", "Item_Hell",
                                         "Boss_Gun", "Cannon" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장

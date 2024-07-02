@@ -229,6 +229,7 @@
     <ClInclude Include="..\Public\SitraSword.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\public\Terrain.h" />
+    <ClInclude Include="..\Public\TutorialMapBridge.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\UIGroup.h" />
     <ClInclude Include="..\Public\UIGroup_Character.h" />
@@ -327,6 +328,7 @@
     <ClCompile Include="..\Private\SitraSword.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\private\Terrain.cpp" />
+    <ClCompile Include="..\Private\TutorialMapBridge.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\UIGroup.cpp" />
     <ClCompile Include="..\Private\UIGroup_Character.cpp" />
@@ -398,6 +400,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Rect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

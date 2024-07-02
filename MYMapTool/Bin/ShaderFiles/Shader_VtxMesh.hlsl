@@ -6,6 +6,11 @@ texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
 
+//FOR DISSOLVE
+texture2D	g_NoiseTexture;
+float		g_fAccTime;
+
+
 vector		g_vCamPosition;
 
 TextureCube g_ReflectionTexture; // 반사 텍스처 큐브맵
@@ -262,6 +267,45 @@ PS_OUT PS_GRASS_ORDINARY(PS_IN In)
 }
 
 
+PS_OUT PS_DISSOLVE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector vNoise = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vNoise.r < g_fAccTime)
+	{
+		discard;
+	}
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	vector		vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+	
+
+
+	Out.vDiffuse = vDiffuse/* * 0.9f*/;
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	Out.vSpecular = g_vMtrlSpecular;
+
+	//Out.vEmissive = 0.5f;
+	/*if (g_Red == 0 || g_Red == 29)
+	{
+		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	}*/
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -301,6 +345,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_GRASS_ORDINARY();
+	}
+
+		pass Dissolve
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_DISSOLVE();
 	}
 
 }

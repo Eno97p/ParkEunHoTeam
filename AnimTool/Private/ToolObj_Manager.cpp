@@ -99,6 +99,12 @@ HRESULT CToolObj_Manager::Add_PartObj(_int iSelectIdx, _int iBoneIdx)
 
     vector<CToolObj*>::iterator obj = m_ToolObjs.begin();
 
+    pDesc.iBoneIdx = iBoneIdx;
+    pDesc.fRightRadian = 0.f;
+    pDesc.fLookRadian = 0.f;
+    pDesc.fUpRadian = 0.f;
+    pDesc.vPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
     pDesc.pParentMatrix = dynamic_cast<CTransform*>((*obj)->Get_Component(TEXT("Com_Transform")))->Get_WorldFloat4x4();
 
     string BoneName = (*obj)->Get_BoneName(iBoneIdx);
@@ -106,11 +112,6 @@ HRESULT CToolObj_Manager::Add_PartObj(_int iSelectIdx, _int iBoneIdx)
         dynamic_cast<CModel*>((*obj)->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix(BoneName.c_str());
 
     pDesc.strModelName = strModelName;
-
-    /*CToolPartObj* PartObj = dynamic_cast<CToolPartObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_PartObj"), &pDesc));
-    if (nullptr == PartObj)
-        return E_FAIL;
-    m_ToolPartObjs.emplace_back(PartObj);*/
 
     if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_PartObj"), TEXT("Prototype_GameObject_PartObj"), &pDesc)))
         return E_FAIL;
@@ -409,6 +410,41 @@ HRESULT CToolObj_Manager::Save_Data()
         }
     }
 
+    // PartObj 정보 전달 : 모델 이름, 회전 값 세 개, 위치 값
+    _char   szPartObj[MAX_PATH] = "";
+    _uint   iSocketBoneIdx = { 0 };
+    _float  fRightRadian = { 0.f };
+    _float  fLookRadian = { 0.f };
+    _float  fUpRadian = { 0.f };
+    _vector vecPartObjPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+    _uint   iPartObjSize = { 0 };
+
+    iPartObjSize = m_ToolPartObjs.size();
+    WriteFile(hFile, &iPartObjSize, sizeof(_uint), &dwByte, nullptr);
+
+    for (auto& pPartObj : m_ToolPartObjs)
+    {
+        iSocketBoneIdx = pPartObj->Get_BoneIdx();
+        WriteFile(hFile, &iSocketBoneIdx, sizeof(_uint), &dwByte, nullptr);
+
+        // 모델 이름
+        wstring wstrName = pPartObj->Get_Name();
+        WideCharToMultiByte(CP_ACP, 0, wstrName.c_str(), wstrName.length(), szPartObj, MAX_PATH, nullptr, nullptr);
+        WriteFile(hFile, &szPartObj, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+
+        // 회전 값 / 위치 값
+        fRightRadian = pPartObj->Get_RightRadian();
+        fLookRadian = pPartObj->Get_LookRadian();
+        fUpRadian = pPartObj->Get_UpRadian();
+        vecPartObjPos = pPartObj->Get_Pos();
+
+        WriteFile(hFile, &fRightRadian, sizeof(_float), &dwByte, nullptr);
+        WriteFile(hFile, &fLookRadian, sizeof(_float), &dwByte, nullptr);
+        WriteFile(hFile, &fUpRadian, sizeof(_float), &dwByte, nullptr);
+        WriteFile(hFile, &vecPartObjPos, sizeof(_vector), &dwByte, nullptr);
+    }
+
     CloseHandle(hFile);
 
     MSG_BOX("Animation Data Save");
@@ -486,6 +522,54 @@ HRESULT CToolObj_Manager::Load_Data()
             CImgui_Manager::GetInstance()->Load_StartKeyframe(i, fStartKeyframe);
             CImgui_Manager::GetInstance()->Load_EndKeyframe(i, fEndKeyframe);
         }
+    }
+
+    // PartObj 정보 전달 : 모델 이름, 회전 값 세 개, 위치 값
+    _char   szPartObj[MAX_PATH] = "";
+    _uint   iSocketBoneIdx = { 0 };
+    _float  fRightRadian = { 0.f };
+    _float  fLookRadian = { 0.f };
+    _float  fUpRadian = { 0.f };
+    _vector vecPartObjPos = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+    _uint   iPartObjSize = { 0 };
+    ReadFile(hFile, &iPartObjSize, sizeof(_uint), &dwByte, nullptr);
+
+    CToolPartObj::PARTOBJ_DESC pPartObjDesc{};
+
+    for (size_t i = 0; i < iPartObjSize; ++i)
+    {
+        ZeroMemory(&pPartObjDesc, sizeof(pPartObjDesc));
+
+        ReadFile(hFile, &iSocketBoneIdx, sizeof(_uint), &dwByte, nullptr);
+        pPartObjDesc.iBoneIdx = iSocketBoneIdx;
+
+        //wstring
+        ReadFile(hFile, &szPartObj, sizeof(_char) * MAX_PATH, &dwByte, nullptr); // wstring으로 변환해주어야?
+        //MultiByteToWideChar(CP_UTF8, 0, szPartObj, sizeof(_char) * MAX_PATH, nullptr, 0);
+        pPartObjDesc.strModelName = szPartObj;
+
+        ReadFile(hFile, &fRightRadian, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &fLookRadian, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &fUpRadian, sizeof(_float), &dwByte, nullptr);
+        ReadFile(hFile, &vecPartObjPos, sizeof(_vector), &dwByte, nullptr);
+
+        // m_ToolPartObjs에다가 추가해주어야 함
+        pPartObjDesc.fRightRadian = fRightRadian;
+        pPartObjDesc.fLookRadian = fLookRadian;
+        pPartObjDesc.fUpRadian = fUpRadian;
+        pPartObjDesc.vPos = vecPartObjPos;
+
+        vector<CToolObj*>::iterator obj = m_ToolObjs.begin();
+
+        pPartObjDesc.pParentMatrix = dynamic_cast<CTransform*>((*obj)->Get_Component(TEXT("Com_Transform")))->Get_WorldFloat4x4();
+
+        string BoneName = (*obj)->Get_BoneName(iSocketBoneIdx);
+        pPartObjDesc.pCombinedTransformationMatrix =
+            dynamic_cast<CModel*>((*obj)->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix(BoneName.c_str());
+
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_PartObj"), TEXT("Prototype_GameObject_PartObj"), &pPartObjDesc)))
+            return E_FAIL;
     }
 
     CloseHandle(hFile);

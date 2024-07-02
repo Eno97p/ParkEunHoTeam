@@ -16,6 +16,9 @@ class CToolPartObj final : public CGameObject
 public:
 	typedef struct PartObj_Desc : public GAMEOBJECT_DESC
 	{
+		_uint				iBoneIdx;
+		_float				fRightRadian, fLookRadian, fUpRadian;
+		_vector				vPos;
 		string				strModelName;
 		const _float4x4* pCombinedTransformationMatrix;
 		const _float4x4* pParentMatrix;
@@ -39,6 +42,10 @@ public:
 	_vector			Get_Pos() { return m_vPos; }
 	void			Set_Pos(_vector vPos) { m_vPos = vPos; }
 
+	// Load
+	wstring			Get_Name() { return m_wstrModelName; }
+	_uint			Get_BoneIdx() { return m_iSocketBoneIdx; }
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -48,6 +55,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_uint					m_iSocketBoneIdx = { 0 };
+
 	_float					m_fRightRadian = { 0.f };
 	_float					m_fLookRadian = { 0.f };
 	_float					m_fUpRadian = { 0.f };

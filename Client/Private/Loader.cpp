@@ -34,7 +34,12 @@
 #include "Body_Juggulus.h"
 #include "Juggulus_Hammer.h"
 #include "Juggulus_HandOne.h"
+
+#include "Mantari.h"
+#include "Body_Mantari.h"
+#include "Weapon_Mantari.h"
 #include "Juggulus_HandTwo.h"
+
 #pragma endregion Monster
 
 
@@ -412,9 +417,16 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 	/* Mantari - 박은호 작업 */
+	/* For.Prototype_Component_Model_Mantari */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mantari"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NewMantari/Mantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Mantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Mantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NewMantari/MantariSword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 
@@ -535,14 +547,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Player */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Distortion"),
-		CDistortion::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Body_Player */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Player"),
 		CBody_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Distortion"),
+		CDistortion::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Clone */
@@ -665,6 +677,22 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Juggulus_HandOne */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandOne"),
 		CJuggulus_HandOne::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_Mantari */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
+		CMantari::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Mantari */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Mantari"),
+		CBody_Mantari::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Weapon_Mantari */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Mantari"),
+		CWeapon_Mantari::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Juggulus_HandTwo */

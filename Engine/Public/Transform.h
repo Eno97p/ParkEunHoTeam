@@ -11,7 +11,8 @@ class ENGINE_DLL CTransform final : public CComponent
 {
 public:
 	enum STATE { STATE_RIGHT, STATE_UP, STATE_LOOK, STATE_POSITION, STATE_END };
-
+private:
+	enum MATRIXTYPE { MAT_VIEW, MAT_PROJ, MAT_VIEWINV, MAT_PROJINV , MATTYPE_END};
 public:
 	typedef struct TRANSFORM_DESC
 	{
@@ -25,7 +26,6 @@ public:
 
 		_float		fSpeedPerSec;
 		_float		fRotationPerSec;
-
 	}TRANSFORM_DESC;
 
 	typedef struct TransformDesc : CComponent::ComponentDesc
@@ -97,6 +97,7 @@ public:
 	void TurnToTarget(_float fTimeDelta, _fvector vTargetPosition);
 	void Speed_Scaling(_float fRatio) { m_fSpeedPerSec *= fRatio; }
 	void Set_Speed(_float fSpeed) { m_fSpeedPerSec = fSpeed; }
+	void BillBoard();			//빌보드 함수 추가 - 박은호
 
 private:
 	//void Update_WorldMatrix();
@@ -105,6 +106,14 @@ private:
 private:
 	/* row major */
 	_float4x4				m_WorldMatrix;
+
+	const XMFLOAT4X4*				m_Matrix[MATTYPE_END];		//뷰,투영,뷰행렬역행렬,투영행렬역행렬 들어있음
+	//_float4x4* m_ViewInverse = nullptr;
+	//_float4x4* m_ProjInverse = nullptr;
+	//_float4x4* m_Proj = nullptr;
+	//_float4x4* m_View = nullptr;
+
+
 
 	_float4x4               m_QuternionMatrix;
 	_float					m_fSpeedPerSec = { 0.0f };

@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
+    <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\Public\Cendres.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
+    <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -213,7 +215,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mantari.h" />
-    <ClInclude Include="..\public\MantariSword.h" />
+    <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\Public\NaruehSword.h" />
@@ -284,6 +286,7 @@
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
+    <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\Private\Cendres.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
@@ -303,6 +306,7 @@
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
+    <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -310,7 +314,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mantari.cpp" />
-    <ClCompile Include="..\private\MantariSword.cpp" />
+    <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\Private\NaruehSword.cpp" />
@@ -387,6 +391,7 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />

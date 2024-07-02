@@ -212,6 +212,7 @@
     <ClInclude Include="..\Public\ToolEffect.h" />
     <ClInclude Include="..\Public\ToolObj.h" />
     <ClInclude Include="..\Public\ToolObj_Manager.h" />
+    <ClInclude Include="..\Public\ToolPartObj.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -245,6 +246,7 @@
     <ClCompile Include="..\Private\ToolEffect.cpp" />
     <ClCompile Include="..\Private\ToolObj.cpp" />
     <ClCompile Include="..\Private\ToolObj_Manager.cpp" />
+    <ClCompile Include="..\Private\ToolPartObj.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

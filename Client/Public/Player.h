@@ -69,8 +69,6 @@ private:
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	_uint										m_iState = { 0 };
-	class CCollider* m_pColliderCom = { nullptr };
-	class CNavigation* m_pNavigationCom = { nullptr };
 	class CPhysXComponent_Character* m_pPhysXCom = { nullptr };
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 	_float										m_fButtonCooltime = 0.f;
@@ -94,8 +92,23 @@ private:
 	_uint										m_iAttackCount = 1;
 	_bool										m_bCanCombo = false;
 
+#pragma region 플레이어 스탯
+	_uint m_iMaxHp = 100;
+	_uint m_iCurHp = m_iMaxHp;
 
-	//shared_ptr<_bool> condition;
+	_uint m_iMaxStamina = 100;
+	_uint m_iCurStamina = m_iMaxStamina;
+
+	_uint m_iMaxMp = 100;
+	_uint m_iCurMp = m_iMaxMp;
+
+	_uint m_iMoney = 0;
+#pragma endregion 플레이어 스탯
+
+
+
+private:
+	void OnShapeHit(const PxControllerShapeHit& hit);
 
 
 public:

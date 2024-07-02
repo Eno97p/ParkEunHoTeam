@@ -3,6 +3,7 @@
 #include "Effect_Define.h"
 #include "imgui.h"
 #include "Particle_Trail.h"
+#include "TextureFrame.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -52,6 +53,10 @@ private:	//for Trail
 	{
 		TrailMat = mat;
 	}
+
+private:	//for FrameTexture
+	void FrameTextureTool();
+
 private:
 	class CGameInstance* m_pGameInstance = nullptr;
 	ID3D11Device* m_pDevice = { nullptr };

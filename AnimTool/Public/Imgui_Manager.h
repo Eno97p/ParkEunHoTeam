@@ -71,6 +71,7 @@ public:
 private:
 	_bool	m_bShowWindow;
 	_bool	m_bShowAnotherWindow;
+	_bool	m_bShowPartObjWindow;
 
 	_bool	m_IsSave = { false };
 	_bool	m_IsLoad = { false };
@@ -92,6 +93,8 @@ private:
 	_int		m_iApplySoundIdx;			// Apply Sound Index
 	_int		m_iEffectIdx;				// Effect Index
 	_int		m_iApplyEffectIdx;			// Apply Effect Index
+	_int		m_iPartObjIdx;
+	_int		m_iAddPartObjIdx;
 
 	_int		m_iCollideBoneIdx;
 	_double		m_dMaxDuration;		// √— Duration
@@ -105,6 +108,8 @@ private:
 	vector<const _char*>			m_vecSound;			// Sound ∫§≈Õ
 	map<_int, vector<string>>		m_mapApplySound; // const _char*
 	vector<const _char*>			m_vecEffect;		// Effect ∫§≈Õ
+	vector<string>					m_vecPartObj;		// PartObj ∫§≈Õ
+	vector<string>					m_vecAddPartObj;	// √ﬂ∞°µ» PartObj ∫§≈Õ
 
 	map<_int, vector<string>>			m_mapApplyEffect;
 	map<_int, vector<_int>>				m_mapBoneIdx;
@@ -148,6 +153,11 @@ private:
 	void	Initialize_Collider();
 	void	Clear_Collider();
 	void	Setting_Collider(_uint iType);
+
+	// PartObj
+	void	Initialize_PartObj();
+	void	Select_List_PartObj();
+	void	Select_List_AddPartObj();
 
 public:
 	virtual void Free() override;

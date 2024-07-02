@@ -306,6 +306,9 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge">
       <UniqueIdentifier>{f2c6ea6c-eaf0-42d7-8370-8c60459eb823}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
+      <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -602,7 +605,7 @@
     <ClInclude Include="..\public\Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MantariSword.h">
+    <ClInclude Include="..\public\Weapon_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TutorialMapBridge.h">
@@ -610,6 +613,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Passive_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Body_Mantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Juggulus_HandTwo.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -888,7 +897,7 @@
     <ClCompile Include="..\private\Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MantariSword.cpp">
+    <ClCompile Include="..\private\Weapon_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TutorialMapBridge.cpp">
@@ -896,6 +905,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Passive_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Body_Mantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Juggulus_HandTwo.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -960,6 +975,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl">
+	  <Filter>97.ShaderFiles</Filter>
+	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

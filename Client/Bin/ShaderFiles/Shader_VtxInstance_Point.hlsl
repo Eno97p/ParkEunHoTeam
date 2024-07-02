@@ -2,7 +2,7 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture;
+texture2D	g_Texture, g_DesolveTexture;
 vector		g_vCamPosition;
 float3		g_StartColor, g_EndColor;
 
@@ -159,9 +159,10 @@ PS_OUT PS_COLORED(PS_IN In)
 		discard;
 
 	//float fRatio = In.vLifeTime.y / In.vLifeTime.x;
-	//Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
 
-	//Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
+	Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
+
+	Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
 
 	return Out;
 }

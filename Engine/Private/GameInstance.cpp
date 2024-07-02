@@ -1,5 +1,5 @@
 #include "..\Public\GameInstance.h"
-
+#include"CHitReport.h"
 #include "Graphic_Device.h"
 #include "Input_Device.h"
 
@@ -112,6 +112,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 		return E_FAIL;
 
 	return S_OK;
+
+
 }
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
@@ -699,6 +701,11 @@ void CGameInstance::Free()
 	Safe_Release(m_pCalculator);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_UISorter);
+
+
+
+
+	CHitReport::DestroyInstance();
 	m_iRefCnt;
 	int ttmp = 0;
 

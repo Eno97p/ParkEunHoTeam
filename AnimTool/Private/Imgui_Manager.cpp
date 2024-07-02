@@ -263,6 +263,8 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         Select_List_Bone();
 
+        ImGui::Checkbox("Isert PartObj", &m_bShowPartObjWindow); // PartObj 부착 기능
+
         // Effect
         ImGui::Text("");
         ImGui::Text("------------------");
@@ -280,6 +282,28 @@ void CImgui_Manager::Tick(_float fTimeDelta)
             m_bShowAnotherWindow = false;
         ImGui::End();
     }
+
+    if (m_bShowPartObjWindow)
+    {
+        ImGui::Begin("Insert PartObj", &m_bShowPartObjWindow);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        ImGui::SetWindowSize("PartObj", ImVec2(200, 300));
+
+        Select_List_PartObj();
+
+        if (ImGui::Button("Add PartObj"))
+            CToolObj_Manager::GetInstance()->Add_PartObj(m_iPartObjIdx, m_iBoneIdx); // Bone Idx를 같이 넣어줌
+        ImGui::SameLine();
+        if (ImGui::Button("Delete PartObj"))
+            CToolObj_Manager::GetInstance()->Delete_PartObj();
+
+        // 생성된 PartObj List 필요
+        ImGui::Text("");
+        Select_List_AddPartObj();
+
+
+        ImGui::End();
+    }
+
     ImGui::EndFrame();
 }
 
@@ -431,7 +455,8 @@ void CImgui_Manager::Delete_Obj()
 
 void CImgui_Manager::Select_List_File()
 {
-    const char* ModelFile[] = { "Wander", "Homomculus", "Job_Mob", "Juggulus", "Malkhel", "Mantari", "Npc_Choron", "Npc_Valnir" };
+    const char* ModelFile[] = { "Wander", "Homomculus", "Job_Mob", "Juggulus", "Malkhel",
+                                "Mantari", "Npc_Choron", "Npc_Valnir", "Arrow_Jobmob" };
     static _int iSelectIdex = 0;
     ImGui::ListBox("###ModelFile", &iSelectIdex, ModelFile, IM_ARRAYSIZE(ModelFile));
 
@@ -952,6 +977,58 @@ void CImgui_Manager::Setting_Collider(_uint iType)
     // EndKeyFrame
     iterValue = (*iter).second.find("EndKeyFrame");
     (*iterValue).second = to_string(m_fEndKeyframe);
+}
+
+void CImgui_Manager::Initialize_PartObj()
+{
+}
+
+void CImgui_Manager::Select_List_PartObj()
+{
+    ImGui::Text("PartObj List");
+
+    static int partObj_current = 0;
+
+    if (ImGui::BeginListBox("###PartObjList", ImVec2(300, 50)))
+    {
+        for (int n = 0; n < m_vecPartObj.size(); n++)
+        {
+            const bool is_selected = (partObj_current == n);
+            if (ImGui::Selectable(m_vecPartObj[n].c_str(), is_selected))
+            {
+                partObj_current = n;
+                m_iPartObjIdx = partObj_current;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndListBox();
+    }
+}
+
+void CImgui_Manager::Select_List_AddPartObj()
+{
+    ImGui::Text("AddPartObj List");
+
+    static int addPartObj_current = 0;
+
+    if (ImGui::BeginListBox("###AddPartObjList", ImVec2(300, 50)))
+    {
+        for (int n = 0; n < m_vecAddPartObj.size(); n++)
+        {
+            const bool is_selected = (addPartObj_current == n);
+            if (ImGui::Selectable(m_vecAddPartObj[n].c_str(), is_selected))
+            {
+                addPartObj_current = n;
+                m_iAddPartObjIdx = addPartObj_current;
+            }
+
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndListBox();
+    }
 }
 
 void CImgui_Manager::Load_ApplySound(_uint iAnimIdx, string pSoundFile)

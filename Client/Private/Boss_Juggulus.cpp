@@ -55,8 +55,7 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 
 void CBoss_Juggulus::Tick(_float fTimeDelta)
 {
-	map<string, CGameObject*>::iterator body = m_PartObjects.find("Body");
-	m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*body).second)->Get_AnimFinished();
+	Check_AnimFinished();
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
@@ -116,6 +115,8 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace("Hand_One", pHandOne);
 
+	// HandTwo
+
 
 	return S_OK;
 }
@@ -140,7 +141,12 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("NextPhase"), bind(&CBoss_Juggulus::NextPhase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
 
+	// 1Phase Attack
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 3.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("HandOneTargettingCool"), TEXT("HandOne_Targetting"), bind(&CBoss_Juggulus::HandOne_Targeting, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandOne_Attack"), bind(&CBoss_Juggulus::HandOne_Attack, this, std::placeholders::_1));
 
+	// 2Phase Attack
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("HammerCool"), 8.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HammerCool"), TEXT("HammerAttack"), bind(&CBoss_Juggulus::HammerAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("FlameCool"), 5.f);
@@ -187,6 +193,28 @@ HRESULT CBoss_Juggulus::Create_Hammer()
 	m_PartObjects.emplace("Hammer", pWeapon);
 
 	return S_OK;
+}
+
+void CBoss_Juggulus::Check_AnimFinished()
+{
+	if (PHASE_ONE == m_ePhase)
+	{
+		if (STATE_HANDONE_ATTACK == m_iState || STATE_HANDONE_TARGETING == m_iState)
+		{
+			map<string, CGameObject*>::iterator Hand = m_PartObjects.find("Hand_One");
+			m_isAnimFinished = dynamic_cast<CJuggulus_HandOne*>((*Hand).second)->Get_AnimFinished();
+		}
+		else if (STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState)
+		{
+			//map<string, CGameObject*>::iterator Hand = m_PartObjects.find("Hand_Two");
+			//m_isAnimFinished = dynamic_cast<CJuggulus_HandTwo*>((*Hand).second)->Get_AnimFinished();
+		}
+	}
+	else
+	{
+		map<string, CGameObject*>::iterator body = m_PartObjects.find("Body");
+		m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*body).second)->Get_AnimFinished();
+	}
 }
 
 NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
@@ -261,29 +289,62 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 	return SUCCESS;
 }
 
-NodeStates CBoss_Juggulus::HandOne_Appear(_float fTimeDelta)
-{
-	return NodeStates();
-}
-
 NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
 {
-	return NodeStates();
+	if (PHASE_TWO == m_ePhase ||  STATE_HANDONE_ATTACK == m_iState || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState )
+	{
+		return FAILURE;
+	}
+
+	if (3.f >= m_fTargettingTimer) // 다른 행동을 하고 있지 않고 타이머가 아직 채워지지 않았으면
+	{
+		m_fTargettingTimer += fTimeDelta;
+		m_isHandOne_On = true; // Hand One 공격 활성화
+
+		m_iState = STATE_HANDONE_TARGETING; // 플레이어 위치에 등장한 후 몇 초 동안 타게팅
+		return RUNNING;
+	}
+	else
+	{
+		m_fTargettingTimer = 0.f;
+		return SUCCESS; // 이때부터 쿨타임 도는 것
+	}
 }
 
 NodeStates CBoss_Juggulus::HandOne_Attack(_float fTimeDelta)
 {
-	return NodeStates();
+	if (PHASE_TWO == m_ePhase || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState)
+	{
+		return FAILURE;
+	}
+
+	if (m_isHandOne_On)
+	{
+		if (!m_isAnimFinished || m_iState == STATE_IDLE_FIRST || m_iState == STATE_HANDONE_TARGETING)
+		{
+			m_iState = STATE_HANDONE_ATTACK;
+			return RUNNING;
+		}
+		else
+		{
+			m_isHandOne_On = false;
+			return FAILURE;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CBoss_Juggulus::HandTwo_Attack(_float fTimeDelta)
 {
-	return NodeStates();
+	return FAILURE;
 }
 
 NodeStates CBoss_Juggulus::HandThree_Attack(_float fTimeDelta)
 {
-	return NodeStates();
+	return FAILURE;
 }
 
 NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)

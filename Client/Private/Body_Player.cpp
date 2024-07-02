@@ -100,7 +100,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 210;
-		fAnimSpeed = 3.f;
+		fAnimSpeed = 2.f;
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{
@@ -161,7 +161,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK2)
 	{
-		if (m_iPastAnimIndex < 98 || m_iPastAnimIndex > 120)
+		if (m_iPastAnimIndex < 115 || m_iPastAnimIndex > 120)
 		{
 			m_iPastAnimIndex = 115;
 		}
@@ -174,6 +174,28 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 143;
+		fAnimSpeed = 1.f;
+	}
+
+	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
+	{
+		if (m_iPastAnimIndex < 137 || m_iPastAnimIndex > 142)
+		{
+			m_iPastAnimIndex = 137;
+		}
+		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		fAnimSpeed = 1.f;
+	}
+	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
+	{
+		if (m_iPastAnimIndex < 115 || m_iPastAnimIndex > 120)
+		{
+			m_iPastAnimIndex = 115;
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK1)
@@ -241,13 +263,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 2.f;
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 2.f;
 	}
 	else if (*m_pState == CPlayer::STATE_DEAD)
 	{
@@ -268,9 +290,9 @@ void CBody_Player::Tick(_float fTimeDelta)
 
 	_bool isLerp = false;
 	// 여러 애니메이션을 재생할 때 마지막 애니메이션은 보간 필요
-	if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || m_iPastAnimIndex == 53 || m_iPastAnimIndex == 149 || m_iPastAnimIndex == 120 ||
+	if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || m_iPastAnimIndex == 53 || m_iPastAnimIndex == 149 || m_iPastAnimIndex == 120 || m_iPastAnimIndex == 115 ||
 		m_iPastAnimIndex == 74 || m_iPastAnimIndex == 153 || m_iPastAnimIndex == 79 || m_iPastAnimIndex == 125 || m_iPastAnimIndex == 136 ||
-		m_iPastAnimIndex == 142 ||
+		m_iPastAnimIndex == 142 || AnimDesc.iAnimIndex == 209 ||
 		(m_iPastAnimIndex == 0 && *m_pState != CPlayer::STATE_LATTACK1 && *m_pState != CPlayer::STATE_LATTACK2
 			&& *m_pState != CPlayer::STATE_LATTACK3 && *m_pState != CPlayer::STATE_RATTACK1))
 	{
@@ -307,13 +329,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex++;
 		}
-		// 우공격1
-		else if (AnimDesc.iAnimIndex >= 121 && AnimDesc.iAnimIndex < 125)
+		// 달리기공격1
+		else if (AnimDesc.iAnimIndex >= 137 && AnimDesc.iAnimIndex < 142)
 		{
 			m_iPastAnimIndex++;
 		}
-		// 달리기공격1
-		else if (AnimDesc.iAnimIndex >= 137 && AnimDesc.iAnimIndex < 142)
+		// 우공격1
+		else if (AnimDesc.iAnimIndex >= 121 && AnimDesc.iAnimIndex < 125)
 		{
 			m_iPastAnimIndex++;
 		}

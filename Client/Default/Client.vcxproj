@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
+    <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\Public\Cendres.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
@@ -213,7 +214,7 @@
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mantari.h" />
-    <ClInclude Include="..\public\MantariSword.h" />
+    <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
     <ClInclude Include="..\Public\NaruehSword.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
+    <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\Private\Cendres.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
@@ -309,7 +311,7 @@
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mantari.cpp" />
-    <ClCompile Include="..\private\MantariSword.cpp" />
+    <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
     <ClCompile Include="..\Private\NaruehSword.cpp" />

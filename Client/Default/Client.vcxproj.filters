@@ -301,6 +301,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword">
       <UniqueIdentifier>{301c332e-f555-403a-85db-d893d905baf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
+      <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -597,8 +600,11 @@
     <ClInclude Include="..\public\Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\MantariSword.h">
+    <ClInclude Include="..\public\Weapon_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Mantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -878,8 +884,11 @@
     <ClCompile Include="..\private\Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\MantariSword.cpp">
+    <ClCompile Include="..\private\Weapon_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\MantariSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Mantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -69,7 +69,15 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_fButtonCooltime = 0.f;
 	}
 
-
+	if (!m_pPhysXCom->Get_IsJump())
+	{
+		m_bJumping = false;
+		m_pPhysXCom->Set_JumpSpeed(10.f);
+	}
+	else
+	{
+		m_bJumping = true;
+	}
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
 	{
@@ -96,18 +104,11 @@ void CPlayer::Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-	
-
-
-	m_pPhysXCom->Tick(fTimeDelta);
-
 	list<CGameObject*> ObjectLis;
 	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
 	if (m_pGameInstance->Key_Down(DIK_7))
 	{
-
 		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	}
 
@@ -117,7 +118,6 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 {
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
-
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
@@ -125,7 +125,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	//m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
-	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
+	//m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
 
@@ -136,27 +136,6 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Add_Components()
 {
-	/* For.Com_Collider */
-	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(0.3f, 0.7f, 0.3f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
-
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
-	/* For.Com_Navigation */
-	CNavigation::NAVIGATION_DESC	NavigationDesc{};
-
-	NavigationDesc.iCurrentCellIndex = 0;
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &NavigationDesc)))
-		return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
 		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
 		return E_FAIL;
@@ -258,7 +237,7 @@ HRESULT CPlayer::Add_Nodes()
 	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DashCool"), 1.5f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("DashCool"), TEXT("Dash"), bind(&CPlayer::Dash, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Jump"), bind(&CPlayer::Jump, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("RollCool"), 0.5f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("RollCool"), 0.1f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("RollCool"), TEXT("Roll"), bind(&CPlayer::Roll, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("MoveTo"), bind(&CPlayer::Move, this, std::placeholders::_1));
 
@@ -325,7 +304,7 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 
 NodeStates CPlayer::Parry(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
 		|| m_bLAttacking || m_bRAttacking || m_fLChargeAttack != 0.f || m_fRChargeAttack != 0.f)
 	{
 		return COOLING;
@@ -359,11 +338,12 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (m_iState == STATE_JUMPSTART || m_iState == STATE_JUMP))
+	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH)
 	{
 		m_iState = STATE_JUMPATTACK;
 		m_bLAttacking = true;
-		m_pPhysXCom->Go_Jump(fTimeDelta, -2.f);
+		m_pPhysXCom->Set_JumpSpeed(-2.f);
+		m_pPhysXCom->Go_Jump(fTimeDelta);
 	}
 
 	if (m_bLAttacking && (m_iState == STATE_JUMPATTACK || m_iState == STATE_JUMPATTACK_LAND))
@@ -376,8 +356,10 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		}
 		else
 		{
+			m_pPhysXCom->Tick(fTimeDelta);
 			if (!m_pPhysXCom->Get_IsJump())
 			{
+				m_pPhysXCom->Set_JumpSpeed(10.f);
 				m_iState = STATE_JUMPATTACK_LAND;
 			}
 			return RUNNING;
@@ -391,7 +373,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RollAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH)
+	if (m_bJumping || m_iState == STATE_DASH)
 	{
 		return COOLING;
 	}
@@ -431,7 +413,7 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 
 NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
 		|| m_bRAttacking || m_fRChargeAttack > 0.f)
 	{
 		return COOLING;
@@ -479,7 +461,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
 		|| m_bLAttacking || m_fLChargeAttack > 0.f)
 	{
 		return COOLING;
@@ -527,29 +509,54 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 NodeStates CPlayer::LAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
 		|| m_bRAttacking)
 	{
 		return COOLING;
 	}
 
-	m_iAttackCount %= 4;
+	if (!m_bRunning)
+	{
+		m_iAttackCount %= 4;
+	}
+	else
+	{
+		m_iAttackCount %= 3;
+	}
+
 	if (m_iAttackCount == 0) m_iAttackCount = 1;
 	if (m_bLAttacking)
 	{
-		switch (m_iAttackCount)
+		if (!m_bRunning)
 		{
-		case 1:
-			m_iState = STATE_LATTACK1;
-			break;
-		case 2:
-			m_iState = STATE_LATTACK2;
-			break;
-		case 3:
-			m_iState = STATE_LATTACK3;
-			break;
-		default:
-			break;
+			switch (m_iAttackCount)
+			{
+			case 1:
+				m_iState = STATE_LATTACK1;
+				break;
+			case 2:
+				m_iState = STATE_LATTACK2;
+				break;
+			case 3:
+				m_iState = STATE_LATTACK3;
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			switch (m_iAttackCount)
+			{
+			case 1:
+				m_iState = STATE_RUNLATTACK1;
+				break;
+			case 2:
+				m_iState = STATE_RUNLATTACK2;
+				break;
+			default:
+				break;
+			}
 		}
 
 		if (m_bAnimFinished)
@@ -572,7 +579,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART || m_iState == STATE_DASH)
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH)
 	{
 		return COOLING;
 	}
@@ -618,8 +625,10 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_E) && (m_iState == STATE_JUMP || m_iState == STATE_JUMPSTART))
+	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping)
 	{
+		m_pPhysXCom->Set_JumpSpeed(0.f);
+		m_pPhysXCom->Go_Jump(fTimeDelta);
 		m_iState = STATE_DASH;
 	}
 
@@ -690,15 +699,16 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_iState != STATE_JUMP && m_iState != STATE_JUMPSTART)
+	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && !m_bJumping)
 	{
-		m_bJumping = true;
 		m_pPhysXCom->Go_Jump(fTimeDelta);
 		m_iState = STATE_JUMPSTART;
 	}
 
-	if (m_iState == STATE_JUMPSTART || m_iState == STATE_JUMP)
+	if (m_bJumping)
 	{
+		m_pPhysXCom->Tick(fTimeDelta);
+
 		if (GetKeyState(VK_LEFT) & 0x8000)
 		{
 			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
@@ -724,16 +734,12 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 			}
 		}
 
-		if (!m_pPhysXCom->Get_IsJump())
-		{
-			m_iState = STATE_IDLE;
-			m_bJumping = false;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
+		return RUNNING;
+	}
+	else
+	{
+		m_iState = STATE_IDLE;
+		return FAILURE;
 	}
 
 	return FAILURE;
@@ -912,9 +918,6 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-
-	Safe_Release(m_pColliderCom);
-	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
 

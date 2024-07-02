@@ -18,7 +18,7 @@ public:
 		_float fJumpSpeed = 0.f;
 	}ControllerDesc;
 
-	
+
 
 private:
 	explicit CPhysXComponent_Character(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -33,7 +33,6 @@ public:
 #ifdef _DEBUG
 	virtual HRESULT  Init_Buffer() override;
 	virtual HRESULT Render() override;
-	virtual void* GetData() override;
 #endif
 
 public:
@@ -43,8 +42,11 @@ public:
 
 	HRESULT Go_Straight(_float fTimeDelta);
 	HRESULT Go_BackWard(_float fTimeDelta);
+	HRESULT Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform);
+	HRESULT Go_OrbitCCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_Jump(_float fTimeDelta, _float fJumpSpeed = 0.f);
 	void Set_Speed(_float fSpeed) { m_fSpeed = fSpeed; }
+	void Set_JumpSpeed(_float fSpeed) { m_fJumpSpeed = fSpeed; }
 	_bool Get_IsJump() { return m_bIsJump; }
 
 
@@ -58,7 +60,7 @@ private:
 	_bool m_bIsJump = false;
 	_float m_fJumpSpeed = 0.f;
 	_float m_fCurrentY_Velocity = 0.f;
-	const _float m_fGravity = -20.f;
+	const _float m_fGravity = -30.f;
 	_float m_fSpeed = 3.f;
 
 public:

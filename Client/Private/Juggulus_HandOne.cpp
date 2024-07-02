@@ -154,7 +154,7 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = true; // false
+	_bool isLerp = false; // false
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 

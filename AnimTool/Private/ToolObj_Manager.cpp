@@ -4,7 +4,6 @@
 #include "Imgui_Manager.h"
 
 #include "Monster.h"
-#include "ToolObj.h"
 
 IMPLEMENT_SINGLETON(CToolObj_Manager)
 
@@ -83,12 +82,23 @@ HRESULT CToolObj_Manager::Add_AnimModel(_int iSelectIdx)
 
     strcpy_s(pDesc.szObjName, Setting_ObjName(iSelectIdx)); // 어차피 이 값은 로드용
     strcpy_s(pDesc.szLayer, "Layer_AnimObj");
-    strcpy_s(pDesc.szModelName, Setting_ObjName(iSelectIdx)); // 어차피 이 값은 로드용
+    strcpy_s(pDesc.szModelName, Setting_ObjName(iSelectIdx));
 
     XMStoreFloat4x4(&pDesc.mWorldMatrix, XMMatrixIdentity());
 
     if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_AnimObj"), TEXT("Prototype_ToolObj"), &pDesc)))
         return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CToolObj_Manager::Add_PartObj(_int iSelectIdx, _int iBoneIdx)
+{
+    CToolPartObj::PARTOBJ_DESC pDesc{};
+
+    // 컴바인드 행렬과 부모 행렬을 넣어주어야 함
+
+
 
     return S_OK;
 }
@@ -225,6 +235,11 @@ HRESULT CToolObj_Manager::Delete_AnimModel()
         return E_FAIL;
 }
 
+HRESULT CToolObj_Manager::Delete_PartObj()
+{
+    return S_OK;
+}
+
 void CToolObj_Manager::Setting_ChannelList()
 {
     vector<CToolObj*>::iterator iter = m_ToolObjs.begin();
@@ -281,6 +296,21 @@ const _tchar* CToolObj_Manager::Setting_FileName()
     }
 
     return L"\0";
+}
+
+string CToolObj_Manager::Setting_PartObjName(_int iSelectIdx)
+{
+    switch (iSelectIdx)
+    {
+    case 0:
+        return "Prototype_GameObject_Bone_JobMob_Gun";
+        break;
+
+    default:
+        break;
+    }
+
+    return "";
 }
 
 HRESULT CToolObj_Manager::Save_Data()
@@ -445,6 +475,11 @@ void CToolObj_Manager::Free()
 {
     for (auto& pObj : m_ToolObjs)
         Safe_Release(pObj);
+    m_ToolObjs.clear();
+
+    for (auto& pPartObj : m_ToolPartObjs)
+        Safe_Release(pPartObj);
+    m_ToolPartObjs.clear();
 
     m_MapObj.clear();
     m_MapElement.clear();

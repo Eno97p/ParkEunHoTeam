@@ -2,6 +2,8 @@
 
 
 
+CHitReport* CHitReport::m_pInstance = nullptr;
+std::mutex CHitReport::m_mutex;
 
 
 
@@ -10,10 +12,6 @@ CHitReport::CHitReport()
 {
 }
 
-CHitReport::CHitReport(const CHitReport& rhs)
-	:PxUserControllerHitReport(rhs)
-{
-}
 
 HRESULT CHitReport::Initialize_Prototype()
 {
@@ -22,25 +20,50 @@ HRESULT CHitReport::Initialize_Prototype()
 
 void CHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
+	if (m_ShapeHitCallBack)
+	{
+
+		m_ShapeHitCallBack(hit);
+	}
+	
 }
 
 void CHitReport::onControllerHit(const PxControllersHit& hit)
 {
+	if (m_ControllerHitCallBack)
+	{
+		m_ControllerHitCallBack(hit);
+
+	}
 }
 
 void CHitReport::onObstacleHit(const PxControllerObstacleHit& hit)
 {
+		if(m_ObstacleHitCallBack)
+		m_ObstacleHitCallBack(hit);
 }
 
-CHitReport* CHitReport::Create()
+CHitReport* CHitReport::GetInstance()
 {
-	CHitReport* pInstance = new CHitReport();
-
-	if (FAILED(pInstance->Initialize_Prototype()))
+	if (nullptr == m_pInstance)
 	{
-		MSG_BOX("Failed to Created : CHitReport");
-		return nullptr;
+		std::lock_guard<std::mutex> lock(m_mutex);
+		if (nullptr == m_pInstance)
+			m_pInstance = new CHitReport;
+
+	}
+	return m_pInstance;
+}
+
+void CHitReport::DestroyInstance()
+{
+
+	std::lock_guard<std::mutex> lock(m_mutex);
+	if(m_pInstance)
+	{
+		delete m_pInstance;
+		m_pInstance = nullptr;
 	}
 
-	return pInstance;
 }
+

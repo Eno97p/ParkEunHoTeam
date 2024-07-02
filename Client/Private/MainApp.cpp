@@ -121,6 +121,7 @@ HRESULT CMainApp::Initialize()
 	//LPCWSTR applicationName = L"C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX Visual Debugger 3\\PVD3.exe";
 	//CreatePhysXProcess(applicationName);
 
+	
 	ENGINE_DESC			EngineDesc{};
 
 	EngineDesc.hWnd = g_hWnd;

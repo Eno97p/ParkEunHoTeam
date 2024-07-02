@@ -8,7 +8,7 @@
 #include"Mesh.h"
 
 #include"Transform.h"
-
+#include"CHitReport.h"
 CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CPhysXComponent{ pDevice, pContext }
 {
@@ -41,8 +41,6 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 	//m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(pObjectdesc->fMatterial.x, pObjectdesc->fMatterial.y, pObjectdesc->fMatterial.z);
 	m_fJumpSpeed = pObjectdesc->fJumpSpeed;
 
-
-
 	PxCapsuleControllerDesc desc;
 	desc.setToDefault();
 
@@ -57,7 +55,12 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 	desc.contactOffset = pObjectdesc->contactOffset;
 	desc.nonWalkableMode = pObjectdesc->nonWalkableMode;
 	desc.volumeGrowth = 1.0f;
+	desc.reportCallback = CHitReport::GetInstance();
+	
 
+	
+
+	
 	
 
 	
@@ -68,8 +71,23 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 		return E_FAIL;
 	}
 
-	//if (FAILED(__super::Initialize(pArg)))
-	//	return E_FAIL;
+	//PxRigidDynamic* actor = m_pController->getActor();
+	//if (actor)
+	//{
+	//	actor->setName(pObjectdesc->pName);
+	//	PxShape* shape;
+	//	PxU32 numShapes = actor->getNbShapes();
+	//	for (PxU32 i = 0; i < numShapes; ++i)
+	//	{
+	//		if (actor->getShapes(&shape, 1) == 1)
+	//		{
+	//			shape->setSimulationFilterData(pObjectdesc->filterData);
+	//			shape->setQueryFilterData(pObjectdesc->filterData);
+	//		}
+	//	}
+	//}
+		
+
 
 #ifdef _DEBUG
 	if (FAILED(Init_Buffer()))
@@ -81,6 +99,38 @@ HRESULT CPhysXComponent_Character::Initialize(void * pArg)
 	
 
 	return S_OK;
+}
+void CPhysXComponent_Character::SetFilterData(PxFilterData filterData)
+{
+
+	if (m_pController)
+	{
+		PxRigidDynamic* actor = m_pController->getActor();
+		if (actor)
+		{
+			PxShape* shpae;
+			PxU32 numShapes = actor->getNbShapes();
+			for (PxU32 i = 0; i < numShapes; ++i)
+			{
+				if (actor->getShapes(&shpae, 1) == 1)
+				{
+
+					shpae->setSimulationFilterData(filterData);
+				}
+
+			}
+				
+
+
+		}
+			
+
+
+	}
+		
+
+
+
 }
 #ifdef _DEBUG
 HRESULT CPhysXComponent_Character::Init_Buffer()
@@ -116,7 +166,8 @@ HRESULT CPhysXComponent_Character::Init_Buffer()
 
 	}
 
-	delete Shapes;
+	delete[] Shapes;
+	Shapes = nullptr;
 
 
 
@@ -284,4 +335,5 @@ void CPhysXComponent_Character::Free()
 	__super::Free();
 
 	Safe_Release(m_pTransform);
+	
 }

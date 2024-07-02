@@ -8,6 +8,8 @@
 #include "Explosion.h"
 #include "Clone.h"
 #include "Body_Player.h"
+#include"CHitReport.h"
+
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -89,10 +91,6 @@ void CPlayer::Tick(_float fTimeDelta)
 
 
 
-
-	//if (FAILED(__super::SetUp_OnTerrain(m_pTransformCom)))
-	//	return;
-
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
@@ -100,7 +98,6 @@ void CPlayer::Tick(_float fTimeDelta)
 	
 
 
-	m_pPhysXCom->Tick(fTimeDelta);
 
 	list<CGameObject*> ObjectLis;
 	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
@@ -111,6 +108,7 @@ void CPlayer::Tick(_float fTimeDelta)
 		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	}
 
+	m_pPhysXCom->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -175,9 +173,18 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;	//오를 수 없는 지형에 대한 처리
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
+	PhysXDesc.pName = "Player";
+	//PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
+	//PhysXDesc.filterData.word1 = Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY;
+	
+	
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
+	
+
+	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
+
 
 	return S_OK;
 }
@@ -221,6 +228,30 @@ HRESULT CPlayer::Add_PartObjects()
 	if (nullptr == pWeapon)
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
+
+	//CPhysXComponent* pWeaponPhysXCom = dynamic_cast<CPhysXComponent*>(pWeapon->Get_Component(TEXT("Com_PhysX")));
+	//if (pWeaponPhysXCom)
+	//{
+	//	PxActor* pActor = pWeaponPhysXCom->Get_Actor();
+	//	if (pActor)
+	//	{
+	//		PxFilterData filterData;
+	//		filterData.word0 = GROUP_WEAPON;
+	//		filterData.word1 = GROUP_ENVIRONMENT | GROUP_ENEMY;  // 무기가 충돌할 그룹
+	//		pWeaponPhysXCom->SetFilterData(filterData);
+	//
+	//
+	//
+	//	}
+	//		
+	//	
+	//
+	//}
+	//	
+
+
+
+
 
 	return S_OK;
 }
@@ -881,6 +912,41 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 	return SUCCESS;
 }
 
+
+void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
+{
+	PxRigidActor* actor = hit.shape->getActor();
+	if (actor && actor->getName())
+	{
+		const char* actorName = actor->getName();
+
+		if (strcmp(actorName, "Weapon") == 0)
+		{
+			return;
+		}
+
+		if (strcmp(actorName, "Environment") == 0)
+		{
+			// 환경과의 충돌 처리
+			// 예: 이동 제한, 반동 적용 등
+		}
+		else if (strcmp(actorName, "Enemy") == 0)
+		{
+			// 적과의 충돌 처리
+			// 예: 데미지 적용, 넉백 등
+		}
+		// 기타 다른 객체들과의 충돌 처리...
+
+
+
+	}
+
+
+
+
+
+
+}
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

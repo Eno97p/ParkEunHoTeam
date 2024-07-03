@@ -56,7 +56,7 @@ private:
 	NodeStates Detect(_float fTimeDelta);
 	NodeStates Move(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
-	void Get_Hp(_float iValue);
+	void Add_Hp(_int iValue);
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
@@ -64,9 +64,9 @@ private:
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 
 #pragma region 상태제어 bool변수
-	_bool										m_bDying = false;
 	_bool										m_bReviving = false;
 	_bool										m_bChasing = true;
+	_bool										m_bHit = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fChasingDelay = 0.5f;
@@ -74,11 +74,7 @@ private:
 	_float										m_fLengthFromPlayer = 0.f;
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;
-
-#pragma region mantari 스탯
-	_uint m_iMaxHp = 100;
-	_uint m_iCurHp = m_iMaxHp;
-#pragma endregion mantari 스탯
+	_float										m_fMoveTime = 2.f;
 
 
 

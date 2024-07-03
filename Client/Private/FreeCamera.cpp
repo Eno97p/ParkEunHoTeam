@@ -36,13 +36,13 @@ void CFreeCamera::Priority_Tick(_float fTimeDelta)
 
 void CFreeCamera::Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	if (GetKeyState(VK_LEFT) & 0x8000)
 		m_pTransformCom->Go_Left(fTimeDelta * m_fCamSpeed);
-	if (GetKeyState('D') & 0x8000)
+	if (GetKeyState(VK_RIGHT) & 0x8000)
 		m_pTransformCom->Go_Right(fTimeDelta * m_fCamSpeed);
-	if (GetKeyState('W') & 0x8000)
+	if (GetKeyState(VK_UP) & 0x8000)
 		m_pTransformCom->Go_Straight(fTimeDelta * m_fCamSpeed);
-	if (GetKeyState('S') & 0x8000)
+	if (GetKeyState(VK_DOWN) & 0x8000)
 		m_pTransformCom->Go_Backward(fTimeDelta * m_fCamSpeed);
 
 	_long		MouseMove = { 0 };

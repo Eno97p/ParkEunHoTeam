@@ -33,6 +33,7 @@ public:
 protected:
 	CTransform*					m_pTerrainTransform = { nullptr };
 	CVIBuffer*					m_pTerrainVIBuffer = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 protected:
 	/* 태우고자하는 객체의 월드위치. * 지형월드역*/

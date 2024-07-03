@@ -51,6 +51,7 @@ public:
 	HRESULT Go_OrbitCCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_Jump(_float fTimeDelta, _float fJumpSpeed = 0.f);
 	void Set_Speed(_float fSpeed) { m_fSpeed = fSpeed; }
+	void Speed_Scaling(_float fScale) { m_fSpeed *= fScale; }
 	void Set_JumpSpeed(_float fSpeed) { m_fJumpSpeed = fSpeed; }
 	_bool Get_IsJump() { return m_bIsJump; }
 

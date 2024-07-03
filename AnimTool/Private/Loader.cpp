@@ -147,7 +147,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Mantari
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mantari"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/NewMantari/Mantari.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Mantari/Mantari.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	// Npc_Choron

@@ -103,8 +103,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CameraDesc.vEye = _float4(71.1f, 542.f, 78.f, 1.f);
+	CameraDesc.vAt = _float4(71.1f, 522.f, 98.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
@@ -193,7 +193,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
 		return E_FAIL;
 	
-
 	return S_OK;
 }
 

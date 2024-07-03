@@ -152,7 +152,9 @@ HRESULT CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
 	vLook = XMVector3Cross(vRight, XMVectorSet(0.0f, 1.f, 0.f, 0.f));
 
 	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScaled.x);	
-	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * vScaled.z);	
+	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * vScaled.z);
+
+	Set_Scale(vScaled.x, vScaled.y, vScaled.z);
 
 	return S_OK;
 }

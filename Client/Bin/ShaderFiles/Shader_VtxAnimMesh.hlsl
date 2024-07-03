@@ -1,4 +1,3 @@
-
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
@@ -10,9 +9,11 @@ texture2D g_OpacityTexture;
 texture2D g_EmissiveTexture;
 texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
+texture2D g_DisolveTexture;
 
 bool g_Hit;
 float g_Alpha = 1.f;
+float g_DisolveValue = 1.f;
 
 bool g_bDiffuse = false;
 bool g_bNormal = false;
@@ -182,8 +183,10 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 	vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
 	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
 	if (g_bEmissive) Out.vEmissive = vEmissive;
-	Out.vRoughness = vector(0.7f, 0.7f, 0.7f, 1.f);
-	Out.vMetalic = vector(1.f, 1.f, 1.f, 1.f);
+	if (g_bRoughness) Out.vRoughness = vRoughness;
+	else Out.vRoughness = vector(0.7f, 0.7f, 0.7f, 1.f);
+	if (g_bMetalic) Out.vMetalic = vMetalic;
+	else Out.vMetalic = vector(1.f, 1.f, 1.f, 1.f);
 
 
 	if (In.vTexcoord.y > 757.f / 2048.f && In.vTexcoord.x > 435.f / 2048.f && In.vTexcoord.x < 821.f / 2048.f)
@@ -191,6 +194,39 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 		Out.vDiffuse.a = (Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b) / 3.f;
 		if (Out.vDiffuse.a < 0.25f) discard;
 	}
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+	}
+
+	return Out;
+}
+
+struct PS_OUT_BLOOM
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_BLOOM PS_WHISPERSWORD_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	Out.vColor = vColor;
+	Out.vColor *= 0.3f;
 
 	return Out;
 }
@@ -302,6 +338,52 @@ PS_OUT_DISTORTION PS_DISTORTION(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_DISOLVE(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vDiffuse.a *= vOpacity.r;
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 0.f);
+	if (g_bEmissive) Out.vEmissive = vEmissive;
+
+	if (g_Hit)
+	{
+		Out.vDiffuse = float4(1.f, 0.f, 0.f, 0.3f);
+	}
+
+	vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	if (g_bEmissive) Out.vEmissive = vEmissive;
+	if (g_bRoughness) Out.vRoughness = vRoughness;
+	if (g_bMetalic) Out.vMetalic = vMetalic;
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -388,5 +470,32 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_CLONE();
 	}
-}
 
+	pass WhisperSword_6
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_WHISPERSWORD_BLOOM();
+	}
+
+	pass Disolve_7
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_DISOLVE();
+	}
+}

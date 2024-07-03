@@ -306,9 +306,12 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge">
       <UniqueIdentifier>{f2c6ea6c-eaf0-42d7-8370-8c60459eb823}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
       <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
+      <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -433,9 +436,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Passive_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Passive_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -613,12 +613,22 @@
     </ClInclude>
     <ClInclude Include="..\Public\Passive_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Body_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Juggulus_HandTwo.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h" />
+    <ClInclude Include="..\Public\Weapon_Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -734,9 +744,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Passive_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Passive_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -905,12 +912,22 @@
     </ClCompile>
     <ClCompile Include="..\Private\Passive_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Body_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Passive_Element.cpp" />
+    <ClCompile Include="..\Private\Weapon_Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -975,8 +992,8 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl">
-	  <Filter>97.ShaderFiles</Filter>
-	</FxCompile>
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>

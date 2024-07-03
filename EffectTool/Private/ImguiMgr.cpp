@@ -4,9 +4,6 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 #include "GameInstance.h"
-#include "ParticleMesh.h"
-#include "Particle_Point.h"
-#include "Particle_Trail.h"
 #include "PartObject.h"
 #include "Player.h"
 
@@ -64,410 +61,6 @@ ImTextureID CImguiMgr::DirectXTextureToImTextureID()
 	return reinterpret_cast<ImTextureID>(SRV);
 }
 
-PARTICLETYPE CImguiMgr::EffectListBox(PARTICLETYPE type, void** vDesc)
-{
-	ImGui::Begin("Effect_List");
-	ImVec2 list_box_size = ImVec2(-1, 200);
-	static bool HeaderOpen[3] = { false,false,false };
-	static int current_item[3] = { 0,0,0 };
-
-#pragma region POINT
-	if (ImGui::CollapsingHeader("Point_Lists", HeaderOpen[0]))
-	{
-		HeaderOpen[1] = false;
-		HeaderOpen[2] = false;
-		if (PointEffects.size() != PointEffectsNames.size())
-		{
-			MSG_BOX("Vector Size Error");
-			HeaderOpen[0] = false;
-		}
-
-		if (ImGui::BeginListBox("Point List Box", list_box_size))
-		{
-			for (int i = 0; i < PointEffectsNames.size(); ++i)
-			{
-				const bool is_selected = (current_item[0] == i);
-				if (ImGui::Selectable(PointEffectsNames[i].c_str(), is_selected))
-				{
-					current_item[0] = i;
-				}
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndListBox();
-		}
-		if (current_item[0] >= 0 && current_item[0] < PointEffects.size())
-		{
-			if (ImGui::Button("Add", ImVec2(100, 30)))
-			{
-				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_ParticlePoint"), PointEffects[current_item[0]]);
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Load this", ImVec2(100, 30)))
-			{
-				*vDesc = PointEffects[current_item[0]];
-				ChangedDesc = true;
-				ImGui::End();
-				return PART_POINT;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Edit", ImVec2(100, 30)))
-			{
-				PointEffects[current_item[0]] = *vDesc;
-			}
-			
-			if (ImGui::Button("Erase", ImVec2(100, 30)))
-			{
-				
-				Safe_Delete(PointEffects[current_item[0]]);
-				PointEffects.erase(PointEffects.begin() + current_item[0]);
-				PointEffectsNames.erase(PointEffectsNames.begin() + current_item[0]);
-
-				if (current_item[0] >= PointEffects.size())
-					current_item[0] = PointEffects.size() - 1;
-
-			}
-			ImGui::SameLine();
-			
-			if (ImGui::Button("Erase All", ImVec2(100, 30)))
-			{
-				for (auto& iter : PointEffects)
-					Safe_Delete(iter);
-				PointEffects.clear();
-				PointEffectsNames.clear();
-				current_item[0] = 0;
-			}
-
-		}
-
-
-	}
-#pragma endregion POINT
-#pragma region MESH
-	if (ImGui::CollapsingHeader("Mesh_Lists", HeaderOpen[1]))
-	{
-		if (MeshEffects.size() != MeshEffectsNames.size())
-		{
-			MSG_BOX("Vector Size Error");
-			HeaderOpen[1] = false;
-		}
-
-		if (ImGui::BeginListBox("Mesh List Box", list_box_size))
-		{
-			for (int i = 0; i < MeshEffectsNames.size(); ++i)
-			{
-				const bool is_selected = (current_item[1] == i);
-				if (ImGui::Selectable(MeshEffectsNames[i].c_str(), is_selected))
-				{
-					current_item[1] = i;
-				}
-
-				if (is_selected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndListBox();
-		}
-		if (current_item[1] >= 0 && current_item[1] < MeshEffects.size())
-		{
-			if (ImGui::Button("Add", ImVec2(100, 30)))
-			{
-				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_ParticleMesh"), MeshEffects[current_item[1]]);
-			}
-			if (ImGui::Button("Load this", ImVec2(100, 30)))
-			{
-				*vDesc = MeshEffects[current_item[1]];
-				ChangedDesc = true;
-				ImGui::End();
-				return PART_MESH;
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Edit", ImVec2(100, 30)))
-			{
-				MeshEffects[current_item[1]] = *vDesc;
-			}
-		
-			if (ImGui::Button("Erase", ImVec2(100, 30)))
-			{
-
-				Safe_Delete(MeshEffects[current_item[1]]);
-				MeshEffects.erase(MeshEffects.begin() + current_item[1]);
-				MeshEffectsNames.erase(MeshEffectsNames.begin() + current_item[1]);
-
-				if (current_item[1] >= MeshEffects.size())
-					current_item[1] = MeshEffects.size() - 1;
-
-			}
-			ImGui::SameLine();
-
-			if (ImGui::Button("Erase All", ImVec2(100, 30)))
-			{
-				for (auto& iter : MeshEffects)
-					Safe_Delete(iter);
-				MeshEffects.clear();
-				MeshEffectsNames.clear();
-				current_item[1] = 0;
-			}
-
-		}
-		HeaderOpen[0] = false;
-		HeaderOpen[2] = false;
-	}
-#pragma endregion MESH
-#pragma region RECT
-	if (ImGui::CollapsingHeader("Rect_Lists", HeaderOpen[2]))
-	{
-		if (RectEffects.size() != RectEffectsNames.size())
-		{
-			MSG_BOX("Vector Size Error");
-			HeaderOpen[2] = false;
-		}
-
-		HeaderOpen[0] = false;
-		HeaderOpen[1] = false;
-	}
-#pragma endregion RECT
-	ImGui::End();
-
-	return type;
-}
-
-HRESULT CImguiMgr::Store_Effects(char* Name, PARTICLETYPE type, void* Arg)
-{
-	string sName = Name;
-
-	switch (type)
-	{
-	case Effect::PART_POINT:
-	{
-		CParticle_Point::PARTICLEPOINT* point = new CParticle_Point::PARTICLEPOINT;
-		*point = *((CParticle_Point::PARTICLEPOINT*)Arg);
-		PointEffects.emplace_back(point);
-		PointEffectsNames.emplace_back(sName);
-		break;
-	}
-	case Effect::PART_MESH:
-	{
-		CParticleMesh::PARTICLEMESH* mesh = new CParticleMesh::PARTICLEMESH;
-		*mesh = *((CParticleMesh::PARTICLEMESH*)Arg);
-		MeshEffects.emplace_back(mesh);
-		MeshEffectsNames.emplace_back(sName);
-		break;
-	}
-	case Effect::PART_END:
-	{
-		break;
-	}
-	default:
-		return E_FAIL;
-		break;
-	}
-
-
-	return S_OK;
-}
-
-HRESULT CImguiMgr::Save_PointsList()
-{
-	string finalPath = "../../Client/Bin/BinaryFile/Effect/Points.Bin";
-	ofstream file(finalPath, ios::out | ios::binary);
-	_uint iSize = PointEffects.size();
-	file.write((char*)&iSize, sizeof(_uint));
-	for (auto& iter : PointEffects)
-	{
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->eType, sizeof(EFFECTTYPE));
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->InstanceDesc, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
-		save_wstring_to_stream(((CParticle_Point::PARTICLEPOINT*)iter)->Texture, file);
-		save_wstring_to_stream(((CParticle_Point::PARTICLEPOINT*)iter)->TexturePath, file);
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->vStartColor, sizeof(_float3));
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->vEndColor, sizeof(_float3));
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->isColored, sizeof(_bool));
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->IsBlur, sizeof(_bool));
-		file.write((char*)&((CParticle_Point::PARTICLEPOINT*)iter)->Desolve, sizeof(_bool));
-	}
-	file.close();
-
-	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Points.bin";
-	ofstream Text(TexPath, ios::out);
-	for (auto& iter : PointEffectsNames)
-	{
-		_uint strlength = iter.size();
-		Text.write((char*)&strlength, sizeof(_uint));
-		Text.write(iter.c_str(), strlength);
-	}
-	Text.close();
-
-	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Points.txt";
-	std::ofstream NumberFile(IndexPath);
-	for (size_t i = 0; i < PointEffectsNames.size(); ++i)
-	{
-		NumberFile << i << ". " << PointEffectsNames[i] << std::endl;
-	}
-	NumberFile.close();
-
-	return S_OK;
-}
-
-HRESULT CImguiMgr::Load_PointsList()
-{
-	string finalPath = "../../Client/Bin/BinaryFile/Effect/Points.Bin";
-	ifstream inFile(finalPath, std::ios::binary);
-
-	if (!inFile.good())	
-		return E_FAIL;
-	if (!inFile.is_open()) {
-		MSG_BOX("Failed To Open File");
-		return E_FAIL;
-	}
-
-	for (auto& iter : PointEffects)
-		Safe_Delete(iter);
-	PointEffects.clear();
-	PointEffectsNames.clear();
-
-	_uint iSize = 0;
-	inFile.read((char*)&iSize, sizeof(_uint));
-	for (int i = 0; i < iSize; ++i)
-	{
-		CParticle_Point::PARTICLEPOINT* readFile = new CParticle_Point::PARTICLEPOINT;
-		inFile.read((char*)&readFile->eType, sizeof(EFFECTTYPE));
-		inFile.read((char*)&readFile->InstanceDesc, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
-		readFile->Texture = load_wstring_from_stream(inFile);
-		readFile->TexturePath = load_wstring_from_stream(inFile);
-
-		if (!m_pGameInstance->IsPrototype(m_pGameInstance->Get_CurrentLevel(), readFile->Texture))
-			Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
-
-		inFile.read((char*)&readFile->vStartColor, sizeof(_float3));
-		inFile.read((char*)&readFile->vEndColor, sizeof(_float3));
-		inFile.read((char*)&readFile->isColored, sizeof(_bool));
-		inFile.read((char*)&readFile->IsBlur, sizeof(_bool));
-		inFile.read((char*)&readFile->Desolve, sizeof(_bool));
-		readFile->vStartPos = _float4(0.f, 0.f, 0.f, 1.f);
-		PointEffects.emplace_back(readFile);
-	}
-	inFile.close();
-	
-
-	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Points.bin";
-	ifstream NameFile(TexPath);
-	if (!NameFile.good())
-		return E_FAIL;
-	if (!NameFile.is_open()) {
-		MSG_BOX("Failed To Open File");
-		return E_FAIL;
-	}
-
-	for (_uint i = 0; i < iSize; ++i)
-	{
-		_uint length;
-		NameFile.read((char*)&length, sizeof(_uint));
-		string str(length, '\0');
-		NameFile.read(&str[0], length);
-		PointEffectsNames.emplace_back(str);
-	}
-	NameFile.close();
-	
-
-	return S_OK;
-}
-
-HRESULT CImguiMgr::Save_MeshList()
-{
-	string finalPath = "../../Client/Bin/BinaryFile/Effect/Mesh.Bin";
-	ofstream file(finalPath, ios::out | ios::binary);
-	_uint iSize = MeshEffects.size();
-	file.write((char*)&iSize, sizeof(_uint));
-	for (auto& iter : MeshEffects)
-	{
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->eType, sizeof(EFFECTTYPE));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->InstanceDesc, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->vStartColor, sizeof(_float3));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->vEndColor, sizeof(_float3));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->eModelType, sizeof(EFFECTTYPE));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->IsBlur, sizeof(_bool));
-		file.write((char*)&((CParticleMesh::PARTICLEMESH*)iter)->Desolve, sizeof(_bool));
-	}
-	file.close();
-
-	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Mesh.bin";
-	ofstream Text(TexPath, ios::out);
-	for (auto& iter : MeshEffectsNames)
-	{
-		_uint strlength = iter.size();
-		Text.write((char*)&strlength, sizeof(_uint));
-		Text.write(iter.c_str(), strlength);
-	}
-	Text.close();
-
-	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Mesh.txt";
-	std::ofstream NumberFile(IndexPath);
-	for (size_t i = 0; i < MeshEffectsNames.size(); ++i)
-	{
-		NumberFile << i << ". " << MeshEffectsNames[i] << std::endl;
-	}
-	NumberFile.close();
-
-	return S_OK;
-}
-
-HRESULT CImguiMgr::Load_MeshList()
-{
-	string finalPath = "../../Client/Bin/BinaryFile/Effect/Mesh.Bin";
-	ifstream inFile(finalPath, std::ios::binary);
-	if (!inFile.good())
-		return E_FAIL;
-	if (!inFile.is_open()) {
-		MSG_BOX("Failed To Open File");
-		return E_FAIL;
-	}
-
-	for (auto& iter : MeshEffects)
-		Safe_Delete(iter);
-	MeshEffects.clear();
-	MeshEffectsNames.clear();
-
-	_uint iSize = 0;
-	inFile.read((char*)&iSize, sizeof(_uint));
-	for (int i = 0; i < iSize; ++i)
-	{
-		CParticleMesh::PARTICLEMESH* readFile = new CParticleMesh::PARTICLEMESH;
-		inFile.read((char*)&readFile->eType, sizeof(EFFECTTYPE));
-		inFile.read((char*)&readFile->InstanceDesc, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
-		inFile.read((char*)&readFile->vStartColor, sizeof(_float3));
-		inFile.read((char*)&readFile->vEndColor, sizeof(_float3));
-		inFile.read((char*)&readFile->eModelType, sizeof(EFFECTTYPE));
-		inFile.read((char*)&readFile->IsBlur, sizeof(_bool));
-		inFile.read((char*)&readFile->Desolve, sizeof(_bool));
-		readFile->vStartPos = _float4(0.f, 0.f, 0.f, 1.f);
-
-		MeshEffects.emplace_back(readFile);
-	}
-	inFile.close();
-
-	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Mesh.bin";
-	ifstream NameFile(TexPath);
-	if (!NameFile.good())
-		return E_FAIL;
-	if (!NameFile.is_open()) {
-		MSG_BOX("Failed To Open File");
-		return E_FAIL;
-	}
-
-	for (_uint i = 0; i < iSize; ++i)
-	{
-		_uint length;
-		NameFile.read((char*)&length, sizeof(_uint));
-		string str(length, '\0');
-		NameFile.read(&str[0], length);
-		MeshEffectsNames.emplace_back(str);
-	}
-	NameFile.close();
-
-
-	return S_OK;
-}
-
 void CImguiMgr::Render()
 {
 	ImGui_ImplDX11_NewFrame();
@@ -504,9 +97,11 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
-	ImGui::Checkbox("Effect_Tool", &bShow[1]);
+	ImGui::Checkbox("Particle_Tool", &bShow[1]);
 	if (bShow[1] == true)
-		EffectTool();
+	{
+		EffectTool_Rework();
+	}
 	ImGui::Checkbox("Trail_Tool", &bShow[2]);
 	if (bShow[2] == true)
 	{
@@ -536,51 +131,40 @@ void CImguiMgr::Visible_Data()
 		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
 		TrailMat = pPlayer->Get_WorldMat();
 	}
+	if (ImGui::Button("Bind_Player_Head"))
+	{
+		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+		TrailMat = pPlayer->Get_HeadMAt();
+	}
 	ImGui::End();
 }
 
-void CImguiMgr::EffectTool()
+void CImguiMgr::EffectTool_Rework()
 {
 	ImGui::Begin("Effect_Editor");
-	static CVIBuffer_Instance::INSTANCE_DESC instDesc = {};
-	static CParticleMesh::PARTICLEMESH classDesc = {};
-	static CParticle_Point::PARTICLEPOINT pointDesc = {};
 
-#pragma region FuncType
-	static EFFECTTYPE FuncType = SPREAD;
-	static _float vStartColor[3] = { 1.0f, 1.0f, 1.0f };
-	static _float vEndColor[3] = { 1.0f, 1.0f, 1.0f };
-	static PARTICLETYPE PartType = PART_POINT;
-	static void* voidDesc = nullptr;
+	static CParticle::PARTICLEDESC parentsDesc{};
+	static CParticleMesh::PARTICLEMESH MeshDesc{};
+	static CParticle_Point::PARTICLEPOINT PointDesc{};
+	static CParticle_Rect::PARTICLERECT RectDesc{};
+	static PARTICLETYPE eParticleType = PART_POINT;
+	
 
-	if (ChangedDesc == true)
+	if (ChangedDesc)
 	{
-		switch (PartType)
+		switch (eParticleType)
 		{
 		case Effect::PART_POINT:
-			pointDesc = *((CParticle_Point::PARTICLEPOINT*)voidDesc);
-			FuncType = pointDesc.eType;
-			instDesc = pointDesc.InstanceDesc;
-			vStartColor[0] = pointDesc.vStartColor.x;
-			vStartColor[1] = pointDesc.vStartColor.y;
-			vStartColor[2] = pointDesc.vStartColor.z;
-			vEndColor[0] = pointDesc.vEndColor.x;
-			vEndColor[1] = pointDesc.vEndColor.y;
-			vEndColor[2] = pointDesc.vEndColor.z;
-			m_pTextureCom = static_cast<CTexture*>(m_pGameInstance->Get_Prototype(m_pGameInstance->Get_CurrentLevel(), m_pTextureProtoName));
+			PointDesc = *((CParticle_Point::PARTICLEPOINT*)Variants);
+			parentsDesc = PointDesc.SuperDesc;
 			break;
 		case Effect::PART_MESH:
-			classDesc = *((CParticleMesh::PARTICLEMESH*)voidDesc);
-			FuncType = classDesc.eType;
-			instDesc = classDesc.InstanceDesc;
-			vStartColor[0] = classDesc.vStartColor.x;
-			vStartColor[1] = classDesc.vStartColor.y;
-			vStartColor[2] = classDesc.vStartColor.z;
-			vEndColor[0] = classDesc.vEndColor.x;
-			vEndColor[1] = classDesc.vEndColor.y;
-			vEndColor[2] = classDesc.vEndColor.z;
+			MeshDesc = *((CParticleMesh::PARTICLEMESH*)Variants);
+			parentsDesc = MeshDesc.SuperDesc;
 			break;
-		case Effect::PART_END:
+		case Effect::PART_RECT:
+			RectDesc = *((CParticle_Rect::PARTICLERECT*)Variants);
+			parentsDesc = RectDesc.SuperDesc;
 			break;
 		default:
 			break;
@@ -590,275 +174,557 @@ void CImguiMgr::EffectTool()
 
 
 
-	if (ImGui::RadioButton("Spread", FuncType == SPREAD))
+
+	MeshDesc.particleType = PART_MESH;
+	PointDesc.particleType = PART_POINT;
+	RectDesc.particleType = PART_RECT;
+
+#pragma region PARTICLEDESC
+
+	if (ImGui::RadioButton("Point", eParticleType == PART_POINT))
+		eParticleType = PART_POINT;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Mesh", eParticleType == PART_MESH))
+		eParticleType = PART_MESH;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rect", eParticleType == PART_RECT))
+		eParticleType = PART_RECT;
+
+	if (eParticleType == PART_MESH)
 	{
-		FuncType = SPREAD;
+		CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Mesh_Type");
+		if (ImGui::RadioButton("Cube", MeshDesc.eModelType == EFFECTMODELTYPE::CUBE))
+			MeshDesc.eModelType = EFFECTMODELTYPE::CUBE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Circle", MeshDesc.eModelType == EFFECTMODELTYPE::CIRCLE))
+			MeshDesc.eModelType = EFFECTMODELTYPE::CIRCLE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Slash", MeshDesc.eModelType == EFFECTMODELTYPE::SLASH))
+			MeshDesc.eModelType = EFFECTMODELTYPE::SLASH;
+	}
+
+	ImGui::Checkbox("Bloom", &parentsDesc.IsBlur);
+	if (parentsDesc.IsBlur == true)
+	{
+		ImGui::InputFloat("BloomPower", &parentsDesc.fBlurPower);
+		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&parentsDesc.vBloomColor));
+	}
+	ImGui::Checkbox("Desolve", &parentsDesc.Desolve);
+	if (parentsDesc.Desolve == true)
+	{
+		ImGui::InputInt("DesolveNumber", &parentsDesc.DesolveNum);
+		ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&parentsDesc.vDesolveColor));
+		ImGui::InputFloat("DesolveLength", &parentsDesc.fDesolveLength);
+	}
+	ImGui::Checkbox("ColorMapping", &parentsDesc.IsColor);
+	if (parentsDesc.IsColor == true)
+	{
+		ImGui::ColorEdit3("Start_Color", reinterpret_cast<float*>(&parentsDesc.vStartColor));
+		ImGui::ColorEdit3("End_Color", reinterpret_cast<float*>(&parentsDesc.vEndColor));
+	}
+	ImGui::Checkbox("AlphaLerp", &parentsDesc.IsAlpha);
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&parentsDesc.vStartPos));
+
+#pragma region FUNCTYPE
+	if (ImGui::RadioButton("Spread", parentsDesc.eType == SPREAD))
+	{
+		parentsDesc.eType = SPREAD;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Drop", FuncType == DROP))
+	if (ImGui::RadioButton("Drop", parentsDesc.eType == DROP))
 	{
-		FuncType = DROP;
+		parentsDesc.eType = DROP;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("GrowOut", FuncType == GROWOUT))
+	if (ImGui::RadioButton("GrowOut", parentsDesc.eType == GROWOUT))
 	{
-		FuncType = GROWOUT;
+		parentsDesc.eType = GROWOUT;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Tornado", FuncType == TORNADO))
+	if (ImGui::RadioButton("Tornado", parentsDesc.eType == TORNADO))
 	{
-		FuncType = TORNADO;
+		parentsDesc.eType = TORNADO;
 	}
-	if (ImGui::RadioButton("Spread_SizeUp", FuncType == SPREAD_SIZEUP))
+	if (ImGui::RadioButton("Spread_SizeUp", parentsDesc.eType == SPREAD_SIZEUP))
 	{
-		FuncType = SPREAD_SIZEUP;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Spread_NonRotation", FuncType == SPREAD_NONROTATION))
-	{
-		FuncType = SPREAD_NONROTATION;
-	}
-
-
-	if (ImGui::RadioButton("Spread_SpeedDown", FuncType == SPREAD_SPEED_DOWN))
-	{
-		FuncType = SPREAD_SPEED_DOWN;
+		parentsDesc.eType = SPREAD_SIZEUP;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("SlashEffect", FuncType == SLASH_EFFECT))
+	if (ImGui::RadioButton("Spread_NonRotation", parentsDesc.eType == SPREAD_NONROTATION))
 	{
-		FuncType = SLASH_EFFECT;
+		parentsDesc.eType = SPREAD_NONROTATION;
+	}
+
+
+	if (ImGui::RadioButton("Spread_SpeedDown", parentsDesc.eType == SPREAD_SPEED_DOWN))
+	{
+		parentsDesc.eType = SPREAD_SPEED_DOWN;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Spread_SpeedDown_SizeUp", FuncType == SPREAD_SPEED_DOWN_SIZE_UP))
+	if (ImGui::RadioButton("SlashEffect", parentsDesc.eType == SLASH_EFFECT))
 	{
-		FuncType = SPREAD_SPEED_DOWN_SIZE_UP;
+		parentsDesc.eType = SLASH_EFFECT;
 	}
-	if (ImGui::RadioButton("Gather", FuncType == GATHER))
+	if (ImGui::RadioButton("Spread_SpeedDown_SizeUp", parentsDesc.eType == SPREAD_SPEED_DOWN_SIZE_UP))
 	{
-		FuncType = GATHER;
+		parentsDesc.eType = SPREAD_SPEED_DOWN_SIZE_UP;
 	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Extinction", FuncType == EXTINCTION))
+	if (ImGui::RadioButton("Gather", parentsDesc.eType == GATHER))
 	{
-		FuncType = EXTINCTION;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("GrowOutY", FuncType == GROWOUTY))
-	{
-		FuncType = GROWOUTY;
-	}
-#pragma endregion FuncType
-
-#pragma region PARTICLETYPE
-
-	if (ImGui::RadioButton("Point", PartType == PART_POINT))
-	{
-		PartType = PART_POINT;
+		parentsDesc.eType = GATHER;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Mesh", PartType == PART_MESH))
+	if (ImGui::RadioButton("Extinction", parentsDesc.eType == EXTINCTION))
 	{
-		PartType = PART_MESH;
+		parentsDesc.eType = EXTINCTION;
 	}
-	ImGui::Text("FunctionType :");
-
-
-	if (PartType == PART_POINT)
+	ImGui::SameLine();
+	if (ImGui::RadioButton("GrowOutY", parentsDesc.eType == GROWOUTY))
 	{
-		if (ImGui::CollapsingHeader("Point Settings"))
-		{
-			// Add your point settings UI elements here
-			ImGui::Text("Point specific settings");
-			if (m_pTextureProtoName == TEXT(""))
-				MSG_BOX("텍스쳐를 먼저 선택해주세요");
-			else
-			{
-				pointDesc.Texture = m_pTextureProtoName;
-				pointDesc.TexturePath = m_pTextureFilePath;
-			}
-			ImGui::Checkbox("Blur", &pointDesc.IsBlur);
-			ImGui::Checkbox("Desolve", &pointDesc.Desolve);
-			
-
-			ImGui::Checkbox("ColorMap", &pointDesc.isColored);
-			if (pointDesc.isColored == true)
-			{
-				if (ImGui::ColorEdit3("Start_Color", vStartColor))
-				{
-					pointDesc.vStartColor = _float3(vStartColor[0], vStartColor[1], vStartColor[2]);
-				}
-				
-				if (ImGui::ColorEdit3("End_Color", vEndColor))
-				{
-					pointDesc.vEndColor = _float3(vEndColor[0], vEndColor[1], vEndColor[2]);
-				}
-			}
-			pointDesc.eType = FuncType;
-		}
+		parentsDesc.eType = GROWOUTY;
 	}
-	else if (PartType == PART_MESH)
-	{
-		if (ImGui::CollapsingHeader("Mesh Settings"))
-		{
-			ImGui::Text("Mesh specific settings");
-			ImGui::Text("MeshType :");
-			ImGui::SameLine();
-			if (ImGui::RadioButton("Cube", classDesc.eModelType == CUBE))
-			{
-				classDesc.eModelType = CUBE;
-			}
-			ImGui::SameLine();
-			if (ImGui::RadioButton("Circle", classDesc.eModelType == CIRCLE))
-			{
-				classDesc.eModelType = CIRCLE;
-			}
-			ImGui::SameLine();
-			if (ImGui::RadioButton("Slash", classDesc.eModelType == SLASH))
-			{
-				classDesc.eModelType = SLASH;
-			}
-
-
-
-			
-			if (ImGui::ColorEdit3("Start_Color", vStartColor))
-			{
-				classDesc.vStartColor = _float3(vStartColor[0], vStartColor[1], vStartColor[2]);
-			}
-			if (ImGui::ColorEdit3("End_Color", vEndColor))
-			{
-				classDesc.vEndColor = _float3(vEndColor[0], vEndColor[1], vEndColor[2]);
-			}
-
-			ImGui::Checkbox("Blur", &classDesc.IsBlur);
-			ImGui::Checkbox("Desolve", &classDesc.Desolve);
-			if (ImGui::InputInt("DesolveTexNum", &classDesc.DesolveNum))
-			{
-				if (classDesc.DesolveNum < 0)
-					classDesc.DesolveNum = 0;
-				if (classDesc.DesolveNum > 15)
-					classDesc.DesolveNum = 15;
-			}
-			classDesc.eType = FuncType;
-		}
-	}
-
-#pragma endregion PARTICLETYPE
+#pragma endregion FUNCTYPE
+	
+#pragma endregion PARTICLEDESC
 
 #pragma region INSTANCEDESC
-	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &instDesc.iNumInstance, NULL, NULL, "%u");
-	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&instDesc.vOffsetPos));
-	ImGui::InputFloat3("PivotPos", reinterpret_cast<float*>(&instDesc.vPivotPos));
-	ImGui::InputFloat3("Range", reinterpret_cast<float*>(&instDesc.vRange));
-	ImGui::InputFloat2("Size", reinterpret_cast<float*>(&instDesc.vSize));
-	ImGui::InputFloat2("Speed", reinterpret_cast<float*>(&instDesc.vSpeed));
-	ImGui::InputFloat2("LifeTime", reinterpret_cast<float*>(&instDesc.vLifeTime));
-	ImGui::InputFloat2("Gravity", reinterpret_cast<float*>(&instDesc.vGravity));
-	static _float4 fStartPos = { 0.f,0.f,0.f,1.f };
-	ImGui::InputFloat4("StartPosition", reinterpret_cast<float*>(&fStartPos));
-	ImGui::Checkbox("IsLoop", &instDesc.isLoop);
+	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &parentsDesc.InstanceDesc.iNumInstance, NULL, NULL, "%u");
+	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vOffsetPos));
+	ImGui::InputFloat3("PivotPos", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vPivotPos));
+	ImGui::InputFloat3("Range", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vRange));
+	ImGui::InputFloat2("Size", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vSize));
+	ImGui::InputFloat2("Speed", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vSpeed));
+	ImGui::InputFloat2("LifeTime", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vLifeTime));
+	ImGui::InputFloat2("Gravity", reinterpret_cast<float*>(&parentsDesc.InstanceDesc.vGravity));
+	ImGui::Checkbox("IsLoop", &parentsDesc.InstanceDesc.isLoop);
 #pragma endregion INSTANCEDESC
 
-
-	classDesc.InstanceDesc = instDesc;	//메쉬
-	pointDesc.InstanceDesc = instDesc;
-
-	classDesc.vStartPos = fStartPos;
-	pointDesc.vStartPos = fStartPos;
-
-
-#pragma region BUTTONS
-	if (ImGui::Button("Add", ImVec2(100, 30)))	//이펙트 생성버튼
+	void* value2 = nullptr;
+	switch (eParticleType)
 	{
-		switch (PartType)
-		{
-		case Effect::PART_POINT:
-		{
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_ParticlePoint"), &pointDesc);
-			break;
-		}
-		case Effect::PART_MESH:
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_ParticleMesh"), &classDesc);
-			break;
-		case Effect::PART_END:
-			break;
-		default:
-			break;
-		}
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("EraseEffects", ImVec2(100, 30)))		//이펙트 레이어 삭제
-	{
-		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
-	}
-	
-	
-	switch (PartType)
-	{
-	case Effect::PART_POINT:
-		voidDesc = &pointDesc;
+	case PARTICLETYPE::PART_POINT:
+		PointDesc.Texture = m_pTextureProtoName;
+		PointDesc.TexturePath = m_pTextureFilePath;
+		PointDesc.SuperDesc = parentsDesc;
+		value2 = &PointDesc;
 		break;
-	case Effect::PART_MESH:
-		voidDesc = &classDesc;
+	case PARTICLETYPE::PART_MESH:
+		MeshDesc.SuperDesc = parentsDesc;
+		value2 = &MeshDesc;
 		break;
-	case Effect::PART_END:
+	case PARTICLETYPE::PART_RECT:
+		RectDesc.Texture = m_pTextureProtoName;
+		RectDesc.TexturePath = m_pTextureFilePath;
+		RectDesc.SuperDesc = parentsDesc;
+		value2 = &RectDesc;
 		break;
 	default:
 		break;
 	}
 
-
-	static char effectname[256] = "";
-	//ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Name :");
-	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
-
-	if (ImGui::Button("Store", ImVec2(50, 30)))		//현재 설정되어 있는 이펙트를 리스트에 추가
+#pragma region BUTTON
+	if (ImGui::Button("Add", ImVec2(100, 30)))
 	{
-		if (effectname[0] == '\0')
+		switch (eParticleType)
+		{
+		case PARTICLETYPE::PART_POINT:
+		{
+			if (PointDesc.Texture == TEXT("") || PointDesc.TexturePath == TEXT(""))
+				MSG_BOX("텍스쳐를 먼저 선택해주세요");
+			else
+			{
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+					TEXT("Prototype_GameObject_ParticlePoint"), &PointDesc);
+			}
+			break;
+		}
+		case PARTICLETYPE::PART_MESH:
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+				TEXT("Prototype_GameObject_ParticleMesh"), &MeshDesc);
+			break;
+		case PARTICLETYPE::PART_RECT:
+		{
+			if (RectDesc.Texture == TEXT("") || RectDesc.TexturePath == TEXT(""))
+				MSG_BOX("텍스쳐를 먼저 선택해주세요");
+			else
+			{
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+					TEXT("Prototype_GameObject_ParticleRect"), &RectDesc);
+			}
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Clear", ImVec2(100, 30)))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"));
+	}
+
+	static char ParticleNames[256] = "";
+	ImGui::InputText("Name", ParticleNames, IM_ARRAYSIZE(ParticleNames));
+
+	if (ImGui::Button("PushBack_List", ImVec2(200, 30)))		
+	{
+		if (ParticleNames[0] == '\0')
 		{
 			MSG_BOX("이름을 입력해주세요");
 		}
 		else
 		{
-			Store_Effects(effectname, PartType, voidDesc);
+			switch (eParticleType)
+			{
+			case Effect::PART_POINT:
+				Store_Particles(ParticleNames, eParticleType, &PointDesc);
+				break;
+			case Effect::PART_MESH:
+				Store_Particles(ParticleNames, eParticleType, &MeshDesc);
+				break;
+			case Effect::PART_RECT:
+				Store_Particles(ParticleNames, eParticleType, &RectDesc);
+				break;
+			default:
+				MSG_BOX("형식이 잘못되었습니다.");
+				break;
+			}
 		}
 	}
 
-	if (ImGui::Button("Save", ImVec2(100, 30)))
+	if (ImGui::Button("Save", ImVec2(200, 30)))
 	{
-		HRESULT hr;
-		hr = Save_PointsList();
-		if (FAILED(hr))
-			MSG_BOX("Failed Save Effects");
-		hr = Save_MeshList();
-		if (FAILED(hr))
-			MSG_BOX("Failed Save Effects");
-
-		if(hr == S_OK)
-			MSG_BOX("Succeed Save Effects");
-
+		if (FAILED(Save_Particles()))
+			MSG_BOX("Failed_Save");
+		else
+			MSG_BOX("Succeed_Save");
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("Load", ImVec2(100, 30)))
+	if (ImGui::Button("Load", ImVec2(200, 30)))
 	{
-		HRESULT hr;
-		hr = Load_PointsList();
-		if (FAILED(hr))
-			MSG_BOX("Failed Load Effects");
-		hr = Load_MeshList();
-		if (FAILED(hr))
-			MSG_BOX("Failed Load Effects");
+		if (FAILED(Load_Particles()))
+			MSG_BOX("Failed_Load");
+		else
+			MSG_BOX("Succeed_Load");
+	}
+#pragma endregion BUTTON
 
-		if (hr == S_OK)
-			MSG_BOX("Succeed Load Effects");
+	
+	eParticleType = ParticleListBox(eParticleType, &Variants, value2);
 
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Particles(char* Name, PARTICLETYPE type, void* pValue)
+{
+	string sName = Name;
+
+	switch (type)
+	{
+	case Effect::PART_POINT:
+	{
+		CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pValue);
+		shared_ptr<CParticle_Point::PARTICLEPOINT> PointDesc = make_shared<CParticle_Point::PARTICLEPOINT>(val);
+		//CParticle_Point::PARTICLEPOINT* PointDesc =  new CParticle_Point::PARTICLEPOINT(val);
+		m_Particles.insert(make_pair(PART_POINT, PointDesc));
+		break;
+	}
+	case Effect::PART_MESH:
+	{
+		CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pValue);
+		shared_ptr<CParticleMesh::PARTICLEMESH> MeshDesc = make_shared<CParticleMesh::PARTICLEMESH>(val);
+		//CParticleMesh::PARTICLEMESH* MeshDesc = new CParticleMesh::PARTICLEMESH(val);
+		m_Particles.insert(make_pair(PART_MESH, MeshDesc));
+		break;
+	}
+	case Effect::PART_RECT:
+	{
+		CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pValue);
+		shared_ptr<CParticle_Rect::PARTICLERECT> RectDesc = make_shared<CParticle_Rect::PARTICLERECT>(val);
+		//CParticle_Rect::PARTICLERECT* RectDesc = new CParticle_Rect::PARTICLERECT(val);
+		m_Particles.insert(make_pair(PART_RECT, RectDesc));
+		break;
+	}
+	default:
+		break;
+	}
+	ParticleNames.emplace_back(sName);
+
+	return S_OK;
+}
+
+PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* pValue2)
+{
+	if (m_Particles.size() < 1)
+		return type;
+
+	if (m_Particles.size() != ParticleNames.size())
+	{
+		MSG_BOX("Size Error");
+		return type;
+	}
+	ImGui::Begin("Particle_List_Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+	if (ImGui::BeginListBox("Particle", list_box_size))
+	{
+		for (int i = 0; i < ParticleNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(ParticleNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
 	}
 
-#pragma endregion BUTTONS
+	if (current_item >= 0 && current_item < m_Particles.size())
+	{
+		auto it = m_Particles.begin();
+		advance(it, current_item);
+		if (it == m_Particles.end())
+		{
+			ImGui::End();
+			return type;
+		}
 
-	PartType = EffectListBox(PartType, &voidDesc);
+		if (ImGui::Button("Add", ButtonSize))
+		{	
+			switch (it->first)
+			{
+			case PART_POINT:
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+					TEXT("Prototype_GameObject_ParticlePoint"), it->second.get());
+				break;
+			case PART_MESH:
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+					TEXT("Prototype_GameObject_ParticleMesh"), it->second.get());
+				break;
+			case PART_RECT:
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
+					TEXT("Prototype_GameObject_ParticleRect"), it->second.get());
+				break;
+			default:
+				break;
+			}
+			
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*pValue = it->second.get();
+			ChangedDesc = true;
+			ImGui::End();
+			return it->first;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			if (it->first != type)
+				MSG_BOX("다른 타입은 수정할 수 없습니다.");
+			else
+			{
+				switch (type)
+				{
+				case Effect::PART_POINT:
+				{
+					it->second.reset();
+					CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pValue2);
+					it->second = make_shared<CParticle_Point::PARTICLEPOINT>(val);
+					break;
+				}
+				case Effect::PART_MESH:
+				{
+					it->second.reset();
+					CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pValue2);
+					it->second = make_shared<CParticleMesh::PARTICLEMESH>(val);
+					break;
+				}
+				case Effect::PART_RECT:
+				{
+					it->second.reset();
+					CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pValue2);
+					it->second = make_shared<CParticle_Rect::PARTICLERECT>(val);
+					break;
+				}
+				default:
+					break;
+				}
+			}
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			it->second.reset();
+			m_Particles.erase(it);
+			ParticleNames.erase(ParticleNames.begin() + current_item);
+
+			if (current_item >= m_Particles.size())
+				current_item = m_Particles.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& pair : m_Particles)
+				pair.second.reset();
+
+			m_Particles.clear();
+			ParticleNames.clear();
+			current_item = 0;
+		}
+	}
 	ImGui::End();
+
+	return type;
+}
+
+HRESULT CImguiMgr::Save_Particles()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Particles.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Particles.size();
+	file.write((char*)&iSize, sizeof(_uint));
+
+	for (auto& pair : m_Particles)
+	{
+		PARTICLETYPE type = pair.first;
+		file.write((char*)&type, sizeof(PARTICLETYPE));
+		switch (type)
+		{
+		case Effect::PART_POINT:
+		{
+			CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pair.second.get());
+			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			save_wstring_to_stream(val.Texture, file);
+			save_wstring_to_stream(val.TexturePath, file);
+			break;
+		}
+		case Effect::PART_MESH:
+		{
+			CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pair.second.get());
+			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			file.write((char*)&val.eModelType, sizeof(EFFECTMODELTYPE));
+			break;
+		}
+		case Effect::PART_RECT:
+		{
+			CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pair.second.get());
+			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			save_wstring_to_stream(val.Texture, file);
+			save_wstring_to_stream(val.TexturePath, file);
+			break;
+		}
+		}
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Particle.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : ParticleNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/ParticleIndex.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < ParticleNames.size(); ++i)
+	{
+		NumberFile << i << ". " << ParticleNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Particles()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Particles.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& pair : m_Particles)
+		pair.second.reset();
+	m_Particles.clear();
+	ParticleNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		PARTICLETYPE type;
+		inFile.read((char*)&type, sizeof(PARTICLETYPE));
+		switch (type)
+		{
+		case PART_POINT:
+		{
+			CParticle_Point::PARTICLEPOINT val;
+			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			val.Texture = load_wstring_from_stream(inFile);
+			val.TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(val.TexturePath, val.Texture);
+			val.particleType = PART_POINT;
+			shared_ptr<CParticle_Point::PARTICLEPOINT> Arg = make_shared<CParticle_Point::PARTICLEPOINT>(val);
+			m_Particles.insert(make_pair(PART_POINT, Arg));
+			break;
+		}
+		case PART_MESH:
+		{
+			CParticleMesh::PARTICLEMESH val;
+			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			inFile.read((char*)&val.eModelType, sizeof(EFFECTMODELTYPE));
+			val.particleType = PART_MESH;
+			shared_ptr<CParticleMesh::PARTICLEMESH> Arg = make_shared<CParticleMesh::PARTICLEMESH>(val);
+			m_Particles.insert(make_pair(PART_MESH, Arg));
+			break;
+		}
+		case PART_RECT:
+		{
+			CParticle_Rect::PARTICLERECT val;
+			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			val.Texture = load_wstring_from_stream(inFile);
+			val.TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(val.TexturePath, val.Texture);
+			val.particleType = PART_RECT;
+			shared_ptr<CParticle_Rect::PARTICLERECT> Arg = make_shared<CParticle_Rect::PARTICLERECT>(val);
+			m_Particles.insert(make_pair(PART_RECT, Arg));
+			break;
+		}
+		}
+	}
+
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Particle.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		ParticleNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::Load_Texture()
@@ -1254,6 +1120,17 @@ void CImguiMgr::FrameTextureTool()
 	ImGui::End();
 }
 
+void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)
+{
+	float windowWidth = ImGui::GetWindowSize().x;
+	float textWidth = ImGui::CalcTextSize(text).x;
+	float textIndent = (windowWidth - textWidth) / 2.0f;
+	if (textIndent < 0.0f)
+		textIndent = 0.0f;
+	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + textIndent);
+	ImGui::TextColored(color, "%s", text);
+}
+
 vector<string> CImguiMgr::GetFilesInDirectory(const string& path)
 {
 	vector<std::string> files;
@@ -1277,18 +1154,8 @@ CImguiMgr* CImguiMgr::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 void CImguiMgr::Free()
 {
-	for (auto& mesh : MeshEffects)
-	{
-		Safe_Delete(mesh);
-	}
-	for (auto& point : PointEffects)
-	{
-		Safe_Delete(point);
-	}
-	for (auto& rect : RectEffects)
-	{
-		Safe_Delete(rect);
-	}
+	m_Particles.clear();
+
 	TrailEffects.clear();
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();

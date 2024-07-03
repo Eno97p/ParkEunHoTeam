@@ -35,6 +35,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pDisolveCom = { nullptr };
 	_bool m_bIsClocking = false;
 
 	_bool m_bAnimFinished = false;

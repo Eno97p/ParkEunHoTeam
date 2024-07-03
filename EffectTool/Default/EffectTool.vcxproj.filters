@@ -65,6 +65,9 @@
     <Filter Include="Objects\04. TextureFrame">
       <UniqueIdentifier>{11f5a40f-81c7-4744-a2a4-063979db7f65}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\03. Player\PartObj\Head">
+      <UniqueIdentifier>{ea8ba2aa-a7ff-40bb-ae06-e315ccd5cf18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -166,6 +169,9 @@
     <ClInclude Include="..\public\TextureFrame.h">
       <Filter>Objects\04. TextureFrame</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerHead.h">
+      <Filter>Objects\03. Player\PartObj\Head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -251,6 +257,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp">
       <Filter>Objects\03. Player\PartObj\Weapons\WhisperSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerHead.cpp">
+      <Filter>Objects\03. Player\PartObj\Head</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

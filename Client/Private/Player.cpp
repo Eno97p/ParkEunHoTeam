@@ -8,8 +8,8 @@
 #include "Explosion.h"
 #include "Clone.h"
 #include "Body_Player.h"
-#include"CHitReport.h"
 
+#include"CHitReport.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -71,10 +71,21 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_fButtonCooltime = 0.f;
 	}
 
+	if (m_fJumpCooltime != 0.f)
+	{
+		m_fJumpCooltime += fTimeDelta;
+	}
+	if (m_fJumpCooltime > JUMPCOOLTIME)
+	{
+		m_fJumpCooltime = 0.f;
+	}
+
 	if (!m_pPhysXCom->Get_IsJump())
 	{
 		m_bJumping = false;
+		m_bDoubleJumping = false;
 		m_pPhysXCom->Set_JumpSpeed(10.f);
+
 	}
 	else
 	{
@@ -97,11 +108,15 @@ void CPlayer::Tick(_float fTimeDelta)
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
-
+	if (m_iState != STATE_DASH)
+	{
+		m_pPhysXCom->Tick(fTimeDelta);
+	}
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	list<CGameObject*> ObjectLis;
 	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
@@ -111,7 +126,6 @@ void CPlayer::Tick(_float fTimeDelta)
 		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	}
 
-	m_pPhysXCom->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -123,7 +137,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 #ifdef _DEBUG
-	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	//m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
@@ -136,6 +150,18 @@ HRESULT CPlayer::Render()
 
 HRESULT CPlayer::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
 		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
 		return E_FAIL;
@@ -164,14 +190,10 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
-	
-
 
 
 	return S_OK;
 }
-
-
 
 HRESULT CPlayer::Add_PartObjects()
 {
@@ -197,54 +219,21 @@ HRESULT CPlayer::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bip001-R-Finger3");
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_sword");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;
-
-	//CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_VeilleurSword"), &WeaponDesc);
-	//if (nullptr == pWeapon)
-	//	return E_FAIL;
-	//m_PartObjects.emplace_back(pWeapon);
 
 	CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_WhisperSword_Anim"), &WeaponDesc);
 	if (nullptr == pWeapon)
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
-	//CPhysXComponent* pWeaponPhysXCom = dynamic_cast<CPhysXComponent*>(pWeapon->Get_Component(TEXT("Com_PhysX")));
-	//if (pWeaponPhysXCom)
-	//{
-	//	PxActor* pActor = pWeaponPhysXCom->Get_Actor();
-	//	if (pActor)
-	//	{
-	//		PxFilterData filterData;
-	//		filterData.word0 = GROUP_WEAPON;
-	//		filterData.word1 = GROUP_ENVIRONMENT | GROUP_ENEMY;  // 무기가 충돌할 그룹
-	//		pWeaponPhysXCom->SetFilterData(filterData);
-	//
-	//
-	//
-	//	}
-	//		
-	//	
-	//
-	//}
-	//	
-
-
-
-
-
 	return S_OK;
 }
 
-_bool CPlayer::Intersect(PART ePartObjID, const wstring& strComponetTag, CCollider* pTargetCollider)
+CGameObject* CPlayer::Get_Weapon()
 {
-	//CCollider* pPartObjCollider = dynamic_cast<CCollider*>(m_PartObjects[ePartObjID]->Get_Component(strComponetTag));
-	//
-	//return pTargetCollider->Intersect(pPartObjCollider);
-
-	return false;
+	return m_PartObjects[1];
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -283,7 +272,6 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 	if (m_pGameInstance->Get_DIKeyState(DIK_L))
 	{
 		m_bReviving = true;
-		m_bDying = false;
 	}
 
 	if (m_bReviving)
@@ -309,19 +297,12 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 
 NodeStates CPlayer::Dead(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_K))
+	if (m_iState == STATE_DEAD)
 	{
-		m_bDying = true;
-	}
-
-	if (m_bDying)
-	{
-		m_iState = STATE_DEAD;
-
 		if (m_bAnimFinished)
 		{
-			// 디졸브, 사망처리
-			//m_bDying = false;
+			m_iState = STATE_IDLE;
+			return SUCCESS;
 		}
 		return RUNNING;
 	}
@@ -333,6 +314,33 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 NodeStates CPlayer::Hit(_float fTimeDelta)
 {
+	// 피격조건(몬스터 패턴 피격 등)
+	if (m_pGameInstance->Get_DIKeyState(DIK_H))
+	{
+		m_bHit = true;
+	}
+
+	if (m_bHit && m_iState != STATE_HIT)
+	{
+		Add_Hp(-1);
+		m_iState = STATE_HIT;
+	}
+
+	if (m_iState == STATE_HIT)
+	{
+		if (m_bAnimFinished)
+		{
+			m_bHit = false;
+			m_fFightIdle += 0.01f;
+			m_iState = STATE_FIGHTIDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+
 	return FAILURE;
 }
 
@@ -346,6 +354,11 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && !m_bLAttacking && !m_bRAttacking && m_iState != STATE_ROLL && m_iState != STATE_DASH)
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
 		m_bParrying = true;
 	}
 
@@ -355,6 +368,12 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			if (!m_bDisolved_Yaak)
+			{
+				static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+				m_bDisolved_Yaak = true;
+			}
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			m_bParrying = false;
 			return SUCCESS;
@@ -374,6 +393,17 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 {
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH)
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
+		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
+		{
+
+			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Weapon = true;
+		}
 		m_iState = STATE_JUMPATTACK;
 		m_bLAttacking = true;
 		m_pPhysXCom->Set_JumpSpeed(-2.f);
@@ -385,12 +415,13 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		if (m_bAnimFinished && m_iState == STATE_JUMPATTACK_LAND)
 		{
 			m_bLAttacking = false;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
 		else
 		{
-			m_pPhysXCom->Tick(fTimeDelta);
+			/*m_pPhysXCom->Tick(fTimeDelta);*/
 			if (!m_pPhysXCom->Get_IsJump())
 			{
 				m_pPhysXCom->Set_JumpSpeed(10.f);
@@ -414,6 +445,11 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_iState == STATE_ROLL)
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
 		m_iState = STATE_ROLLATTACK;
 		m_bLAttacking = true;
 	}
@@ -423,14 +459,15 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 		if (m_bAnimFinished)
 		{
 			m_bLAttacking = false;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			if (m_bRunning)
 			{
-				m_pTransformCom->Set_Speed(6.f);
+				m_pTransformCom->Set_Speed(RUNSPEED);
 			}
 			else
 			{
-				m_pTransformCom->Set_Speed(3.f);
+				m_pTransformCom->Set_Speed(WALKSPEED);
 			}
 			return SUCCESS;
 		}
@@ -455,9 +492,20 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_LBUTTON) & 0x8000))
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
+		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
+		{
+			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Weapon = true;
+		}
 		if (!m_bLAttacking)
 		{
 			m_fLChargeAttack += fTimeDelta;
+
 		}
 		if (m_bCanCombo)
 		{
@@ -469,6 +517,10 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 	{
 		m_fLChargeAttack = 0.f;
 		m_bLAttacking = true;
+		if (m_bRunning && ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000)))
+		{
+			m_bIsRunAttack = true;
+		}
 	}
 
 	if (m_fLChargeAttack != 0.f)
@@ -479,6 +531,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 		{
 			m_iAttackCount = 1;
 			m_fLChargeAttack = 0.f;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -503,6 +556,16 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_RBUTTON) & 0x8000))
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
+		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
+		{
+			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Weapon = true;
+		}
 		if (!m_bRAttacking)
 		{
 			m_fRChargeAttack += fTimeDelta;
@@ -527,6 +590,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 		{
 			m_iAttackCount = 1;
 			m_fRChargeAttack = 0.f;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -549,7 +613,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (!m_bRunning)
+	if (!m_bIsRunAttack)
 	{
 		m_iAttackCount %= 4;
 	}
@@ -561,7 +625,24 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 	if (m_iAttackCount == 0) m_iAttackCount = 1;
 	if (m_bLAttacking)
 	{
-		if (!m_bRunning)
+		if (m_bIsRunAttack)
+		{
+			switch (m_iAttackCount)
+			{
+			case 1:
+				m_iState = STATE_RUNLATTACK1;
+				break;
+			case 2:
+				m_iState = STATE_RUNLATTACK2;
+				break;
+			default:
+				break;
+			}
+
+			m_pPhysXCom->Speed_Scaling(0.95f);
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+		else
 		{
 			switch (m_iAttackCount)
 			{
@@ -578,25 +659,21 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 				break;
 			}
 		}
-		else
-		{
-			switch (m_iAttackCount)
-			{
-			case 1:
-				m_iState = STATE_RUNLATTACK1;
-				break;
-			case 2:
-				m_iState = STATE_RUNLATTACK2;
-				break;
-			default:
-				break;
-			}
-		}
 
 		if (m_bAnimFinished)
 		{
+			if (m_bRunning)
+			{
+				m_pPhysXCom->Set_Speed(RUNSPEED);
+			}
+			else
+			{
+				m_pPhysXCom->Set_Speed(WALKSPEED);
+			}
+			m_bIsRunAttack = false;
 			m_bLAttacking = false;
 			m_iAttackCount++;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -638,6 +715,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 		{
 			m_bRAttacking = false;
 			m_iAttackCount++;
+			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -670,11 +748,11 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 	{
 		m_pPhysXCom->Set_Speed(ROLLSPEED);
 		m_pTransformCom->Set_Speed(1.f);
-		if (GetKeyState(VK_DOWN) & 0x8000)
+		if (GetKeyState('S') & 0x8000)
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
 		}
-		if (GetKeyState(VK_UP) & 0x8000)
+		if (GetKeyState('W') & 0x8000)
 		{
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
@@ -733,36 +811,49 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && !m_bJumping)
+	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping))
 	{
+		m_fJumpCooltime += 0.01f;
+		if (m_bJumping)
+		{
+			m_bDoubleJumping = true;
+			m_iState = STATE_DOUBLEJUMPSTART;
+		}
+		else
+		{
+			m_bJumping = true;
+			m_iState = STATE_JUMPSTART;
+		}
 		m_pPhysXCom->Go_Jump(fTimeDelta);
-		m_iState = STATE_JUMPSTART;
+
+		m_bIsLanded = false;
 	}
 
 	if (m_bJumping)
 	{
-		m_pPhysXCom->Tick(fTimeDelta);
 
-		if (GetKeyState(VK_LEFT) & 0x8000)
+		/*m_pPhysXCom->Tick(fTimeDelta);*/
+
+		if (GetKeyState('A') & 0x8000)
 		{
 			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
 		}
-		else if (GetKeyState(VK_RIGHT) & 0x8000)
+		else if (GetKeyState('D') & 0x8000)
 		{
 			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 		}
-		if (GetKeyState(VK_UP) & 0x8000)
+		if (GetKeyState('W') & 0x8000)
 		{
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
-		else if (GetKeyState(VK_DOWN) & 0x8000)
+		else if (GetKeyState('S') & 0x8000)
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
 		}
 
 		if (m_bAnimFinished)
 		{
-			if (m_iState == STATE_JUMPSTART)
+			if (m_iState == STATE_JUMPSTART || m_iState == STATE_DOUBLEJUMPSTART)
 			{
 				m_iState = STATE_JUMP;
 			}
@@ -772,7 +863,19 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 	}
 	else
 	{
-		m_iState = STATE_IDLE;
+		if (!m_bIsLanded)
+		{
+			if (m_fFightIdle > ATTACKPOSTDELAY)
+			{
+				m_iState = STATE_IDLE;
+			}
+			else
+			{
+				m_iState = STATE_FIGHTIDLE;
+				m_fFightIdle += 0.01f;
+			}
+			m_bIsLanded = true;
+		}
 		return FAILURE;
 	}
 
@@ -783,18 +886,22 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_E))
 	{
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
 		m_iState = STATE_ROLL;
 	}
 
 	if (m_iState == STATE_ROLL)
 	{
 		m_pPhysXCom->Set_Speed(ROLLSPEED);
-		m_pTransformCom->Set_Speed(1.f);
-		if (GetKeyState(VK_DOWN) & 0x8000)
+		if (GetKeyState('S') & 0x8000)
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
 		}
-		if (GetKeyState(VK_UP) & 0x8000)
+		if (GetKeyState('W') & 0x8000)
 		{
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
@@ -846,11 +953,11 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 
 NodeStates CPlayer::Move(_float fTimeDelta)
 {
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	if (GetKeyState('A') & 0x8000)
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
 	}
-	else if (GetKeyState(VK_RIGHT) & 0x8000)
+	else if (GetKeyState('D') & 0x8000)
 	{
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 	}
@@ -869,8 +976,13 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		m_fButtonCooltime = 0.001f;
 	}
 
-	if (GetKeyState(VK_UP) & 0x8000)
+	if (GetKeyState('W') & 0x8000)
 	{
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
 		m_pPhysXCom->Go_Straight(fTimeDelta);
 		if (m_bRunning)
 		{
@@ -882,8 +994,13 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		}
 		return SUCCESS;
 	}
-	else if (GetKeyState(VK_DOWN) & 0x8000)
+	else if (GetKeyState('S') & 0x8000)
 	{
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
 		m_pPhysXCom->Go_BackWard(fTimeDelta);
 		if (m_bRunning)
 		{
@@ -897,6 +1014,14 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 	}
 	else
 	{
+		if (m_fFightIdle > ATTACKPOSTDELAY || m_fFightIdle == 0.f)
+		{
+			m_iState = STATE_IDLE;
+		}
+		else
+		{
+			m_iState = STATE_FIGHTIDLE;
+		}
 		return FAILURE;
 	}
 }
@@ -905,39 +1030,86 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 {
 	if (m_iState == STATE_FIGHTIDLE)
 	{
-		m_iState = STATE_FIGHTIDLE;
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
 		m_fFightIdle += fTimeDelta;
-		if (m_fFightIdle > 3.f)
+		if (m_fFightIdle > ATTACKPOSTDELAY)
 		{
 			m_iAttackCount = 1;
 			m_fFightIdle = 0.f;
 			m_iState = STATE_IDLE;
 		}
+		else if (m_fFightIdle > ATTACKPOSTDELAY - 0.2f)
+		{
+			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+		}
+
 	}
-	else
+	else if (m_iState == STATE_IDLE)
 	{
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
+		m_bDisolved_Weapon = false;
 		m_iState = STATE_IDLE;
 	}
-	return SUCCESS;
+	return RUNNING;
+}
+
+void CPlayer::Add_Hp(_int iValue)
+{
+
+	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
+	if (m_iCurHp == 0)
+	{
+		m_iState = STATE_DEAD;
+	}
+}
+
+void CPlayer::Add_Stamina(_int iValue)
+{
+	m_iCurStamina = min(m_iMaxStamina, max(0, m_iCurStamina + iValue));
+	if (m_iCurStamina == 0)
+	{
+
+	}
+
+
+}
+
+void CPlayer::Add_Mp(_int iValue)
+{
+	m_iCurMp = min(m_iMaxMp, max(0, m_iCurMp + iValue));
+	if (m_iCurMp == 0)
+	{
+
+	}
 }
 
 
 void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 {
+
 	PxFilterData hitObjectFilterData = hit.shape->getSimulationFilterData();
 	// 충돌한 객체가 무기(검)인 경우
 	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_WEAPON)
 	{
 		// 무기와의 충돌은 무시 (이미 필터 셰이더에서 처리되었지만, 추가 안전장치로 사용)
-			return;
+		return;
 	}
 	// 충돌한 객체가 환경(지형, 벽 등)인 경우
 	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_ENVIRONMENT)
 	{
 		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
 		int temp = 0;
-		
+
 	}
+
 
 
 }

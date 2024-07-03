@@ -272,7 +272,7 @@ void CPhysXComponent::Tick(const _float4x4 * pWorldMatrix)
 }
 
 void CPhysXComponent::Late_Tick(_float4x4* pWorldMatrix)
-{
+w{
 	
 	PxTransform pTransform =	m_pActor->getGlobalPose();
 	

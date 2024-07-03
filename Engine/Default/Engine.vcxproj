@@ -203,6 +203,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CHitReport.cpp" />
     <ClCompile Include="..\Private\CInverter.cpp" />
     <ClCompile Include="..\Private\CNode.cpp" />
+    <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />
@@ -314,6 +315,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Model.h" />
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
+    <ClInclude Include="..\public\OctTree.h" />
     <ClInclude Include="..\Public\PhysXComponent.h" />
     <ClInclude Include="..\Public\PhysXComponent_Character.h" />
     <ClInclude Include="..\Public\PhysXComponent_static.h" />

@@ -7,6 +7,7 @@
 #include "Default_Camera.h"
 #include "ToolObj.h"
 #include "Bone_Sphere.h"
+#include "ToolPartObj.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -147,7 +148,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Mantari
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Mantari"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/NewMantari/Mantari.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Mantari/Mantari.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	// Npc_Choron
@@ -238,6 +239,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	// BoneSphere
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BoneSphere"),
 		CBone_Sphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// PartObj
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PartObj"),
+		CToolPartObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion Object Prototype Load

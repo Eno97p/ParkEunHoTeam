@@ -48,7 +48,10 @@ void CJuggulus_HandTwo::Tick(_float fTimeDelta)
 
 void CJuggulus_HandTwo::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	if (m_isRender)
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	}
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 }
@@ -105,7 +108,7 @@ HRESULT CJuggulus_HandTwo::Render_LightDepth()
 HRESULT CJuggulus_HandTwo::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHandOne"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHandTwo"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -144,13 +147,18 @@ void CJuggulus_HandTwo::Change_Animation(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 5;
 		fAnimSpeed = 1.f;
+		m_isRender = true;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_HANDTWO_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 4;
 		fAnimSpeed = 1.f;
-
+		m_isRender = true;
+	}
+	else
+	{
+		m_isRender = false;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

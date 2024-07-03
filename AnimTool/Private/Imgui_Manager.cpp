@@ -142,6 +142,7 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
     Initialize_vecSound();
     Initialize_vecEffect();
+    Initialize_PartObj();
 
     return S_OK;
 }
@@ -291,15 +292,25 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Select_List_PartObj();
 
         if (ImGui::Button("Add PartObj"))
+        {
             CToolObj_Manager::GetInstance()->Add_PartObj(m_iPartObjIdx, m_iBoneIdx); // Bone Idx를 같이 넣어줌
+            Add_PartObject();
+        }
         ImGui::SameLine();
         if (ImGui::Button("Delete PartObj"))
-            CToolObj_Manager::GetInstance()->Delete_PartObj();
+        {
+            CToolObj_Manager::GetInstance()->Delete_PartObj(m_iAddPartObjIdx);
+            vector<string>::iterator partObj = m_vecAddPartObj.begin();
+            for (size_t i = 0; i < m_iAddPartObjIdx; ++i)
+                ++partObj;
+            m_vecAddPartObj.erase(partObj);
+        }
 
         // 생성된 PartObj List 필요
         ImGui::Text("");
         Select_List_AddPartObj();
 
+        Setting_PartObj();
 
         ImGui::End();
     }
@@ -981,12 +992,11 @@ void CImgui_Manager::Setting_Collider(_uint iType)
 
 void CImgui_Manager::Initialize_PartObj()
 {
+    m_vecPartObj.emplace_back("Gun");
 }
 
 void CImgui_Manager::Select_List_PartObj()
 {
-    ImGui::Text("PartObj List");
-
     static int partObj_current = 0;
 
     if (ImGui::BeginListBox("###PartObjList", ImVec2(300, 50)))
@@ -1031,6 +1041,69 @@ void CImgui_Manager::Select_List_AddPartObj()
     }
 }
 
+void CImgui_Manager::Add_PartObject()
+{
+    vector<string>::iterator iter = m_vecPartObj.begin();
+
+    for (size_t i = 0; i < m_iPartObjIdx; ++i)
+        ++iter;
+
+    m_vecAddPartObj.emplace_back((*iter));
+}
+
+void CImgui_Manager::Setting_PartObj()
+{
+    ImGui::Text("");
+    ImGui::Text("Data Setting");
+
+    ImGui::Text("Right Radian");
+    ImGui::SameLine();
+    static _float fRightRadian = 0.f;
+    ImGui::InputFloat("###Right Radian", &fRightRadian);
+
+    ImGui::Text("Look Radian");
+    ImGui::SameLine();
+    static _float fLookRadian = 0.f;
+    ImGui::InputFloat("###Look Radian", &fLookRadian);
+
+    ImGui::Text("Up Radian");
+    ImGui::SameLine();
+    static _float fUpRadian = 0.f;
+    ImGui::InputFloat("###Up Radian", &fUpRadian);
+
+    ImGui::Text("Vector Pos");
+    ImGui::Text("X : ");
+    ImGui::SameLine();
+    static _float fVecX = 0.f;
+    ImGui::InputFloat("###Vector PosX", &fVecX);
+    ImGui::Text("Y : ");
+    ImGui::SameLine();
+    static _float fVecY = 0.f;
+    ImGui::InputFloat("###Vector PosY", &fVecY);
+    ImGui::Text("Z : ");
+    ImGui::SameLine();
+    static _float fVecZ = 0.f;
+    ImGui::InputFloat("###Vector PosZ", &fVecZ);
+
+    if (ImGui::Button("Data Apply"))
+    {
+        // 입력된 값들 PartObj에 적용해주기
+        //Tool Obj 에 접근
+        vector<CToolPartObj*>::iterator iter = (CToolObj_Manager::GetInstance()->Get_ToolPartObjs()).begin();
+        for (size_t i = 0; i < m_iAddPartObjIdx; ++i)
+            ++iter;
+
+        (*iter)->Set_RightRadian(fRightRadian);
+        (*iter)->Set_LookRadian(fLookRadian);
+        (*iter)->Set_UpRadian(fUpRadian);
+        _vector vecPos = XMVectorSet(fVecX, fVecY, fVecZ, 1.f);
+        (*iter)->Set_Pos(vecPos);
+
+        (*iter)->Set_Radian(fRightRadian, fLookRadian, fUpRadian);
+    }
+}
+
+#pragma region LoadFunction
 void CImgui_Manager::Load_ApplySound(_uint iAnimIdx, string pSoundFile)
 {
     map<_int, vector<string>>::iterator applysound = m_mapApplySound.find(iAnimIdx);
@@ -1090,6 +1163,11 @@ void CImgui_Manager::Load_EndKeyframe(_uint iAnimIdx, _float fEndKeyframe)
     (*iterValue).second = to_string(m_fEndKeyframe);
 }
 
+void CImgui_Manager::Load_PartObj(const _char* szName)
+{
+    m_vecAddPartObj.emplace_back(szName);
+}
+
 _bool CImgui_Manager::IsColliderSave(_uint iAnimIdx)
 {
     // 예외 처리를 통해 Collider 저장 여부에 대한 값을 반환하는 함수
@@ -1106,6 +1184,7 @@ _bool CImgui_Manager::IsColliderSave(_uint iAnimIdx)
         return true;;
     }
 }
+#pragma endregion LoadFunction
 
 void CImgui_Manager::Add_ApplySound()
 {

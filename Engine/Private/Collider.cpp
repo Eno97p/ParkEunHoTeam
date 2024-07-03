@@ -74,9 +74,40 @@ void CCollider::Tick(_fmatrix WorldMatrix)
 	m_pBounding->Tick(WorldMatrix);
 }
 
-_bool CCollider::Intersect(CCollider * pTargetCollider)
+CCollider::COLLTYPE CCollider::Intersect(CCollider * pTargetCollider)
 {
-	return m_isColl = m_pBounding->Intersect(pTargetCollider->m_eType, pTargetCollider->m_pBounding);	
+	_bool bCurColl = m_pBounding->Intersect(pTargetCollider->m_eType, pTargetCollider->m_pBounding);
+
+	// 충돌O
+	if (bCurColl)
+	{
+		// 닿아있는 상태
+		if (m_isColl)
+		{
+			return COLL_CONTINUE;
+		}
+		// 처음 닿았을 때
+		else
+		{
+			m_isColl = true;
+			return COLL_START;
+		}
+	}
+	// 충돌X
+	else
+	{
+		// 처음 벗어났을 떄
+		if (m_isColl)
+		{
+			m_isColl = false;
+			return COLL_FINISH;
+		}
+		// 닿아있지 않음
+		else
+		{
+			return COLL_NOCOLL;
+		}
+	}
 }
 
 _bool CCollider::IntersectRay(_vector vRayOrigin, _vector vRayDirection, _float fDistance)

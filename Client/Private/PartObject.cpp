@@ -55,4 +55,5 @@ HRESULT CPartObject::Render()
 void CPartObject::Free()
 {
 	__super::Free();
+	Safe_Release(m_pColliderCom);
 }

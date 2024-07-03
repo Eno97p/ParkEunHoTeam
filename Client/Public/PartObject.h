@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CTransform;
+class CCollider;
 END
 
 /* 파츠들(무기, 바디)의 부모가 되기위한 클래스이다. */
@@ -14,6 +15,8 @@ BEGIN(Client)
 class CPartObject abstract : public CGameObject
 {
 public:
+	enum DISOLVETYPE { TYPE_IDLE, TYPE_INCREASE, TYPE_DECREASE, TYPE_END };
+
 	typedef struct PARTOBJ_DESC : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _float4x4* pParentMatrix;
@@ -34,14 +37,18 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
+	CCollider* Get_Collider() { return m_pColliderCom; }
 
 protected:
+	CCollider* m_pColliderCom = { nullptr };
 	_float4x4				m_WorldMatrix;
 	const _float4x4* m_pParentMatrix = { nullptr };
 	const _uint* m_pState = { nullptr };
 	_bool* m_pCanCombo = { nullptr };
+	_float m_fDisolveValue = 1.f;
 
-
+	DISOLVETYPE m_eDisolveType = TYPE_IDLE;
 	LEVEL					m_eLevel = { LEVEL_END };
 
 public:

@@ -73,7 +73,7 @@ HRESULT CBone_Sphere::Render()
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(4);
 
         m_pModelCom->Render(i);
     }

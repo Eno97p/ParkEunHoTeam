@@ -29,16 +29,24 @@ namespace Engine
             return 1;
     }
 
-    //float를 선형보간 해주는 함수, 예시로, LerpFloat(0.f, 1.f, 0.5f) 를 넣으면 맨 마지막 인자의 비율 만큼 선형보간되어 0.5f가 나온다.
-    inline _float LerpFloat(_float fStart, _float fEnd, _float _t) 
+    // _float3를 위한 더하기 함수 객체
+    struct Float3Add
     {
-        XMVECTOR startVec = XMVectorSet(fStart, 0.0f, 0.0f, 0.0f);
-        XMVECTOR endVec = XMVectorSet(fEnd, 0.0f, 0.0f, 0.0f);
-        XMVECTOR resultVec = XMVectorLerp(startVec, endVec, _t);
-        _float result;
-        XMStoreFloat(&result, resultVec);
-        return result;
-    }
+        _float3 operator()(const _float3& lhs, const _float3& rhs) const
+        {
+            return _float3(lhs.x + rhs.x, lhs.y + rhs.y, lhs.z + rhs.z);
+        }
+    };
+
+// _float3를 위한 스칼라 곱셈 함수 객체
+    struct Float3Multiply
+    {
+        _float3 operator()(const _float3& v, float scalar) const
+        {
+            return _float3(v.x * scalar, v.y * scalar, v.z * scalar);
+        }
+    };
+
 
     //matrix를 선형보간 해주는 함수
     inline _matrix XMMatrixSlerp(_matrix matStart, _matrix matEnd, float _t)

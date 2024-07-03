@@ -137,7 +137,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	//m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
-	//m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
+	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
 
@@ -169,7 +169,8 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(80.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 96.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(72.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f,98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -178,9 +179,16 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;	//오를 수 없는 지형에 대한 처리
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
+	PhysXDesc.pName = "Player";
+	PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
+	//PhysXDesc.filterData.word1 = Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY;
+	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
+	
+	
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -1053,6 +1061,7 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 
 void CPlayer::Add_Hp(_int iValue)
 {
+
 	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
 	if (m_iCurHp == 0)
 	{
@@ -1067,6 +1076,8 @@ void CPlayer::Add_Stamina(_int iValue)
 	{
 
 	}
+
+
 }
 
 void CPlayer::Add_Mp(_int iValue)

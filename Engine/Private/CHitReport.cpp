@@ -20,6 +20,7 @@ HRESULT CHitReport::Initialize_Prototype()
 
 void CHitReport::onShapeHit(const PxControllerShapeHit& hit)
 {
+	std::lock_guard<std::mutex> lock(m_mutex); // lock_guard¸¦ »ç¿ëÇÏ¿© mutex ¶ôÀ» È¹µæ
 	if (m_ShapeHitCallBack)
 	{
 
@@ -30,6 +31,7 @@ void CHitReport::onShapeHit(const PxControllerShapeHit& hit)
 
 void CHitReport::onControllerHit(const PxControllersHit& hit)
 {
+	std::lock_guard<std::mutex> lock(m_mutex); // lock_guard¸¦ »ç¿ëÇÏ¿© mutex ¶ôÀ» È¹µæ
 	if (m_ControllerHitCallBack)
 	{
 		m_ControllerHitCallBack(hit);
@@ -39,6 +41,7 @@ void CHitReport::onControllerHit(const PxControllersHit& hit)
 
 void CHitReport::onObstacleHit(const PxControllerObstacleHit& hit)
 {
+	std::lock_guard<std::mutex> lock(m_mutex); // lock_guard¸¦ »ç¿ëÇÏ¿© mutex ¶ôÀ» È¹µæ
 		if(m_ObstacleHitCallBack)
 		m_ObstacleHitCallBack(hit);
 }

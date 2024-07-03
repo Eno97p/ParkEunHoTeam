@@ -341,8 +341,76 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 
 		ImGui::Begin(ComponentName.c_str(), nullptr, ImGuiWindowFlags_HorizontalScrollbar);
 
-		pComponent->GetData();
+		
+	auto&& tmep= pComponent->GetData();
+		
+	if (tmep)
+	{
+		if (typeid(*pComponent) == typeid(CTransform))
+		{
+			CTransform::Transform_Editable_Desc* tDesc = static_cast<CTransform::Transform_Editable_Desc*>(tmep);
+			ImGui::Text("World Matrix:");
+			//ImGui::Text("  [%f, %f, %f, %f]", tDesc->pWorldMatrix->m[0][0], tDesc->pWorldMatrix->m[0][1], tDesc->pWorldMatrix->m[0][2], tDesc->pWorldMatrix->m[0][3]);
+			//ImGui::Text("  [%f, %f, %f, %f]", tDesc->pWorldMatrix->m[1][0], tDesc->pWorldMatrix->m[1][1], tDesc->pWorldMatrix->m[1][2], tDesc->pWorldMatrix->m[1][3]);
+			//ImGui::Text("  [%f, %f, %f, %f]", tDesc->pWorldMatrix->m[2][0], tDesc->pWorldMatrix->m[2][1], tDesc->pWorldMatrix->m[2][2], tDesc->pWorldMatrix->m[2][3]);
+			//ImGui::Text("  [%f, %f, %f, %f]", tDesc->pWorldMatrix->m[3][0], tDesc->pWorldMatrix->m[3][1], tDesc->pWorldMatrix->m[3][2], tDesc->pWorldMatrix->m[3][3]);
 
+			ImGui::InputFloat4("Row 1", reinterpret_cast<float*>(&tDesc->pWorldMatrix->m[0]));
+			ImGui::InputFloat4("Row 2", reinterpret_cast<float*>(&tDesc->pWorldMatrix->m[1]));
+			ImGui::InputFloat4("Row 3", reinterpret_cast<float*>(&tDesc->pWorldMatrix->m[2]));
+			ImGui::InputFloat4("Row 4", reinterpret_cast<float*>(&tDesc->pWorldMatrix->m[3]));
+			//tDesc->pWorldMatrix
+
+			
+		}
+		else if (typeid(*pComponent) == typeid(CPhysXComponent))
+		{
+			CPhysXComponent::PhysX_Editable_Desc* tDesc = static_cast<CPhysXComponent::PhysX_Editable_Desc*>(tmep);
+			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
+			//pComponent->Addtest()
+			
+			int tmep = 0;
+
+
+		}
+		else if (typeid(*pComponent) == typeid(CPhysXComponent_static))
+		{
+			CPhysXComponent_static::PhysX_static_Editable_Desc* tDesc = static_cast<CPhysXComponent_static::PhysX_static_Editable_Desc*>(tmep);
+			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
+			
+
+		}
+		else if (typeid(*pComponent) == typeid(CPhysXComponent_Character))
+		{
+			CPhysXComponent_Character::PhysX_Character_Editable_Desc* tDesc = static_cast<CPhysXComponent_Character::PhysX_Character_Editable_Desc*>(tmep);
+			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
+
+		}
+
+
+
+
+
+		else if (typeid(*pComponent) == typeid(CShader))
+		{
+
+			CShader::Shader_Editable_Desc* tDesc = static_cast<CShader::Shader_Editable_Desc*>(tmep);
+			ImGui::Text("Shader Pass Count: %zu", tDesc->PassNames.size());
+			int currentPassValue=static_cast<int>(tDesc->iCurrentPass);
+			ImGui::Text("Current Pass: %d", currentPassValue);
+		
+			for(const auto& passName : tDesc->PassNames)
+			{
+				string PassNameStr= wstring_to_string(passName);
+				ImGui::Text("Pass: %s", PassNameStr.c_str());
+			}
+
+		}
+	
+	}
+		
+
+		
 
 		if (ImGui::Button("Close"))
 		{

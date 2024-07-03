@@ -217,6 +217,9 @@
     <Filter Include="01.Utility\03.Components\Shader\ComputeShader\Buffer">
       <UniqueIdentifier>{72e941ab-01fd-40c0-b19d-2bed6918c3ec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\OctTree">
+      <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -453,6 +456,9 @@
     <ClInclude Include="..\Public\ComputeShader_Buffer.h">
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\OctTree.h">
+      <Filter>01.Utility\03.Components\VIBuffer\Terrain\OctTree</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -673,6 +679,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader_Buffer.cpp">
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OctTree.cpp">
+      <Filter>01.Utility\03.Components\VIBuffer\Terrain\OctTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

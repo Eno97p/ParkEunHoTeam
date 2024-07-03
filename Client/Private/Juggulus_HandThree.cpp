@@ -1,24 +1,24 @@
-#include "Juggulus_HandOne.h"
+#include "Juggulus_HandThree.h"
 
 #include "GameInstance.h"
 #include "Boss_Juggulus.h"
 
-CJuggulus_HandOne::CJuggulus_HandOne(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CJuggulus_HandThree::CJuggulus_HandThree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {
 }
 
-CJuggulus_HandOne::CJuggulus_HandOne(const CJuggulus_HandOne& rhs)
+CJuggulus_HandThree::CJuggulus_HandThree(const CJuggulus_HandThree& rhs)
 	: CPartObject{ rhs }
 {
 }
 
-HRESULT CJuggulus_HandOne::Initialize_Prototype()
+HRESULT CJuggulus_HandThree::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Initialize(void* pArg)
+HRESULT CJuggulus_HandThree::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,20 +28,18 @@ HRESULT CJuggulus_HandOne::Initialize(void* pArg)
 
 	m_isRender = true;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
 
-	/*m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-80.f));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));*/
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, -3.f, 1.f));
 
 	return S_OK;
 }
 
-void CJuggulus_HandOne::Priority_Tick(_float fTimeDelta)
+void CJuggulus_HandThree::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CJuggulus_HandOne::Tick(_float fTimeDelta)
+void CJuggulus_HandThree::Tick(_float fTimeDelta)
 {
 	Change_Animation(fTimeDelta);
 
@@ -49,15 +47,15 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 }
 
-void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
+void CJuggulus_HandThree::Late_Tick(_float fTimeDelta)
 {
-	if(m_isRender)
+	if (m_isRender)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 }
 
-HRESULT CJuggulus_HandOne::Render()
+HRESULT CJuggulus_HandThree::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -95,17 +93,17 @@ HRESULT CJuggulus_HandOne::Render()
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Render_Distortion()
+HRESULT CJuggulus_HandThree::Render_Distortion()
 {
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Render_LightDepth()
+HRESULT CJuggulus_HandThree::Render_LightDepth()
 {
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Add_Components()
+HRESULT CJuggulus_HandThree::Add_Components()
 {
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHandOne"),
@@ -125,7 +123,7 @@ HRESULT CJuggulus_HandOne::Add_Components()
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Bind_ShaderResources()
+HRESULT CJuggulus_HandThree::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -137,29 +135,12 @@ HRESULT CJuggulus_HandOne::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
+void CJuggulus_HandThree::Change_Animation(_float fTimeDelta)
 {
 	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
-	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_TARGETING)
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 3;
-		fAnimSpeed = 1.f;
-		m_isRender = true;
-	}
-	else if (*m_pState == CBoss_Juggulus::STATE_HANDONE_ATTACK)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 7;
-		fAnimSpeed = 0.5f;
-		m_isRender = true;
-	}
-	else
-	{
-		m_isRender = false;
-	}
+
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
@@ -167,33 +148,33 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 
-CJuggulus_HandOne* CJuggulus_HandOne::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CJuggulus_HandThree* CJuggulus_HandThree::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CJuggulus_HandOne* pInstance = new CJuggulus_HandOne(pDevice, pContext);
+	CJuggulus_HandThree* pInstance = new CJuggulus_HandThree(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CJuggulus_HandOne");
+		MSG_BOX("Failed To Created : CJuggulus_HandThree");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CJuggulus_HandOne::Clone(void* pArg)
+CGameObject* CJuggulus_HandThree::Clone(void* pArg)
 {
-	CJuggulus_HandOne* pInstance = new CJuggulus_HandOne(*this);
+	CJuggulus_HandThree* pInstance = new CJuggulus_HandThree(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CJuggulus_HandOne");
+		MSG_BOX("Failed To Cloned : CJuggulus_HandThree");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CJuggulus_HandOne::Free()
+void CJuggulus_HandThree::Free()
 {
 	__super::Free();
 

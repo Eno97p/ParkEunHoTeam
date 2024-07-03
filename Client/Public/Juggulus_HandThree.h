@@ -12,12 +12,12 @@ END
 
 BEGIN(Client)
 
-class CJuggulus_HandOne final : public CPartObject
+class CJuggulus_HandThree final : public CPartObject
 {
 private:
-	CJuggulus_HandOne(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CJuggulus_HandOne(const CJuggulus_HandOne& rhs);
-	virtual ~CJuggulus_HandOne() = default;
+	CJuggulus_HandThree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CJuggulus_HandThree(const CJuggulus_HandThree& rhs);
+	virtual ~CJuggulus_HandThree() = default;
 
 public:
 	virtual bool	Get_AnimFinished() { return m_isAnimFinished; }
@@ -35,10 +35,10 @@ public:
 private:
 	_bool		m_isRender = { false };
 
-	CCollider* m_pColliderCom = { nullptr };
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
+	CCollider*	m_pColliderCom = { nullptr };
+	CShader*	m_pShaderCom = { nullptr };
+	CModel*		m_pModelCom = { nullptr };
+	CTexture*	m_pTextureCom = { nullptr };
 
 	_bool			m_isAnimFinished = { false };
 	_uint			m_iPastAnimIndex = 0;
@@ -50,9 +50,9 @@ public:
 	void					Change_Animation(_float fTimeDelta);
 
 public:
-	static CJuggulus_HandOne*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
-	virtual void				Free() override;
+	static CJuggulus_HandThree*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
+	virtual void					Free() override;
 };
 
 END

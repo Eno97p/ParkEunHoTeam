@@ -78,6 +78,9 @@
 #include "C:\Real3DProject\Client\Private\Juggulus_HandOne.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Juggulus_HandThree.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Juggulus_HandTwo.cpp"
 
 

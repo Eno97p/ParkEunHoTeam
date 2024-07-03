@@ -129,20 +129,22 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Top_Selector"), TEXT("AttackCool"), 3.f); 	// Attack 간 coolTime
-	m_pBehaviorCom->Add_Composit_Node(TEXT("AttackCool"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	//m_pBehaviorCom->Add_CoolDown(TEXT("Top_Selector"), TEXT("AttackCool"), 3.f); 	// Attack 간 coolTime
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("OneP_Attack"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("TwoP_Attack"), CBehaviorTree::Selector);
 
-	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("IDLE_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
+
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CBoss_Juggulus::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("NextPhase"), bind(&CBoss_Juggulus::NextPhase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
 
 	// 1Phase Attack
-	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 3.f);
+	// 쿨타임이 안 먹는 거 같음
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 8.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HandOneTargettingCool"), TEXT("HandOne_Targetting"), bind(&CBoss_Juggulus::HandOne_Targeting, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandOne_Attack"), bind(&CBoss_Juggulus::HandOne_Attack, this, std::placeholders::_1));
 
@@ -156,7 +158,6 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("ThunderCool"), 3.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ThunderCool"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_Action_Node(TEXT("IDLE_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -291,7 +292,7 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
 {
-	if (PHASE_TWO == m_ePhase ||  STATE_HANDONE_ATTACK == m_iState || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState )
+	if (PHASE_TWO == m_ePhase ||  STATE_HANDONE_ATTACK == m_iState || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState || m_isHandOne_On)
 	{
 		return FAILURE;
 	}
@@ -299,15 +300,14 @@ NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
 	if (3.f >= m_fTargettingTimer) // 다른 행동을 하고 있지 않고 타이머가 아직 채워지지 않았으면
 	{
 		m_fTargettingTimer += fTimeDelta;
-		m_isHandOne_On = true; // Hand One 공격 활성화
-
 		m_iState = STATE_HANDONE_TARGETING; // 플레이어 위치에 등장한 후 몇 초 동안 타게팅
 		return RUNNING;
 	}
 	else
 	{
+		m_isHandOne_On = true; // Hand One 공격 활성화
 		m_fTargettingTimer = 0.f;
-		return SUCCESS; // 이때부터 쿨타임 도는 것
+		return FAILURE; // 이때부터 쿨타임 도는 것
 	}
 }
 
@@ -328,7 +328,7 @@ NodeStates CBoss_Juggulus::HandOne_Attack(_float fTimeDelta)
 		else
 		{
 			m_isHandOne_On = false;
-			return FAILURE;
+			return SUCCESS;
 		}
 	}
 	else

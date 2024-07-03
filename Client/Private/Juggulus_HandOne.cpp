@@ -51,10 +51,12 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 
 void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
 {
-	if(m_isRender)
+	if (m_isRender)
+	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+		m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+	}
 }
 
 HRESULT CJuggulus_HandOne::Render()
@@ -144,7 +146,7 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 
 	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_TARGETING)
 	{
-		AnimDesc.isLoop = true;
+		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 1.f;
 		m_isRender = true;

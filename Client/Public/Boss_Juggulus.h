@@ -13,8 +13,6 @@ public:
 		STATE_HANDTHREE_ATTACK,
 		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_END };
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
-	enum SKILL { SKILL_HANDONE, SKILL_HANDTWO, SKILL_HANDTHREE,
-		SKILL_FLAME, SKILL_HAMMER, SKILL_SPHERE, SKILL_THUNDER, SKILL_END };
 
 private:
 	CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -34,13 +32,15 @@ private:
 	_bool							m_isAttackDone = { true }; 
 	_bool							m_isPhaseChanged = { false };
 	_bool							m_isHandOne_On = { false };
+	_bool							m_isHandTwo_On = { false };
+	_bool							m_isHandAnimFinished = { false };
+	_bool							m_isHandTwoAnimFinished = { false };
 
 	_float							m_fTargettingTimer = { 0.f };
 
 	map<string, class CGameObject*>	m_PartObjects;
 
 	PHASE							m_ePhase = { PHASE_END };
-	SKILL							m_eCurSkill = { SKILL_END };
 
 private:
 	HRESULT				Add_Components();
@@ -60,6 +60,7 @@ private:
 
 	NodeStates			HandOne_Targeting(_float fTimeDelta);
 	NodeStates			HandOne_Attack(_float fTimeDelta);
+	NodeStates			HandTwo_Scoop(_float fTimeDedelta);
 	NodeStates			HandTwo_Attack(_float fTimeDelta);
 	NodeStates			HandThree_Attack(_float fTimeDelta);
 

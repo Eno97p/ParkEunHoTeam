@@ -132,6 +132,13 @@ HRESULT CPlayerDummy::Add_PartObjects()
 
 	m_PartObjects.emplace_back(pWeapon);
 
+	WeaponDesc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("Bip001-HeadNub_end");
+	pWeapon  = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_PlayerHead"), &WeaponDesc);
+	if (nullptr == pWeapon)
+		return E_FAIL;
+
+	m_PartObjects.emplace_back(pWeapon);
+
 	return S_OK;
 }
 
@@ -169,6 +176,12 @@ const _float4x4* CPlayerDummy::Get_WorldMat()
 {
 	return m_pTransformCom->Get_WorldFloat4x4();
 }
+
+const _float4x4* CPlayerDummy::Get_HeadMAt()
+{
+	return static_cast<CPartObject*>(m_PartObjects[1])->Get_WorldMat();
+}
+
 
 const _float4x4* CPlayerDummy::Get_WeaponMat()
 {

@@ -64,6 +64,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 	return S_OK;
 }
 
+#ifdef _DEBUG
 void* CPhysXComponent_static::GetData()
 {
 
@@ -73,7 +74,7 @@ void* CPhysXComponent_static::GetData()
 
 	return nullptr;
 }
-
+#endif
 HRESULT CPhysXComponent_static::CreateActor()
 {
 	

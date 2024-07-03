@@ -13,17 +13,26 @@ BEGIN(Effect)
 class CParticle abstract : public CBlendObject
 {
 public:
-	typedef struct PARTICLEDESC : public CGameObject::GAMEOBJECT_DESC
+	typedef struct PUBLIC_PARTICLEDESC
 	{
-		PARTICLETYPE						particleType;
+		PARTICLETYPE						particleType = PART_POINT;
+	};
+
+	typedef struct PARTICLEDESC
+	{
 		CVIBuffer_Instance::INSTANCE_DESC	InstanceDesc;
 		_bool								IsBlur = false;
 		_bool								Desolve = false;
+		_bool								IsColor = false;
+		_bool								IsAlpha = false;
 		_int								DesolveNum = 0;
 		XMFLOAT3						    vStartColor{1.f,1.f,1.f};
 		XMFLOAT3						    vEndColor{1.f,1.f,1.f};
+		XMFLOAT3							vBloomColor{ 1.f,1.f,1.f };
+		XMFLOAT3							vDesolveColor{ 1.f,1.f,1.f };
 		EFFECTTYPE						    eType;
-		_float4								vStartPos;
+		_float4								vStartPos{0.f,0.f,0.f,1.f};
+		_float								fDesolveLength = 0.f;
 		_float								fBlurPower = 0.f;
 	};
 
@@ -36,8 +45,6 @@ protected:
 public:
 	void Set_Target(CGameObject* Target);
 
-protected:
-	PARTICLEDESC* m_pParticleDesc;
 protected:
 	CTexture* m_pDesolveTexture = { nullptr };
 	CShader*  m_pShaderCom = { nullptr };

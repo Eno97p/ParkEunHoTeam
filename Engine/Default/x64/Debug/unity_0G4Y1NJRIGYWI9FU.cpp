@@ -50,6 +50,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\CNode.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\OctTree.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\Collider.cpp"
 
 

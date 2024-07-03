@@ -9,6 +9,8 @@
 #include "Clone.h"
 #include "Body_Player.h"
 
+#include"CHitReport.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -1089,6 +1091,28 @@ void CPlayer::Add_Mp(_int iValue)
 	}
 }
 
+
+void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
+{
+
+	PxFilterData hitObjectFilterData = hit.shape->getSimulationFilterData();
+	// 충돌한 객체가 무기(검)인 경우
+	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_WEAPON)
+	{
+		// 무기와의 충돌은 무시 (이미 필터 셰이더에서 처리되었지만, 추가 안전장치로 사용)
+		return;
+	}
+	// 충돌한 객체가 환경(지형, 벽 등)인 경우
+	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_ENVIRONMENT)
+	{
+		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
+		int temp = 0;
+
+	}
+
+
+
+}
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

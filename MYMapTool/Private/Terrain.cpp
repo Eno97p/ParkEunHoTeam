@@ -9,9 +9,9 @@
 #include "Monster.h"
 
 CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{pDevice, pContext}
+	: CGameObject{ pDevice, pContext }
 	, m_pImgui_Manager{ CImgui_Manager::GetInstance() }
-	, m_pToolObj_Manager{CToolObj_Manager::GetInstance()}
+	, m_pToolObj_Manager{ CToolObj_Manager::GetInstance() }
 {
 
 	Safe_AddRef(m_pImgui_Manager);
@@ -20,8 +20,8 @@ CTerrain::CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CTerrain::CTerrain(const CTerrain& rhs)
 	: CGameObject{ rhs }
-	, m_pImgui_Manager{rhs.m_pImgui_Manager}
-	, m_pToolObj_Manager{rhs.m_pToolObj_Manager }
+	, m_pImgui_Manager{ rhs.m_pImgui_Manager }
+	, m_pToolObj_Manager{ rhs.m_pToolObj_Manager }
 {
 	Safe_AddRef(m_pImgui_Manager);
 	Safe_AddRef(m_pToolObj_Manager);
@@ -69,6 +69,7 @@ void CTerrain::Tick(_float fTimeDelta)
 	}
 
 
+	//m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
 
 	/*if (m_pImgui_Manager->Get_IsNaviClear())
 	{
@@ -105,10 +106,10 @@ HRESULT CTerrain::Render()
 	m_pShaderCom->Begin(path); // pass 선택
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
-//
-//#ifdef _DEBUG
-//	m_pNavigationCom->Render();
-//#endif
+	//
+	//#ifdef _DEBUG
+	//	m_pNavigationCom->Render();
+	//#endif
 
 	return S_OK;
 }
@@ -169,6 +170,14 @@ void CTerrain::Brush_Picking(_vector vPos, _float fSize, _float fStrength, _floa
 
 					pVertices[index].vPosition = vVertexPos;
 					pVertexPositions[index] = _float4(vVertexPos.x, vVertexPos.y, vVertexPos.z, 1.f);
+
+					// Update m_vHeightMapData (r16 format)
+					if (index * 2 + 1 < m_vHeightMapData.size())
+					{
+						USHORT heightValue = static_cast<USHORT>((vVertexPos.y / fMaxHeight) * 65535.0f);
+						m_vHeightMapData[index * 2] = heightValue & 0xFF;
+						m_vHeightMapData[index * 2 + 1] = (heightValue >> 8) & 0xFF;
+					}
 				}
 			}
 		}
@@ -236,6 +245,14 @@ void CTerrain::Brush_Flatten(_vector vPos, _float fSize, _float fStrength, _floa
 
 					pVertices[index].vPosition = vVertexPos;
 					pVertexPositions[index] = _float4(vVertexPos.x, vVertexPos.y, vVertexPos.z, 1.f);
+
+					// Update m_vHeightMapData (r16 format)
+					if (index * 2 + 1 < m_vHeightMapData.size())
+					{
+						USHORT heightValue = static_cast<USHORT>((vVertexPos.y / m_fMaxHeight) * 65535.0f);
+						m_vHeightMapData[index * 2] = heightValue & 0xFF;
+						m_vHeightMapData[index * 2 + 1] = (heightValue >> 8) & 0xFF;
+					}
 				}
 			}
 		}
@@ -272,88 +289,93 @@ void CTerrain::Setting_LoadTerrain(void* pArg)
 }
 
 
-
 HRESULT CTerrain::LoadHeightMap(const wstring& strHeightMapFilePath)
 {
-	// 파일에서 높이맵 데이터 로드
+	// r16 파일에서 높이맵 데이터 로드
 	HANDLE hFile = CreateFile(strHeightMapFilePath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE)
 		return E_FAIL;
 
+	// 파일 크기 확인
+	DWORD fileSize = GetFileSize(hFile, NULL);
+	if (fileSize == INVALID_FILE_SIZE)
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
+
+	// r16 파일의 크기로부터 지형의 크기를 계산
+	int iWidth = int(sqrt(float(fileSize) / sizeof(WORD)));
+	int iHeight = iWidth; // r16 파일은 보통 정사각형 형태
+
+	// 16비트 높이 데이터를 저장할 버퍼 생성
+	vector<WORD> heightData(iWidth * iHeight);
+
+	// 파일 읽기
 	DWORD dwBytesRead = 0;
-	BITMAPFILEHEADER bmfHeader;
-	BITMAPINFOHEADER bmiHeader;
-
-	ReadFile(hFile, &bmfHeader, sizeof(BITMAPFILEHEADER), &dwBytesRead, NULL);
-	ReadFile(hFile, &bmiHeader, sizeof(BITMAPINFOHEADER), &dwBytesRead, NULL);
-
-	int iWidth = bmiHeader.biWidth;
-	int iHeight = bmiHeader.biHeight;
-
-	_uint* pPixel = new _uint[iWidth * iHeight];
-	ReadFile(hFile, pPixel, sizeof(_uint) * iWidth * iHeight, &dwBytesRead, NULL);
+	if (!ReadFile(hFile, heightData.data(), fileSize, &dwBytesRead, NULL))
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 
 	CloseHandle(hFile);
 
 	const float terrainScale = 4.0f; // xz 간격을 2배로 설정
+	const float heightScale = 1.0f; /*/ 65535.0f * 300.f*//* * 150.0f*/; // 높이 스케일 조정 (0-65535를 0-300 범위로 매핑)
 
 	m_vHeightMapData.resize(iWidth * iHeight);
 	for (int z = 0; z < iHeight; ++z)
 	{
 		for (int x = 0; x < iWidth; ++x)
 		{
-			int iIndex = (iHeight - 1 - z) * iWidth + x; // 좌표계 반전
-			m_vHeightMapData[z * iWidth + x] = (BYTE)(pPixel[iIndex] & 0x000000ff);
+			int iIndex = z * iWidth + x;
+			float height = (heightData[iIndex] * 65535.0f) /** heightScale * 300.f*/;
+			m_vHeightMapData[iIndex] = height;
 		}
 	}
 
-	Safe_Delete_Array(pPixel);
-
 	// 높이맵 데이터를 기반으로 지형 정점 업데이트
-	if (FAILED(m_pVIBufferCom->UpdateVertexBuffer(&m_vHeightMapData[0], iWidth, iHeight, terrainScale)))
+	if (FAILED(m_pVIBufferCom->UpdateVertexBuffer(m_vHeightMapData.data(), iWidth, iHeight, terrainScale)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CTerrain::SplatBrushOnHeightMap(const _float3& vBrushPos, float fBrushRadius, float fBrushStrength, float fMaxHeight)
+HRESULT CTerrain::SaveHeightMapToR16(const wstring& strFilePath)
 {
+	if (m_vHeightMapData.empty())
+		return E_FAIL;
+
+	// 파일 생성
+	HANDLE hFile = CreateFile(strFilePath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile == INVALID_HANDLE_VALUE)
+		return E_FAIL;
+
 	int iWidth = m_pVIBufferCom->GetNumVerticesX();
 	int iHeight = m_pVIBufferCom->GetNumVerticesZ();
 
-	int iStartX = max(0, (int)(vBrushPos.x - fBrushRadius));
-	int iStartZ = max(0, (int)(vBrushPos.z - fBrushRadius));
-	int iEndX = min(iWidth /*- 1*/, (int)(vBrushPos.x + fBrushRadius));
-	int iEndZ = min(iHeight /*- 1*/, (int)(vBrushPos.z + fBrushRadius));
+	vector<WORD> heightData(iWidth * iHeight);
+	float maxHeight = 300.0f; // LoadHeightMap과 동일한 최대 높이 사용
 
-	if (iStartX > iEndX)
-		swap(iStartX, iEndX);
-	if (iStartZ > iEndZ)
-		swap(iStartZ, iEndZ);
-
-	int iHeightMapRange = 255; // 높이맵 데이터의 범위에 맞게 조정
-
-	for (int z = iStartZ; z <= iEndZ; ++z)
+	for (int i = 0; i < iWidth * iHeight; ++i)
 	{
-		for (int x = iStartX; x <= iEndX; ++x)
-		{
-			int iIndex = z * iWidth + x;
-			float fDistance = sqrt(pow(x - vBrushPos.x, 2) + pow(z - vBrushPos.z, 2));
-			if (fDistance <= fBrushRadius)
-			{
-				float fStrength = 1.0f - (fDistance / fBrushRadius);
-				float fHeight = min(fStrength * fBrushStrength * fMaxHeight, fMaxHeight);
-				float fNormalizedHeight = fHeight / fMaxHeight;
-				m_vHeightMapData[iIndex] = (BYTE)(fNormalizedHeight * 255.0f);
-			}
-		}
+		heightData[i] = static_cast<WORD>((m_vHeightMapData[i] / maxHeight) * 65535.0f);
 	}
 
-	// 높이맵 데이터를 기반으로 지형 정점 업데이트
-	if (FAILED(m_pVIBufferCom->UpdateVertexBuffer(&m_vHeightMapData[0], iWidth -1 , iHeight -1 , 4.0f)))
-		return;
+	// 파일에 데이터 쓰기
+	DWORD dwBytesWritten;
+	if (!WriteFile(hFile, heightData.data(), sizeof(WORD) * iWidth * iHeight, &dwBytesWritten, NULL))
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
+
+	CloseHandle(hFile);
+
+	return S_OK;
 }
-//
+
 
 HRESULT CTerrain::Add_Components()
 {
@@ -373,10 +395,17 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	// Com Diffuse
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
-		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_DIFFUSE]))))
+	// Com_TexGrass
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground"),
+		TEXT("Com_TexGround"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_DIFFUSE]))))
 		return E_FAIL;
+
+	// Com_TexMoss
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Normal"),
+		TEXT("Com_TexNormal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_NORMAL]))))
+		return E_FAIL;
+
+
 
 	// Com Mask
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain_Mask"),
@@ -433,6 +462,9 @@ HRESULT CTerrain::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureCom[TEX_DIFFUSE]->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
+
+	if (FAILED(m_pTextureCom[TEX_NORMAL]->Bind_ShaderResources(m_pShaderCom, "g_NormalTexture")))
+		return E_FAIL;
 	//if (FAILED(m_pTextureCom[TEX_MASK]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
 	//	return E_FAIL;
 	if (FAILED(m_pTextureCom[TEX_BRUSH]->Bind_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
@@ -473,7 +505,7 @@ void CTerrain::Free()
 
 	//Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pShaderCom);
-	
+
 	for (auto& pTexture : m_pTextureCom)
 		Safe_Release(pTexture);
 

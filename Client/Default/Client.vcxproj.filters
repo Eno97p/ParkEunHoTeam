@@ -630,6 +630,9 @@
     <ClInclude Include="..\Public\Legionnaire.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Juggulus_HandThree.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -928,6 +931,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Legionnaire.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

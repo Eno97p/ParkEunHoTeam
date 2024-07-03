@@ -143,21 +143,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_DefaultCamera"), &pDesc)))
         return E_FAIL;
 
-    pDesc.fSensor = 0.1f;
+    //pDesc.fSensor = 0.1f;
 
-    pDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
-    pDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+    //pDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+    //pDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 
-    pDesc.fFovy = XMConvertToRadians(60.f);
-    pDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-    pDesc.fNear = 0.1f;
-    pDesc.fFar = 3000.f;
+    //pDesc.fFovy = XMConvertToRadians(60.f);
+    //pDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+    //pDesc.fNear = 0.1f;
+    //pDesc.fFar = 3000.f;
 
-    pDesc.fSpeedPerSec = 40.f;
-    pDesc.fRotationPerSec = XMConvertToRadians(90.f);
+    //pDesc.fSpeedPerSec = 40.f;
+    //pDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
-    if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_DefaultCamera"), &pDesc)))
-        return E_FAIL;
+    //if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_DefaultCamera"), &pDesc)))
+    //    return E_FAIL;
 
     return S_OK;
 }

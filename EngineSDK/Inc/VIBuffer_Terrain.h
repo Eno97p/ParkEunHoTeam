@@ -26,6 +26,8 @@ public:
 
 	HRESULT UpdateHeightMap(ID3D11Texture2D* pHeightMapTexture);
 
+	HRESULT UpdateVertexBuffer(_ushort* pHeightMapData, int iWidth, int iHeight, float terrainScale);
+
 	HRESULT UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, int iHeight, float terrainScale);
 
 

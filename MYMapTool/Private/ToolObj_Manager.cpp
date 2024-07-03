@@ -85,17 +85,25 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_EliteMst"),
                         TEXT("Prototype_Component_Model_Boss_1P") };
 
-    m_PassiveElements = { TEXT("Prototype_Component_Model_TronesT02"),
+    m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), TEXT("Prototype_Component_Model_RasSamrahCastle"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
         //TUTORIAL
         TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
-                        TEXT("Prototype_Component_Model_box_1"), TEXT("Prototype_Component_Model_box_2"),
-                        TEXT("Prototype_Component_Model_fire_wood"), TEXT("Prototype_Component_Model_fireframe"),
-                        TEXT("Prototype_Component_Model_woodBridge"), TEXT("Prototype_Component_Model_woodBridge_2"), 
-                        TEXT("Prototype_Component_Model_woodElement_1"), TEXT("Prototype_Component_Model_woodElement_2"), TEXT("Prototype_Component_Model_woodElement_3"), 
-                        TEXT("Prototype_Component_Model_woodFloor_1"), TEXT("Prototype_Component_Model_woodFloor_2"),
-                        TEXT("Prototype_Component_Model_woodObstacle"), TEXT("Prototype_Component_Model_Obstacle"), TEXT("Prototype_Component_Model_Obstacle_2"), TEXT("Prototype_Component_Model_StrawObstacle_1"),TEXT("Prototype_Component_Model_StrawObstacle_2"),
+                
+        //Stage 1
+        TEXT("Prototype_Component_Model_WellArea"), TEXT("Prototype_Component_Model_MergedSmallHouses23"),
+                        TEXT("Prototype_Component_Model_MergedSmallHouses65"), TEXT("Prototype_Component_Model_AckbarCastle"),
+                        TEXT("Prototype_Component_Model_AqueducTower"), TEXT("Prototype_Component_Model_BigStairSides"), 
+                        TEXT("Prototype_Component_Model_WoodStair"), TEXT("Prototype_Component_Model_WoodPlatform"),
+                        TEXT("Prototype_Component_Model_WoodPlank"),
+                        TEXT("Prototype_Component_Model_RichStairs_Rambarde"),
+                        TEXT("Prototype_Component_Model_BigRocks"),
+                        TEXT("Prototype_Component_Model_BigRocks4"), 
+
+
+
+                        TEXT("Prototype_Component_Model_Obstacle"), TEXT("Prototype_Component_Model_Obstacle_2"), TEXT("Prototype_Component_Model_StrawObstacle_1"),TEXT("Prototype_Component_Model_StrawObstacle_2"),
                         TEXT("Prototype_Component_Model_Spike"), 
                         TEXT("Prototype_Component_Model_TreeGrass_1"), TEXT("Prototype_Component_Model_TreeGrass_2"), TEXT("Prototype_Component_Model_TreeWood_1"), TEXT("Prototype_Component_Model_TreeWood_2"),
                         

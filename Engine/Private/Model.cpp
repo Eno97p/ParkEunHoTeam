@@ -54,7 +54,7 @@ _bool CModel::Get_Ratio_Betwin(_float min, _float max)
 	return (Get_Current_Ratio() > min && Get_Current_Ratio() < max);
 }
 
-const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
+const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const 
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
 		{

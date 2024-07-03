@@ -180,6 +180,7 @@
     <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
+    <ClInclude Include="..\Public\Body_Legionnaire.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
@@ -210,12 +211,14 @@
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
     <ClInclude Include="..\public\LandObject.h" />
+    <ClInclude Include="..\Public\Legionnaire.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mantari.h" />
+    <ClInclude Include="..\Public\Weapon_Legionnaire.h" />
     <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -284,6 +287,7 @@
     <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
+    <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
@@ -310,12 +314,14 @@
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
+    <ClCompile Include="..\Private\Legionnaire.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mantari.cpp" />
+    <ClCompile Include="..\Private\Weapon_Legionnaire.cpp" />
     <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />

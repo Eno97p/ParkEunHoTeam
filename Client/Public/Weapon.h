@@ -13,6 +13,7 @@ BEGIN(Client)
 
 class CWeapon : public CPartObject
 {
+
 public:
 	typedef struct WEAPON_DESC : public CPartObject::PARTOBJ_DESC
 	{
@@ -26,10 +27,10 @@ protected:
 	virtual ~CWeapon() = default;
 
 protected:
-	CCollider*						m_pColliderCom = { nullptr };
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	const _float4x4*				m_pSocketMatrix = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 
 public:
 	virtual void Free() override;

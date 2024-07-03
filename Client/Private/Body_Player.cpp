@@ -27,15 +27,32 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 20, true));
-
-
-
 	return S_OK;
 }
 
 void CBody_Player::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_INCREASE:
+		m_fDisolveValue += fTimeDelta * 5.f;
+		if (m_fDisolveValue > 1.f)
+		{
+			m_eDisolveType = TYPE_IDLE;
+			m_fDisolveValue = 1.f;
+		}
+		break;
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 5.f;
+		if (m_fDisolveValue < 0.f)
+		{
+			m_eDisolveType = TYPE_IDLE;
+			m_fDisolveValue = 0.f;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void CBody_Player::Tick(_float fTimeDelta)
@@ -68,10 +85,22 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 38;
 		fAnimSpeed = 1.f;
 	}
+	else if (*m_pState == CPlayer::STATE_HIT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 13;
+		fAnimSpeed = 1.f;
+	}
 	else if (*m_pState == CPlayer::STATE_JUMPSTART)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
+		fAnimSpeed = 1.f;
+	}
+	else if (*m_pState == CPlayer::STATE_DOUBLEJUMPSTART)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CPlayer::STATE_JUMP)
@@ -161,11 +190,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK2)
 	{
-		if (m_iPastAnimIndex < 115 || m_iPastAnimIndex > 120)
+		if (m_iPastAnimIndex < 138 || m_iPastAnimIndex > 142)
 		{
-			m_iPastAnimIndex = 115;
+			m_iPastAnimIndex = 138;
 		}
-		if (m_iPastAnimIndex == 120) *m_pCanCombo = true;
+		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
@@ -174,28 +203,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 143;
-		fAnimSpeed = 1.f;
-	}
-
-	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
-	{
-		if (m_iPastAnimIndex < 137 || m_iPastAnimIndex > 142)
-		{
-			m_iPastAnimIndex = 137;
-		}
-		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
-	}
-	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
-	{
-		if (m_iPastAnimIndex < 115 || m_iPastAnimIndex > 120)
-		{
-			m_iPastAnimIndex = 115;
-		}
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK1)
@@ -225,15 +232,16 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 137;
 		}
+		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
 	{
-		if (m_iPastAnimIndex < 115 || m_iPastAnimIndex > 120)
+		if (m_iPastAnimIndex < 82 || m_iPastAnimIndex > 85)
 		{
-			m_iPastAnimIndex = 115;
+			m_iPastAnimIndex = 82;
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
@@ -284,15 +292,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		fAnimSpeed = 1.f;
 	}
 
-
-
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
 	_bool isLerp = false;
 	// 여러 애니메이션을 재생할 때 마지막 애니메이션은 보간 필요
-	if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || m_iPastAnimIndex == 53 || m_iPastAnimIndex == 149 || m_iPastAnimIndex == 120 || m_iPastAnimIndex == 115 ||
+	if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || m_iPastAnimIndex == 53 || m_iPastAnimIndex == 149 || 
 		m_iPastAnimIndex == 74 || m_iPastAnimIndex == 153 || m_iPastAnimIndex == 79 || m_iPastAnimIndex == 125 || m_iPastAnimIndex == 136 ||
-		m_iPastAnimIndex == 142 || AnimDesc.iAnimIndex == 209 ||
+		m_iPastAnimIndex == 142 || AnimDesc.iAnimIndex == 209 || m_iPastAnimIndex == 85 ||
 		(m_iPastAnimIndex == 0 && *m_pState != CPlayer::STATE_LATTACK1 && *m_pState != CPlayer::STATE_LATTACK2
 			&& *m_pState != CPlayer::STATE_LATTACK3 && *m_pState != CPlayer::STATE_RATTACK1))
 	{
@@ -325,7 +331,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_iPastAnimIndex++;
 		}
 		// 공격2, 달리기공격2
-		else if (AnimDesc.iAnimIndex >= 115 && AnimDesc.iAnimIndex < 120)
+		else if (AnimDesc.iAnimIndex >= 82 && AnimDesc.iAnimIndex < 85)
 		{
 			m_iPastAnimIndex++;
 		}
@@ -435,7 +441,19 @@ HRESULT CBody_Player::Render()
 				return E_FAIL;
 		}
 
-		m_pShaderCom->Begin(0);
+		if (i == 2)
+		{
+			if (FAILED(m_pDisolveCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+				return E_FAIL;
+			m_pShaderCom->Begin(7);
+		}
+		else
+		{
+			m_pShaderCom->Begin(0);
+		}
+		
 
 		m_pModelCom->Render(i);
 	}
@@ -514,7 +532,6 @@ HRESULT CBody_Player::Add_Components()
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
-
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -528,6 +545,11 @@ HRESULT CBody_Player::Add_Components()
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Distortion"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_DisolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -579,4 +601,5 @@ void CBody_Player::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pDisolveCom);
 }

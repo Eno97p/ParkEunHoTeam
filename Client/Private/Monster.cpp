@@ -76,4 +76,8 @@ void CMonster::Free()
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pBehaviorCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pPlayerTransform);
+	
 }

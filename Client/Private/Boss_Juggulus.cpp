@@ -29,7 +29,7 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 3.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_iHP = 100;
+	m_iCurHp = 100;
 	m_iState = STATE_IDLE_FIRST;
 	m_ePhase = PHASE_ONE;
 
@@ -233,7 +233,7 @@ void CBoss_Juggulus::Check_AnimFinished()
 
 NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
-	if (0 >= m_iHP)
+	if (0 >= m_iCurHp)
 	{
 		m_iState = STATE_DEAD;
 
@@ -251,7 +251,7 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 
 NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 {
-	if (10 >= m_iHP && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
+	if (10 >= m_iCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
 	{
 		m_iState = STATE_NEXTPHASE;
 

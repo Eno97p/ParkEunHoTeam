@@ -172,15 +172,26 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	if (0 == hFile)
 		return E_FAIL;
 
-	BITMAPFILEHEADER		fh;
-	ReadFile(hFile, &fh, sizeof fh, &dwByte, nullptr);
+	// RAW 파일의 크기를 확인
+	DWORD fileSize = GetFileSize(hFile, NULL);
+	if (fileSize == INVALID_FILE_SIZE)
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 
+	// RAW 파일의 크기로부터 지형의 크기를 계산
+	m_iNumVerticesX = m_iNumVerticesZ = static_cast<int>(sqrt(static_cast<float>(fileSize) / sizeof(WORD)));
 
-	BITMAPINFOHEADER		ih;
-	ReadFile(hFile, &ih, sizeof ih, &dwByte, nullptr);
+	// RAW 데이터를 저장할 버퍼 생성
+	vector<WORD> rawData(m_iNumVerticesX * m_iNumVerticesZ);
 
-	_uint* pPixel = new _uint[ih.biWidth * ih.biHeight];
-	ReadFile(hFile, pPixel, sizeof(_uint) * ih.biWidth * ih.biHeight, &dwByte, nullptr);
+	// RAW 파일 읽기
+	if (!ReadFile(hFile, rawData.data(), fileSize, &dwByte, nullptr))
+	{
+		CloseHandle(hFile);
+		return E_FAIL;
+	}
 
 	CloseHandle(hFile);
 
@@ -188,9 +199,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	m_iIndexFormat = DXGI_FORMAT_R32_UINT;
 	m_iNumVertexBuffers = 1;
 	m_iVertexStride = sizeof(VTXNORTEX);
-	m_iNumVertices = ih.biWidth * ih.biHeight;
-	m_iNumVerticesX = ih.biWidth;
-	m_iNumVerticesZ = ih.biHeight;
+	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
 
 	m_iIndexStride = 4;
 	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
@@ -202,7 +211,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	m_pVertexPositions = new _float4[m_iNumVertices];
 	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
 
-	const float terrainScale = 4.0f; // xz 간격을 2배로 설정
+	const float terrainScale = 4.0f;
+	const float heightScale = 300.f;  // 높이 스케일 값, 필요에 따라 조정
 
 	for (size_t i = 0; i < m_iNumVerticesZ; i++)
 	{
@@ -210,7 +220,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 		{
 			_uint		iIndex = i * m_iNumVerticesX + j;
 
-			pVertices[iIndex].vPosition = _float3(j * terrainScale, (pPixel[iIndex] & 0x000000ff) / 4.f, i * terrainScale);
+			float height = rawData[iIndex] / 65535.f * heightScale;
+			pVertices[iIndex].vPosition = _float3(j * terrainScale, height, i * terrainScale);
 			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
 			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
@@ -309,7 +320,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	if (FAILED(__super::Create_Buffer(&m_pIB)))
 		return E_FAIL;
 
-	Safe_Delete_Array(pPixel);
+	//Safe_Delete_Array(pPixel);
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
 #pragma endregion
@@ -323,6 +334,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	return S_OK;
 
 }
+
 
 HRESULT CVIBuffer_Terrain::Initialize(void * pArg)
 {
@@ -563,7 +575,7 @@ HRESULT CVIBuffer_Terrain::UpdateHeightMap(ID3D11Texture2D* pHeightMapTexture)
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Terrain::UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, int iHeight, float terrainScale)
+HRESULT CVIBuffer_Terrain::UpdateVertexBuffer(_ushort* pHeightMapData, int iWidth, int iHeight, float terrainScale)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	if (FAILED(m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
@@ -580,7 +592,12 @@ HRESULT CVIBuffer_Terrain::UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, 
 			int iHeightMapZ = min(z * (iHeight - 1) / (m_iNumVerticesZ - 1), iHeight - 1);
 			int iHeightMapIndex = iHeightMapZ * iWidth + iHeightMapX;
 
-			float fHeight = pHeightMapData[iHeightMapIndex] / 255.0f * 20.0f; // 높이 범위를 0~20으로 조정
+			// unsigned short 형식에서 높이 값을 가져와 0~1 범위로 정규화
+			float fHeight = pHeightMapData[iHeightMapIndex] / 65535.0f;
+
+			// 높이 범위를 원하는 대로 조정 (예: 0~20)
+			fHeight *= 20.0f;
+
 			pVertices[iIndex].vPosition = _float3(x * terrainScale, fHeight, z * terrainScale);
 			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
 		}

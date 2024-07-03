@@ -4,6 +4,8 @@
 #include "Body_Juggulus.h"
 #include "Juggulus_Hammer.h"
 #include "Juggulus_HandOne.h"
+#include "Juggulus_HandTwo.h"
+#include "Juggulus_HandThree.h"
 
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{pDevice, pContext}
@@ -109,14 +111,23 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace("Body", pBody);
 
-	// HandOne
+	// Hand One
 	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
 	if (nullptr == pHandOne)
 		return E_FAIL;
 	m_PartObjects.emplace("Hand_One", pHandOne);
 
-	// HandTwo
+	// Hand Two
+	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
+	if (nullptr == pHandTwo)
+		return E_FAIL;
+	m_PartObjects.emplace("Hand_Two", pHandTwo);
 
+	// Hand Three
+	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
+	if (nullptr == pHandThree)
+		return E_FAIL;
+	m_PartObjects.emplace("Hand_Three", pHandThree);
 
 	return S_OK;
 }
@@ -129,22 +140,33 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Top_Selector"), TEXT("AttackCool"), 3.f); 	// Attack 간 coolTime
-	m_pBehaviorCom->Add_Composit_Node(TEXT("AttackCool"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	//m_pBehaviorCom->Add_CoolDown(TEXT("Top_Selector"), TEXT("AttackCool"), 3.f); 	// Attack 간 coolTime
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("OneP_Attack"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Attack_Selector"), TEXT("TwoP_Attack"), CBehaviorTree::Selector);
 
-	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("IDLE_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
+
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CBoss_Juggulus::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("NextPhase"), bind(&CBoss_Juggulus::NextPhase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
 
 	// 1Phase Attack
-	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 3.f);
+	// Hand One Attack
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 10.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HandOneTargettingCool"), TEXT("HandOne_Targetting"), bind(&CBoss_Juggulus::HandOne_Targeting, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandOne_Attack"), bind(&CBoss_Juggulus::HandOne_Attack, this, std::placeholders::_1));
+	
+	// Hand Two Attack
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandTwoScoopCool"), 8.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("HandTwoScoopCool"), TEXT("HandTwo_Scoop"), bind(&CBoss_Juggulus::HandTwo_Scoop, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandTwo_Attack"), bind(&CBoss_Juggulus::HandTwo_Attack, this, std::placeholders::_1));
+
+	// Hand Three Attack
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandThreeScoopCool"), 6.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("HandThreeScoopCool"), TEXT("HandThree_Attack"), bind(&CBoss_Juggulus::HandThree_Attack, this, std::placeholders::_1));
 
 	// 2Phase Attack
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("HammerCool"), 8.f);
@@ -156,7 +178,6 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("ThunderCool"), 3.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ThunderCool"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_Action_Node(TEXT("IDLE_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -197,24 +218,17 @@ HRESULT CBoss_Juggulus::Create_Hammer()
 
 void CBoss_Juggulus::Check_AnimFinished()
 {
-	if (PHASE_ONE == m_ePhase)
-	{
-		if (STATE_HANDONE_ATTACK == m_iState || STATE_HANDONE_TARGETING == m_iState)
-		{
-			map<string, CGameObject*>::iterator Hand = m_PartObjects.find("Hand_One");
-			m_isAnimFinished = dynamic_cast<CJuggulus_HandOne*>((*Hand).second)->Get_AnimFinished();
-		}
-		else if (STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState)
-		{
-			//map<string, CGameObject*>::iterator Hand = m_PartObjects.find("Hand_Two");
-			//m_isAnimFinished = dynamic_cast<CJuggulus_HandTwo*>((*Hand).second)->Get_AnimFinished();
-		}
-	}
-	else
-	{
-		map<string, CGameObject*>::iterator body = m_PartObjects.find("Body");
-		m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*body).second)->Get_AnimFinished();
-	}
+	map<string, CGameObject*>::iterator hand = m_PartObjects.find("Hand_One");
+	m_isHandAnimFinished = dynamic_cast<CJuggulus_HandOne*>((*hand).second)->Get_AnimFinished();
+
+	map<string, CGameObject*>::iterator hand_two = m_PartObjects.find("Hand_Two");
+	m_isHandTwoAnimFinished = dynamic_cast<CJuggulus_HandTwo*>((*hand_two).second)->Get_AnimFinished();
+
+	map<string, CGameObject*>::iterator hand_three = m_PartObjects.find("Hand_Three");
+	m_isHandThreeAnimFinished = dynamic_cast<CJuggulus_HandThree*>((*hand_three).second)->Get_AnimFinished();
+
+	map<string, CGameObject*>::iterator body = m_PartObjects.find("Body");
+	m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*body).second)->Get_AnimFinished();
 }
 
 NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
@@ -291,7 +305,7 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
 {
-	if (PHASE_TWO == m_ePhase ||  STATE_HANDONE_ATTACK == m_iState || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState )
+	if (PHASE_TWO == m_ePhase || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState || m_isHandOne_On)
 	{
 		return FAILURE;
 	}
@@ -299,13 +313,12 @@ NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
 	if (3.f >= m_fTargettingTimer) // 다른 행동을 하고 있지 않고 타이머가 아직 채워지지 않았으면
 	{
 		m_fTargettingTimer += fTimeDelta;
-		m_isHandOne_On = true; // Hand One 공격 활성화
-
 		m_iState = STATE_HANDONE_TARGETING; // 플레이어 위치에 등장한 후 몇 초 동안 타게팅
 		return RUNNING;
 	}
 	else
 	{
+		m_isHandOne_On = true; // Hand One 공격 활성화
 		m_fTargettingTimer = 0.f;
 		return SUCCESS; // 이때부터 쿨타임 도는 것
 	}
@@ -320,16 +333,17 @@ NodeStates CBoss_Juggulus::HandOne_Attack(_float fTimeDelta)
 
 	if (m_isHandOne_On)
 	{
-		if (!m_isAnimFinished || m_iState == STATE_IDLE_FIRST || m_iState == STATE_HANDONE_TARGETING)
-		{
-			m_iState = STATE_HANDONE_ATTACK;
-			return RUNNING;
-		}
-		else
+		if(STATE_HANDONE_TARGETING == m_iState)
+			m_isHandAnimFinished = false;
+
+		m_iState = STATE_HANDONE_ATTACK;
+
+		if (m_isHandAnimFinished)
 		{
 			m_isHandOne_On = false;
-			return FAILURE;
 		}
+
+		return RUNNING;
 	}
 	else
 	{
@@ -337,14 +351,68 @@ NodeStates CBoss_Juggulus::HandOne_Attack(_float fTimeDelta)
 	}
 }
 
+NodeStates CBoss_Juggulus::HandTwo_Scoop(_float fTimeDedelta)
+{
+	if (PHASE_TWO == m_ePhase || STATE_HANDTHREE_ATTACK == m_iState || m_isHandTwo_On)
+	{
+		return FAILURE;
+	}
+
+	if (!m_isHandTwoAnimFinished)
+	{
+		m_iState = STATE_HANDTWO_SCOOP;
+		return RUNNING;
+	}
+	else
+	{
+		m_isHandTwo_On = true;
+		return SUCCESS;
+	}
+}
+
 NodeStates CBoss_Juggulus::HandTwo_Attack(_float fTimeDelta)
 {
-	return FAILURE;
+	if (PHASE_TWO == m_ePhase || STATE_HANDTHREE_ATTACK == m_iState)
+	{
+		return FAILURE;
+	}
+
+	if (m_isHandTwo_On)
+	{
+		if (STATE_HANDTWO_SCOOP == m_iState)
+			m_isHandTwoAnimFinished = false;
+
+		m_iState = STATE_HANDTWO_ATTACK;
+
+		if (m_isHandTwoAnimFinished)
+		{
+			m_isHandTwo_On = false;
+
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CBoss_Juggulus::HandThree_Attack(_float fTimeDelta)
 {
-	return FAILURE;
+	if (PHASE_TWO == m_ePhase)
+	{
+		return FAILURE;
+	}
+
+	if (!m_isHandThreeAnimFinished)
+	{
+		m_iState = STATE_HANDTHREE_ATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)

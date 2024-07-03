@@ -207,6 +207,7 @@
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
+    <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
+    <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />

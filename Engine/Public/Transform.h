@@ -28,15 +28,14 @@ public:
 		_float		fRotationPerSec;
 	}TRANSFORM_DESC;
 
-	typedef struct TransformDesc : CComponent::ComponentDesc
+	typedef struct Transform_Editable_Desc : CComponent::ComponentDesc
 	{
 		//수정 가능하게 할 항목만 넣기
 		_float4x4* pWorldMatrix = nullptr;
 
+	}Transform_Editable_Desc;
 
-	}TransformDesc;
-
-
+	virtual Transform_Editable_Desc*  GetData() override { return &m_OutDesc; }
 
 private:
 	CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -77,8 +76,8 @@ public:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+	
 
-	virtual void* GetData() override { return &m_OutDesc; }
 
 public:
 	HRESULT Bind_ShaderResource(class CShader* pShader, const _char* pConstantName);
@@ -119,7 +118,7 @@ private:
 	_float					m_fSpeedPerSec = { 0.0f };
 	_float					m_fRotationPerSec = { 0.0f };
 
-	TransformDesc			m_OutDesc;
+	Transform_Editable_Desc			m_OutDesc;
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

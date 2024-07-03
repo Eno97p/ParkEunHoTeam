@@ -17,6 +17,7 @@ CPhysXComponent_static::CPhysXComponent_static(ID3D11Device * pDevice, ID3D11Dev
 CPhysXComponent_static::CPhysXComponent_static(const CPhysXComponent_static & rhs)
 	: CPhysXComponent{ rhs }
 	, m_strFilePath{ rhs.m_strFilePath }
+	,m_OutDesc{rhs.m_OutDesc}
 {
 }
 
@@ -65,16 +66,18 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 }
 
 #ifdef _DEBUG
-void* CPhysXComponent_static::GetData()
-{
-
-
-
-
-
-	return nullptr;
-}
+//void* CPhysXComponent_static::GetData()
+//{
+//
+//
+//
+//
+//
+//	return nullptr;
+//}
 #endif
+
+
 HRESULT CPhysXComponent_static::CreateActor()
 {
 	

@@ -5,6 +5,8 @@
 
 
 BEGIN(Engine)
+class CSimulationCallBack;
+
 class CPhysX final : public CBase
 {
 
@@ -48,7 +50,7 @@ private:
 	PxPvd*					m_pPvd = { nullptr };
 	PxCudaContextManager*	m_pCudaContextManager = { nullptr };
 	PxControllerManager*	m_pControllerManager = { nullptr };
-
+	CSimulationCallBack*	m_pSimulationCallBack = { nullptr };
 
 public:
 	static CPhysX* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

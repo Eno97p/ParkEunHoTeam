@@ -203,6 +203,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CHitReport.cpp" />
     <ClCompile Include="..\Private\CInverter.cpp" />
     <ClCompile Include="..\Private\CNode.cpp" />
+    <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
     <ClCompile Include="..\private\Component_Manager.cpp" />
@@ -213,6 +214,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CPhysX.cpp" />
     <ClCompile Include="..\Private\CSelector.cpp" />
     <ClCompile Include="..\Private\CSequence.cpp" />
+    <ClCompile Include="..\private\CSimulationCallBack.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\Private\EventMgr.cpp" />
@@ -288,6 +290,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\CPhysX.h" />
     <ClInclude Include="..\Public\CSelector.h" />
     <ClInclude Include="..\Public\CSequence.h" />
+    <ClInclude Include="..\public\CSimulationCallBack.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -312,6 +315,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Model.h" />
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
+    <ClInclude Include="..\public\OctTree.h" />
     <ClInclude Include="..\Public\PhysXComponent.h" />
     <ClInclude Include="..\Public\PhysXComponent_Character.h" />
     <ClInclude Include="..\Public\PhysXComponent_static.h" />

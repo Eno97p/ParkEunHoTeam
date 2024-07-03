@@ -32,6 +32,17 @@ const _double* CToolObj::Get_CurrentPos(_uint iAnimIdx) const
 	return m_pModelCom->Get_CurrentPos(iAnimIdx);
 }
 
+string CToolObj::Get_BoneName(_uint iBoneIdx)
+{
+	vector<string>* pBoneName = m_pModelCom->Get_BoneNameVec_MemVar();
+	vector<string>::iterator boneName = pBoneName->begin();
+
+	for (size_t i = 0; i < iBoneIdx; ++i)
+		++boneName;
+
+	return *boneName;
+}
+
 HRESULT CToolObj::Initialize_Prototype()
 {
 	return S_OK;

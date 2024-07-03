@@ -35,6 +35,7 @@
 #include "Juggulus_Hammer.h"
 #include "Juggulus_HandOne.h"
 #include "Juggulus_HandTwo.h"
+#include "Juggulus_HandThree.h"
 
 #include "Mantari.h"
 #include "Body_Mantari.h"
@@ -736,6 +737,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Juggulus_HandTwo */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandTwo"),
 		CJuggulus_HandTwo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Juggulus_HandThree */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandThree"),
+		CJuggulus_HandThree::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

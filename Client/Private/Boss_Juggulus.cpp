@@ -111,17 +111,23 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace("Body", pBody);
 
-	// HandOne
+	// Hand One
 	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
 	if (nullptr == pHandOne)
 		return E_FAIL;
 	m_PartObjects.emplace("Hand_One", pHandOne);
 
-	// HandTwo
+	// Hand Two
 	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
 	if (nullptr == pHandTwo)
 		return E_FAIL;
 	m_PartObjects.emplace("Hand_Two", pHandTwo);
+
+	// Hand Three
+	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
+	if (nullptr == pHandThree)
+		return E_FAIL;
+	m_PartObjects.emplace("Hand_Three", pHandThree);
 
 	return S_OK;
 }
@@ -149,17 +155,18 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 
 	// 1Phase Attack
 	// Hand One Attack
-	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 8.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandOneTargettingCool"), 10.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HandOneTargettingCool"), TEXT("HandOne_Targetting"), bind(&CBoss_Juggulus::HandOne_Targeting, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandOne_Attack"), bind(&CBoss_Juggulus::HandOne_Attack, this, std::placeholders::_1));
 	
 	// Hand Two Attack
-	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandTwoScoopCool"), 6.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandTwoScoopCool"), 8.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("HandTwoScoopCool"), TEXT("HandTwo_Scoop"), bind(&CBoss_Juggulus::HandTwo_Scoop, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("OneP_Attack"), TEXT("HandTwo_Attack"), bind(&CBoss_Juggulus::HandTwo_Attack, this, std::placeholders::_1));
 
 	// Hand Three Attack
-
+	m_pBehaviorCom->Add_CoolDown(TEXT("OneP_Attack"), TEXT("HandThreeScoopCool"), 6.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("HandThreeScoopCool"), TEXT("HandThree_Attack"), bind(&CBoss_Juggulus::HandThree_Attack, this, std::placeholders::_1));
 
 	// 2Phase Attack
 	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("HammerCool"), 8.f);
@@ -217,6 +224,8 @@ void CBoss_Juggulus::Check_AnimFinished()
 	map<string, CGameObject*>::iterator hand_two = m_PartObjects.find("Hand_Two");
 	m_isHandTwoAnimFinished = dynamic_cast<CJuggulus_HandTwo*>((*hand_two).second)->Get_AnimFinished();
 
+	map<string, CGameObject*>::iterator hand_three = m_PartObjects.find("Hand_Three");
+	m_isHandThreeAnimFinished = dynamic_cast<CJuggulus_HandThree*>((*hand_three).second)->Get_AnimFinished();
 
 	map<string, CGameObject*>::iterator body = m_PartObjects.find("Body");
 	m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*body).second)->Get_AnimFinished();
@@ -352,7 +361,6 @@ NodeStates CBoss_Juggulus::HandTwo_Scoop(_float fTimeDedelta)
 	if (!m_isHandTwoAnimFinished)
 	{
 		m_iState = STATE_HANDTWO_SCOOP;
-
 		return RUNNING;
 	}
 	else
@@ -391,7 +399,20 @@ NodeStates CBoss_Juggulus::HandTwo_Attack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::HandThree_Attack(_float fTimeDelta)
 {
-	return FAILURE;
+	if (PHASE_TWO == m_ePhase)
+	{
+		return FAILURE;
+	}
+
+	if (!m_isHandThreeAnimFinished)
+	{
+		m_iState = STATE_HANDTHREE_ATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)

@@ -35,6 +35,7 @@ private:
 	_bool							m_isHandTwo_On = { false };
 	_bool							m_isHandAnimFinished = { false };
 	_bool							m_isHandTwoAnimFinished = { false };
+	_bool							m_isHandThreeAnimFinished = { false };
 
 	_float							m_fTargettingTimer = { 0.f };
 

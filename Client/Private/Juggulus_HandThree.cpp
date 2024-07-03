@@ -28,7 +28,7 @@ HRESULT CJuggulus_HandThree::Initialize(void* pArg)
 
 	m_isRender = true;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, -3.f, 1.f));
 
@@ -51,6 +51,11 @@ void CJuggulus_HandThree::Late_Tick(_float fTimeDelta)
 {
 	if (m_isRender)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+
+	/*if (*m_pState == CBoss_Juggulus::STATE_HANDTHREE_ATTACK)
+
+	else
+		m_isAnimFinished = false;*/
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 }
@@ -106,7 +111,7 @@ HRESULT CJuggulus_HandThree::Render_LightDepth()
 HRESULT CJuggulus_HandThree::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHandOne"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHandThree"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -137,9 +142,20 @@ HRESULT CJuggulus_HandThree::Bind_ShaderResources()
 
 void CJuggulus_HandThree::Change_Animation(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
+	CModel::ANIMATION_DESC		AnimDesc{ 1, true };
 	_float fAnimSpeed = 1.f;
 
+	if (*m_pState == CBoss_Juggulus::STATE_HANDTHREE_ATTACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 2;
+		fAnimSpeed = 1.f;
+		m_isRender = true;
+	}
+	else
+	{
+		m_isRender = false;
+	}
 
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

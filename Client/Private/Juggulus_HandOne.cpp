@@ -26,6 +26,8 @@ HRESULT CJuggulus_HandOne::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_isRender = true;
+
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
 	/*m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-80.f));
@@ -49,9 +51,12 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 
 void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	if (m_isRender)
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+		m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+	}
 }
 
 HRESULT CJuggulus_HandOne::Render()
@@ -141,15 +146,21 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 
 	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_TARGETING)
 	{
-		AnimDesc.isLoop = true;
+		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 1.f;
+		m_isRender = true;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_HANDONE_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
 		fAnimSpeed = 0.5f;
+		m_isRender = true;
+	}
+	else
+	{
+		m_isRender = false;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

@@ -33,6 +33,8 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 
 private:
+	_bool		m_isRender = { false };
+
 	CCollider* m_pColliderCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

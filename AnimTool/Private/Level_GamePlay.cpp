@@ -39,8 +39,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
     //    CNaviMgr::GetInstance()->Save_NaviData(); // Navi Save( ) 함수 호출
     //}     
 
-    if (CImgui_Manager::GetInstance()->Get_IsLoad())
-        Load_Data();
+    //if (CImgui_Manager::GetInstance()->Get_IsLoad())
+    //    Load_Data();
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("Level : GamePlay"));

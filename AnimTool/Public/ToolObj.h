@@ -50,6 +50,7 @@ public:
 	const _double* Get_CurrentPos(_uint iAnimIdx) const;
 
 	_uint Get_NumAnim() { return m_pModelCom->Get_NumAnim(); }
+	string			Get_BoneName(_uint iBoneIdx);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

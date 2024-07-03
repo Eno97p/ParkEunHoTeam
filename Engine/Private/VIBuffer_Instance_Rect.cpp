@@ -200,4 +200,12 @@ CComponent* CVIBuffer_Instance_Rect::Clone(void* pArg)
 void CVIBuffer_Instance_Rect::Free()
 {
 	__super::Free();
+
+	Safe_Delete_Array(m_pSpeeds);
+	Safe_Delete_Array(m_pOriginalSpeed);
+	Safe_Delete_Array(m_pOriginalPositions);
+	Safe_Delete_Array(m_pOriginalGravity);
+	Safe_Delete_Array(m_pSize);
+	Safe_Delete_Array(m_pOriginalSize);
+
 }

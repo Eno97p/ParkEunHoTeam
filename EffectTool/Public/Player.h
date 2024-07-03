@@ -29,6 +29,8 @@ public:
 	HRESULT Add_PartObjects();
 	void Set_AnimIndex(_float fTimeDelta);
 	const _float4x4* Get_WorldMat();
+	const _float4x4* Get_HeadMAt();
+
 	const _float4x4* Get_WeaponMat();
 
 private:

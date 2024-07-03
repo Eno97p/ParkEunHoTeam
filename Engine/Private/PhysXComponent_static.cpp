@@ -77,6 +77,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 //}
 #endif
 
+
 HRESULT CPhysXComponent_static::CreateActor()
 {
 	

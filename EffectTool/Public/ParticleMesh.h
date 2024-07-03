@@ -4,17 +4,16 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
-//class CComputeShader;
-//class CTexture;
 END
 
 BEGIN(Effect)
 class CParticleMesh : public CParticle
 {
 public:
-	typedef struct PARTICLEMESH : public CParticle::PARTICLEDESC
+	typedef struct PARTICLEMESH  : public PUBLIC_PARTICLEDESC
 	{
 		EFFECTMODELTYPE						eModelType;
+		PARTICLEDESC						SuperDesc;
 	};
 private:
 	CParticleMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -35,9 +34,12 @@ private:
 private:
 	HRESULT Add_Components(const wstring& strModelPrototype);
 	HRESULT Bind_ShaderResources();
+	HRESULT Bind_BlurResources();
 
-	_int		m_ShaderPass = 0;
 	const wchar_t* m_ModelPrototypeTag = nullptr;
+
+private:
+	shared_ptr<PARTICLEMESH> OwnDesc;
 
 public:
 	static CParticleMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

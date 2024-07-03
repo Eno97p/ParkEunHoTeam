@@ -125,7 +125,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	//m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
-	//m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
+	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
 
@@ -146,6 +146,7 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
 	PhysXDesc.position = PxExtendedVec3(72.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f,98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -155,8 +156,9 @@ HRESULT CPlayer::Add_Components()
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
 	PhysXDesc.pName = "Player";
-	//PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
+	PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
 	//PhysXDesc.filterData.word1 = Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY;
+	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 	
 	
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
@@ -164,7 +166,6 @@ HRESULT CPlayer::Add_Components()
 		return E_FAIL;
 	
 
-	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 
 
 	return S_OK;
@@ -923,35 +924,20 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 
 void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 {
-	PxRigidActor* actor = hit.shape->getActor();
-	if (actor && actor->getName())
+	PxFilterData hitObjectFilterData = hit.shape->getSimulationFilterData();
+	// 충돌한 객체가 무기(검)인 경우
+	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_WEAPON)
 	{
-		const char* actorName = actor->getName();
-
-		if (strcmp(actorName, "Weapon") == 0)
-		{
+		// 무기와의 충돌은 무시 (이미 필터 셰이더에서 처리되었지만, 추가 안전장치로 사용)
 			return;
-		}
-
-		if (strcmp(actorName, "Environment") == 0)
-		{
-			// 환경과의 충돌 처리
-			// 예: 이동 제한, 반동 적용 등
-		}
-		else if (strcmp(actorName, "Enemy") == 0)
-		{
-			// 적과의 충돌 처리
-			// 예: 데미지 적용, 넉백 등
-		}
-		// 기타 다른 객체들과의 충돌 처리...
-
-
-
 	}
-
-
-
-
+	// 충돌한 객체가 환경(지형, 벽 등)인 경우
+	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_ENVIRONMENT)
+	{
+		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
+		int temp = 0;
+		
+	}
 
 
 }

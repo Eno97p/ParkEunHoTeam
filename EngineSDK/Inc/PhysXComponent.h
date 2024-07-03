@@ -15,6 +15,7 @@ public:
 
 		_float3 fMatterial;
 		_float4x4 fWorldMatrix = {};
+		_float4x4 fOffsetMatrix = {};
 		CComponent* pComponent = nullptr;
 		PxGeometryType::Enum eGeometryType = PxGeometryType::eINVALID;
 		const char* pName = nullptr;
@@ -23,6 +24,13 @@ public:
 		PxFilterData filterData = {};
 	}PHYSX_DESC;
 
+	typedef struct  PhysX_Editable_Desc : CComponent::ComponentDesc
+	{
+		//수정 가능하게 할 항목만 넣기
+		PxMaterial* pMaterial= nullptr;
+		_bool bIsOnDebugRender = true;
+
+	}PhysX_Editable_Desc;
 
 
 protected:
@@ -38,7 +46,7 @@ public:
 #ifdef _DEBUG
 	virtual HRESULT  Init_Buffer();
 	virtual HRESULT Render();
-	virtual void* GetData() override;
+	virtual PhysX_Editable_Desc* GetData() override { return &m_OutDesc; }
 #endif
 
 public:
@@ -51,10 +59,12 @@ protected:
 
 public:
 	vector<_float3> CreateCapsuleVertices(float radius, float halfHeight, int segments = 32, int rings = 32);
-	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans);
+	tuple<vector<_float3>, vector<_uint>> CreateBoxVertices(const PxVec3& halfExtents);
+	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans, const PxTransform pxOffsetTrans = PxTransform());
 	PxActor* Get_Actor() { return m_pActor; }
 
-
+private:
+	void MakeFilterData(PxFilterData& filterData);
 
 
 
@@ -75,14 +85,13 @@ protected:
 	PxRigidActor* m_pActor = { nullptr };
 	PxShape* m_pShape = { nullptr };
 	_float4x4 m_WorldMatrix = {};
-	
 private:
 	class CModel* m_pModelCom = { nullptr };
 	vector<_float3> m_vecVertices;
 
 	_float3 m_fBoxProperty = { 0.f, 0.f, 0.f };
 	_float2 m_fCapsuleProperty = { 0.f, 0.f };
-
+	PhysX_Editable_Desc m_OutDesc;
 public:
 	static CPhysXComponent* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

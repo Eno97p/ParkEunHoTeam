@@ -76,7 +76,7 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
-	//m_PhysXCom->Tick(&m_WorldMatrix);
+	m_PhysXCom->Tick(&m_WorldMatrix);
 }
 
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
@@ -86,7 +86,7 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 
 	//m_PhysXCom->Late_Tick(&m_WorldMatrix);
 #ifdef _DEBUG
-	//m_pGameInstance->Add_DebugComponent(m_PhysXCom);
+	m_pGameInstance->Add_DebugComponent(m_PhysXCom);
 #endif
 
 
@@ -164,8 +164,11 @@ HRESULT CWhisperSword_Anim::Add_Components()
 	PhysXDesc.fMatterial= _float3(0.5f, 0.5f, 0.5f);
 	PhysXDesc.pComponent = m_pModelCom;
 	PhysXDesc.fWorldMatrix = m_WorldMatrix;
-	PhysXDesc.fCapsuleProperty= _float2(0.5f, 0.5f);
-	PhysXDesc.pName = "Weapon";
+	PhysXDesc.fCapsuleProperty= _float2(0.1f, 0.5f);
+	PhysXDesc.pName= "Weapon";
+	PhysXDesc.filterData.word0 =  Engine::CollisionGropuID::GROUP_WEAPON;
+	//XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix, XMMatrixRotationX(XMConvertToRadians(90.0f)) * XMMatrixTranslation(10.f,0.f,10.f));
+	//PhysXDesc.filterData.word1 =  Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY;
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_PhysXCom),&PhysXDesc)))
 		return E_FAIL;

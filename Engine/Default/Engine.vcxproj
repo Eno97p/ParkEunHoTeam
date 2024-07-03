@@ -213,6 +213,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CPhysX.cpp" />
     <ClCompile Include="..\Private\CSelector.cpp" />
     <ClCompile Include="..\Private\CSequence.cpp" />
+    <ClCompile Include="..\private\CSimulationCallBack.cpp" />
     <ClCompile Include="..\private\CustomFont.cpp" />
     <ClCompile Include="..\Private\DebugDraw.cpp" />
     <ClCompile Include="..\Private\EventMgr.cpp" />
@@ -288,6 +289,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\CPhysX.h" />
     <ClInclude Include="..\Public\CSelector.h" />
     <ClInclude Include="..\Public\CSequence.h" />
+    <ClInclude Include="..\public\CSimulationCallBack.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />

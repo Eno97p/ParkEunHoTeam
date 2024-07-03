@@ -27,6 +27,7 @@ CPhysXComponent::CPhysXComponent(const CPhysXComponent & rhs)
 	, m_pMaterial{ rhs.m_pMaterial }
 	, m_pActor{ rhs.m_pActor }
 	, m_pShape{ rhs.m_pShape }
+	, m_OutDesc{ rhs.m_OutDesc }
 {
 #ifdef _DEBUG
 	Safe_AddRef(m_pShader);	
@@ -56,15 +57,19 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	m_WorldMatrix = pDesc->fWorldMatrix;
 	m_fBoxProperty= pDesc->fBoxProperty;
 	m_fCapsuleProperty = pDesc->fCapsuleProperty;
-	
+	PxFilterData filterData = pDesc->filterData;
 
 	
 	PxTransform pxTrans =Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
+	PxTransform pxOffsetTrans =Convert_DxMat_To_PxTrans(pDesc->fOffsetMatrix);
 	
 	m_pMaterial=m_pGameInstance->GetPhysics()->createMaterial(pDesc->fMatterial.x, pDesc->fMatterial.y, pDesc->fMatterial.z);
 
+
+	CreateActor(pDesc->eGeometryType, pxTrans, pxOffsetTrans);
+	MakeFilterData(filterData);
 	
-	CreateActor(pDesc->eGeometryType, pxTrans);
+
 	//pDesc
 	if(pDesc->pName)
 		m_pActor->setName(pDesc->pName);
@@ -81,7 +86,7 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 #endif
 
 	
-
+	m_OutDesc.pMaterial = m_pMaterial;
 	return S_OK;
 }
 
@@ -91,11 +96,11 @@ HRESULT CPhysXComponent::Init_Buffer()
 
 	//최대 10개?
 	//스택메모리 워링 떠서 힙으로 이동
-	PxShape** Shapes = new PxShape*[3000];
+	PxShape** Shapes = new PxShape*[10];
 
 	//여기서 문제인듯? //받아오려는 갯수가 많으면 속도가 느린가?
 	//많아도 문제 없음 :확인 완료
-	PxU32 numShapes=	m_pActor->getShapes(Shapes, 3000);
+	PxU32 numShapes=	m_pActor->getShapes(Shapes, 10);
 
 
 
@@ -130,7 +135,14 @@ HRESULT CPhysXComponent::Init_Buffer()
 		case PxGeometryType::eBOX:
 		{
 			PxBoxGeometry boxGeometry = geometry.box();
-			_float fHalfWidth = boxGeometry.halfExtents.x;
+			PxVec3 halfExtents = boxGeometry.halfExtents;
+
+			auto result = CreateBoxVertices(halfExtents);
+			m_vecVertices = get<0>(result);
+			vector<_uint> vecIndices = get<1>(result);
+			
+			m_pBuffer.push_back(CVIBuffer_PhysXBuffer::Create(m_pDevice, m_pContext, m_vecVertices, vecIndices));
+			
 
 			break;
 		}
@@ -254,8 +266,7 @@ void CPhysXComponent::Tick(const _float4x4 * pWorldMatrix)
 	// 피직스 액터의 위치와 회전을 설정
 	PxTransform newTransform(PxVec3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]), PxQuat(rotation.m128_f32[0], rotation.m128_f32[1], rotation.m128_f32[2], rotation.m128_f32[3]));
 	m_pActor->setGlobalPose(newTransform);
-	
-	
+	m_WorldMatrix= *pWorldMatrix;
 	
 
 }
@@ -265,6 +276,7 @@ void CPhysXComponent::Late_Tick(_float4x4* pWorldMatrix)
 	
 	PxTransform pTransform =	m_pActor->getGlobalPose();
 	
+
 	_float3 fPos = { pTransform.p.x,pTransform.p.y,pTransform.p.z };
 	_float4 fRot = { pTransform.q.x,pTransform.q.y,pTransform.q.z,pTransform.q.w };
 
@@ -314,42 +326,43 @@ void CPhysXComponent::SetFilterData(PxFilterData filterData)
 #ifdef _DEBUG
 HRESULT CPhysXComponent::Render()
 {
-
-	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
-
-	m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
-	m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
-
-
-	m_pShader->Begin(1);
-
-
-	//Test: Render Call 
-	//m_pBuffer[0]->Bind_Buffers();
-	//m_pBuffer[0]->Render();
-	for(auto& pPhysXBuffer : m_pBuffer)
+	if (m_OutDesc.bIsOnDebugRender)
 	{
-		if (nullptr != pPhysXBuffer)
+		m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+
+		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
+		m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
+
+
+		m_pShader->Begin(1);
+
+
+		//Test: Render Call 
+		//m_pBuffer[0]->Bind_Buffers();
+		//m_pBuffer[0]->Render();
+		for (auto& pPhysXBuffer : m_pBuffer)
 		{
-			pPhysXBuffer->Bind_Buffers();
-			pPhysXBuffer->Render();
+			if (nullptr != pPhysXBuffer)
+			{
+				pPhysXBuffer->Bind_Buffers();
+				pPhysXBuffer->Render();
+			}
+
+
 		}
-		
-	
 	}
-	
 
 	return S_OK;
 }
-void* CPhysXComponent::GetData()
-{
-
-
-
-
-
-	return nullptr;
-}
+//void* CPhysXComponent::GetData()
+//{
+//
+//
+//
+//
+//
+//	return nullptr;
+//}
 #endif
 
 
@@ -441,7 +454,42 @@ vector<_float3> CPhysXComponent::CreateCapsuleVertices(float radius, float halfH
 	
 }
 
-HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans)
+tuple<vector<_float3>, vector<_uint>> CPhysXComponent::CreateBoxVertices(const PxVec3& halfExtents)
+{
+	std::vector<_float3> vertices;
+	std::vector<_uint> indices;
+	
+	vertices.push_back(_float3(-halfExtents.x, -halfExtents.y, -halfExtents.z)); // 0
+	vertices.push_back(_float3(halfExtents.x, -halfExtents.y, -halfExtents.z));  // 1
+	vertices.push_back(_float3(-halfExtents.x, halfExtents.y, -halfExtents.z));  // 2
+	vertices.push_back(_float3(halfExtents.x, halfExtents.y, -halfExtents.z));   // 3
+	vertices.push_back(_float3(-halfExtents.x, -halfExtents.y, halfExtents.z));  // 4
+	vertices.push_back(_float3(halfExtents.x, -halfExtents.y, halfExtents.z));   // 5
+	vertices.push_back(_float3(-halfExtents.x, halfExtents.y, halfExtents.z));   // 6
+	vertices.push_back(_float3(halfExtents.x, halfExtents.y, halfExtents.z));    // 7
+
+
+	indices = {
+		// 앞면
+		0, 1, 2, 2, 1, 3,
+		// 뒷면
+		4, 6, 5, 5, 6, 7,
+		// 왼쪽면
+		0, 2, 4, 4, 2, 6,
+		// 오른쪽면
+		1, 5, 3, 3, 5, 7,
+		// 윗면
+		2, 3, 6, 6, 3, 7,
+		// 아랫면
+		0, 4, 1, 1, 4, 5
+	};
+
+
+	return	make_tuple(vertices, indices);
+	
+}
+
+HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans, const PxTransform pxOffsetTrans)
 {
 
 	switch (eGeometryType)
@@ -454,15 +502,20 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 	{
 		
 		PxCapsuleGeometry temp = PxCapsuleGeometry(m_fCapsuleProperty.x, m_fCapsuleProperty.y);
-		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f);
-
+		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f, pxOffsetTrans);
+		
+		if(nullptr==m_pActor)
+			return E_FAIL;
 		break;
 	}
 	case physx::PxGeometryType::eBOX:
 	{
 
 		PxBoxGeometry temp = PxBoxGeometry(m_fBoxProperty.x, m_fBoxProperty.y, m_fBoxProperty.z);
-		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f);
+		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f, pxOffsetTrans);
+
+		if (nullptr == m_pActor)
+			return E_FAIL;
 		break;
 	}
 	case physx::PxGeometryType::eCONVEXMESH:
@@ -488,6 +541,26 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 	}
 
 	return S_OK;
+}
+
+void CPhysXComponent::MakeFilterData(PxFilterData& filterData)
+{
+	if (filterData.word0 != 0 || filterData.word1 != 0 || filterData.word2 != 0 || filterData.word3 != 0)
+	{
+		PxU32 numShapes = m_pActor->getNbShapes();
+		PxShape** shapes = new PxShape * [numShapes];
+		m_pActor->getShapes(shapes, numShapes);
+
+		for (PxU32 i = 0; i < numShapes; i++)
+		{
+			shapes[i]->setSimulationFilterData(filterData);
+			//shapes[i]->setQueryFilterData(filterData);
+		}
+
+		delete[] shapes;
+		shapes= nullptr;
+	}
+
 }
 
 tuple<vector<PxVec3>, vector<PxU32>> CPhysXComponent::CreateTriangleMeshDesc(void* pvoid)

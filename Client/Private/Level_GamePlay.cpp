@@ -7,6 +7,8 @@
 #include "Map_Element.h"
 #include "Monster.h"
 
+#include "Light.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -62,18 +64,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
+	Load_Lights();
 
 
+	//LIGHT_DESC			LightDesc{};
 
-	LIGHT_DESC			LightDesc{};
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
-
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -103,8 +105,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
-	CameraDesc.vAt = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CameraDesc.vEye = _float4(71.1f, 542.f, 78.f, 1.f);
+	CameraDesc.vAt = _float4(71.1f, 522.f, 98.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
@@ -187,13 +189,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 
 	pDesc->eLevel = LEVEL_GAMEPLAY;*/
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
 		return E_FAIL;
 	
-
 	return S_OK;
 }
 
@@ -279,6 +280,91 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 	//}
 
 	return S_OK;
+}
+
+void CLevel_GamePlay::Load_Lights()
+{
+	list<CLight*> lights = m_pGameInstance->Get_Lights();
+	for (auto& iter : lights)
+	{
+		iter->LightOff();
+	}
+
+	//switch (iStageIdx)
+	//{
+	//case STAGE_HOME:
+	//	m_LightsDataPath = L"../Bin/MapData/LightsData/Stage_Lights.dat";
+	//	break;
+	//case STAGE_ONE:
+	//	m_LightsDataPath = L"../Bin/MapData/LightsData/Stage1_Lights.dat";
+	//	break;
+	//case STAGE_TWO:
+	//	m_LightsDataPath = L"../Bin/MapData/LightsData/Stage2_Lights.dat";
+	//	break;
+	//case STAGE_THREE:
+	//	m_LightsDataPath = L"../Bin/MapData/LightsData/Stage3_Lights.dat";
+	//	break;
+	//case STAGE_BOSS:
+	//	m_LightsDataPath = L"../Bin/MapData/LightsData/Stage4_Lights.dat";
+	//	break;
+	//default:
+	//	MSG_BOX("Setting File Name is Failed");
+	//	return;
+	//}
+
+	wstring LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
+
+	HANDLE hFile = CreateFile(LightsDataPath.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (nullptr == hFile)
+	{
+		MSG_BOX("hFile is nullptr");
+		return;
+	}
+
+	DWORD dwByte(0);
+	_uint iLightCount = 0;
+	ReadFile(hFile, &iLightCount, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iLightCount; ++i)
+	{
+		LIGHT_DESC desc{};
+		ReadFile(hFile, &desc.eType, sizeof(LIGHT_DESC::TYPE), &dwByte, nullptr);
+		ReadFile(hFile, &desc.vDiffuse, sizeof(XMFLOAT4), &dwByte, nullptr);
+		ReadFile(hFile, &desc.vAmbient, sizeof(XMFLOAT4), &dwByte, nullptr);
+		ReadFile(hFile, &desc.vSpecular, sizeof(XMFLOAT4), &dwByte, nullptr);
+
+		switch (desc.eType)
+		{
+		case LIGHT_DESC::TYPE_DIRECTIONAL:
+			ReadFile(hFile, &desc.vDirection, sizeof(XMFLOAT4), &dwByte, nullptr);
+			break;
+		case LIGHT_DESC::TYPE_POINT:
+			ReadFile(hFile, &desc.vPosition, sizeof(XMFLOAT4), &dwByte, nullptr);
+			ReadFile(hFile, &desc.fRange, sizeof(float), &dwByte, nullptr);
+			break;
+		case LIGHT_DESC::TYPE_SPOTLIGHT:
+			ReadFile(hFile, &desc.vDirection, sizeof(XMFLOAT4), &dwByte, nullptr);
+			ReadFile(hFile, &desc.vPosition, sizeof(XMFLOAT4), &dwByte, nullptr);
+			ReadFile(hFile, &desc.fRange, sizeof(float), &dwByte, nullptr);
+			ReadFile(hFile, &desc.innerAngle, sizeof(float), &dwByte, nullptr);
+			ReadFile(hFile, &desc.outerAngle, sizeof(float), &dwByte, nullptr);
+			break;
+		}
+
+		if (0 == dwByte)
+			break;
+
+		if (FAILED(m_pGameInstance->Add_Light(desc)))
+		{
+			MSG_BOX("Failed to Add Light");
+			return;
+		}
+	}
+
+	CloseHandle(hFile);
+	MSG_BOX("Lights Data Load");
+
+	return;
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

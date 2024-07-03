@@ -407,11 +407,15 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     }
     case LAYER_PASSIVE_ELEMENT:
     {
-        const char* items_MapElement[] = { "TronesT02",
-            "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
-            "RasSamrahCastle2", "TutorialMap", "TutorialDecoStructure", "Mountain_4", "Mountain_5",
-            "box_1", "box_2", "fire_wood", "fireframe",
-            "woodBridge", "woodBridge_2", "woodElement_1", "woodElement_2", "woodElement_3", "woodFloor_1", "woodFloor_2", "woodObstacle",
+        const char* items_MapElement[] = { "BasicCube", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
+            "RasSamrahCastle2",
+            
+            //TUTORIAL
+            "TutorialMap", "TutorialDecoStructure", "TutorialDecoCube", "TutorialDecoMaze",
+
+            //STAGE 1
+            "WellArea", "MergedHouses23", "MergedHouses65", "AckbarCastle",
+            "AqueducTower", "BigStairSides", "WoodStair", "_WoodPlatform", "WoodPlank", "RichStairs_Rambarde", "BigRocks", "BigRocks4",
             "Obstacle", "Obstacle_2", "StrawObstacle_1", "StrawObstacle_2", "Spike",
             "TreeGrass_1", "TreeGrass_2", "TreeWood_1", "TreeWood_2",
             "Building_1", "Building_2",
@@ -1193,53 +1197,88 @@ void CImgui_Manager::Camera_Editor()
 
 void CImgui_Manager::Terrain_Editor()
 {
+    static char heightMapPath[256] = "../Bin/Resources/Textures/Terrain/heightmap.r16";
+    static float maxHeight = 100.0f;
+    static float brushSize = 10.0f;
+    static float brushStrength = 0.1f;
+    static int brushMode = 0;
+    static float flattenHeight = 50.0f;
+    static bool bShowBrush = false;
+
     ImGui::Begin("Terrain Editor");
 
     // 높이맵 섹션
     ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Height Map");
-    static char heightMapPath[256] = "../Bin/Resources/Textures/Terrain/Height1.bmp";
     ImGui::InputText("Height Map Path", heightMapPath, IM_ARRAYSIZE(heightMapPath));
 
+    // Load 버튼
     if (ImGui::Button("Load Height Map"))
     {
         CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
         if (pTerrain)
         {
-            // char 배열을 wstring으로 변환
             std::wstring wHeightMapPath;
             wHeightMapPath.assign(heightMapPath, heightMapPath + strlen(heightMapPath));
-
             pTerrain->LoadHeightMap(wHeightMapPath);
         }
     }
 
-    static float maxHeight = 100.0f;
+    // Save 버튼
+    ImGui::SameLine();
+    if (ImGui::Button("Save Height Map"))
+    {
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        if (pTerrain)
+        {
+            std::wstring wHeightMapPath;
+            wHeightMapPath.assign(heightMapPath, heightMapPath + strlen(heightMapPath));
+            if (SUCCEEDED(pTerrain->SaveHeightMapToR16(wHeightMapPath)))
+            {
+                ImGui::OpenPopup("Save Successful");
+            }
+            else
+            {
+                ImGui::OpenPopup("Save Failed");
+            }
+        }
+    }
+
+    // 성공/실패 팝업
+    if (ImGui::BeginPopupModal("Save Successful", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Height map saved successfully.");
+        if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+        ImGui::EndPopup();
+    }
+    if (ImGui::BeginPopupModal("Save Failed", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Text("Failed to save height map.");
+        if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+        ImGui::EndPopup();
+    }
+
     ImGui::SliderFloat("Max Height", &maxHeight, 10.0f, 500.0f);
-
-    static float brushSize = 10.0f;
     ImGui::SliderFloat("Brush Size", &brushSize, 1.0f, 100.0f);
-
-    static float brushStrength = 0.1f;
     ImGui::SliderFloat("Brush Strength", &brushStrength, 0.01f, 1.0f);
 
     ImGui::Separator();
+
     // 브러쉬 모드 선택
-    static int brushMode = 0;
     const char* brushModes[] = { "Raise", "Lower", "Flatten" };
     ImGui::Combo("Brush Mode", &brushMode, brushModes, IM_ARRAYSIZE(brushModes));
 
     // 평탄화 높이 설정 (Flatten 모드에서 사용)
-    static float flattenHeight = 50.0f;
     if (brushMode == 2) // Flatten 모드
     {
         ImGui::SliderFloat("Flatten Height", &flattenHeight, 0.0f, maxHeight);
     }
 
     ImGui::Separator();
+
     // 브러쉬 섹션
     ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Brush");
-    static bool bShowBrush = false;
     ImGui::Checkbox("Show Brush", &bShowBrush);
+
     if (bShowBrush && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) && !ImGui::IsAnyItemHovered())
     {
         _bool isPick = false;
@@ -1264,6 +1303,7 @@ void CImgui_Manager::Terrain_Editor()
             }
         }
     }
+
     ImGui::End();
 }
 

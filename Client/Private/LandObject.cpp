@@ -32,6 +32,7 @@ HRESULT CLandObject::Initialize(void * pArg)
 	Safe_AddRef(m_pTerrainTransform);
 	Safe_AddRef(m_pTerrainVIBuffer);
 
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -76,4 +77,5 @@ void CLandObject::Free()
 
 	Safe_Release(m_pTerrainTransform);
 	Safe_Release(m_pTerrainVIBuffer);
+	Safe_Release(m_pColliderCom);
 }

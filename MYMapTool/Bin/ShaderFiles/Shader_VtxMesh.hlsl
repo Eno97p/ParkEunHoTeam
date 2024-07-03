@@ -6,6 +6,8 @@ texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
 
+texture2D g_RoughnessTexture;
+texture2D g_MetalicTexture;
 //FOR DISSOLVE
 texture2D	g_NoiseTexture;
 float		g_fAccTime;
@@ -33,6 +35,7 @@ bool g_bSpecular = false;
 bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
+bool g_bMetalic = false;
 
 float g_fFlowSpeed = 0.1f;
 float g_fTimeDelta;
@@ -176,35 +179,48 @@ struct PS_OUT
 	vector		vSpecular : SV_TARGET3;
 	vector		vEmissive : SV_TARGET4;
 	vector		vRoughness : SV_TARGET5;
+	vector		vMetalic : SV_TARGET6;
 
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
-	PS_OUT		Out = (PS_OUT)0;
+	PS_OUT Out = (PS_OUT)0;
 
-	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 	if (vDiffuse.a < 0.1f)
 		discard;
 
-	vector		vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
-
-	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
-
-	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+	
+	float3 vNormal;
+	if (g_bNormal)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	}
+	else
+	{
+		vNormal = In.vNormal.xyz * 2.f - 1.f;
+	}
+	
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
 
 	vNormal = mul(vNormal, WorldMatrix);
 
-	Out.vDiffuse = vDiffuse/* * 0.9f*/;
+	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
+
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
-	Out.vSpecular = g_vMtrlSpecular;
-	//Out.vEmissive = 0.5f;
-	/*if (g_Red == 0 || g_Red == 29)
-	{
-		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
-	}*/
+	if (g_bSpecular) Out.vSpecular = vSpecular;
+
+	//vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	//if (g_bEmissive) Out.vEmissive = vEmissive;
+	if (g_bRoughness) Out.vRoughness = 1.f -  vRoughness;
+	if (g_bMetalic) Out.vMetalic = 1.f -  vMetalic;
+
 	return Out;
 }
 

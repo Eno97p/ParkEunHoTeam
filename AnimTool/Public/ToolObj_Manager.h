@@ -24,6 +24,7 @@ private:
 
 public:
 	vector<CToolObj*>& Get_ToolObjs() { return m_ToolObjs; }
+	vector<CToolPartObj*>& Get_ToolPartObjs() { return m_ToolPartObjs; }
 	const _float4x4* Get_Obj_WorldMatrix(_int iIndex);	// 해당 Index Obj의 WorldMatrix를 반환하는 함수
 
 	_uint	Get_CurKeyFrame(_uint iAnimIdx, _uint iChannelIdx);
@@ -37,6 +38,9 @@ public:
 			return false;
 	}
 
+	// PartObj
+
+
 public:
 	HRESULT	Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector vPosition); // Tool에서 Obj 생성
 	HRESULT	Add_AnimModel(_int iSelectIdx);
@@ -44,7 +48,7 @@ public:
 
 	HRESULT	Delete_Obj(_int iSelectIdx);
 	HRESULT	Delete_AnimModel();
-	HRESULT	Delete_PartObj();
+	HRESULT	Delete_PartObj(_int iSelectIdx);
 
 	void	Setting_ChannelList();
 
@@ -57,6 +61,8 @@ public:
 
 	HRESULT	Save_Data();
 	HRESULT	Load_Data();
+
+	void	Setting_AddPartObj(const _char* szName);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

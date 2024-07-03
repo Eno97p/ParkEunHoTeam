@@ -10,6 +10,7 @@ CShader::CShader(const CShader & rhs)
 	, m_pEffect { rhs.m_pEffect } 
 	, m_iNumPasses { rhs.m_iNumPasses } 
 	, m_InputLayouts { rhs.m_InputLayouts }
+	, m_ShaderComponentDesc{ rhs.m_ShaderComponentDesc }
 {
 	Safe_AddRef(m_pEffect);
 
@@ -48,14 +49,29 @@ HRESULT CShader::Initialize_Prototype(const wstring & strShaderFilePath, const D
 		D3DX11_PASS_DESC	PassDesc{};
 
 		pPass->GetDesc(&PassDesc);	
-
+		
 		ID3D11InputLayout*			pInputLayout = { nullptr };
 
 		if (FAILED(m_pDevice->CreateInputLayout(pElement, iNumElements, PassDesc.pIAInputSignature, PassDesc.IAInputSignatureSize, &pInputLayout)))
 			return E_FAIL;
 
+
+
+
+
 		m_InputLayouts.push_back(pInputLayout);
+
+
+		std::wstring passName = std::wstring(PassDesc.Name, PassDesc.Name + strlen(PassDesc.Name));
+
+		m_ShaderComponentDesc.PassNames.reserve(m_iNumPasses);
+		m_ShaderComponentDesc.PassNames.push_back(passName);
 	}	
+
+
+	m_ShaderComponentDesc.iNumPasses = &m_iNumPasses;
+
+
 
 	return S_OK;
 }
@@ -67,11 +83,14 @@ HRESULT CShader::Initialize(void * pArg)
 
 HRESULT CShader::Begin(_uint iPassIndex)
 {
+	m_ShaderComponentDesc.iCurrentPass = iPassIndex;
 	if (nullptr == m_InputLayouts[iPassIndex])
 		return E_FAIL;
+	
+
 
 	m_pContext->IASetInputLayout(m_InputLayouts[iPassIndex]);
-
+	
 	ID3DX11EffectPass* pPass = m_pEffect->GetTechniqueByIndex(0)->GetPassByIndex(iPassIndex);
 	if (nullptr == pPass)
 		return E_FAIL;
@@ -79,6 +98,10 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	/* 이 쉐이더에 이 패스로 그립니다. */
 	/* 쉐이더에 전달해야할 모든 데이터를 다 던져놓아야한다. */
 	pPass->Apply(0, m_pContext);
+
+
+
+	
 
 	return S_OK;
 }

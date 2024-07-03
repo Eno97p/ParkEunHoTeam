@@ -23,16 +23,18 @@ HRESULT CParticle_Point::Initialize(void * pArg)
 	if (pArg == nullptr)
 		return E_FAIL;
 
-	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(nullptr)))
 		return E_FAIL;
 
-	m_IsColored = ((PARTICLEPOINT*)pArg)->isColored;
+	PARTICLEPOINT* pDesc = reinterpret_cast<PARTICLEPOINT*>(pArg);
+	OwnDesc = make_shared<PARTICLEPOINT>(*pDesc);
 
-	if (FAILED(Add_Components(((PARTICLEPOINT*)pArg)->Texture)))
+
+
+	if (FAILED(Add_Components(OwnDesc->Texture)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&((PARTICLEPOINT*)pArg)->vStartPos));
-	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&OwnDesc->SuperDesc.vStartPos));
 	return S_OK;
 }
 
@@ -51,7 +53,7 @@ void CParticle_Point::Tick(_float fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTarget->Get_State(CTransform::STATE_POSITION));
 	}
 
-	switch (m_pParticleDesc->eType)
+	switch (OwnDesc->SuperDesc.eType)
 	{
 	case SPREAD:
 		m_pVIBufferCom->Spread(fTimeDelta);
@@ -99,8 +101,8 @@ void CParticle_Point::Late_Tick(_float fTimeDelta)
 
 	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-
+	if(OwnDesc->SuperDesc.IsBlur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CParticle_Point::Render()
@@ -108,11 +110,22 @@ HRESULT CParticle_Point::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_IsColored == true)
-		m_pShaderCom->Begin(2);
-	else
-		m_pShaderCom->Begin(1);
+	m_pShaderCom->Begin(0);
 	
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CParticle_Point::Render_Bloom()
+{
+	if (FAILED(Bind_BlurResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(1);
+
 	m_pVIBufferCom->Bind_Buffers();
 
 	m_pVIBufferCom->Render();
@@ -124,7 +137,7 @@ HRESULT CParticle_Point::Add_Components(const wstring& Texcom)
 {
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&(m_pParticleDesc->InstanceDesc))))
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&(OwnDesc->SuperDesc.InstanceDesc))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
@@ -142,26 +155,63 @@ HRESULT CParticle_Point::Add_Components(const wstring& Texcom)
 
 HRESULT CParticle_Point::Bind_ShaderResources()
 {
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+		return E_FAIL;
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
-	if (FAILED(m_pDesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", 0)))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Desolve", &OwnDesc->SuperDesc.Desolve, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pDesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", OwnDesc->SuperDesc.DesolveNum)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolveColor", &OwnDesc->SuperDesc.vDesolveColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &OwnDesc->SuperDesc.IsColor, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartColor", &OwnDesc->SuperDesc.vStartColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_EndColor", &OwnDesc->SuperDesc.vEndColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &OwnDesc->SuperDesc.IsAlpha, sizeof(_bool))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartColor", &m_pParticleDesc->vStartColor, sizeof(_float3))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_EndColor", &m_pParticleDesc->vEndColor, sizeof(_float3))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolvePower", &OwnDesc->SuperDesc.fDesolveLength, sizeof(_float))))
 		return E_FAIL;
 	
+	return S_OK;
+}
+
+HRESULT CParticle_Point::Bind_BlurResources()
+{
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Desolve", &OwnDesc->SuperDesc.Desolve, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pDesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", OwnDesc->SuperDesc.DesolveNum)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolveColor", &OwnDesc->SuperDesc.vDesolveColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BlurPower", &OwnDesc->SuperDesc.fBlurPower, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BloomColor", &OwnDesc->SuperDesc.vBloomColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &OwnDesc->SuperDesc.IsAlpha, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolvePower", &OwnDesc->SuperDesc.fDesolveLength, sizeof(_float))))
+		return E_FAIL;
 	return S_OK;
 }
 

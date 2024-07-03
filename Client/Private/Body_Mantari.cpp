@@ -48,6 +48,12 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.f;
 	}
+	else if (*m_pState == CMantari::STATE_HIT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 15;
+		fAnimSpeed = 1.f;
+	}
 	else if (*m_pState == CMantari::STATE_WALKLEFT)
 	{
 		AnimDesc.isLoop = true;
@@ -215,13 +221,13 @@ HRESULT CBody_Mantari::Render()
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
-		
+
 		if (i == 0)
 		{
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
 				return E_FAIL;
 		}
-		
+
 		if (i == 1)
 		{
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))

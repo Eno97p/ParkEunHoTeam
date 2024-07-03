@@ -32,6 +32,8 @@ private:
 
 	HRESULT Load_LevelData(const _tchar* pFilePath);
 
+	void Load_Lights();
+
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;
 

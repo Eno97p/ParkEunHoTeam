@@ -1,5 +1,16 @@
 #include "CPhysX.h"
 
+#include"CSimulationCallBack.h"
+#include "CHitReport.h"
+#include"foundation/PxThread.h"
+
+
+
+
+
+CSimulationCallBack g_SimulationCallBack;
+
+
 CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice(pDevice)
 	, m_pContext(pContext)
@@ -38,7 +49,7 @@ HRESULT CPhysX::Initialize()
 		return E_FAIL;
 
 	PxCudaContextManagerDesc cudaContextManagerDesc;
-
+	
 	m_pCudaContextManager= PxCreateCudaContextManager(*m_pFoundation, cudaContextManagerDesc, PxGetProfilerCallback());	//Create the CUDA context manager, required for GRB to dispatch CUDA kernels.
 	if(m_pCudaContextManager)
 	{
@@ -54,22 +65,35 @@ HRESULT CPhysX::Initialize()
 	//deviceName = m_pCudaContextManager->getDeviceName();
 	//int iDeviceVersion = m_pCudaContextManager->getDriverVersion();
 
+	
 
-
-
+	
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
-	m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(6);
+	PxU32 numCores = PxThread::getNbPhysicalCores();
+	m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
+	if(!m_pCPUDispatcher)
+	{
+		MSG_BOX("Failed To Create : Physx_CPUDispatcher");
+		return E_FAIL;
+	}
 	sceneDesc.cpuDispatcher = m_pCPUDispatcher;
+	//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	sceneDesc.filterShader = FilterShaderExample;
-	
+	sceneDesc.simulationEventCallback = &g_SimulationCallBack;
+
 	sceneDesc.cudaContextManager = m_pCudaContextManager;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
+	sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
 	
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 	sceneDesc.gpuMaxNumPartitions = 8;
+	
+	
+
+	
 
 
 	m_pScene = m_pPhysics->createScene(sceneDesc);
@@ -89,18 +113,21 @@ HRESULT CPhysX::Initialize()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, false);
 	}
 
-	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	//m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
+	//
+	//PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
+	//m_pScene->addActor(*groundPlane);
 
-	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
-	m_pScene->addActor(*groundPlane);
 
 
+#ifdef _DEBUG
 
 
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f);
 	m_pScene->getVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES);
-
+#endif // _DEBUG
+	
 	//m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
@@ -109,7 +136,10 @@ HRESULT CPhysX::Initialize()
 		MSG_BOX("Failed To Create : Physx_ControllerManager");
 		return E_FAIL;
 	}
-	
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
+
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
+	m_pScene->addActor(*groundPlane);
 
 	
 
@@ -136,13 +166,42 @@ HRESULT CPhysX::AddActor(PxActor* pActor)
 
 PxFilterFlags CPhysX::FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
+
+	PX_UNUSED(attributes0);
+	PX_UNUSED(attributes1);
+	PX_UNUSED(filterData0);
+	PX_UNUSED(filterData1);
+	PX_UNUSED(constantBlockSize);
+	PX_UNUSED(constantBlock);
+
+
+
+	if ((filterData0.word0 & GROUP_PLAYER && filterData1.word0 & GROUP_WEAPON) ||
+		(filterData0.word0 & GROUP_WEAPON && filterData1.word0 & GROUP_PLAYER))
 	{
-		pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-		return PxFilterFlag::eDEFAULT;
+		return PxFilterFlag::eSUPPRESS; // 충돌 억제
 	}
 
-	return PxFilterFlag::eSUPPRESS;
+
+
+	// all initial and persisting reports for everything, with per-point data
+	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
+		| PxPairFlag::eNOTIFY_TOUCH_FOUND
+		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
+		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+	return PxFilterFlag::eDEFAULT;
+
+
+
+	//if ((filterData0.word0 & filterData1.word1) & (Engine::CollisionGropuID::GROUP_PLAYER | Engine::CollisionGropuID::GROUP_WEAPON))
+	//{
+	//	return PxFilterFlag::eSUPPRESS; // 충돌 억제
+	//}
+	//
+	//// 기본적인 충돌 설정 (필요에 따라 추가적인 설정 가능)
+	//pairFlags = PxPairFlag::eCONTACT_DEFAULT;
+	//
+	//return PxFilterFlag::eDEFAULT;
 }
 
 
@@ -163,6 +222,9 @@ CPhysX* CPhysX::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 void CPhysX::Free()
 {
+	
+
+
 	Safe_physX_Release(m_pControllerManager);
 	Safe_physX_Release(m_pScene);
 	Safe_physX_Release(m_pCPUDispatcher);
@@ -183,4 +245,7 @@ void CPhysX::Free()
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
+
+	CHitReport::DestroyInstance();
 }

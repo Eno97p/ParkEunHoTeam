@@ -111,6 +111,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_UISorter)
 		return E_FAIL;
 
+
+
+	
 	return S_OK;
 
 
@@ -705,7 +708,7 @@ void CGameInstance::Free()
 
 
 
-	CHitReport::DestroyInstance();
+	
 	m_iRefCnt;
 	int ttmp = 0;
 

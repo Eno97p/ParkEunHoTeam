@@ -20,6 +20,13 @@ public:
 		PxFilterData filterData = {};
 	}ControllerDesc;
 
+public:
+	typedef struct  PhysX_Character_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
+	{
+		//수정 가능하게 할 항목만 넣기
+
+
+	}PhysX_Character_Editable_Desc;
 
 
 private:
@@ -38,6 +45,7 @@ public:
 #ifdef _DEBUG
 	virtual HRESULT  Init_Buffer() override;
 	virtual HRESULT Render() override;
+	virtual PhysX_Character_Editable_Desc* GetData() override { return &m_OutDesc; }
 #endif
 
 public:
@@ -68,7 +76,7 @@ private:
 	const _float m_fGravity = -30.f;
 	_float m_fSpeed = 3.f;
 
-
+	PhysX_Character_Editable_Desc m_OutDesc;
 	
 public:
 	static CPhysXComponent_Character* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

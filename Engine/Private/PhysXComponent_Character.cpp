@@ -18,6 +18,7 @@ CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device* pDevice, ID3D
 
 CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Character& rhs)
 	: CPhysXComponent{ rhs }
+	, m_OutDesc{rhs.m_OutDesc }
 
 {
 }
@@ -58,32 +59,41 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	desc.nonWalkableMode = pObjectdesc->nonWalkableMode;
 	desc.volumeGrowth = 1.0f;
 	desc.reportCallback = CHitReport::GetInstance();
-	
 
+
+	PxFilterData filterData = pObjectdesc->filterData;
 
 	m_pController = m_pGameInstance->GetControllerManager()->createController(desc);
+	
 	if (m_pController == nullptr)
 	{
 		MSG_BOX("Failed to Create : Physx_Controller");
 		return E_FAIL;
 	}
+	if (pObjectdesc->pName)
+		m_pController->getActor()->setName(pObjectdesc->pName);
 
-	//PxRigidDynamic* actor = m_pController->getActor();
-	//if (actor)
-	//{
-	//	actor->setName(pObjectdesc->pName);
-	//	PxShape* shape;
-	//	PxU32 numShapes = actor->getNbShapes();
-	//	for (PxU32 i = 0; i < numShapes; ++i)
-	//	{
-	//		if (actor->getShapes(&shape, 1) == 1)
-	//		{
-	//			shape->setSimulationFilterData(pObjectdesc->filterData);
-	//			shape->setQueryFilterData(pObjectdesc->filterData);
-	//		}
-	//	}
-	//}
-		
+
+	if (m_pController)
+	{
+		PxRigidDynamic* actor = m_pController->getActor();
+		if (actor)
+		{
+			PxShape* shpae;
+			PxU32 numShapes = actor->getNbShapes();
+			for (PxU32 i = 0; i < numShapes; ++i)
+			{
+				if (actor->getShapes(&shpae, numShapes))
+				{
+					shpae->setSimulationFilterData(filterData);
+					//shpae->setQueryFilterData(filterData);
+	
+				}
+	
+			}
+		}
+	}
+
 
 
 #ifdef _DEBUG
@@ -175,25 +185,30 @@ HRESULT CPhysXComponent_Character::Init_Buffer()
 HRESULT CPhysXComponent_Character::Render()
 {
 
-	m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
 
-	m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
-	m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
-
-
-	m_pShader->Begin(0);
-
-	for (auto& pPhysXBuffer : m_pBuffer)
+	//??왜??
+	if (this->m_OutDesc.bIsOnDebugRender)
 	{
-		if (nullptr != pPhysXBuffer)
+		//랜더 문제 (와이어프레임)때문에 따로 함수를 오버라이딩함
+		m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+
+		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
+		m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
+
+
+		m_pShader->Begin(0);
+
+		for (auto& pPhysXBuffer : m_pBuffer)
 		{
-			pPhysXBuffer->Bind_Buffers();
-			pPhysXBuffer->Render();
+			if (nullptr != pPhysXBuffer)
+			{
+				pPhysXBuffer->Bind_Buffers();
+				pPhysXBuffer->Render();
+			}
+
+
 		}
-
-
 	}
-
 	return S_OK;
 }
 #endif // _DEBUG

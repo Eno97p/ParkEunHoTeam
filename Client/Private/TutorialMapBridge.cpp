@@ -79,7 +79,7 @@ void CTutorialMapBridge::Tick(_float fTimeDelta)
 
 void CTutorialMapBridge::Late_Tick(_float fTimeDelta)
 {
-	if (!m_bPhysxOff)
+	if (m_bPhysxOff)
 	{
 		m_pPhysXCom->Late_Tick(m_pTransformCom->Get_WorldFloat4x4Ref());
 	}	
@@ -143,12 +143,14 @@ HRESULT CTutorialMapBridge::Add_Components(void* pArg)
 
 	CPhysXComponent::PHYSX_DESC		PhysXDesc{};
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
+	PhysXDesc.fBoxProperty = _float3(10.f, 1.f, 10.f);				//박스 크기
 	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix,  XMMatrixRotationX(XMConvertToRadians(90.0f))* XMMatrixTranslation(20.f, 10.f, 0.f));  //오프셋 위치
+	
 
 	PhysXDesc.pComponent = m_pModelCom;
 	PhysXDesc.eGeometryType = PxGeometryType::eBOX;
 	PhysXDesc.pName = "Bridge";
-	PhysXDesc.fBoxProperty = _float3(1.f, 1.f, 1.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;

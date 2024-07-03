@@ -26,7 +26,9 @@ public:
 	virtual HRESULT Initialize(void* pArg);	
 	virtual HRESULT Render() { return S_OK; };
 
-	virtual void* GetData() { return nullptr; };
+	
+	virtual ComponentDesc* GetData() { return nullptr; };
+
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };

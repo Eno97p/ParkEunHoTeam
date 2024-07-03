@@ -12,7 +12,14 @@ class CGameObject;
 
 class ENGINE_DLL CPhysXComponent_static final : public CPhysXComponent
 {
+public:
+	typedef struct  PhysX_static_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
+	{
+		//수정 가능하게 할 항목만 넣기
+		int i = 20;
+	
 
+	}PhysX_static_Editable_Desc;
 private:
 	explicit CPhysXComponent_static(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CPhysXComponent_static(const CPhysXComponent_static& rhs);
@@ -23,7 +30,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 #ifdef _DEBUG
-	virtual void* GetData() override;
+	virtual PhysX_static_Editable_Desc* GetData() override { return &m_OutDesc; }
 #endif
 
 
@@ -39,7 +46,7 @@ private:
 private:
 	string m_strFilePath;
 
-
+	PhysX_static_Editable_Desc m_OutDesc;
 
 public:
 	static CPhysXComponent_static* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, const wstring& FilePath);

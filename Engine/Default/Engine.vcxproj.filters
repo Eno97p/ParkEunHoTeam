@@ -453,6 +453,9 @@
     <ClInclude Include="..\Public\ComputeShader_Buffer.h">
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CSimulationCallBack.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -673,6 +676,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader_Buffer.cpp">
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CSimulationCallBack.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

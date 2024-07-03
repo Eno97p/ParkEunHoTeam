@@ -57,6 +57,7 @@ using namespace physx;
 #include<cassert>
 #include<locale>
 #include<mutex>
+#include<any>
 
 
 #include "fmod.hpp"
@@ -91,10 +92,10 @@ namespace Engine
 	enum CollisionGropuID
 	{
 
-		GROUP_PLAYER = (1 << 0),
-		GROUP_WEAPON = (1 << 1),
-		GROUP_ENVIRONMENT = (1 << 2),
-		GROUP_ENEMY = (1 << 3)
+		GROUP_PLAYER = 1 << 0,
+		GROUP_WEAPON = 1 << 1,
+		GROUP_ENVIRONMENT = 1 << 2,
+		GROUP_ENEMY = 1 << 3
 	};
 
 }

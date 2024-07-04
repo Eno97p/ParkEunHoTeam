@@ -191,7 +191,7 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_CASTING)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 5;
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_MELEEATTACK1)
@@ -212,7 +212,7 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = false;
+	_bool isLerp = true;
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 

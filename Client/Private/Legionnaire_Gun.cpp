@@ -100,7 +100,6 @@ HRESULT CLegionnaire_Gun::Add_PartObjects()
 	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	WeaponDesc.pState = &m_iState;
 	WeaponDesc.eLevel = m_eLevel;
-
 	WeaponDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_Gun");
 
 	CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_LGGun_Weapon"), &WeaponDesc);
@@ -128,8 +127,7 @@ HRESULT CLegionnaire_Gun::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("WakeUp"), bind(&CLegionnaire_Gun::WakeUp, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CLegionnaire_Gun::Hit, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("MeleeAttackCool"), 6.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("MeleeAttackCool"), TEXT("Casting"), bind(&CLegionnaire_Gun::Casting, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Casting"), bind(&CLegionnaire_Gun::Casting, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("MeleeAttack"), bind(&CLegionnaire_Gun::MeleeAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("GunAttackCool"), 3.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("GunAttackCool"), TEXT("GunAttack"), bind(&CLegionnaire_Gun::GunAttack, this, std::placeholders::_1));
@@ -189,8 +187,14 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 
 NodeStates CLegionnaire_Gun::WakeUp(_float fTimedelta)
 {
+	// 아래 분기점에 들어는 오는데 애니메이션 변화가 x
 	if (m_isParry)
 	{
+		if (STATE_KNOCKDOWN == m_iState)
+		{
+			m_isAnimFinished = false;
+		}
+
 		m_iState = STATE_WAKEUP;
 
 		if (m_isAnimFinished)
@@ -207,7 +211,7 @@ NodeStates CLegionnaire_Gun::WakeUp(_float fTimedelta)
 
 NodeStates CLegionnaire_Gun::KnockDown(_float fTimedelta)
 {
-	if (m_isParry)
+	if (m_isParry && STATE_WAKEUP != m_iState)
 	{
 		m_iState = STATE_KNOCKDOWN;
 
@@ -249,19 +253,80 @@ NodeStates CLegionnaire_Gun::GunAttack(_float fTimedelta)
 	}
 	else
 	{
-		return FAILURE;
+		return SUCCESS;
 	}
 }
 
 NodeStates CLegionnaire_Gun::Casting(_float fTimedelta)
 {
-	// 몇 초 후 MeleeAttack과 연결?
-	return FAILURE;
+	// 몇 초 후 MeleeAttack과 연결하는 것으로?
+	// Player와의 거리가 일정 이하면 근접 공격 준비?
+
+	if (STATE_GUNATTACK == m_iState)
+	{
+		return FAILURE;
+	}
+
+	if (m_isAttackDistance && !m_isMeleeAttack) // 해당 변수 활성화 여부로 분기 >> Player와의 거리를 기준으로 함
+	{
+		if (3.f >= m_fCastingTimer) // m_isAnimFinished 기준이 아니라 시간으로 계산할 것?
+		{
+			m_fCastingTimer += fTimedelta;
+			m_iState = STATE_CASTING;
+			return RUNNING;
+		}
+		else
+		{
+			m_fCastingTimer = 0.f;
+			m_isMeleeAttack = true;
+			return FAILURE;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimedelta)
 {
-	return FAILURE;
+	if (STATE_CASTING == m_iState)
+	{
+		m_iState = STATE_MELEEATTACK1;
+		m_isAnimFinished = false;
+	}
+
+	if (m_isMeleeAttack/* && STATE_CASTING == m_iState*/)
+	{
+		if (m_isAnimFinished) // 애니메이션이 종료되었다면
+		{
+			switch (m_iState)
+			{
+			case STATE_MELEEATTACK1:
+			{
+				m_iState = STATE_MELEEATTACK2;
+				break;
+			}
+			case STATE_MELEEATTACK2:
+			{
+				m_iState = STATE_MELEEATTACK3;
+				break;
+			}
+			case STATE_MELEEATTACK3:
+			{
+				m_isMeleeAttack = false;
+				break;
+			}
+			default:
+				break;
+			}
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 CLegionnaire_Gun* CLegionnaire_Gun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

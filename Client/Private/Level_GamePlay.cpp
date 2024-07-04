@@ -105,7 +105,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(0.f, 10.f, 10.f, 1.f); // _float4(71.1f, 542.f, 78.f, 1.f);
+	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f); // _float4(71.1f, 542.f, 78.f, 1.f);
 	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f); // _float4(71.1f, 522.f, 98.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;

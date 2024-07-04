@@ -25,8 +25,12 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool							m_isParry = { false };
+	_bool							m_isParry = { true };
 	_bool							m_isHit = { false };
+	_bool							m_isAttackDistance = { false };
+	_bool							m_isMeleeAttack = { false };
+
+	_float							m_fCastingTimer = { 0.f };
 
 	vector<class CGameObject*>		m_PartObjects;
 

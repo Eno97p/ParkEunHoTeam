@@ -45,6 +45,7 @@
 #include "Weapon_Legionnaire.h"
 #include "Legionnaire_Gun.h"
 #include "Body_LGGun.h"
+#include "LGGun_Weapon.h"
 
 #pragma endregion Monster
 
@@ -463,6 +464,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LGGun_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 
 	/* Mantari - 박은호 작업 */
@@ -793,6 +799,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Body_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_LGGun"),
 		CBody_LGGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LGGun_Weapon"),
+		CLGGun_Weapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

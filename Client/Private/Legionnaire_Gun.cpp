@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Body_LGGun.h"
+#include "LGGun_Weapon.h"
 
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -82,17 +83,30 @@ HRESULT CLegionnaire_Gun::Add_Components()
 HRESULT CLegionnaire_Gun::Add_PartObjects()
 {
 	// Body
-	CPartObject::PARTOBJ_DESC pBodyDesc{};
-	pBodyDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	pBodyDesc.fSpeedPerSec = 0.f;
-	pBodyDesc.fRotationPerSec = 0.f;
-	pBodyDesc.pState = &m_iState;
-	pBodyDesc.eLevel = m_eLevel;
+	CPartObject::PARTOBJ_DESC pPartDesc{};
+	pPartDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	pPartDesc.fSpeedPerSec = 0.f;
+	pPartDesc.fRotationPerSec = 0.f;
+	pPartDesc.pState = &m_iState;
+	pPartDesc.eLevel = m_eLevel;
 
-	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_LGGun"), &pBodyDesc);
+	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_LGGun"), &pPartDesc);
 	if (nullptr == pBody)
 		return E_FAIL;
 	m_PartObjects.emplace_back(pBody);
+
+	// Weapon
+	CWeapon::WEAPON_DESC WeaponDesc{};
+	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	WeaponDesc.pState = &m_iState;
+	WeaponDesc.eLevel = m_eLevel;
+
+	WeaponDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_Gun");
+
+	CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_LGGun_Weapon"), &WeaponDesc);
+	if (nullptr == pWeapon)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pWeapon);
 
 
 	return S_OK;

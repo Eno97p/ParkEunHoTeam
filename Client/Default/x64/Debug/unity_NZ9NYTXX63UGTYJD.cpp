@@ -108,6 +108,9 @@
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\LGGun_Weapon.cpp"
+
+
 #include "C:\Real3DProject\Client\private\Loader.cpp"
 
 

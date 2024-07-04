@@ -651,6 +651,9 @@
     <ClInclude Include="..\Public\Body_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LGGun_Weapon.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -958,6 +961,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LGGun_Weapon.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

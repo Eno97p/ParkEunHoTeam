@@ -6,6 +6,9 @@
 #include "C:\Real3DProject\Client\private\BackGround.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Ghost.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Body_Juggulus.cpp"
 
 
@@ -52,6 +55,9 @@
 
 
 #include "C:\Real3DProject\Client\private\FreeCamera.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Ghost.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\IceBlade.cpp"

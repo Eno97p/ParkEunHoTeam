@@ -13,7 +13,7 @@ public:
 
 private:
 	CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CLegionnaire_Gun(const CMonster& rhs);
+	CLegionnaire_Gun(const CLegionnaire_Gun& rhs);
 	virtual ~CLegionnaire_Gun() = default;
 
 public:
@@ -25,7 +25,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool							m_isParry = { true };
+	_bool							m_isParry = { false };
 	_bool							m_isHit = { false };
 	_bool							m_isAttackDistance = { false };
 	_bool							m_isMeleeAttack = { false };

@@ -46,6 +46,8 @@
 #include "Legionnaire_Gun.h"
 #include "Body_LGGun.h"
 #include "LGGun_Weapon.h"
+#include "Ghost.h"
+#include "Body_Ghost.h"
 
 #pragma endregion Monster
 
@@ -469,6 +471,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ghost"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 
 	/* Mantari - 박은호 작업 */
@@ -804,6 +810,16 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_LGGun_Weapon */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LGGun_Weapon"),
 		CLGGun_Weapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ghost"),
+		CGhost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Ghost"),
+		CBody_Ghost::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

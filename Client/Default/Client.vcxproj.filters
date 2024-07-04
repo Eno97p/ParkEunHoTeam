@@ -325,6 +325,12 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon">
       <UniqueIdentifier>{ec6e2399-4e94-454d-9ec3-5b28cb6e775a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost">
+      <UniqueIdentifier>{07401c7c-d2a6-4f61-88b5-ed4a9ea60a3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost\Body">
+      <UniqueIdentifier>{e8538dba-0638-468e-9aa9-7c5f95d44e56}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -654,6 +660,12 @@
     <ClInclude Include="..\Public\LGGun_Weapon.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ghost.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Ghost.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -964,6 +976,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\LGGun_Weapon.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ghost.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Ghost.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@ CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 {
 }
 
-CBoss_Juggulus::CBoss_Juggulus(const CMonster& rhs)
+CBoss_Juggulus::CBoss_Juggulus(const CBoss_Juggulus& rhs)
 	: CMonster{rhs}
 {
 }

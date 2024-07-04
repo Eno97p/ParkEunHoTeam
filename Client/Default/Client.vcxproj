@@ -179,6 +179,7 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Ghost.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
     <ClInclude Include="..\Public\Body_LGGun.h" />
@@ -198,6 +199,7 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
+    <ClInclude Include="..\Public\Ghost.h" />
     <ClInclude Include="..\Public\IceBlade.h" />
     <ClInclude Include="..\Public\ImGUi\imconfig.h" />
     <ClInclude Include="..\Public\ImGUi\imgui.h" />
@@ -289,6 +291,7 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Ghost.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
@@ -305,6 +308,7 @@
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
+    <ClCompile Include="..\Private\Ghost.cpp" />
     <ClCompile Include="..\Private\IceBlade.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_demo.cpp" />

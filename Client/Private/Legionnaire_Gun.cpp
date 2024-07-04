@@ -9,7 +9,7 @@ CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* p
 {
 }
 
-CLegionnaire_Gun::CLegionnaire_Gun(const CMonster& rhs)
+CLegionnaire_Gun::CLegionnaire_Gun(const CLegionnaire_Gun& rhs)
 	: CMonster{ rhs }
 {
 }
@@ -187,7 +187,6 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 
 NodeStates CLegionnaire_Gun::WakeUp(_float fTimedelta)
 {
-	// 아래 분기점에 들어는 오는데 애니메이션 변화가 x
 	if (m_isParry)
 	{
 		if (STATE_KNOCKDOWN == m_iState)
@@ -259,17 +258,15 @@ NodeStates CLegionnaire_Gun::GunAttack(_float fTimedelta)
 
 NodeStates CLegionnaire_Gun::Casting(_float fTimedelta)
 {
-	// 몇 초 후 MeleeAttack과 연결하는 것으로?
 	// Player와의 거리가 일정 이하면 근접 공격 준비?
-
 	if (STATE_GUNATTACK == m_iState)
 	{
 		return FAILURE;
 	}
 
-	if (m_isAttackDistance && !m_isMeleeAttack) // 해당 변수 활성화 여부로 분기 >> Player와의 거리를 기준으로 함
+	if (m_isAttackDistance && !m_isMeleeAttack)
 	{
-		if (3.f >= m_fCastingTimer) // m_isAnimFinished 기준이 아니라 시간으로 계산할 것?
+		if (3.f >= m_fCastingTimer)
 		{
 			m_fCastingTimer += fTimedelta;
 			m_iState = STATE_CASTING;
@@ -296,7 +293,7 @@ NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimedelta)
 		m_isAnimFinished = false;
 	}
 
-	if (m_isMeleeAttack/* && STATE_CASTING == m_iState*/)
+	if (m_isMeleeAttack)
 	{
 		if (m_isAnimFinished) // 애니메이션이 종료되었다면
 		{

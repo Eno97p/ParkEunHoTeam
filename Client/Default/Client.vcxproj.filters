@@ -313,6 +313,18 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
       <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun">
+      <UniqueIdentifier>{fdc2adbf-bc69-45fb-8f4e-f96d74ead0e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject">
+      <UniqueIdentifier>{f11bf536-e453-4164-b0b8-846c71a58c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body">
+      <UniqueIdentifier>{c804aa51-e83c-4cb8-94b3-4683a873bb16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon">
+      <UniqueIdentifier>{ec6e2399-4e94-454d-9ec3-5b28cb6e775a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -633,6 +645,9 @@
     <ClInclude Include="..\Public\Juggulus_HandThree.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Legionnaire_Gun.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -934,6 +949,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Legionnaire_Gun.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

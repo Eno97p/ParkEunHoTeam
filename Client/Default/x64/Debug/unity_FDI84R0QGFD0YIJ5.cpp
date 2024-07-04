@@ -93,6 +93,9 @@
 #include "C:\Real3DProject\Client\Private\Legionnaire.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Legionnaire_Gun.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Level_GamePlay.cpp"
 
 

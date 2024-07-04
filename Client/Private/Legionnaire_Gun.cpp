@@ -1,6 +1,7 @@
 #include "Legionnaire_Gun.h"
 
 #include "GameInstance.h"
+#include "Body_LGGun.h"
 
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -56,13 +57,13 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 	m_pBehaviorCom->Update(fTimeDelta);
 
 	for (auto& pPartObject : m_PartObjects)
-		pPartObject.second->Tick(fTimeDelta);
+		pPartObject->Tick(fTimeDelta);
 }
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 {
 	for (auto& pPartObject : m_PartObjects)
-		pPartObject.second->Late_Tick(fTimeDelta);
+		pPartObject->Late_Tick(fTimeDelta);
 }
 
 HRESULT CLegionnaire_Gun::Render()
@@ -80,81 +81,173 @@ HRESULT CLegionnaire_Gun::Add_Components()
 
 HRESULT CLegionnaire_Gun::Add_PartObjects()
 {
+	// Body
+	CPartObject::PARTOBJ_DESC pBodyDesc{};
+	pBodyDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	pBodyDesc.fSpeedPerSec = 0.f;
+	pBodyDesc.fRotationPerSec = 0.f;
+	pBodyDesc.pState = &m_iState;
+	pBodyDesc.eLevel = m_eLevel;
+
+	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_LGGun"), &pBodyDesc);
+	if (nullptr == pBody)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pBody);
+
+
 	return S_OK;
 }
 
 HRESULT CLegionnaire_Gun::Add_Nodes()
 {
+	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
+
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
+
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Move_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CLegionnaire_Gun::Idle, this, std::placeholders::_1));
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CLegionnaire_Gun::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("KnockDown"), bind(&CLegionnaire_Gun::KnockDown, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("WakeUp"), bind(&CLegionnaire_Gun::WakeUp, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CLegionnaire_Gun::Hit, this, std::placeholders::_1));
+
+	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("MeleeAttackCool"), 6.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("MeleeAttackCool"), TEXT("Casting"), bind(&CLegionnaire_Gun::Casting, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("MeleeAttack"), bind(&CLegionnaire_Gun::MeleeAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("GunAttackCool"), 3.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("GunAttackCool"), TEXT("GunAttack"), bind(&CLegionnaire_Gun::GunAttack, this, std::placeholders::_1));
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CLegionnaire_Gun::Move, this, std::placeholders::_1));
+
 	return S_OK;
 }
 
 void CLegionnaire_Gun::Check_AnimFinished()
 {
+	vector<CGameObject*>::iterator iter = m_PartObjects.begin();
+	m_isAnimFinished = dynamic_cast<CBody_LGGun*>(*iter)->Get_AnimFinished();
 }
 
 NodeStates CLegionnaire_Gun::Dead(_float fTimedelta)
 {
-	return NodeStates();
+	if (0 >= m_iCurHp)
+	{
+		m_iState = STATE_DEAD;
+
+		if (m_isAnimFinished)
+		{
+			m_pGameInstance->Erase(this);
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 {
-	return NodeStates();
+	if (m_isHit) // 이 부분을 State으로 분기 처리 해도 
+	{
+		if (m_iState != STATE_HIT)
+		{
+			// HP 처리
+
+		}
+
+		m_iState = STATE_HIT;
+
+		if (m_isAnimFinished)
+		{
+			m_isHit = false;
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::WakeUp(_float fTimedelta)
 {
-	return NodeStates();
+	if (m_isParry)
+	{
+		m_iState = STATE_WAKEUP;
+
+		if (m_isAnimFinished)
+		{
+			m_isParry = false;
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::KnockDown(_float fTimedelta)
 {
-	return NodeStates();
+	if (m_isParry)
+	{
+		m_iState = STATE_KNOCKDOWN;
+
+		if (m_isAnimFinished)
+		{
+			return FAILURE;
+		}
+
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::Idle(_float fTimedelta)
 {
-	return NodeStates();
+	m_iState = STATE_IDLE;
+
+	return RUNNING;
 }
 
-NodeStates CLegionnaire_Gun::Walk(_float fTimedelta)
+NodeStates CLegionnaire_Gun::Move(_float fTimeDelta)
 {
-	return NodeStates();
-}
+	// 상황에 따라 상태 처리 다르게(앞뒤좌우)
 
-NodeStates CLegionnaire_Gun::Run(_float fTimedelta)
-{
-	return NodeStates();
-}
 
-NodeStates CLegionnaire_Gun::WalkBack(_float fTimedelta)
-{
-	return NodeStates();
-}
 
-NodeStates CLegionnaire_Gun::WalkLeft(_float fTimedelta)
-{
-	return NodeStates();
-}
-
-NodeStates CLegionnaire_Gun::WalkRight(_float fTimedelta)
-{
-	return NodeStates();
+	return FAILURE;
 }
 
 NodeStates CLegionnaire_Gun::GunAttack(_float fTimedelta)
 {
-	return NodeStates();
+	if (!m_isAnimFinished)
+	{
+		m_iState = STATE_GUNATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CLegionnaire_Gun::Casting(_float fTimedelta)
 {
-	return NodeStates();
+	// 몇 초 후 MeleeAttack과 연결?
+	return FAILURE;
 }
 
 NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimedelta)
 {
-	return NodeStates();
+	return FAILURE;
 }
 
 CLegionnaire_Gun* CLegionnaire_Gun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -190,6 +283,6 @@ void CLegionnaire_Gun::Free()
 	Safe_Release(m_pBehaviorCom);
 
 	for (auto& pPartObject : m_PartObjects)
-		Safe_Release(pPartObject.second);
+		Safe_Release(pPartObject);
 	m_PartObjects.clear();
 }

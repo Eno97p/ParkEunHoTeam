@@ -181,6 +181,7 @@
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
+    <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
+    <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />

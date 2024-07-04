@@ -300,7 +300,7 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 	{
 		m_iState = STATE_IDLE_SEC;
 	}
-	return SUCCESS;
+	return RUNNING; // SUCCESS
 }
 
 NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)

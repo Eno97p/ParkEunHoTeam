@@ -43,6 +43,8 @@
 #include "Legionnaire.h"
 #include "Body_Legionnaire.h"
 #include "Weapon_Legionnaire.h"
+#include "Legionnaire_Gun.h"
+#include "Body_LGGun.h"
 
 #pragma endregion Monster
 
@@ -456,6 +458,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Legionnaire_Gun"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 
 
@@ -777,6 +783,16 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Weapon_Legionnaire */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Legionnaire"),
 		CWeapon_Legionnaire::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire_Gun"),
+		CLegionnaire_Gun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_LGGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_LGGun"),
+		CBody_LGGun::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

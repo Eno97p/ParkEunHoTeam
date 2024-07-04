@@ -25,7 +25,10 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	map<string, class CGameObject*>	m_PartObjects;
+	_bool							m_isParry = { false };
+	_bool							m_isHit = { false };
+
+	vector<class CGameObject*>		m_PartObjects;
 
 private:
 	HRESULT				Add_Components();
@@ -42,11 +45,7 @@ private:
 	NodeStates			KnockDown(_float fTimedelta);
 	NodeStates			Idle(_float fTimedelta);
 
-	NodeStates			Walk(_float fTimedelta);
-	NodeStates			Run(_float fTimedelta);
-	NodeStates			WalkBack(_float fTimedelta);
-	NodeStates			WalkLeft(_float fTimedelta);
-	NodeStates			WalkRight(_float fTimedelta);
+	NodeStates			Move(_float fTimeDelta);
 
 	NodeStates			GunAttack(_float fTimedelta);
 	NodeStates			Casting(_float fTimedelta);

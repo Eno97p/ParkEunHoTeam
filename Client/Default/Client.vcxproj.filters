@@ -336,6 +336,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\Body">
       <UniqueIdentifier>{3fa0fc76-9382-4dd6-be82-626980f8c02e}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\08. vehicle">
+      <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -635,9 +638,6 @@
     <ClInclude Include="..\Public\TutorialMapBridge.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Passive_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClInclude>
@@ -677,6 +677,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Homonculus.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CHoverboard.h">
+      <Filter>02.GameObjects\08. vehicle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -958,9 +964,6 @@
     <ClCompile Include="..\Private\TutorialMapBridge.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Passive_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Body_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClCompile>
@@ -1000,6 +1003,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Homonculus.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Passive_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CHoverboard.cpp">
+      <Filter>02.GameObjects\08. vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -331,6 +331,12 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost\Body">
       <UniqueIdentifier>{e8538dba-0638-468e-9aa9-7c5f95d44e56}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus">
+      <UniqueIdentifier>{e5b6e09e-877d-40e3-8096-e3c7eb4cbf55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\Body">
+      <UniqueIdentifier>{3fa0fc76-9382-4dd6-be82-626980f8c02e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -666,6 +672,12 @@
     <ClInclude Include="..\Public\Body_Ghost.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Homonculus.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Homonculus.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -982,6 +994,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Ghost.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Homonculus.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Homonculus.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

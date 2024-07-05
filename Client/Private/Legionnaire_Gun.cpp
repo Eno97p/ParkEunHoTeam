@@ -231,7 +231,7 @@ NodeStates CLegionnaire_Gun::Idle(_float fTimedelta)
 {
 	m_iState = STATE_IDLE;
 
-	return RUNNING;
+	return SUCCESS; // ?
 }
 
 NodeStates CLegionnaire_Gun::Move(_float fTimeDelta)

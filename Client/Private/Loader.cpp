@@ -48,6 +48,8 @@
 #include "LGGun_Weapon.h"
 #include "Ghost.h"
 #include "Body_Ghost.h"
+#include "Homonculus.h"
+#include "Body_Homonculus.h"
 
 #pragma endregion Monster
 
@@ -476,6 +478,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Homonculus/Homomculus.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 	/* Mantari - 박은호 작업 */
 	/* For.Prototype_Component_Model_Mantari */
@@ -820,6 +827,16 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Body_Ghost */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Ghost"),
 		CBody_Ghost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Homonculus"),
+		CHomonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Homonculus"),
+		CBody_Homonculus::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

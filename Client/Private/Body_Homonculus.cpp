@@ -1,24 +1,24 @@
-#include "Body_Ghost.h"
+#include "Body_Homonculus.h"
 
 #include "GameInstance.h"
-#include "Ghost.h"
+#include "Homonculus.h"
 
-CBody_Ghost::CBody_Ghost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CBody_Homonculus::CBody_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {
 }
 
-CBody_Ghost::CBody_Ghost(const CBody_Ghost& rhs)
+CBody_Homonculus::CBody_Homonculus(const CBody_Homonculus& rhs)
 	: CPartObject{ rhs }
 {
 }
 
-HRESULT CBody_Ghost::Initialize_Prototype()
+HRESULT CBody_Homonculus::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CBody_Ghost::Initialize(void* pArg)
+HRESULT CBody_Homonculus::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -26,30 +26,30 @@ HRESULT CBody_Ghost::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(17, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(9, true));
 
 	return S_OK;
 }
 
-void CBody_Ghost::Priority_Tick(_float fTimeDelta)
+void CBody_Homonculus::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CBody_Ghost::Tick(_float fTimeDelta)
+void CBody_Homonculus::Tick(_float fTimeDelta)
 {
 	Change_Animation(fTimeDelta);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 }
 
-void CBody_Ghost::Late_Tick(_float fTimeDelta)
+void CBody_Homonculus::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 }
 
-HRESULT CBody_Ghost::Render()
+HRESULT CBody_Homonculus::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -87,20 +87,20 @@ HRESULT CBody_Ghost::Render()
 	return S_OK;
 }
 
-HRESULT CBody_Ghost::Render_Distortion()
+HRESULT CBody_Homonculus::Render_Distortion()
 {
 	return S_OK;
 }
 
-HRESULT CBody_Ghost::Render_LightDepth()
+HRESULT CBody_Homonculus::Render_LightDepth()
 {
 	return S_OK;
 }
 
-HRESULT CBody_Ghost::Add_Components()
+HRESULT CBody_Homonculus::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ghost"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -117,7 +117,7 @@ HRESULT CBody_Ghost::Add_Components()
 	return S_OK;
 }
 
-HRESULT CBody_Ghost::Bind_ShaderResources()
+HRESULT CBody_Homonculus::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -129,66 +129,12 @@ HRESULT CBody_Ghost::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CBody_Ghost::Change_Animation(_float fTimeDelta)
+void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 17, true };
+	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
-	if (*m_pState == CGhost::STATE_IDLE)
-	{
-		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 17;
-	}
-	else if (*m_pState == CGhost::STATE_DEAD)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 9;
-	}
-	else if (*m_pState == CGhost::STATE_HIT)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 11;
-	}
-	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_1)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 0;
-	}
-	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_2)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 1;
-	}
-	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_3)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 2;
-	}
-	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_4)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 3;
-	}
-	else if (*m_pState == CGhost::STATE_DOWNATTACK)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 7;
-	}
-	else if (*m_pState == CGhost::STATE_GO)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 18;
-	}
-	else if (*m_pState == CGhost::STATE_LEFT)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 19;
-	}
-	else if (*m_pState == CGhost::STATE_RIGHT)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 20;
-	}
+
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
@@ -196,33 +142,33 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 
-CBody_Ghost* CBody_Ghost::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CBody_Homonculus* CBody_Homonculus::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CBody_Ghost* pInstance = new CBody_Ghost(pDevice, pContext);
+	CBody_Homonculus* pInstance = new CBody_Homonculus(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CBody_Ghost");
+		MSG_BOX("Failed To Created : CBody_Homonculus");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CBody_Ghost::Clone(void* pArg)
+CGameObject* CBody_Homonculus::Clone(void* pArg)
 {
-	CBody_Ghost* pInstance = new CBody_Ghost(*this);
+	CBody_Homonculus* pInstance = new CBody_Homonculus(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CBody_Ghost");
+		MSG_BOX("Failed To Cloned : CBody_Homonculus");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CBody_Ghost::Free()
+void CBody_Homonculus::Free()
 {
 	__super::Free();
 

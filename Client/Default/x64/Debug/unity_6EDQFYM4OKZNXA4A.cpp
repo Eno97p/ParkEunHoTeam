@@ -9,6 +9,9 @@
 #include "C:\Real3DProject\Client\Private\Body_Ghost.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Homonculus.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Body_Juggulus.cpp"
 
 
@@ -58,6 +61,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\Ghost.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Homonculus.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\IceBlade.cpp"

@@ -1,6 +1,7 @@
 #include "Ghost.h"
 
 #include "GameInstance.h"
+#include "Body_Ghost.h"
 
 CGhost::CGhost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -25,8 +26,7 @@ HRESULT CGhost::Initialize(void* pArg)
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
 	m_iCurHp = 100;
-	/*m_iState = STATE_IDLE_FIRST;
-	m_ePhase = PHASE_ONE;*/
+	m_iState = STATE_IDLE;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
@@ -80,16 +80,167 @@ HRESULT CGhost::Add_Components()
 
 HRESULT CGhost::Add_PartObjects()
 {
+	// Body
+	CPartObject::PARTOBJ_DESC pPartDesc{};
+	pPartDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	pPartDesc.fSpeedPerSec = 0.f;
+	pPartDesc.fRotationPerSec = 0.f;
+	pPartDesc.pState = &m_iState;
+	pPartDesc.eLevel = m_eLevel;
+
+	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Ghost"), &pPartDesc);
+	if (nullptr == pBody)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pBody);
+
 	return S_OK;
 }
 
 HRESULT CGhost::Add_Nodes()
 {
+	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
+
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
+
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Move_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CGhost::Idle, this, std::placeholders::_1));
+
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CGhost::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CGhost::Hit, this, std::placeholders::_1));
+	
+	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("DefaultAttackCool"), 8.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("DefaultAttackCool"), TEXT("DefaultAttack"), bind(&CGhost::Default_Attack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("DownAttackCool"), 5.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("DownAttackCool"), TEXT("DownAttack"), bind(&CGhost::Down_Attack, this, std::placeholders::_1));
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CGhost::Move, this, std::placeholders::_1));
+
 	return S_OK;
 }
 
 void CGhost::Check_AnimFinished()
 {
+	vector<CGameObject*>::iterator iter = m_PartObjects.begin();
+	m_isAnimFinished = dynamic_cast<CBody_Ghost*>(*iter)->Get_AnimFinished();
+}
+
+NodeStates CGhost::Dead(_float fTimeDelta)
+{
+	if (0 >= m_iCurHp)
+	{
+		m_iState = STATE_DEAD;
+		if (m_isAnimFinished)
+		{
+			m_pGameInstance->Erase(this);
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CGhost::Hit(_float fTimeDelta)
+{
+	if (m_isHit)
+	{
+
+		m_iState = STATE_HIT;
+
+		if (m_isAnimFinished)
+		{
+			m_isHit = false;
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CGhost::Idle(_float fTimeDelta)
+{
+	m_iState = STATE_IDLE;
+
+	return SUCCESS;
+}
+
+NodeStates CGhost::Move(_float fTimeDelta)
+{
+
+	return FAILURE;
+}
+
+NodeStates CGhost::Default_Attack(_float fTimeDelta)
+{
+	if (STATE_DOWNATTACK == m_iState)
+	{
+		return FAILURE;
+	}
+
+	// 조건문을 다른 것으로 할 것
+	if (STATE_DEFAULTATTACK_4 != m_iState)
+	{
+		m_isDefaultAttack = true;
+	}
+
+	if (m_isDefaultAttack)
+	{
+		if (STATE_DEFAULTATTACK_1 != m_iState && STATE_DEFAULTATTACK_2 != m_iState && STATE_DEFAULTATTACK_3 != m_iState && STATE_DEFAULTATTACK_4 != m_iState)
+		{
+			m_iState = STATE_DEFAULTATTACK_1;
+			m_isAnimFinished = false;
+		}
+
+		if (m_isAnimFinished)
+		{
+			switch (m_iState)
+			{
+			case STATE_DEFAULTATTACK_1:
+				m_iState = STATE_DEFAULTATTACK_2;
+				break;
+			case STATE_DEFAULTATTACK_2:
+				m_iState = STATE_DEFAULTATTACK_3;
+				break;
+			case STATE_DEFAULTATTACK_3:
+				m_iState = STATE_DEFAULTATTACK_4;
+				break;
+			case STATE_DEFAULTATTACK_4:
+				m_isDefaultAttack = false;
+				break;
+			default:
+				break;
+			}
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
+}
+
+NodeStates CGhost::Down_Attack(_float fTimeDelta)
+{
+	if (STATE_IDLE == m_iState)
+	{
+		m_isAnimFinished = false;
+	}
+
+	if (!m_isAnimFinished)
+	{
+		m_iState = STATE_DOWNATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 CGhost* CGhost::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

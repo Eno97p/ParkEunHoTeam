@@ -12,12 +12,12 @@ END
 
 BEGIN(Client)
 
-class CBody_Ghost final : public CPartObject
+class CBody_Homonculus final : public CPartObject
 {
 private:
-	CBody_Ghost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CBody_Ghost(const CBody_Ghost& rhs);
-	virtual ~CBody_Ghost() = default;
+	CBody_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CBody_Homonculus(const CBody_Homonculus& rhs);
+	virtual ~CBody_Homonculus() = default;
 
 public:
 	virtual bool	Get_AnimFinished() { return m_isAnimFinished; }
@@ -48,9 +48,9 @@ public:
 	void	Change_Animation(_float fTimeDelta);
 
 public:
-	static CBody_Ghost*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*	Clone(void* pArg) override;
-	virtual void			Free() override;
+	static CBody_Homonculus*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*		Clone(void* pArg) override;
+	virtual void				Free() override;
 };
 
 END

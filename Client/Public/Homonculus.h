@@ -4,17 +4,15 @@
 
 BEGIN(Client)
 
-class CGhost final : public CMonster
+class CHomonculus final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT,
-		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DEFAULTATTACK_3, STATE_DEFAULTATTACK_4, STATE_DOWNATTACK,
-		STATE_GO, STATE_LEFT, STATE_RIGHT, STATE_END };
+	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, STATE_END };
 
 private:
-	CGhost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CGhost(const CGhost& rhs);
-	virtual ~CGhost() = default;
+	CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CHomonculus(const CHomonculus& rhs);
+	virtual ~CHomonculus() = default;
 
 
 public:
@@ -27,7 +25,6 @@ public:
 
 private:
 	_bool							m_isHit = { false };
-	_bool							m_isDefaultAttack = { false };
 
 	vector<class CGameObject*>		m_PartObjects;
 
@@ -46,12 +43,9 @@ private:
 
 	NodeStates			Move(_float fTimeDelta);
 
-	NodeStates			Default_Attack(_float fTimeDelta);
-	NodeStates			Down_Attack(_float fTimeDelta);
-
 
 public:
-	static CGhost*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CHomonculus*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

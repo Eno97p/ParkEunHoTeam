@@ -7,7 +7,9 @@ BEGIN(Client)
 class CHomonculus final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, STATE_END };
+	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, 
+		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DOWNATTACK, STATE_FULLATTACK,
+		STATE_GO, STATE_LEFT, STATE_RIGHT, STATE_END };
 
 private:
 	CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -43,6 +45,9 @@ private:
 
 	NodeStates			Move(_float fTimeDelta);
 
+	NodeStates			Default_Attack(_float fTimeDelta);
+	NodeStates			Down_Attack(_float fTimeDelta);
+	NodeStates			Full_Attack(_float fTimeDelta);
 
 public:
 	static CHomonculus*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

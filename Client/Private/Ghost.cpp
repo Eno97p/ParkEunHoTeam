@@ -132,6 +132,7 @@ NodeStates CGhost::Dead(_float fTimeDelta)
 	if (0 >= m_iCurHp)
 	{
 		m_iState = STATE_DEAD;
+
 		if (m_isAnimFinished)
 		{
 			m_pGameInstance->Erase(this);

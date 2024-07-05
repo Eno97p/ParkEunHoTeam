@@ -20,7 +20,7 @@ public:
 		_bool			isLoop;
 
 		//For Map Elements
-		vector<_float4x4*>		WorldMats;
+		//vector<_float4x4*>		WorldMats;
 	}INSTANCE_DESC;
 protected:
 	CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

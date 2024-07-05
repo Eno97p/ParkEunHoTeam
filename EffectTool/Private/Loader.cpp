@@ -145,7 +145,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//Flat
 	PreTransformMatrix = XMMatrixScaling(0.1f, 0.1f, 0.1f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Flat"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Model/Flat/Flat.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Model/Flat/NewFlat.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Fiona */

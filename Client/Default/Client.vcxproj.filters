@@ -73,15 +73,6 @@
     <Filter Include="02.GameObjects\06.Effect\Particle">
       <UniqueIdentifier>{76934740-a5db-4428-9475-8f245620e6bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Particle\Rect">
-      <UniqueIdentifier>{e3631d35-6f8e-476c-9872-42d0871d5798}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Particle\Point">
-      <UniqueIdentifier>{ab27df53-d9d1-4d37-a28e-14fc65696bbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Explosion">
-      <UniqueIdentifier>{95f956dd-b699-4485-9277-20671612e4b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Distortion">
       <UniqueIdentifier>{74bfd6ce-319e-4717-a724-8b3052d85183}</UniqueIdentifier>
     </Filter>
@@ -310,6 +301,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
       <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FrameTexture">
+      <UniqueIdentifier>{07a20ad7-ecc3-45f4-a797-3ac0038191c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -374,15 +368,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\04.Sky</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Particle_Rect.h">
-      <Filter>02.GameObjects\06.Effect\Particle\Rect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Particle_Point.h">
-      <Filter>02.GameObjects\06.Effect\Particle\Point</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Explosion.h">
-      <Filter>02.GameObjects\06.Effect\Explosion</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Distortion.h">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
@@ -621,6 +606,24 @@
     <ClInclude Include="..\Public\Juggulus_HandThree.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ParticleMesh.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectManager.h">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -676,15 +679,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\04.Sky</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Rect.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle\Rect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Point.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle\Point</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Explosion.cpp">
-      <Filter>02.GameObjects\06.Effect\Explosion</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Distortion.cpp">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
@@ -913,6 +907,24 @@
     <ClCompile Include="..\Private\Passive_Element.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ParticleMesh.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EffectManager.cpp">
+      <Filter>02.GameObjects\06.Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

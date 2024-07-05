@@ -69,6 +69,7 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 		ID3D11ShaderResourceView* pSRV = { nullptr };
 
 		HRESULT			hr{};
+		
 
 		if (false == lstrcmp(szEXT, TEXT(".dds")))
 			hr = CreateDDSTextureFromFile(m_pDevice, m_szTextureFilePath, nullptr, &pSRV);

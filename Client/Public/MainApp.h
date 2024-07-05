@@ -40,6 +40,7 @@ public:
 	HRESULT Ready_Gara();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Prototype_For_Effects();
 	HRESULT	Ready_UI();
 	HRESULT	Ready_Texture_UI();
 	HRESULT	Ready_Prototype_UI();

@@ -30,9 +30,23 @@ public:
 private:	//for FileSystem
 	void Load_Texture();
 	vector<string> GetFilesInDirectory(const string& path);
+	vector<string> GetFilesTexture(const string& path);
 	bool IsPNGFile(const std::string& filename) {
 		return filename.size() >= 4 && filename.substr(filename.size() - 4) == ".png";
 	}
+	bool IsTextureFile(const string& filename)
+	{
+		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".png") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".jpg") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".jpeg") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".tga");
+	}
+
+	bool IsDDSFile(const std::string& filename) {
+		return filename.size() >= 4 && filename.substr(filename.size() - 4) == ".dds";
+	}
+
+
 	wstring utf8_to_wstring(const std::string& str);
 	HRESULT Add_Texture_Prototype(const wstring& path, const wstring& name);
 	ImTextureID DirectXTextureToImTextureID();
@@ -62,6 +76,9 @@ private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
 private:
+	HRESULT ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath);
+
+private:
 	class CGameInstance* m_pGameInstance = nullptr;
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -74,7 +91,10 @@ private:
 	const _float4x4* TrailMat = nullptr;
 
 private:
-	multimap<PARTICLETYPE, shared_ptr<void>>			m_Particles;
+	void Erase_Particle(_int index);
+
+private:
+	vector<pair<PARTICLETYPE, void*>>		m_Types;
 	vector<shared_ptr<CParticle_Trail::TRAIL_DESC>> TrailEffects;
 
 	vector<string> ParticleNames;

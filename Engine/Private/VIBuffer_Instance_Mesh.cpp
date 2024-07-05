@@ -255,26 +255,26 @@ HRESULT CInstance_Mesh::Initialize_ProtoType_ForMapElements(CMesh* m_Meshes, con
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		if (i < InstanceDesc.WorldMats.size())
-		{
-			// WorldMats에서 월드 행렬을 가져와 VTXMATRIX 구조체에 설정
-			XMMATRIX worldMatrix = XMLoadFloat4x4(InstanceDesc.WorldMats[i]);
-
-			// 월드 행렬의 각 행을 VTXMATRIX의 각 벡터에 복사
-			XMStoreFloat4(&pInstanceVertices[i].vRight, (worldMatrix.r[0]));
-			XMStoreFloat4(&pInstanceVertices[i].vUp, (worldMatrix.r[1]));
-			XMStoreFloat4(&pInstanceVertices[i].vLook, (worldMatrix.r[2]));
-			XMStoreFloat4(&pInstanceVertices[i].vTranslation, (worldMatrix.r[3]));
-		}
-		else
-		{
-			// WorldMats의 크기가 m_iNumInstance보다 작을 경우, 기본값으로 설정
-			pInstanceVertices[i].vRight = _float4(1.0f, 0.0f, 0.0f, 0.0f);
-			pInstanceVertices[i].vUp = _float4(0.0f, 1.0f, 0.0f, 0.0f);
-			pInstanceVertices[i].vLook = _float4(0.0f, 0.0f, 1.0f, 0.0f);
-			pInstanceVertices[i].vTranslation = _float4(0.0f, 0.0f, 0.0f, 1.0f);
-		}
-
+		//if (i < InstanceDesc.WorldMats.size())
+		//{
+		//	// WorldMats에서 월드 행렬을 가져와 VTXMATRIX 구조체에 설정
+		//	XMMATRIX worldMatrix = XMLoadFloat4x4(InstanceDesc.WorldMats[i]);
+		//
+		//	// 월드 행렬의 각 행을 VTXMATRIX의 각 벡터에 복사
+		//	XMStoreFloat4(&pInstanceVertices[i].vRight, (worldMatrix.r[0]));
+		//	XMStoreFloat4(&pInstanceVertices[i].vUp, (worldMatrix.r[1]));
+		//	XMStoreFloat4(&pInstanceVertices[i].vLook, (worldMatrix.r[2]));
+		//	XMStoreFloat4(&pInstanceVertices[i].vTranslation, (worldMatrix.r[3]));
+		//}
+		//else
+		//{
+		//	// WorldMats의 크기가 m_iNumInstance보다 작을 경우, 기본값으로 설정
+		//	pInstanceVertices[i].vRight = _float4(1.0f, 0.0f, 0.0f, 0.0f);
+		//	pInstanceVertices[i].vUp = _float4(0.0f, 1.0f, 0.0f, 0.0f);
+		//	pInstanceVertices[i].vLook = _float4(0.0f, 0.0f, 1.0f, 0.0f);
+		//	pInstanceVertices[i].vTranslation = _float4(0.0f, 0.0f, 0.0f, 1.0f);
+		//}
+	
 	}
 
 	m_InitialData.pSysMem = pInstanceVertices;

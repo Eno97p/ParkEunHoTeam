@@ -523,16 +523,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxInstance_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Rect"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Rect.hlsl"), VTXINSTANCE_RECT::Elements, VTXINSTANCE_RECT::iNumElements))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_VtxInstance_Point */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
-		return E_FAIL;
-
-	/* For.Prototype_Component_Shader_VtxInstance_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
 		return E_FAIL;
@@ -687,20 +677,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CActive_Element::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	///* For.Prototype_GameObject_Particle_Rect */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Rect"),
-	//	CParticle_Rect::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	///* For.Prototype_GameObject_Particle_Point */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Point"),
-	//	CParticle_Point::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	/* For.Prototype_GameObject_Explosion */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Explosion"),
-		CExplosion::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 
 #pragma region Active Element

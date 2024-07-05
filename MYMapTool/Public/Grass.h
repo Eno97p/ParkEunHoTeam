@@ -1,7 +1,7 @@
 #pragma once
 
-#include "GameObject.h"
-#include "MYMapTool_Defines.h"
+//#include "MYMapTool_Defines.h"
+#include "ToolObj.h"
 
 BEGIN(Engine)
 class CShader;
@@ -11,7 +11,7 @@ END
 
 BEGIN(MYMapTool)
 
-class CGrass final : public CGameObject
+class CGrass final : public CToolObj
 {
 public:
 	typedef struct GRASS_DESC : public CGameObject::GAMEOBJECT_DESC

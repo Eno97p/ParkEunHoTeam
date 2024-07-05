@@ -41,6 +41,7 @@
 #include <tchar.h>
 using namespace DirectX;
 using namespace physx;
+using namespace vehicle2;
 
 #include <vector>
 #include <list>

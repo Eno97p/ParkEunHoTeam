@@ -22,18 +22,22 @@ public:
 public:
 	HRESULT	Initialize(LEVEL eNextLevel);
 	HRESULT	Loading();
+	HRESULT Loading_Map();
 
 private:
-	ID3D11Device*			m_pDevice = { nullptr };
-	ID3D11DeviceContext*	m_pContext = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
 
-	HANDLE					m_hThread = { 0 };
-	CRITICAL_SECTION		m_Critical_Section = {};
+
+#define MAX_THREAD 4
+
+	HANDLE					m_hThread[MAX_THREAD] = { 0 };
+	CRITICAL_SECTION		m_Critical_Section[MAX_THREAD] = {};
+
 	LEVEL					m_eNextLevel = { LEVEL_END };
-	_tchar					m_szLoadingText[MAX_PATH] = { TEXT("")} ;
+	_tchar					m_szLoadingText[MAX_PATH] = { TEXT("") };
 	_bool					m_isFinished = { false };
-
-	CGameInstance*			m_pGameInstance = { nullptr };
+	CGameInstance* m_pGameInstance = { nullptr };
 
 private:
 	HRESULT	Loading_For_LogoLevel();

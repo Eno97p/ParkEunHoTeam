@@ -54,7 +54,7 @@ _bool CModel::Get_Ratio_Betwin(_float min, _float max)
 	return (Get_Current_Ratio() > min && Get_Current_Ratio() < max);
 }
 
-const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
+const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const 
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
 		{
@@ -555,7 +555,7 @@ HRESULT CModel::Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& Instance
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
+HRESULT CModel::Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc)
 {
 	for (size_t i = 0; i < m_iNumMeshes; i++)
 	{

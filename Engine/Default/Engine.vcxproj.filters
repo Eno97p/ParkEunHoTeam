@@ -220,6 +220,9 @@
     <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\OctTree">
       <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle">
+      <UniqueIdentifier>{2cf5356c-ce99-4c87-9d86-89599d859b4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -462,6 +465,9 @@
     <ClInclude Include="..\public\CSimulationCallBack.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PhysXComponent_Vehicle.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -688,6 +694,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CSimulationCallBack.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

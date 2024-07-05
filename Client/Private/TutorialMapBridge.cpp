@@ -1,6 +1,8 @@
 #include "TutorialMapBridge.h"
 
 #include "GameInstance.h"
+
+
 CTutorialMapBridge::CTutorialMapBridge(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CActive_Element(pDevice, pContext)
 {
@@ -119,6 +121,8 @@ HRESULT CTutorialMapBridge::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+	return S_OK;
 }
 
 HRESULT CTutorialMapBridge::Add_Components(void* pArg)

@@ -126,14 +126,14 @@ HRESULT CToolObj::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bNormal"), &f, sizeof(_bool))))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+	/*	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
 			return E_FAIL;
 		
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColorOffset", &m_vColorOffset, sizeof(_uint))))
-			return E_FAIL;
+			return E_FAIL;*/
 
 
 		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &i, sizeof(_uint))))

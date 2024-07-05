@@ -12,6 +12,7 @@ class ENGINE_DLL CCollider final : public CComponent
 {
 public:
 	enum TYPE { TYPE_AABB, TYPE_OBB, TYPE_SPHERE, TYPE_END };
+	enum COLLTYPE { COLL_START, COLL_CONTINUE, COLL_FINISH, COLL_NOCOLL, COLL_END };
 
 public:
 	typedef struct COLLIDER_DESC
@@ -30,7 +31,7 @@ public:
 	virtual void Tick(_fmatrix WorldMatrix);
 
 public:
-	_bool Intersect(CCollider* pTargetCollider);
+	COLLTYPE Intersect(CCollider* pTargetCollider);
 	_bool IntersectRay(_vector vRayOrigin, _vector vRayDirection, _float fDistance); //콜라이더 레이 충돌
 	_float3 Get_Center();															//콜라이더의 센터벡터 반환
 

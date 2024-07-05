@@ -8,6 +8,7 @@
 #include "Explosion.h"
 #include "Clone.h"
 #include "Body_Mantari.h"
+#include "Weapon_Mantari.h"
 
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -21,7 +22,6 @@ CMantari::CMantari(const CMantari& rhs)
 
 HRESULT CMantari::Initialize_Prototype()
 {
-
 	return S_OK;
 }
 
@@ -43,7 +43,7 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
-	 m_pTransformCom->Set_Scale(2.f, 2.f, 2.f);
+	m_pTransformCom->Set_Scale(2.f, 2.f, 2.f);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
@@ -55,6 +55,15 @@ HRESULT CMantari::Initialize(void* pArg)
 
 void CMantari::Priority_Tick(_float fTimeDelta)
 {
+	if (m_fDeadDelay < 2.f)
+	{
+		m_fDeadDelay -= fTimeDelta;
+		if (m_fDeadDelay < 0.f)
+		{
+			m_pGameInstance->Erase(this);
+		}
+	}
+
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
 	m_bAnimFinished = dynamic_cast<CBody_Mantari*>(m_PartObjects.front())->Get_AnimFinished();
@@ -62,7 +71,7 @@ void CMantari::Priority_Tick(_float fTimeDelta)
 
 void CMantari::Tick(_float fTimeDelta)
 {
-	m_pPhysXCom->Tick(fTimeDelta);
+	
 
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
@@ -70,6 +79,18 @@ void CMantari::Tick(_float fTimeDelta)
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	// 플레이어 무기와 몬스터의 충돌 여부
+
+	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+	if (pPlayerWeapon->Get_Active())
+	{
+		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+	}
+
+	m_pPhysXCom->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -81,6 +102,7 @@ void CMantari::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 #ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
@@ -92,6 +114,18 @@ HRESULT CMantari::Render()
 
 HRESULT CMantari::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
 		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
 		return E_FAIL;
@@ -101,7 +135,7 @@ HRESULT CMantari::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(71.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(160.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -152,6 +186,8 @@ HRESULT CMantari::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
+	dynamic_cast<CBody_Mantari*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
+
 	return S_OK;
 }
 
@@ -174,6 +210,7 @@ HRESULT CMantari::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CMantari::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CMantari::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMantari::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMantari::Hit, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CMantari::JumpAttack, this, std::placeholders::_1));
@@ -192,7 +229,6 @@ NodeStates CMantari::Revive(_float fTimeDelta)
 	if (m_pGameInstance->Get_DIKeyState(DIK_L))
 	{
 		m_bReviving = true;
-		m_bDying = false;
 	}
 
 	if (m_bReviving)
@@ -218,19 +254,19 @@ NodeStates CMantari::Revive(_float fTimeDelta)
 
 NodeStates CMantari::Dead(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_K))
+	if (m_iState == STATE_DEAD)
 	{
-		m_bDying = true;
-	}
-
-	if (m_bDying)
-	{
-		m_iState = STATE_DEAD;
-
 		if (m_bAnimFinished)
 		{
-			// 디졸브, 사망처리
-			//m_bDying = false;
+			if (!m_bDead)
+			{
+				m_bDead = true;
+				for (_uint i = 0; i < m_PartObjects.size(); i++)
+				{
+					dynamic_cast<CPartObject*>(m_PartObjects[i])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+				}
+				m_fDeadDelay -= 0.001f;
+			}
 		}
 		return RUNNING;
 	}
@@ -240,8 +276,58 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 	}
 }
 
+NodeStates CMantari::Parried(_float fTimeDelta)
+{
+	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried())
+	{
+		m_iState = STATE_PARRIED;
+	}
+
+	if (m_iState == STATE_PARRIED)
+	{
+		if (m_bAnimFinished)
+		{
+			dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Set_IsParried(false);
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
 NodeStates CMantari::Hit(_float fTimeDelta)
 {
+	switch (m_eColltype)
+	{
+	case CCollider::COLL_START:
+		m_iState = STATE_HIT;
+		Add_Hp(-10);
+		return RUNNING;
+		break;
+	case CCollider::COLL_CONTINUE:
+		m_iState = STATE_HIT;
+		return RUNNING;
+		break;
+	case CCollider::COLL_FINISH:
+		m_iState = STATE_HIT;
+		break;
+	case CCollider::COLL_NOCOLL:
+		break;
+	}
+
+	if (m_iState == STATE_HIT && m_bAnimFinished)
+	{
+		m_iState = STATE_IDLE;
+		return SUCCESS;
+	}
+
 	return FAILURE;
 }
 
@@ -258,12 +344,22 @@ NodeStates CMantari::JumpAttack(_float fTimeDelta)
 
 		if (m_bChasing && m_fChasingDelay < 0.f)
 		{
+			_float3 fScale = m_pTransformCom->Get_Scaled();
+
 			_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vDir.m128_f32[1] = 0.f;
+
+			_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+			_vector vUp = XMVector3Cross(vDir, vRight);
+
 			vDir = XMVector3Normalize(vDir);
-			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir * m_pTransformCom->Get_Scaled().z);
+			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+			m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
 			m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
 		}
-		
+
 		if (m_fLengthFromPlayer < 5.f)
 		{
 			m_bChasing = false;
@@ -336,7 +432,7 @@ NodeStates CMantari::Attack(_float fTimeDelta)
 			{
 				m_iState = STATE_WALKFRONT;
 			}
-			
+
 			return SUCCESS;
 		}
 		else
@@ -404,7 +500,20 @@ NodeStates CMantari::Detect(_float fTimeDelta)
 		}
 		else
 		{
-			m_iState = STATE_ATTACK1;
+			switch (m_iAttackCount)
+			{
+			case 1:
+				m_iState = STATE_ATTACK1;
+				break;
+			case 2:
+				m_iState = STATE_ATTACK2;
+				break;
+			case 3:
+				m_iState = STATE_ATTACK3;
+				break;
+			default:
+				break;
+			}
 		}
 		return SUCCESS;
 	}
@@ -420,17 +529,37 @@ NodeStates CMantari::Move(_float fTimeDelta)
 	if (m_iState == STATE_WALKLEFT)
 	{
 		m_pPhysXCom->Go_OrbitCW(fTimeDelta, m_pPlayerTransform);
+		m_fMoveTime -= fTimeDelta;
+		if (m_fMoveTime <= 0.f)
+		{
+			m_iState = STATE_IDLE;
+			m_fMoveTime = 2.f;
+		}
 	}
 	else if (m_iState == STATE_WALKRIGHT)
 	{
 		m_pPhysXCom->Go_OrbitCCW(fTimeDelta, m_pPlayerTransform);
+		m_fMoveTime -= fTimeDelta;
+		if (m_fMoveTime <= 0.f)
+		{
+			m_iState = STATE_IDLE;
+			m_fMoveTime = 2.f;
+		}
 	}
 	else if (m_iState == STATE_WALKBACK)
 	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		m_pPhysXCom->Go_BackWard(fTimeDelta);
+		m_fMoveTime -= fTimeDelta;
+		if (m_fMoveTime <= 0.f)
+		{
+			m_iState = STATE_IDLE;
+			m_fMoveTime = 2.f;
+		}
 	}
 	else if (m_iState == STATE_WALKFRONT)
 	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		m_pPhysXCom->Go_Straight(fTimeDelta);
 		if (m_fLengthFromPlayer < 5.f)
 		{
@@ -448,10 +577,13 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 	return SUCCESS;
 }
 
-void CMantari::Get_Hp(_float iValue)
+void CMantari::Add_Hp(_int iValue)
 {
-	m_iCurHp += iValue;
-	m_iCurHp = max(0, min(m_iCurHp, m_iMaxHp));
+	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
+	if (m_iCurHp == 0)
+	{
+		m_iState = STATE_DEAD;
+	}
 }
 
 CMantari* CMantari::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -484,7 +616,6 @@ void CMantari::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
 
 	for (auto& pPartObject : m_PartObjects)

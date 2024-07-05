@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CCollider;
 class CNavigation;
 class CBehaviorTree;
+class CModel;
 END
 
 /* 플레이어를 구성하는 객체들을 들고 있는 객체이다. */
@@ -17,14 +18,16 @@ class CPlayer final : public CLandObject
 {
 #define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
+#define JUMPCOOLTIME 0.3f
 #define WALKSPEED 3.f
 #define RUNSPEED 6.f
 #define ROLLSPEED 10.f
+#define ATTACKPOSTDELAY 1.5f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_RUN, STATE_JUMPSTART, STATE_JUMP, STATE_LAND, STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,
+		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND, STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,
 		STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, STATE_DASH, STATE_DEAD, STATE_REVIVE, STATE_END
 	};
 
@@ -44,7 +47,13 @@ public:
 public:
 	HRESULT Add_Components();
 	HRESULT Add_PartObjects();
-	_bool Intersect(PART ePartObjID, const wstring& strComponetTag, CCollider* pTargetCollider);
+	_uint Get_State() { return m_iState; }
+	CGameObject* Get_Weapon();
+	void PlayerHit(_int iValue);
+	_float Get_HpRatio() { return (_float)m_iCurHp / (_float)m_iMaxHp; }
+	_float Get_StaminaRatio() { return (_float)m_iCurStamina / (_float)m_iMaxStamina; }
+	_float Get_MpRatio() { return (_float)m_iCurMp / (_float)m_iMaxMp; }
+	void Parry_Succeed() { m_bParry = true; m_bParrying = false;}
 
 private:
 	HRESULT Add_Nodes();
@@ -54,6 +63,7 @@ private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
 	NodeStates Parry(_float fTimeDelta);
+	NodeStates Counter(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates RollAttack(_float fTimeDelta);
 	NodeStates LChargeAttack(_float fTimeDelta);
@@ -65,6 +75,9 @@ private:
 	NodeStates Roll(_float fTimeDelta);
 	NodeStates Move(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
+	void Add_Hp(_int iValue);
+	void Add_Stamina(_int iValue);
+	void Add_Mp(_int iValue);
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
@@ -72,15 +85,20 @@ private:
 	class CPhysXComponent_Character* m_pPhysXCom = { nullptr };
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 	_float										m_fButtonCooltime = 0.f;
+	_float										m_fJumpCooltime = 0.f;
 
 #pragma region 상태제어 bool변수
 	_bool										m_bJumping = false;
+	_bool										m_bDoubleJumping = false;
 	_bool										m_bLAttacking = false;
 	_bool										m_bRAttacking = false;
 	_bool										m_bRunning = false;
-	_bool										m_bDying = false;
-	_bool										m_bReviving = false;
 	_bool										m_bParrying = false;
+	_bool										m_bIsLanded = false;
+	_bool										m_bIsRunAttack = false;
+	_bool										m_bDisolved_Weapon = false;
+	_bool										m_bDisolved_Yaak = false;
+	_bool										m_bParry = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;

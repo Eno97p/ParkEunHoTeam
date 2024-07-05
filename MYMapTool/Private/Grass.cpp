@@ -1,14 +1,14 @@
 #include "Grass.h"
 #include "ToolObj.h"
-
+#include "ToolObj_Manager.h"
 #include "GameInstance.h"
 CGrass::CGrass(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext)
+	: CToolObj(pDevice, pContext)
 {
 }
 
 CGrass::CGrass(const CGrass& rhs)
-	: CGameObject(rhs)
+	: CToolObj(rhs)
 {
 }
 
@@ -19,7 +19,7 @@ HRESULT CGrass::Initialize_Prototype()
 
 HRESULT CGrass::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(nullptr)))
+	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
 
 
@@ -42,6 +42,21 @@ HRESULT CGrass::Initialize(void* pArg)
 		_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
 		m_vPivotPos.y += 5.f;
 		XMStoreFloat3(&m_vPivotPos, vPos);
+
+
+		strcpy_s(m_szName, pDesc->szObjName);
+		strcpy_s(m_szLayer, pDesc->szLayer);
+		strcpy_s(m_szModelName, pDesc->szModelName);
+		m_eModelType = pDesc->eModelType;
+		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
+
+
+		// 생성 목록에 리스트 번호 매기기
+		string strSize = to_string(CToolObj_Manager::GetInstance()->Get_ToolObjs().size()) + ". ";
+		strcat_s(m_szListName, strSize.c_str());
+		strcat_s(m_szListName, m_szName);
+		CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
+
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -121,7 +136,6 @@ HRESULT CGrass::Add_Components(void* pArg)
 
 	InstanceDesc.iNumInstance = 10000;
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
-	//InstanceDesc.vPivotPos = _float3(89.0f, 12.f, 75.0f);
 	InstanceDesc.vPivotPos = m_vPivotPos;
 	InstanceDesc.vRange = _float3(25.0f, 0.4f, 25.0f);
 	InstanceDesc.vSize = _float2(1.f, 5.f);
@@ -130,43 +144,43 @@ HRESULT CGrass::Add_Components(void* pArg)
 	InstanceDesc.isLoop = true;
 
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &InstanceDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Grass"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Grass"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	if (rand() % 100 > 50)
 	{
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT_Normal"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT_Normal"),
 			TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pNormalCom))))
 			return E_FAIL;
 	}
 	else
 	{
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
 		/* For.Com_Texture */
-		if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF_Normal"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF_Normal"),
 			TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pNormalCom))))
 			return E_FAIL;
 	}
 	
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
 		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pNoiseCom))))
 		return E_FAIL;
 

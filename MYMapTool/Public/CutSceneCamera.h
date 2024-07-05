@@ -93,7 +93,6 @@ private:
 	_bool IsNear = false;
 private:
 	_float	m_fIntensity;	//카메라 흔들림 강도
-	_float	m_fShakeTime;	//진동 시간
 	_float	m_fShakeAccTime;		//누적 시간
 	_bool	m_bLockWidth;
 

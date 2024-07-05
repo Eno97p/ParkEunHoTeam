@@ -330,6 +330,12 @@ void CRenderer::Clear()
 
 		m_RenderGroup[i].clear();
 	}
+
+	for(auto& DebugObject : m_DebugComponents)
+		Safe_Release(DebugObject);
+	m_DebugComponents.clear();
+
+
 }
 
 void CRenderer::Draw()

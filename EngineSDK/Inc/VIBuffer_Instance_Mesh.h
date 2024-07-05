@@ -19,7 +19,7 @@ public:
 
 public:
 	HRESULT Initialize_ProtoType(class CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc);
-	HRESULT Initialize_ProtoType_ForMapElements(class CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc);
+	HRESULT Initialize_ProtoType_ForMapElements(class CMesh* m_Meshes, const INSTANCE_MAP_DESC& InstanceDesc);
 	HRESULT Initialize(void* pArg);
 
 	_uint* Get_Mesh_Indices() { return pNewIndices; }
@@ -36,7 +36,7 @@ private:
 
 public:
 	static CInstance_Mesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc);
-	static CInstance_Mesh* Create_ForMapElements(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc);
+	static CInstance_Mesh* Create_ForMapElements(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, class CMesh* m_Meshes, const INSTANCE_MAP_DESC& InstanceDesc);
 
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

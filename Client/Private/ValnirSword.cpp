@@ -31,9 +31,7 @@ HRESULT CValnirSword::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.1f, 0.f, 1.f));
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
 	return S_OK;
 }

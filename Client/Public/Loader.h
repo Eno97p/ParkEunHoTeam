@@ -51,7 +51,10 @@ private:
 	HRESULT Load_LevelData(LEVEL eLevel, const _tchar* pFilePath);
 
 	HRESULT Loading_For_LogoLevel();
+	HRESULT Loading_For_LogoLevel_For_Shader();
+	
 	HRESULT Loading_For_GamePlayLevel();
+	HRESULT Loading_For_GamePlayLevel_For_Shader();
 
 
 

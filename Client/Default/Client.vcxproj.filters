@@ -304,6 +304,15 @@
     <Filter Include="02.GameObjects\06.Effect\FrameTexture">
       <UniqueIdentifier>{07a20ad7-ecc3-45f4-a797-3ac0038191c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
+      <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element">
+      <UniqueIdentifier>{11ee1bf9-e805-4ec7-8de9-4b67c07f4889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. vehicle">
+      <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -593,9 +602,6 @@
     <ClInclude Include="..\Public\TutorialMapBridge.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Passive_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Mantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClInclude>
@@ -603,6 +609,15 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Passive_Element.h" />
+    <ClInclude Include="..\Public\Weapon_Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Legionnaire.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Juggulus_HandThree.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClInclude>
@@ -623,6 +638,12 @@
     </ClInclude>
     <ClInclude Include="..\public\EffectManager.h">
       <Filter>02.GameObjects\06.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CHoverboard.h">
+      <Filter>02.GameObjects\08. vehicle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -895,9 +916,6 @@
     <ClCompile Include="..\Private\TutorialMapBridge.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Passive_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Body_Mantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body</Filter>
     </ClCompile>
@@ -905,6 +923,15 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Passive_Element.cpp" />
+    <ClCompile Include="..\Private\Weapon_Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Legionnaire.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClCompile>
@@ -925,6 +952,12 @@
     </ClCompile>
     <ClCompile Include="..\private\EffectManager.cpp">
       <Filter>02.GameObjects\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Passive_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CHoverboard.cpp">
+      <Filter>02.GameObjects\08. vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

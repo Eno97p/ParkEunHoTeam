@@ -40,7 +40,13 @@ protected:
 protected:
 	_bool							m_isAnimFinished = { false };
 
-	_uint							m_iHP = { 0 };
+#pragma region ∏ÛΩ∫≈Õ Ω∫≈»
+	_uint m_iMaxHp = 100;
+	_uint m_iCurHp = m_iMaxHp;
+#pragma endregion ∏ÛΩ∫≈Õ Ω∫≈»
+
+	_bool m_bDead = false;
+
 	_uint							m_iState = { 0 };
 
 	CShader*						m_pShaderCom = { nullptr };

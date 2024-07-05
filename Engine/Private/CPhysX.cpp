@@ -7,7 +7,8 @@
 
 
 
-
+PxDefaultAllocator		gAllocator;
+PxDefaultErrorCallback	gErrorCallback;
 CSimulationCallBack g_SimulationCallBack;
 
 
@@ -24,7 +25,7 @@ CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CPhysX::Initialize()
 {
-	m_pFoundation= PxCreateFoundation(PX_PHYSICS_VERSION, m_Allocator, m_ErrorCallback);
+	m_pFoundation= PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
 	if (!m_pFoundation)
 	{
 		MSG_BOX("Failed To Create : Physx_Foundation");
@@ -45,8 +46,19 @@ HRESULT CPhysX::Initialize()
 	scale.length = WORLD_METER;
 	scale.speed = WORLD_SPEED;
 	m_pPhysics= PxCreatePhysics(PX_PHYSICS_VERSION, *m_pFoundation, scale, true, m_pPvd == nullptr ? 0 : m_pPvd);
-	if(!m_pPhysics)
+	if (!m_pPhysics)
+	{
+		MSG_BOX("Failed To Create : Physx_Physics");
 		return E_FAIL;
+	}
+	
+	
+
+
+
+
+
+
 
 	PxCudaContextManagerDesc cudaContextManagerDesc;
 	
@@ -141,8 +153,9 @@ HRESULT CPhysX::Initialize()
 	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
 	m_pScene->addActor(*groundPlane);
 
-	
 
+
+	PxInitVehicleExtension(*m_pFoundation);
 
 	return S_OK;
 }
@@ -222,7 +235,7 @@ CPhysX* CPhysX::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 void CPhysX::Free()
 {
-	
+	PxCloseVehicleExtension();
 
 
 	Safe_physX_Release(m_pControllerManager);

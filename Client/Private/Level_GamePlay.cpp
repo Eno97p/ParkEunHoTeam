@@ -161,6 +161,10 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -248,6 +252,7 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 			pDesc.wstrModelName = wszModelName;
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
 				return E_FAIL;
+
 		}
 	}
 

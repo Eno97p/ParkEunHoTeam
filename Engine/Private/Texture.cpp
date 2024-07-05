@@ -70,6 +70,8 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 
 		HRESULT			hr{};
 
+		
+		
 		if (false == lstrcmp(szEXT, TEXT(".dds")))
 			hr = CreateDDSTextureFromFile(m_pDevice, m_szTextureFilePath, nullptr, &pSRV);
 

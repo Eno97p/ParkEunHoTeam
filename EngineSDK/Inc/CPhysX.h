@@ -40,8 +40,6 @@ private:
 
 
 private:
-	PxDefaultAllocator		m_Allocator;
-	PxDefaultErrorCallback	m_ErrorCallback;
 	PxMaterial*				m_pMaterial = { nullptr };
 	PxFoundation*			m_pFoundation = { nullptr };
 	PxPhysics*				m_pPhysics = { nullptr };

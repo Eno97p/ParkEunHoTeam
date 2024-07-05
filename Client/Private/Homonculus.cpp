@@ -34,7 +34,7 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(20.f, 0.f, 0.f, 1.f));
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -178,13 +178,59 @@ NodeStates CHomonculus::Move(_float fTimeDelta)
 
 NodeStates CHomonculus::Default_Attack(_float fTimeDelta)
 {
-	
-	return SUCCESS;
+	if (STATE_DEFAULTATTACK_2 != m_iState)
+	{
+		m_isDefaultAttack = true;
+	}
+
+	if (m_isDefaultAttack)
+	{
+		if (STATE_DEFAULTATTACK_1 != m_iState && STATE_DEFAULTATTACK_2 != m_iState)
+		{
+			m_iState = STATE_DEFAULTATTACK_1;
+			m_isAnimFinished = false;
+		}
+
+		if (m_isAnimFinished)
+		{
+			if (STATE_DEFAULTATTACK_1 == m_iState)
+			{
+				m_iState = STATE_DEFAULTATTACK_2;
+			}
+			else
+			{
+				m_isDefaultAttack = false;
+			}
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 NodeStates CHomonculus::Down_Attack(_float fTimeDelta)
 {
-	return SUCCESS;
+	if (STATE_DEFAULTATTACK_1 == m_iState || STATE_DEFAULTATTACK_2 == m_iState)
+	{
+		return FAILURE;
+	}
+
+	if (STATE_IDLE == m_iState)
+	{
+		m_isAnimFinished = false;
+	}
+
+	if (!m_isAnimFinished)
+	{
+		m_iState = STATE_DOWNATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 NodeStates CHomonculus::Full_Attack(_float fTimeDelta)
@@ -194,7 +240,20 @@ NodeStates CHomonculus::Full_Attack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	return SUCCESS;
+	if (STATE_IDLE == m_iState)
+	{
+		m_isAnimFinished = false;
+	}
+
+	if (!m_isAnimFinished)
+	{
+		m_iState = STATE_FULLATTACK;
+		return RUNNING;
+	}
+	else
+	{
+		return SUCCESS;
+	}
 }
 
 CHomonculus* CHomonculus::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

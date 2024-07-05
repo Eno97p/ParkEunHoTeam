@@ -34,7 +34,7 @@ HRESULT CGhost::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(10.f, 0.f, 0.f, 1.f));
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -184,7 +184,6 @@ NodeStates CGhost::Default_Attack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	// 조건문을 다른 것으로 할 것
 	if (STATE_DEFAULTATTACK_4 != m_iState)
 	{
 		m_isDefaultAttack = true;

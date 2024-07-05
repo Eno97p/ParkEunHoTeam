@@ -27,6 +27,7 @@ public:
 
 private:
 	_bool							m_isHit = { false };
+	_bool							m_isDefaultAttack = { false };
 
 	vector<class CGameObject*>		m_PartObjects;
 

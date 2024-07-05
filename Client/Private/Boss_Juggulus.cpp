@@ -64,6 +64,8 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject.second->Tick(fTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_P))
+		m_iCurHp = 10;
 
 }
 

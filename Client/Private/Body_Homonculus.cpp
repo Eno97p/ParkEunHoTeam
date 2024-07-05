@@ -26,7 +26,7 @@ HRESULT CBody_Homonculus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(9, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(11, true));
 
 	return S_OK;
 }
@@ -131,58 +131,73 @@ HRESULT CBody_Homonculus::Bind_ShaderResources()
 
 void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
+	CModel::ANIMATION_DESC		AnimDesc{ 11, true };
 	_float fAnimSpeed = 1.f;
 
 	if (*m_pState == CHomonculus::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 9;
+		AnimDesc.iAnimIndex = 11;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEAD)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 4;
+		AnimDesc.iAnimIndex = 5;
 	}
 	else if (*m_pState == CHomonculus::STATE_HIT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 17;
+		AnimDesc.iAnimIndex = 10;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_1)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 1;
+		AnimDesc.iAnimIndex = 0;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_2)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 0;
+		AnimDesc.iAnimIndex = 2;
+	}
+	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_3)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 1;
 	}
 	else if (*m_pState == CHomonculus::STATE_DOWNATTACK)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 2;
+		AnimDesc.iAnimIndex = 3;
 	}
 	else if (*m_pState == CHomonculus::STATE_FULLATTACK)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 3;
+		AnimDesc.iAnimIndex = 4;
 	}
 	else if (*m_pState == CHomonculus::STATE_GO)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 13;
+		AnimDesc.iAnimIndex = 15;
 	}
 	else if (*m_pState == CHomonculus::STATE_LEFT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 11;
+		AnimDesc.iAnimIndex = 13;
 	}
 	else if (*m_pState == CHomonculus::STATE_RIGHT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 12;
+		AnimDesc.iAnimIndex = 14;
+	}
+	else if (*m_pState == CHomonculus::STATE_PARRY)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
+	}
+	else if (*m_pState == CHomonculus::STATE_WAKEUP)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 6;
 	}
 
 

@@ -168,8 +168,31 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 NodeStates CHomonculus::Parry(_float fTimeDelta)
 {
 	// ÆÐµù
+	if (m_isParry)
+	{
+		if (STATE_PARRY != m_iState && STATE_WAKEUP != m_iState)
+		{
+			m_iState = STATE_PARRY;
+			m_isAnimFinished = false;
+		}
 
-	return FAILURE;
+		if (m_isAnimFinished)
+		{
+			if (STATE_PARRY == m_iState)
+			{
+				m_iState = STATE_WAKEUP;
+			}
+			else if(STATE_WAKEUP == m_iState)
+			{
+				m_isParry = false;
+			}
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CHomonculus::Idle(_float fTimeDelta)
@@ -186,6 +209,11 @@ NodeStates CHomonculus::Move(_float fTimeDelta)
 
 NodeStates CHomonculus::Default_Attack(_float fTimeDelta)
 {
+	if (m_isParry)
+	{
+		return FAILURE;
+	}
+
 	if (STATE_DEFAULTATTACK_2 != m_iState)
 	{
 		m_isDefaultAttack = true;
@@ -220,7 +248,7 @@ NodeStates CHomonculus::Default_Attack(_float fTimeDelta)
 
 NodeStates CHomonculus::Down_Attack(_float fTimeDelta)
 {
-	if (STATE_DEFAULTATTACK_1 == m_iState || STATE_DEFAULTATTACK_2 == m_iState)
+	if (STATE_DEFAULTATTACK_1 == m_iState || STATE_DEFAULTATTACK_2 == m_iState || m_isParry)
 	{
 		return FAILURE;
 	}
@@ -243,7 +271,7 @@ NodeStates CHomonculus::Down_Attack(_float fTimeDelta)
 
 NodeStates CHomonculus::Full_Attack(_float fTimeDelta)
 {
-	if (STATE_DOWNATTACK == m_iState || STATE_DEFAULTATTACK_1 == m_iState || STATE_DEFAULTATTACK_2 == m_iState)
+	if (STATE_DOWNATTACK == m_iState || STATE_DEFAULTATTACK_1 == m_iState || STATE_DEFAULTATTACK_2 == m_iState || m_isParry)
 	{
 		return FAILURE;
 	}

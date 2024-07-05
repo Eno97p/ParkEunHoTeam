@@ -36,6 +36,9 @@
 #include "C:\Real3DProject\Client\Private\Cendres.cpp"
 
 
+#include "C:\Real3DProject\Client\private\CHoverboard.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\CImGuiMgr.cpp"
 
 
@@ -51,7 +54,7 @@
 #include "C:\Real3DProject\Client\Private\DurgaSword.cpp"
 
 
-#include "C:\Real3DProject\Client\Private\Explosion.cpp"
+#include "C:\Real3DProject\Client\Private\EffectManager.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ForkLift.cpp"
@@ -132,6 +135,21 @@
 #include "C:\Real3DProject\Client\private\Mantari.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Particle.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\ParticleMesh.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Particle_Point.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Particle_Rect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Particle_Trail.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Weapon_Legionnaire.cpp"
 
 
@@ -145,12 +163,6 @@
 
 
 #include "C:\Real3DProject\Client\Private\NaruehSword.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\Particle_Point.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\Particle_Rect.cpp"
 
 
 #include "C:\Real3DProject\Client\private\PartObject.cpp"

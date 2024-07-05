@@ -50,6 +50,9 @@
 #include "C:\3D_TeamProj\Engine\Private\CNode.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\private\OctTree.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\Collider.cpp"
 
 
@@ -78,6 +81,9 @@
 
 
 #include "C:\3D_TeamProj\Engine\Private\CSequence.cpp"
+
+
+#include "C:\3D_TeamProj\Engine\private\CSimulationCallBack.cpp"
 
 
 #include "C:\3D_TeamProj\Engine\private\CustomFont.cpp"

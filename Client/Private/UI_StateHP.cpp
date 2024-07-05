@@ -1,6 +1,7 @@
 #include "UI_StateHP.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
 CUI_StateHP::CUI_StateHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{pDevice, pContext}
@@ -37,10 +38,32 @@ HRESULT CUI_StateHP::Initialize(void* pArg)
 
 void CUI_StateHP::Priority_Tick(_float fTimeDelta)
 {
+	
 }
 
 void CUI_StateHP::Tick(_float fTimeDelta)
 {
+	if (!m_pPlayer)
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+		m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+		Safe_AddRef(m_pPlayer);
+	}
+	else
+	{
+		m_fCurrentRatio = m_pPlayer->Get_HpRatio();
+	}
+
+	// 체력이 천천히 줄어듦
+	if (m_fCurrentRatio < m_fPastRatio)
+	{
+		m_fPastRatio -= fTimeDelta * 0.2f;
+	}
+	// 체력이 전부 줄어듦
+	else if (m_fCurrentRatio > m_fPastRatio)
+	{
+		m_fPastRatio = m_fCurrentRatio;
+	}
 }
 
 void CUI_StateHP::Late_Tick(_float fTimeDelta)
@@ -53,7 +76,13 @@ HRESULT CUI_StateHP::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(2);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -125,4 +154,5 @@ CGameObject* CUI_StateHP::Clone(void* pArg)
 void CUI_StateHP::Free()
 {
 	__super::Free();
+	Safe_Release(m_pPlayer);
 }

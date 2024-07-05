@@ -81,6 +81,9 @@
 #include "C:\3D_TeamProj\Client\Private\Juggulus_HandOne.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Juggulus_HandThree.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Juggulus_HandTwo.cpp"
 
 

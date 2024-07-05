@@ -36,10 +36,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
-
-
 	//m_pUI_Manager->Initialize();
-
 
 	return S_OK;
 }
@@ -105,8 +102,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(71.1f, 542.f, 78.f, 1.f);
-	CameraDesc.vAt = _float4(71.1f, 522.f, 98.f, 1.f);
+	CameraDesc.vEye = _float4(140.f, 542.f, 78.f, 1.f);
+	CameraDesc.vAt = _float4(140.f, 522.f, 98.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;

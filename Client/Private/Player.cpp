@@ -171,7 +171,7 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(72.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f,98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
@@ -228,12 +228,20 @@ HRESULT CPlayer::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
+	dynamic_cast<CBody_Player*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
+
 	return S_OK;
 }
 
 CGameObject* CPlayer::Get_Weapon()
 {
 	return m_PartObjects[1];
+}
+
+void CPlayer::PlayerHit(_int iValue)
+{
+	m_iState = STATE_HIT;
+	Add_Hp(-iValue);
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -250,6 +258,7 @@ HRESULT CPlayer::Add_Nodes()
 
 	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("ParryCool"), 0.5f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ParryCool"), TEXT("Parry"), bind(&CPlayer::Parry, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Counter"), bind(&CPlayer::Counter, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CPlayer::JumpAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("RollAttack"), bind(&CPlayer::RollAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("LChargeAttack"), bind(&CPlayer::LChargeAttack, this, std::placeholders::_1));
@@ -271,16 +280,15 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_L))
 	{
-		m_bReviving = true;
+		m_iState = STATE_REVIVE;
 	}
 
-	if (m_bReviving)
+	if (m_iState == STATE_REVIVE)
 	{
 		m_iState = STATE_REVIVE;
 
 		if (m_bAnimFinished)
 		{
-			m_bReviving = false;
 			m_iState = STATE_IDLE;
 			return SUCCESS;
 		}
@@ -314,23 +322,10 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 NodeStates CPlayer::Hit(_float fTimeDelta)
 {
-	// 피격조건(몬스터 패턴 피격 등)
-	if (m_pGameInstance->Get_DIKeyState(DIK_H))
-	{
-		m_bHit = true;
-	}
-
-	if (m_bHit && m_iState != STATE_HIT)
-	{
-		Add_Hp(-1);
-		m_iState = STATE_HIT;
-	}
-
 	if (m_iState == STATE_HIT)
 	{
 		if (m_bAnimFinished)
 		{
-			m_bHit = false;
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
@@ -376,6 +371,33 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			m_bParrying = false;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CPlayer::Counter(_float fTimeDelta)
+{
+	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000))
+	{
+		m_iState = STATE_COUNTER;
+	}
+
+	if (m_iState == STATE_COUNTER)
+	{
+		if (m_bAnimFinished)
+		{
+			m_bParry = false;
+			m_fFightIdle += 0.01f;
+			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
 		else
@@ -1063,7 +1085,6 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 
 void CPlayer::Add_Hp(_int iValue)
 {
-
 	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
 	if (m_iCurHp == 0)
 	{

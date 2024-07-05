@@ -56,11 +56,45 @@ HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath
 
 HRESULT CPhysXComponent_static::Initialize(void * pArg)
 {
+	CPhysXComponent::PHYSX_DESC* pDesc = static_cast<CPhysXComponent::PHYSX_DESC*>(pArg);
+	
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	
+	//m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
 
-	
+
+	return S_OK;
+}
+
+HRESULT CPhysXComponent_static::Render()
+{
+	if (m_OutDesc.bIsOnDebugRender)
+	{
+		m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+
+		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
+		m_pShader->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
+
+
+		m_pShader->Begin(1);
+
+
+		//Test: Render Call 
+		//m_pBuffer[0]->Bind_Buffers();
+		//m_pBuffer[0]->Render();
+		for (auto& pPhysXBuffer : m_pBuffer)
+		{
+			if (nullptr != pPhysXBuffer)
+			{
+				pPhysXBuffer->Bind_Buffers();
+				pPhysXBuffer->Render();
+			}
+
+
+		}
+	}
 
 	return S_OK;
 }

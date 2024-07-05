@@ -50,9 +50,11 @@
 #include "Map_Element.h"
 #include "Passive_Element.h"
 #include "Active_Element.h"
-
 #include "TutorialMapBridge.h"
 
+
+
+#include"CHoverboard.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -174,15 +176,19 @@ HRESULT CLoader::Loading_Map()
 		break;
 	case LEVEL_GAMEPLAY:
 	{
+
 		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
 			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
 			return hr = E_FAIL;
+	
 
-		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static2"),
+
+		
+	/*	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static2"),
 			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMapBridge.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
-			return hr = E_FAIL;
+			return hr = E_FAIL;*/
 
-		break;
+		break;		
 	}
 	//¿¹½Ã:case LEVEL_BOSS:
 	//	
@@ -353,6 +359,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Wander/Wander.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_HoverBoard*/
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hoverboard"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Hoverboard/Hoverboard.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Wander */
@@ -836,9 +848,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Legionnaire"),
 		CWeapon_Legionnaire::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
 #pragma endregion Monster
+
+
+	/* For.Prototype_GameObject_HoverBoard */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
+		CHoverboard::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 

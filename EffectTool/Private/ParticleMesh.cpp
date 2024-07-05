@@ -254,4 +254,5 @@ void CParticleMesh::Free()
 	__super::Free();
 
 	Safe_Release(m_InstModelCom);
+	OwnDesc.reset();
 }

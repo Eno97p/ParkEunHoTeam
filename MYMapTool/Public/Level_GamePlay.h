@@ -2,6 +2,7 @@
 
 #include "Level.h"
 #include "MYMapTool_Defines.h"
+#include "LandObject.h"
 
 BEGIN(MYMapTool)
 
@@ -21,6 +22,9 @@ private:
 	HRESULT	Ready_Layer_Terrain(const wstring& strLayerTag);
 	HRESULT	Ready_Layer_Camera(const wstring& strLayerTag);
 	HRESULT	Ready_Layer_Monster(const wstring& strLayerTag);
+
+	HRESULT Ready_LandObjects();
+	HRESULT Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
 
 	// Load 함수와 Save 함수 필요
 	HRESULT	Save_Data();

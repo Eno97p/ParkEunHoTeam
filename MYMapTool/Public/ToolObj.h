@@ -4,7 +4,8 @@
 #include "MYMapTool_Defines.h"
 
 #include "Model.h"
-
+#include "Imgui_Manager.h"
+#include "EventTrigger.h"
 // IMGUI에서 생성할 모든 Obj들을 담당하는 클래스
 // 애니메이션 여부, 
 
@@ -19,7 +20,7 @@ class CToolObj : public CGameObject
 {
 public:
 	// Client에 객체 생성 시 들고 가야 할 정보를 담을 구조체
-	typedef struct ToolObj_Desc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct TOOLOBJ_DESC : public CGameObject::GAMEOBJECT_DESC
 	{
 		_char szObjName[MAX_PATH] = ""; // 객체 이름
 		_char szLayer[MAX_PATH] = ""; // Layer 이름
@@ -28,6 +29,9 @@ public:
 		CModel::MODELTYPE eModelType; // Anim 여부
 
 		_float4 f4Color = {0.f, 0.f, 0.f, 0.f};
+		_uint TriggerType = 0;
+		//CEventTrigger::TRIGGER_TYPE eTriggerType;
+
 	}TOOLOBJ_DESC;
 
 protected:
@@ -42,6 +46,7 @@ public:
 	_matrix			Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }		// 월드 행렬
 	const _float4x4* Get_WorldFloat4x4() { return m_pTransformCom->Get_WorldFloat4x4(); }
 	CModel::MODELTYPE	Get_ModelType() { return m_eModelType; }
+	_uint	Get_TriggerType() { return m_iTriggerType; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -62,6 +67,7 @@ protected:
 	_char				m_szModelName[MAX_PATH] = "";
 	_vector				m_vPosition;
 	CModel::MODELTYPE	m_eModelType;
+	_uint				m_iTriggerType = 0;
 
 	_char				m_szListName[MAX_PATH] = "";  // Imgui의 생성 목록을 위한 이름... 별론데
 	_float4				m_vColorOffset = { 0.f, 0.f, 0.f, 0.f };

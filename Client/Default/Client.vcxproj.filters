@@ -73,15 +73,6 @@
     <Filter Include="02.GameObjects\06.Effect\Particle">
       <UniqueIdentifier>{76934740-a5db-4428-9475-8f245620e6bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Particle\Rect">
-      <UniqueIdentifier>{e3631d35-6f8e-476c-9872-42d0871d5798}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Particle\Point">
-      <UniqueIdentifier>{ab27df53-d9d1-4d37-a28e-14fc65696bbc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Explosion">
-      <UniqueIdentifier>{95f956dd-b699-4485-9277-20671612e4b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Distortion">
       <UniqueIdentifier>{74bfd6ce-319e-4717-a724-8b3052d85183}</UniqueIdentifier>
     </Filter>
@@ -310,8 +301,38 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
       <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FrameTexture">
+      <UniqueIdentifier>{07a20ad7-ecc3-45f4-a797-3ac0038191c5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
       <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun">
+      <UniqueIdentifier>{fdc2adbf-bc69-45fb-8f4e-f96d74ead0e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject">
+      <UniqueIdentifier>{f11bf536-e453-4164-b0b8-846c71a58c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body">
+      <UniqueIdentifier>{c804aa51-e83c-4cb8-94b3-4683a873bb16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon">
+      <UniqueIdentifier>{ec6e2399-4e94-454d-9ec3-5b28cb6e775a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost">
+      <UniqueIdentifier>{07401c7c-d2a6-4f61-88b5-ed4a9ea60a3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost\Body">
+      <UniqueIdentifier>{e8538dba-0638-468e-9aa9-7c5f95d44e56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus">
+      <UniqueIdentifier>{e5b6e09e-877d-40e3-8096-e3c7eb4cbf55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\Body">
+      <UniqueIdentifier>{3fa0fc76-9382-4dd6-be82-626980f8c02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element">
+      <UniqueIdentifier>{11ee1bf9-e805-4ec7-8de9-4b67c07f4889}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\08. vehicle">
       <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
@@ -381,22 +402,12 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Particle_Rect.h">
-      <Filter>02.GameObjects\06.Effect\Particle\Rect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Particle_Point.h">
-      <Filter>02.GameObjects\06.Effect\Particle\Point</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Explosion.h">
-      <Filter>02.GameObjects\06.Effect\Explosion</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Distortion.h">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Clone.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\Public\WhisperSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
@@ -633,11 +644,53 @@
     <ClInclude Include="..\Public\Juggulus_HandThree.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Legionnaire_Gun.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_LGGun.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LGGun_Weapon.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Ghost.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Ghost.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Homonculus.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Homonculus.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Passive_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CHoverboard.h">
       <Filter>02.GameObjects\08. vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ParticleMesh.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectManager.h">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Active_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -695,22 +748,12 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Particle_Rect.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle\Rect</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Particle_Point.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle\Point</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Explosion.cpp">
-      <Filter>02.GameObjects\06.Effect\Explosion</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Distortion.cpp">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Clone.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\Private\WhisperSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
@@ -938,11 +981,53 @@
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Legionnaire_Gun.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_LGGun.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LGGun_Weapon.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ghost.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Ghost.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Homonculus.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Homonculus.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Passive_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CHoverboard.cpp">
       <Filter>02.GameObjects\08. vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ParticleMesh.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectManager.cpp">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Active_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

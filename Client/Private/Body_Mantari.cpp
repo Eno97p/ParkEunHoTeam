@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Mantari.h"
+#include "Weapon.h"
 
 CBody_Mantari::CBody_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -34,6 +35,14 @@ HRESULT CBody_Mantari::Initialize(void* pArg)
 
 void CBody_Mantari::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 0.5f;
+		break;
+	default:
+		break;
+	}
 }
 
 void CBody_Mantari::Tick(_float fTimeDelta)
@@ -42,6 +51,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	_float fAnimSpeed = 1.f;
 
 	*m_pCanCombo = false;
+	m_pWeapon->Set_Active(false);
 	if (*m_pState == CMantari::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
@@ -49,6 +59,12 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CMantari::STATE_HIT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 15;
+		fAnimSpeed = 1.f;
+	}
+	else if (*m_pState == CMantari::STATE_PARRIED)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 15;
@@ -87,6 +103,11 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 2.7f && m_fDamageTiming < 3.f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK1)
 	{
@@ -98,6 +119,11 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.1f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK2)
 	{
@@ -109,6 +135,10 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex == 3)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK3)
 	{
@@ -120,6 +150,10 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex > 5)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CMantari::STATE_CIRCLEATTACK)
 	{
@@ -130,6 +164,11 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 1.3f && m_fDamageTiming < 1.6f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CMantari::STATE_DEAD)
 	{
@@ -186,6 +225,10 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			m_bAnimFinished = true;
 		}
 	}
+	if (m_bAnimFinished)
+	{
+		m_fDamageTiming = 0.f;
+	}
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 }
@@ -234,7 +277,7 @@ HRESULT CBody_Mantari::Render()
 				return E_FAIL;
 		}
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(7);
 
 		m_pModelCom->Render(i);
 	}
@@ -287,6 +330,11 @@ HRESULT CBody_Mantari::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -297,6 +345,10 @@ HRESULT CBody_Mantari::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

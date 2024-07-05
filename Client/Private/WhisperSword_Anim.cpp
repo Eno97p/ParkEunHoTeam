@@ -107,7 +107,10 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 
 	//m_PhysXCom->Late_Tick(&m_WorldMatrix);
 #ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
 	m_pGameInstance->Add_DebugComponent(m_PhysXCom);
 #endif
 
@@ -184,7 +187,7 @@ HRESULT CWhisperSword_Anim::Add_Components()
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+	ColliderDesc.vExtents = _float3(0.5f, 1.5f, 0.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -220,7 +223,7 @@ HRESULT CWhisperSword_Anim::Add_Components()
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
-		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -234,7 +237,7 @@ HRESULT CWhisperSword_Anim::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
 		return E_FAIL;
 	if(FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;

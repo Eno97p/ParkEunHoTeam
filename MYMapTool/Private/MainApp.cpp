@@ -129,6 +129,9 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo.jpg"), 1)))) // TEXT("../Bin/Resources/Textures/Default%d.jpg"), 2))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
+		CBehaviorTree::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -8,7 +8,6 @@
 #include "Body_Player.h"
 #include "Clone.h"
 #include "FreeCamera.h"
-#include "Explosion.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -43,6 +42,13 @@
 #include "Legionnaire.h"
 #include "Body_Legionnaire.h"
 #include "Weapon_Legionnaire.h"
+#include "Legionnaire_Gun.h"
+#include "Body_LGGun.h"
+#include "LGGun_Weapon.h"
+#include "Ghost.h"
+#include "Body_Ghost.h"
+#include "Homonculus.h"
+#include "Body_Homonculus.h"
 
 #pragma endregion Monster
 
@@ -526,7 +532,25 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Legionnaire_Gun"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
+	/* For.Prototype_Component_Model_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LGGun_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ghost"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Homonculus/Homonculus.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 
 	/* Mantari - 박은호 작업 */
@@ -594,6 +618,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
 	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 	//	return E_FAIL;
+
 
 	///* For.Prototype_Component_Shader_VtxInstance_Rect */
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Rect"),
@@ -760,20 +785,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CActive_Element::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	///* For.Prototype_GameObject_Particle_Rect */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Rect"),
-	//	CParticle_Rect::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	///* For.Prototype_GameObject_Particle_Point */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Point"),
-	//	CParticle_Point::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	/* For.Prototype_GameObject_Explosion */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Explosion"),
-		CExplosion::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 
 #pragma region Active Element
@@ -848,6 +859,42 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Legionnaire"),
 		CWeapon_Legionnaire::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire_Gun"),
+		CLegionnaire_Gun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_LGGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_LGGun"),
+		CBody_LGGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LGGun_Weapon"),
+		CLGGun_Weapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ghost"),
+		CGhost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Ghost"),
+		CBody_Ghost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Homonculus"),
+		CHomonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Homonculus"),
+		CBody_Homonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 
@@ -926,6 +973,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel_For_Shader()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
 		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
 		return E_FAIL;
+
+
+
+
+
 
 	//lstrcpy(m_szLoadingText, TEXT("쉐이더 로드 되었습니다."));
 	

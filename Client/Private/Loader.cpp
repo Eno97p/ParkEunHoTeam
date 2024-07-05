@@ -480,7 +480,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	/* For.Prototype_Component_Model_Homonculus */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Homonculus/Homomculus.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Homonculus/Homonculus.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 

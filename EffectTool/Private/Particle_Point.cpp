@@ -26,12 +26,11 @@ HRESULT CParticle_Point::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(nullptr)))
 		return E_FAIL;
 
-	PARTICLEPOINT* pDesc = reinterpret_cast<PARTICLEPOINT*>(pArg);
-	OwnDesc = make_shared<PARTICLEPOINT>(*pDesc);
+	OwnDesc = new PARTICLEPOINT;
+	*OwnDesc = *reinterpret_cast<PARTICLEPOINT*>(pArg);
 
 
-
-	if (FAILED(Add_Components(OwnDesc->Texture)))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&OwnDesc->SuperDesc.vStartPos));
@@ -133,7 +132,7 @@ HRESULT CParticle_Point::Render_Bloom()
 	return S_OK;
 }
 
-HRESULT CParticle_Point::Add_Components(const wstring& Texcom)
+HRESULT CParticle_Point::Add_Components()
 {
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
@@ -146,7 +145,7 @@ HRESULT CParticle_Point::Add_Components(const wstring& Texcom)
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), Texcom,
+	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), OwnDesc->Texture,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;	
 	
@@ -246,4 +245,5 @@ void CParticle_Point::Free()
 	__super::Free();
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Delete(OwnDesc);
 }

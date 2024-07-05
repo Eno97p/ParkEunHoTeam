@@ -4,12 +4,6 @@
     <Filter Include="99. Default">
       <UniqueIdentifier>{0b94b47c-5344-4055-82fc-3928a73486a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="999. Imgui">
-      <UniqueIdentifier>{0ac58ef3-2e12-4e5e-8f41-6e6fca800553}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="999. Imgui\Backend">
-      <UniqueIdentifier>{6b658bc0-f7d3-4e45-8167-ab476c1782b4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -68,31 +62,37 @@
     <Filter Include="Objects\03. Player\PartObj\Head">
       <UniqueIdentifier>{ea8ba2aa-a7ff-40bb-ae06-e315ccd5cf18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="99. Default\999. Imgui">
+      <UniqueIdentifier>{0ac58ef3-2e12-4e5e-8f41-6e6fca800553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="99. Default\999. Imgui\Backend">
+      <UniqueIdentifier>{6b658bc0-f7d3-4e45-8167-ab476c1782b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Imgui\imgui.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Imgui\imgui_internal.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Imgui\imstb_rectpack.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Imgui\imstb_textedit.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Imgui\imstb_truetype.h">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\Backend\imgui_impl_dx11.h">
-      <Filter>999. Imgui\Backend</Filter>
+      <Filter>99. Default\999. Imgui\Backend</Filter>
     </ClInclude>
     <ClInclude Include="..\Backend\imgui_impl_win32.h">
-      <Filter>999. Imgui\Backend</Filter>
+      <Filter>99. Default\999. Imgui\Backend</Filter>
     </ClInclude>
     <ClInclude Include="EffectTool.h">
       <Filter>99. Default</Filter>
@@ -175,25 +175,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Imgui\imgui_demo.cpp">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Imgui\imgui_draw.cpp">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Imgui\imgui_tables.cpp">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Imgui\imgui_widgets.cpp">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </ClCompile>
     <ClCompile Include="..\Backend\imgui_impl_dx11.cpp">
-      <Filter>999. Imgui\Backend</Filter>
+      <Filter>99. Default\999. Imgui\Backend</Filter>
     </ClCompile>
     <ClCompile Include="..\Backend\imgui_impl_win32.cpp">
-      <Filter>999. Imgui\Backend</Filter>
+      <Filter>99. Default\999. Imgui\Backend</Filter>
     </ClCompile>
     <ClCompile Include="EffectTool.cpp">
       <Filter>99. Default</Filter>
@@ -272,13 +272,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Imgui\.editorconfig">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </None>
     <None Include="..\Imgui\.gitattributes">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </None>
     <None Include="..\Imgui\.gitignore">
-      <Filter>999. Imgui</Filter>
+      <Filter>99. Default\999. Imgui</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

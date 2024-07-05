@@ -69,6 +69,7 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 		ID3D11ShaderResourceView* pSRV = { nullptr };
 
 		HRESULT			hr{};
+		
 
 		
 		

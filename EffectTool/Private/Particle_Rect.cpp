@@ -24,13 +24,13 @@ HRESULT CParticle_Rect::Initialize(void * pArg)
 	if (pArg == nullptr)
 		return E_FAIL;
 
-	PARTICLERECT* pDesc = reinterpret_cast<PARTICLERECT*>(pArg);
-	OwnDesc = make_shared<PARTICLERECT>(*pDesc);
+	OwnDesc = new PARTICLERECT;
+	*OwnDesc = *reinterpret_cast<PARTICLERECT*>(pArg);
 
 	if (FAILED(__super::Initialize(nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components(OwnDesc->Texture)))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&OwnDesc->SuperDesc.vStartPos));
@@ -44,6 +44,9 @@ void CParticle_Rect::Priority_Tick(_float fTimeDelta)
 
 void CParticle_Rect::Tick(_float fTimeDelta)
 {
+
+
+
 	if (m_pVIBufferCom->Check_Instance_Dead())
 		m_pGameInstance->Erase(this);
 
@@ -130,7 +133,7 @@ HRESULT CParticle_Rect::Render_Bloom()
 	return S_OK;
 }
 
-HRESULT CParticle_Rect::Add_Components(const wstring& Texcom)
+HRESULT CParticle_Rect::Add_Components()
 {
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
@@ -143,7 +146,7 @@ HRESULT CParticle_Rect::Add_Components(const wstring& Texcom)
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, Texcom,
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, OwnDesc->Texture,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -239,4 +242,5 @@ void CParticle_Rect::Free()
 
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Delete(OwnDesc);
 }

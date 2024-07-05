@@ -423,26 +423,23 @@ HRESULT CImguiMgr::Store_Particles(char* Name, PARTICLETYPE type, void* pValue)
 	{
 	case Effect::PART_POINT:
 	{
-		CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pValue);
-		shared_ptr<CParticle_Point::PARTICLEPOINT> PointDesc = make_shared<CParticle_Point::PARTICLEPOINT>(val);
-		//CParticle_Point::PARTICLEPOINT* PointDesc =  new CParticle_Point::PARTICLEPOINT(val);
-		m_Particles.insert(make_pair(PART_POINT, PointDesc));
+		CParticle_Point::PARTICLEPOINT* PointDesc = new CParticle_Point::PARTICLEPOINT;
+		*PointDesc = *((CParticle_Point::PARTICLEPOINT*)pValue);
+		m_Types.emplace_back(make_pair(PART_POINT, PointDesc));
 		break;
 	}
 	case Effect::PART_MESH:
 	{
-		CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pValue);
-		shared_ptr<CParticleMesh::PARTICLEMESH> MeshDesc = make_shared<CParticleMesh::PARTICLEMESH>(val);
-		//CParticleMesh::PARTICLEMESH* MeshDesc = new CParticleMesh::PARTICLEMESH(val);
-		m_Particles.insert(make_pair(PART_MESH, MeshDesc));
+		CParticleMesh::PARTICLEMESH* MeshDesc = new CParticleMesh::PARTICLEMESH;
+		*MeshDesc = *((CParticleMesh::PARTICLEMESH*)pValue);
+		m_Types.emplace_back(make_pair(PART_MESH, MeshDesc));
 		break;
 	}
 	case Effect::PART_RECT:
 	{
-		CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pValue);
-		shared_ptr<CParticle_Rect::PARTICLERECT> RectDesc = make_shared<CParticle_Rect::PARTICLERECT>(val);
-		//CParticle_Rect::PARTICLERECT* RectDesc = new CParticle_Rect::PARTICLERECT(val);
-		m_Particles.insert(make_pair(PART_RECT, RectDesc));
+		CParticle_Rect::PARTICLERECT* RectDesc = new CParticle_Rect::PARTICLERECT;
+		*RectDesc = *((CParticle_Rect::PARTICLERECT*)pValue);
+		m_Types.emplace_back(make_pair(PART_RECT, RectDesc));
 		break;
 	}
 	default:
@@ -455,10 +452,13 @@ HRESULT CImguiMgr::Store_Particles(char* Name, PARTICLETYPE type, void* pValue)
 
 PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* pValue2)
 {
-	if (m_Particles.size() < 1)
+	//if (m_Particles.size() < 1)
+	//	return type;
+	if (m_Types.size() < 1)
 		return type;
 
-	if (m_Particles.size() != ParticleNames.size())
+
+	if (m_Types.size() != ParticleNames.size())
 	{
 		MSG_BOX("Size Error");
 		return type;
@@ -483,31 +483,23 @@ PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* 
 		ImGui::EndListBox();
 	}
 
-	if (current_item >= 0 && current_item < m_Particles.size())
+	if (current_item >= 0 && current_item < m_Types.size())
 	{
-		auto it = m_Particles.begin();
-		advance(it, current_item);
-		if (it == m_Particles.end())
-		{
-			ImGui::End();
-			return type;
-		}
-
 		if (ImGui::Button("Add", ButtonSize))
 		{	
-			switch (it->first)
+			switch (m_Types[current_item].first)
 			{
 			case PART_POINT:
 				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
-					TEXT("Prototype_GameObject_ParticlePoint"), it->second.get());
+					TEXT("Prototype_GameObject_ParticlePoint"), m_Types[current_item].second);
 				break;
 			case PART_MESH:
 				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
-					TEXT("Prototype_GameObject_ParticleMesh"), it->second.get());
+					TEXT("Prototype_GameObject_ParticleMesh"), m_Types[current_item].second);
 				break;
 			case PART_RECT:
 				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Particle"),
-					TEXT("Prototype_GameObject_ParticleRect"), it->second.get());
+					TEXT("Prototype_GameObject_ParticleRect"), m_Types[current_item].second);
 				break;
 			default:
 				break;
@@ -517,15 +509,15 @@ PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* 
 		ImGui::SameLine();
 		if (ImGui::Button("Load this", ButtonSize))
 		{
-			*pValue = it->second.get();
+			*pValue = m_Types[current_item].second;
 			ChangedDesc = true;
 			ImGui::End();
-			return it->first;
+			return m_Types[current_item].first;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Edit", ButtonSize))
 		{
-			if (it->first != type)
+			if (m_Types[current_item].first != type)
 				MSG_BOX("다른 타입은 수정할 수 없습니다.");
 			else
 			{
@@ -533,23 +525,23 @@ PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* 
 				{
 				case Effect::PART_POINT:
 				{
-					it->second.reset();
+					Erase_Particle(current_item);
 					CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pValue2);
-					it->second = make_shared<CParticle_Point::PARTICLEPOINT>(val);
+					m_Types[current_item].second = new CParticle_Point::PARTICLEPOINT(val);
 					break;
 				}
 				case Effect::PART_MESH:
 				{
-					it->second.reset();
+					Erase_Particle(current_item);
 					CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pValue2);
-					it->second = make_shared<CParticleMesh::PARTICLEMESH>(val);
+					m_Types[current_item].second = new CParticleMesh::PARTICLEMESH(val);
 					break;
 				}
 				case Effect::PART_RECT:
 				{
-					it->second.reset();
+					Erase_Particle(current_item);
 					CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pValue2);
-					it->second = make_shared<CParticle_Rect::PARTICLERECT>(val);
+					m_Types[current_item].second = new CParticle_Rect::PARTICLERECT(val);
 					break;
 				}
 				default:
@@ -560,20 +552,21 @@ PARTICLETYPE CImguiMgr::ParticleListBox(PARTICLETYPE type, void** pValue, void* 
 
 		if (ImGui::Button("Erase", ButtonSize))
 		{
-			it->second.reset();
-			m_Particles.erase(it);
+			Erase_Particle(current_item);
+			m_Types.erase(m_Types.begin() + current_item);
 			ParticleNames.erase(ParticleNames.begin() + current_item);
 
-			if (current_item >= m_Particles.size())
-				current_item = m_Particles.size() - 1;
+			if (current_item >= m_Types.size())
+				current_item = m_Types.size() - 1;
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Erase All", ButtonSize))
 		{
-			for (auto& pair : m_Particles)
-				pair.second.reset();
+			for (int i = 0; i < m_Types.size(); ++i)
+				Erase_Particle(i);
 
-			m_Particles.clear();
+			m_Types.clear();
+			//m_Particles.clear();
 			ParticleNames.clear();
 			current_item = 0;
 		}
@@ -587,10 +580,10 @@ HRESULT CImguiMgr::Save_Particles()
 {
 	string finalPath = "../../Client/Bin/BinaryFile/Effect/Particles.Bin";
 	ofstream file(finalPath, ios::out | ios::binary);
-	_uint iSize = m_Particles.size();
+	_uint iSize = m_Types.size();
 	file.write((char*)&iSize, sizeof(_uint));
 
-	for (auto& pair : m_Particles)
+	for (auto& pair : m_Types)
 	{
 		PARTICLETYPE type = pair.first;
 		file.write((char*)&type, sizeof(PARTICLETYPE));
@@ -598,7 +591,7 @@ HRESULT CImguiMgr::Save_Particles()
 		{
 		case Effect::PART_POINT:
 		{
-			CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pair.second.get());
+			CParticle_Point::PARTICLEPOINT val = *((CParticle_Point::PARTICLEPOINT*)pair.second);
 			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
 			save_wstring_to_stream(val.Texture, file);
 			save_wstring_to_stream(val.TexturePath, file);
@@ -606,14 +599,14 @@ HRESULT CImguiMgr::Save_Particles()
 		}
 		case Effect::PART_MESH:
 		{
-			CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pair.second.get());
+			CParticleMesh::PARTICLEMESH val = *((CParticleMesh::PARTICLEMESH*)pair.second);
 			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
 			file.write((char*)&val.eModelType, sizeof(EFFECTMODELTYPE));
 			break;
 		}
 		case Effect::PART_RECT:
 		{
-			CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pair.second.get());
+			CParticle_Rect::PARTICLERECT val = *((CParticle_Rect::PARTICLERECT*)pair.second);
 			file.write((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
 			save_wstring_to_stream(val.Texture, file);
 			save_wstring_to_stream(val.TexturePath, file);
@@ -654,9 +647,9 @@ HRESULT CImguiMgr::Load_Particles()
 		MSG_BOX("Failed To Open File");
 		return E_FAIL;
 	}
-	for (auto& pair : m_Particles)
-		pair.second.reset();
-	m_Particles.clear();
+	for (int i = 0; i < m_Types.size(); ++i)
+		Erase_Particle(i);
+	m_Types.clear();
 	ParticleNames.clear();
 
 	_uint iSize = 0;
@@ -669,36 +662,34 @@ HRESULT CImguiMgr::Load_Particles()
 		{
 		case PART_POINT:
 		{
-			CParticle_Point::PARTICLEPOINT val;
-			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
-			val.Texture = load_wstring_from_stream(inFile);
-			val.TexturePath = load_wstring_from_stream(inFile);
-			Add_Texture_Prototype(val.TexturePath, val.Texture);
-			val.particleType = PART_POINT;
-			shared_ptr<CParticle_Point::PARTICLEPOINT> Arg = make_shared<CParticle_Point::PARTICLEPOINT>(val);
-			m_Particles.insert(make_pair(PART_POINT, Arg));
+			CParticle_Point::PARTICLEPOINT* Arg = new CParticle_Point::PARTICLEPOINT;
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			Arg->Texture = load_wstring_from_stream(inFile);
+			Arg->TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(Arg->TexturePath, Arg->Texture);
+			Arg->particleType = PART_POINT;
+			m_Types.emplace_back(make_pair(PART_POINT, Arg));
+			
 			break;
 		}
 		case PART_MESH:
 		{
-			CParticleMesh::PARTICLEMESH val;
-			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
-			inFile.read((char*)&val.eModelType, sizeof(EFFECTMODELTYPE));
-			val.particleType = PART_MESH;
-			shared_ptr<CParticleMesh::PARTICLEMESH> Arg = make_shared<CParticleMesh::PARTICLEMESH>(val);
-			m_Particles.insert(make_pair(PART_MESH, Arg));
+			CParticleMesh::PARTICLEMESH* Arg = new CParticleMesh::PARTICLEMESH();
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			inFile.read((char*)&Arg->eModelType, sizeof(EFFECTMODELTYPE));
+			Arg->particleType = PART_MESH;
+			m_Types.emplace_back(make_pair(PART_MESH, Arg));
 			break;
 		}
 		case PART_RECT:
 		{
-			CParticle_Rect::PARTICLERECT val;
-			inFile.read((char*)&val.SuperDesc, sizeof(CParticle::PARTICLEDESC));
-			val.Texture = load_wstring_from_stream(inFile);
-			val.TexturePath = load_wstring_from_stream(inFile);
-			Add_Texture_Prototype(val.TexturePath, val.Texture);
-			val.particleType = PART_RECT;
-			shared_ptr<CParticle_Rect::PARTICLERECT> Arg = make_shared<CParticle_Rect::PARTICLERECT>(val);
-			m_Particles.insert(make_pair(PART_RECT, Arg));
+			CParticle_Rect::PARTICLERECT* Arg = new CParticle_Rect::PARTICLERECT();
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			Arg->Texture = load_wstring_from_stream(inFile);
+			Arg->TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(Arg->TexturePath, Arg->Texture);
+			Arg->particleType = PART_RECT;
+			m_Types.emplace_back(make_pair(PART_RECT, Arg));
 			break;
 		}
 		}
@@ -734,12 +725,21 @@ void CImguiMgr::Load_Texture()
 	static std::string currentPath = "../../Client/Bin/Resources/Textures/";
 	static std::string selectedFile = "";
 	static std::string fullPath = "";
-
 	std::vector<std::string> files = GetFilesInDirectory(currentPath);
 
-	if (ImGui::Button("..")) {
+	if (ImGui::Button("..", ImVec2(50,30))) {
 		currentPath = std::filesystem::path(currentPath).parent_path().string();
 	}
+	ImGui::SameLine();
+	if (ImGui::Button("Convert_To_DDS_This_Folder", ImVec2(200.f, 30.f)))
+	{
+		vector<string> imageFiles = GetFilesTexture(currentPath);
+		for (const auto& file : imageFiles) {
+			ConvertToDDSWithMipmap(file, file);
+		}
+
+	}
+
 
 	if (ImGui::BeginListBox("##file_list", ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing()))) {
 		for (const auto& file : files) {
@@ -759,7 +759,7 @@ void CImguiMgr::Load_Texture()
 		ImGui::EndListBox();
 	}
 
-	if (IsPNGFile(selectedFile)) {
+	if (IsPNGFile(selectedFile) || IsDDSFile(selectedFile)) {
 		string selectedFilePath = fullPath;
 		wstring wPath = utf8_to_wstring(selectedFilePath);
 		wstring wName = utf8_to_wstring(selectedFile);
@@ -775,6 +775,7 @@ void CImguiMgr::Load_Texture()
 
 	}
 
+	
 	ImGui::End();
 }
 
@@ -1131,13 +1132,87 @@ void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)
 	ImGui::TextColored(color, "%s", text);
 }
 
+HRESULT CImguiMgr::ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath)
+{
+	DirectX::ScratchImage image;
+	DirectX::TexMetadata metadata;
+	HRESULT hr;
+
+	// 이미지 로드
+	hr = DirectX::LoadFromWICFile(utf8_to_wstring(inputFilePath).c_str(), DirectX::WIC_FLAGS_NONE, &metadata, image);
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to load image: ");
+		return hr;
+	}
+
+	// mipmap 생성
+	DirectX::ScratchImage mipChain;
+	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipChain);
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to generate mipmaps: ");
+		return hr;
+	}
+
+	// 새로운 파일명 생성: 기존 확장자 .png 제거 후 .dds 추가
+	std::filesystem::path outputPath = std::filesystem::path(outputFilePath).replace_extension(".dds");
+
+	// DDS 파일로 저장
+	hr = DirectX::SaveToDDSFile(mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(), DirectX::DDS_FLAGS_NONE, outputPath.c_str());
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to save DDS file: ");
+		return hr;
+	}
+
+	return S_OK;
+}
+
 vector<string> CImguiMgr::GetFilesInDirectory(const string& path)
 {
 	vector<std::string> files;
 	for (const auto& entry : filesystem::directory_iterator(path)) {
+
 		files.push_back(entry.path().filename().string());
 	}
 	return files;
+}
+
+vector<string> CImguiMgr::GetFilesTexture(const string& path)
+{
+	vector<string> imageFiles;
+	for (const auto& entry : filesystem::directory_iterator(path)) {
+		if (entry.is_regular_file())
+		{
+			string filePath = entry.path().string();
+			if (IsTextureFile(filePath))
+			{
+				imageFiles.push_back(filePath);
+			}
+		}
+	}
+	return imageFiles;
+}
+
+void CImguiMgr::Erase_Particle(_int index)
+{
+	if (index >= m_Types.size())
+		return;
+	switch (m_Types[index].first)
+	{
+	case PART_POINT:
+		delete ((CParticle_Point::PARTICLEPOINT*)m_Types[index].second);
+		m_Types[index].second = nullptr;
+		break;
+	case PART_MESH:
+		delete ((CParticleMesh::PARTICLEMESH*)m_Types[index].second);
+		m_Types[index].second = nullptr;
+		break;
+	case PART_RECT:
+		delete ((CParticle_Rect::PARTICLERECT*)m_Types[index].second);
+		m_Types[index].second = nullptr;
+		break;
+	default:
+		break;
+	}
 }
 
 CImguiMgr* CImguiMgr::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -1154,7 +1229,10 @@ CImguiMgr* CImguiMgr::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 void CImguiMgr::Free()
 {
-	m_Particles.clear();
+	for (int i = 0; i < m_Types.size(); ++i)
+		Erase_Particle(i);
+
+	m_Types.clear();
 
 	TrailEffects.clear();
 	ImGui_ImplDX11_Shutdown();

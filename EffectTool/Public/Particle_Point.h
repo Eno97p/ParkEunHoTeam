@@ -16,8 +16,12 @@ class CParticle_Point final : public CParticle
 public:
 	typedef struct PARTICLEPOINT : public PUBLIC_PARTICLEDESC
 	{
-		wstring									 Texture;
-		wstring									 TexturePath;
+		~PARTICLEPOINT(){
+			Texture.clear();
+			TexturePath.clear();
+		}
+		wstring									 Texture = TEXT("");
+		wstring									 TexturePath = TEXT("");
 		PARTICLEDESC							 SuperDesc;
 	};
 private:
@@ -37,10 +41,10 @@ public:
 private:
 	CTexture*						m_pTextureCom = { nullptr };
 	CVIBuffer_Instance_Point*		m_pVIBufferCom = { nullptr };	
-	shared_ptr<PARTICLEPOINT>		OwnDesc;
+	PARTICLEPOINT*					OwnDesc = nullptr;
 
 private:
-	HRESULT Add_Components(const wstring& Texcom);
+	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 	HRESULT Bind_BlurResources();
 public:

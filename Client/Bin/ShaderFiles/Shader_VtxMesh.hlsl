@@ -9,7 +9,9 @@ texture2D g_OpacityTexture;
 texture2D g_EmissiveTexture;
 texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
+texture2D g_DisolveTexture;
 
+float g_DisolveValue = 1.f;
 bool g_bDiffuse = false;
 bool g_bNormal = false;
 bool g_bSpecular = false;
@@ -171,6 +173,21 @@ PS_OUT PS_WEAPON(PS_IN In)
 	else Out.vRoughness = vector(0.7f, 0.7f, 0.7f, 1.f);
 	if (g_bMetalic) Out.vMetalic = vMetalic;
 	else Out.vMetalic = vector(1.f, 1.f, 1.f, 1.f);
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+	}
 
 	return Out;
 }

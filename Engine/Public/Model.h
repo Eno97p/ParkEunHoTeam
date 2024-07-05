@@ -46,7 +46,7 @@ public:														//파티클 함수들
 
 	HRESULT Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc);		//인스턴싱할 모델만 호출해준다
 
-	HRESULT Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc);
+	HRESULT Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc);
 
 	_uint Get_NumMeshes() const {							//메쉬의 갯수 반환
 		return m_iNumMeshes;

@@ -35,6 +35,8 @@ HRESULT CMonster::Initialize(void * pArg)
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayer);
+	Safe_AddRef(m_pPlayerTransform);
 
 	return S_OK;
 }
@@ -79,5 +81,4 @@ void CMonster::Free()
 	Safe_Release(m_pBehaviorCom);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pPlayerTransform);
-	
 }

@@ -22,7 +22,7 @@ class CMantari final : public CMonster
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_WALKLEFT, STATE_WALKRIGHT, STATE_WALKBACK, STATE_WALKFRONT, STATE_JUMPATTACK, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_CIRCLEATTACK, STATE_HIT, STATE_DEAD, STATE_REVIVE, STATE_END
+		STATE_IDLE, STATE_WALKLEFT, STATE_WALKRIGHT, STATE_WALKBACK, STATE_WALKFRONT, STATE_JUMPATTACK, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_CIRCLEATTACK, STATE_HIT, STATE_PARRIED, STATE_DEAD, STATE_REVIVE, STATE_END
 	};
 
 private:
@@ -49,6 +49,7 @@ private:
 private:
 	NodeStates Revive(_float fTimeDelta);
 	NodeStates Dead(_float fTimeDelta);
+	NodeStates Parried(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates Attack(_float fTimeDelta);
@@ -69,6 +70,7 @@ private:
 	_bool										m_bHit = false;
 #pragma endregion 상태제어 bool변수
 
+	_float										m_fDeadDelay = 2.f;
 	_float										m_fChasingDelay = 0.5f;
 	_bool										m_bAnimFinished = false;
 	_float										m_fLengthFromPlayer = 0.f;

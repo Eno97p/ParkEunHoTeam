@@ -337,6 +337,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\Body">
       <UniqueIdentifier>{3fa0fc76-9382-4dd6-be82-626980f8c02e}</UniqueIdentifier>
 	</Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element">
+      <UniqueIdentifier>{11ee1bf9-e805-4ec7-8de9-4b67c07f4889}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\08. vehicle">
       <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
     </Filter>

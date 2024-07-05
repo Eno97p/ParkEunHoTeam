@@ -29,11 +29,13 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	CCollider* Get_Collider() { return m_pColliderCom; }
 
 protected:
 	CTransform*					m_pTerrainTransform = { nullptr };
 	CVIBuffer*					m_pTerrainVIBuffer = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	CCollider::COLLTYPE m_eColltype = CCollider::COLL_END;
 
 protected:
 	/* 태우고자하는 객체의 월드위치. * 지형월드역*/

@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\Catharsis.h" />
     <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\Public\Cendres.h" />
+    <ClInclude Include="..\public\CHoverboard.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Function.hpp" />
@@ -293,6 +294,7 @@
     <ClCompile Include="..\Private\Catharsis.cpp" />
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\Private\Cendres.cpp" />
+    <ClCompile Include="..\private\CHoverboard.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\CorruptedSword.cpp" />

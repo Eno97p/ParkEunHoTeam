@@ -62,7 +62,7 @@ void CMantari::Priority_Tick(_float fTimeDelta)
 
 void CMantari::Tick(_float fTimeDelta)
 {
-	m_pPhysXCom->Tick(fTimeDelta);
+	
 
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
@@ -75,6 +75,8 @@ void CMantari::Tick(_float fTimeDelta)
 
 	// 플레이어 무기와 몬스터의 충돌 여부
 	m_eColltype = m_pColliderCom->Intersect(dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Collider());
+
+	m_pPhysXCom->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -87,6 +89,7 @@ void CMantari::Late_Tick(_float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
 

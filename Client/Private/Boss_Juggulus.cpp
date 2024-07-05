@@ -12,7 +12,7 @@ CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 {
 }
 
-CBoss_Juggulus::CBoss_Juggulus(const CMonster& rhs)
+CBoss_Juggulus::CBoss_Juggulus(const CBoss_Juggulus& rhs)
 	: CMonster{rhs}
 {
 }
@@ -64,6 +64,8 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject.second->Tick(fTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_P))
+		m_iCurHp = 10;
 
 }
 
@@ -300,7 +302,7 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 	{
 		m_iState = STATE_IDLE_SEC;
 	}
-	return SUCCESS;
+	return RUNNING; // SUCCESS
 }
 
 NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)

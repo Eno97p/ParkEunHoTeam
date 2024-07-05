@@ -179,8 +179,11 @@
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Ghost.h" />
+    <ClInclude Include="..\Public\Body_Homonculus.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
+    <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
@@ -198,6 +201,8 @@
     <ClInclude Include="..\Public\Explosion.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
+    <ClInclude Include="..\Public\Ghost.h" />
+    <ClInclude Include="..\Public\Homonculus.h" />
     <ClInclude Include="..\Public\IceBlade.h" />
     <ClInclude Include="..\Public\ImGUi\imconfig.h" />
     <ClInclude Include="..\Public\ImGUi\imgui.h" />
@@ -213,9 +218,11 @@
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Legionnaire.h" />
+    <ClInclude Include="..\Public\Legionnaire_Gun.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\LGGun_Weapon.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mantari.h" />
@@ -287,8 +294,11 @@
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Ghost.cpp" />
+    <ClCompile Include="..\Private\Body_Homonculus.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
+    <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
@@ -303,6 +313,8 @@
     <ClCompile Include="..\Private\Explosion.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
+    <ClCompile Include="..\Private\Ghost.cpp" />
+    <ClCompile Include="..\Private\Homonculus.cpp" />
     <ClCompile Include="..\Private\IceBlade.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_demo.cpp" />
@@ -317,9 +329,11 @@
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Legionnaire.cpp" />
+    <ClCompile Include="..\Private\Legionnaire_Gun.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\LGGun_Weapon.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mantari.cpp" />

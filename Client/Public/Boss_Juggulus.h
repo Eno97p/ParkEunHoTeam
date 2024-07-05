@@ -16,7 +16,7 @@ public:
 
 private:
 	CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CBoss_Juggulus(const CMonster& rhs);
+	CBoss_Juggulus(const CBoss_Juggulus& rhs);
 	virtual ~CBoss_Juggulus() = default;
 
 public:

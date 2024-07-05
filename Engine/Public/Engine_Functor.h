@@ -86,45 +86,32 @@ namespace Engine
 
     inline string wstring_to_string(const std::wstring& wstr) {
         if (wstr.empty()) return std::string();
-        int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+        int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), nullptr, 0, nullptr, nullptr);
         std::string strTo(size_needed, 0);
-        WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, nullptr, nullptr);
+        WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, nullptr, nullptr);
         return strTo;
     }
 
-    // string을 wstring으로 변환하는 함수 (UTF-8)
     inline wstring string_to_wstring(const std::string& str) {
         if (str.empty()) return std::wstring();
-        int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), nullptr, 0);
+        int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), nullptr, 0);
         std::wstring wstrTo(size_needed, 0);
-        MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+        MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
         return wstrTo;
     }
 
     inline void save_wstring_to_stream(const std::wstring& wstr, std::ostream& os) {
-        // wstring을 string으로 변환
         std::string utf8_string = wstring_to_string(wstr);
-
-        // string 데이터의 길이 가져오기
         std::size_t size = utf8_string.size();
-
-        // 데이터 크기 먼저 쓰기
         os.write(reinterpret_cast<const char*>(&size), sizeof(size));
-
-        // string 데이터를 바이너리로 스트림에 쓰기
         os.write(utf8_string.c_str(), size);
     }
 
-    inline wstring load_wstring_from_stream(std::istream& is) {
-        // 데이터 크기 읽기
+    inline std::wstring load_wstring_from_stream(std::istream& is) {
         std::size_t size;
         is.read(reinterpret_cast<char*>(&size), sizeof(size));
-
-        // string 데이터 읽기
         std::string utf8_string(size, '\0');
         is.read(&utf8_string[0], size);
-
-        // string을 wstring으로 변환
         return string_to_wstring(utf8_string);
     }
 
@@ -133,6 +120,20 @@ namespace Engine
 		std::string utf8_string = str;
 		return string_to_wstring(utf8_string);
 	}
+
+    inline wchar_t* wstringToWchar(const wstring& wstr) {
+        size_t len = wstr.length();
+        wchar_t* wchars = new wchar_t[len + 1];
+        errno_t err = wcsncpy_s(wchars, len + 1, wstr.c_str(), len);
+        if (err != 0) {
+            delete[] wchars;
+            throw runtime_error("Error copying string");
+        }
+        return wchars;
+    }
+
+
+
 
     //_float4, _float3, _float2 ==연산이랑 != 연산 가능하도록 오버라이딩
     inline bool operator==(const XMFLOAT4& lhs, const XMFLOAT4& rhs) {

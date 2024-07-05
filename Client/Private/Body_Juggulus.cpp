@@ -144,49 +144,41 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 17;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_NEXTPHASE)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 2;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_CREATE_HAMMER)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_FLAME_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 6;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_HAMMER_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_SPHERE_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 19;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_THUNDER_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 19;
-		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_DEAD)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 14;
-		fAnimSpeed = 1.f;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

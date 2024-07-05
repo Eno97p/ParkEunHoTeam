@@ -16,8 +16,13 @@ class CParticle_Rect final : public CParticle
 public:
 	typedef struct PARTICLERECT : public PUBLIC_PARTICLEDESC
 	{
-		wstring									 Texture;
-		wstring									 TexturePath;
+		~PARTICLERECT()
+		{
+			Texture.clear();
+			TexturePath.clear();
+		}
+		wstring									 Texture = TEXT("");
+		wstring									 TexturePath = TEXT("");
 		PARTICLEDESC							 SuperDesc;
 	};
 private:
@@ -38,12 +43,12 @@ private:
 	CVIBuffer_Instance_Rect* m_pVIBufferCom = { nullptr };
 
 private:
-	HRESULT Add_Components(const wstring& Texcom);
+	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 	HRESULT Bind_BlurResources();
 
 private:
-	shared_ptr<PARTICLERECT>		OwnDesc;
+	PARTICLERECT*		OwnDesc = nullptr;
 
 public:
 	static CParticle_Rect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

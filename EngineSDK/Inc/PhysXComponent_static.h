@@ -31,6 +31,7 @@ public:
 
 #ifdef _DEBUG
 	virtual PhysX_static_Editable_Desc* GetData() override { return &m_OutDesc; }
+	virtual HRESULT Render()override;
 #endif
 
 

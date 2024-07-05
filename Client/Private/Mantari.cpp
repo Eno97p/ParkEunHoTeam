@@ -5,9 +5,9 @@
 #include "GameInstance.h"
 #include "PartObject.h"
 #include "Weapon.h"
-#include "Explosion.h"
 #include "Clone.h"
 #include "Body_Mantari.h"
+#include "Weapon_Mantari.h"
 
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -21,7 +21,6 @@ CMantari::CMantari(const CMantari& rhs)
 
 HRESULT CMantari::Initialize_Prototype()
 {
-
 	return S_OK;
 }
 
@@ -55,6 +54,15 @@ HRESULT CMantari::Initialize(void* pArg)
 
 void CMantari::Priority_Tick(_float fTimeDelta)
 {
+	if (m_fDeadDelay < 2.f)
+	{
+		m_fDeadDelay -= fTimeDelta;
+		if (m_fDeadDelay < 0.f)
+		{
+			m_pGameInstance->Erase(this);
+		}
+	}
+
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
 	m_bAnimFinished = dynamic_cast<CBody_Mantari*>(m_PartObjects.front())->Get_AnimFinished();
@@ -62,7 +70,7 @@ void CMantari::Priority_Tick(_float fTimeDelta)
 
 void CMantari::Tick(_float fTimeDelta)
 {
-	m_pPhysXCom->Tick(fTimeDelta);
+	
 
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
@@ -74,7 +82,14 @@ void CMantari::Tick(_float fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부
-	m_eColltype = m_pColliderCom->Intersect(dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Collider());
+
+	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+	if (pPlayerWeapon->Get_Active())
+	{
+		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+	}
+
+	m_pPhysXCom->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -87,6 +102,7 @@ void CMantari::Late_Tick(_float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
 
@@ -118,7 +134,7 @@ HRESULT CMantari::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(71.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(160.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -169,6 +185,8 @@ HRESULT CMantari::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
+	dynamic_cast<CBody_Mantari*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
+
 	return S_OK;
 }
 
@@ -191,6 +209,7 @@ HRESULT CMantari::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CMantari::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CMantari::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMantari::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMantari::Hit, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CMantari::JumpAttack, this, std::placeholders::_1));
@@ -238,9 +257,43 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 	{
 		if (m_bAnimFinished)
 		{
-			m_iState = STATE_IDLE;
+			if (!m_bDead)
+			{
+				m_bDead = true;
+				for (_uint i = 0; i < m_PartObjects.size(); i++)
+				{
+					dynamic_cast<CPartObject*>(m_PartObjects[i])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+				}
+				m_fDeadDelay -= 0.001f;
+			}
 		}
 		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CMantari::Parried(_float fTimeDelta)
+{
+	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried())
+	{
+		m_iState = STATE_PARRIED;
+	}
+
+	if (m_iState == STATE_PARRIED)
+	{
+		if (m_bAnimFinished)
+		{
+			dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Set_IsParried(false);
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
 	}
 	else
 	{

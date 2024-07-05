@@ -5,7 +5,6 @@
 #include "GameInstance.h"
 #include "PartObject.h"
 #include "Weapon.h"
-#include "Explosion.h"
 #include "Clone.h"
 #include "Body_Legionnaire.h"
 

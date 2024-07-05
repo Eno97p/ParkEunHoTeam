@@ -43,8 +43,9 @@ protected:
 #pragma region ∏ÛΩ∫≈Õ Ω∫≈»
 	_uint m_iMaxHp = 100;
 	_uint m_iCurHp = m_iMaxHp;
-	CCollider::COLLTYPE m_eColltype = CCollider::COLL_END;
 #pragma endregion ∏ÛΩ∫≈Õ Ω∫≈»
+
+	_bool m_bDead = false;
 
 	_uint							m_iState = { 0 };
 

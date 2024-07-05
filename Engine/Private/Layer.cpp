@@ -81,19 +81,31 @@ void CLayer::Clean()
 void CLayer::Priority_Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
+	{
+		if (pGameObject->Get_Dead() == true)
+			continue;
 		pGameObject->Priority_Tick(fTimeDelta);
+	}
 }
 
 void CLayer::Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
+	{
+		if (pGameObject->Get_Dead() == true)
+			continue;
 		pGameObject->Tick(fTimeDelta);
+	}
 }
 
 void CLayer::Late_Tick(_float fTimeDelta)
 {
 	for (auto& pGameObject : m_GameObjects)
+	{
+		if (pGameObject->Get_Dead() == true)
+			continue;
 		pGameObject->Late_Tick(fTimeDelta);
+	}
 }
 
 void CLayer::Delete_Object(CGameObject* pGameObject)

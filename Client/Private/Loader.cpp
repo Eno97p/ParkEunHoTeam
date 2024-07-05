@@ -8,7 +8,6 @@
 #include "Body_Player.h"
 #include "Clone.h"
 #include "FreeCamera.h"
-#include "Explosion.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -43,6 +42,13 @@
 #include "Legionnaire.h"
 #include "Body_Legionnaire.h"
 #include "Weapon_Legionnaire.h"
+#include "Legionnaire_Gun.h"
+#include "Body_LGGun.h"
+#include "LGGun_Weapon.h"
+#include "Ghost.h"
+#include "Body_Ghost.h"
+#include "Homonculus.h"
+#include "Body_Homonculus.h"
 
 #pragma endregion Monster
 
@@ -50,9 +56,11 @@
 #include "Map_Element.h"
 #include "Passive_Element.h"
 #include "Active_Element.h"
-
 #include "TutorialMapBridge.h"
 
+
+
+#include"CHoverboard.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -93,6 +101,24 @@ _uint APIENTRY Loading_MapData(void* pArg)
 	return 0;
 }
 
+_uint APIENTRY Loading_ShaderData(void* pArg)
+{
+	CoInitializeEx(0, COINIT_MULTITHREADED);
+
+	CLoader* pLoader = (CLoader*)pArg;
+
+	if (FAILED(pLoader->Loading_Shader()))
+		return 1;
+
+	CoUninitialize();
+
+	return 0;
+}
+
+
+
+
+
 
 
 HRESULT CLoader::Initialize(LEVEL eNextLevel)
@@ -108,6 +134,10 @@ HRESULT CLoader::Initialize(LEVEL eNextLevel)
 
 	m_hThread[1] = (HANDLE)_beginthreadex(nullptr, 0, Loading_MapData, this, 0, nullptr);
 	if (0 == m_hThread[1])
+		return E_FAIL;
+
+	m_hThread[2] = (HANDLE)_beginthreadex(nullptr, 0, Loading_ShaderData, this, 0, nullptr);
+	if (0 == m_hThread[2])
 		return E_FAIL;
 
 
@@ -152,15 +182,19 @@ HRESULT CLoader::Loading_Map()
 		break;
 	case LEVEL_GAMEPLAY:
 	{
+
 		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
 			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
 			return hr = E_FAIL;
+	
 
-		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static2"),
+
+		
+	/*	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static2"),
 			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMapBridge.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
-			return hr = E_FAIL;
+			return hr = E_FAIL;*/
 
-		break;
+		break;		
 	}
 	//예시:case LEVEL_BOSS:
 	//	
@@ -194,13 +228,44 @@ HRESULT CLoader::Loading_Map()
 
 HRESULT CLoader::Loading_Shader()
 {
+	EnterCriticalSection(&m_Critical_Section[2]);
+	HRESULT			hr{};
+
+
+	switch (m_eNextLevel)
+	{
+	case LEVEL_LOGO:
+		hr = Loading_For_LogoLevel_For_Shader();
+		break;
+	case LEVEL_GAMEPLAY:
+		hr = Loading_For_GamePlayLevel_For_Shader();
+		break;
+	}
+	//예시:case LEVEL_BOSS:
+	//	
+	//	
+	//	
+	//	
+	//	
+	//	
+	//
+	//	break;
 
 
 
 
+
+
+
+	LeaveCriticalSection(&m_Critical_Section[2]);
+
+
+	if (FAILED(hr))
+		return E_FAIL;
 
 
 	return S_OK;
+
 }
 
 
@@ -223,6 +288,11 @@ HRESULT CLoader::Loading_For_LogoLevel()
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_LogoLevel_For_Shader()
+{
 	return S_OK;
 }
 
@@ -295,6 +365,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Wander/Wander.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_HoverBoard*/
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hoverboard"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Hoverboard/Hoverboard.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Wander */
@@ -456,7 +532,25 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Legionnaire_Gun"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
+	/* For.Prototype_Component_Model_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_LGGun_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ghost"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Homonculus/Homonculus.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 
 	/* Mantari - 박은호 작업 */
@@ -503,62 +597,63 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+	//lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
-	/* For.Prototype_Component_Shader_VtxNorTex */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxNorTex */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxMesh */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxMesh */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxAnimMesh */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxAnimMesh */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxCube */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxCube */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxInstance_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Rect"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Rect.hlsl"), VTXINSTANCE_RECT::Elements, VTXINSTANCE_RECT::iNumElements))))
-		return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxInstance_Point */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxInstance_Rect */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Rect"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Rect.hlsl"), VTXINSTANCE_RECT::Elements, VTXINSTANCE_RECT::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxInstance_Rect */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxInstance_Point */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_VtxPassiveElement */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMapElement.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxInstance_Rect */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_Shader_Sky */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Sky"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Sky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxPassiveElement */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMapElement.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_ComputeShader_Calculate */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Calculate"),
-		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Calculate.hlsl"), "main"))))
-		return E_FAIL;
+	///* For.Prototype_Component_Shader_Sky */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Sky"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Sky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+	//	return E_FAIL;
 
-	/* For.Prototype_Component_ComputeShader_Float4 */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
-		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
-		return E_FAIL;
+	///* For.Prototype_Component_ComputeShader_Calculate */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Calculate"),
+	//	CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Calculate.hlsl"), "main"))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_ComputeShader_Float4 */
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
+	//	CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
 	/* For.Prototype_Component_Collider */
@@ -690,20 +785,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CActive_Element::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	///* For.Prototype_GameObject_Particle_Rect */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Rect"),
-	//	CParticle_Rect::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	///* For.Prototype_GameObject_Particle_Point */
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_Point"),
-	//	CParticle_Point::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	/* For.Prototype_GameObject_Explosion */
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Explosion"),
-		CExplosion::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 
 #pragma region Active Element
@@ -779,8 +860,48 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CWeapon_Legionnaire::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Legionnaire_Gun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire_Gun"),
+		CLegionnaire_Gun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_LGGun */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_LGGun"),
+		CBody_LGGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LGGun_Weapon */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_LGGun_Weapon"),
+		CLGGun_Weapon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ghost"),
+		CGhost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Ghost"),
+		CBody_Ghost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Homonculus"),
+		CHomonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Homonculus"),
+		CBody_Homonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion Monster
+
+
+	/* For.Prototype_GameObject_HoverBoard */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
+		CHoverboard::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 
@@ -790,6 +911,76 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_GamePlayLevel_For_Shader()
+{
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxAnimMesh */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstance_Rect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Rect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Rect.hlsl"), VTXINSTANCE_RECT::Elements, VTXINSTANCE_RECT::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstance_Point */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstance_Rect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPassiveElement */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMapElement.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_Sky */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Sky"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Sky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ComputeShader_Calculate */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Calculate"),
+		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Calculate.hlsl"), "main"))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_ComputeShader_Float4 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
+		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
+		return E_FAIL;
+
+
+
+
+
+
+	//lstrcpy(m_szLoadingText, TEXT("쉐이더 로드 되었습니다."));
+	
 	return S_OK;
 }
 

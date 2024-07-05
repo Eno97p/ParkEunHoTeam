@@ -29,6 +29,7 @@
 #include "DirectXTK\Effects.h"
 
 
+
 #include "assimp\scene.h"
 #include "assimp\Importer.hpp"
 #include "assimp\postprocess.h"
@@ -40,6 +41,7 @@
 #include <tchar.h>
 using namespace DirectX;
 using namespace physx;
+using namespace vehicle2;
 
 #include <vector>
 #include <list>

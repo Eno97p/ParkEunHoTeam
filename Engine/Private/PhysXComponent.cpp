@@ -73,8 +73,10 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	//pDesc
 	if(pDesc->pName)
 		m_pActor->setName(pDesc->pName);
-
+#ifdef _DEBUG
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
+
+#endif
 	m_pGameInstance->AddActor(m_pActor);
 
 
@@ -272,7 +274,7 @@ void CPhysXComponent::Tick(const _float4x4 * pWorldMatrix)
 }
 
 void CPhysXComponent::Late_Tick(_float4x4* pWorldMatrix)
-w{
+{
 	
 	PxTransform pTransform =	m_pActor->getGlobalPose();
 	

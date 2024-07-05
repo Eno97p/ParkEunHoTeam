@@ -158,10 +158,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         // Layer 선택(Combo)
         ImGui::Checkbox("ANIM MODEL", &m_bIsAnimModel);
+        ImGui::Checkbox("DECO OBJECT", &m_bIsDecoObject);
 
-        const char* Layers[] = { "Monster", "Passive Element", "Active Element" };
+        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger"};
         static int Layer_current = 0;
-        ImGui::Combo("combo", &Layer_current, Layers, IM_ARRAYSIZE(Layers));
+        ImGui::Combo("Layer", &Layer_current, Layers, IM_ARRAYSIZE(Layers));
         m_iLayerIdx = Layer_current;
 
 
@@ -379,6 +380,15 @@ void CImgui_Manager::EditTransform(float* cameraView, float* cameraProjection, f
     // matrix : 객체월드행ㄹ려
     ImGuizmo::Manipulate(cameraView, cameraProjection, mGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
 
+    // Gizmo 조작 후 업데이트된 행렬 표시
+    ImGui::Text("Updated World Matrix:");
+    for (int i = 0; i < 4; i++)
+    {
+        ImGui::Text("%.3f %.3f %.3f %.3f",
+            matrix[i * 4 + 0], matrix[i * 4 + 1],
+            matrix[i * 4 + 2], matrix[i * 4 + 3]);
+    }
+
     // 화면 상단 카메라 돌아가는애
     //ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
 
@@ -407,7 +417,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     }
     case LAYER_PASSIVE_ELEMENT:
     {
-        const char* items_MapElement[] = { "BasicCube", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
+        const char* items_MapElement[] = { "BasicCube", "BasicDonut", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
             "RasSamrahCastle2",
             
             //TUTORIAL
@@ -416,25 +426,40 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             //STAGE 1
             "WellArea", "MergedHouses23", "MergedHouses65", "AckbarCastle",
             "AqueducTower", "BigStairSides", "WoodStair", "_WoodPlatform", "WoodPlank", "RichStairs_Rambarde", "BigRocks", "BigRocks4",
-            "Obstacle", "Obstacle_2", "StrawObstacle_1", "StrawObstacle_2", "Spike",
-            "TreeGrass_1", "TreeGrass_2", "TreeWood_1", "TreeWood_2",
-            "Building_1", "Building_2",
-            "Elevator_1", "Elevator_2", "Elevator_3",
-            "Ship", "ShipSail",
-            "Wall_1", "Wall_2", "Wall_3", "Wall_4",
-            "JailDoor", "FireIron", "Ship_2"
+
+
+            //STAGE 1 DECOS
+            "BoxA", "BoxB",
+            "YantraStatue",
+            "Light_Brasero", "Light_BraseroSmall",
+            "Light_Candle", "Light_CandleGroup",
+            "Light_Crystal",
+            "Light_TorchA", "Light_TorchB",
+            "CharetteNew", "CharetteBroke",
+            "Facade1", "Facade2",
+            "Facade3", "Facade4",
+            "Facade5", "Facade6",
+            "Facade7", "Facade8",
+            "Facade9", "Facade10"
         };
         ImGui::ListBox("###Obj", &item_current, items_MapElement, IM_ARRAYSIZE(items_MapElement)); // item_current 변수에 선택 값 저장
         break;
     }
     case LAYER_ACTIVE_ELEMENT:
     {
-        const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Npc_Smith", "Npc_EliteQuest", "RewardBox",
-                                        "Item_Gloves", "Item_Hell",
+        const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
+                                        "EventTrigger_Box", "EventTrigger_Sphere",
                                         "Boss_Gun", "Cannon" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
+    case LAYER_TRIGGER:
+    {
+        const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER", "STAGE1_LightsOn" };
+        ImGui::ListBox("###Obj", &item_current, items_Trigger, IM_ARRAYSIZE(items_Trigger)); // item_current 변수에 선택 값 저장
+        break;
+    }
+        break;
     default:
         break;
     }

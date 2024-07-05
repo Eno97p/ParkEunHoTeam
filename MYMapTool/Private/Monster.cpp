@@ -1,5 +1,5 @@
 #include "Monster.h"
-
+#include "ToolObj.h"
 #include "GameInstance.h"
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -29,7 +29,8 @@ HRESULT CMonster::Initialize(void* pArg)
 
 	//m_vPosition.m128_f32[1] = 10.f;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vPosition);
+	Setting_WorldMatrix(pArg);
 
 	return S_OK;
 }
@@ -52,6 +53,7 @@ void CMonster::Tick(_float fTimeDelta)
 	//_vector vTargetPos = m_pGameInstance->Picking(&isPick);
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, isPick == true ? vTargetPos : m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 }
 
 void CMonster::Late_Tick(_float fTimeDelta)
@@ -70,7 +72,7 @@ HRESULT CMonster::Render()
 	{
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
 		m_pShaderCom->Begin(0);
@@ -79,6 +81,23 @@ HRESULT CMonster::Render()
 	}
 
 	return S_OK;
+}
+
+_vector CMonster::Get_MonsterPos()
+{
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+}
+
+void CMonster::Setting_WorldMatrix(void* pArg)
+{
+	CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3]);
+	m_pTransformCom->Set_Scale(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[2][2]);
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[0][1], pDesc->mWorldMatrix.m[0][2], pDesc->mWorldMatrix.m[0][3]));
+	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(pDesc->mWorldMatrix.m[1][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[1][2], pDesc->mWorldMatrix.m[1][3]));
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(pDesc->mWorldMatrix.m[2][0], pDesc->mWorldMatrix.m[2][1], pDesc->mWorldMatrix.m[2][2], pDesc->mWorldMatrix.m[2][3]));
 }
 
 HRESULT CMonster::Add_Component()

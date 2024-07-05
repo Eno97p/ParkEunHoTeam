@@ -20,10 +20,16 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_LightDepth() override;
+	_bool Get_IsParried() { return m_bIsParried; }
+	void Set_IsParried(_bool isParried) { m_bIsParried = isParried; }
 
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
+
+private:
+	class CPlayer* m_pPlayer = { nullptr };
+	_bool m_bIsParried = false;
 
 public:
 	static CWeapon_Mantari* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

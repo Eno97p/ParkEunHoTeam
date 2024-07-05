@@ -1,8 +1,13 @@
 #pragma once
 #include <Windows.h>
 #include <process.h>
+#include <wincodec.h>
+#include "DirectXTex.h"
+#include <string>
+#include <istream>
+using namespace std;
 //#include <vld.h>
-
+#pragma comment(lib, "DirectXTex.lib")
 namespace Effect
 {
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };

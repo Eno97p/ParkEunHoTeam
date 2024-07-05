@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Default_Camera.h"
+#include "ThirdPersonCamera.h"
 
 #include "Imgui_Manager.h"
 #include "ToolObj_Manager.h"
@@ -25,13 +26,18 @@ HRESULT CLevel_GamePlay::Initialize()
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
-    if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-        return E_FAIL;
+
     
     if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
         return E_FAIL;
 
     if(FAILED(Ready_Layer_Terrain(TEXT("Layer_Terrain"))))
+        return E_FAIL;
+
+    if (FAILED(Ready_LandObjects()))
+        return E_FAIL;
+
+    if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
         return E_FAIL;
 
 	return S_OK;
@@ -159,6 +165,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     //if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_DefaultCamera"), &pDesc)))
     //    return E_FAIL;
 
+
+  /*  CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
+
+    pTPCDesc.fSensor = 0.1f;
+
+    pTPCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+    pTPCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+    pTPCDesc.fFovy = XMConvertToRadians(60.f);
+    pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+    pTPCDesc.fNear = 0.1f;
+    pTPCDesc.fFar = 3000.f;
+
+    pTPCDesc.fSpeedPerSec = 40.f;
+    pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+    pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+    if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
+        return E_FAIL;*/
+
     return S_OK;
 }
 
@@ -181,6 +206,32 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
     return S_OK;
 }
 
+HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+{
+    //if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
+    //    return E_FAIL;
+
+
+    return S_OK;
+}
+
+
+HRESULT CLevel_GamePlay::Ready_LandObjects()
+{
+    CLandObject::LANDOBJ_DESC		LandObjDesc{};
+
+    LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(CGameInstance::GetInstance()->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_Transform")));
+    LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(CGameInstance::GetInstance()->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer")));
+
+    if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+        return E_FAIL;
+
+    //if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+    //    return E_FAIL;
+
+    return S_OK;
+}
+
 HRESULT CLevel_GamePlay::Save_Data()
 {
     const wchar_t* wszFileName[MAX_PATH] = { Setting_FileName() };
@@ -196,6 +247,7 @@ HRESULT CLevel_GamePlay::Save_Data()
     //_uint   iVerticesX = { 0 };
     //_uint   iVerticesZ = { 0 };
     DWORD   dwByte(0);
+    _uint iTriggerType;
 
     // Terrain 정보 저장
     //CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object_InLayer(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"))->back());
@@ -217,10 +269,21 @@ HRESULT CLevel_GamePlay::Save_Data()
         eModelType = iter->Get_ModelType();
 
         WriteFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr); // sizeof(_char) * MAX_PATH
-        WriteFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
-        WriteFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
-        WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
-        WriteFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+
+        if (strcmp(szName, "Prototype_GameObject_EventTrigger") == 0)
+        {
+            iTriggerType =iter->Get_TriggerType();
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+        }
+        else
+        {
+            WriteFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+        }
+      
     }
 
     CloseHandle(hFile);
@@ -248,6 +311,7 @@ HRESULT CLevel_GamePlay::Load_Data()
     _uint   iVerticesZ = { 0 };
     DWORD   dwByte(0);
 
+    _uint   iTriggerType;
     //ReadFile(hFile, &iVerticesX, sizeof(_uint), &dwByte, nullptr);
     //ReadFile(hFile, &iVerticesZ, sizeof(_uint), &dwByte, nullptr);
 
@@ -264,24 +328,48 @@ HRESULT CLevel_GamePlay::Load_Data()
     while (true)
     {
         ReadFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
-        ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
-        ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
-        ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
-        ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
 
-        if (0 == dwByte)
-            break;
+        if (strcmp(szName, "Prototype_GameObject_EventTrigger") == 0)
+        {
+            ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
 
-        CToolObj::TOOLOBJ_DESC pDesc{};
 
-        strcpy_s(pDesc.szObjName, szName);
-        strcpy_s(pDesc.szLayer, szLayer);
-        strcpy_s(pDesc.szModelName, szModelName);
-        pDesc.mWorldMatrix = WorldMatrix;
-        pDesc.eModelType = eModelType;
+            if (0 == dwByte)
+                break;
 
-        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Obj"), TEXT("Prototype_ToolObj"), &pDesc)))
-            return E_FAIL;
+            CToolObj::TOOLOBJ_DESC pDesc{};
+
+            strcpy_s(pDesc.szObjName, szName);
+            pDesc.mWorldMatrix = WorldMatrix;
+            pDesc.TriggerType = iTriggerType;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+                return E_FAIL;
+        }
+        else 
+        {
+            ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+
+            if (0 == dwByte)
+                break;
+
+            CToolObj::TOOLOBJ_DESC pDesc{};
+
+            strcpy_s(pDesc.szObjName, szName);
+            strcpy_s(pDesc.szLayer, szLayer);
+            strcpy_s(pDesc.szModelName, szModelName);
+            pDesc.mWorldMatrix = WorldMatrix;
+            pDesc.eModelType = eModelType;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Obj"), TEXT("Prototype_ToolObj"), &pDesc)))
+                return E_FAIL;
+        }
+      
+    
     }
 
     CloseHandle(hFile);

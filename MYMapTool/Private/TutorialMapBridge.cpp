@@ -39,6 +39,13 @@ HRESULT CTutorialMapBridge::Initialize(void* pArg)
 		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
 
 
+		// 생성 목록에 리스트 번호 매기기
+		string strSize = to_string(CToolObj_Manager::GetInstance()->Get_ToolObjs().size()) + ". ";
+		strcat_s(m_szListName, strSize.c_str());
+		strcat_s(m_szListName, m_szName);
+		CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
+
+
 		/*m_pTransformCom->Set_Scale(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[2][2]);
 
 		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[0][1], pDesc->mWorldMatrix.m[0][2], pDesc->mWorldMatrix.m[0][3]));

@@ -187,8 +187,12 @@
     <ClInclude Include="..\ImGuizmo\ImSequencer.h" />
     <ClInclude Include="..\ImGuizmo\ImZoomSlider.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\CutSceneCamera.h" />
+    <ClInclude Include="..\public\EventTrigger.h" />
+    <ClInclude Include="..\public\FakeWall.h" />
     <ClInclude Include="..\public\Grass.h" />
+    <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\MYMapTool_Defines.h" />
     <ClInclude Include="..\Public\Default_Camera.h" />
     <ClInclude Include="..\Public\imconfig.h" />
@@ -207,8 +211,11 @@
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\NaviMgr.h" />
+    <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\public\ThirdPersonCamera.h" />
     <ClInclude Include="..\Public\ToolObj.h" />
     <ClInclude Include="..\Public\ToolObj_Manager.h" />
     <ClInclude Include="..\Public\TutorialMapBridge.h" />
@@ -225,8 +232,11 @@
     <ClCompile Include="..\ImGuizmo\ImSequencer.cpp" />
     <ClCompile Include="..\ImGuizmo\main.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\Private\Default_Camera.cpp" />
+    <ClCompile Include="..\private\EventTrigger.cpp" />
+    <ClCompile Include="..\private\FakeWall.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\imgui.cpp" />
     <ClCompile Include="..\Private\imgui_demo.cpp" />
@@ -236,6 +246,7 @@
     <ClCompile Include="..\Private\Imgui_Manager.cpp" />
     <ClCompile Include="..\Private\imgui_tables.cpp" />
     <ClCompile Include="..\Private\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
@@ -243,8 +254,11 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\NaviMgr.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\private\ThirdPersonCamera.cpp" />
     <ClCompile Include="..\Private\ToolObj.cpp" />
     <ClCompile Include="..\Private\ToolObj_Manager.cpp" />
     <ClCompile Include="..\Private\TutorialMapBridge.cpp" />

@@ -33,12 +33,8 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _
 	HRESULT			hr = eModelType == CModel::TYPE_NONANIM ? Ready_Vertices_For_NonAnimMesh(pAIMesh, PreTransformMatrix) : Ready_Vertices_For_AnimMesh(pAIMesh, Bones);
 	m_ModelType = eModelType;
 
-
-
 	if (FAILED(hr))
 		return E_FAIL;
-
-
 
 #pragma endregion
 

@@ -66,9 +66,20 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
         if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), wst.c_str(), &pDesc)))
             return E_FAIL;
     }
-    else
+    else if(iLayerIdx == 0) 
     {
-        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_ToolObj"), &pDesc)))
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Monster"), &pDesc)))
+            return E_FAIL;
+    }
+    else if (iLayerIdx == 1)
+    {
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_ToolObj"), &pDesc)))
+            return E_FAIL;
+    }
+    else if (iLayerIdx == 3)
+    {
+        pDesc.TriggerType = /*(CEventTrigger::TRIGGER_TYPE)*/iSelectIdx;
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
             return E_FAIL;
     }
 
@@ -85,39 +96,50 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_EliteMst"),
                         TEXT("Prototype_Component_Model_Boss_1P") };
 
-    m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),
+    m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), TEXT("Prototype_Component_Model_RasSamrahCastle"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
         //TUTORIAL
         TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
-                
+
         //Stage 1
         TEXT("Prototype_Component_Model_WellArea"), TEXT("Prototype_Component_Model_MergedSmallHouses23"),
                         TEXT("Prototype_Component_Model_MergedSmallHouses65"), TEXT("Prototype_Component_Model_AckbarCastle"),
-                        TEXT("Prototype_Component_Model_AqueducTower"), TEXT("Prototype_Component_Model_BigStairSides"), 
+                        TEXT("Prototype_Component_Model_AqueducTower"), TEXT("Prototype_Component_Model_BigStairSides"),
                         TEXT("Prototype_Component_Model_WoodStair"), TEXT("Prototype_Component_Model_WoodPlatform"),
                         TEXT("Prototype_Component_Model_WoodPlank"),
                         TEXT("Prototype_Component_Model_RichStairs_Rambarde"),
                         TEXT("Prototype_Component_Model_BigRocks"),
-                        TEXT("Prototype_Component_Model_BigRocks4"), 
+                        TEXT("Prototype_Component_Model_BigRocks4"),
 
-
-
-                        TEXT("Prototype_Component_Model_Obstacle"), TEXT("Prototype_Component_Model_Obstacle_2"), TEXT("Prototype_Component_Model_StrawObstacle_1"),TEXT("Prototype_Component_Model_StrawObstacle_2"),
-                        TEXT("Prototype_Component_Model_Spike"), 
-                        TEXT("Prototype_Component_Model_TreeGrass_1"), TEXT("Prototype_Component_Model_TreeGrass_2"), TEXT("Prototype_Component_Model_TreeWood_1"), TEXT("Prototype_Component_Model_TreeWood_2"),
-                        
-                        TEXT("Prototype_Component_Model_Building_1"), TEXT("Prototype_Component_Model_Building_2"),
-                        TEXT("Prototype_Component_Model_Elevator_1"), TEXT("Prototype_Component_Model_Elevator_2"), TEXT("Prototype_Component_Model_Elevator_3"),
-                        TEXT("Prototype_Component_Model_Ship"), TEXT("Prototype_Component_Model_ShipSail"),
-                        TEXT("Prototype_Component_Model_Wall_1"), TEXT("Prototype_Component_Model_Wall_2"), TEXT("Prototype_Component_Model_Wall_3"), TEXT("Prototype_Component_Model_Wall_4"),
-                        TEXT("Prototype_Component_Model_JailDoor"), TEXT("Prototype_Component_Model_FireIron"), TEXT("Prototype_Component_Model_Ship_2")
+        //DECO ELEMENTS
+                        TEXT("Prototype_Component_Model_BoxA"), TEXT("Prototype_Component_Model_BoxB"),
+                        TEXT("Prototype_Component_Model_YantraStatue"),
+                        TEXT("Prototype_Component_Model_Light_Brasero"), TEXT("Prototype_Component_Model_Light_BraseroSmall"),
+                        TEXT("Prototype_Component_Model_Light_Candle"),  TEXT("Prototype_Component_Model_Light_CandleGroup"),
+                        TEXT("Prototype_Component_Model_Light_Crystal"),
+                        TEXT("Prototype_Component_Model_Light_TorchA"), TEXT("Prototype_Component_Model_Light_TorchB"),
+                        TEXT("Prototype_Component_Model_CharetteNew"), TEXT("Prototype_Component_Model_CharetteBroke"),
+                        TEXT("Prototype_Component_Model_Facade1"), TEXT("Prototype_Component_Model_Facade2"),
+                        TEXT("Prototype_Component_Model_Facade3"), TEXT("Prototype_Component_Model_Facade4"),
+                        TEXT("Prototype_Component_Model_Facade5"), TEXT("Prototype_Component_Model_Facade6"),
+                        TEXT("Prototype_Component_Model_Facade7"), TEXT("Prototype_Component_Model_Facade8"),
+                        TEXT("Prototype_Component_Model_Facade9"), TEXT("Prototype_Component_Model_Facade10")
     };
 
-    m_ActiveElements = { TEXT("Prototype_Component_Model_Npc_Owner"), TEXT("Prototype_Component_Model_TutorialMapBridge"), TEXT("Prototype_Component_Model_Npc_Smith"), TEXT("Prototype_Component_Model_Npc_Elite_Quest"),
-                TEXT("Prototype_Component_Model_RewardBox"),
-                TEXT("Prototype_Component_Model_Item_Gloves"), TEXT("Prototype_Component_Model_Item_Hell"),
-                TEXT("Prototype_Component_Model_Boss_Gun"), TEXT("Prototype_Component_Model_Cannon") };
+    m_ActiveElements = { TEXT("Prototype_Component_Model_Grass"),
+        
+        TEXT("Prototype_Component_Model_TutorialMapBridge"),
+        TEXT("Prototype_Component_Model_Well"),
+        //FakeWall
+        TEXT("Prototype_Component_Model_BasicDonut"),
+        TEXT("Prototype_Component_Model_BasicCube"),
+        //EventTrigger
+        TEXT("Prototype_Component_Model_BasicCube"),
+        TEXT("Prototype_Component_Model_SkySphere"),
+        
+        TEXT("Prototype_Component_Model_Item_Hell"),
+        TEXT("Prototype_Component_Model_Boss_Gun"), TEXT("Prototype_Component_Model_Cannon") };
 }
 
 void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::TOOLOBJ_DESC& pDesc)
@@ -199,6 +221,17 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
 
         break;
     }
+    case 3: // Layer_Trigger
+    {
+        strcpy_s(pDesc.szLayer, "Layer_Trigger");
+        strcpy_s(pDesc.szObjName, "Prototype_GameObject_EventTrigger");
+        {
+            pDesc.eModelType = CModel::TYPE_NONANIM;
+        }
+        strcpy_s(pDesc.szModelName, "Prototype_Component_Model_BasicCube");
+
+        break;
+    }
     default:
         break;
     }
@@ -235,8 +268,16 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
     // Passive Element
     else if (1 == iLayerIdx)     
     {
-        //PE 기능 : 카메라 충돌 시 알파블렌딩 / 플레이어 충돌
-        return "Prototype_GameObject_Passive_Element";
+
+        //Anim 모델 체크박스 확인
+        if (CImgui_Manager::GetInstance()->isDecoObject())
+        {
+            return "Prototype_GameObject_Deco_Element";
+        }
+        else
+        {
+            return "Prototype_GameObject_Passive_Element";
+        }
 
     }
     // Active Element
@@ -250,15 +291,15 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 1:
             return "Prototype_GameObject_TutorialMapBridge";
         case 2:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_Well";
         case 3:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_FakeWall";
         case 4:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_FakeWall";
         case 5:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_EventTrigger";
         case 6:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_EventTrigger";
         case 7:
             return "Prototype_GameObject_Active_Element";
         case 8:

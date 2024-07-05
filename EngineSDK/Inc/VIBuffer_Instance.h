@@ -22,6 +22,23 @@ public:
 		//For Map Elements
 		vector<_float4x4*>		WorldMats;
 	}INSTANCE_DESC;
+
+	typedef struct INSTANCE_MAP_DESC
+	{
+		_uint			iNumInstance = { 0 };
+		_float3			vOffsetPos;
+		_float3			vPivotPos;
+		_float3			vRange;
+		_float2			vSize;
+		_float2			vSpeed;
+		_float2			vLifeTime;
+		_float2			vGravity;
+		_bool			isLoop;
+
+		//For Map Elements
+		vector<_float4x4*>		WorldMats;
+	}INSTANCE_MAP_DESC;
+
 protected:
 	CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Instance(const CVIBuffer_Instance& rhs);
@@ -76,6 +93,7 @@ protected:
 
 	_bool						m_bInstanceDead = false;
 	INSTANCE_DESC				m_InstanceDesc = {};
+	INSTANCE_MAP_DESC				m_InstanceMapDesc = {};
 
 
 protected:

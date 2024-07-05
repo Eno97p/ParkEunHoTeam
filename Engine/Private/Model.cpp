@@ -555,7 +555,7 @@ HRESULT CModel::Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& Instance
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
+HRESULT CModel::Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc)
 {
 	for (size_t i = 0; i < m_iNumMeshes; i++)
 	{

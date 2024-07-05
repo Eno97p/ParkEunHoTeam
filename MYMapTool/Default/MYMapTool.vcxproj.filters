@@ -117,6 +117,27 @@
     <ClCompile Include="..\Private\TutorialMapBridge.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Body_Player.cpp">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandObject.cpp">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PartObject.cpp">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ThirdPersonCamera.cpp">
+      <Filter>02. GameObjects\99. Camera\01. ThirdPerson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FakeWall.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EventTrigger.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -230,6 +251,27 @@
     <ClInclude Include="..\Public\TutorialMapBridge.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Body_Player.h">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandObject.h">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PartObject.h">
+      <Filter>02. GameObjects\06. Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ThirdPersonCamera.h">
+      <Filter>02. GameObjects\99. Camera\01. ThirdPerson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FakeWall.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EventTrigger.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -311,6 +353,9 @@
     </Filter>
     <Filter Include="02. GameObjects\05. Active_Elements">
       <UniqueIdentifier>{ae510232-16fd-4528-886f-9cfaa8d0ec33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\06. Player">
+      <UniqueIdentifier>{b764be88-de7b-415c-99ba-2bec26d5db62}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

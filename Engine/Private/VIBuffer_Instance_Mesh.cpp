@@ -160,12 +160,13 @@ HRESULT CInstance_Mesh::Initialize_ProtoType(CMesh* m_Meshes, const INSTANCE_DES
 
 
 
-HRESULT CInstance_Mesh::Initialize_ProtoType_ForMapElements(CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc)
+HRESULT CInstance_Mesh::Initialize_ProtoType_ForMapElements(CMesh* m_Meshes, const INSTANCE_MAP_DESC& InstanceDesc)
 {
-	m_InstanceDesc = InstanceDesc;
+	m_InstanceMapDesc = InstanceDesc;
 
-	if (FAILED(__super::Initialize_Prototype(InstanceDesc)))
-		return E_FAIL;
+	m_iNumInstance = InstanceDesc.iNumInstance;
+	m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
+	m_RandomNumber = mt19937_64(m_RandomDevice());
 
 	m_iMaterialIndex = m_Meshes->Get_MaterialIndex();
 
@@ -308,7 +309,7 @@ CInstance_Mesh* CInstance_Mesh::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CInstance_Mesh* CInstance_Mesh::Create_ForMapElements(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMesh* m_Meshes, const INSTANCE_DESC& InstanceDesc)
+CInstance_Mesh* CInstance_Mesh::Create_ForMapElements(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMesh* m_Meshes, const INSTANCE_MAP_DESC& InstanceDesc)
 {
 	CInstance_Mesh* pInstance = new CInstance_Mesh(pDevice, pContext);
 

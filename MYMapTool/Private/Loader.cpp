@@ -7,10 +7,18 @@
 #include "Monster.h"
 
 #include "Default_Camera.h"
+#include "ThirdPersonCamera.h"
+
 #include "ToolObj.h"
 
+#include "Player.h"
+#include "Body_Player.h"
 #include "Grass.h"
+#include "FakeWall.h"
+
 #include "TutorialMapBridge.h"
+
+#include "EventTrigger.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -36,24 +44,49 @@ _uint APIENTRY Loading_Main(void* pArg)
 	return 0;
 }
 
+_uint APIENTRY Loading_MapData(void* pArg)
+{
+	CoInitializeEx(0, COINIT_MULTITHREADED);
+
+	CLoader* pLoader = (CLoader*)pArg;
+
+	if (FAILED(pLoader->Loading_Map()))
+		return 1;
+
+	CoUninitialize();
+
+	return 0;
+}
+
+
 HRESULT CLoader::Initialize(LEVEL eNextLevel)
 {
 	m_eNextLevel = eNextLevel;
 
-	InitializeCriticalSection(&m_Critical_Section);
+	for (_uint i = 0; i < MAX_THREAD; ++i)
+		InitializeCriticalSection(&m_Critical_Section[i]);
 
-	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, Loading_Main, this, 0, nullptr);
-	if (0 == m_hThread)
+	m_hThread[0] = (HANDLE)_beginthreadex(nullptr, 0, Loading_Main, this, 0, nullptr);
+	if (0 == m_hThread[0])
 		return E_FAIL;
+
+	m_hThread[1] = (HANDLE)_beginthreadex(nullptr, 0, Loading_MapData, this, 0, nullptr);
+	if (0 == m_hThread[1])
+		return E_FAIL;
+
+
 
 	return S_OK;
 }
 
+
 HRESULT CLoader::Loading()
 {
-	EnterCriticalSection(&m_Critical_Section);
 
-	HRESULT	hr = {};
+
+	EnterCriticalSection(&m_Critical_Section[0]);
+
+	HRESULT			hr{};
 
 	switch (m_eNextLevel)
 	{
@@ -64,11 +97,63 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_GamePlayLevel();
 		break;
 	}
-
-	LeaveCriticalSection(&m_Critical_Section);
+	LeaveCriticalSection(&m_Critical_Section[0]);
 
 	if (FAILED(hr))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+
+HRESULT CLoader::Loading_Map()
+{
+	EnterCriticalSection(&m_Critical_Section[1]);
+	HRESULT			hr{};
+
+
+	switch (m_eNextLevel)
+	{
+	case LEVEL_LOGO:
+		break;
+	case LEVEL_GAMEPLAY:
+	{
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
+			return hr = E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static2"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMapBridge.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
+			return hr = E_FAIL;
+
+		break;
+	}
+	//예시:case LEVEL_BOSS:
+	//	
+	//	
+	//	
+	//	
+	//	
+	//	
+	//
+	//	break;
+
+
+	}
+
+
+
+
+
+
+	LeaveCriticalSection(&m_Critical_Section[1]);
+
+
+	if (FAILED(hr))
+		return E_FAIL;
+
+
+
 
 	return S_OK;
 }
@@ -188,6 +273,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 
+
+	//PLAYER
+	//PLAYER
+	//PLAYER
+	//PLAYER
+
+	/* For.Prototype_Component_Model_Wander */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(0.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Wander/Wander.fbx", PreTransformMatrix))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region  Passive Element Model Load
@@ -202,7 +298,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//	return E_FAIL;
 
 	//// Prototype_Component_Model_Fiona
-	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+	PreTransformMatrix =  XMMatrixRotationY(XMConvertToRadians(0.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Fiona/Fiona.fbx", PreTransformMatrix)))) // TYPE_ANIM
 		return E_FAIL;
@@ -293,10 +389,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BasicCube"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Basic/Cube/BasicCube.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BasicDonut"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Basic/Donut/BasicDonut.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma region  STAGE 1 PASSIVE ELEMENTS
 
-	//STAGE 1
-
+	//STAGE 1 PASSIVE ELEMENTS
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Well"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
 		return E_FAIL;
@@ -349,7 +449,8 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BigRocks4"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/BigRocks4.fbx", PreTransformMatrix))))
-		return E_FAIL;	
+		return E_FAIL;
+
 
 
 
@@ -357,6 +458,102 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 #pragma endregion  STAGE 1 PASSIVE ELEMENTS
 
 
+#pragma region  DECO ELEMENTS
+	//STAGE 1 DECO ELEMENTS
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BoxA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Crates_CrateA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BoxB"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Crates_CrateB.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_YantraStatue"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/YantraStatue/YantraStatue.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//LIGHT PROPS@@@@@@@@@@
+	//LIGHT PROPS@@@@@@@@@@
+	//LIGHT PROPS@@@@@@@@@@
+	//LIGHT PROPS@@@@@@@@@@
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_Brasero"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_Brasero.fbx", PreTransformMatrix))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_BraseroSmall"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_BraseroSmall.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_Candle"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_Candle.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_CandleGroup"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_CandleGroup.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_Crystal"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_Crystal.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_TorchA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_TorchA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_TorchB"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_TorchB.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//Charette
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CharetteNew"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Charette/CharetteNew.fbx", PreTransformMatrix))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CharetteBroke"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Charette/CharetteBroke.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//FACADE
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade1.fbx", PreTransformMatrix))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade3.fbx", PreTransformMatrix))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade4.fbx", PreTransformMatrix))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade5"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade5.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade6"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade6.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade7"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade7.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade8"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade8.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade9"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade9.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Facade10"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade10.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion   DECO ELEMENTS
 #pragma endregion  
 
 #pragma region  Active Element Model Load
@@ -417,8 +614,36 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	
 #pragma endregion Shader Load
 
+	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
+	/* For.Prototype_Component_Collider */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		CCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("피직스(을) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
+		CPhysXComponent::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
+		CPhysXComponent_Character::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
 #pragma region Object Prototype Load
 	lstrcpy(m_szLoadingText, TEXT("객체 원형을 로딩 중 입니다."));
+
+	// Prototype_GameObject_Player
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// Prototype_GameObject_Player
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Player"),
+		CBody_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	// Prototype_GameObject_Terrain
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
 		CTerrain::Create(m_pDevice, m_pContext))))
@@ -436,9 +661,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	// Prototype_GameObject_CutSceneCamera
-
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"),
 		CCutSceneCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// Prototype_GameObject_ThirdPersonCamera
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
+		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// Prototype_GameObject_Monster
@@ -460,6 +689,16 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TutorialMapBridge"),
 		CTutorialMapBridge::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	// Prototype_GameObject_FakeWall
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FakeWall"), CFakeWall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EventTrigger"), CEventTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 
 
 #pragma endregion Object Prototype Load
@@ -491,13 +730,19 @@ CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, L
 
 void CLoader::Free()
 {
- 	WaitForSingleObject(m_hThread, INFINITE);
+	for (int i = 0; i < MAX_THREAD; ++i)
+	{
+		if (m_hThread[i] != nullptr)
+		{
+			WaitForSingleObject(m_hThread[i], INFINITE);
+			CloseHandle(m_hThread[i]);
+			m_hThread[i] = nullptr;
+		}
+	}
 
-	DeleteObject(m_hThread);
+	for (_uint i = 0; i < MAX_THREAD; ++i)
+		DeleteCriticalSection(&m_Critical_Section[i]);
 
-	CloseHandle(m_hThread);
-
-	DeleteCriticalSection(&m_Critical_Section);
 
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pDevice);

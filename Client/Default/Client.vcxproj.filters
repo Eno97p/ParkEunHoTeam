@@ -330,7 +330,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\Body">
       <UniqueIdentifier>{3fa0fc76-9382-4dd6-be82-626980f8c02e}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element">
       <UniqueIdentifier>{11ee1bf9-e805-4ec7-8de9-4b67c07f4889}</UniqueIdentifier>
     </Filter>
@@ -408,7 +408,6 @@
     <ClInclude Include="..\Public\Clone.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\Public\WhisperSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
@@ -645,24 +644,6 @@
     <ClInclude Include="..\Public\Juggulus_HandThree.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Particle.h">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ParticleMesh.h">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\EffectManager.h">
-      <Filter>02.GameObjects\06.Effect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Legionnaire_Gun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
     </ClInclude>
@@ -683,12 +664,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Homonculus.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Passive_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CHoverboard.h">
       <Filter>02.GameObjects\08. vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ParticleMesh.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectManager.h">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Active_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -752,7 +754,6 @@
     <ClCompile Include="..\Private\Clone.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\Private\WhisperSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
@@ -980,24 +981,6 @@
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Particle.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\ParticleMesh.cpp">
-      <Filter>02.GameObjects\06.Effect\Particle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\EffectManager.cpp">
-      <Filter>02.GameObjects\06.Effect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Legionnaire_Gun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun</Filter>
     </ClCompile>
@@ -1018,12 +1001,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Homonculus.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\Body</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Passive_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CHoverboard.cpp">
       <Filter>02.GameObjects\08. vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ParticleMesh.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectManager.cpp">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Active_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

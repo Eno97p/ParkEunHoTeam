@@ -350,7 +350,7 @@ void CRenderer::Draw()
 
 	Render_NonLight();
 	Render_Blend();
-	Render_Bloom();
+	//Render_Bloom();
 	Render_Distortion();
 
 	Render_Final();
@@ -736,7 +736,7 @@ void CRenderer::Render_Final()
 {
 	m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_ResultTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_ResultTexture");
 	m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 1);
 
 

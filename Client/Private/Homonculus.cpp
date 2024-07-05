@@ -108,6 +108,7 @@ HRESULT CHomonculus::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CHomonculus::Idle, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CHomonculus::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parry"), bind(&CHomonculus::Parry, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CHomonculus::Hit, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("FullAtackCool"), 10.f);
@@ -162,6 +163,13 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 	{
 		return FAILURE;
 	}
+}
+
+NodeStates CHomonculus::Parry(_float fTimeDelta)
+{
+	// ÆÐµù
+
+	return FAILURE;
 }
 
 NodeStates CHomonculus::Idle(_float fTimeDelta)

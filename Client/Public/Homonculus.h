@@ -7,8 +7,8 @@ BEGIN(Client)
 class CHomonculus final : public CMonster
 {
 public:
-	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, 
-		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DOWNATTACK, STATE_FULLATTACK,
+	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, STATE_PARRY, STATE_WAKEUP,
+		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DEFAULTATTACK_3, STATE_DOWNATTACK, STATE_FULLATTACK,
 		STATE_GO, STATE_LEFT, STATE_RIGHT, STATE_END };
 
 private:
@@ -42,6 +42,7 @@ private:
 private:
 	NodeStates			Dead(_float fTimeDelta);
 	NodeStates			Hit(_float fTimeDelta);
+	NodeStates			Parry(_float fTimeDelta);
 	NodeStates			Idle(_float fTimeDelta);
 
 	NodeStates			Move(_float fTimeDelta);

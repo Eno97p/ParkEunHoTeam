@@ -26,11 +26,15 @@ protected:
 	CWeapon(const CWeapon& rhs);
 	virtual ~CWeapon() = default;
 
+public:
+	void Set_Active(_bool isActive = true) { m_bIsActive = isActive; }
+	_bool Get_Active() { return m_bIsActive; }
+
 protected:
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	const _float4x4*				m_pSocketMatrix = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
+	_bool							m_bIsActive = false;
 
 public:
 	virtual void Free() override;

@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Weapon.h"
 
 CBody_Player::CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -60,6 +61,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
+	m_pWeapon->Set_Active(false);
 	*m_pCanCombo = false;
 	if (*m_pState == CPlayer::STATE_IDLE)
 	{
@@ -123,7 +125,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 4.f;
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK)
 	{
@@ -136,6 +138,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 209;
 		fAnimSpeed = 1.f;
+		m_pWeapon->Set_Active();
 	}
 	else if (*m_pState == CPlayer::STATE_ROLLATTACK)
 	{
@@ -146,6 +149,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		if (m_iPastAnimIndex > 34)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_BACKATTACK)
 	{
@@ -156,6 +163,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex > 72)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LCHARGEATTACK)
 	{
@@ -166,6 +177,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+		if (m_iPastAnimIndex > 150)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK)
 	{
@@ -176,6 +191,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+		if (m_iPastAnimIndex == 133)
+		{
+			m_pWeapon->Set_Active(false);
+		}
+		else if (m_iPastAnimIndex > 131)
+		{
+			m_pWeapon->Set_Active();
+		}
+
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK1)
 	{
@@ -187,6 +211,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		if (m_iPastAnimIndex > 145)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK2)
 	{
@@ -198,12 +226,21 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex > 138)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK3)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.f;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 0.3f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK1)
 	{
@@ -215,6 +252,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		if (m_iPastAnimIndex > 122)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK2)
 	{
@@ -225,6 +266,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		if (m_iPastAnimIndex > 77)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
 	{
@@ -236,6 +281,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex > 139)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
 	{
@@ -246,6 +295,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex > 82)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNRATTACK)
 	{
@@ -256,6 +309,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		if (m_iPastAnimIndex > 77)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_COUNTER)
 	{
@@ -266,6 +323,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		if (m_iPastAnimIndex == 49 || m_iPastAnimIndex == 52)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_ROLL)
 	{
@@ -371,6 +432,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_bAnimFinished = true;
 		}
 	}
+	if (m_bAnimFinished)
+	{
+		m_fDamageTiming = 0.f;
+	}
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 
@@ -443,7 +508,7 @@ HRESULT CBody_Player::Render()
 
 		if (i == 2)
 		{
-			if (FAILED(m_pDisolveCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+			if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
 				return E_FAIL;
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 				return E_FAIL;
@@ -549,7 +614,7 @@ HRESULT CBody_Player::Add_Components()
 
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
-		TEXT("Com_DisolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveCom))))
+		TEXT("Com_DisolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -601,5 +666,4 @@ void CBody_Player::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pDisolveCom);
 }

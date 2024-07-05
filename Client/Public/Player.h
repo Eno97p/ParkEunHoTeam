@@ -47,7 +47,13 @@ public:
 public:
 	HRESULT Add_Components();
 	HRESULT Add_PartObjects();
+	_uint Get_State() { return m_iState; }
 	CGameObject* Get_Weapon();
+	void PlayerHit(_int iValue);
+	_float Get_HpRatio() { return (_float)m_iCurHp / (_float)m_iMaxHp; }
+	_float Get_StaminaRatio() { return (_float)m_iCurStamina / (_float)m_iMaxStamina; }
+	_float Get_MpRatio() { return (_float)m_iCurMp / (_float)m_iMaxMp; }
+	void Parry_Succeed() { m_bParry = true; m_bParrying = false;}
 
 private:
 	HRESULT Add_Nodes();
@@ -57,6 +63,7 @@ private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
 	NodeStates Parry(_float fTimeDelta);
+	NodeStates Counter(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates RollAttack(_float fTimeDelta);
 	NodeStates LChargeAttack(_float fTimeDelta);
@@ -86,13 +93,12 @@ private:
 	_bool										m_bLAttacking = false;
 	_bool										m_bRAttacking = false;
 	_bool										m_bRunning = false;
-	_bool										m_bReviving = false;
 	_bool										m_bParrying = false;
 	_bool										m_bIsLanded = false;
 	_bool										m_bIsRunAttack = false;
 	_bool										m_bDisolved_Weapon = false;
 	_bool										m_bDisolved_Yaak = false;
-	_bool										m_bHit = false;
+	_bool										m_bParry = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;

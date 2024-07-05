@@ -47,9 +47,12 @@ protected:
 	const _uint* m_pState = { nullptr };
 	_bool* m_pCanCombo = { nullptr };
 	_float m_fDisolveValue = 1.f;
+	CTexture* m_pDisolveTextureCom = nullptr;
+	CCollider::COLLTYPE m_eColltype = CCollider::COLL_END;
 
 	DISOLVETYPE m_eDisolveType = TYPE_IDLE;
 	LEVEL					m_eLevel = { LEVEL_END };
+
 
 public:
 

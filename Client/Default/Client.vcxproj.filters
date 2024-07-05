@@ -313,6 +313,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
       <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element">
+      <UniqueIdentifier>{11ee1bf9-e805-4ec7-8de9-4b67c07f4889}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

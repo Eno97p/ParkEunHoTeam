@@ -11,7 +11,7 @@ class CImgui_Manager final : public CBase
 	DECLARE_SINGLETON(CImgui_Manager)
 
 private:
-	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_END };
+	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_END };
 
 private:
 	CImgui_Manager();
@@ -43,6 +43,7 @@ public:
 	void	Set_IsNaviDelete() { m_isNaviDelete = false; }
 
 	_bool isAnimModel() { return m_bIsAnimModel; }
+	_bool isDecoObject() { return m_bIsDecoObject; }
 
 
 	void	Add_vecCreateObj(_char* pName) { m_vecCreateObj.emplace_back(pName); }
@@ -105,6 +106,7 @@ private:
 	_bool m_bAddToolObj = false;
 	_bool g_bIsHovered = false;
 	_bool m_bIsAnimModel = false;
+	_bool m_bIsDecoObject = false;
 
 	_float4 m_ClickedMousePos = { 0.f, 0.f, 0.f, 1.f };
 	_int	m_selectedOption = 0; // 선택된 옵션을 저장할 변수

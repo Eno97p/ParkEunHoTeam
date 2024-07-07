@@ -9,6 +9,7 @@
 #include "Body_Player.h"
 
 #include"CHitReport.h"
+#include "EffectManager.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }

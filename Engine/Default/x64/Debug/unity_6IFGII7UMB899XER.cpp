@@ -50,6 +50,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\CNode.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\Components_Vehicle.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\OctTree.cpp"
 
 
@@ -140,6 +143,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\Object_Manager.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\PhysXActorVehicle.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\PhysXComponent.cpp"
 
 
@@ -189,6 +195,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\UISorter.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\VehicleDefault.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\VIBuffer.cpp"

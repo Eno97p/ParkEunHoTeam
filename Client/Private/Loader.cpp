@@ -596,6 +596,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CPhysXComponent_Character::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
+		CPhysXComponent_Vehicle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 
 
 
@@ -990,10 +995,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel_For_Shader()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
 		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
 		return E_FAIL;
-
-
-
-
 
 
 	//lstrcpy(m_szLoadingText, TEXT("쉐이더 로드 되었습니다."));

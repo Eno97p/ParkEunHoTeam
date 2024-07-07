@@ -47,6 +47,8 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 
 void CHoverboard::Tick(_float fTimeDelta)
 {
+	
+	m_pPhysXCom->Tick(fTimeDelta);
 
 
 }
@@ -55,7 +57,7 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-
+	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 
 
@@ -100,6 +102,12 @@ HRESULT CHoverboard::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
+
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -161,4 +169,5 @@ void CHoverboard::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPhysXCom);
 }

@@ -28,11 +28,9 @@ HRESULT CParticle_Trail::Initialize(void * pArg)
 	m_pTrailDesc = new TRAIL_DESC;
 	*m_pTrailDesc = *((TRAIL_DESC*)pArg);
 
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	
 	return S_OK;
 }
 
@@ -114,7 +112,7 @@ HRESULT CParticle_Trail::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SwordTrail_Rotated"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_pTrailDesc->Texture,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;	
 

@@ -7,6 +7,7 @@ namespace Client
 	//Level이 추가되면 아래 문자열 순서 맞춰서 추가해주기
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_END };
 
+#define EFFECTMGR 						CEffectManager::GetInstance()
 	//아래 enum, 건들지 말것 - 박은호
 #pragma region EFFECT_ENUM
 	enum EFFECTTYPE {

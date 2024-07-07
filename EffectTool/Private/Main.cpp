@@ -69,7 +69,7 @@ HRESULT CMainEffect::Open_Level(LEVEL eLevelID)
 {
 	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
 		return E_FAIL;
-	//Abcd
+
 	return S_OK;
 }
 

@@ -203,8 +203,10 @@ void CImguiMgr::EffectTool_Rework()
 			MeshDesc.eModelType = EFFECTMODELTYPE::SLASH;
 	}
 
-	ImGui::Checkbox("Bloom", &parentsDesc.IsBlur);
-	if (parentsDesc.IsBlur == true)
+	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
+	ImGui::SameLine();
+	ImGui::Checkbox("Blur", &parentsDesc.IsBlur);
+	if (parentsDesc.IsBloom == true)
 	{
 		ImGui::InputFloat("BloomPower", &parentsDesc.fBlurPower);
 		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&parentsDesc.vBloomColor));
@@ -212,7 +214,13 @@ void CImguiMgr::EffectTool_Rework()
 	ImGui::Checkbox("Desolve", &parentsDesc.Desolve);
 	if (parentsDesc.Desolve == true)
 	{
-		ImGui::InputInt("DesolveNumber", &parentsDesc.DesolveNum);
+		if (ImGui::InputInt("DesolveNumber", &parentsDesc.DesolveNum))
+		{
+			if (parentsDesc.DesolveNum < 0)
+				parentsDesc.DesolveNum = 0;
+			if (parentsDesc.DesolveNum > 17)
+				parentsDesc.DesolveNum = 17;
+		}
 		ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&parentsDesc.vDesolveColor));
 		ImGui::InputFloat("DesolveLength", &parentsDesc.fDesolveLength);
 	}
@@ -733,11 +741,12 @@ void CImguiMgr::Load_Texture()
 	ImGui::SameLine();
 	if (ImGui::Button("Convert_To_DDS_This_Folder", ImVec2(200.f, 30.f)))
 	{
+		string outputDirectory = "../../Client/Bin/Resources/Textures/DDS_Storage/";
 		vector<string> imageFiles = GetFilesTexture(currentPath);
 		for (const auto& file : imageFiles) {
-			ConvertToDDSWithMipmap(file, file);
+			ConvertToDDSWithMipmap(file, outputDirectory);
 		}
-
+		MSG_BOX("DDS 추출 완료");
 	}
 
 
@@ -759,7 +768,7 @@ void CImguiMgr::Load_Texture()
 		ImGui::EndListBox();
 	}
 
-	if (IsPNGFile(selectedFile) || IsDDSFile(selectedFile)) {
+	if (IsPNGFile(selectedFile) || IsDDSFile(selectedFile) || ISTex(selectedFile)) {
 		string selectedFilePath = fullPath;
 		wstring wPath = utf8_to_wstring(selectedFilePath);
 		wstring wName = utf8_to_wstring(selectedFile);
@@ -792,6 +801,8 @@ void CImguiMgr::Trail_Tool()
 		traildesc = classdesc.traildesc;
 		traildesc.ParentMat = TrailMat;
 		ChangedTrail = false;
+		m_pTextureProtoName = classdesc.Texture;
+		m_pTextureFilePath = classdesc.TexturePath;
 	}
 
 
@@ -815,7 +826,6 @@ void CImguiMgr::Trail_Tool()
 	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&traildesc.vSize));
 	ImGui::InputFloat("Speed", &traildesc.vSpeed);
 	ImGui::InputFloat("lifetime", &traildesc.fLifeTime);
-	ImGui::Checkbox("IsLoop", &traildesc.IsLoop);
 	ImGui::Checkbox("Alpha", &classdesc.Alpha);
 	ImGui::Checkbox("Desolve", &classdesc.Desolve);
 	if (classdesc.Desolve == true)
@@ -829,11 +839,18 @@ void CImguiMgr::Trail_Tool()
 		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&classdesc.vBloomColor));
 	}
 	classdesc.traildesc = traildesc;
+	classdesc.Texture = m_pTextureProtoName;
+	classdesc.TexturePath = m_pTextureFilePath;
 
 	if (ImGui::Button("Generate", ButtonSize))
 	{
-		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Trail"),
-			TEXT("Prototype_GameObject_Trail"), &classdesc);
+		if (classdesc.Texture == TEXT("") || classdesc.TexturePath == TEXT(""))
+			MSG_BOX("텍스쳐 파일을 선택해 주세요.");
+		else
+		{
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Trail"),
+				TEXT("Prototype_GameObject_Trail"), &classdesc);
+		}
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Clear", ButtonSize))
@@ -985,6 +1002,8 @@ HRESULT CImguiMgr::Save_TrailList()
 		file.write((char*)&iter->eFuncType, sizeof(TRAILFUNCTYPE));
 		file.write((char*)&iter->eUsage, sizeof(TRAIL_USAGE));
 		file.write((char*)&iter->DesolveNum, sizeof(_int));
+		save_wstring_to_stream(iter->Texture, file);
+		save_wstring_to_stream(iter->TexturePath, file);
 	}
 	file.close();
 
@@ -1041,7 +1060,9 @@ HRESULT CImguiMgr::Load_TrailList()
 		inFile.read((char*)&readFile->eFuncType, sizeof(TRAILFUNCTYPE));
 		inFile.read((char*)&readFile->eUsage, sizeof(TRAIL_USAGE));
 		inFile.read((char*)&readFile->DesolveNum, sizeof(_int));
-
+		readFile->Texture = load_wstring_from_stream(inFile);
+		readFile->TexturePath = load_wstring_from_stream(inFile);
+		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
 		TrailEffects.emplace_back(readFile);
 	}
 	inFile.close();
@@ -1154,7 +1175,7 @@ HRESULT CImguiMgr::ConvertToDDSWithMipmap(const string& inputFilePath, const str
 	}
 
 	// 새로운 파일명 생성: 기존 확장자 .png 제거 후 .dds 추가
-	std::filesystem::path outputPath = std::filesystem::path(outputFilePath).replace_extension(".dds");
+	std::filesystem::path outputPath = std::filesystem::path(outputFilePath) / std::filesystem::path(inputFilePath).filename().replace_extension(".dds");
 
 	// DDS 파일로 저장
 	hr = DirectX::SaveToDDSFile(mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(), DirectX::DDS_FLAGS_NONE, outputPath.c_str());

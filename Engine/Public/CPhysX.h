@@ -56,18 +56,6 @@ public:
 
 };
 
-template<typename T>
-void Safe_physX_Release(T& pInstance)
-{
 
-	if (pInstance)
-	{
-		pInstance->release();
-		pInstance = nullptr;
-	}
-
-	
-
-}
 
 END

@@ -614,16 +614,29 @@ CComponent * CPhysXComponent::Clone(void * pArg)
 
 void CPhysXComponent::Free()
 {
-	__super::Free();
-
+__super::Free();
 
 #ifdef _DEBUG
 	Safe_Release(m_pShader);
-
 #endif
 	for (auto& pPhysXBuffer : m_pBuffer)
 		Safe_Release(pPhysXBuffer);
 
+	if (m_pMaterial)
+	{ 
+		if(m_pMaterial->isReleasable())
+			Safe_physX_Release(m_pMaterial);
+
+	}
+
+	if (m_pActor)
+	{
+		if (m_pActor->getScene() == m_pGameInstance->GetScene())
+			m_pGameInstance->GetScene()->removeActor(*m_pActor);
+		
+	}
+
+	int tmep = 0;
 
 
 }

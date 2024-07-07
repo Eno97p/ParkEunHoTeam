@@ -686,7 +686,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {	
-	Safe_Release(m_pPhysX);
+	
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pTarget_Manager);
@@ -708,7 +708,7 @@ void CGameInstance::Free()
 
 
 
-	
+	Safe_Release(m_pPhysX);
 	m_iRefCnt;
 	int ttmp = 0;
 

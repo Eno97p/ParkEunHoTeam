@@ -4,10 +4,8 @@
 #include "Client_Defines.h"
 
 BEGIN(Engine)
-class CCollider;
 class CShader;
 class CModel;
-class CTexture;
 END
 
 BEGIN(Client)
@@ -31,15 +29,16 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Distortion();
 	virtual HRESULT Render_LightDepth() override;
+	void Set_Weapon(class CWeapon* pWeapon) { m_pWeapon = pWeapon; }
 
 private:
-	CCollider*	m_pColliderCom = { nullptr };
 	CShader*	m_pShaderCom = { nullptr };
 	CModel*		m_pModelCom = { nullptr };
-	CTexture*	m_pTextureCom = { nullptr };
 
 	_bool		m_isAnimFinished = { false };
 	_uint		m_iPastAnimIndex = 0;
+	class CWeapon* m_pWeapon = nullptr;
+	_float m_fDamageTiming = 0.f;
 
 public:
 	HRESULT Add_Components();

@@ -209,6 +209,161 @@ namespace Engine
 		DWORD_PTR		fParam;
 	}tEvent;
 
+
+
+	namespace Vehicle
+	{
+
+	#define MAX_NUM_WHEELS 4
+
+
+		//차량을 만드는데 필요한 기본적인 정보들
+		struct ENGINE_DLL VehicleBeginParams
+		{
+		public:
+			//디폴트로 초기화 필요하다면 초기화
+			PX_FORCE_INLINE VehicleBeginParams()
+				: mass(1000.0f), dimensions(1.0f, 1.0f, 1.0f), numWheels(4)
+			{
+				for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
+					wheelRadius[i] = 0.5f;
+			}
+			PX_FORCE_INLINE VehicleBeginParams(PxReal _mass, PxVec3 _dimensions, PxU32 _numWheels, PxReal _wheelRadius)
+				: mass(_mass), dimensions(_dimensions), numWheels(_numWheels)
+			{
+				for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
+					wheelRadius[i] = _wheelRadius;
+			}
+
+			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleBeginParams)); }
+		
+
+			PxReal mass;			//차량의 질량
+			PxVec3 dimensions;		//차량의 크기
+			PxU32 numWheels;		//차량의 바퀴 갯수
+			PxReal wheelRadius[MAX_NUM_WHEELS];		//바퀴의 반지름
+
+		};
+
+		struct ENGINE_DLL VehicleBeginState
+		{
+			public:
+				//디폴트로 초기화 필요하다면 초기화
+				PX_FORCE_INLINE VehicleBeginState()
+					: transform(PxTransform(PxIdentity)), linearVelocity(PxVec3(0)), angularVelocity(PxVec3(0))	
+				{
+				}
+				PX_FORCE_INLINE VehicleBeginState(PxTransform _transform, PxVec3 _linearVelocity, PxVec3 _angularVelocity)
+					: transform(_transform), linearVelocity(_linearVelocity), angularVelocity(_angularVelocity)
+				{
+				}
+
+				PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleBeginState));	}
+				PX_FORCE_INLINE void setData(const VehicleBeginState& other)
+				{
+					transform = other.transform;
+					linearVelocity = other.linearVelocity;
+					angularVelocity = other.angularVelocity;
+				}
+
+
+				PxTransform transform;		//차량의 위치
+				PxVec3 linearVelocity;		//차량의 선속도
+				PxVec3 angularVelocity;		//차량의 각속도
+		};
+
+		struct ENGINE_DLL VehicleMiddleParams
+		{
+		public:
+			PX_FORCE_INLINE VehicleMiddleParams()
+				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f)
+			{
+			}
+			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle)
+				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle)
+			{
+			}
+
+			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleMiddleParams)); }
+
+
+
+			PxReal engineTorque;		//엔진 토크
+			PxReal brakeTorque;			//브레이크 토크
+			PxReal steeringAngle;		//핸들 각도
+		};
+
+		struct ENGINE_DLL VehicleMiddleState
+		{
+			public:
+				PX_FORCE_INLINE VehicleMiddleState()
+				{
+					PxMemZero(wheelSpeeds, sizeof(PxReal) * MAX_NUM_WHEELS);
+					PxMemZero(suspensionCompression, sizeof(PxReal) * MAX_NUM_WHEELS);
+				}
+				PX_FORCE_INLINE VehicleMiddleState(PxReal _wheelSpeeds[MAX_NUM_WHEELS], PxReal _suspensionCompression[MAX_NUM_WHEELS])
+				{
+					for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
+					{
+						wheelSpeeds[i] = _wheelSpeeds[i];
+						suspensionCompression[i] = _suspensionCompression[i];
+					}
+				}
+				PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleMiddleState)); }
+				PX_FORCE_INLINE void setData(const VehicleMiddleState& other)
+				{
+					for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
+					{
+						wheelSpeeds[i] = other.wheelSpeeds[i];
+						suspensionCompression[i] = other.suspensionCompression[i];
+					}
+				}
+
+				PxReal wheelSpeeds[MAX_NUM_WHEELS];				//바퀴 속도
+				PxReal suspensionCompression[MAX_NUM_WHEELS];	//서스펜션 압축
+		};
+
+		struct ENGINE_DLL VehicleEndParams
+		{
+		public:
+
+			PX_FORCE_INLINE VehicleEndParams()
+				: maxSpeed(100.0f)
+			{
+			}
+
+			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleEndParams)); }
+
+
+			PxReal maxSpeed;		//최대 속도
+		};
+
+		struct ENGINE_DLL VehicleEndState
+		{
+		public:
+			PX_FORCE_INLINE VehicleEndState()
+				: finalPose(PxTransform(PxIdentity)), finalVelocity(PxVec3(0))
+			{
+			}
+			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleEndState)); }
+			PX_FORCE_INLINE void setData(const VehicleEndState& other)
+			{
+				finalPose = other.finalPose;
+				finalVelocity = other.finalVelocity;
+			}
+
+
+
+			PxTransform finalPose;	//최종 위치
+			PxVec3 finalVelocity;	//최종 속도
+
+		};
+
+
+	}
+
+
+
 	
 }
 #endif // Engine_Struct_h__

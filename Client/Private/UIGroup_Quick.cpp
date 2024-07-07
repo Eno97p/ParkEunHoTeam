@@ -44,11 +44,6 @@ void CUIGroup_Quick::Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Tick(fTimeDelta);
-
-		if (m_pGameInstance->Key_Down(DIK_I)) // 다른 메뉴 실행중에는 켜지면 안 됨. 예외 처리 필요 
-		{
-			m_isRend = !m_isRend;
-		}
 	}
 }
 

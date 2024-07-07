@@ -5,7 +5,6 @@
 #include "GameInstance.h"
 #include "PartObject.h"
 #include "Weapon.h"
-#include "Clone.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
 
@@ -65,13 +64,11 @@ void CMantari::Priority_Tick(_float fTimeDelta)
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
-	m_bAnimFinished = dynamic_cast<CBody_Mantari*>(m_PartObjects.front())->Get_AnimFinished();
+	m_isAnimFinished = dynamic_cast<CBody_Mantari*>(m_PartObjects.front())->Get_AnimFinished();
 }
 
 void CMantari::Tick(_float fTimeDelta)
 {
-	
-
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	m_pBehaviorCom->Update(fTimeDelta);
@@ -117,6 +114,7 @@ HRESULT CMantari::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
 	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
@@ -234,7 +232,7 @@ NodeStates CMantari::Revive(_float fTimeDelta)
 	{
 		m_iState = STATE_REVIVE;
 
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
 			m_bReviving = false;
 			m_iState = STATE_IDLE;
@@ -255,7 +253,7 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
 			if (!m_bDead)
 			{
@@ -277,15 +275,17 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 
 NodeStates CMantari::Parried(_float fTimeDelta)
 {
-	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried())
+	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		fSlowValue = 0.4f;
 		m_iState = STATE_PARRIED;
 	}
 
 	if (m_iState == STATE_PARRIED)
 	{
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
+			fSlowValue = 1.f;
 			dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Set_IsParried(false);
 			m_iState = STATE_IDLE;
 			return SUCCESS;
@@ -321,7 +321,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		break;
 	}
 
-	if (m_iState == STATE_HIT && m_bAnimFinished)
+	if (m_iState == STATE_HIT && m_isAnimFinished)
 	{
 		m_iState = STATE_IDLE;
 		return SUCCESS;
@@ -364,7 +364,7 @@ NodeStates CMantari::JumpAttack(_float fTimeDelta)
 			m_bChasing = false;
 		}
 
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
 			if (m_fLengthFromPlayer < 5.f)
 			{
@@ -413,7 +413,7 @@ NodeStates CMantari::Attack(_float fTimeDelta)
 			break;
 		}
 
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
 			if (m_iAttackCount == 3)
 			{
@@ -449,7 +449,7 @@ NodeStates CMantari::CircleAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_CIRCLEATTACK)
 	{
-		if (m_bAnimFinished)
+		if (m_isAnimFinished)
 		{
 			m_iAttackCount++;
 			if (m_fLengthFromPlayer < 6.f)
@@ -572,6 +572,7 @@ NodeStates CMantari::Move(_float fTimeDelta)
 
 NodeStates CMantari::Idle(_float fTimeDelta)
 {
+	m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
@@ -615,6 +616,7 @@ void CMantari::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
 
 	for (auto& pPartObject : m_PartObjects)

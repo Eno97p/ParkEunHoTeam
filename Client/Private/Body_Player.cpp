@@ -81,6 +81,18 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 44;
 		fAnimSpeed = 1.f;
 	}
+	else if (*m_pState == CPlayer::STATE_USEITEM)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 199;
+		fAnimSpeed = 1.f;
+	}
+	else if (*m_pState == CPlayer::STATE_BUFF)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 199;
+		fAnimSpeed = 1.f;
+	}
 	else if (*m_pState == CPlayer::STATE_RUN)
 	{
 		AnimDesc.isLoop = true;
@@ -210,8 +222,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 149) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
-		if (m_iPastAnimIndex > 145)
+		fAnimSpeed = 1.5f;
+		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -226,7 +238,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
-		if (m_iPastAnimIndex > 138)
+		if (m_iPastAnimIndex > 138 && m_iPastAnimIndex < 142)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -237,7 +249,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.f;
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.3f)
+		if (m_fDamageTiming > 0.4f && m_fDamageTiming < 0.7f)
 		{
 			m_pWeapon->Set_Active();
 		}

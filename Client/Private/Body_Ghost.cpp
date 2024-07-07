@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Ghost.h"
+#include "Weapon.h"
 
 CBody_Ghost::CBody_Ghost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -33,6 +34,14 @@ HRESULT CBody_Ghost::Initialize(void* pArg)
 
 void CBody_Ghost::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 0.5f;
+		break;
+	default:
+		break;
+	}
 }
 
 void CBody_Ghost::Tick(_float fTimeDelta)
@@ -47,6 +56,10 @@ void CBody_Ghost::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+	if (m_isAnimFinished)
+	{
+		m_fDamageTiming = 0.f;
+	}
 }
 
 HRESULT CBody_Ghost::Render()
@@ -68,18 +81,10 @@ HRESULT CBody_Ghost::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
 
-		if (i == 0)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;*/
-		}
-		else if (i == 1)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
-				return E_FAIL;*/
-		}
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
+		//	return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(7);
 
 		m_pModelCom->Render(i);
 	}
@@ -109,10 +114,11 @@ HRESULT CBody_Ghost::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Distortion"),
-	//	TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -125,6 +131,10 @@ HRESULT CBody_Ghost::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -134,10 +144,16 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 17, true };
 	_float fAnimSpeed = 1.f;
 
+	m_pWeapon->Set_Active(false);
 	if (*m_pState == CGhost::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 17;
+	}
+	else if (*m_pState == CGhost::STATE_MOVE)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 18;
 	}
 	else if (*m_pState == CGhost::STATE_DEAD)
 	{
@@ -148,6 +164,12 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
+	}
+	else if (*m_pState == CGhost::STATE_PARRIED)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 11;
+		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_1)
 	{
@@ -163,6 +185,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 2;
+		m_pWeapon->Set_Active();
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_4)
 	{
@@ -173,26 +196,30 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
-	}
-	else if (*m_pState == CGhost::STATE_GO)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 18;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 0.9f && m_fDamageTiming < 1.2f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CGhost::STATE_LEFT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 19;
 	}
 	else if (*m_pState == CGhost::STATE_RIGHT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 20;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = false;
+	_bool isLerp = true;
+	if (AnimDesc.iAnimIndex == 1 || AnimDesc.iAnimIndex == 2 || AnimDesc.iAnimIndex == 3)
+	{
+		isLerp = false;
+	}
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 
@@ -226,8 +253,6 @@ void CBody_Ghost::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pTextureCom);
 }

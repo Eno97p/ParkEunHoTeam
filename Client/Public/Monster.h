@@ -46,6 +46,8 @@ protected:
 #pragma endregion ∏ÛΩ∫≈Õ Ω∫≈»
 
 	_bool m_bDead = false;
+	_float m_fDeadDelay = 2.f;
+	_float	m_fLengthFromPlayer = 0.f;
 
 	_uint							m_iState = { 0 };
 

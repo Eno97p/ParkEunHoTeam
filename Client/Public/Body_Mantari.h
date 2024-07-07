@@ -4,10 +4,8 @@
 #include "PartObject.h"
 
 BEGIN(Engine)
-class CCollider;
 class CShader;
 class CModel;
-class CTexture;
 END
 
 BEGIN(Client)

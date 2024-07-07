@@ -32,7 +32,6 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	// 여기서 디졸브일지 알파블렌딩일지 선택해서 적용?
 	_bool			m_isFadeIn = { false };
 	_float			m_fAlphaTimer = { 0.f };
 	_float			m_fDisolveValue = 0.f;

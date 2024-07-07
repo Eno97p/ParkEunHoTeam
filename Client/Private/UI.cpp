@@ -41,6 +41,11 @@ void CUI::Priority_Tick(_float fTimeDelta)
 
 void CUI::Tick(_float fTimeDelta)
 {
+    m_fRenderTimer += fTimeDelta;
+    if (m_fRenderTimer >= 1.f)
+    {
+        m_fRenderTimer = 1.f;
+    }
 }
 
 void CUI::Late_Tick(_float fTimeDelta)

@@ -37,6 +37,8 @@ public:
 	virtual HRESULT	Render() override;
 
 protected:
+	_float				m_fRenderTimer = { 0.f };
+
 	CShader*			m_pShaderCom = { nullptr };
 	CTexture*			m_pTextureCom = { nullptr };
 	CVIBuffer_Rect*		m_pVIBufferCom = { nullptr };

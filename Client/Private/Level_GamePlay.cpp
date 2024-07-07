@@ -8,6 +8,7 @@
 #include "Monster.h"
 
 #include "Light.h"
+#include "UI_FadeInOut.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -44,6 +45,15 @@ HRESULT CLevel_GamePlay::Initialize()
 void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_O))
+	{
+		Add_FadeInOut(false);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_K))
+	{
+		Add_FadeInOut(true);
+	}
 
 
 #ifdef _DEBUG
@@ -103,11 +113,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 
 	CameraDesc.fSensor = 0.1f;
 
-	//CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f); // _float4(71.1f, 542.f, 78.f, 1.f);
-	//CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f); // _float4(71.1f, 522.f, 98.f, 1.f);
+	CameraDesc.vEye = _float4(0.f, 10.f, -10.f, 1.f); // _float4(71.1f, 542.f, 78.f, 1.f);
+	CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f); // _float4(71.1f, 522.f, 98.f, 1.f);
 
-	CameraDesc.vEye = _float4(140.f, 542.f, 78.f, 1.f);
-	CameraDesc.vAt = _float4(140.f, 522.f, 98.f, 1.f);
+	//CameraDesc.vEye = _float4(140.f, 542.f, 78.f, 1.f);
+	//CameraDesc.vAt = _float4(140.f, 522.f, 98.f, 1.f);
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
@@ -381,6 +391,22 @@ void CLevel_GamePlay::Load_Lights()
 	MSG_BOX("Lights Data Load");
 
 	return;
+}
+
+HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
+{
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = false;
+	if(isDissolve)
+		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
+	else
+		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

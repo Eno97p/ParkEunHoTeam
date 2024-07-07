@@ -3,6 +3,11 @@
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_Texture;
 texture2D	g_MaskTexture;
+texture2D	g_DisolveTexture;
+
+bool		g_bIsFadeIn;
+float		g_fAlphaTimer;
+float		g_DisolveValue = 1.f;
 
 float		g_fFlowTime;
 float		g_CurrentRatio;
@@ -101,6 +106,56 @@ PS_OUT PS_HUD(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_FADE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	if (g_bIsFadeIn)
+	{
+		Out.vColor.a = 1.f - g_fAlphaTimer;
+	}
+	else
+	{
+		Out.vColor.a = g_fAlphaTimer;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_FADE_DISSOLVE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	vector vDissolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float dissolveValue = (vDissolve.r + vDissolve.g + vDissolve.b) / 3.f;
+
+	if ((g_DisolveValue - dissolveValue) > 0.05f)
+	{
+		Out.vColor = vDiffuse;
+		return Out;
+	}
+	else if (dissolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+		Out.vColor.a = vDiffuse.a;
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -140,6 +195,32 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_HUD();
+	}
+
+	pass FadeInOut
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FADE();
+	}
+
+		pass Fade_Dissolve
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FADE_DISSOLVE();
 	}
 }
 

@@ -68,10 +68,13 @@
 #include "UI_Slot.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup_Inventory.h"
-
+#include "UI_FadeInOut.h"
 
 #pragma endregion UI
 
+#pragma region EFFECT
+#include "EffectManager.h"
+#pragma endregion EFFECT
 
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
@@ -402,8 +405,9 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 #pragma endregion SHADER
 
 #pragma region TEXTURE
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 16))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 39))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -413,19 +417,23 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail_Rotated"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Trail/SwordTrail_Rotated.png"), 1))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve39"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 39))))
+		return E_FAIL;
 #pragma endregion TEXTURE
 
 
 #pragma region Component
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
 		CVIBuffer_Instance_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Trail"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Component
@@ -448,8 +456,8 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 #pragma endregion MODEL
 
-
-
+	//if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -704,6 +712,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ShatteredCursor.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_FadeInOut */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FadeInOut"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion UI_Texture
 
 	return S_OK;
@@ -915,6 +928,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Inventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_FadeInOut*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_FadeInOut"),
+		CUI_FadeInOut::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion UI_Obj
 
 	return S_OK;
@@ -949,10 +967,12 @@ void CMainApp::Free()
 
 #ifdef _DEBUG
 
+
 	m_pImGuiMgr->DestroyInstance();
 	CImGuiMgr::DestroyInstance();
 #endif // _DEBUG
 
+	EFFECTMGR->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Release_Engine();
 

@@ -11,9 +11,9 @@ public:
 		_float3			vSize;
 		_float			vSpeed;
 		_float			fLifeTime;
-		_bool			IsLoop;
 		const _float4x4*  ParentMat;
-	}TRAILDESC;
+	};
+
 
 private:
 	CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,11 +25,16 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
+
 	_bool Check_Instance_Dead() { return m_bInstanceDead; }
 
 public:
 	void ExtinctTrail(_float fDelta);
 	void EternalTrail(_float fDelta);
+
+private:
+	XMVECTOR CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t);
+	void Tick();
 private:
 	ID3D11Buffer*				m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC			m_InstanceBufferDesc = {};
@@ -45,8 +50,9 @@ private:
 	_float3* m_pOriginalSize = { nullptr };
 	_float3 m_pPivotPos = {0.f,0.f,0.f};
 
-	_bool						m_bIsLoop = false;
 	_bool						m_bInstanceDead = false;
+
+	_float4x4					m_UsingMat;
 public:
 	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

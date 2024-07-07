@@ -39,6 +39,7 @@ public:
 	virtual HRESULT Render() override;
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 	CCollider* Get_Collider() { return m_pColliderCom; }
+	const _float4x4* Get_Part_Mat() { return &m_WorldMatrix; }
 
 protected:
 	CCollider* m_pColliderCom = { nullptr };

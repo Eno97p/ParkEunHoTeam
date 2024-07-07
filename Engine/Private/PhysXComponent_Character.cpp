@@ -219,20 +219,12 @@ HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 	_float3 fLook;
 	XMStoreFloat3(&fLook, vTransformLook);
 
-
-
-	PxVec3 moveVector = PxVec3(fLook.x, fLook.y, fLook.z) * m_fSpeed * fTimeDelta;
+	PxVec3 moveVector = PxVec3(fLook.x, 0, fLook.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
-
-
 	//m_pController->move(PxVec3(0,0,1),)
-
-
-
-
 
 	return S_OK;
 }
@@ -243,9 +235,7 @@ HRESULT CPhysXComponent_Character::Go_BackWard(_float fTimeDelta)
 	_float3 fLook;
 	XMStoreFloat3(&fLook, -vTransformLook);
 
-
-
-	PxVec3 moveVector = PxVec3(fLook.x, fLook.y, fLook.z) * m_fSpeed * fTimeDelta;
+	PxVec3 moveVector = PxVec3(fLook.x, 0, fLook.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
@@ -321,7 +311,6 @@ HRESULT CPhysXComponent_Character::Go_Jump(_float fTimeDelta, _float fJumpSpeed)
 
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {
-
 	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
 	// 변위 계산: s = ut + 0.5 * a * t^2
 	float displacement = m_fCurrentY_Velocity * fTimeDelta + 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
@@ -339,21 +328,16 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 		m_bIsJump = false;
 		m_fCurrentY_Velocity = 0.f;
 	}
-
-
-
 }
 
 
 void CPhysXComponent_Character::Late_Tick(_float fTimeDelta)
 {
-	PxExtendedVec3 vFootPositipn = m_pController->getFootPosition();
+	PxExtendedVec3 vFootPosition = m_pController->getFootPosition();
 
-	_float3 fPos = { static_cast<_float>(vFootPositipn.x),static_cast<_float>(vFootPositipn.y), static_cast<_float>(vFootPositipn.z) };
-
+	_float3 fPos = { static_cast<_float>(vFootPosition.x),static_cast<_float>(vFootPosition.y), static_cast<_float>(vFootPosition.z) };
 
 	_vector PhysxPosition = XMVectorSet(fPos.x, fPos.y, fPos.z, 1.0f);
-
 	m_pTransform->Set_State(CTransform::STATE_POSITION, PhysxPosition);
 
 	m_WorldMatrix = *m_pTransform->Get_WorldFloat4x4();

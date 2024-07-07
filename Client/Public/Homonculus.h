@@ -6,10 +6,16 @@ BEGIN(Client)
 
 class CHomonculus final : public CMonster
 {
+#define DETECTRANGE 20.f
+#define ATTACKRANGE 2.f
+#define EXPLOSIONRANGE 5.f
+
 public:
-	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, STATE_PARRY, STATE_WAKEUP,
+	enum STATE {
+		STATE_IDLE = 0, STATE_DEAD, STATE_EXPLOSION, STATE_HIT, STATE_PARRIED,
 		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DEFAULTATTACK_3, STATE_DOWNATTACK, STATE_FULLATTACK,
-		STATE_GO, STATE_LEFT, STATE_RIGHT, STATE_END };
+		STATE_MOVE, STATE_LEFT, STATE_RIGHT, STATE_END
+	};
 
 private:
 	CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -26,6 +32,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool							m_isParry = { false };
 	_bool							m_isHit = { false };
 	_bool							m_isDefaultAttack = { false };
 
@@ -40,20 +47,26 @@ private:
 	void				Check_AnimFinished();
 
 private:
+	NodeStates			Explosion(_float fTimeDelta);
 	NodeStates			Dead(_float fTimeDelta);
 	NodeStates			Hit(_float fTimeDelta);
-	NodeStates			Parry(_float fTimeDelta);
-	NodeStates			Idle(_float fTimeDelta);
-
-	NodeStates			Move(_float fTimeDelta);
+	NodeStates			Parried(_float fTimeDelta);
 
 	NodeStates			Default_Attack(_float fTimeDelta);
 	NodeStates			Down_Attack(_float fTimeDelta);
 	NodeStates			Full_Attack(_float fTimeDelta);
 
+	NodeStates			Detect(_float fTimeDelta);
+	NodeStates			Move(_float fTimeDelta);
+	NodeStates			Idle(_float fTimeDelta);
+
+
+	void Add_Hp(_int iValue);
+
+
 public:
-	static CHomonculus*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*	Clone(void* pArg) override;
+	static CHomonculus* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void			Free() override;
 };
 

@@ -96,7 +96,7 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_EliteMst"),
                         TEXT("Prototype_Component_Model_Boss_1P") };
 
-    m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"),
+    m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"), TEXT("Prototype_Component_Model_BasicGround"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), TEXT("Prototype_Component_Model_RasSamrahCastle"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
         //TUTORIAL
@@ -124,7 +124,14 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Facade3"), TEXT("Prototype_Component_Model_Facade4"),
                         TEXT("Prototype_Component_Model_Facade5"), TEXT("Prototype_Component_Model_Facade6"),
                         TEXT("Prototype_Component_Model_Facade7"), TEXT("Prototype_Component_Model_Facade8"),
-                        TEXT("Prototype_Component_Model_Facade9"), TEXT("Prototype_Component_Model_Facade10")
+                        TEXT("Prototype_Component_Model_Facade9"), TEXT("Prototype_Component_Model_Facade10"),
+
+                        TEXT("Prototype_Component_Model_RuinsPilar"), TEXT("Prototype_Component_Model_AckbarHouseLarge"),
+                        TEXT("Prototype_Component_Model_AckbarHouseSmall"), TEXT("Prototype_Component_Model_AckbarSwampHouse"),
+                        TEXT("Prototype_Component_Model_AckbarHouseRoofL"), TEXT("Prototype_Component_Model_AckbarHouseRoofM"),
+                        TEXT("Prototype_Component_Model_AckbarHouseRoofS"),
+                        TEXT("Prototype_Component_Model_AqueducTowerRoof"),
+                        TEXT("Prototype_Component_Model_UnderRoofFilling")
     };
 
     m_ActiveElements = { TEXT("Prototype_Component_Model_Grass"),

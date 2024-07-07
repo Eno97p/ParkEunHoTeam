@@ -85,7 +85,34 @@ void CToolObj::Late_Tick(_float fTimeDelta)
 {
 	m_fTimeDelta = fTimeDelta;
 
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	//CTransform* pPT = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+	//_vector vPlayerPos = pPT->Get_State(CTransform::STATE_POSITION);
+	//_vector vCamPos = m_pGameInstance->Get_CamPosition();
+	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//_vector vCamToPlayer = vPlayerPos - vCamPos;
+	//_vector vCamToObj = vPos - vCamPos;
+
+	//float fDistCamToPlayer = XMVectorGetX(XMVector3Length(vCamToPlayer));
+	//float fDistCamToObj = XMVectorGetX(XMVector3Length(vCamToObj));
+
+	//_vector vNormalizedCamToPlayer = XMVector3Normalize(vCamToPlayer);
+	//_vector vNormalizedCamToObj = XMVector3Normalize(vCamToObj);
+	//float fDot = XMVectorGetX(XMVector3Dot(vNormalizedCamToPlayer, vNormalizedCamToObj));
+
+	//// 일정 각도 내에 있고, 카메라와 플레이어 사이에 있는 경우
+	//if (fDot > 0.95f && fDistCamToObj < fDistCamToPlayer)
+	//{
+	//	// 알파 블렌딩 적용
+	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	//}
+	//else
+	{
+		// 일반 렌더링
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	}
+
+	// 그림자는 항상 렌더링
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 }
 
@@ -126,13 +153,13 @@ HRESULT CToolObj::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bNormal"), &f, sizeof(_bool))))
 			return E_FAIL;*/
 
-	/*	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
 			return E_FAIL;
 		
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColorOffset", &m_vColorOffset, sizeof(_uint))))
+	/*	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColorOffset", &m_vColorOffset, sizeof(_uint))))
 			return E_FAIL;*/
 
 

@@ -1,7 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture, g_DesolveTexture;
+texture2D	g_Texture, g_DesolveTexture , g_DepthTexture;
 float		g_BlurPower, g_DesolvePower;
 float3		g_StartColor, g_EndColor, g_DesolveColor, g_BloomColor;
 bool		g_Desolve, g_Alpha, g_Color;
@@ -24,6 +24,7 @@ struct VS_OUT
 	float2		vTexcoord : TEXCOORD0;
 
 	float2		vLifeTime : COLOR0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -43,7 +44,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTexcoord = In.vTexcoord;
 
 	Out.vLifeTime = In.vLifeTime;
-
+	Out.vProjPos = Out.vPosition;
 	return Out;
 }
 
@@ -54,6 +55,7 @@ struct PS_IN
 	float4		vPosition : SV_POSITION;
 	float2		vTexcoord : TEXCOORD0;
 	float2		vLifeTime : COLOR0;
+	float4		vProjPos : TEXCOORD1;
 };
 
 struct PS_OUT
@@ -69,7 +71,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a < 0.01f)
 		discard;
 
 	if (g_Alpha)
@@ -107,7 +109,7 @@ PS_OUT PS_BLOOM(PS_IN In)
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a < 0.01f)
 		discard;
 
 	if (g_Alpha)

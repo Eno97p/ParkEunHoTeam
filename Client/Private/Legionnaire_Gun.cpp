@@ -323,7 +323,7 @@ NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimedelta)
 	else
 	{
 		return FAILURE;
-	}
+	}	
 }
 
 CLegionnaire_Gun* CLegionnaire_Gun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

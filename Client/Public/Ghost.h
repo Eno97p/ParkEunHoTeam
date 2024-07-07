@@ -6,10 +6,13 @@ BEGIN(Client)
 
 class CGhost final : public CMonster
 {
+#define DETECTRANGE 20.f
+#define ATTACKRANGE 2.f
+
 public:
-	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT,
+	enum STATE { STATE_IDLE = 0, STATE_DEAD, STATE_HIT, STATE_PARRIED, 
 		STATE_DEFAULTATTACK_1, STATE_DEFAULTATTACK_2, STATE_DEFAULTATTACK_3, STATE_DEFAULTATTACK_4, STATE_DOWNATTACK,
-		STATE_GO, STATE_LEFT, STATE_RIGHT, STATE_END };
+		STATE_MOVE, STATE_LEFT, STATE_RIGHT, STATE_END };
 
 private:
 	CGhost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -41,13 +44,18 @@ private:
 
 private:
 	NodeStates			Dead(_float fTimeDelta);
+	NodeStates			Parried(_float fTimeDelta);
 	NodeStates			Hit(_float fTimeDelta);
-	NodeStates			Idle(_float fTimeDelta);
-
-	NodeStates			Move(_float fTimeDelta);
 
 	NodeStates			Default_Attack(_float fTimeDelta);
 	NodeStates			Down_Attack(_float fTimeDelta);
+
+	NodeStates			Detect(_float fTimeDelta);
+	NodeStates			Move(_float fTimeDelta);
+	NodeStates			Idle(_float fTimeDelta);
+
+
+	void Add_Hp(_int iValue);
 
 
 public:

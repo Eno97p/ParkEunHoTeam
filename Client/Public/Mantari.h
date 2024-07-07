@@ -70,10 +70,7 @@ private:
 	_bool										m_bHit = false;
 #pragma endregion 상태제어 bool변수
 
-	_float										m_fDeadDelay = 2.f;
 	_float										m_fChasingDelay = 0.5f;
-	_bool										m_bAnimFinished = false;
-	_float										m_fLengthFromPlayer = 0.f;
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;

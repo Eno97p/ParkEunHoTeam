@@ -39,16 +39,22 @@
 #include "Mantari.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
+
 #include "Legionnaire.h"
 #include "Body_Legionnaire.h"
 #include "Weapon_Legionnaire.h"
+
 #include "Legionnaire_Gun.h"
 #include "Body_LGGun.h"
 #include "LGGun_Weapon.h"
+
 #include "Ghost.h"
 #include "Body_Ghost.h"
+#include "Weapon_Ghost.h"
+
 #include "Homonculus.h"
 #include "Body_Homonculus.h"
+#include "Weapon_Homonculus.h"
 
 #pragma endregion Monster
 
@@ -543,6 +549,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Ghost */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ghost"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
 		return E_FAIL;
@@ -890,6 +897,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CBody_Ghost::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Weapon_Ghost */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Ghost"),
+		CWeapon_Ghost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Homonculus */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Homonculus"),
 		CHomonculus::Create(m_pDevice, m_pContext))))
@@ -898,6 +910,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Body_Homonculus */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Homonculus"),
 		CBody_Homonculus::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Weapon_Homonculus */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Homonculus"),
+		CWeapon_Homonculus::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion Monster
@@ -978,10 +995,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel_For_Shader()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Float4"),
 		CComputeShader_Buffer::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Float4.hlsl"), "main"))))
 		return E_FAIL;
-
-
-
-
 
 
 	//lstrcpy(m_szLoadingText, TEXT("쉐이더 로드 되었습니다."));

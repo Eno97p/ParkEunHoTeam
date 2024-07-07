@@ -392,5 +392,6 @@ void CPhysXComponent_Character::Free()
 	__super::Free();
 
 	Safe_Release(m_pTransform);
+	Safe_physX_Release(m_pController);
 	
 }

@@ -589,6 +589,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CPhysXComponent_Character::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
+		CPhysXComponent_Vehicle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 
 
 

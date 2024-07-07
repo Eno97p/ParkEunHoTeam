@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CPhysXComponent_Vehicle;
 END
 
 
@@ -35,7 +36,7 @@ private:
 private:
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
-
+	CPhysXComponent_Vehicle* m_pPhysXCom = { nullptr };
 private:
 
 

@@ -19,29 +19,29 @@ private:
 	virtual ~CPhysXComponent_Vehicle() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const _char* pModelFilePath, const wstring& FilePath);
+	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg) override;
 
 #ifdef _DEBUG
 	virtual HRESULT Render()override;
 #endif
 
-
+public:
+	virtual void Tick(const _float fTimeDelta);
+	virtual void Late_Tick(const _float fTimeDelta);
 
 private:
 	HRESULT CreateActor();
-
+	
 
 private:
+	CVehicleDefault* m_pVehicle = nullptr;
+	PxVehiclePhysXSimulationContext m_pVehicleSimulationContext;
 
-	float m_fHoverHeight = 0.5f;
-	float m_fHoverForce = 500.0f;
-	float m_fStabilizeForce = 100.0f;
-	float m_fMaxTiltAngle = 30.0f; // 최대 기울기 각도 (도)
-
+	
 
 public:
-	static CPhysXComponent_Vehicle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, const wstring& FilePath);
+	static CPhysXComponent_Vehicle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free();
 

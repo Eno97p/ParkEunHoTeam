@@ -54,6 +54,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\DurgaSword.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\EffectManager.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ForkLift.cpp"
 
 

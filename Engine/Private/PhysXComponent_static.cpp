@@ -294,4 +294,7 @@ void CPhysXComponent_static::Free()
 {
 	__super::Free();
 
+
+	
+
 }

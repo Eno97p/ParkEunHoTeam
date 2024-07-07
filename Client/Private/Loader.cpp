@@ -980,10 +980,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel_For_Shader()
 		return E_FAIL;
 
 
-
-
-
-
 	//lstrcpy(m_szLoadingText, TEXT("쉐이더 로드 되었습니다."));
 	
 	return S_OK;

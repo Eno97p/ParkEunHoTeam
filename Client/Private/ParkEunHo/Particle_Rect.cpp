@@ -99,7 +99,7 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 	if(OwnDesc->SuperDesc.IsBlur)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -179,6 +179,8 @@ HRESULT CParticle_Rect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &OwnDesc->SuperDesc.IsAlpha, sizeof(_bool))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolvePower", &OwnDesc->SuperDesc.fDesolveLength, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 	return S_OK;
 }

@@ -48,7 +48,11 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_O))
 	{
-		Add_FadeInOut();
+		Add_FadeInOut(false);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_K))
+	{
+		Add_FadeInOut(true);
 	}
 
 
@@ -389,12 +393,15 @@ void CLevel_GamePlay::Load_Lights()
 	return;
 }
 
-HRESULT CLevel_GamePlay::Add_FadeInOut()
+HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
 {
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
 
 	pDesc.isFadeIn = false;
-	pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
+	if(isDissolve)
+		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
+	else
+		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;

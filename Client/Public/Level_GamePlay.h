@@ -34,7 +34,7 @@ private:
 
 	void Load_Lights();
 
-	HRESULT	Add_FadeInOut();
+	HRESULT	Add_FadeInOut(_bool isDissolve);
 
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;

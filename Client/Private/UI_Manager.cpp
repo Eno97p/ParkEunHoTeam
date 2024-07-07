@@ -87,14 +87,17 @@ HRESULT CUI_Manager::Create_UI()
 
 void CUI_Manager::Key_Input()
 {
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	_bool isMenuOpen = (*menu).second->Get_Rend();
+	_bool isQuickOpen = (*quick).second->Get_Rend();
+
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE)) // 다른 메뉴 실행중에는 켜지면 안 됨. 예외 처리 필요 
 	{
-		map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 		map<string, CUIGroup*>::iterator character = m_mapUIGroup.find("Menu_Ch");
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
 		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 
-		_bool isMenuOpen = (*menu).second->Get_Rend();
 		_bool isChOpen = (*character).second->Get_Rend();
 		_bool isInvOpen = (*inventory).second->Get_Rend();
 		_bool isWeaponOpen = (*weapon).second->Get_Rend();
@@ -120,7 +123,17 @@ void CUI_Manager::Key_Input()
 		}
 		else
 		{
-			(*menu).second->Set_Rend(!isMenuOpen);
+			if (!isQuickOpen)
+			{
+				(*menu).second->Set_Rend(!isMenuOpen);
+			}
+		}
+	}
+	else if (m_pGameInstance->Key_Down(DIK_I))
+	{
+		if (!isMenuOpen)
+		{
+			(*quick).second->Set_Rend(!isQuickOpen);
 		}
 	}
 }

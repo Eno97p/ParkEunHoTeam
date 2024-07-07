@@ -46,26 +46,31 @@ void CUI_FadeInOut::Priority_Tick(_float fTimeDelta)
 
 void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
-	m_fAlphaTimer += fTimeDelta* 0.4f;
-	m_fDisolveValue += fTimeDelta * 0.4f;
-
-	if (m_fDisolveValue >= 1.f)
+	if (TYPE_ALPHA == m_eFadeType)
 	{
-		m_fDisolveValue = 1.f;
-		m_pGameInstance->Erase(this);
+		m_fAlphaTimer += fTimeDelta * 0.4f;
+		if (m_fAlphaTimer >= 1.f)
+		{
+			m_fAlphaTimer = 1.f;
+
+			if (!m_isFadeIn) // Fade Out
+			{
+				// 씬 초기화 필요
+
+			}
+			m_pGameInstance->Erase(this);
+		}
 	}
+	else if (TYPE_DISSOLVE == m_eFadeType)
+	{
+		m_fDisolveValue += fTimeDelta * 0.5f;
 
-	//if (m_fAlphaTimer >= 1.f)
-	//{
-	//	m_fAlphaTimer = 1.f;
-
-	//	if (!m_isFadeIn) // Fade Out
-	//	{
-	//		// 씬 초기화 필요
-
-	//	}
-	//	m_pGameInstance->Erase(this);
-	//}
+		if (m_fDisolveValue >= 1.f)
+		{
+			m_fDisolveValue = 1.f;
+			m_pGameInstance->Erase(this);
+		}
+	}
 }
 
 void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
@@ -134,17 +139,22 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 29)))
-		return E_FAIL;
+	if (TYPE_ALPHA == m_eFadeType)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fAlphaTimer, sizeof(_float))))
+			return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fAlphaTimer, sizeof(_float))))
-		return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isFadeIn, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (TYPE_DISSOLVE == m_eFadeType)
+	{
+		if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 29)))
+			return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isFadeIn, sizeof(_bool))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
-		return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

@@ -62,6 +62,26 @@ namespace Engine
 		return iRefCnt;
 	}
 
+
+	template<typename T>
+	void Safe_physX_Release(T& pInstance)
+	{
+
+		if (nullptr != pInstance)
+		{
+			
+			pInstance->release();
+			pInstance = nullptr;
+		}
+
+
+
+	}
+
+
+
+
+
 	template<typename T>
 	void writeVectorToBinary(std::vector<T>& vec, std::ostream& os) {
 		// 벡터의 요소 개수를 이진 파일에 쓰기

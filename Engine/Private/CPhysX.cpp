@@ -125,13 +125,6 @@ HRESULT CPhysX::Initialize()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, false);
 	}
 
-	//m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
-	//
-	//PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
-	//m_pScene->addActor(*groundPlane);
-
-
-
 #ifdef _DEBUG
 
 
@@ -171,7 +164,7 @@ void CPhysX::Tick(_float fTimeDelta)
 
 HRESULT CPhysX::AddActor(PxActor* pActor)
 {
-	if(m_pScene->addActor(*pActor))
+	if(!m_pScene->addActor(*pActor))
 		return E_FAIL;
 	
 	return S_OK;

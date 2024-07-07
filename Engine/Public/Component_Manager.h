@@ -26,6 +26,7 @@
 #include"VIBuffer_PhysXBuffer.h"
 #include"PhysXComponent.h"
 #include"PhysXComponent_static.h"
+#include"PhysXComponent_Vehicle.h"
 #include"PhysXComponent_Character.h"
 #pragma endregion
 

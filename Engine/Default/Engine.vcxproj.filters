@@ -223,6 +223,15 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle">
       <UniqueIdentifier>{2cf5356c-ce99-4c87-9d86-89599d859b4e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass">
+      <UniqueIdentifier>{1f489c9d-87cf-49f8-bdf7-d0a63e2fae4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor">
+      <UniqueIdentifier>{ff3cdc56-b1ac-4bda-b482-72131f76ae91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components">
+      <UniqueIdentifier>{eb0ddf12-0036-467c-88ec-c03b2f62e3ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -468,6 +477,15 @@
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VehicleDefault.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PhysXActorVehicle.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Components_Vehicle.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -697,6 +715,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VehicleDefault.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysXActorVehicle.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Components_Vehicle.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -41,7 +41,7 @@
 #include <tchar.h>
 using namespace DirectX;
 using namespace physx;
-using namespace vehicle2;
+using namespace physx::vehicle2;
 
 #include <vector>
 #include <list>
@@ -100,6 +100,9 @@ namespace Engine
 		GROUP_ENEMY = 1 << 3
 	};
 
+
+
+	
 }
 
 #include "Engine_Typedef.h"
@@ -132,3 +135,5 @@ namespace Engine
 using namespace Engine;
 using namespace std;
 
+//내각 직접 만든 Vehicle 네임스페이스
+using namespace Vehicle;

@@ -337,6 +337,12 @@
     <Filter Include="02.GameObjects\08. vehicle">
       <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword">
+      <UniqueIdentifier>{b60a75ea-4059-4a3b-b1f8-22312624836b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist">
+      <UniqueIdentifier>{127d022a-955f-4e46-a133-c313370b1483}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -447,9 +453,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\VeilleurSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Active_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -692,6 +695,13 @@
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\Weapon_Ghost.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Homonculus.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -793,9 +803,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\VeilleurSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Active_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -1028,6 +1035,13 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\Weapon_Ghost.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Homonculus.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

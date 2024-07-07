@@ -57,11 +57,18 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
 	m_bAnimFinished = dynamic_cast<CBody_Player*>(m_PartObjects.front())->Get_AnimFinished();
+	if (m_fStaminaRecoverDelay > 0.f)
+	{
+		m_fStaminaRecoverDelay -= fTimeDelta;
+	}
+	else if (m_fStaminaRecoverDelay < 0.f)
+	{
+		Add_Stamina(fTimeDelta * 20.f);
+	}
 }
 
 void CPlayer::Tick(_float fTimeDelta)
 {
-
 	if (m_fButtonCooltime != 0.f)
 	{
 		m_fButtonCooltime += fTimeDelta;
@@ -138,7 +145,6 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-	//m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 }
@@ -171,7 +177,7 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 528.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
@@ -238,10 +244,22 @@ CGameObject* CPlayer::Get_Weapon()
 	return m_PartObjects[1];
 }
 
-void CPlayer::PlayerHit(_int iValue)
+void CPlayer::PlayerHit(_float fValue)
 {
+	if (m_bParrying || m_iState == STATE_ROLL || m_bParry) return;
 	m_iState = STATE_HIT;
-	Add_Hp(-iValue);
+	m_bLAttacking = false;
+	m_bRAttacking = false;
+	m_bIsRunAttack = false;
+	if (m_bRunning)
+	{
+		m_pTransformCom->Set_Speed(RUNSPEED);
+	}
+	else
+	{
+		m_pTransformCom->Set_Speed(WALKSPEED);
+	}
+	Add_Hp(-fValue);
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -271,6 +289,8 @@ HRESULT CPlayer::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Jump"), bind(&CPlayer::Jump, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("RollCool"), 0.1f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("RollCool"), TEXT("Roll"), bind(&CPlayer::Roll, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("UseItem"), bind(&CPlayer::UseItem, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Buff"), bind(&CPlayer::Buff, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("MoveTo"), bind(&CPlayer::Move, this, std::placeholders::_1));
 
 	return S_OK;
@@ -342,12 +362,13 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 NodeStates CPlayer::Parry(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bLAttacking || m_bRAttacking || m_fLChargeAttack != 0.f || m_fRChargeAttack != 0.f)
+		|| m_bLAttacking || m_bRAttacking || m_fLChargeAttack != 0.f || m_fRChargeAttack != 0.f
+		|| m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && !m_bLAttacking && !m_bRAttacking && m_iState != STATE_ROLL && m_iState != STATE_DASH)
+	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && !m_bParrying)
 	{
 		if (!m_bDisolved_Yaak)
 		{
@@ -355,6 +376,10 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 			m_bDisolved_Yaak = true;
 		}
 		m_bParrying = true;
+		
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 	}
 
 	if (m_bParrying)
@@ -363,6 +388,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			if (!m_bDisolved_Yaak)
 			{
 				static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -386,15 +412,29 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 NodeStates CPlayer::Counter(_float fTimeDelta)
 {
-	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000))
+	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
 	{
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 		m_iState = STATE_COUNTER;
+		fSlowValue = 0.4f;
 	}
 
 	if (m_iState == STATE_COUNTER)
 	{
+		if (m_fSlowDelay <= 0.3f)
+		{
+			m_fSlowDelay += fTimeDelta;
+		}
+		else if (m_fSlowDelay > 0.3f)
+		{
+			m_fSlowDelay = 0.f;
+			fSlowValue = 1.f;
+		}
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_bParry = false;
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
@@ -413,7 +453,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH)
+	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH && !m_bLAttacking)
 	{
 		if (!m_bDisolved_Yaak)
 		{
@@ -430,12 +470,16 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		m_bLAttacking = true;
 		m_pPhysXCom->Set_JumpSpeed(-2.f);
 		m_pPhysXCom->Go_Jump(fTimeDelta);
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 	}
 
 	if (m_bLAttacking && (m_iState == STATE_JUMPATTACK || m_iState == STATE_JUMPATTACK_LAND))
 	{
 		if (m_bAnimFinished && m_iState == STATE_JUMPATTACK_LAND)
 		{
+			m_bStaminaCanDecrease = true;
 			m_bLAttacking = false;
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
@@ -465,8 +509,13 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_iState == STATE_ROLL)
+	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_iState == STATE_ROLL && !m_bLAttacking)
 	{
+		if (m_bStaminaCanDecrease)
+		{
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
+		}
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -474,12 +523,16 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 		}
 		m_iState = STATE_ROLLATTACK;
 		m_bLAttacking = true;
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 	}
 
 	if (m_bLAttacking && m_iState == STATE_ROLLATTACK)
 	{
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_bLAttacking = false;
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
@@ -507,7 +560,7 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bRAttacking || m_fRChargeAttack > 0.f)
+		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
@@ -527,20 +580,25 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 		if (!m_bLAttacking)
 		{
 			m_fLChargeAttack += fTimeDelta;
-
 		}
 		if (m_bCanCombo)
 		{
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
 			m_iAttackCount++;
 			m_bCanCombo = false;
 		}
 	}
 	else if (m_fLChargeAttack > 0.f && m_fLChargeAttack < 0.4f)
 	{
+		Add_Stamina(-10.f);
 		m_fLChargeAttack = 0.f;
 		m_bLAttacking = true;
 		if (m_bRunning && ((GetKeyState('W') & 0x8000) || (GetKeyState('S') & 0x8000)))
 		{
+			m_bStaminaCanDecrease = true;
+			Add_Stamina(-10.f);
 			m_bIsRunAttack = true;
 		}
 	}
@@ -548,9 +606,14 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 	if (m_fLChargeAttack != 0.f)
 	{
 		m_iState = STATE_LCHARGEATTACK;
-
+		if (m_fLChargeAttack >= 0.7f)
+		{
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
+		}
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_iAttackCount = 1;
 			m_fLChargeAttack = 0.f;
 			m_fFightIdle += 0.01f;
@@ -571,7 +634,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bLAttacking || m_fLChargeAttack > 0.f)
+		|| m_bLAttacking || m_fLChargeAttack > 0.f || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
@@ -594,22 +657,39 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 		}
 		if (m_bCanCombo)
 		{
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
 			m_iAttackCount++;
 			m_bCanCombo = false;
 		}
 	}
 	else if (m_fRChargeAttack > 0.f && m_fRChargeAttack < 0.4f)
 	{
+		if (m_bStaminaCanDecrease)
+		{
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
+		}
 		m_fRChargeAttack = 0.f;
 		m_bRAttacking = true;
 	}
 
 	if (m_fRChargeAttack != 0.f)
 	{
+		if (m_fRChargeAttack >= 1.f)
+		{
+			if (m_bStaminaCanDecrease)
+			{
+				// 스테미나 조절할 것
+				Add_Stamina(-10.f);
+			}
+		}
 		m_iState = STATE_RCHARGEATTACK;
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_iAttackCount = 1;
 			m_fRChargeAttack = 0.f;
 			m_fFightIdle += 0.01f;
@@ -630,7 +710,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 NodeStates CPlayer::LAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bRAttacking)
+		|| m_bRAttacking || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
@@ -684,6 +764,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			if (m_bRunning)
 			{
 				m_pPhysXCom->Set_Speed(RUNSPEED);
@@ -712,7 +793,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH)
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
@@ -735,6 +816,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_bRAttacking = false;
 			m_iAttackCount++;
 			m_fFightIdle += 0.01f;
@@ -754,16 +836,19 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 NodeStates CPlayer::Dash(_float fTimeDelta)
 {
-	if (!m_bJumping)
+	if (!m_bJumping || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping)
+	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping && m_iState != STATE_DASH)
 	{
 		m_pPhysXCom->Set_JumpSpeed(0.f);
 		m_pPhysXCom->Go_Jump(fTimeDelta);
 		m_iState = STATE_DASH;
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 	}
 
 	if (m_iState == STATE_DASH)
@@ -799,6 +884,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_iState = STATE_IDLE;
 			m_fCloneDelay = 0.f;
 			m_fAnimDelay = 0.f;
@@ -828,13 +914,16 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL)
+	if (m_iState == STATE_ROLL || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping))
 	{
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 		m_fJumpCooltime += 0.01f;
 		if (m_bJumping)
 		{
@@ -887,6 +976,7 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 	{
 		if (!m_bIsLanded)
 		{
+			m_bStaminaCanDecrease = true;
 			if (m_fFightIdle > ATTACKPOSTDELAY)
 			{
 				m_iState = STATE_IDLE;
@@ -906,8 +996,16 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 
 NodeStates CPlayer::Roll(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_E))
+	if (m_iState == STATE_USEITEM)
 	{
+		return COOLING;
+	}
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_iState != STATE_ROLL)
+	{
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -947,6 +1045,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			m_bStaminaCanDecrease = true;
 			m_iState = STATE_IDLE;
 			m_fCloneDelay = 0.f;
 			m_fAnimDelay = 0.f;
@@ -958,6 +1057,75 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			{
 				m_pPhysXCom->Set_Speed(WALKSPEED);
 			}
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		m_fCloneDelay = 0.f;
+		m_fAnimDelay = 0.f;
+		return FAILURE;
+	}
+}
+
+NodeStates CPlayer::UseItem(_float fTimeDelta)
+{
+	if (m_iState == STATE_BUFF)
+	{
+		return COOLING;
+	}
+
+	if (GetKeyState('Z') & 0x8000 && m_iState != STATE_USEITEM)
+	{
+		m_iState = STATE_USEITEM;
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
+	}
+
+	if (m_iState == STATE_USEITEM)
+	{
+		if (m_bAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		m_fCloneDelay = 0.f;
+		m_fAnimDelay = 0.f;
+		return FAILURE;
+	}
+}
+
+NodeStates CPlayer::Buff(_float fTimeDelta)
+{
+	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
+	{
+		m_iState = STATE_BUFF;
+		if (!m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			m_bDisolved_Yaak = true;
+		}
+	}
+
+	if (m_iState == STATE_BUFF)
+	{
+		if (m_bAnimFinished)
+		{
+			m_iState = STATE_IDLE;
 			return SUCCESS;
 		}
 		else
@@ -1009,6 +1177,9 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		if (m_bRunning)
 		{
 			m_iState = STATE_RUN;
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-fTimeDelta * 5.f);
 		}
 		else
 		{
@@ -1027,6 +1198,9 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		if (m_bRunning)
 		{
 			m_iState = STATE_RUN;
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-fTimeDelta * 5.f);
 		}
 		else
 		{
@@ -1072,6 +1246,7 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 	}
 	else if (m_iState == STATE_IDLE)
 	{
+		m_bParry = false;
 		if (m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
@@ -1083,33 +1258,33 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 	return RUNNING;
 }
 
-void CPlayer::Add_Hp(_int iValue)
+void CPlayer::Add_Hp(_float iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0.f, m_fCurHp + iValue));
+	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
 	}
 }
 
-void CPlayer::Add_Stamina(_int iValue)
+void CPlayer::Add_Stamina(_float iValue)
 {
-	m_iCurStamina = min(m_iMaxStamina, max(0, m_iCurStamina + iValue));
-	if (m_iCurStamina == 0)
+	if (iValue > 0.f)
 	{
-
+		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue));
 	}
-
-
+	else if (m_bStaminaCanDecrease)
+	{
+		m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
+		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue));
+		m_bStaminaCanDecrease = false;
+	}
+	
 }
 
-void CPlayer::Add_Mp(_int iValue)
+void CPlayer::Add_Mp(_float iValue)
 {
-	m_iCurMp = min(m_iMaxMp, max(0, m_iCurMp + iValue));
-	if (m_iCurMp == 0)
-	{
-
-	}
+	m_fCurMp = min(m_fMaxMp, max(0.f, m_fCurMp + iValue));
 }
 
 
@@ -1128,11 +1303,7 @@ void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 	{
 		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
 		int temp = 0;
-
 	}
-
-
-
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -54,15 +54,23 @@ void CUI_StateHP::Tick(_float fTimeDelta)
 		m_fCurrentRatio = m_pPlayer->Get_HpRatio();
 	}
 
-	// 체력이 천천히 줄어듦
+	// 체력 감소
 	if (m_fCurrentRatio < m_fPastRatio)
 	{
 		m_fPastRatio -= fTimeDelta * 0.2f;
+		if (m_fCurrentRatio > m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
 	}
-	// 체력이 전부 줄어듦
+	// 체력 증가
 	else if (m_fCurrentRatio > m_fPastRatio)
 	{
-		m_fPastRatio = m_fCurrentRatio;
+		m_fPastRatio += fTimeDelta * 0.2f;
+		if (m_fCurrentRatio < m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
 	}
 }
 

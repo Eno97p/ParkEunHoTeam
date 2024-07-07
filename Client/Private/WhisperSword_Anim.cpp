@@ -96,7 +96,7 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 #endif
-	
+
 }
 
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
@@ -111,10 +111,8 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	}
-	
+
 #endif
-
-
 }
 
 HRESULT CWhisperSword_Anim::Render()
@@ -206,7 +204,6 @@ HRESULT CWhisperSword_Anim::Add_Components()
 		return E_FAIL;
 
 
-
 	/* For.Com_Texture */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
@@ -260,6 +257,4 @@ CGameObject* CWhisperSword_Anim::Clone(void* pArg)
 void CWhisperSword_Anim::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_PhysXCom);
 }

@@ -417,7 +417,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     }
     case LAYER_PASSIVE_ELEMENT:
     {
-        const char* items_MapElement[] = { "BasicCube", "BasicDonut", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
+        const char* items_MapElement[] = { "BasicCube", "BasicDonut",  "BasicGround", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
             "RasSamrahCastle2",
             
             //TUTORIAL
@@ -440,7 +440,16 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "Facade3", "Facade4",
             "Facade5", "Facade6",
             "Facade7", "Facade8",
-            "Facade9", "Facade10"
+            "Facade9", "Facade10",
+
+            "RuinsPillar", "AckbarHouseLarge",
+            "AckbarHouseSmall",  "AckbarHouseSwamp",
+            "AckbarHouseRoofLarge",
+            "AckbarHouseRoofMid", "AckbarHouseRoofSmall",
+            "AqueducTowerRoof",
+            "UnderRoofFilling"
+
+
         };
         ImGui::ListBox("###Obj", &item_current, items_MapElement, IM_ARRAYSIZE(items_MapElement)); // item_current 변수에 선택 값 저장
         break;

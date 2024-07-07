@@ -76,11 +76,11 @@ void CDefault_Camera::Key_Input(_float fTimeDelta)
 		m_pGameInstance->Set_MainCamera(0);
 	}
 
-	//~키 누르면 캠 고정
-	if (m_pGameInstance->Key_Down(DIK_1))
-	{
-		m_pGameInstance->Set_MainCamera(1);
-	}
+	////~키 누르면 캠 고정
+	//if (m_pGameInstance->Key_Down(DIK_1))
+	//{
+	//	m_pGameInstance->Set_MainCamera(1);
+	//}
 
 	//Up, Down으로 캠 스피드 조정
 	if (m_pGameInstance->CheckMouseWheel() == WHEEL_UP)

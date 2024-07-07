@@ -394,7 +394,7 @@ HRESULT CLevel_GamePlay::Add_FadeInOut()
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
 
 	pDesc.isFadeIn = false;
-	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;

@@ -46,19 +46,26 @@ void CUI_FadeInOut::Priority_Tick(_float fTimeDelta)
 
 void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
-	m_fAlphaTimer += fTimeDelta;
+	m_fAlphaTimer += fTimeDelta* 0.4f;
+	m_fDisolveValue += fTimeDelta * 0.4f;
 
-	if (m_fAlphaTimer >= 1.f)
+	if (m_fDisolveValue >= 1.f)
 	{
-		m_fAlphaTimer = 1.f;
-
-		if (!m_isFadeIn) // Fade Out
-		{
-			// 씬 초기화 필요
-
-		}
+		m_fDisolveValue = 1.f;
 		m_pGameInstance->Erase(this);
 	}
+
+	//if (m_fAlphaTimer >= 1.f)
+	//{
+	//	m_fAlphaTimer = 1.f;
+
+	//	if (!m_isFadeIn) // Fade Out
+	//	{
+	//		// 씬 초기화 필요
+
+	//	}
+	//	m_pGameInstance->Erase(this);
+	//}
 }
 
 void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
@@ -71,7 +78,15 @@ HRESULT CUI_FadeInOut::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3);
+	if (TYPE_ALPHA == m_eFadeType)
+	{
+		m_pShaderCom->Begin(3);
+	}
+	else if (TYPE_DISSOLVE == m_eFadeType)
+	{
+		m_pShaderCom->Begin(4);
+	}
+
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -95,6 +110,14 @@ HRESULT CUI_FadeInOut::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	if (TYPE_DISSOLVE == m_eFadeType)
+	{
+		/* For.Com_DissolveTexture */
+		if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
+			TEXT("Com_DissolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -111,12 +134,18 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 29)))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fAlphaTimer, sizeof(_float))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isFadeIn, sizeof(_bool))))
-
 		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -150,6 +179,7 @@ void CUI_FadeInOut::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pDisolveTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pShaderCom);

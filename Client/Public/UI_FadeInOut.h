@@ -2,6 +2,10 @@
 
 #include "UI.h"
 
+BEGIN(Engine)
+class CTexture;
+END
+
 BEGIN(Client)
 
 class CUI_FadeInOut final : public CUI
@@ -31,8 +35,11 @@ private:
 	// 여기서 디졸브일지 알파블렌딩일지 선택해서 적용?
 	_bool			m_isFadeIn = { false };
 	_float			m_fAlphaTimer = { 0.f };
+	_float			m_fDisolveValue = 0.f;
 
 	FADE_TYPE		m_eFadeType = { TYPE_END };
+
+	CTexture*		m_pDisolveTextureCom = nullptr;
 
 private:
 	HRESULT Add_Components();

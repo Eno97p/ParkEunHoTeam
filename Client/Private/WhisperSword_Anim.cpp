@@ -107,7 +107,7 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 
 	//m_PhysXCom->Late_Tick(&m_WorldMatrix);
 #ifdef _DEBUG
-	if (m_bIsActive)
+	if (m_bIsActive) 
 	{
 		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	}

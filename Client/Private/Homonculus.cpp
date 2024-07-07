@@ -204,6 +204,9 @@ NodeStates CHomonculus::Idle(_float fTimeDelta)
 
 NodeStates CHomonculus::Move(_float fTimeDelta)
 {
+	// 플레이어 움직임에 따라 움직이도록?
+
+
     return FAILURE;
 }
 
@@ -214,14 +217,14 @@ NodeStates CHomonculus::Default_Attack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	if (STATE_DEFAULTATTACK_2 != m_iState)
+	if (STATE_DEFAULTATTACK_3 != m_iState)
 	{
 		m_isDefaultAttack = true;
 	}
 
 	if (m_isDefaultAttack)
 	{
-		if (STATE_DEFAULTATTACK_1 != m_iState && STATE_DEFAULTATTACK_2 != m_iState)
+		if (STATE_DEFAULTATTACK_1 != m_iState && STATE_DEFAULTATTACK_2 != m_iState && STATE_DEFAULTATTACK_3 != m_iState)
 		{
 			m_iState = STATE_DEFAULTATTACK_1;
 			m_isAnimFinished = false;
@@ -232,6 +235,10 @@ NodeStates CHomonculus::Default_Attack(_float fTimeDelta)
 			if (STATE_DEFAULTATTACK_1 == m_iState)
 			{
 				m_iState = STATE_DEFAULTATTACK_2;
+			}
+			else if (STATE_DEFAULTATTACK_2 == m_iState)
+			{
+				m_iState = STATE_DEFAULTATTACK_3;
 			}
 			else
 			{

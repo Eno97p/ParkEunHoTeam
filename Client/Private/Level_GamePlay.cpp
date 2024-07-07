@@ -54,6 +54,11 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 void CLevel_GamePlay::Late_Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Late_Tick(fTimeDelta);
+
+	// FadeInOut Test
+	// Prototype_GameObject_UI_FadeInOut
+
+
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()

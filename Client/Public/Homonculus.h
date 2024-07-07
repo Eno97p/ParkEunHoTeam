@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool							m_isParry = { true };
+	_bool							m_isParry = { false };
 	_bool							m_isHit = { false };
 	_bool							m_isDefaultAttack = { false };
 

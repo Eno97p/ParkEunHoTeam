@@ -337,6 +337,9 @@
     <Filter Include="02.GameObjects\08. vehicle">
       <UniqueIdentifier>{c854afd1-c438-4f4a-ac9f-866c4171925b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\FadeInFadeOut">
+      <UniqueIdentifier>{92832647-1401-41cc-aa61-c44d4394fe50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -447,9 +450,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\VeilleurSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Active_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -692,6 +692,10 @@
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\UI_FadeInOut.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -793,9 +797,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\VeilleurSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Active_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\Active_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -1028,6 +1029,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\UI_FadeInOut.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

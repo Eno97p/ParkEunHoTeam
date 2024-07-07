@@ -150,6 +150,9 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Particle_Trail.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Weapon_Legionnaire.cpp"
 
 

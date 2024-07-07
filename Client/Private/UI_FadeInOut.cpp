@@ -22,6 +22,7 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 	UI_FADEINOUT_DESC* pDesc = static_cast<UI_FADEINOUT_DESC*>(pArg);
 
 	m_isFadeIn = pDesc->isFadeIn;
+	m_eFadeType = pDesc->eFadeType;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -45,26 +46,18 @@ void CUI_FadeInOut::Priority_Tick(_float fTimeDelta)
 
 void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
-	if (!m_isEnd)
+	m_fAlphaTimer += fTimeDelta;
+
+	if (m_fAlphaTimer >= 1.f)
 	{
-		m_fAlphaTimer += fTimeDelta;
+		m_fAlphaTimer = 1.f;
 
-		if (m_fAlphaTimer >= 1.f)
+		if (!m_isFadeIn) // Fade Out
 		{
-			m_fAlphaTimer = 1.f;
+			// 씬 초기화 필요
 
-			if (!m_isFadeIn) // Fade Out
-			{
-				// 씬 초기화 필요
-			}
-			else // Fade In
-			{
-				// 없어도 될듯
-			}
-
-			m_pGameInstance->Erase(this);
 		}
-		m_isEnd = true;
+		m_pGameInstance->Erase(this);
 	}
 }
 
@@ -93,7 +86,7 @@ HRESULT CUI_FadeInOut::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUITex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
@@ -116,10 +109,6 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
-
-	_float4 color = _float4(1.f, 1.f, 1.f, 0.1f);
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &color, sizeof(_float4))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fAlphaTimer, sizeof(_float))))

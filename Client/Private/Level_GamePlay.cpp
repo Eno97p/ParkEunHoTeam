@@ -8,6 +8,7 @@
 #include "Monster.h"
 
 #include "Light.h"
+#include "UI_FadeInOut.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -45,6 +46,11 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
+	if (m_pGameInstance->Key_Down(DIK_O))
+	{
+		Add_FadeInOut();
+	}
+
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
@@ -54,11 +60,6 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 void CLevel_GamePlay::Late_Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Late_Tick(fTimeDelta);
-
-	// FadeInOut Test
-	// Prototype_GameObject_UI_FadeInOut
-
-
 }
 
 HRESULT CLevel_GamePlay::Ready_Lights()
@@ -386,6 +387,19 @@ void CLevel_GamePlay::Load_Lights()
 	MSG_BOX("Lights Data Load");
 
 	return;
+}
+
+HRESULT CLevel_GamePlay::Add_FadeInOut()
+{
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = false;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

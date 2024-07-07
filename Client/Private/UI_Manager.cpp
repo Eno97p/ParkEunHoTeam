@@ -64,8 +64,6 @@ HRESULT CUI_Manager::Create_UI()
 	pDesc.eLevel = LEVEL_STATIC;
 	m_mapUIGroup.emplace("HUD_State", dynamic_cast<CUIGroup_State*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_State"), &pDesc)));
 
-	// 여기서 안 들어감 ^^^
-
 	// WeaponSlot
 	m_mapUIGroup.emplace("HUD_WeaponSlot", dynamic_cast<CUIGroup_WeaponSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_WeaponSlot"), &pDesc)));
 

@@ -7,9 +7,11 @@ BEGIN(Client)
 class CUI_FadeInOut final : public CUI
 {
 public:
+	enum FADE_TYPE { TYPE_ALPHA, TYPE_DISSOLVE, TYPE_END };
 	typedef struct UI_FadeInOut_Desc : public UI_DESC
 	{
-		_bool		isFadeIn = true;
+		_bool		isFadeIn;
+		FADE_TYPE	eFadeType;
 	}UI_FADEINOUT_DESC;
 
 private:
@@ -26,9 +28,11 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool			m_isFadeIn = { true };
-	_bool			m_isEnd = { false };
+	// 여기서 디졸브일지 알파블렌딩일지 선택해서 적용?
+	_bool			m_isFadeIn = { false };
 	_float			m_fAlphaTimer = { 0.f };
+
+	FADE_TYPE		m_eFadeType = { TYPE_END };
 
 private:
 	HRESULT Add_Components();

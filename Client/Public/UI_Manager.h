@@ -19,7 +19,7 @@ private:
 	virtual ~CUI_Manager() = default;
 
 public:
-	HRESULT		Initialize();
+	HRESULT				Initialize();
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
 public:

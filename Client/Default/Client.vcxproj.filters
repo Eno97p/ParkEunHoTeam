@@ -699,14 +699,14 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Active_Element.h" />
-    <ClInclude Include="..\Public\UI_FadeInOut.h">
-      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Weapon_Ghost.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon_Homonculus.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_FadeInOut.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1043,14 +1043,14 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp" />
-    <ClCompile Include="..\Private\UI_FadeInOut.cpp">
-      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Weapon_Ghost.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_FadeInOut.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -150,6 +150,15 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Particle_Trail.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_FadeInOut.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Ghost.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Homonculus.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Legionnaire.cpp"
 
 

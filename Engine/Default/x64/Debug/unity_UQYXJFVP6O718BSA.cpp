@@ -149,6 +149,9 @@
 #include "C:\3D_TeamProj\Engine\Private\PhysXComponent_static.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\Private\PhysXComponent_Vehicle.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\Picking.cpp"
 
 

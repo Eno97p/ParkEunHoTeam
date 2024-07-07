@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Homonculus.h"
+#include "Weapon.h"
 
 CBody_Homonculus::CBody_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -26,13 +27,21 @@ HRESULT CBody_Homonculus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(11, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(9, true));
 
 	return S_OK;
 }
 
 void CBody_Homonculus::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 0.5f;
+		break;
+	default:
+		break;
+	}
 }
 
 void CBody_Homonculus::Tick(_float fTimeDelta)
@@ -47,6 +56,10 @@ void CBody_Homonculus::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+	if (m_isAnimFinished)
+	{
+		m_fDamageTiming = 0.f;
+	}
 }
 
 HRESULT CBody_Homonculus::Render()
@@ -68,18 +81,13 @@ HRESULT CBody_Homonculus::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
 
-		if (i == 0)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;*/
-		}
-		else if (i == 1)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
-				return E_FAIL;*/
-		}
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
+			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(7);
 
 		m_pModelCom->Render(i);
 	}
@@ -109,10 +117,10 @@ HRESULT CBody_Homonculus::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Distortion"),
-	//	TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -125,19 +133,30 @@ HRESULT CBody_Homonculus::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 {
-	CModel::ANIMATION_DESC		AnimDesc{ 11, true };
+	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
+	m_pWeapon->Set_Active(false);
 	if (*m_pState == CHomonculus::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 11;
+		AnimDesc.iAnimIndex = 10;
+	}
+	else if (*m_pState == CHomonculus::STATE_EXPLOSION)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
+		fAnimSpeed = 0.3f;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEAD)
 	{
@@ -147,63 +166,77 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	else if (*m_pState == CHomonculus::STATE_HIT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 10;
+		AnimDesc.iAnimIndex = 9;
+	}
+	else if (*m_pState == CHomonculus::STATE_PARRIED)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 9;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_1)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 0;
+		AnimDesc.iAnimIndex = 17;
+		fAnimSpeed = 0.7f;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_2)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 2;
+		AnimDesc.iAnimIndex = 18;
+		m_pWeapon->Set_Active();
+		fAnimSpeed = 0.7f;
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_3)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 1;
+		AnimDesc.iAnimIndex = 19;
+		fAnimSpeed = 0.7f;
 	}
 	else if (*m_pState == CHomonculus::STATE_DOWNATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
+		fAnimSpeed = 0.5f;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 1.f && m_fDamageTiming < 1.3f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
 	else if (*m_pState == CHomonculus::STATE_FULLATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 4;
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 1.5f)
+		{
+			m_pWeapon->Set_Active();
+		}
 	}
-	else if (*m_pState == CHomonculus::STATE_GO)
+	else if (*m_pState == CHomonculus::STATE_MOVE)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
 	}
 	else if (*m_pState == CHomonculus::STATE_LEFT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 13;
 	}
 	else if (*m_pState == CHomonculus::STATE_RIGHT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 14;
-	}
-	else if (*m_pState == CHomonculus::STATE_PARRY)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 7;
-	}
-	else if (*m_pState == CHomonculus::STATE_WAKEUP)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 6;
 	}
 
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = false;
+	_bool isLerp = true;
+	if (AnimDesc.iAnimIndex == 18 || AnimDesc.iAnimIndex == 19)
+	{
+		isLerp = false;
+	}
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 }
 
@@ -236,9 +269,6 @@ CGameObject* CBody_Homonculus::Clone(void* pArg)
 void CBody_Homonculus::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pTextureCom);
 }

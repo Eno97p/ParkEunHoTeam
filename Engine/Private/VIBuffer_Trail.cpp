@@ -7,14 +7,6 @@ CVIBuffer_Trail::CVIBuffer_Trail(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 CVIBuffer_Trail::CVIBuffer_Trail(const CVIBuffer_Trail& rhs)
 	: CVIBuffer{ rhs }
-	 // m_iNumInstance{ rhs.m_iNumInstance }
-	// m_iInstanceStride{ rhs.m_iInstanceStride }
-	// m_iIndexCountPerInstance{ rhs.m_iIndexCountPerInstance }
-	// m_InstanceBufferDesc{ rhs.m_InstanceBufferDesc }
-	// m_pSpeeds{ rhs.m_pSpeeds }
-	// m_pSize{rhs.m_pSize }
-	// m_pOriginalSize{rhs.m_pOriginalSize }
-	// m_pPivotPos{rhs.m_pPivotPos }
 {
 }
 
@@ -149,7 +141,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 		return E_FAIL;
 	Safe_Delete_Array(pInstanceVertices);
 
-	m_bIsLoop = m_TrailDescription.IsLoop;
+
 
 #pragma endregion
 	return S_OK;
@@ -190,7 +182,7 @@ HRESULT CVIBuffer_Trail::Render()
 void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 {
 	//생성 시점을 나눠서 잡아줘야함
-
+	Tick();
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
@@ -199,58 +191,45 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 	{
 		pVertices[i].vLifeTime.y += fDelta;
 		m_pSpeeds[i] += fDelta;
-		_vector vRight = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_11, m_TrailDescription.ParentMat->_12, m_TrailDescription.ParentMat->_13, 0.f));
-		_vector vUp = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_21, m_TrailDescription.ParentMat->_22, m_TrailDescription.ParentMat->_23, 0.f));
-		_vector vLook = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_31, m_TrailDescription.ParentMat->_32, m_TrailDescription.ParentMat->_33, 0.f));
+
 		if (i > 0)  // 첫 번째 인스턴스가 아니면 이전 인스턴스의 위치를 따라감
 		{
 			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&pVertices[i - 1].vTranslation) - vPos;
-			vPos += vDir * m_pSpeeds[i] * fDelta;
+			_vector Up = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vUp), XMLoadFloat4(&pVertices[i - 1].vUp), m_pSpeeds[i] * fDelta));
+			_vector Right = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vRight), XMLoadFloat4(&pVertices[i - 1].vRight), m_pSpeeds[i] * fDelta));
+			_vector Look = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vLook), XMLoadFloat4(&pVertices[i - 1].vLook), m_pSpeeds[i] * fDelta));
+
+			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
+
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
-
-			_vector vPos = XMVectorSet(m_TrailDescription.ParentMat->_41,
-				m_TrailDescription.ParentMat->_42,
-				m_TrailDescription.ParentMat->_43, 1.f);
+			_vector vRight = XMVector4Normalize(XMVectorSet(m_UsingMat._11, m_UsingMat._12, m_UsingMat._13, 0.f));
+			_vector vUp = XMVector4Normalize(XMVectorSet(m_UsingMat._21, m_UsingMat._22, m_UsingMat._23, 0.f));
+			_vector vLook = XMVector4Normalize(XMVectorSet(m_UsingMat._31, m_UsingMat._32, m_UsingMat._33, 0.f));
+			_vector vPos = XMVectorSet(m_UsingMat._41,
+				m_UsingMat._42,
+				m_UsingMat._43, 1.f);
 			vPos += vRight * m_pPivotPos.x;
 			vPos += vUp * m_pPivotPos.y;
 			vPos += vLook * m_pPivotPos.z;
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+			XMStoreFloat4(&pVertices[i].vRight, vRight* m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, vRight* m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, vRight* m_pSize[i].z);
 		}
-
-		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
-		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-		XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 
 
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{
-			if (m_bIsLoop == true)
-			{
-				_vector vPos = XMVectorSet(m_TrailDescription.ParentMat->_41,
-					m_TrailDescription.ParentMat->_42,
-					m_TrailDescription.ParentMat->_43, 1.f);
-				vPos += vRight * m_pPivotPos.x;
-				vPos += vUp * m_pPivotPos.y;
-				vPos += vLook * m_pPivotPos.z;
-
-				XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-
-				pVertices[i].vRight.x = m_pOriginalSize[i].x;
-				pVertices[i].vUp.y = m_pOriginalSize[i].y;
-				pVertices[i].vLook.z = m_pOriginalSize[i].z;
-				m_pSize[i] = m_pOriginalSize[i];
-				m_pSpeeds[i] = m_pOriginalSpeeds[i];
-			}
-			else
-			{
-				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
-			}
-		
+	
+			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			
 		}
 
 		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
@@ -260,7 +239,7 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 	}
 
 	m_pContext->Unmap(m_pVBInstance, 0);
-	if (!m_bIsLoop && allInstancesDead)
+	if (allInstancesDead)
 		m_bInstanceDead = true;
 	else
 		m_bInstanceDead = false;
@@ -268,43 +247,72 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 
 void CVIBuffer_Trail::EternalTrail(_float fDelta)
 {
+	Tick();
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		_vector vRight = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_11, m_TrailDescription.ParentMat->_12, m_TrailDescription.ParentMat->_13, 0.f));
-		_vector vUp = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_21, m_TrailDescription.ParentMat->_22, m_TrailDescription.ParentMat->_23, 0.f));
-		_vector vLook = XMVector4Normalize(XMVectorSet(m_TrailDescription.ParentMat->_31, m_TrailDescription.ParentMat->_32, m_TrailDescription.ParentMat->_33, 0.f));
+		
 		if (i > 0)  // 첫 번째 인스턴스가 아니면 이전 인스턴스의 위치를 따라감
 		{
 			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-			_vector vDir = XMLoadFloat4(&pVertices[i - 1].vTranslation) - vPos;
-			vPos += vDir * m_pSpeeds[i] * fDelta;
+			_vector Up = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vUp), XMLoadFloat4(&pVertices[i - 1].vUp), m_pSpeeds[i] * fDelta));
+			_vector Right = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vRight), XMLoadFloat4(&pVertices[i - 1].vRight), m_pSpeeds[i] * fDelta));
+			_vector Look = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vLook), XMLoadFloat4(&pVertices[i - 1].vLook), m_pSpeeds[i] * fDelta));
 
+			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
+			
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 
 			float ratio = static_cast<float>(i) / static_cast<float>(m_iNumInstance - 1);
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x * ratio;
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
+			_vector vRight = XMVector4Normalize(XMVectorSet(m_UsingMat._11, m_UsingMat._12, m_UsingMat._13, 0.f));
+			_vector vUp = XMVector4Normalize(XMVectorSet(m_UsingMat._21, m_UsingMat._22, m_UsingMat._23, 0.f));
+			_vector vLook = XMVector4Normalize(XMVectorSet(m_UsingMat._31, m_UsingMat._32, m_UsingMat._33, 0.f));
 			pVertices[i].vLifeTime.y = 0.f;
-			_vector vPos = XMVectorSet(m_TrailDescription.ParentMat->_41,
-				m_TrailDescription.ParentMat->_42,
-				m_TrailDescription.ParentMat->_43, 1.f);
+			_vector vPos = XMVectorSet(m_UsingMat._41,
+				m_UsingMat._42,
+				m_UsingMat._43, 1.f);
 			vPos += vRight * m_pPivotPos.x;
 			vPos += vUp * m_pPivotPos.y;
 			vPos += vLook * m_pPivotPos.z;
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+			XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 		}
-		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
-		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-		XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
+
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
+
+
+XMVECTOR CVIBuffer_Trail::CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t)
+{
+	float t2 = t * t;
+	float t3 = t2 * t;
+
+	XMVECTOR result = (2.0f * P1) +
+		(-P0 + P2) * t +
+		(2.0f * P0 - 5.0f * P1 + 4.0f * P2 - P3) * t2 +
+		(-P0 + 3.0f * P1 - 3.0f * P2 + P3) * t3;
+
+	return result * 0.5f;
+}
+
+void CVIBuffer_Trail::Tick()
+{
+	m_UsingMat = *m_TrailDescription.ParentMat;
 }
 
 CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

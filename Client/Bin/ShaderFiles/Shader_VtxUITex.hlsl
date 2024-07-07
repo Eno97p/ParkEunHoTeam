@@ -92,8 +92,15 @@ PS_OUT PS_HUD(PS_IN In)
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	if (Out.vColor.a < 0.1f)
 		discard;
-	if (In.vTexcoord.x > g_PastRatio * 0.8f + 0.1f) discard;
-	else if (In.vTexcoord.x > g_CurrentRatio * 0.8f + 0.1f) Out.vColor = float4(1.f, 1.f, 0.5f, Out.vColor.a);
+	if (g_PastRatio > g_CurrentRatio)
+	{
+		if (In.vTexcoord.x > g_PastRatio * 0.8f + 0.1f) discard;
+		else if (In.vTexcoord.x > g_CurrentRatio * 0.8f + 0.1f) Out.vColor = float4(1.f, 1.f, 0.5f, Out.vColor.a);
+	}
+	else
+	{
+		if (In.vTexcoord.x > g_PastRatio * 0.8f + 0.1f) discard;
+	}
 
 
 	return Out;

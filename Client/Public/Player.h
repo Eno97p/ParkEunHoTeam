@@ -23,12 +23,15 @@ class CPlayer final : public CLandObject
 #define RUNSPEED 6.f
 #define ROLLSPEED 10.f
 #define ATTACKPOSTDELAY 1.5f
+#define STAMINARECOVERDELAY 1.5f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND, STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,
-		STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, STATE_DASH, STATE_DEAD, STATE_REVIVE, STATE_END
+		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND, 
+		STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,
+		STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, 
+		STATE_COUNTER, STATE_ROLL, STATE_HIT, STATE_DASH, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_END
 	};
 
 private:
@@ -49,10 +52,10 @@ public:
 	HRESULT Add_PartObjects();
 	_uint Get_State() { return m_iState; }
 	CGameObject* Get_Weapon();
-	void PlayerHit(_int iValue);
-	_float Get_HpRatio() { return (_float)m_iCurHp / (_float)m_iMaxHp; }
-	_float Get_StaminaRatio() { return (_float)m_iCurStamina / (_float)m_iMaxStamina; }
-	_float Get_MpRatio() { return (_float)m_iCurMp / (_float)m_iMaxMp; }
+	void PlayerHit(_float iValue);
+	_float Get_HpRatio() { return m_fCurHp / m_fMaxHp; }
+	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
+	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	void Parry_Succeed() { m_bParry = true; m_bParrying = false;}
 
 private:
@@ -73,11 +76,13 @@ private:
 	NodeStates Dash(_float fTimeDelta);
 	NodeStates Jump(_float fTimeDelta);
 	NodeStates Roll(_float fTimeDelta);
+	NodeStates UseItem(_float fTimeDelta);
+	NodeStates Buff(_float fTimeDelta);
 	NodeStates Move(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
-	void Add_Hp(_int iValue);
-	void Add_Stamina(_int iValue);
-	void Add_Mp(_int iValue);
+	void Add_Hp(_float iValue);
+	void Add_Stamina(_float iValue);
+	void Add_Mp(_float iValue);
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
@@ -99,6 +104,7 @@ private:
 	_bool										m_bDisolved_Weapon = false;
 	_bool										m_bDisolved_Yaak = false;
 	_bool										m_bParry = false;
+	_bool										m_bStaminaCanDecrease = true;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
@@ -109,18 +115,20 @@ private:
 	_float										m_fCloneDelay = 0.f;
 	_uint										m_iAttackCount = 1;
 	_bool										m_bCanCombo = false;
+	_float										m_fSlowDelay = 0.f;
+	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
 
 #pragma region 플레이어 스탯
-	_uint m_iMaxHp = 100;
-	_uint m_iCurHp = m_iMaxHp;
+	_float m_fMaxHp = 100.f;
+	_float m_fCurHp = m_fMaxHp;
 
-	_uint m_iMaxStamina = 100;
-	_uint m_iCurStamina = m_iMaxStamina;
+	_float m_fMaxStamina = 100.f;
+	_float m_fCurStamina = m_fMaxStamina;
 
-	_uint m_iMaxMp = 100;
-	_uint m_iCurMp = m_iMaxMp;
+	_float m_fMaxMp = 100.f;
+	_float m_fCurMp = m_fMaxMp;
 
-	_uint m_iMoney = 0;
+	_float m_iMoney = 0;
 #pragma endregion 플레이어 스탯
 
 

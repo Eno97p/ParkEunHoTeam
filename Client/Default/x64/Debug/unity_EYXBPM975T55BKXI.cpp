@@ -6,10 +6,19 @@
 #include "C:\3D_TeamProj\Client\private\BackGround.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Body_Ghost.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Body_Homonculus.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Body_Juggulus.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Body_Legionnaire.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Body_LGGun.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Body_Player.cpp"
@@ -27,6 +36,9 @@
 #include "C:\3D_TeamProj\Client\Private\Cendres.cpp"
 
 
+#include "C:\3D_TeamProj\Client\private\CHoverboard.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\CImGuiMgr.cpp"
 
 
@@ -42,13 +54,19 @@
 #include "C:\3D_TeamProj\Client\Private\DurgaSword.cpp"
 
 
-#include "C:\3D_TeamProj\Client\Private\Explosion.cpp"
+#include "C:\3D_TeamProj\Client\Private\EffectManager.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\ForkLift.cpp"
 
 
 #include "C:\3D_TeamProj\Client\private\FreeCamera.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Ghost.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Homonculus.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\IceBlade.cpp"
@@ -93,6 +111,9 @@
 #include "C:\3D_TeamProj\Client\Private\Legionnaire.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Legionnaire_Gun.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Level_GamePlay.cpp"
 
 
@@ -102,6 +123,9 @@
 #include "C:\3D_TeamProj\Client\private\Level_Logo.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\LGGun_Weapon.cpp"
+
+
 #include "C:\3D_TeamProj\Client\private\Loader.cpp"
 
 
@@ -109,6 +133,27 @@
 
 
 #include "C:\3D_TeamProj\Client\private\Mantari.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\ParticleMesh.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle_Point.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle_Rect.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle_Trail.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Weapon_Ghost.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Weapon_Homonculus.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Weapon_Legionnaire.cpp"
@@ -124,12 +169,6 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\NaruehSword.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\Particle_Point.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\Particle_Rect.cpp"
 
 
 #include "C:\3D_TeamProj\Client\private\PartObject.cpp"

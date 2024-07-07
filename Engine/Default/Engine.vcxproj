@@ -203,6 +203,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CHitReport.cpp" />
     <ClCompile Include="..\Private\CInverter.cpp" />
     <ClCompile Include="..\Private\CNode.cpp" />
+    <ClCompile Include="..\Private\Components_Vehicle.cpp" />
     <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -233,6 +234,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\Model.cpp" />
     <ClCompile Include="..\private\Navigation.cpp" />
     <ClCompile Include="..\private\Object_Manager.cpp" />
+    <ClCompile Include="..\private\PhysXActorVehicle.cpp" />
     <ClCompile Include="..\Private\PhysXComponent.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_Character.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_static.cpp" />
@@ -250,6 +252,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\private\Transform.cpp" />
     <ClCompile Include="..\private\UISorter.cpp" />
+    <ClCompile Include="..\Private\VehicleDefault.cpp" />
     <ClCompile Include="..\private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cell.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp" />
@@ -283,6 +286,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\CNode.h" />
     <ClInclude Include="..\public\Collider.h" />
     <ClInclude Include="..\public\Component.h" />
+    <ClInclude Include="..\Public\Components_Vehicle.h" />
     <ClInclude Include="..\public\Component_Manager.h" />
     <ClInclude Include="..\Public\ComputeShader_Buffer.h" />
     <ClInclude Include="..\public\ComputeShader_Texture.h" />
@@ -317,6 +321,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\Navigation.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
     <ClInclude Include="..\public\OctTree.h" />
+    <ClInclude Include="..\public\PhysXActorVehicle.h" />
     <ClInclude Include="..\Public\PhysXComponent.h" />
     <ClInclude Include="..\Public\PhysXComponent_Character.h" />
     <ClInclude Include="..\Public\PhysXComponent_static.h" />
@@ -334,6 +339,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\public\Transform.h" />
     <ClInclude Include="..\public\UISorter.h" />
+    <ClInclude Include="..\Public\VehicleDefault.h" />
     <ClInclude Include="..\public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Cell.h" />
     <ClInclude Include="..\Public\VIBuffer_Cube.h" />

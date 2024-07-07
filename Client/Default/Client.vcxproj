@@ -231,7 +231,8 @@
     <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h" />
-    <ClInclude Include="..\Public\UI_FadeInOut.h" />
+    <ClInclude Include="..\Public\Weapon_Ghost.h" />
+    <ClInclude Include="..\Public\Weapon_Homonculus.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h" />
     <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
@@ -346,7 +347,8 @@
     <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp" />
-    <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
+    <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
+    <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />
     <ClCompile Include="..\Private\Weapon_Legionnaire.cpp" />
     <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />

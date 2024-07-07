@@ -18,8 +18,13 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
+	void Set_Ratio(_float fRatio) { m_fCurrentRatio = fRatio; }
 
 private:
+	class CPlayer* m_pPlayer = { nullptr };
+	_float m_fCurrentRatio = 1.f;
+	_float m_fPastRatio = 1.f;
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

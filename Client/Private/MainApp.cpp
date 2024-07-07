@@ -72,6 +72,9 @@
 
 #pragma endregion UI
 
+#pragma region EFFECT
+#include "EffectManager.h"
+#pragma endregion EFFECT
 
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
@@ -402,30 +405,22 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 #pragma endregion SHADER
 
 #pragma region TEXTURE
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 16))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Trail/T_SwordTrail01.png"), 1))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail_Rotated"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Trail/SwordTrail_Rotated.png"), 1))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve18"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 18))))
 		return E_FAIL;
 #pragma endregion TEXTURE
 
 
 #pragma region Component
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
 		CVIBuffer_Instance_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Trail"),
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Component
@@ -448,8 +443,8 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 #pragma endregion MODEL
 
-
-
+	//if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -949,10 +944,12 @@ void CMainApp::Free()
 
 #ifdef _DEBUG
 
+
 	m_pImGuiMgr->DestroyInstance();
 	CImGuiMgr::DestroyInstance();
 #endif // _DEBUG
 
+	EFFECTMGR->DestroyInstance();
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Release_Engine();
 

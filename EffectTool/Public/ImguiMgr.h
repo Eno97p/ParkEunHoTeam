@@ -45,6 +45,11 @@ private:	//for FileSystem
 	bool IsDDSFile(const std::string& filename) {
 		return filename.size() >= 4 && filename.substr(filename.size() - 4) == ".dds";
 	}
+	bool ISTex(const std::string& filename) {
+		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".jpg") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".JPG") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".bmp");
+	}
 
 
 	wstring utf8_to_wstring(const std::string& str);

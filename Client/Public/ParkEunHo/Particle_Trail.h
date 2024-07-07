@@ -27,6 +27,8 @@ public:
 		TRAILFUNCTYPE						eFuncType = TRAIL_EXTINCT;
 		TRAIL_USAGE							eUsage = USAGE_SWORD;
 		_int								DesolveNum = 0;
+		wstring								Texture = TEXT("");
+		wstring								TexturePath = TEXT("");
 	};
 
 private:
@@ -42,6 +44,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
+
 
 private:
 	CShader*						m_pShaderCom = { nullptr };

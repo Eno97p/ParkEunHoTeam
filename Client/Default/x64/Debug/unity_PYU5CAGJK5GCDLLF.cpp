@@ -6,7 +6,19 @@
 #include "C:\NewRepository\Client\private\BackGround.cpp"
 
 
+#include "C:\NewRepository\Client\Private\Body_Ghost.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Body_Homonculus.cpp"
+
+
 #include "C:\NewRepository\Client\Private\Body_Juggulus.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Body_Legionnaire.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Body_LGGun.cpp"
 
 
 #include "C:\NewRepository\Client\Private\Body_Player.cpp"
@@ -18,7 +30,13 @@
 #include "C:\NewRepository\Client\Private\Catharsis.cpp"
 
 
+#include "C:\NewRepository\Client\Private\Body_Mantari.cpp"
+
+
 #include "C:\NewRepository\Client\Private\Cendres.cpp"
+
+
+#include "C:\NewRepository\Client\private\CHoverboard.cpp"
 
 
 #include "C:\NewRepository\Client\Private\CImGuiMgr.cpp"
@@ -36,13 +54,19 @@
 #include "C:\NewRepository\Client\Private\DurgaSword.cpp"
 
 
-#include "C:\NewRepository\Client\Private\Explosion.cpp"
+#include "C:\NewRepository\Client\Private\EffectManager.cpp"
 
 
 #include "C:\NewRepository\Client\Private\ForkLift.cpp"
 
 
 #include "C:\NewRepository\Client\private\FreeCamera.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Ghost.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Homonculus.cpp"
 
 
 #include "C:\NewRepository\Client\Private\IceBlade.cpp"
@@ -75,7 +99,19 @@
 #include "C:\NewRepository\Client\Private\Juggulus_HandOne.cpp"
 
 
+#include "C:\NewRepository\Client\Private\Juggulus_HandThree.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Juggulus_HandTwo.cpp"
+
+
 #include "C:\NewRepository\Client\private\LandObject.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Legionnaire.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Legionnaire_Gun.cpp"
 
 
 #include "C:\NewRepository\Client\Private\Level_GamePlay.cpp"
@@ -87,10 +123,37 @@
 #include "C:\NewRepository\Client\private\Level_Logo.cpp"
 
 
+#include "C:\NewRepository\Client\Private\LGGun_Weapon.cpp"
+
+
 #include "C:\NewRepository\Client\private\Loader.cpp"
 
 
 #include "C:\NewRepository\Client\private\MainApp.cpp"
+
+
+#include "C:\NewRepository\Client\private\Mantari.cpp"
+
+
+#include "C:\NewRepository\Client\Private\ParkEunHo\Particle.cpp"
+
+
+#include "C:\NewRepository\Client\Private\ParkEunHo\ParticleMesh.cpp"
+
+
+#include "C:\NewRepository\Client\Private\ParkEunHo\Particle_Point.cpp"
+
+
+#include "C:\NewRepository\Client\Private\ParkEunHo\Particle_Rect.cpp"
+
+
+#include "C:\NewRepository\Client\Private\ParkEunHo\Particle_Trail.cpp"
+
+
+#include "C:\NewRepository\Client\Private\Weapon_Legionnaire.cpp"
+
+
+#include "C:\NewRepository\Client\private\Weapon_Mantari.cpp"
 
 
 #include "C:\NewRepository\Client\Private\Map_Element.cpp"
@@ -100,12 +163,6 @@
 
 
 #include "C:\NewRepository\Client\Private\NaruehSword.cpp"
-
-
-#include "C:\NewRepository\Client\Private\Particle_Point.cpp"
-
-
-#include "C:\NewRepository\Client\Private\Particle_Rect.cpp"
 
 
 #include "C:\NewRepository\Client\private\PartObject.cpp"
@@ -130,6 +187,9 @@
 
 
 #include "C:\NewRepository\Client\private\Terrain.cpp"
+
+
+#include "C:\NewRepository\Client\Private\TutorialMapBridge.cpp"
 
 
 #include "C:\NewRepository\Client\Private\UI.cpp"

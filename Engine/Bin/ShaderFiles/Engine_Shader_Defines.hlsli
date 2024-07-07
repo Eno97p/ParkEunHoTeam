@@ -85,3 +85,17 @@ BlendState		BS_Blend
 	DestBlend = One;
 	BlendOp = Add;
 };
+
+
+float4 CatmullRom(float4 P0, float4 P1, float4 P2, float4 P3, float t)
+{
+    float t2 = t * t;
+    float t3 = t2 * t;
+
+    float4 result = (2.0f * P1) +
+                    (-P0 + P2) * t +
+                    (2.0f * P0 - 5.0f * P1 + 4.0f * P2 - P3) * t2 +
+                    (-P0 + 3.0f * P1 - 3.0f * P2 + P3) * t3;
+
+    return result * 0.5f;
+}

@@ -21,6 +21,7 @@ public:
 	typedef struct PARTICLEDESC
 	{
 		CVIBuffer_Instance::INSTANCE_DESC	InstanceDesc;
+		_bool								IsBloom = false;
 		_bool								IsBlur = false;
 		_bool								Desolve = false;
 		_bool								IsColor = false;

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Weapon.h"
 
+
 CBody_Player::CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {

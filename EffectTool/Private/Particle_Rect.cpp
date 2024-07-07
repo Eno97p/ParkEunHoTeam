@@ -98,10 +98,11 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 
 void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
+	m_pTransformCom->BillBoard();
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
-	if(OwnDesc->SuperDesc.IsBlur)
+	if(OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 

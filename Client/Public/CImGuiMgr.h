@@ -60,6 +60,10 @@ private:
 public:
 	//static CImGui* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
+
+
+
+	static _bool FrameLimit;
 };
 
 END

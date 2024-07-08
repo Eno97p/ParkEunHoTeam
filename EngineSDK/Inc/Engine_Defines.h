@@ -135,5 +135,5 @@ namespace Engine
 using namespace Engine;
 using namespace std;
 
-//내각 직접 만든 Vehicle 네임스페이스
+// 사용자 정의 Vehicle 네임스페이스
 using namespace Vehicle;

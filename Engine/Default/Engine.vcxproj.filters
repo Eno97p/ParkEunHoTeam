@@ -232,6 +232,12 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components">
       <UniqueIdentifier>{eb0ddf12-0036-467c-88ec-c03b2f62e3ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\997. Profiler">
+      <UniqueIdentifier>{941d6ede-5e76-4d4e-9ab3-f8b60e59341c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\997. Profiler\ProfileScope">
+      <UniqueIdentifier>{c3ca219b-9671-4a90-9e1d-27120fd31469}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -486,6 +492,12 @@
     <ClInclude Include="..\Public\Components_Vehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CProfiler.h">
+      <Filter>01.Utility\997. Profiler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CProfileScope.h">
+      <Filter>01.Utility\997. Profiler\ProfileScope</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -724,6 +736,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Components_Vehicle.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CProfiler.cpp">
+      <Filter>01.Utility\997. Profiler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CProfileScope.cpp">
+      <Filter>01.Utility\997. Profiler\ProfileScope</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

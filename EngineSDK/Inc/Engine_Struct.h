@@ -199,6 +199,7 @@ namespace Engine
 
 
 
+
 	typedef struct ENGINE_DLL tEvent //이벤트 매니저 파라미터
 	{
 		eEVENT_TYPE		eEven;

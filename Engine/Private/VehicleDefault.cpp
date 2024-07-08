@@ -54,7 +54,7 @@ bool CVehicleDefault::update(const PxReal dt, const PxVehicleSimulationContext& 
 		PxTransform pose = endState.finalPose;
 		PxVec3 velocity = endState.finalVelocity;
 
-		if (pose.isValid())
+		//if (pose.isValid())
 		{
 			mActor->setGlobalPose(pose);
 			mActor->setLinearVelocity(velocity);

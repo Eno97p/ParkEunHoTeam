@@ -121,7 +121,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Wanda
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Wanda"), // "../../Client/Bin/Resources/Models/Fiona/Fiona.fbx"
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Fiona/Fiona.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Wander/Wander.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	// º´ÇÕ¿ë

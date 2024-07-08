@@ -19,6 +19,12 @@ public:
 	{
 		TYPE		eType = { TYPE_END };
 	}COLLIDER_DESC;
+	typedef struct  Collider_Editable_Desc : CComponent::ComponentDesc
+	{
+		//수정 가능하게 할 항목만 넣기
+		_bool bIsOnDebugRender = true;
+	}Collider_Editable_Desc;
+
 
 private:
 	CCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -38,6 +44,7 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT Render();
+	virtual Collider_Editable_Desc* GetData() override { return &m_OutDesc; }
 #endif
 
 private:
@@ -50,6 +57,7 @@ private:
 	PrimitiveBatch<VertexPositionColor>*			m_pBatch = { nullptr };
 	BasicEffect*									m_pShader = { nullptr };
 	ID3D11InputLayout*								m_pInputLayout = { nullptr };
+	Collider_Editable_Desc							m_OutDesc;
 #endif
 
 public:

@@ -41,6 +41,10 @@ void CUI_QuickTop::Priority_Tick(_float fTimeDelta)
 
 void CUI_QuickTop::Tick(_float fTimeDelta)
 {
+	// 퀵슬롯의 Render가 true가 되었을 때 애니메이션 시작 > 애니메이션이 종료되기 전까지 애니메이션 실행
+
+	if(!m_isRenderAnimFinished) // 애니메이션이 종료되지 않았다면 애니메이션 함수를 계속 호출
+		Render_Animation(fTimeDelta);
 }
 
 void CUI_QuickTop::Late_Tick(_float fTimeDelta)
@@ -53,7 +57,7 @@ HRESULT CUI_QuickTop::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -91,6 +95,12 @@ HRESULT CUI_QuickTop::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOn, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

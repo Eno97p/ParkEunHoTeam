@@ -76,10 +76,16 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
 	, m_pGameInstance{ CGameInstance::GetInstance() }
+	, m_iFinishedThreadCount{ 0 }
+
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
+	for (int i = 0; i < MAX_THREAD; ++i)
+		m_bIsFinish[i] = false;
+
 }
 
 _uint APIENTRY Loading_Main(void* pArg)
@@ -132,9 +138,10 @@ _uint APIENTRY Loading_ShaderData(void* pArg)
 
 HRESULT CLoader::Initialize(LEVEL eNextLevel)
 {
+
 	m_eNextLevel = eNextLevel;
 
-	for (_uint i = 0; i < MAX_THREAD; ++i)
+	for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
 		InitializeCriticalSection(&m_Critical_Section[i]);
 
 	m_hThread[0] = (HANDLE)_beginthreadex(nullptr, 0, Loading_Main, this, 0, nullptr);
@@ -175,6 +182,8 @@ HRESULT CLoader::Loading()
 
 	if (FAILED(hr))
 		return E_FAIL;
+
+	Finish_Thread(0);
 
 	return S_OK;
 }
@@ -231,7 +240,7 @@ HRESULT CLoader::Loading_Map()
 
 
 
-
+	Finish_Thread(1);
 	return S_OK;
 }
 
@@ -272,10 +281,11 @@ HRESULT CLoader::Loading_Shader()
 	if (FAILED(hr))
 		return E_FAIL;
 
-
+	Finish_Thread(2);
 	return S_OK;
 
 }
+
 
 
 
@@ -295,7 +305,6 @@ HRESULT CLoader::Loading_For_LogoLevel()
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
-	m_isFinished = true;
 
 	return S_OK;
 }
@@ -948,7 +957,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
-	m_isFinished = true;
 
 	return S_OK;
 }

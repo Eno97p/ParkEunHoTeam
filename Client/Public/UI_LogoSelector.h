@@ -34,6 +34,7 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	_tchar*	Setting_SelectorText();
+	HRESULT Click_Event();
 
 public:
 	static CUI_LogoSelector*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

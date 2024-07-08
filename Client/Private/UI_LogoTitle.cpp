@@ -59,6 +59,9 @@ HRESULT CUI_LogoTitle::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), TEXT("TALE OF THE FORGOTTEN KING"), _float2((g_iWinSizeX >> 1) - 130.f, (g_iWinSizeY >> 1) + 5.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -1,6 +1,8 @@
 #include "UI_LogoSelector.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
+#include "Level_Loading.h"
 #include "CMouse.h"
 
 CUI_LogoSelector::CUI_LogoSelector(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -44,14 +46,15 @@ void CUI_LogoSelector::Tick(_float fTimeDelta)
     if (!m_isRenderAnimFinished)
         Render_Animation(fTimeDelta);
 
-    //__super::Tick(fTimeDelta);
-
     m_CollisionRect = { LONG(m_fX - m_fSizeX * 0.3f),
                     LONG(m_fY - m_fSizeY * 0.1f),
                     LONG(m_fX + m_fSizeX * 0.3f),
                     LONG(m_fY + m_fSizeY * 0.1f) };
 
     m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+    if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect)
+        Click_Event();
 }
 
 void CUI_LogoSelector::Late_Tick(_float fTimeDelta)
@@ -67,11 +70,19 @@ HRESULT CUI_LogoSelector::Render()
     m_pShaderCom->Begin(3);
     m_pVIBufferCom->Bind_Buffers();
 
-    if(m_isSelect)
+    _vector vColor = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+    if (m_isSelect)
+    {
         m_pVIBufferCom->Render();
+        vColor = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+    }
+    else
+    {
+        vColor = XMVectorSet(0.5f, 0.5f, 0.5f, 1.f);
+    }
 
-
-    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), Setting_SelectorText(), _float2(m_fX, m_fY), XMVectorSet(0.f, 0.f, 0.f, 1.f))))
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), Setting_SelectorText(), _float2(m_fX - 45.f, m_fY - 10.f), vColor)))
         return E_FAIL;
 
     return S_OK;
@@ -128,14 +139,48 @@ _tchar* CUI_LogoSelector::Setting_SelectorText()
     case Client::CUI_LogoSelector::SELECTOR_NEWGAME:
         return TEXT("NEW GAME");
     case Client::CUI_LogoSelector::SELECTOR_SETTINGS:
-        return TEXT("SETTINGS");
+        return TEXT("  SETTINGS");
     case Client::CUI_LogoSelector::SELECTOR_CREDITS:
-        return TEXT("CREDITS");
+        return TEXT("   CREDITS");
     case Client::CUI_LogoSelector::SELECTOR_LEAVE:
-        return TEXT("LEAVE");
+        return TEXT("     LEAVE");
     default:
         return TEXT("");
     }
+}
+
+HRESULT CUI_LogoSelector::Click_Event()
+{
+    switch (m_eSelectorType)
+    {
+    case Client::CUI_LogoSelector::SELECTOR_CONTINUE: 
+    {
+        CUI_Manager::GetInstance()->Render_Logo(false);
+
+        if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+            return E_FAIL;
+
+        break;
+    }
+    case Client::CUI_LogoSelector::SELECTOR_NEWGAME:
+    {
+        CUI_Manager::GetInstance()->Render_Logo(false);
+
+        if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+            return E_FAIL;
+
+        break;
+    }
+    case Client::CUI_LogoSelector::SELECTOR_SETTINGS:
+        break;
+    case Client::CUI_LogoSelector::SELECTOR_CREDITS:
+        break;
+    case Client::CUI_LogoSelector::SELECTOR_LEAVE:
+        break;
+    default:
+        break;
+    }
+    return S_OK;
 }
 
 CUI_LogoSelector* CUI_LogoSelector::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

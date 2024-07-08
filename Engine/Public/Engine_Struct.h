@@ -98,8 +98,6 @@ namespace Engine
 
 
 
-
-
 	typedef struct ENGINE_DLL VTXPOINT
 	{
 		XMFLOAT3		vPosition;
@@ -195,6 +193,14 @@ namespace Engine
 		static const unsigned int		iNumElements = { 8 };
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	}VTXINSTANCE_MESH;
+
+	typedef struct ENGINE_DLL VTXTRAIL
+	{
+		XMFLOAT3		vPosition[4];
+
+		static const unsigned int		iNumElements = { 1 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[1];
+	}VTXPOINT;
 
 
 

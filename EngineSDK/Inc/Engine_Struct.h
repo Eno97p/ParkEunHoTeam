@@ -196,6 +196,13 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	}VTXINSTANCE_MESH;
 
+	typedef struct ENGINE_DLL VTXTRAIL
+	{
+		static const unsigned int		iNumElements = { 7 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[7];
+	};
+
+
 
 
 

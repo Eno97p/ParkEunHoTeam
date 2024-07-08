@@ -426,6 +426,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             //STAGE 1
             "WellArea", "MergedHouses23", "MergedHouses65", "AckbarCastle",
             "AqueducTower", "BigStairSides", "WoodStair", "_WoodPlatform", "WoodPlank", "RichStairs_Rambarde", "BigRocks", "BigRocks4",
+            "Rock1",    "Rock2",    "Rock3",    "Rock4",
 
 
             //STAGE 1 DECOS

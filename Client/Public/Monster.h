@@ -34,6 +34,10 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	//FOR LOCKON
+	_vector Get_MonsterPos();
+
 protected:
 	HRESULT Add_BehaviorTree();
 

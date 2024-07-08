@@ -8,6 +8,7 @@
 #include "Body_Player.h"
 #include "Clone.h"
 #include "FreeCamera.h"
+#include "ThirdPersonCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -63,6 +64,7 @@
 #pragma endregion ITEM
 
 #include "Map_Element.h"
+#include "Passive_Element.h"
 #include "Passive_Element.h"
 #include "Active_Element.h"
 #include "TutorialMapBridge.h"
@@ -704,6 +706,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_FreeCamera*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FreeCamera"),
 		CFreeCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ThirdPersonCamera*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
+		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Monster */

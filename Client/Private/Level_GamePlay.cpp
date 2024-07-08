@@ -4,6 +4,7 @@
 #include "UI_Manager.h"
 
 #include "FreeCamera.h"
+#include "ThirdPersonCamera.h"
 #include "Map_Element.h"
 #include "Monster.h"
 
@@ -23,8 +24,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;	
+
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -35,9 +35,16 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
 	
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
 	//m_pUI_Manager->Initialize();
+
+#ifdef _DEBUG
+	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
+#endif
 
 	return S_OK;
 }
@@ -56,7 +63,23 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	}
 
 
+	
+
+
 #ifdef _DEBUG
+	//카메라 전환 ~ 키
+	//카메라 전환 ~ 키
+	//카메라 전환 ~ 키
+	if (m_pGameInstance->Key_Down(DIK_GRAVE))
+	{
+		m_iMainCameraIdx++;
+		if (m_iCamSize <= m_iMainCameraIdx)
+		{
+			m_iMainCameraIdx = 0;
+		}
+		m_pGameInstance->Set_MainCamera(m_iMainCameraIdx);
+	}
+
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
 #endif
 }
@@ -125,8 +148,26 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	CameraDesc.fSpeedPerSec = 20.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);	
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
 		return E_FAIL;
+
+	 CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
+
+	 pTPCDesc.fSensor = 0.1f;
+
+	 pTPCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pTPCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
+	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pTPCDesc.fNear = 0.1f;
+	 pTPCDesc.fFar = 3000.f;
+
+	 pTPCDesc.fSpeedPerSec = 40.f;
+	 pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	 pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
+		 return E_FAIL;
 
 	return S_OK;
 }

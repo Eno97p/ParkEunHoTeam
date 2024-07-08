@@ -1170,8 +1170,8 @@ HRESULT CImguiMgr::ConvertToDDSWithMipmap(const string& inputFilePath, const str
 	DirectX::ScratchImage mipChain;
 	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipChain);
 	if (FAILED(hr)) {
-		MSG_BOX("Failed to generate mipmaps, Proceeding with original image. ");
-		mipChain = std::move(image);
+		MSG_BOX("Failed to generate mipmaps: ");
+		return hr;
 	}
 
 	// 새로운 파일명 생성: 기존 확장자 .png 제거 후 .dds 추가

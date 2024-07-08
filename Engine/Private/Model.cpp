@@ -818,9 +818,7 @@ HRESULT CModel::Load_Model(_fmatrix PreTransformMatrix)
 				{
 					pMt.MaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, inFile);
 					if (nullptr == pMt.MaterialTextures[j])
-					{
 						return E_FAIL;
-					}
 				}
 			}
 			m_Materials.emplace_back(pMt);

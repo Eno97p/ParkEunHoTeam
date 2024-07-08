@@ -98,6 +98,8 @@ namespace Engine
 
 
 
+
+
 	typedef struct ENGINE_DLL VTXPOINT
 	{
 		XMFLOAT3		vPosition;
@@ -194,7 +196,10 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	}VTXINSTANCE_MESH;
 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> parent of 724c360 (2024/07/08 ParkEunHo, DDS Convert)
 
 
 

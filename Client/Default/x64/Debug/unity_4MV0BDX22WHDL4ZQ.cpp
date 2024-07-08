@@ -93,6 +93,9 @@
 #include "C:\3D_TeamProj\Client\Private\ImGUi\imgui_widgets.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Item.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Juggulus_Hammer.cpp"
 
 
@@ -148,6 +151,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle_Trail.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_FadeInOut.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Weapon_Ghost.cpp"

@@ -3,6 +3,9 @@
 #include "GameInstance.h"
 
 #include "UI_LogoBG.h"
+#include "UI_LogoBanner.h"
+#include "UI_LogoTitle.h"
+#include "UI_LogoSelector.h"
 
 CUIGroup_Logo::CUIGroup_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -67,9 +70,41 @@ HRESULT CUIGroup_Logo::Create_UI()
 	CUI::UI_DESC pDesc{};
 
 	pDesc.eLevel = LEVEL_STATIC;
-	
-	// LogoBG >>> 근데 dynamic_cast 필요 없는 듯
+
+	// LogoBG
 	m_vecUI.emplace_back(dynamic_cast<CUI_LogoBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoBG"), &pDesc)));
+
+	// LogoBanner 
+	m_vecUI.emplace_back(dynamic_cast<CUI_LogoBanner*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoBanner"), &pDesc)));
+
+	// LogoTitle 
+	m_vecUI.emplace_back(dynamic_cast<CUI_LogoTitle*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoTitle"), &pDesc)));
+
+	Create_Selector();
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_Logo::Create_Selector()
+{
+	CUI_LogoSelector::SELECTOR_TYPE		arrType[CUI_LogoSelector::SELECTOR_END] =
+	{
+		CUI_LogoSelector::SELECTOR_CONTINUE, CUI_LogoSelector::SELECTOR_NEWGAME, CUI_LogoSelector::SELECTOR_SETTINGS, CUI_LogoSelector::SELECTOR_CREDITS, CUI_LogoSelector::SELECTOR_LEAVE
+	};
+
+	CUI_LogoSelector::UI_SELECTOR_DESC pDesc{};
+
+	for (size_t i = 0; i < 5; ++i)
+	{
+		ZeroMemory(&pDesc, sizeof(pDesc));
+		pDesc.eLevel = LEVEL_STATIC;
+		pDesc.fX = g_iWinSizeX >> 1;
+		pDesc.fY = (g_iWinSizeY >> 1) + 100.f + (i * 30.f);
+		pDesc.fSizeX = 341.3f; // 512.f
+		pDesc.fSizeY = 42.6f; // 64.f
+		pDesc.eSelectorType = arrType[i];
+		m_vecUI.emplace_back(dynamic_cast<CUI_LogoSelector*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoSelector"), &pDesc)));
+	}
 
 	return S_OK;
 }

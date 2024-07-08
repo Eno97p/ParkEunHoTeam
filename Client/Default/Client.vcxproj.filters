@@ -364,7 +364,7 @@
     <Filter Include="02.GameObjects\07. UI\Logo\Title">
       <UniqueIdentifier>{7b553402-79da-431b-a26f-e34ba5d7851b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. UI\Logo\Btn">
+    <Filter Include="02.GameObjects\07. UI\Logo\Selector">
       <UniqueIdentifier>{a18e8000-0809-49df-bfe1-bc5b2da7b0c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -741,6 +741,15 @@
     <ClInclude Include="..\Public\UI_LogoBG.h">
       <Filter>02.GameObjects\07. UI\Logo\BG</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoBanner.h">
+      <Filter>02.GameObjects\07. UI\Logo\Banner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoTitle.h">
+      <Filter>02.GameObjects\07. UI\Logo\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoSelector.h">
+      <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1096,6 +1105,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LogoBG.cpp">
       <Filter>02.GameObjects\07. UI\Logo\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoBanner.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Banner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoTitle.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoSelector.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

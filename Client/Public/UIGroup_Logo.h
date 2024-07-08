@@ -26,6 +26,7 @@ private:
 
 private:
 	HRESULT					Create_UI();
+	HRESULT					Create_Selector();
 
 public:
 	static CUIGroup_Logo*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -162,7 +162,16 @@
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_LogoBanner.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_LogoBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_LogoSelector.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_LogoTitle.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Ghost.cpp"

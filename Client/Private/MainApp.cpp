@@ -17,6 +17,9 @@
 
 #pragma region Logo
 #include "UI_LogoBG.h"
+#include "UI_LogoBanner.h"
+#include "UI_LogoTitle.h"
+#include "UI_LogoSelector.h"
 
 #include "UIGroup_Logo.h"
 #pragma endregion Logo
@@ -769,7 +772,20 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_LogoBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_LogoBanner*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LogoBanner"),
+		CUI_LogoBanner::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_LogoTitle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LogoTitle"),
+		CUI_LogoTitle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_LogoSelector*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LogoSelector"),
+		CUI_LogoSelector::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Logo*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Logo"),

@@ -124,13 +124,20 @@ PS_OUT PS_FADE(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
+	float fAlpha = Out.vColor.a;
+
 	if (g_bIsFadeIn)
 	{
 		Out.vColor.a = 1.f - g_fAlphaTimer;
 	}
 	else
 	{
-		Out.vColor.a = g_fAlphaTimer;
+		float fResultAlpha = g_fAlphaTimer;
+
+		if (fAlpha < fResultAlpha)
+			fResultAlpha = fAlpha;
+
+		Out.vColor.a = fResultAlpha;
 	}
 
 	return Out;

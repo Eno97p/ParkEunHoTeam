@@ -704,7 +704,7 @@ void CRenderer::Render_Distortion()
 	for (auto& pGameObject : m_RenderGroup[RENDER_DISTORTION])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Render();
+			pGameObject->Render_Distortion();
 
 		Safe_Release(pGameObject);
 	}

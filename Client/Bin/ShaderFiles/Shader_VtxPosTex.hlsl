@@ -87,6 +87,23 @@ PS_OUT PS_MAIN(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_ITEM(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	
+	Out.vColor.a = Out.vColor.r;
+
+	if (Out.vColor.a < 0.1f) discard;
+
+	
+
+	Out.vColor.rgb *= float3(1.f, 1.f, sqrt((In.vTexcoord.x - 0.5f) * (In.vTexcoord.x - 0.5f) + (In.vTexcoord.y - 0.5f) * (In.vTexcoord.y - 0.5f)));
+
+	return Out;
+}
+
 struct PS_IN_SOFTEFFECT
 {
 	float4		vPosition : SV_POSITION;
@@ -145,6 +162,20 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SOFTEFFECT();
+	}
+
+	pass Item_2
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ITEM();
 	}
 }
 

@@ -212,6 +212,7 @@
     <ClInclude Include="..\Public\ImGUi\imstb_rectpack.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_textedit.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
@@ -329,6 +330,7 @@
     <ClCompile Include="..\Private\ImGUi\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_tables.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />

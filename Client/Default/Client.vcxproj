@@ -212,6 +212,7 @@
     <ClInclude Include="..\Public\ImGUi\imstb_rectpack.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_textedit.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
@@ -231,6 +232,7 @@
     <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h" />
+    <ClInclude Include="..\Public\ThirdPersonCamera.h" />
     <ClInclude Include="..\Public\UI_FadeInOut.h" />
     <ClInclude Include="..\Public\Weapon_Ghost.h" />
     <ClInclude Include="..\Public\Weapon_Homonculus.h" />
@@ -329,6 +331,7 @@
     <ClCompile Include="..\Private\ImGUi\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_tables.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
@@ -348,6 +351,7 @@
     <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp" />
+    <ClCompile Include="..\Private\ThirdPersonCamera.cpp" />
     <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
     <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />

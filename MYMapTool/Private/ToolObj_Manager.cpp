@@ -112,6 +112,12 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_BigRocks"),
                         TEXT("Prototype_Component_Model_BigRocks4"),
 
+        //ROck
+                        TEXT("Prototype_Component_Model_Rock1"),
+                        TEXT("Prototype_Component_Model_Rock2"),
+                        TEXT("Prototype_Component_Model_Rock3"),
+                        TEXT("Prototype_Component_Model_Rock4"),
+
         //DECO ELEMENTS
                         TEXT("Prototype_Component_Model_BoxA"), TEXT("Prototype_Component_Model_BoxB"),
                         TEXT("Prototype_Component_Model_YantraStatue"),

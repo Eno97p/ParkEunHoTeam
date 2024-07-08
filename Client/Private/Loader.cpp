@@ -8,6 +8,7 @@
 #include "Body_Player.h"
 #include "Clone.h"
 #include "FreeCamera.h"
+#include "ThirdPersonCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -58,8 +59,12 @@
 
 #pragma endregion Monster
 
+#pragma region ITEM
+#include "Item.h"
+#pragma endregion ITEM
 
 #include "Map_Element.h"
+#include "Passive_Element.h"
 #include "Passive_Element.h"
 #include "Active_Element.h"
 #include "TutorialMapBridge.h"
@@ -590,6 +595,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion Monster
 
+#pragma region ITEM
+	//Item
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Item"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Item/Item.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion ITEM
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -693,6 +706,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_FreeCamera*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FreeCamera"),
 		CFreeCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ThirdPersonCamera*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
+		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Monster */
@@ -928,6 +946,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion Monster
 
+#pragma region ITEM
+	/* For.Prototype_GameObject_Item*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion ITEM
 
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),

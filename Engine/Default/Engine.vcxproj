@@ -204,6 +204,8 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\CInverter.cpp" />
     <ClCompile Include="..\Private\CNode.cpp" />
     <ClCompile Include="..\Private\Components_Vehicle.cpp" />
+    <ClCompile Include="..\private\CProfiler.cpp" />
+    <ClCompile Include="..\private\CProfileScope.cpp" />
     <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -293,6 +295,8 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\ConditionNode.h" />
     <ClInclude Include="..\public\CoolDownNode.h" />
     <ClInclude Include="..\public\CPhysX.h" />
+    <ClInclude Include="..\public\CProfiler.h" />
+    <ClInclude Include="..\public\CProfileScope.h" />
     <ClInclude Include="..\Public\CSelector.h" />
     <ClInclude Include="..\Public\CSequence.h" />
     <ClInclude Include="..\public\CSimulationCallBack.h" />

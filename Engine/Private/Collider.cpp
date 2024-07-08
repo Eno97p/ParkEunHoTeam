@@ -18,6 +18,7 @@ CCollider::CCollider(const CCollider & rhs)
 	, m_pBatch{ rhs.m_pBatch }
 	, m_pShader{ rhs.m_pShader }
 	, m_pInputLayout{ rhs.m_pInputLayout }
+	, m_OutDesc{ rhs.m_OutDesc }
 #endif
 {
 #ifdef _DEBUG	
@@ -124,28 +125,31 @@ _float3 CCollider::Get_Center()
 
 HRESULT CCollider::Render()
 {
-	m_pContext->GSSetShader(nullptr, nullptr, 0);
-/*
-	m_pContext->OMSetDepthStencilState(nullptr, 0);
-	_float		fTemp = {};
-	m_pContext->OMSetBlendState(nullptr, &fTemp, 0);
-	m_pContext->RSSetState(nullptr);*/
-	
-	m_pShader->SetWorld(XMMatrixIdentity());
-	m_pShader->SetView(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
-	m_pShader->SetProjection(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
+	if (m_OutDesc.bIsOnDebugRender)
+	{
+		m_pContext->GSSetShader(nullptr, nullptr, 0);
+		/*
+			m_pContext->OMSetDepthStencilState(nullptr, 0);
+			_float		fTemp = {};
+			m_pContext->OMSetBlendState(nullptr, &fTemp, 0);
+			m_pContext->RSSetState(nullptr);*/
 
-	
+		m_pShader->SetWorld(XMMatrixIdentity());
+		m_pShader->SetView(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
+		m_pShader->SetProjection(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
 
-	m_pContext->IASetInputLayout(m_pInputLayout);
 
-	m_pShader->Apply(m_pContext);
 
-	m_pBatch->Begin();
+		m_pContext->IASetInputLayout(m_pInputLayout);
 
-	m_pBounding->Render(m_pBatch, m_isColl == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f));
+		m_pShader->Apply(m_pContext);
 
-	m_pBatch->End();
+		m_pBatch->Begin();
+
+		m_pBounding->Render(m_pBatch, m_isColl == true ? XMVectorSet(1.f, 0.f, 0.f, 1.f) : XMVectorSet(0.f, 1.f, 0.f, 1.f));
+
+		m_pBatch->End();
+	}
 
 	return S_OK;
 }

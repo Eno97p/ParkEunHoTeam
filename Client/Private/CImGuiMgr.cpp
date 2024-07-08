@@ -13,6 +13,10 @@
 #ifdef _DEBUG
 IMPLEMENT_SINGLETON(CImGuiMgr)
 
+
+
+_bool CImGuiMgr::FrameLimit = true;
+
 CImGuiMgr::CImGuiMgr()
 {
 }
@@ -69,6 +73,7 @@ HRESULT CImGuiMgr::Update_ImGui()
 {
 	ImGui::Begin("Property", nullptr, ImGuiWindowFlags_HorizontalScrollbar/*| ImGuiWindowFlags_NoMove| ImGuiWindowFlags_NoResize*/);
 	ImGui::Text("Frame:%f", ImGui::GetIO().Framerate);
+	ImGui::Checkbox("Frame Limit", &FrameLimit);
 	Render_MainMenu();
 
 
@@ -386,11 +391,6 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
 
 		}
-
-
-
-
-
 		else if (typeid(*pComponent) == typeid(CShader))
 		{
 
@@ -404,6 +404,13 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 				string PassNameStr= wstring_to_string(passName);
 				ImGui::Text("Pass: %s", PassNameStr.c_str());
 			}
+
+		}
+		else if (typeid(*pComponent) == typeid(CCollider))
+		{
+			CCollider::Collider_Editable_Desc* tDesc = static_cast<CCollider::Collider_Editable_Desc*>(tmep);
+			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
+
 
 		}
 	

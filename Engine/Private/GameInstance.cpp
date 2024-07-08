@@ -19,6 +19,10 @@
 #include "SoundMgr.h"
 #include "UISorter.h"
 
+
+#include"CProfileScope.h"
+#include"CProfiler.h"
+
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -121,37 +125,71 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
 {
+	PROFILE_FUNCTION();
 	if (nullptr == m_pLevel_Manager)
 		return;
+	{
+		PROFILE_SCOPE("Input Device Update");
+		m_pInput_Device->Update_InputDev();
+	}
 
-	m_pInput_Device->Update_InputDev();
+	{
+		PROFILE_SCOPE("Object Manager Priority Tick");
+		m_pObject_Manager->Priority_Tick(fTimeDelta);
+	}
 
-	m_pObject_Manager->Priority_Tick(fTimeDelta);
+	{
+		PROFILE_SCOPE("Object Manager Tick");
+		m_pObject_Manager->Tick(fTimeDelta);	
+	}
 
-	m_pObject_Manager->Tick(fTimeDelta);	
+	{
+		PROFILE_SCOPE("PipeLine Tick");
+		m_pPipeLine->Tick();
+	}
 
-	m_pPipeLine->Tick();
+	{
+		PROFILE_SCOPE("PhysX Tick");
+		m_pPhysX->Tick(fTimeDelta);
+	}
 
+	{
+		PROFILE_SCOPE("Frustum Tick");
+		m_pFrustum->Update();
+	}
 
+	{
+		PROFILE_SCOPE("Calculator Tick");
+		m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
+	}
 
-	//Test
+	{
 
-	m_pPhysX->Tick(fTimeDelta);
+		PROFILE_SCOPE("Picking Update");
+		m_pPicking->Update();
+	}
 
-	m_pFrustum->Update();
+	{
+		PROFILE_SCOPE("Object Manager Late_Tick");
+		m_pObject_Manager->Late_Tick(fTimeDelta);
+	}
 
-	m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ),
-		m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
+	{
 
-	m_pPicking->Update();
+		PROFILE_SCOPE("Level Manager Tick");
+		m_pLevel_Manager->Tick(fTimeDelta);
+	}
 
-	m_pObject_Manager->Late_Tick(fTimeDelta);
-
-	m_pLevel_Manager->Tick(fTimeDelta);
-	m_pLevel_Manager->Late_Tick(fTimeDelta);
+	{
+		PROFILE_SCOPE("Level Manager Late_Tick");
+		m_pLevel_Manager->Late_Tick(fTimeDelta);
+	}
 	
-
-	m_UISorter->Sorting();
+	
+	{
+		PROFILE_SCOPE("UISorting Tick");
+		m_UISorter->Sorting();
+	}
 }
 
 HRESULT CGameInstance::Draw()
@@ -681,6 +719,7 @@ void CGameInstance::Release_Engine()
 {	
 	CGameInstance::GetInstance()->Free();
 
+	CProfiler::DestroyInstance();
 	DestroyInstance();	
 }
 

@@ -59,7 +59,7 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 
 	os.read(reinterpret_cast<char*>(m_szTextureFilePath), sizeof(_tchar) * MAX_PATH);
 
-	//TransformFilePath(m_szTextureFilePath);	//DDS로 텍스쳐 경로 바꿔주는 함수
+	TransformFilePath(m_szTextureFilePath);	//DDS로 텍스쳐 경로 바꿔주는 함수
 
 	m_Textures.reserve(m_iNumTextures);
 

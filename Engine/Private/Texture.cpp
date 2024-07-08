@@ -176,20 +176,6 @@ HRESULT CTexture::Fetch_Pixel_FromPixelShader(const _float2& vTexCoord, _float4*
 	return hr;
 }
 
-void CTexture::TransformFilePath(_tchar* filePath)
-{
-	_tchar fileName[MAX_PATH];
-	_tchar fileExtension[MAX_PATH];
-	_tchar drive[MAX_PATH];
-	_tchar dir[MAX_PATH];
-	_tsplitpath_s(filePath, drive, dir, fileName, fileExtension);
-	_tchar newPath[MAX_PATH] = TEXT("../../Client/Bin/Resources/Textures/DDS_Storage/");
-	_tchar newExtension[] = TEXT(".dds");
-	_tchar newFilePath[MAX_PATH];
-	_stprintf_s(newFilePath, MAX_PATH, TEXT("%s%s%s"), newPath, fileName, newExtension);
-	_tcscpy_s(filePath, MAX_PATH, newFilePath);
-}
-
 CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strTextureFilePath, _uint iNumTextures)
 {
 	CTexture* pInstance = new CTexture(pDevice, pContext);

@@ -72,10 +72,10 @@ void CUI::Render_Animation(_float fTimeDelta)
     }
 }
 
-void CUI::Resset_Animation()
+void CUI::Resset_Animation(_bool isOffAnim)
 {
     m_fRenderTimer = 0.f;
-    m_isRenderOffAnim = true;
+    m_isRenderOffAnim = isOffAnim;
     m_isRenderAnimFinished = false;
 }
 

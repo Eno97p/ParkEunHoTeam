@@ -133,18 +133,17 @@ void CUI_Manager::Key_Input()
 	{
 		if (!isMenuOpen)
 		{
+			(*quick).second->Set_AnimFinished(false);
+
 			if (isQuickOpen) // 퀵슬롯이 켜져 있을 때 > 꺼지게
 			{
-				// 여기서 Render를 바로 false로 만들면 꺼져버리기 때문에 다른 방식으로 접근 필요
-				// > 꺼지는 애니메이션 On
-				(*quick).second->Set_AnimFinished(false);
 				(*quick).second->Set_RenderOnAnim(false);
 			}
 			else // 꺼져있을 때 > 켜지게
 			{
-				(*quick).second->Set_Rend(true); // 퀵슬롯의 Render를 true로
+				(*quick).second->Set_Rend(true);
+				(*quick).second->Set_RenderOnAnim(true);
 			}
-			// (*quick).second->Set_Rend(!isQuickOpen);
 		}
 	}
 }

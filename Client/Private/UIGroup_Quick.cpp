@@ -45,18 +45,22 @@ void CUIGroup_Quick::Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 		{
-			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim())) // 꺼지는 애니메이션이 On 된 상태 & RenderOnAnim 상태 변환 전이라면
+			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
 			{
-				pUI->Resset_Animation();
+				pUI->Resset_Animation(true);
 			}
+			else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+			{
+				pUI->Resset_Animation(false);
+			}
+
 			pUI->Tick(fTimeDelta);
 
 			isRender_End = pUI->isRender_End();
 
-			if (isRender_End)
+			if (isRender_End) // UI 객체에 모두 적용하기 전 임시 코드
 			{
 				m_isRend = false;
-				int i = 1;
 			}
 		}
 		/*if (isRender_End)

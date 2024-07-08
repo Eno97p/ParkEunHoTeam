@@ -44,7 +44,7 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Render_Animation(_float fTimeDelta);
-	void			Resset_Animation();
+	void			Resset_Animation(_bool isOffAnim);
 	_bool			isRender_End();
 
 protected:

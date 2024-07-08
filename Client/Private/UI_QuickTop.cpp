@@ -41,9 +41,7 @@ void CUI_QuickTop::Priority_Tick(_float fTimeDelta)
 
 void CUI_QuickTop::Tick(_float fTimeDelta)
 {
-	// 퀵슬롯의 Render가 true가 되었을 때 애니메이션 시작 > 애니메이션이 종료되기 전까지 애니메이션 실행
-
-	if(!m_isRenderAnimFinished) // 애니메이션이 종료되지 않았다면 애니메이션 함수를 계속 호출
+	if(!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 }
 

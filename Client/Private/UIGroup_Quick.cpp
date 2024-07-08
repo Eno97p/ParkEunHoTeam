@@ -40,26 +40,36 @@ void CUIGroup_Quick::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Quick::Tick(_float fTimeDelta)
 {
-
-
+	_bool isRender_End = false;
 	if (m_isRend)
 	{
 		for (auto& pUI : m_vecUI)
 		{
-			if (!m_isRenderOnAnim && pUI->Get_RenderOnAnim()) // 꺼지는 애니메이션이 On 된 상태 & RenderOnAnim 상태 변환 전이라면
+			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim())) // 꺼지는 애니메이션이 On 된 상태 & RenderOnAnim 상태 변환 전이라면
 			{
 				pUI->Resset_Animation();
 			}
 			pUI->Tick(fTimeDelta);
+
+			isRender_End = pUI->isRender_End();
+
+			if (isRender_End)
+			{
+				m_isRend = false;
+				int i = 1;
+			}
 		}
+		/*if (isRender_End)
+			m_isRend = false;*/
+
 	}
 }
 
 void CUIGroup_Quick::Late_Tick(_float fTimeDelta)
 {
-	for (auto& pUI : m_vecUI)
+	if (m_isRend)
 	{
-		if (m_isRend)
+		for (auto& pUI : m_vecUI)
 		{
 			pUI->Late_Tick(fTimeDelta);
 		}

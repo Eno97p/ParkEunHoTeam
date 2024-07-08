@@ -93,6 +93,9 @@
 #include "C:\Real3DProject\Client\Private\ImGUi\imgui_widgets.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Item.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Juggulus_Hammer.cpp"
 
 
@@ -148,6 +151,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Particle_Trail.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ThirdPersonCamera.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"

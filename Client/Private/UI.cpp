@@ -68,7 +68,6 @@ void CUI::Render_Animation(_float fTimeDelta)
     if (m_fRenderTimer >= 1.f) // 애니메이션 종료 시
     {
         m_fRenderTimer = 1.f;
-        //m_isRenderOnAnim = !m_isRenderOnAnim; // 켜짐-> 꺼짐 / 꺼짐->켜짐 으로 UI객체가 가지는 애니메이션 상태 변경?
         m_isRenderAnimFinished = true;
     }
 }
@@ -76,7 +75,16 @@ void CUI::Render_Animation(_float fTimeDelta)
 void CUI::Resset_Animation()
 {
     m_fRenderTimer = 0.f;
-    m_isRenderOnAnim = false;
+    m_isRenderOffAnim = true;
+    m_isRenderAnimFinished = false;
+}
+
+_bool CUI::isRender_End()
+{
+    if (m_isRenderOffAnim && m_isRenderAnimFinished)
+        return true;
+    
+    return false;
 }
 
 void CUI::Free()

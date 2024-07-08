@@ -24,7 +24,7 @@ void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
 	// render true false  Á¶Àý
 	map<string, CUIGroup*>::iterator iter = m_mapUIGroup.find(PageKey);
 	(*iter).second->Set_Rend(isOpen);
-
+	(*iter).second->Set_RenderOnAnim(true);
 }
 
 void CUI_Manager::Tick(_float fTimeDelta)
@@ -106,26 +106,33 @@ void CUI_Manager::Key_Input()
 		{
 			if (isChOpen)
 			{
-				(*character).second->Set_Rend(false);
+				//(*character).second->Set_Rend(false);
+				(*character).second->Set_RenderOnAnim(false);
 			}
 			else if (isInvOpen)
 			{
-				(*inventory).second->Set_Rend(false);
+				//(*inventory).second->Set_Rend(false);
+				(*inventory).second->Set_RenderOnAnim(false);
 			}
 			else if (isWeaponOpen)
 			{
-				(*weapon).second->Set_Rend(false);
+				//(*weapon).second->Set_Rend(false);
+				(*weapon).second->Set_RenderOnAnim(false);
 			}
 			else
 			{
-				(*menu).second->Set_Rend(!isMenuOpen);
+				//(*menu).second->Set_Rend(!isMenuOpen);
+				(*menu).second->Set_RenderOnAnim(false);
 			}
 		}
 		else
 		{
 			if (!isQuickOpen)
 			{
-				(*menu).second->Set_Rend(!isMenuOpen);
+
+				//(*menu).second->Set_Rend(!isMenuOpen);
+				(*menu).second->Set_Rend(true);
+				(*menu).second->Set_RenderOnAnim(true);
 			}
 		}
 	}

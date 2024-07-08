@@ -39,10 +39,26 @@ void CUIGroup_Menu::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Menu::Tick(_float fTimeDelta)
 {
+	_bool isRender_End = false;
 	if (m_isRend)
 	{
 		for (auto& pUI : m_vecUI)
+		{
+			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
+			{
+				pUI->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+			{
+				pUI->Resset_Animation(false);
+			}
+
 			pUI->Tick(fTimeDelta);
+
+			isRender_End = pUI->isRender_End();
+		}
+		if (isRender_End)
+			m_isRend = false;
 	}
 }
 

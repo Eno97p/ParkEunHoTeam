@@ -37,8 +37,27 @@ void CUIGroup_Character::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Character::Tick(_float fTimeDelta)
 {
-    for (auto& pUI : m_vecUI)
-        pUI->Tick(fTimeDelta);
+    _bool isRender_End = false;
+    if (m_isRend)
+    {
+        for (auto& pUI : m_vecUI)
+        {
+            if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
+            {
+                pUI->Resset_Animation(true);
+            }
+            else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+            {
+                pUI->Resset_Animation(false);
+            }
+
+            pUI->Tick(fTimeDelta);
+
+            isRender_End = pUI->isRender_End();
+        }
+        if (isRender_End)
+            m_isRend = false;
+    }
 }
 
 void CUIGroup_Character::Late_Tick(_float fTimeDelta)

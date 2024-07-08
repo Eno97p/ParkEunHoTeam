@@ -82,6 +82,15 @@ PS_OUT PS_MAIN_FLOW(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
+	if (g_bIsFadeIn)
+	{
+		Out.vColor.a = 1.f - g_fAlphaTimer;
+	}
+	else
+	{
+		Out.vColor.a = g_fAlphaTimer;
+	}
+
 	return Out;
 }
 
@@ -151,27 +160,6 @@ PS_OUT PS_FADE_DISSOLVE(PS_IN In)
 	{
 		Out.vColor.rgb = float3(0.f, 0.f, 0.f);
 		Out.vColor.a = vDiffuse.a;
-	}
-
-	return Out;
-}
-
-PS_OUT PS_RENDER_ANIM(PS_IN In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-
-	if (Out.vColor.a < 0.1f)
-		discard;
-
-	if (g_bIsFadeIn) // g_bIsFadeIn을 Render On/Off로 활용
-	{
-		Out.vColor.a = 1.f - g_fAlphaTimer;
-	}
-	else
-	{
-		Out.vColor.a = g_fAlphaTimer;
 	}
 
 	return Out;

@@ -44,6 +44,9 @@ void CUI_Menu_SelectFrame::Priority_Tick(_float fTimeDelta)
 
 void CUI_Menu_SelectFrame::Tick(_float fTimeDelta)
 {
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
+
 	m_fFlowTimer += fTimeDelta * 0.2f;
 	if (10.f <= m_fFlowTimer)
 	{
@@ -53,8 +56,8 @@ void CUI_Menu_SelectFrame::Tick(_float fTimeDelta)
 
 void CUI_Menu_SelectFrame::Late_Tick(_float fTimeDelta)
 {
-
-	CGameInstance::GetInstance()->Add_UI(this, SIXTH);
+	if(m_isRenderAnimFinished) // 애니메이션 다 돌고 나서 렌더 되도록 하기? 그 전에 보이면 안됨
+		CGameInstance::GetInstance()->Add_UI(this, SIXTH);
 }
 
 HRESULT CUI_Menu_SelectFrame::Render()
@@ -109,6 +112,12 @@ HRESULT CUI_Menu_SelectFrame::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowTime", &m_fFlowTimer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

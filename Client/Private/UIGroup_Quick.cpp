@@ -57,15 +57,9 @@ void CUIGroup_Quick::Tick(_float fTimeDelta)
 			pUI->Tick(fTimeDelta);
 
 			isRender_End = pUI->isRender_End();
-
-			if (isRender_End) // UI 객체에 모두 적용하기 전 임시 코드
-			{
-				m_isRend = false;
-			}
 		}
-		/*if (isRender_End)
-			m_isRend = false;*/
-
+		if (isRender_End)
+			m_isRend = false;
 	}
 }
 

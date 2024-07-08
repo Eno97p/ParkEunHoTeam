@@ -27,6 +27,18 @@ void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
 	(*iter).second->Set_RenderOnAnim(true);
 }
 
+_bool CUI_Manager::Get_MenuPageState()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	return dynamic_cast<CUIGroup_Menu*>((*menu).second)->Get_MenuPageState();
+}
+
+void CUI_Manager::Set_MenuPageOpen()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(true);
+}
+
 void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
@@ -52,13 +64,6 @@ HRESULT CUI_Manager::Initialize()
 HRESULT CUI_Manager::Create_UI()
 {
 	CUIGroup::UIGROUP_DESC pDesc{};
-
-
-	//m_mapUIGroup.clear();
-	//for(auto& pair : m_mapUIGroup)
-	//{
-	//	
-	//}
 
 	// State
 	pDesc.eLevel = LEVEL_STATIC;
@@ -92,7 +97,7 @@ void CUI_Manager::Key_Input()
 	_bool isMenuOpen = (*menu).second->Get_Rend();
 	_bool isQuickOpen = (*quick).second->Get_Rend();
 
-	if (m_pGameInstance->Key_Down(DIK_ESCAPE)) // 다른 메뉴 실행중에는 켜지면 안 됨. 예외 처리 필요 
+	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
 		map<string, CUIGroup*>::iterator character = m_mapUIGroup.find("Menu_Ch");
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
@@ -106,31 +111,26 @@ void CUI_Manager::Key_Input()
 		{
 			if (isChOpen)
 			{
-				//(*character).second->Set_Rend(false);
 				(*character).second->Set_RenderOnAnim(false);
 			}
 			else if (isInvOpen)
 			{
-				//(*inventory).second->Set_Rend(false);
 				(*inventory).second->Set_RenderOnAnim(false);
 			}
 			else if (isWeaponOpen)
 			{
-				//(*weapon).second->Set_Rend(false);
 				(*weapon).second->Set_RenderOnAnim(false);
 			}
 			else
 			{
-				//(*menu).second->Set_Rend(!isMenuOpen);
 				(*menu).second->Set_RenderOnAnim(false);
 			}
+			dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 		}
 		else
 		{
 			if (!isQuickOpen)
 			{
-
-				//(*menu).second->Set_Rend(!isMenuOpen);
 				(*menu).second->Set_Rend(true);
 				(*menu).second->Set_RenderOnAnim(true);
 			}

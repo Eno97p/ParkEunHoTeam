@@ -19,10 +19,14 @@ private:
 	virtual ~CUI_Manager() = default;
 
 public:
-	HRESULT				Initialize();
+	_bool				Get_MenuPageState();
+	void				Set_MenuPageOpen();
+
+public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
 public:
+	HRESULT				Initialize();
 	void				Tick(_float fTimeDelta);
 	void				Late_Tick(_float fTimeDelta);
 

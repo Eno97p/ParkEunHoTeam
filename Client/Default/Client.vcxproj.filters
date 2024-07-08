@@ -346,6 +346,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Homonculus\HomonculusFist">
       <UniqueIdentifier>{127d022a-955f-4e46-a133-c313370b1483}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.Camers\ThirdPerson">
+      <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -708,6 +711,9 @@
     <ClInclude Include="..\Public\UI_FadeInOut.h">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ThirdPersonCamera.h">
+      <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1051,6 +1057,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_FadeInOut.cpp">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ThirdPersonCamera.cpp">
+      <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

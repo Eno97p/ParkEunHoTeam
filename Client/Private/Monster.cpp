@@ -58,6 +58,11 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+_vector CMonster::Get_MonsterPos()
+{
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+}
+
 HRESULT CMonster::Add_BehaviorTree()
 {
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),

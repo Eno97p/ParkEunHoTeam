@@ -36,6 +36,7 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Render_LightDepth() { return S_OK; }
 	virtual HRESULT Render_Bloom() { return S_OK; }
+	virtual HRESULT Render_Distortion() { return S_OK; }
 	void Set_Dead() { IsDead = true; }
 	_bool Get_Dead() { return IsDead; }
 

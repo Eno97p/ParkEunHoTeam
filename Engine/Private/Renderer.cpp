@@ -331,10 +331,11 @@ void CRenderer::Clear()
 		m_RenderGroup[i].clear();
 	}
 
+#ifdef _DEBUG
 	for(auto& DebugObject : m_DebugComponents)
 		Safe_Release(DebugObject);
 	m_DebugComponents.clear();
-
+#endif
 
 }
 
@@ -704,7 +705,7 @@ void CRenderer::Render_Distortion()
 	for (auto& pGameObject : m_RenderGroup[RENDER_DISTORTION])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Render();
+			pGameObject->Render_Distortion();
 
 		Safe_Release(pGameObject);
 	}

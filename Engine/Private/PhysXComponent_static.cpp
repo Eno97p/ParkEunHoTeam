@@ -68,6 +68,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 	return S_OK;
 }
 
+#ifdef _DEBUG
 HRESULT CPhysXComponent_static::Render()
 {
 	if (m_OutDesc.bIsOnDebugRender)
@@ -98,6 +99,7 @@ HRESULT CPhysXComponent_static::Render()
 
 	return S_OK;
 }
+#endif
 
 #ifdef _DEBUG
 //void* CPhysXComponent_static::GetData()

@@ -8,6 +8,7 @@
 #include "Body_Player.h"
 #include "Clone.h"
 #include "FreeCamera.h"
+#include "ThirdPersonCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -58,8 +59,12 @@
 
 #pragma endregion Monster
 
+#pragma region ITEM
+#include "Item.h"
+#pragma endregion ITEM
 
 #include "Map_Element.h"
+#include "Passive_Element.h"
 #include "Passive_Element.h"
 #include "Active_Element.h"
 #include "TutorialMapBridge.h"
@@ -73,10 +78,16 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
 	, m_pGameInstance{ CGameInstance::GetInstance() }
+	, m_iFinishedThreadCount{ 0 }
+
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
+	for (int i = 0; i < MAX_THREAD; ++i)
+		m_bIsFinish[i] = false;
+
 }
 
 _uint APIENTRY Loading_Main(void* pArg)
@@ -129,9 +140,10 @@ _uint APIENTRY Loading_ShaderData(void* pArg)
 
 HRESULT CLoader::Initialize(LEVEL eNextLevel)
 {
+
 	m_eNextLevel = eNextLevel;
 
-	for (_uint i = 0; i < MAX_THREAD; ++i)
+	for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
 		InitializeCriticalSection(&m_Critical_Section[i]);
 
 	m_hThread[0] = (HANDLE)_beginthreadex(nullptr, 0, Loading_Main, this, 0, nullptr);
@@ -172,6 +184,8 @@ HRESULT CLoader::Loading()
 
 	if (FAILED(hr))
 		return E_FAIL;
+
+	Finish_Thread(0);
 
 	return S_OK;
 }
@@ -228,7 +242,7 @@ HRESULT CLoader::Loading_Map()
 
 
 
-
+	Finish_Thread(1);
 	return S_OK;
 }
 
@@ -269,10 +283,11 @@ HRESULT CLoader::Loading_Shader()
 	if (FAILED(hr))
 		return E_FAIL;
 
-
+	Finish_Thread(2);
 	return S_OK;
 
 }
+
 
 
 
@@ -292,7 +307,6 @@ HRESULT CLoader::Loading_For_LogoLevel()
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
-	m_isFinished = true;
 
 	return S_OK;
 }
@@ -581,6 +595,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion Monster
 
+#pragma region ITEM
+	//Item
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Item"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Item/Item.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion ITEM
+
 	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -684,6 +706,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_FreeCamera*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FreeCamera"),
 		CFreeCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ThirdPersonCamera*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
+		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	///* For.Prototype_GameObject_Monster */
@@ -919,6 +946,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion Monster
 
+#pragma region ITEM
+	/* For.Prototype_GameObject_Item*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion ITEM
 
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
@@ -931,7 +964,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
-	m_isFinished = true;
 
 	return S_OK;
 }

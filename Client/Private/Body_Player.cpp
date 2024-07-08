@@ -486,11 +486,6 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 
 HRESULT CBody_Player::Render()
 {
-	if (m_bIsClocking)
-	{
-		return Render_Distortion();
-	}
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 

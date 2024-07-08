@@ -26,7 +26,7 @@ public:
 	void Visible_Data();
 	void Render();
 	void Tick(_float fTimiedelta);
-
+	//a
 private:	//for FileSystem
 	void Load_Texture();
 	vector<string> GetFilesInDirectory(const string& path);

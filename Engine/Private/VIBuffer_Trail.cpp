@@ -202,9 +202,9 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
@@ -219,15 +219,17 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 			vPos += vLook * m_pPivotPos.z;
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vLook, vRight * m_pSize[i].x);
-			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vRight, vLook * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vRight, vRight* m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, vRight* m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, vRight* m_pSize[i].z);
 		}
 
 
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{
+	
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			
 		}
 
 		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
@@ -263,9 +265,9 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
 			
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 
 			float ratio = static_cast<float>(i) / static_cast<float>(m_iNumInstance - 1);
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x * ratio;
@@ -284,9 +286,9 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 			vPos += vLook * m_pPivotPos.z;
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vLook, vRight * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vRight, vLook * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 		}
 
 	}

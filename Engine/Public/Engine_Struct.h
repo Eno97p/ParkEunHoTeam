@@ -98,6 +98,8 @@ namespace Engine
 
 
 
+
+
 	typedef struct ENGINE_DLL VTXPOINT
 	{
 		XMFLOAT3		vPosition;

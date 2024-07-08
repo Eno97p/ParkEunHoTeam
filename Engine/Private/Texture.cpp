@@ -82,9 +82,7 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 			hr = CreateWICTextureFromFile(m_pDevice, m_szTextureFilePath, nullptr, &pSRV);
 
 		if (FAILED(hr))
-		{
 			return E_FAIL;
-		}
 
 		m_Textures.push_back(pSRV);
 	}

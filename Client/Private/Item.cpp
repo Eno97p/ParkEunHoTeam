@@ -36,14 +36,12 @@ HRESULT CItem::Initialize(void* pArg)
 
 void CItem::Set_Texture()
 {
-
-	m_pTextureTransformCom->Scaling(0.3f, 0.3f, 0.3f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(140.f, 524.f, 98.f, 1.f));
 	m_pTextureTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_pTextureTransformCom->Set_Scale(0.3f, 0.3f, 0.3f);
 	m_pTextureTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(
 		XMVectorGetX(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)),
-		XMVectorGetY(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)) - 0.1f,
+		XMVectorGetY(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.1f,
 		XMVectorGetZ(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)), 1.f));
 }
 
@@ -55,16 +53,13 @@ void CItem::Tick(_float fTimeDelta)
 {
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
 
-	m_pTextureTransformCom->Set_State(CTransform::STATE_LOOK, m_pGameInstance->Get_CamPosition() - m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pTextureTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_pTextureTransformCom->Get_State(CTransform::STATE_LOOK)));
-	m_pTextureTransformCom->Set_State(CTransform::STATE_UP, XMVector3Cross(m_pTextureTransformCom->Get_State(CTransform::STATE_LOOK), m_pTextureTransformCom->Get_State(CTransform::STATE_RIGHT)));
-	m_pTextureTransformCom->Set_Scale(0.3f, 0.3f, 0.3f);
+	m_pTextureTransformCom->BillBoard();
 }
 
 void CItem::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 }
 
@@ -90,7 +85,7 @@ HRESULT CItem::Render()
 
 HRESULT CItem::Render_Bloom()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pTextureShaderCom, "g_WorldMatrix")))
+	if (FAILED(m_pTextureTransformCom->Bind_ShaderResource(m_pTextureShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pTextureShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
@@ -100,7 +95,7 @@ HRESULT CItem::Render_Bloom()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pTextureShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	m_pTextureShaderCom->Begin(2);
+	m_pTextureShaderCom->Begin(3);
 
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
@@ -119,10 +114,10 @@ HRESULT CItem::Render_Distortion()
 
 		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(3);
 
 		m_pModelCom->Render(i);
 	}
@@ -161,6 +156,7 @@ HRESULT CItem::Add_Components()
 	m_pTextureTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTextureTransformCom)
 		return E_FAIL;
+	m_pTextureTransformCom->Initialize(nullptr);
 
 	return S_OK;
 }

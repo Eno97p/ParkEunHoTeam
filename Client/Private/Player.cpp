@@ -363,7 +363,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
 		|| m_bLAttacking || m_bRAttacking || m_fLChargeAttack != 0.f || m_fRChargeAttack != 0.f
-		|| m_iState == STATE_USEITEM)
+		|| m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -412,6 +412,11 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 NodeStates CPlayer::Counter(_float fTimeDelta)
 {
+	if ((m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+	{
+		return COOLING;
+	}
+
 	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
 	{
 		m_bStaminaCanDecrease = true;
@@ -453,6 +458,11 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 {
+	if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
+	{
+		return COOLING;
+	}
+
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH && !m_bLAttacking)
 	{
 		if (!m_bDisolved_Yaak)
@@ -504,7 +514,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RollAttack(_float fTimeDelta)
 {
-	if (m_bJumping || m_iState == STATE_DASH)
+	if (m_bJumping || m_iState == STATE_DASH || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -560,7 +570,8 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM)
+		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM || 
+		(m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -583,6 +594,10 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 		}
 		if (m_bCanCombo)
 		{
+			if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
+			{
+				return COOLING;
+			}
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
@@ -634,7 +649,8 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bLAttacking || m_fLChargeAttack > 0.f || m_iState == STATE_USEITEM)
+		|| m_bLAttacking || m_fLChargeAttack > 0.f || m_iState == STATE_USEITEM
+		|| (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -657,6 +673,10 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 		}
 		if (m_bCanCombo)
 		{
+			if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
+			{
+				return COOLING;
+			}
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
@@ -710,7 +730,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 NodeStates CPlayer::LAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
-		|| m_bRAttacking || m_iState == STATE_USEITEM)
+		|| m_bRAttacking || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -793,7 +813,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_USEITEM)
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -836,7 +856,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 NodeStates CPlayer::Dash(_float fTimeDelta)
 {
-	if (!m_bJumping || m_iState == STATE_USEITEM)
+	if (!m_bJumping || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -914,7 +934,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_USEITEM)
+	if (m_iState == STATE_ROLL || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -996,7 +1016,7 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 
 NodeStates CPlayer::Roll(_float fTimeDelta)
 {
-	if (m_iState == STATE_USEITEM)
+	if (m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}

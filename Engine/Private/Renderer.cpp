@@ -714,7 +714,7 @@ void CRenderer::Render_Distortion()
 
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Distortion"));
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_DiffuseTexture");
 	m_pDistortionTex->Bind_ShaderResource(m_pShader, "g_DistortionTexture", 3);
 	m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 	//if (m_pGameInstance->Get_DIKeyState(DIK_Y))

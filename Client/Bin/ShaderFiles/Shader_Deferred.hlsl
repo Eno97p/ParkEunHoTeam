@@ -373,8 +373,8 @@ PS_OUT PS_DISTORTION(PS_IN In)
 
     float2 objectCenter = float2(0.5f, 0.5f); // 객체 중심의 텍스처 좌표 (화면 중심)
     float waveFrequency = 10.f; // 파동 주파수
-    float waveAmplitude = 0.02f; // 파동 진폭
-    float distortionRadius = 0.3f; // 일그러짐 반경
+    float waveAmplitude = 0.005f; // 파동 진폭
+    float distortionRadius = 0.1f; // 일그러짐 반경
 
     if (g_EffectTexture.Sample(LinearSampler, In.vTexcoord).a == 0.f) return Out;
 
@@ -684,7 +684,7 @@ technique11 DefaultTechnique
 
     pass Distortion_4
     {
-       SetRasterizerState(RS_Default);
+       SetRasterizerState(RS_NoCull);
        SetDepthStencilState(DSS_None_Test_None_Write, 0);
        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

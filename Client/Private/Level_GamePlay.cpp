@@ -71,18 +71,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	Load_Lights();
+	//Load_Lights();
 
 
-	//LIGHT_DESC			LightDesc{};
+	LIGHT_DESC			LightDesc{};
 
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	//m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));

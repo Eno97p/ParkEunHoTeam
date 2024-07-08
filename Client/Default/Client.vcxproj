@@ -231,6 +231,7 @@
     <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h" />
+    <ClInclude Include="..\Public\ThirdPersonCamera.h" />
     <ClInclude Include="..\Public\UI_FadeInOut.h" />
     <ClInclude Include="..\Public\Weapon_Ghost.h" />
     <ClInclude Include="..\Public\Weapon_Homonculus.h" />
@@ -348,6 +349,7 @@
     <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp" />
+    <ClCompile Include="..\Private\ThirdPersonCamera.cpp" />
     <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
     <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />

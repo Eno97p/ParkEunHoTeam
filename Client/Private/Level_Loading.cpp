@@ -15,7 +15,9 @@
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
+	, m_pUI_Manager(CUI_Manager::GetInstance())
 {
+	Safe_AddRef(m_pUI_Manager);
 }
 
 /* 
@@ -42,6 +44,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 void CLevel_Loading::Tick(_float fTimeDelta)
 {
+	m_pUI_Manager->Render_Loading(true);
+
 	if (true == m_pLoader->is_Finished())
 	{
 		if (GetKeyState(VK_RETURN) & 0x8000)
@@ -56,6 +60,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				//pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_GAMEPLAY:
+				m_pUI_Manager->Render_Loading(false);
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;
 				//pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
@@ -74,6 +79,11 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #endif
+}
+
+void CLevel_Loading::Late_Tick(_float fTimeDelta)
+{
+	m_pUI_Manager->Late_Tick(fTimeDelta);
 }
 
 HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
@@ -111,4 +121,5 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
+	Safe_Release(m_pUI_Manager);
 }

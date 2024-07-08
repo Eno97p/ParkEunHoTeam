@@ -20,9 +20,13 @@
 #include "UI_LogoBanner.h"
 #include "UI_LogoTitle.h"
 #include "UI_LogoSelector.h"
-
 #include "UIGroup_Logo.h"
 #pragma endregion Logo
+
+#pragma region Loading
+#include "UI_LoadingBG.h"
+#include "UIGroup_Loading.h"
+#pragma endregion Loading
 
 #pragma region State
 #include "UI_StateBG.h"
@@ -163,10 +167,10 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Ready_UI()))
+	if (FAILED(Ready_Prototype_For_Effects()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Prototype_For_Effects()))
+	if (FAILED(Ready_UI()))
 		return E_FAIL;
 
 
@@ -488,8 +492,6 @@ HRESULT CMainApp::Ready_UI()
 	if (FAILED(m_pUI_Manager->Initialize()))
 		return E_FAIL;
 
-	CUI_Manager::GetInstance()->Render_Logo(true);
-
 	return S_OK;
 }
 
@@ -519,6 +521,19 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 
 #pragma endregion Logo
+
+#pragma region Loading
+	/* Prototype_Component_Texture_LoadingBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/fond_loading2.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LoadingCircle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingCircle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/T_Circle_loading%d.png"), 2))))
+		return E_FAIL;
+
+#pragma endregion Loading
 
 #pragma region HUD
 #pragma region State
@@ -793,6 +808,19 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 
 #pragma endregion Logo
+
+#pragma region Loading
+	/* For.Prototype_GameObject_UI_LoadingBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LoadingBG"),
+		CUI_LoadingBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UIGroup_Loading*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Loading"),
+		CUIGroup_Loading::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Loading
 
 #pragma region HUD
 

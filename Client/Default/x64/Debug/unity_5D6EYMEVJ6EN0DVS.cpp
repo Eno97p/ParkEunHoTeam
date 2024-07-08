@@ -156,10 +156,16 @@
 #include "C:\Real3DProject\Client\Private\ThirdPersonCamera.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Loading.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Logo.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_LoadingBG.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_LogoBanner.cpp"

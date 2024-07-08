@@ -31,6 +31,7 @@ public:
 	void				Late_Tick(_float fTimeDelta);
 
 	void				Render_Logo(_bool isRender);
+	void				Render_Loading(_bool isRender);
 	void				Render_HUD(_bool isRender);
 
 private:

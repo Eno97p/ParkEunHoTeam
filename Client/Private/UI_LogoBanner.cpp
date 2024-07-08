@@ -41,8 +41,27 @@ void CUI_LogoBanner::Priority_Tick(_float fTimeDelta)
 
 void CUI_LogoBanner::Tick(_float fTimeDelta)
 {
+	//if (!m_isRenderAnimFinished)
+	//Render_Animation(fTimeDelta); // Dissolve로 수정할 예정
+
+	// Dissolve 애니메이션 처리 필요함(덜 됨)
 	if (!m_isRenderAnimFinished)
-		Render_Animation(fTimeDelta); // Dissolve로 수정할 예정
+	{
+		m_fRenderTimer += fTimeDelta * 0.3f;
+
+		if (m_fRenderTimer >= 1.f)
+		{
+			m_fRenderTimer = 1.f;
+
+			if (!m_isRenderOffAnim)
+			{
+				//// 화면 전환? 필요
+				//if (FAILED(Create_FadeIn()))
+				//	return;
+			}
+			m_isRenderAnimFinished = true;
+		}
+	}
 }
 
 void CUI_LogoBanner::Late_Tick(_float fTimeDelta)
@@ -55,7 +74,7 @@ HRESULT CUI_LogoBanner::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3);
+	m_pShaderCom->Begin(4);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -79,6 +98,11 @@ HRESULT CUI_LogoBanner::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* For.Com_DissolveTexture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_DissolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -93,6 +117,9 @@ HRESULT CUI_LogoBanner::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 29)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
@@ -133,4 +160,6 @@ CGameObject* CUI_LogoBanner::Clone(void* pArg)
 void CUI_LogoBanner::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDisolveTextureCom);
 }

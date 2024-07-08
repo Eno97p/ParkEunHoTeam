@@ -165,8 +165,6 @@ HRESULT CLoader::Initialize(LEVEL eNextLevel)
 
 HRESULT CLoader::Loading()
 {
-
-
 	EnterCriticalSection(&m_Critical_Section[0]);
 
 	HRESULT			hr{};

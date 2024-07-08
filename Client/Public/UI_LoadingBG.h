@@ -2,18 +2,14 @@
 
 #include "UI.h"
 
-BEGIN(Engine)
-class CTexture;
-END
-
 BEGIN(Client)
 
-class CUI_LogoBanner final : public CUI
+class CUI_LoadingBG final : public CUI
 {
 private:
-	CUI_LogoBanner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_LogoBanner(const CUI_LogoBanner& rhs);
-	virtual ~CUI_LogoBanner() = default;
+	CUI_LoadingBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_LoadingBG(const CUI_LoadingBG& rhs);
+	virtual ~CUI_LoadingBG() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -24,14 +20,11 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	CTexture*				m_pDisolveTextureCom = nullptr;
-
-private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_LogoBanner*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_LoadingBG*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

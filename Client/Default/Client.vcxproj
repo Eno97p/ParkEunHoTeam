@@ -233,8 +233,10 @@
     <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h" />
     <ClInclude Include="..\Public\ThirdPersonCamera.h" />
+    <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_Logo.h" />
     <ClInclude Include="..\Public\UI_FadeInOut.h" />
+    <ClInclude Include="..\Public\UI_LoadingBG.h" />
     <ClInclude Include="..\Public\UI_LogoBanner.h" />
     <ClInclude Include="..\Public\UI_LogoBG.h" />
     <ClInclude Include="..\Public\UI_LogoSelector.h" />
@@ -357,8 +359,10 @@
     <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp" />
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_Logo.cpp" />
     <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
+    <ClCompile Include="..\Private\UI_LoadingBG.cpp" />
     <ClCompile Include="..\Private\UI_LogoBanner.cpp" />
     <ClCompile Include="..\Private\UI_LogoBG.cpp" />
     <ClCompile Include="..\Private\UI_LogoSelector.cpp" />

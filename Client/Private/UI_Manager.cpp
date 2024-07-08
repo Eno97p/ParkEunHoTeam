@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UIGroup_Logo.h"
+#include "UIGroup_Loading.h"
 #include "UIGroup_State.h"
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Menu.h"
@@ -61,6 +62,12 @@ void CUI_Manager::Render_Logo(_bool isRender)
 	(*logo).second->Set_Rend(isRender);
 }
 
+void CUI_Manager::Render_Loading(_bool isRender)
+{
+	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
+	(*loading).second->Set_Rend(isRender);
+}
+
 void CUI_Manager::Render_HUD(_bool isRender)
 {
 	map<string, CUIGroup*>::iterator hud_state = m_mapUIGroup.find("HUD_State");
@@ -86,6 +93,9 @@ HRESULT CUI_Manager::Create_UI()
 
 	// Logo
 	m_mapUIGroup.emplace("Logo", dynamic_cast<CUIGroup_Logo*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Logo"), &pDesc)));
+
+	// Loading
+	m_mapUIGroup.emplace("Loading", dynamic_cast<CUIGroup_Loading*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Loading"), &pDesc)));
 
 	// State
 	m_mapUIGroup.emplace("HUD_State", dynamic_cast<CUIGroup_State*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_State"), &pDesc)));

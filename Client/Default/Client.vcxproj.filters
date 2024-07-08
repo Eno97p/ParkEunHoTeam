@@ -367,6 +367,15 @@
     <Filter Include="02.GameObjects\07. UI\Logo\Selector">
       <UniqueIdentifier>{a18e8000-0809-49df-bfe1-bc5b2da7b0c4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading">
+      <UniqueIdentifier>{18247cd8-88d3-49f1-a9af-acf939a8b236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading\BG">
+      <UniqueIdentifier>{b9eb2ff4-ed36-48d9-9e8a-a8dcea632693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading\Circle">
+      <UniqueIdentifier>{d4f4d034-d774-4f8e-91d6-37364a511304}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -750,6 +759,12 @@
     <ClInclude Include="..\Public\UI_LogoSelector.h">
       <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Loading.h">
+      <Filter>02.GameObjects\07. UI\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LoadingBG.h">
+      <Filter>02.GameObjects\07. UI\Loading\BG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1114,6 +1129,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LogoSelector.cpp">
       <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Loading.cpp">
+      <Filter>02.GameObjects\07. UI\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LoadingBG.cpp">
+      <Filter>02.GameObjects\07. UI\Loading\BG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

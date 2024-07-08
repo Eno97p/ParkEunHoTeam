@@ -15,6 +15,12 @@
 
 #pragma region UI
 
+#pragma region Logo
+#include "UI_LogoBG.h"
+
+#include "UIGroup_Logo.h"
+#pragma endregion Logo
+
 #pragma region State
 #include "UI_StateBG.h"
 #include "UI_StateBar.h"
@@ -479,6 +485,8 @@ HRESULT CMainApp::Ready_UI()
 	if (FAILED(m_pUI_Manager->Initialize()))
 		return E_FAIL;
 
+	CUI_Manager::GetInstance()->Render_Logo(true);
+
 	return S_OK;
 }
 
@@ -489,9 +497,23 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Logo
 	/* Prototype_Component_Texture_LogoBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_StartMenu_Banner.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_StartMenu_BG.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_Logo_Banner */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Banner"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Banner.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Logo_Selector */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Selector"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Selector.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Logo_Title */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Title"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Title.png"), 1))))
+		return E_FAIL;
 
 #pragma endregion Logo
 
@@ -740,6 +762,21 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	// Mouse
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mouse"), CMouse::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region Logo
+	/* For.Prototype_GameObject_UI_LogoBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LogoBG"),
+		CUI_LogoBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	/* For.Prototype_GameObject_UIGroup_Logo*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Logo"),
+		CUIGroup_Logo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion Logo
 
 #pragma region HUD
 

@@ -40,7 +40,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
-	//m_pUI_Manager->Initialize();
+	m_pUI_Manager->Render_HUD(true);
 
 #ifdef _DEBUG
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();

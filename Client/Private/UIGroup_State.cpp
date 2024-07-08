@@ -41,14 +41,20 @@ void CUIGroup_State::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_State::Tick(_float fTimeDelta)
 {
-    for (auto& pUI : m_vecUI)
-        pUI->Tick(fTimeDelta);
+    if (m_isRend)
+    {
+        for (auto& pUI : m_vecUI)
+            pUI->Tick(fTimeDelta);
+    }
 }
 
 void CUIGroup_State::Late_Tick(_float fTimeDelta)
 {
-    for (auto& pUI : m_vecUI)
-        pUI->Late_Tick(fTimeDelta);
+    if (m_isRend)
+    {
+        for (auto& pUI : m_vecUI)
+            pUI->Late_Tick(fTimeDelta);
+    }
 }
 
 HRESULT CUIGroup_State::Render()

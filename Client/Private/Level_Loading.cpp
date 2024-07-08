@@ -5,6 +5,7 @@
 #include "BackGround.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 #pragma region LEVEL_HEADER
 #include "Level_Logo.h"
@@ -84,8 +85,10 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 	ObjectDesc.fSpeedPerSec = 10.f;
 	ObjectDesc.fRotationPerSec = XMConvertToRadians(90.0f);*/
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, strLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, strLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;*/
+
+	//CUI_Manager::GetInstance()->Render_Logo(true);
 
 	return S_OK;
 }

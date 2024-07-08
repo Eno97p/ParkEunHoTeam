@@ -156,7 +156,13 @@
 #include "C:\Real3DProject\Client\Private\ThirdPersonCamera.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Logo.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_LogoBG.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Ghost.cpp"

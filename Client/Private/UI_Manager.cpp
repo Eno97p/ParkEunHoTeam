@@ -1,6 +1,7 @@
 #include "UI_Manager.h"
 
 #include "GameInstance.h"
+#include "UIGroup_Logo.h"
 #include "UIGroup_State.h"
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Menu.h"
@@ -53,6 +54,22 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 }
 
+void CUI_Manager::Render_Logo(_bool isRender)
+{
+	// Logo를 출력
+	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
+	(*logo).second->Set_Rend(isRender);
+}
+
+void CUI_Manager::Render_HUD(_bool isRender)
+{
+	map<string, CUIGroup*>::iterator hud_state = m_mapUIGroup.find("HUD_State");
+	(*hud_state).second->Set_Rend(isRender);
+
+	map<string, CUIGroup*>::iterator hud_weapon = m_mapUIGroup.find("HUD_WeaponSlot");
+	(*hud_weapon).second->Set_Rend(isRender);
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))
@@ -65,8 +82,12 @@ HRESULT CUI_Manager::Create_UI()
 {
 	CUIGroup::UIGROUP_DESC pDesc{};
 
-	// State
 	pDesc.eLevel = LEVEL_STATIC;
+
+	// Logo
+	m_mapUIGroup.emplace("Logo", dynamic_cast<CUIGroup_Logo*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Logo"), &pDesc)));
+
+	// State
 	m_mapUIGroup.emplace("HUD_State", dynamic_cast<CUIGroup_State*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_State"), &pDesc)));
 
 	// WeaponSlot
@@ -92,6 +113,8 @@ HRESULT CUI_Manager::Create_UI()
 
 void CUI_Manager::Key_Input()
 {
+	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요
+
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	_bool isMenuOpen = (*menu).second->Get_Rend();

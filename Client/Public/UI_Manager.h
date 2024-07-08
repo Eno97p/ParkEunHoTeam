@@ -30,6 +30,9 @@ public:
 	void				Tick(_float fTimeDelta);
 	void				Late_Tick(_float fTimeDelta);
 
+	void				Render_Logo(_bool isRender);
+	void				Render_HUD(_bool isRender);
+
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 

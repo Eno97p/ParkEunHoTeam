@@ -37,14 +37,20 @@ void CUIGroup_WeaponSlot::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_WeaponSlot::Tick(_float fTimeDelta)
 {
-    for (auto& pUI : m_vecUI)
-        pUI->Tick(fTimeDelta);
+    if (m_isRend)
+    {
+        for (auto& pUI : m_vecUI)
+            pUI->Tick(fTimeDelta);
+    }
 }
 
 void CUIGroup_WeaponSlot::Late_Tick(_float fTimeDelta)
 {
-    for (auto& pUI : m_vecUI)
-        pUI->Late_Tick(fTimeDelta);
+    if (m_isRend)
+    {
+        for (auto& pUI : m_vecUI)
+            pUI->Late_Tick(fTimeDelta);
+    }
 }
 
 HRESULT CUIGroup_WeaponSlot::Render()

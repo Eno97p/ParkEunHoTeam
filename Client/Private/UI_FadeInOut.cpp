@@ -48,7 +48,7 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
 	if (TYPE_ALPHA == m_eFadeType)
 	{
-		m_fAlphaTimer += fTimeDelta * 0.4f;
+		m_fAlphaTimer += fTimeDelta * 0.7f;
 		if (m_fAlphaTimer >= 1.f)
 		{
 			m_fAlphaTimer = 1.f;
@@ -56,18 +56,27 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 			if (!m_isFadeIn) // Fade Out
 			{
 				// 씬 초기화 필요
-
+				if (FAILED(Create_FadeIn()))
+					return;
 			}
 			m_pGameInstance->Erase(this);
 		}
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
 	{
-		m_fDisolveValue += fTimeDelta * 0.5f;
+		m_fDisolveValue += fTimeDelta * 0.3f;
 
 		if (m_fDisolveValue >= 1.f)
 		{
 			m_fDisolveValue = 1.f;
+
+			if (!m_isFadeIn)
+			{
+				// 화면 전환? 필요
+				if (FAILED(Create_FadeIn()))
+					return;
+			}
+
 			m_pGameInstance->Erase(this);
 		}
 	}
@@ -154,7 +163,31 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isFadeIn, sizeof(_bool))))
+			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CUI_FadeInOut::Create_FadeIn()
+{
+	UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = true;
+
+	if (TYPE_DISSOLVE == m_eFadeType)
+	{
+		pDesc.eFadeType = TYPE_DISSOLVE;
+	}
+	else
+	{
+		pDesc.eFadeType = TYPE_ALPHA;
+	}
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

@@ -147,19 +147,39 @@ PS_OUT PS_FADE_DISSOLVE(PS_IN In)
 	vector vDissolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float dissolveValue = (vDissolve.r + vDissolve.g + vDissolve.b) / 3.f;
 
-	if ((g_DisolveValue - dissolveValue) > 0.05f)
+	if (g_bIsFadeIn)
 	{
-		Out.vColor = vDiffuse;
-		return Out;
-	}
-	else if (dissolveValue > g_DisolveValue)
-	{
-		discard;
+		if ((g_DisolveValue - dissolveValue) < 0.05f)
+		{
+			Out.vColor = vDiffuse;
+			return Out;
+		}
+		else if (dissolveValue < g_DisolveValue)
+		{
+			discard;
+		}
+		else
+		{
+			Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+			Out.vColor.a = vDiffuse.a;
+		}
 	}
 	else
 	{
-		Out.vColor.rgb = float3(0.f, 0.f, 0.f);
-		Out.vColor.a = vDiffuse.a;
+		if ((g_DisolveValue - dissolveValue) > 0.05f)
+		{
+			Out.vColor = vDiffuse;
+			return Out;
+		}
+		else if (dissolveValue > g_DisolveValue)
+		{
+			discard;
+		}
+		else
+		{
+			Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+			Out.vColor.a = vDiffuse.a;
+		}
 	}
 
 	return Out;

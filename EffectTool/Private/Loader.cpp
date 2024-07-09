@@ -12,6 +12,8 @@
 #include "PlayerHead.h"
 #include "TextureFrame.h"
 #include "WhisperSword_Anim.h"
+#include "Particle_STrail.h"
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -125,6 +127,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Sword_Trail"),
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion COMPONENT
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 #pragma region MODEL
@@ -208,6 +215,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 
+	/* SwordTrailShader */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Sword_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
+		return E_FAIL;
+
 
 #pragma endregion SHADER
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩 중 입니다."));
@@ -234,6 +246,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Trail"),
 		CParticle_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sword_Trail"),
+		CSTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PlayerDummy"),

@@ -6,6 +6,7 @@
 #include "GameInstance.h"
 #include "PartObject.h"
 #include "Player.h"
+#include "Particle_STrail.h"
 
 
 
@@ -120,6 +121,11 @@ void CImguiMgr::Visible_Data()
 	{
 		FrameTextureTool();
 	}
+
+	ImGui::Checkbox("SwordTrailTest", &bShow[4]);
+	if(bShow[4] == true)
+		SwordTrail_Tool();
+
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -1086,6 +1092,32 @@ HRESULT CImguiMgr::Load_TrailList()
 	}
 	NameFile.close();
 	return S_OK;
+}
+
+void CImguiMgr::SwordTrail_Tool()
+{
+	ImGui::Begin("SwordTrail_Tool");
+
+	ImVec2 ButtonSize = { 100.f,30.f };
+
+	static CSTrail::STRAIL_DESC StaticDesc = {};
+	
+	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &StaticDesc.traildesc.iNumInstance, NULL, NULL, "%u");
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&StaticDesc.traildesc.vOffsetPos));
+	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&StaticDesc.traildesc.vSize));
+	ImGui::InputFloat("LifeTime", &StaticDesc.traildesc.fLifeTime);
+	StaticDesc.traildesc.ParentMat = TrailMat;
+
+	StaticDesc.Texture = m_pTextureProtoName; 
+	StaticDesc.TexturePath = m_pTextureFilePath;
+
+	if (ImGui::Button("Add", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(LEVEL_GAMEPLAY, TEXT("Layer_SwordTrail"),
+			TEXT("Prototype_GameObject_Sword_Trail"), &StaticDesc);
+	}
+
+	ImGui::End();
 }
 
 void CImguiMgr::FrameTextureTool()

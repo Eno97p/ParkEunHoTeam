@@ -367,25 +367,29 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
-	Render_Priority();
-	Render_ShadowObjects();
-	Render_NonBlend();
-	Render_LightAcc();
+	
+
+	PROFILE_CALL("Render Priority", Render_Priority());
+	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
+	PROFILE_CALL("Render NonBlend", Render_NonBlend());
+	PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
 
-	Render_DeferredResult();
+	PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 
-	Render_NonLight();
-	Render_Blend();
-	Render_Bloom();
-	Render_Distortion();
+	PROFILE_CALL("Render Render_NonLight", Render_NonLight());
+	PROFILE_CALL("Render Blend", Render_Blend());
+	PROFILE_CALL("Render Bloom", Render_Bloom());
+	PROFILE_CALL("Render Distortion", Render_Distortion());
 
-	Render_Final();
-	Render_UI();
+	PROFILE_CALL("Render Final", Render_Final());
+	PROFILE_CALL("Render UI", Render_UI());
 
 #ifdef _DEBUG
-	Render_Debug();
+	PROFILE_CALL("Render Debug", Render_Debug());
 #endif
+
+	
 }
 #ifdef _DEBUG
 HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)

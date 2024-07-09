@@ -10,6 +10,11 @@
 #include "Level_GamePlay.h"
 #pragma endregion LEVEL_HEADER
 
+
+
+#include"CProfiler.h"
+
+
 #ifdef _DEBUG
 IMPLEMENT_SINGLETON(CImGuiMgr)
 
@@ -75,22 +80,17 @@ HRESULT CImGuiMgr::Update_ImGui()
 	ImGui::Text("Frame:%f", ImGui::GetIO().Framerate);
 	ImGui::Checkbox("Frame Limit", &FrameLimit);
 	Render_MainMenu();
+	ImGui::End();
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+	ImGui::Begin("Profile", nullptr, ImGuiWindowFlags_HorizontalScrollbar/*| ImGuiWindowFlags_NoMove| ImGuiWindowFlags_NoResize*/);
+	Render_Profile();
 
 	ImGui::End();
+
+	
 	return S_OK;
 }
 
@@ -415,10 +415,6 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		}
 	
 	}
-		
-
-		
-
 		if (ImGui::Button("Close"))
 		{
 			m_bComponentPanel = false;
@@ -426,31 +422,17 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		ImGui::End();
 	}
 
-	//Test
 
-	//void* pComponentData = nullptr;
+}
 
-//pComponentData=	Components[ComponentTag]->GetData();
+void CImGuiMgr::Render_Profile()
+{
 
-
-//if(nullptr!=pComponentData)
-//{
-//	if (ComponentTag == TEXT("Com_Transform"))
-//	{
-//		CTransform::TransformDesc* tDesc = static_cast<CTransform::TransformDesc*>(pComponentData);
-//		//tDesc
-//		//_float4x4* pWorldMatrix = static_cast<_float4x4*>(pComponentData);
-//		int tmep = 0;
-
-//	}
-//	
-//}
-
-//auto iter = Components.begin();
-//std::advance(iter, iCurrentComponent);
-//CComponent* pComponent = iter->second;
-
-
+	auto Result = CProfiler::GetInstance().GetProfileResults();
+	for(const auto& profile : Result)
+	{
+		ImGui::Text("%s: %.4f ms", profile.first.c_str(), profile.second);
+	}
 
 
 

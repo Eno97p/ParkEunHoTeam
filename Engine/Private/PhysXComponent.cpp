@@ -506,6 +506,7 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 		PxCapsuleGeometry temp = PxCapsuleGeometry(m_fCapsuleProperty.x, m_fCapsuleProperty.y);
 		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f, pxOffsetTrans);
 		
+		
 		if(nullptr==m_pActor)
 			return E_FAIL;
 		break;
@@ -643,6 +644,18 @@ __super::Free();
 
 PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix)
 {
+
+
+	//PxMat44 pxMat;
+	//for(int i=0;i<4;++i)
+	//	for (int j = 0; j < 4; ++j)
+	//		pxMat[i][j] = pWorldMatrix.m[i][j];
+
+
+
+	//return PxTransform(pxMat);
+
+
 	_vector vScale, vRotation, vPosition;
 	XMMatrixDecompose(&vScale, &vRotation, &vPosition, XMLoadFloat4x4(&pWorldMatrix));
 

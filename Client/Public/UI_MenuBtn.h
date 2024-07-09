@@ -31,7 +31,7 @@ private:
 	_uint			m_iTextureNum = { 0 };
 
 	MENU_TYPE		m_eMenuType = { MENU_END };
-
+	
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

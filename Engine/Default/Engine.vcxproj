@@ -265,6 +265,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Instance_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_PhysXBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SwordTrail.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
@@ -355,6 +356,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\VIBuffer_Instance_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_PhysXBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
+    <ClInclude Include="..\Public\VIBuffer_SwordTrail.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
     <ClInclude Include="..\public\VIBuffer_Trail.h" />
   </ItemGroup>

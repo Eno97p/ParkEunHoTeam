@@ -38,8 +38,8 @@ public:
 
 protected:
 	_bool		m_isRend = { false };
-	_bool		m_isAnimFinished = { false }; // 꺼질 때 애니메이션 종료 여부
-	_bool		m_isRenderOnAnim = { true }; // 켜지는 애니메이션인지 꺼지는 애니메이션인지 상태 여부 (기본 값 : true)
+	_bool		m_isAnimFinished = { false };
+	_bool		m_isRenderOnAnim = { true };
 
 	LEVEL		m_eLevel = { LEVEL_END };
 

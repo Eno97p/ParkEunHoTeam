@@ -144,16 +144,10 @@ HRESULT CPassive_Element::Render()
 
 HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
 {
-    //_int iLevelIndex = m_pGameInstance->Get_
-
-    //LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
-    //LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
-    //LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
-    //LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
-    //LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
+    // LEVEL GAMEPLAY 나중에 수정@@@@@@@@@@@@@@@
 
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str() /*TEXT("Prototype_Component_Model_TronesT03")*/,
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -162,27 +156,22 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
-
-
-
-    
-
-
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-333.f, 154.f, -160.f, 1.f));
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-    //matWorld= m_pTransformCom->Get_WorldMatrix()
+    // wstrModelName을 수정하여 physxName 생성
+    wstring physxName = desc->wstrModelName;
+    size_t pos = physxName.find(L"Model_");
+    if (pos != wstring::npos)
+    {
+        physxName.replace(pos, 6, L"PhysX_");
+    }
 
     CPhysXComponent::PHYSX_DESC		PhysXDesc{};
     PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
     XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
     PhysXDesc.pComponent = m_pModelCom;
     PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
         TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
         return E_FAIL;
-
-
-
 
     return S_OK;
 }

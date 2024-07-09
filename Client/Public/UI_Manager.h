@@ -19,12 +19,20 @@ private:
 	virtual ~CUI_Manager() = default;
 
 public:
-	HRESULT				Initialize();
+	_bool				Get_MenuPageState();
+	void				Set_MenuPageOpen();
+
+public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
 public:
+	HRESULT				Initialize();
 	void				Tick(_float fTimeDelta);
 	void				Late_Tick(_float fTimeDelta);
+
+	void				Render_Logo(_bool isRender);
+	void				Render_Loading(_bool isRender);
+	void				Render_HUD(_bool isRender);
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

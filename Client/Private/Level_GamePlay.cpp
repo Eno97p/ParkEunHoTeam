@@ -40,7 +40,7 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
-	//m_pUI_Manager->Initialize();
+	m_pUI_Manager->Render_HUD(true);
 
 #ifdef _DEBUG
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
@@ -94,18 +94,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	Load_Lights();
+	//Load_Lights();
 
 
-	//LIGHT_DESC			LightDesc{};
+	LIGHT_DESC			LightDesc{};
 
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	//m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -210,12 +210,6 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 
-
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
-
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(0.f);
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
@@ -225,6 +219,9 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
+	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -255,14 +252,14 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
 		return E_FAIL;
@@ -285,10 +282,12 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 	_tchar wszName[MAX_PATH] = TEXT("");
 	_tchar wszLayer[MAX_PATH] = TEXT("");
 	_tchar wszModelName[MAX_PATH] = TEXT("");
+	_uint   iTriggerType = 0;
 
 	// 모델 종류별로 월드 매트릭스를 저장할 맵
 	map<wstring, vector<_float4x4*>> modelMatrices;
 
+	
 	// 생성된 객체 로드
 	while (true)
 	{
@@ -297,39 +296,58 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 		ZeroMemory(wszModelName, sizeof(_tchar) * MAX_PATH);
 
 		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
-		ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
-		MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
-		MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
-
-		//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
-		//{
-		//	// 모델 이름별로 월드 매트릭스 저장
-		//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
-		//	modelMatrices[wszModelName].push_back(pWorldMatrix);
-		//}
-		//else
+		if (strcmp(szName, "Prototype_GameObject_EventTrigger") == 0)
 		{
-			//for (int i = 0; i < 5; ++i)
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+			pDesc.mWorldMatrix = WorldMatrix;
+			pDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+				return E_FAIL;
+		}
+		else
+		{
+			ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			if (0 == dwByte)
+				break;
+
+
+			//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
+			//{
+			//	// 모델 이름별로 월드 매트릭스 저장
+			//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+			//	modelMatrices[wszModelName].push_back(pWorldMatrix);
+			//}
+			//else
 			{
 				// 다른 객체들은 개별적으로 생성
 				CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
 				pDesc.mWorldMatrix = WorldMatrix;
-				//pDesc.mWorldMatrix._41 += i * 100.f;
 				pDesc.wstrModelName = wszModelName;
 				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
 					return E_FAIL;
-			}
-			
 
+			}
 		}
+	
+
+	
 	}
 
 	CloseHandle(hFile);

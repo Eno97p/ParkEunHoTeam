@@ -35,7 +35,7 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-10.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(160.f, 522.f, 98.f, 1.f));
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;

@@ -352,6 +352,36 @@
     <Filter Include="02.GameObjects\99.Camers\ThirdPerson">
       <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo">
+      <UniqueIdentifier>{a0e9d04e-21ca-4d17-8e09-8c9eaf2d8469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo\BG">
+      <UniqueIdentifier>{7fb5f7f2-faa0-49fe-8d0e-6ba12fe96f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo\Banner">
+      <UniqueIdentifier>{10431bd1-fefb-4ef7-b3d8-cd6889419a21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo\Title">
+      <UniqueIdentifier>{7b553402-79da-431b-a26f-e34ba5d7851b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo\Selector">
+      <UniqueIdentifier>{a18e8000-0809-49df-bfe1-bc5b2da7b0c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading">
+      <UniqueIdentifier>{18247cd8-88d3-49f1-a9af-acf939a8b236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading\BG">
+      <UniqueIdentifier>{b9eb2ff4-ed36-48d9-9e8a-a8dcea632693}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Loading\Circle">
+      <UniqueIdentifier>{d4f4d034-d774-4f8e-91d6-37364a511304}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\02. Trigger">
+      <UniqueIdentifier>{b26739c1-9d84-4ec4-abc9-abb542a35d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall">
+      <UniqueIdentifier>{cb0ad04b-85e2-4407-9076-686705c77f2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -643,7 +673,6 @@
     <ClInclude Include="..\Public\Juggulus_HandTwo.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Passive_Element.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
     </ClInclude>
@@ -701,9 +730,6 @@
     <ClInclude Include="..\Public\EffectManager.h">
       <Filter>02.GameObjects\06.Effect</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Active_Element.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Active_Element.h" />
     <ClInclude Include="..\Public\Weapon_Ghost.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
@@ -719,6 +745,39 @@
     </ClInclude>
     <ClInclude Include="..\Public\ThirdPersonCamera.h">
       <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Logo.h">
+      <Filter>02.GameObjects\07. UI\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoBG.h">
+      <Filter>02.GameObjects\07. UI\Logo\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoBanner.h">
+      <Filter>02.GameObjects\07. UI\Logo\Banner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoTitle.h">
+      <Filter>02.GameObjects\07. UI\Logo\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoSelector.h">
+      <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Loading.h">
+      <Filter>02.GameObjects\07. UI\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LoadingBG.h">
+      <Filter>02.GameObjects\07. UI\Loading\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EventTrigger.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\02. Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FakeWall.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Active_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1051,9 +1110,6 @@
     <ClCompile Include="..\Private\EffectManager.cpp">
       <Filter>02.GameObjects\06.Effect</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Active_Element.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp" />
     <ClCompile Include="..\Private\Weapon_Ghost.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Ghost\GhostSword</Filter>
@@ -1069,6 +1125,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp">
       <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Logo.cpp">
+      <Filter>02.GameObjects\07. UI\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoBG.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoBanner.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Banner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoTitle.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoSelector.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Selector</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Loading.cpp">
+      <Filter>02.GameObjects\07. UI\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LoadingBG.cpp">
+      <Filter>02.GameObjects\07. UI\Loading\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EventTrigger.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\02. Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FakeWall.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Active_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1136,6 +1222,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

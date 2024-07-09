@@ -52,8 +52,20 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
        // CNaviMgr::GetInstance()->Save_NaviData(); // Navi Save( ) 함수 호출
     }     
 
+
+
     if (CImgui_Manager::GetInstance()->Get_IsLoad())
         Load_Data();
+
+    if (CImgui_Manager::GetInstance()->Get_IsPhysXSave())
+    {
+        Save_Data_PhysX();
+    }
+
+    if (CImgui_Manager::GetInstance()->Get_IsPhysXLoad())
+    {
+        Load_Data_PhysX();
+    }
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("Level : GamePlay"));
@@ -208,8 +220,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-    //if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
-    //    return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
+        return E_FAIL;
 
 
     return S_OK;
@@ -263,10 +275,8 @@ HRESULT CLevel_GamePlay::Save_Data()
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
     {
         strcpy_s(szName, iter->Get_Name());
-        strcpy_s(szLayer, iter->Get_Layer());
-        strcpy_s(szModelName, iter->Get_ModelName());
         XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
-        eModelType = iter->Get_ModelType();
+       
 
         WriteFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr); // sizeof(_char) * MAX_PATH
 
@@ -278,6 +288,10 @@ HRESULT CLevel_GamePlay::Save_Data()
         }
         else
         {
+            strcpy_s(szModelName, iter->Get_ModelName());
+            eModelType = iter->Get_ModelType();
+            strcpy_s(szLayer, iter->Get_Layer());
+
             WriteFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
@@ -292,6 +306,124 @@ HRESULT CLevel_GamePlay::Save_Data()
 
     MSG_BOX("Data Save");
 
+    return S_OK;
+}
+
+
+HRESULT CLevel_GamePlay::Save_Data_PhysX()
+{
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Tutorial_PhysX.bin";
+    HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (nullptr == hFile)
+        return E_FAIL;
+
+    DWORD dwByte(0);
+    map<std::string, bool> processedModels;
+
+    // 먼저 모든 고유한 모델을 처리하여 map의 크기를 결정
+    for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
+    {
+        string modelName;
+        if (nullptr != iter->Get_ModelName())
+        {
+            modelName = iter->Get_ModelName();
+            if (processedModels.find(modelName) == processedModels.end())
+            {
+                processedModels[modelName] = true;
+            }
+        }
+
+      
+    }
+
+    // map의 크기(고유한 모델의 수)를 파일에 쓰기
+    size_t mapSize = processedModels.size();
+    WriteFile(hFile, &mapSize, sizeof(size_t), &dwByte, nullptr);
+
+    // map을 초기화하고 다시 채우면서 모델 정보 저장
+    processedModels.clear();
+
+    // 생성된 Tool Obj들 저장
+    for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
+    {
+        if (nullptr != iter->Get_ModelName())
+        {
+            string modelName = iter->Get_ModelName();
+            string modelPath = iter->Get_ModelPath();
+
+            // 모델이 아직 처리되지 않았다면
+            if (processedModels.find(modelName) == processedModels.end())
+            {
+                processedModels[modelName] = true;
+
+                // "Model_"을 "PhysX_"로 대체
+                size_t pos = modelName.find("Model_");
+                if (pos != string::npos)
+                {
+                    modelName.replace(pos, 6, "PhysX_");
+                }
+
+                char szModelName[MAX_PATH] = "";
+                strcpy_s(szModelName, modelName.c_str());
+
+                WriteFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+                WriteFile(hFile, modelPath.c_str(), sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            }
+        }
+    }
+
+    CloseHandle(hFile);
+    CImgui_Manager::GetInstance()->Set_DontPhysXSave();
+    MSG_BOX("Data Save");
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_Data_PhysX()
+{
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_PhysX.bin";
+    HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (INVALID_HANDLE_VALUE == hFile)
+        return E_FAIL;
+
+    DWORD dwByte(0);
+
+    // 먼저 map의 크기(고유한 모델의 수)를 읽습니다.
+    size_t mapSize = 0;
+    ReadFile(hFile, &mapSize, sizeof(size_t), &dwByte, nullptr);
+    if (0 == dwByte)
+    {
+        CloseHandle(hFile);
+        return S_OK; // 파일이 비어있는 경우
+    }
+
+    // 각 모델에 대한 정보를 읽습니다.
+    for (size_t i = 0; i < mapSize; ++i)
+    {
+        char szModelName[MAX_PATH] = "";
+        char szModelPath[MAX_PATH] = "";
+
+        ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+        if (0 == dwByte)
+            break;
+
+        ReadFile(hFile, szModelPath, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+        if (0 == dwByte)
+            break;
+
+        // 여기서 읽어들인 모델 이름과 경로를 사용하여 필요한 작업을 수행합니다.
+        // 예: PhysX 콜라이더 생성, 모델 로드 등
+
+        // 예시:
+        // Create_PhysXCollider(szModelName, szModelPath);
+
+        // 디버그 출력 (필요시 사용)
+        // OutputDebugStringA(("Loaded Model: " + std::string(szModelName) + "\n").c_str());
+    }
+
+    CloseHandle(hFile);
+    CImgui_Manager::GetInstance()->Set_DontPhysXLoad();
+
+    MSG_BOX("PhysX Data Loaded");
     return S_OK;
 }
 
@@ -392,11 +524,11 @@ const _tchar* CLevel_GamePlay::Setting_FileName()
         return  L"../Bin/MapData/Stage.dat";
       //  return  L"../../Data/Home.dat";
     case STAGE_ONE:
-        return L"../../Data/Stage1.dat";
+        return L"../Bin/MapData/Stage_Tutorial.dat";
     case STAGE_TWO:
-        return L"../../Data/Stage2.dat";
+        return L"../Bin/MapData/Stage_AndrasArena.dat";
     case STAGE_THREE:
-        return L"../../Data/Stage3.dat";
+        return L"../Data/Stage3.dat";
     case STAGE_BOSS:
         return L"../../Data/BossStage.dat";
     default:

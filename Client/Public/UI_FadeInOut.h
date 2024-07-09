@@ -34,7 +34,7 @@ public:
 private:
 	_bool			m_isFadeIn = { false };
 	_float			m_fAlphaTimer = { 0.f };
-	_float			m_fDisolveValue = 0.f;
+	_float			m_fDisolveValue = { 0.f };
 
 	FADE_TYPE		m_eFadeType = { TYPE_END };
 
@@ -43,6 +43,8 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
+
+	HRESULT	Create_FadeIn();
 
 public:
 	static CUI_FadeInOut*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

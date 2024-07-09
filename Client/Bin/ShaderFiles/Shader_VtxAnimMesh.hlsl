@@ -226,7 +226,6 @@ PS_OUT_BLOOM PS_WHISPERSWORD_BLOOM(PS_IN In)
 	vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 
 	Out.vColor = vColor;
-	Out.vColor *= 0.3f;
 
 	return Out;
 }

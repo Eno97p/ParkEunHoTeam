@@ -14,6 +14,10 @@ private:
 	virtual ~CUIGroup_Menu() = default;
 
 public:
+	_bool				Get_MenuPageState() { return m_isMenuPageOpen; }
+	void				Set_MenuPageState(_bool isOpen) { m_isMenuPageOpen = isOpen; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -22,6 +26,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool					m_isMenuPageOpen;
+
 	vector<CUI*>			m_vecUI;
 
 private:

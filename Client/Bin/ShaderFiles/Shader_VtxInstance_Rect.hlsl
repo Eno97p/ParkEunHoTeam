@@ -18,6 +18,7 @@ struct VS_IN
 	float2		vLifeTime : COLOR0;
 };
 
+
 struct VS_OUT
 {
 	float4		vPosition : SV_POSITION;

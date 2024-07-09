@@ -1138,5 +1138,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

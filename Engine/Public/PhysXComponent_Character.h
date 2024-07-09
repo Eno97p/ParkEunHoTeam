@@ -35,8 +35,9 @@ private:
 	virtual ~CPhysXComponent_Character() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
+	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
+
 
 public:
 	virtual void SetFilterData(PxFilterData  filterData)override;

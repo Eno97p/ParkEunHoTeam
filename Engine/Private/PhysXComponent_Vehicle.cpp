@@ -123,7 +123,7 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 
 void CPhysXComponent_Vehicle::Late_Tick(const _float fTimeDelta)
 {
-	//m_pVehicle->updateSequence(fTimeDelta, m_pVehicleSimulationContext);
+	m_pVehicle->updateSequence(fTimeDelta, m_pVehicleSimulationContext);
 }
 
 

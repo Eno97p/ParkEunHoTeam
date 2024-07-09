@@ -48,7 +48,7 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 void CHoverboard::Tick(_float fTimeDelta)
 {
 	
-	//m_pPhysXCom->Tick(fTimeDelta);
+	m_pPhysXCom->Tick(fTimeDelta);
 
 
 }

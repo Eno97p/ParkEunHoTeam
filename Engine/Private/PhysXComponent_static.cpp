@@ -18,29 +18,30 @@ CPhysXComponent_static::CPhysXComponent_static(const CPhysXComponent_static & rh
 	: CPhysXComponent{ rhs }
 	, m_strFilePath{ rhs.m_strFilePath }
 	,m_OutDesc{rhs.m_OutDesc}
+	, m_pTriangleMesh{rhs.m_pTriangleMesh}
 {
 }
 
 HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath, const wstring& FilePath)
 {
-	if(FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
 	m_strFilePath = pModelFilePath;
 
-	decltype(auto) Load_data = Load_Data<_char[MAX_PATH], _char[MAX_PATH], _char[MAX_PATH], _float4x4, CModel::MODELTYPE>(FilePath);
+	if(FAILED(__super::Initialize_Prototype()))
+		return E_FAIL;
 
-	_float4x4 WorldMatrix = get<3>(Load_data);
+	//decltype(auto) Load_data = Load_Data<_char[MAX_PATH], _char[MAX_PATH], _char[MAX_PATH], _float4x4, CModel::MODELTYPE>(FilePath);
+
+	//_float4x4 WorldMatrix = get<3>(Load_data);
 
 
+	//PxTransform pxTrans =Convert_DxMat_To_PxTrans(WorldMatrix);
 
-	PxTransform pxTrans =Convert_DxMat_To_PxTrans(WorldMatrix);
-
-	m_pActor= m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
+	//m_pActor= m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
 
 	if (FAILED(Load_Buffer()))
 		return E_FAIL;
 	
-	if(FAILED(CreateActor()))
+	if(FAILED(Create_PhysX_TriAngleMesh()))
 		return E_FAIL;
 
 
@@ -59,20 +60,33 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 {
 	CPhysXComponent::PHYSX_DESC* pDesc = static_cast<CPhysXComponent::PHYSX_DESC*>(pArg);
 
+	PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
+
+	_vector vScale, vRotation, vPosition;
+	XMMatrixDecompose(&vScale, &vRotation, &vPosition, XMLoadFloat4x4(&pDesc->fWorldMatrix));
+	_float3 fScale;
+	XMStoreFloat3(&fScale, vScale);
 
 
-	//나중에 수정할 것
-	//PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
-	//m_pActor = m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
-	//
-	//if (FAILED(CreateActor()))
-	//	return E_FAIL;
+
+	m_pActor = m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
+	m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(0.5f, 0.5f, 0.5f);
+	for (auto& TriangleMesh : m_pTriangleMesh)
+	{
+		PxTriangleMeshGeometry triGeom(TriangleMesh, PxMeshScale(PxVec3(fScale.x, fScale.y, fScale.z)));
+		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial);
+		m_pActor->attachShape(*shape);
+		shape->release();
+
+	}
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	
 	m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
+	
 
 
 	return S_OK;
@@ -124,7 +138,7 @@ HRESULT CPhysXComponent_static::Render()
 #endif
 
 
-HRESULT CPhysXComponent_static::CreateActor()
+HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 {
 	
 	size_t iMeshCount = m_pBuffer.size();
@@ -153,10 +167,13 @@ HRESULT CPhysXComponent_static::CreateActor()
 		//}
 		
 		
+		PxTolerancesScale scale;
+		scale= m_pGameInstance->GetPhysics()->getTolerancesScale();
 		PxCookingParams cookingParams(m_pGameInstance->GetPhysics()->getTolerancesScale());
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
-		cookingParams.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
+		//cookingParams.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
+		cookingParams.midphaseDesc.mBVH34Desc.setToDefault();
 		
 		
 		
@@ -165,22 +182,38 @@ HRESULT CPhysXComponent_static::CreateActor()
 		bool bSuccess = PxCookTriangleMesh(cookingParams, meshDesc, writeBuffer, &result);
 		if (!bSuccess)
 			return E_FAIL;
+
+		wstring filePath(m_strFilePath.begin(), m_strFilePath.end());
+		size_t pos = filePath.find(L".fbx");
+
+		wstring AddName = L" _PhysX";
+		if (pos != wstring::npos)
+		{
+
+			filePath.insert(pos, AddName);
+		}
+
+		PxU8* pMeshData = writeBuffer.getData();
+		PxU32 iMeshSize = writeBuffer.getSize();
 		
+		Save_Data(filePath, pMeshData, iMeshSize);
+
 		
+
 		PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
 		PxTriangleMesh* pTriangleMesh = m_pGameInstance->GetPhysics()->createTriangleMesh(readBuffer);
 		
-
+		m_pTriangleMesh.push_back(pTriangleMesh);
 		//나중에 수정해야 할 수도 있음 현재 그냥 상수로 넣어놓음
 		//맵 마다 다르게 재질을 설정해야 한다면 구조 수정!
-		m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(0.5f, 0.5f, 0.5f);
-		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(PxTriangleMeshGeometry(pTriangleMesh), *m_pMaterial);
-		
-		
-		m_pActor->attachShape(*shape);
-		
-
-		shape->release();
+		//m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(0.5f, 0.5f, 0.5f);
+		//PxShape* shape = m_pGameInstance->GetPhysics()->createShape(PxTriangleMeshGeometry(pTriangleMesh), *m_pMaterial);
+		//
+		//
+		//m_pActor->attachShape(*shape);
+		//
+		//
+		//shape->release();
 
 
 

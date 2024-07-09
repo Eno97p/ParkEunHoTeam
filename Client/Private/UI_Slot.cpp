@@ -155,11 +155,9 @@ void CUI_Slot::Open_SubPage()
 	{
 		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
 
-		// 두 번 눌러야 멀쩡하게 애니메이션 포함해서 켜지는 오류 있음
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
-
 	}
 }
 

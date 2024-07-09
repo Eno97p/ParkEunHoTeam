@@ -382,9 +382,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall">
       <UniqueIdentifier>{cb0ad04b-85e2-4407-9076-686705c77f2a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. UI\MenuPage\Weapon\SubPage">
-      <UniqueIdentifier>{1d42b181-11b6-43ff-8a3a-a2bfce1dac57}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\MenuPage\BG_Alpha">
       <UniqueIdentifier>{24ba0fa8-6961-4fea-9e7d-687585a0abb9}</UniqueIdentifier>
     </Filter>

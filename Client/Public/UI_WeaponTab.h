@@ -37,6 +37,9 @@ private:
 
 	void	Setting_Data();
 
+	_tchar* Settiing_BtnText();
+	void	Render_Text();
+
 public:
 	static CUI_WeaponTab*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;

@@ -59,6 +59,8 @@ HRESULT CUI_WeaponTab::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	Render_Text();
+
 	return S_OK;
 }
 
@@ -127,6 +129,50 @@ void CUI_WeaponTab::Setting_Data()
 	}
 
 	m_fY = 80.f;
+}
+
+_tchar* CUI_WeaponTab::Settiing_BtnText()
+{
+	switch (m_eTabType)
+	{
+	case Client::CUI_WeaponTab::TAB_L:
+		return TEXT("WEAPONS");
+	case Client::CUI_WeaponTab::TAB_R:
+		return TEXT("ARTEFACTS");
+	default:
+		return TEXT("");
+	}
+}
+
+void CUI_WeaponTab::Render_Text()
+{
+	_tchar wszFont[MAX_PATH] = TEXT("");
+	_float fX = { 0.f };
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), TEXT("TAB"), _float2((g_iWinSizeX >> 1) - 17.f, m_fY - 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+
+	// Tab 선택한 것에 따라 폰트 크기 변경되도록 해야함
+	switch (m_eTabType)
+	{
+	case Client::CUI_WeaponTab::TAB_L:
+	{
+		wcscpy_s(wszFont, TEXT("Font_Cardo17"));
+		fX = m_fX - 350.f;
+		break;
+	}
+	case Client::CUI_WeaponTab::TAB_R:
+	{
+		wcscpy_s(wszFont, TEXT("Font_Cardo15"));
+		fX = m_fX + 170.f;
+		break;
+	}
+	default:
+		break;
+	}
+
+	if (FAILED(m_pGameInstance->Render_Font(wszFont, Settiing_BtnText(), _float2(fX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
 }
 
 CUI_WeaponTab* CUI_WeaponTab::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

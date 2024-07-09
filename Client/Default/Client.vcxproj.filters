@@ -779,6 +779,9 @@
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_LoadingCircle.h">
+      <Filter>02.GameObjects\07. UI\Loading\Circle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1155,6 +1158,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LoadingCircle.cpp">
+      <Filter>02.GameObjects\07. UI\Loading\Circle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

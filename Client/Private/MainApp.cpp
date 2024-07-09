@@ -25,6 +25,7 @@
 
 #pragma region Loading
 #include "UI_LoadingBG.h"
+#include "UI_LoadingCircle.h"
 #include "UIGroup_Loading.h"
 #pragma endregion Loading
 
@@ -812,6 +813,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_LoadingBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LoadingBG"),
 		CUI_LoadingBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_LoadingCircle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LoadingCircle"),
+		CUI_LoadingCircle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

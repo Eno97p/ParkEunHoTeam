@@ -9,6 +9,7 @@ class CModel;
 class CTexture;
 class CVIBuffer_Rect;
 class CTransform;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -38,6 +39,9 @@ private:
 	CTexture* m_pTextureCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	CTransform* m_pTextureTransformCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
+
+	CPlayer* m_pPlayer = { nullptr };
 
 public:
 	HRESULT Add_Components();

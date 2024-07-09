@@ -62,7 +62,15 @@
 #define KEY_NONE(key) KEY_CHECK(key,eKEY_STATE::NONE )
 
 
-
+#ifdef _DEBUG
+#define PROFILE_FUNCTION() ProfileScope profiler##__LINE__(__FUNCTION__)
+#define PROFILE_SCOPE(name) ProfileScope profiler##__LINE__(name)
+#define PROFILE_RESET() CProfiler::GetInstance().Reset()
+#else
+#define PROFILE_FUNCTION()
+#define PROFILE_SCOPE(name)
+#define PROFILE_RESET()
+#endif
 
 
 //For_PhysX

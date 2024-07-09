@@ -5,6 +5,7 @@
 #include "BackGround.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 #pragma region LEVEL_HEADER
 #include "Level_Logo.h"
@@ -14,7 +15,9 @@
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
+	, m_pUI_Manager(CUI_Manager::GetInstance())
 {
+	Safe_AddRef(m_pUI_Manager);
 }
 
 /* 
@@ -41,6 +44,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 void CLevel_Loading::Tick(_float fTimeDelta)
 {
+	m_pUI_Manager->Render_Loading(true);
+
 	if (true == m_pLoader->is_Finished())
 	{
 		if (GetKeyState(VK_RETURN) & 0x8000)
@@ -55,6 +60,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				//pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_GAMEPLAY:
+				m_pUI_Manager->Render_Loading(false);
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;
 				//pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
@@ -75,6 +81,11 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 #endif
 }
 
+void CLevel_Loading::Late_Tick(_float fTimeDelta)
+{
+	m_pUI_Manager->Late_Tick(fTimeDelta);
+}
+
 HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 {
 	/*CBackGround::BACKGROUND_DESC		ObjectDesc{};
@@ -84,8 +95,10 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 	ObjectDesc.fSpeedPerSec = 10.f;
 	ObjectDesc.fRotationPerSec = XMConvertToRadians(90.0f);*/
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, strLayerTag, TEXT("Prototype_GameObject_BackGround"))))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, strLayerTag, TEXT("Prototype_GameObject_BackGround"))))
+		return E_FAIL;*/
+
+	//CUI_Manager::GetInstance()->Render_Logo(true);
 
 	return S_OK;
 }
@@ -108,4 +121,5 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
+	Safe_Release(m_pUI_Manager);
 }

@@ -20,8 +20,7 @@
 #include "UISorter.h"
 
 
-#include"CProfileScope.h"
-#include"CProfiler.h"
+
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -125,71 +124,71 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
 {
-	PROFILE_FUNCTION();
+	PROFILE_RESET();
+	
 	if (nullptr == m_pLevel_Manager)
 		return;
-	{
-		PROFILE_SCOPE("Input Device Update");
-		m_pInput_Device->Update_InputDev();
-	}
 
-	{
-		PROFILE_SCOPE("Object Manager Priority Tick");
-		m_pObject_Manager->Priority_Tick(fTimeDelta);
-	}
+	//PROFILE_SCOPE("Input Device Update");
+	PROFILE_CALL("Input Device Update", m_pInput_Device->Update_InputDev());
+	
+	//PROFILE_SCOPE("Object Manager Priority Tick");
+	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
-	{
-		PROFILE_SCOPE("Object Manager Tick");
-		m_pObject_Manager->Tick(fTimeDelta);	
-	}
 
-	{
-		PROFILE_SCOPE("PipeLine Tick");
-		m_pPipeLine->Tick();
-	}
+	
+	//PROFILE_SCOPE("Object Manager Tick");
+	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+	
 
-	{
-		PROFILE_SCOPE("PhysX Tick");
-		m_pPhysX->Tick(fTimeDelta);
-	}
+	
+	//PROFILE_SCOPE("PipeLine Tick");
+	PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
+	
 
-	{
-		PROFILE_SCOPE("Frustum Tick");
-		m_pFrustum->Update();
-	}
+	
+	//PROFILE_SCOPE("PhysX Tick");
+	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+	
 
-	{
-		PROFILE_SCOPE("Calculator Tick");
-		m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW));
-	}
+	
+	//PROFILE_SCOPE("Frustum Tick");
+	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+	
 
-	{
+	
+	//PROFILE_SCOPE("Calculator Tick");
+	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+	
 
-		PROFILE_SCOPE("Picking Update");
-		m_pPicking->Update();
-	}
+	
 
-	{
-		PROFILE_SCOPE("Object Manager Late_Tick");
-		m_pObject_Manager->Late_Tick(fTimeDelta);
-	}
+	//PROFILE_SCOPE("Picking Update");
+#ifdef _DEBUG
+	PROFILE_CALL("Picking Update", m_pPicking->Update());
+#endif // _DEBUG
 
-	{
-
-		PROFILE_SCOPE("Level Manager Tick");
-		m_pLevel_Manager->Tick(fTimeDelta);
-	}
-
-	{
-		PROFILE_SCOPE("Level Manager Late_Tick");
-		m_pLevel_Manager->Late_Tick(fTimeDelta);
-	}
 	
 	
-	{
-		PROFILE_SCOPE("UISorting Tick");
-		m_UISorter->Sorting();
-	}
+
+	
+	//PROFILE_SCOPE("Object Manager Late_Tick");
+	PROFILE_CALL("Object Manager Late_Tick", m_pObject_Manager->Late_Tick(fTimeDelta));
+	
+
+
+	//PROFILE_SCOPE("Level Manager Tick");
+	PROFILE_CALL("Level Manager Tick", m_pLevel_Manager->Tick(fTimeDelta));
+	
+	//PROFILE_SCOPE("Level Manager Late_Tick");
+	PROFILE_CALL("Level Manager Late_Tick",m_pLevel_Manager->Late_Tick(fTimeDelta));
+	
+	//PROFILE_SCOPE("UISorting Tick");
+	PROFILE_CALL("UISorting Tick",m_UISorter->Sorting());
+	
+
+
+
 }
 
 HRESULT CGameInstance::Draw()
@@ -206,7 +205,6 @@ HRESULT CGameInstance::Draw()
 void CGameInstance::Clear_Resources(_uint iLevelIndex)
 {
 	m_pRenderer->Clear();
-	//m_pLight_Manager->LightOff_All();
 	m_pObject_Manager->Clear(iLevelIndex);
 	m_pComponent_Manager->Clear(iLevelIndex);
 }
@@ -629,6 +627,8 @@ POINT CGameInstance::Get_Mouse_Point()
 
 HRESULT CGameInstance::EventUpdate()
 {
+	
+	
 	return m_pEvent_Manager->EventUpdate();
 }
 

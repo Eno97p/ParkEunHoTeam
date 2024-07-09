@@ -26,6 +26,12 @@ public:
 	_bool	Get_IsSave() { return m_IsSave; }
 	void	Set_DontSave() { m_IsSave = false; }
 
+	_bool	Get_IsPhysXSave() { return m_IsPhysXSave; }
+	void	Set_DontPhysXSave() { m_IsPhysXSave = false; }
+
+	_bool	Get_IsPhysXLoad() { return m_IsPhysXLoad; }
+	void	Set_DontPhysXLoad() { m_IsPhysXLoad = false; }
+
 	_bool	Get_IsLoad() { return m_IsLoad; }
 	void	Set_DontLoad() { m_IsLoad = false; }
 
@@ -95,6 +101,8 @@ private:
 	_bool	m_bTerrainWindow = false;
 
 	_bool	m_IsSave = { false };
+	_bool	m_IsPhysXSave = { false };
+	_bool	m_IsPhysXLoad = { false };
 	_bool	m_IsLoad = { false };
 	_bool	m_IsTerrainReLoad = { false };
 

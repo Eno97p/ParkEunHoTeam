@@ -29,8 +29,8 @@ protected:
 	virtual ~CUI() = default;
 
 public:
-	_bool			Get_RenderOnAnim() { return m_isRenderOnAnim; }
-	void			Set_RenderOnAnim(_bool isRenderOnAnim) { m_isRenderOnAnim = isRenderOnAnim; }
+	_bool			Get_RenderOnAnim() { return m_isRenderOffAnim; }
+	void			Set_RenderOnAnim(_bool isRenderOffAnim) { m_isRenderOffAnim = isRenderOffAnim; }
 
 	_bool			Get_RenderAnimFinished() { return m_isRenderAnimFinished; }
 	void			Set_RenderAnimFinised(_bool isRenderAnimFinished) { m_isRenderAnimFinished = isRenderAnimFinished; }
@@ -44,10 +44,11 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Render_Animation(_float fTimeDelta);
-	void			Resset_Animation();
+	void			Resset_Animation(_bool isOffAnim);
+	_bool			isRender_End();
 
 protected:
-	_bool				m_isRenderOnAnim = { false }; // 켜지는 애니메이션인지 꺼지는 애니메이션인지
+	_bool				m_isRenderOffAnim = { false }; // 켜지는 애니메이션인지 꺼지는 애니메이션인지
 	_bool				m_isRenderAnimFinished = { false }; // 애니메이션 종료 여부
 	_float				m_fRenderTimer = { 0.f };
 

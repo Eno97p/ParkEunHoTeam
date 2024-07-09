@@ -83,6 +83,7 @@ public:/*For.Physx*/
 	vector<CMesh*> Get_Meshes() { return m_Meshes; }
 	vector<CBone*>* Get_Bones() { return &m_Bones; }
 
+	string Get_ModelPath() { return m_fullpath; }
 
 public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const  _char* pModelFilePath, _fmatrix PreTransformMatrix);

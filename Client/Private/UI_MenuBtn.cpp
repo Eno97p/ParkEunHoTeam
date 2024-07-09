@@ -46,6 +46,9 @@ void CUI_MenuBtn::Priority_Tick(_float fTimeDelta)
 
 void CUI_MenuBtn::Tick(_float fTimeDelta)
 {
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
+
 	m_CollisionRect = { LONG(m_fX - m_fSizeX * 0.15f), LONG(m_fY - m_fSizeY * 0.15f),
 						LONG(m_fX + m_fSizeX * 0.15f) ,LONG(m_fY + m_fSizeY * 0.15f) };
 
@@ -54,7 +57,7 @@ void CUI_MenuBtn::Tick(_float fTimeDelta)
 	if (m_isSelect)
 	{
 		m_iTextureNum = 1;
-		if (m_pGameInstance->Mouse_Down(DIM_LB))
+		if (m_pGameInstance->Mouse_Down(DIM_LB) && !(CUI_Manager::GetInstance()->Get_MenuPageState()))
 			Open_MenuPage();
 	}
 	else
@@ -71,7 +74,7 @@ HRESULT CUI_MenuBtn::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -108,7 +111,13 @@ HRESULT CUI_MenuBtn::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureNum))) // 추후 마우스 충돌에 따라 texture 선택하여 출력
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureNum)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;
@@ -191,6 +200,7 @@ void CUI_MenuBtn::Open_MenuPage()
 		break;
 	}
 
+	CUI_Manager::GetInstance()->Set_MenuPageOpen();
 }
 
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

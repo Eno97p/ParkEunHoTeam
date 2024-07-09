@@ -22,6 +22,30 @@ CToolObj::CToolObj(const CToolObj& rhs)
 {
 }
 
+_char* CToolObj::Get_ModelName()
+{
+	if (m_pModelCom != nullptr)
+	{
+		return m_szModelName;
+	}
+
+	return nullptr;
+}
+
+string CToolObj::Get_ModelPath()
+{
+	if (m_pModelCom != nullptr)
+	{
+		return m_pModelCom->Get_ModelPath();
+	}
+	else
+	{
+		return "NoModel";
+	}
+
+	return "NoModel";
+}
+
 HRESULT CToolObj::Initialize_Prototype()
 {
 	return S_OK;
@@ -153,11 +177,11 @@ HRESULT CToolObj::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bNormal"), &f, sizeof(_bool))))
 			return E_FAIL;*/
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+		//	return E_FAIL;
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+		//	return E_FAIL;
 		
 	/*	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColorOffset", &m_vColorOffset, sizeof(_uint))))
 			return E_FAIL;*/

@@ -43,7 +43,7 @@ private:
 
 private:
 	class CShader* m_pShader = { nullptr };
-	class CComputeShader_Texture* m_pBloomComputeShader = { nullptr };
+	//class CComputeShader_Texture* m_pBloomComputeShader = { nullptr };
 	class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
 	_float4x4							m_WorldMatrix = {};

@@ -206,6 +206,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\Components_Vehicle.cpp" />
     <ClCompile Include="..\private\CProfiler.cpp" />
     <ClCompile Include="..\private\CProfileScope.cpp" />
+    <ClCompile Include="..\private\CUserErrorCallBack.cpp" />
     <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -264,6 +265,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\VIBuffer_Instance_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_PhysXBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_SwordTrail.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Terrain.cpp" />
     <ClCompile Include="..\private\VIBuffer_Trail.cpp" />
     <ClCompile Include="..\Public\Engine_Struct.cpp" />
@@ -300,6 +302,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\CSelector.h" />
     <ClInclude Include="..\Public\CSequence.h" />
     <ClInclude Include="..\public\CSimulationCallBack.h" />
+    <ClInclude Include="..\public\CUserErrorCallBack.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -353,6 +356,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\VIBuffer_Instance_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_PhysXBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
+    <ClInclude Include="..\Public\VIBuffer_SwordTrail.h" />
     <ClInclude Include="..\Public\VIBuffer_Terrain.h" />
     <ClInclude Include="..\public\VIBuffer_Trail.h" />
   </ItemGroup>

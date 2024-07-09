@@ -4,12 +4,13 @@
 #include "CHitReport.h"
 #include"foundation/PxThread.h"
 
-
+#include"CUserErrorCallBack.h"
 
 
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 CSimulationCallBack g_SimulationCallBack;
+CUserErrorCallBack g_ErrorCallBack;
 
 
 CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -25,7 +26,7 @@ CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CPhysX::Initialize()
 {
-	m_pFoundation= PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, gErrorCallback);
+	m_pFoundation= PxCreateFoundation(PX_PHYSICS_VERSION, gAllocator, g_ErrorCallBack);
 	if (!m_pFoundation)
 	{
 		MSG_BOX("Failed To Create : Physx_Foundation");
@@ -95,6 +96,9 @@ HRESULT CPhysX::Initialize()
 	sceneDesc.simulationEventCallback = &g_SimulationCallBack;
 
 	sceneDesc.cudaContextManager = m_pCudaContextManager;
+
+
+	//sceneDesc.flags |= PxSceneFlag::eENABLE_DIRECT_GPU_API;			//https://nvidia-omniverse.github.io/PhysX/physx/5.4.0/docs/DirectGPUAPI.html#direct-gpu-api-limitations
 	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
@@ -102,6 +106,7 @@ HRESULT CPhysX::Initialize()
 	
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 	sceneDesc.gpuMaxNumPartitions = 8;
+	
 	
 	
 
@@ -126,8 +131,6 @@ HRESULT CPhysX::Initialize()
 	}
 
 #ifdef _DEBUG
-
-
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eACTOR_AXES, 1.0f);
 	m_pScene->getVisualizationParameter(PxVisualizationParameter::eCOLLISION_SHAPES);
@@ -141,14 +144,22 @@ HRESULT CPhysX::Initialize()
 		MSG_BOX("Failed To Create : Physx_ControllerManager");
 		return E_FAIL;
 	}
-	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
 
+
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
 	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
 	m_pScene->addActor(*groundPlane);
 
 
+	if (!PxInitExtensions(*m_pPhysics, m_pPvd))
+	{
+		MSG_BOX("PxInitExtensions failed!");
+		return E_FAIL;
+	
+	}
 
 	PxInitVehicleExtension(*m_pFoundation);
+
 
 	return S_OK;
 }
@@ -156,10 +167,26 @@ HRESULT CPhysX::Initialize()
 void CPhysX::Tick(_float fTimeDelta)
 {
 	m_pScene->simulate(fTimeDelta);
-	m_pScene->fetchResults(true);
 
 
+	PxU32 errorState = 0;
 
+	bool resultFetched = m_pScene->fetchResults(true,&errorState);
+	if (!resultFetched)
+	{
+		MSG_BOX("Failed To Fetch Result");
+		return;
+	}
+
+	PxSimulationStatistics stats;
+	m_pScene->getSimulationStatistics(stats);
+
+	PxU32 temp = stats.nbActiveDynamicBodies;
+	PxU32 temp2 = stats.nbActiveKinematicBodies;
+	PxU32 temp3 = stats.nbStaticBodies;
+
+	
+	
 }
 
 HRESULT CPhysX::AddActor(PxActor* pActor)
@@ -228,7 +255,9 @@ CPhysX* CPhysX::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 void CPhysX::Free()
 {
+	PxCloseExtensions();
 	PxCloseVehicleExtension();
+
 
 
 	Safe_physX_Release(m_pControllerManager);

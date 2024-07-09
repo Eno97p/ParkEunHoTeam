@@ -137,7 +137,7 @@ HRESULT CUI_Slot::Create_Frame()
 	
 	if (SLOT_QUICK == m_eSlotType)
 		pDesc.eUISort = ELEVENTH;
-	else if (SLOT_INV == m_eSlotType)
+	else if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 		pDesc.eUISort = TENTH;
 	else if (SLOT_INVSUB == m_eSlotType)
 		pDesc.eUISort = FOURTEENTH;

@@ -210,14 +210,17 @@ void CUI_MenuBtn::Open_MenuPage()
 	{
 	case Client::CUI_MenuBtn::MENU_CH:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Menu_Ch");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_MAP:
 		break;
 	case Client::CUI_MenuBtn::MENU_WEAPON:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_INV:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Inventory");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_SET:
 		break;
@@ -227,7 +230,7 @@ void CUI_MenuBtn::Open_MenuPage()
 		break;
 	}
 
-	CUI_Manager::GetInstance()->Set_MenuPageOpen();
+	//CUI_Manager::GetInstance()->Set_MenuPageOpen(); // 예외 처리 위해 위에 코드 붙였지만 해당 코드로 적용해야 함
 }
 
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

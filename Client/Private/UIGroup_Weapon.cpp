@@ -140,7 +140,7 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 			pDesc.fY = 200.f + (i * 76.f);
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
-			pDesc.eSlotType = CUI_Slot::SLOT_INV;
+			pDesc.eSlotType = CUI_Slot::SLOT_WEAPON; // Inv가 아니라 Weapon을 만들어야 예외처리 가능
 			pDesc.eUISort = NINETH;
 			m_vecUI.emplace_back(dynamic_cast<CUI*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}

@@ -128,16 +128,6 @@ HRESULT CLoader::Loading_Map()
 
 		break;
 	}
-	//¿¹½Ã:case LEVEL_BOSS:
-	//	
-	//	
-	//	
-	//	
-	//	
-	//	
-	//
-	//	break;
-
 
 	}
 
@@ -151,9 +141,6 @@ HRESULT CLoader::Loading_Map()
 
 	if (FAILED(hr))
 		return E_FAIL;
-
-
-
 
 	return S_OK;
 }

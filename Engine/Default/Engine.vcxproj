@@ -206,6 +206,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\Components_Vehicle.cpp" />
     <ClCompile Include="..\private\CProfiler.cpp" />
     <ClCompile Include="..\private\CProfileScope.cpp" />
+    <ClCompile Include="..\private\CUserErrorCallBack.cpp" />
     <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -300,6 +301,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\CSelector.h" />
     <ClInclude Include="..\Public\CSequence.h" />
     <ClInclude Include="..\public\CSimulationCallBack.h" />
+    <ClInclude Include="..\public\CUserErrorCallBack.h" />
     <ClInclude Include="..\public\CustomFont.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />

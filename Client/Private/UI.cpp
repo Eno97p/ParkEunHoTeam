@@ -61,6 +61,24 @@ void CUI::Setting_Position()
     XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
 }
 
+void CUI::Render_Animation(_float fTimeDelta)
+{
+    m_fRenderTimer += fTimeDelta * 3.f;
+
+    if (m_fRenderTimer >= 1.f) // 애니메이션 종료 시
+    {
+        m_fRenderTimer = 1.f;
+        //m_isRenderOnAnim = !m_isRenderOnAnim; // 켜짐-> 꺼짐 / 꺼짐->켜짐 으로 UI객체가 가지는 애니메이션 상태 변경?
+        m_isRenderAnimFinished = true;
+    }
+}
+
+void CUI::Resset_Animation()
+{
+    m_fRenderTimer = 0.f;
+    m_isRenderOnAnim = false;
+}
+
 void CUI::Free()
 {
     __super::Free();

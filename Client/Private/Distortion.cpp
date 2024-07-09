@@ -53,7 +53,7 @@ void CDistortion::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 }
 
-HRESULT CDistortion::Render()
+HRESULT CDistortion::Render_Distortion()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;

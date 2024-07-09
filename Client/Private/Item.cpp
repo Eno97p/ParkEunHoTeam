@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "PartObject.h"
+#include "Player.h"
 
 CItem::CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -31,12 +32,15 @@ HRESULT CItem::Initialize(void* pArg)
 
 	Set_Texture();
 
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
 	return S_OK;
 }
 
 void CItem::Set_Texture()
 {
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(140.f, 524.f, 98.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 524.f, 98.f, 1.f));
 	m_pTextureTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_pTextureTransformCom->Set_Scale(0.3f, 0.3f, 0.3f);
 	m_pTextureTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(
@@ -54,6 +58,14 @@ void CItem::Tick(_float fTimeDelta)
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
 
 	m_pTextureTransformCom->BillBoard();
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	{
+		// ¾ÆÀÌÅÛ È¹µæ ·ÎÁ÷
+		m_pGameInstance->Erase(this);
+	}
 }
 
 void CItem::Late_Tick(_float fTimeDelta)
@@ -61,6 +73,10 @@ void CItem::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
+
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 }
 
 HRESULT CItem::Render()
@@ -158,6 +174,17 @@ HRESULT CItem::Add_Components()
 		return E_FAIL;
 	m_pTextureTransformCom->Initialize(nullptr);
 
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(7.f, 7.f, 7.f);
+	ColliderDesc.vCenter = _float3(0.f, 5.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -210,4 +237,5 @@ void CItem::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pColliderCom);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Client_Defines.h"
 #include "Monster.h"
 
 BEGIN(Client)
@@ -20,6 +21,17 @@ private:
 	virtual ~CBoss_Juggulus() = default;
 
 public:
+#pragma region 상태제어 bool변수
+	_bool										m_bReviving = false;
+	_bool										m_bChasing = true;
+	_bool										m_bHit = false;
+#pragma endregion 상태제어 bool변수
+
+	_float										m_fChasingDelay = 0.5f;
+	_uint										m_iAttackCount = 0;
+	_bool										m_bCanCombo = false;
+	_float										m_fMoveTime = 2.f;
+
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;

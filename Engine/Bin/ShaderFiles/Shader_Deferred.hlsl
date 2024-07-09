@@ -372,7 +372,7 @@ PS_OUT PS_DISTORTION(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     float2 objectCenter = float2(0.5f, 0.5f); // 객체 중심의 텍스처 좌표 (화면 중심)
-    float waveFrequency = 10.f; // 파동 주파수
+    float waveFrequency = 1.f; // 파동 주파수
     float waveAmplitude = 0.005f; // 파동 진폭
     float distortionRadius = 0.1f; // 일그러짐 반경
 
@@ -395,6 +395,8 @@ PS_OUT PS_DISTORTION(PS_IN In)
 
     // 변형된 텍스처 좌표로 기본 텍스처 샘플링
     Out.vColor = g_DiffuseTexture.Sample(LinearSampler, distortedTex);
+    // 디스토션 범위가 좀 더 명확히 보이도록 값 보정
+    Out.vColor.rgb += float3(0.02f, 0.02f, 0.02f);
 
     return Out;
 }
@@ -537,25 +539,27 @@ PS_OUT PS_BLURX(PS_IN In)
 
        Out.vColor /= g_fTotal;
     }
+    // 시행횟수 1/2 적용
     else if (g_BlurNum == 2)
     {
-       for (int i = -26; i < 26; ++i)
+       for (int i = -13; i < 13; ++i)
        {
-          vUV = saturate(In.vTexcoord + float2(1.f / g_fTexW * i, 0));
-          Out.vColor += g_fWeight2[26 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
+          vUV = saturate(In.vTexcoord + float2(1.f / g_fTexW * i * 2.f, 0));
+          Out.vColor += g_fWeight2[26 + i * 2] * g_EffectTexture.Sample(LinearSampler, vUV);
        }
 
-       Out.vColor /= g_fTotal * 2;
+       Out.vColor /= g_fTotal/* * 2.f*/;
     }
+    // 시행횟수 1/10 적용
     else if (g_BlurNum == 3)
     {
-       for (int i = -130; i < 130; ++i)
+       for (int i = -13; i < 13; ++i)
        {
-          vUV = saturate(In.vTexcoord + float2(1.f / g_fTexW * i, 0));
-          Out.vColor += g_fWeight3[130 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
+          vUV = saturate(In.vTexcoord + float2(1.f / g_fTexW * i * 10.f, 0));
+          Out.vColor += g_fWeight3[130 + i * 10] * g_EffectTexture.Sample(LinearSampler, vUV);
        }
 
-       Out.vColor /= g_fTotal * 8;
+       Out.vColor /= g_fTotal * 0.8f/* * 8.f*/;
     }
     //Out.vColor = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 

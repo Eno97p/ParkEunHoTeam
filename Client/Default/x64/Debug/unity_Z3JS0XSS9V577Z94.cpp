@@ -153,6 +153,9 @@
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Particle_Trail.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ThirdPersonCamera.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UI_FadeInOut.cpp"
 
 

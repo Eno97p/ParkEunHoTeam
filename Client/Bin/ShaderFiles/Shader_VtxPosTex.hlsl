@@ -98,8 +98,9 @@ PS_OUT PS_ITEM(PS_IN In)
 	if (Out.vColor.a < 0.1f) discard;
 
 	
+	Out.vColor.rgb *= float3(1.f, 1.f, 0.7f - sqrt((In.vTexcoord.x - 0.5f) * (In.vTexcoord.x - 0.5f) + (In.vTexcoord.y - 0.5f) * (In.vTexcoord.y - 0.5f)) * 4.f);
 
-	Out.vColor.rgb *= float3(1.f, 1.f, 0.5f);
+	//Out.vColor.rgb *= float3(1.f, 1.f, 0.5f);
 
 	return Out;
 }
@@ -114,27 +115,8 @@ PS_OUT PS_ITEM_BLOOM(PS_IN In)
 
 	if (Out.vColor.a < 0.1f) discard;
 
-	int width, height;
-	g_Texture.GetDimensions(width, height);
+	Out.vColor.rgb *= float3(1.f, 1.f, 0.7f - sqrt((In.vTexcoord.x - 0.5f) * (In.vTexcoord.x - 0.5f) + (In.vTexcoord.y - 0.5f) * (In.vTexcoord.y - 0.5f)) * 4.f);
 
-	//int count = 0;
-	//for (int i = -5; i <= 5; i++)
-	//{
-	//	for (int j = -5; j <= 5; j++)
-	//	{
-	//		if (g_Texture.Sample(LinearSampler, float2(In.vTexcoord.x + i / width, In.vTexcoord.y + j / height)).a > 0.1f)
-	//		{
-	//			count++;
-	//		}
-	//	}
-	//}
-	//if (count == 100)
-	//{
-	//	discard;
-	//}
-
-	//Out.vColor.rgb *= float3(1.f, 1.f, sqrt((In.vTexcoord.x - 0.5f) * (In.vTexcoord.x - 0.5f) + (In.vTexcoord.y - 0.5f) * (In.vTexcoord.y - 0.5f)));
-	Out.vColor.rgb *= float3(1.f, 1.f, 0.5f);
 	return Out;
 }
 

@@ -119,6 +119,16 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Bloom"), TEXT("Target_Bloom"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Bloom2"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Bloom2"), TEXT("Target_Bloom2"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Bloom3"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Bloom3"), TEXT("Target_Bloom3"))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
@@ -126,6 +136,22 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurY"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_BlurY"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX2"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX2"), TEXT("Target_BlurX2"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurY2"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY2"), TEXT("Target_BlurY2"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurX3"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurX3"), TEXT("Target_BlurX3"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BlurY3"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_BlurY3"), TEXT("Target_BlurY3"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Distortion"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -167,10 +193,10 @@ HRESULT CRenderer::Initialize()
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
-	const char* bloomPassNames[6] = { "BlurX1", "BlurY1", "BlurX2", "BlurY2", "BlurX3", "BlurY3" };
-	m_pBloomComputeShader = CComputeShader_Texture::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Blur.hlsl"), 6, &bloomPassNames[0]);
-	if (nullptr == m_pBloomComputeShader)
-		return E_FAIL;
+	//const char* bloomPassNames[6] = { "BlurX1", "BlurY1", "BlurX2", "BlurY2", "BlurX3", "BlurY3" };
+	//m_pBloomComputeShader = CComputeShader_Texture::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Blur.hlsl"), 6, &bloomPassNames[0]);
+	//if (nullptr == m_pBloomComputeShader)
+	//	return E_FAIL;
 
 	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
 	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
@@ -631,19 +657,43 @@ void CRenderer::Render_Bloom()
 
 	m_pGameInstance->End_MRT();
 
-	m_pBloomComputeShader->Begin(0);
-	m_pGameInstance->Bind_RenderTargetSRV_Compute(TEXT("Target_Bloom"), m_pBloomComputeShader, "gInput");
-	m_pBloomComputeShader->Compute((1280 + 255) / 256, 720, 1);
 
-	m_pBloomComputeShader->Begin(1);
-	m_pBloomComputeShader->Bind_SRV("gInput", m_pBloomComputeShader->Get_SRV(0));
-	m_pBloomComputeShader->Compute(1280, (720 + 255) / 256, 1);
+
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+
+	_uint iBlurNum = 3;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(12);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
+
+	iBlurNum = 3;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(13);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
 
 	// 업샘플링
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"));
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"), false);
 
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4_2"), m_pShader, "g_DiffuseTexture");
-	m_pShader->Bind_SRV("g_EffectTexture", m_pBloomComputeShader->Get_SRV(1));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_EffectTexture");
+
 
 	m_pShader->Begin(11);
 
@@ -653,19 +703,43 @@ void CRenderer::Render_Bloom()
 
 	m_pGameInstance->End_MRT();
 
-	m_pBloomComputeShader->Begin(2);
-	m_pGameInstance->Bind_RenderTargetSRV_Compute(TEXT("Target_Bloom"), m_pBloomComputeShader, "gInput");
-	m_pBloomComputeShader->Compute((1280 + 255) / 256, 720, 1);
 
-	m_pBloomComputeShader->Begin(3);
-	m_pBloomComputeShader->Bind_SRV("gInput", m_pBloomComputeShader->Get_SRV(2));
-	m_pBloomComputeShader->Compute(1280, (720 + 255) / 256, 1);
 
-	//업샘플링
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"), false);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX2"));
+
+	iBlurNum = 2;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(12);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY2"));
+
+	iBlurNum = 2;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX2"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(13);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	// 업샘플링
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom2"));
 
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4"), m_pShader, "g_DiffuseTexture");
-	m_pShader->Bind_SRV("g_EffectTexture", m_pBloomComputeShader->Get_SRV(3));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY2"), m_pShader, "g_EffectTexture");
 
 	m_pShader->Begin(11);
 
@@ -675,19 +749,42 @@ void CRenderer::Render_Bloom()
 
 	m_pGameInstance->End_MRT();
 
-	m_pBloomComputeShader->Begin(4);
-	m_pGameInstance->Bind_RenderTargetSRV_Compute(TEXT("Target_Bloom"), m_pBloomComputeShader, "gInput");
-	m_pBloomComputeShader->Compute((1280 + 255) / 256, 720, 1);
 
-	m_pBloomComputeShader->Begin(5);
-	m_pBloomComputeShader->Bind_SRV("gInput", m_pBloomComputeShader->Get_SRV(4));
-	m_pBloomComputeShader->Compute(1280, (720 + 255) / 256, 1);
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX3"));
 
-	// 원본과 블렌딩
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"), false);
+	iBlurNum = 1;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom2"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(12);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY3"));
+
+	iBlurNum = 1;
+	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX3"), m_pShader, "g_EffectTexture");
+
+	m_pShader->Begin(13);
+
+	m_pVIBuffer->Bind_Buffers();
+
+	m_pVIBuffer->Render();
+
+	m_pGameInstance->End_MRT();
+
+	// 업샘플링
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
 
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
-	m_pShader->Bind_SRV("g_EffectTexture", m_pBloomComputeShader->Get_SRV(5));
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
 
 	m_pShader->Begin(11);
 
@@ -715,7 +812,7 @@ void CRenderer::Render_Distortion()
 
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Distortion"));
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_DiffuseTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_DiffuseTexture");
 	m_pDistortionTex->Bind_ShaderResource(m_pShader, "g_DistortionTexture", 3);
 	m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 	//if (m_pGameInstance->Get_DIKeyState(DIK_Y))
@@ -737,7 +834,7 @@ void CRenderer::Render_Final()
 {
 	m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_ResultTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
 	m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 1);
 
 
@@ -838,7 +935,9 @@ void CRenderer::Render_Debug()
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample4x4_2"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample5x5"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Bloom"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY2"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY3"), m_pShader, m_pVIBuffer);
 }
 
 #endif
@@ -871,7 +970,7 @@ void CRenderer::Free()
 	Safe_Release(m_pLightDepthStencilView);
 
 	Safe_Release(m_pShader);
-	Safe_Release(m_pBloomComputeShader);
+	//Safe_Release(m_pBloomComputeShader);
 	Safe_Release(m_pVIBuffer);
 
 	Safe_Release(m_pDevice);

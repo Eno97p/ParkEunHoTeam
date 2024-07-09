@@ -53,6 +53,12 @@
 #include "C:\3D_TeamProj\Engine\Private\Components_Vehicle.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\private\CProfiler.cpp"
+
+
+#include "C:\3D_TeamProj\Engine\private\CProfileScope.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\OctTree.cpp"
 
 

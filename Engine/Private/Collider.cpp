@@ -72,6 +72,8 @@ HRESULT CCollider::Initialize(void * pArg)
 
 void CCollider::Tick(_fmatrix WorldMatrix)
 {
+	
+
 	m_pBounding->Tick(WorldMatrix);
 }
 

@@ -236,6 +236,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\VIBuffer_Rect.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\VIBuffer_SwordTrail.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\VIBuffer_Terrain.cpp"
 
 

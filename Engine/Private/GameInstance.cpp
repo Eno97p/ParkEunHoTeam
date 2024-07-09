@@ -627,6 +627,8 @@ POINT CGameInstance::Get_Mouse_Point()
 
 HRESULT CGameInstance::EventUpdate()
 {
+	
+	
 	return m_pEvent_Manager->EventUpdate();
 }
 

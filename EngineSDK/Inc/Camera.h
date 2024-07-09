@@ -57,7 +57,8 @@ protected:
 	_float				m_fNear = { 0.f };
 	_float				m_fFar = { 0.f };
 
-private:
+
+protected:
 	_bool				m_bCamActivated = { true };
 
 public:

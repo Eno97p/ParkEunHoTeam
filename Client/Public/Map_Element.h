@@ -22,6 +22,8 @@ public:
 		wstring wstrModelName = L"";  // Model 이름
 		//CModel::MODELTYPE eModelType; // Anim 여부
 
+		_uint TriggerType = 0; //Trigger 전용 이벤트 타입
+
 	}MAP_ELEMENT_DESC;
 
 

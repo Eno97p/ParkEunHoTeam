@@ -42,11 +42,13 @@ protected:
 public:
 	_char* Get_Name() { return m_szName; }								//이름
 	_char* Get_Layer() { return m_szLayer; }
-	_char* Get_ModelName() { return m_szModelName; }
+	_char* Get_ModelName();
 	_matrix			Get_WorldMatrix() { return m_pTransformCom->Get_WorldMatrix(); }		// 월드 행렬
 	const _float4x4* Get_WorldFloat4x4() { return m_pTransformCom->Get_WorldFloat4x4(); }
 	CModel::MODELTYPE	Get_ModelType() { return m_eModelType; }
 	_uint	Get_TriggerType() { return m_iTriggerType; }
+
+	string	Get_ModelPath();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

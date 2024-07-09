@@ -34,7 +34,7 @@ HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath
 
 
 	PxTransform pxTrans =Convert_DxMat_To_PxTrans(WorldMatrix);
-	m_pActor= m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
+	m_pActor= m_pGameInstance->GetPhysics()->createRigidStatic(PxTransform(PxIdentity));
 
 	if (FAILED(Load_Buffer()))
 		return E_FAIL;
@@ -62,7 +62,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 	
-	//m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
+	m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
 
 
 	return S_OK;

@@ -28,6 +28,7 @@ public:
 	HRESULT Initialize(LEVEL eNextLevel);
 	HRESULT Loading();
 	HRESULT Loading_Map();
+	HRESULT Load_LevelData(const _tchar* pFilePath);
 	HRESULT Loading_Shader();
 
 private:

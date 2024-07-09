@@ -199,6 +199,7 @@ HRESULT CModel::Bind_Material(CShader* pShaderCom, const _char* pConstantName, _
 	return m_Materials[m_Meshes[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
 }
 
+
 HRESULT CModel::Bind_Material_Instance(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
 {
 	return m_Materials[m_InstanseMesh[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);

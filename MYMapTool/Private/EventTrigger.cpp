@@ -79,28 +79,33 @@ void CEventTrigger::Priority_Tick(_float fTimeDelta)
 
 void CEventTrigger::Tick(_float fTimeDelta)
 {
+
 	CCollider* pPlayerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Collider")));
-	if (CCollider::COLL_START == m_pColliderCom->Intersect(pPlayerCollider))
+	if (nullptr != pPlayerCollider)
 	{
-		switch (m_eTRIGState)
+		if (CCollider::COLL_START == m_pColliderCom->Intersect(pPlayerCollider))
 		{
-		case TRIG_TUTORIAL_BOSSENCOUNTER:
-		{
-			CToolObj::TOOLOBJ_DESC pDesc = {};
-			_matrix vMat = { 1.4f, 0.f, 0.f, 0.f,
-			0.f, 10.f, 0.f, 0.f,
-			0.f, 0.f, 1.4f, 0.f,
-			154.009f, 531.828f, 96.989f, 1.f };
-			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
-			strcpy_s(pDesc.szModelName, "Prototype_Component_Model_BasicDonut");
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_FakeWall") , &pDesc);
-		}
+			switch (m_eTRIGState)
+			{
+			case TRIG_TUTORIAL_BOSSENCOUNTER:
+			{
+				CToolObj::TOOLOBJ_DESC pDesc = {};
+				_matrix vMat = { 1.4f, 0.f, 0.f, 0.f,
+				0.f, 10.f, 0.f, 0.f,
+				0.f, 0.f, 1.4f, 0.f,
+				154.009f, 531.828f, 96.989f, 1.f };
+				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_BasicDonut");
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_FakeWall"), &pDesc);
+			}
 			break;
-		default:
-			break;
+			default:
+				break;
+			}
+			m_pGameInstance->Erase(this);
 		}
-		m_pGameInstance->Erase(this);
 	}
+	
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }

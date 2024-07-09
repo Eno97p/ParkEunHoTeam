@@ -172,6 +172,7 @@
     <ClInclude Include="..\Public\ParticleMesh.h" />
     <ClInclude Include="..\Public\Particle_Point.h" />
     <ClInclude Include="..\Public\Particle_Rect.h" />
+    <ClInclude Include="..\Public\Particle_STrail.h" />
     <ClInclude Include="..\Public\Particle_Trail.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="..\Private\ParticleMesh.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp" />
     <ClCompile Include="..\Private\Particle_Rect.cpp" />
+    <ClCompile Include="..\Private\Particle_STrail.cpp" />
     <ClCompile Include="..\Private\Particle_Trail.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />

@@ -122,6 +122,15 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         if (ImGui::Button("Load Obejects"))
             m_IsLoad = true;
         ImGui::SameLine();
+        ImGui::Separator();
+
+        if (ImGui::Button("Save PhysX"))
+            m_IsPhysXSave = true;
+
+        if (ImGui::Button("Load PhysX"))
+            m_IsPhysXLoad = true;
+
+        ImGui::SameLine();
 
         ImGui::Spacing();
         ImGui::Separator();

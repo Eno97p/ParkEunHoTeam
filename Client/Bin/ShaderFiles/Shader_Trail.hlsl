@@ -72,7 +72,11 @@ PS_OUT PS_SWORDTRAIL(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 	//Out.vColor
-	float4 Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	float2 adjustedTexcoord = In.vTexcoord;
+	adjustedTexcoord.x = lerp(1.0, 0.0, fRatio);
+
+	float4 Color = g_Texture.Sample(LinearSampler, adjustedTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 
 	if (Color.a == 0.f)
@@ -88,7 +92,7 @@ PS_OUT PS_SWORDTRAIL(PS_IN In)
 		Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
 	}
 
-	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	
 
 	if (g_Desolve)
 	{

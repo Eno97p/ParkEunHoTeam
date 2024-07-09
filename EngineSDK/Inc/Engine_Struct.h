@@ -109,6 +109,10 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[2];
 	}VTXPOINT;
 
+
+
+
+
 	typedef struct ENGINE_DLL  VTXPOSTEX
 	{
 		XMFLOAT3		vPosition;
@@ -178,6 +182,9 @@ namespace Engine
 		_float			   vGravity;
 	}VTXMATRIX;
 
+
+
+
 	typedef struct ENGINE_DLL VTXINSTANCE_RECT
 	{
 		static const unsigned int		iNumElements = { 7 };
@@ -196,7 +203,22 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	}VTXINSTANCE_MESH;
 
+	typedef struct ENGINE_DLL SwordTrailVertex
+	{
+		XMFLOAT3 Zero;
+		XMFLOAT3 One;
+		XMFLOAT3 Two;
+		XMFLOAT3 Three;
 
+		XMFLOAT2 texCoord0;
+		XMFLOAT2 texCoord1;
+		XMFLOAT2 texCoord2;
+		XMFLOAT2 texCoord3;
+
+		_float2 lifetime;
+		static const unsigned int		iNumElements = { 9 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[9];
+	};
 
 
 

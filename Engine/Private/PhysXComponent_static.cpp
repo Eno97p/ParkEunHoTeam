@@ -34,18 +34,19 @@ HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath
 
 
 	PxTransform pxTrans =Convert_DxMat_To_PxTrans(WorldMatrix);
+
 	m_pActor= m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
 
 	if (FAILED(Load_Buffer()))
 		return E_FAIL;
-
+	
 	if(FAILED(CreateActor()))
 		return E_FAIL;
 
 
-
-
-
+	
+	
+	
 
 	
 
@@ -57,12 +58,21 @@ HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath
 HRESULT CPhysXComponent_static::Initialize(void * pArg)
 {
 	CPhysXComponent::PHYSX_DESC* pDesc = static_cast<CPhysXComponent::PHYSX_DESC*>(pArg);
-	
+
+
+
+	//나중에 수정할 것
+	//PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
+	//m_pActor = m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
+	//
+	//if (FAILED(CreateActor()))
+	//	return E_FAIL;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
 	
-	//m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
+	m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
 
 
 	return S_OK;
@@ -170,7 +180,7 @@ HRESULT CPhysXComponent_static::CreateActor()
 		m_pActor->attachShape(*shape);
 		
 
-
+		shape->release();
 
 
 

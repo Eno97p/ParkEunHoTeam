@@ -69,6 +69,9 @@ private:	//for Trail
 	HRESULT Store_Trails(char* Name , void* Value);
 	HRESULT Save_TrailList();
 	HRESULT Load_TrailList();
+
+	void SwordTrail_Tool();
+
 	void Set_TrailMatrix(const _float4x4* mat)
 	{
 		TrailMat = mat;
@@ -79,6 +82,9 @@ private:	//for FrameTexture
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
+
+private:
+
 
 private:
 	HRESULT ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath);

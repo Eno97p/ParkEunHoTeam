@@ -29,6 +29,8 @@ private:
 	// Load 함수와 Save 함수 필요
 	HRESULT	Save_Data();
 	HRESULT	Load_Data();
+	HRESULT Save_Data_PhysX();
+	HRESULT Load_Data_PhysX();
 
 	const wchar_t* Setting_FileName();
 

@@ -195,7 +195,7 @@ void CMainApp::Tick(float fTimeDelta)
 
 	m_fTimeAcc += fTimeDelta;
 
-
+	
 	m_pGameInstance->Tick_Engine(fTimeDelta);
 }
 
@@ -212,10 +212,9 @@ HRESULT CMainApp::Render()
 	}
 
 
-	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);
-	//if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;
-
-
+	
+	
+	//IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);
 
 	/* 그린다. */
 	if (FAILED(m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f))))
@@ -229,12 +228,12 @@ HRESULT CMainApp::Render()
 		return E_FAIL;
 
 
+	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);		//프로파일링 하기 위해 Draw다음으로 옮김
+
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
 		return E_FAIL;
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->End_ImGui())) return E_FAIL;);
-	//if (FAILED(m_pImGuiMgr->End_ImGui()))
-	//	return E_FAIL;
 
 
 	if (FAILED(m_pGameInstance->Present()))

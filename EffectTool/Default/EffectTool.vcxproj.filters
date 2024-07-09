@@ -68,6 +68,9 @@
     <Filter Include="99. Default\999. Imgui\Backend">
       <UniqueIdentifier>{6b658bc0-f7d3-4e45-8167-ab476c1782b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Particle\04. SwordTrail">
+      <UniqueIdentifier>{8b0154dd-d31c-4f95-981e-7a021c554134}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -172,6 +175,9 @@
     <ClInclude Include="..\public\PlayerHead.h">
       <Filter>Objects\03. Player\PartObj\Head</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_STrail.h">
+      <Filter>Objects\02. Particle\04. SwordTrail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -260,6 +266,9 @@
     </ClCompile>
     <ClCompile Include="..\private\PlayerHead.cpp">
       <Filter>Objects\03. Player\PartObj\Head</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_STrail.cpp">
+      <Filter>Objects\02. Particle\04. SwordTrail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

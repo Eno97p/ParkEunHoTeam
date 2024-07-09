@@ -104,11 +104,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
              //frameThreshold == 1.0f ? 1.0f : fTimeAcc > frameThreshold
 		if (frameCondition)
 		{
+         
 			pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
 			pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")) * fSlowValue);
             pMainApp->Render();
          
 			fTimeAcc = 0.f;
+     
 		}
 		
 	}

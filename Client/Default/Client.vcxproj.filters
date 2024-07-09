@@ -352,6 +352,12 @@
     <Filter Include="02.GameObjects\99.Camers\ThirdPerson">
       <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\02. Trigger">
+      <UniqueIdentifier>{b26739c1-9d84-4ec4-abc9-abb542a35d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall">
+      <UniqueIdentifier>{cb0ad04b-85e2-4407-9076-686705c77f2a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -643,7 +649,6 @@
     <ClInclude Include="..\Public\Juggulus_HandTwo.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Two</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Passive_Element.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire</Filter>
     </ClInclude>
@@ -719,6 +724,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\ThirdPersonCamera.h">
       <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EventTrigger.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\02. Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FakeWall.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Passive_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1070,6 +1084,12 @@
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp">
       <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\EventTrigger.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\02. Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FakeWall.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1136,6 +1156,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

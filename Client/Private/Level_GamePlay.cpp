@@ -282,10 +282,12 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 	_tchar wszName[MAX_PATH] = TEXT("");
 	_tchar wszLayer[MAX_PATH] = TEXT("");
 	_tchar wszModelName[MAX_PATH] = TEXT("");
+	_uint   iTriggerType = 0;
 
 	// 모델 종류별로 월드 매트릭스를 저장할 맵
 	map<wstring, vector<_float4x4*>> modelMatrices;
 
+	
 	// 생성된 객체 로드
 	while (true)
 	{
@@ -294,39 +296,58 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 		ZeroMemory(wszModelName, sizeof(_tchar) * MAX_PATH);
 
 		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
-		ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
-		MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
-		MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
-
-		//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
-		//{
-		//	// 모델 이름별로 월드 매트릭스 저장
-		//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
-		//	modelMatrices[wszModelName].push_back(pWorldMatrix);
-		//}
-		//else
+		if (strcmp(szName, "Prototype_GameObject_EventTrigger") == 0)
 		{
-			//for (int i = 0; i < 5; ++i)
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+			pDesc.mWorldMatrix = WorldMatrix;
+			pDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+				return E_FAIL;
+		}
+		else
+		{
+			ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			if (0 == dwByte)
+				break;
+
+
+			//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
+			//{
+			//	// 모델 이름별로 월드 매트릭스 저장
+			//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+			//	modelMatrices[wszModelName].push_back(pWorldMatrix);
+			//}
+			//else
 			{
 				// 다른 객체들은 개별적으로 생성
 				CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
 				pDesc.mWorldMatrix = WorldMatrix;
-				//pDesc.mWorldMatrix._41 += i * 100.f;
 				pDesc.wstrModelName = wszModelName;
 				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
 					return E_FAIL;
-			}
-			
 
+			}
 		}
+	
+
+	
 	}
 
 	CloseHandle(hFile);

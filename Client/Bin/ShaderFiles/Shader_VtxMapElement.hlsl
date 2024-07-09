@@ -305,6 +305,19 @@ PS_OUT PS_DISSOLVE(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_WIREFRAME(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vDiffuse = vector(0.f, 0.f, 1.f, 1.f);
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -360,5 +373,17 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_DISSOLVE();
 	}
 
+		pass WireFrame
+	{
+		SetRasterizerState(RS_Wireframe);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_WIREFRAME();
+	}
 }
 

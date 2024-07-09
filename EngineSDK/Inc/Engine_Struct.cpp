@@ -14,10 +14,6 @@ namespace Engine
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-
-
-
-
 	const D3D11_INPUT_ELEMENT_DESC VTXPOSTEX::Elements[2] = 
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -97,8 +93,21 @@ namespace Engine
 	};
 
 	
+	const D3D11_INPUT_ELEMENT_DESC SwordTrailVertex::Elements[9] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof(SwordTrailVertex, Zero), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "POSITION", 1, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof(SwordTrailVertex, One), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "POSITION", 2, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof(SwordTrailVertex, Two), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "POSITION", 3, DXGI_FORMAT_R32G32B32_FLOAT, 1, offsetof(SwordTrailVertex, Three), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 
-	
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, offsetof(SwordTrailVertex, texCoord0), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 1, offsetof(SwordTrailVertex, texCoord1), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 1, offsetof(SwordTrailVertex, texCoord2), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "TEXCOORD", 3, DXGI_FORMAT_R32G32_FLOAT, 1, offsetof(SwordTrailVertex, texCoord3), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+
+		{ "COLOR", 0, DXGI_FORMAT_R32G32_FLOAT, 1, offsetof(SwordTrailVertex, lifetime), D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+	};
+
 
 	
 }

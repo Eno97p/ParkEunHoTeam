@@ -199,6 +199,8 @@
     <ClInclude Include="..\Public\Distortion.h" />
     <ClInclude Include="..\Public\DurgaSword.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
+    <ClInclude Include="..\Public\EventTrigger.h" />
+    <ClInclude Include="..\Public\FakeWall.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
     <ClInclude Include="..\Public\Ghost.h" />
@@ -319,6 +321,8 @@
     <ClCompile Include="..\Private\Distortion.cpp" />
     <ClCompile Include="..\Private\DurgaSword.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />
+    <ClCompile Include="..\Private\EventTrigger.cpp" />
+    <ClCompile Include="..\Private\FakeWall.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Ghost.cpp" />
@@ -433,6 +437,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

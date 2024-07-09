@@ -22,6 +22,8 @@ public:
 	HRESULT Bind_ShaderResources(class CShader* pShader, const _char* pConstantName);
 	HRESULT Fetch_Pixel_FromPixelShader(const _float2& vTexCoord, _float4* pPixelColor, _uint iTextureIndex);
 private:
+	void TransformFilePath(_tchar* filePath);
+private:
 	_uint													m_iNumTextures = { 0 };
 public:
 	vector<ID3D11ShaderResourceView*>						m_Textures;

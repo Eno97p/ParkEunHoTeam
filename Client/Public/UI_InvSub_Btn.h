@@ -38,6 +38,8 @@ private:
 
 	HRESULT	Create_SelectBtn();
 
+	_tchar* Settiing_BtnText();
+
 public:
 	static CUI_InvSub_Btn*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;

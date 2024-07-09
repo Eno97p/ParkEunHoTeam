@@ -57,7 +57,7 @@ void CUI_InvSub_Btn::Tick(_float fTimeDelta)
 
 void CUI_InvSub_Btn::Late_Tick(_float fTimeDelta)
 {
-    CGameInstance::GetInstance()->Add_UI(this, THIRTEENTH);
+    CGameInstance::GetInstance()->Add_UI(this, FIFTEENTH); // THIRTEENTH
 
 	if (nullptr != m_pSelectBtn && m_isSelect)
 		m_pSelectBtn->Late_Tick(fTimeDelta);
@@ -70,7 +70,21 @@ HRESULT CUI_InvSub_Btn::Render()
 
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
-	m_pVIBufferCom->Render();
+
+	_vector vColor = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+	if (m_isSelect)
+	{
+		vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+	}
+	else
+	{
+		m_pVIBufferCom->Render();
+		vColor = XMVectorSet(0.5f, 0.5f, 0.5f, 1.f);
+	}
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), Settiing_BtnText(), _float2(m_fX - 80.f, m_fY - 8.f), vColor)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -134,6 +148,21 @@ HRESULT CUI_InvSub_Btn::Create_SelectBtn()
     return S_OK;
 }
 
+_tchar* CUI_InvSub_Btn::Settiing_BtnText()
+{
+	switch (m_eBtnType)
+	{
+	case Client::CUI_InvSub_Btn::BTN_SET:
+		return TEXT("SET IN QUICK ACCESS");
+	case Client::CUI_InvSub_Btn::BTN_USE:
+		return TEXT("                USE");
+	case Client::CUI_InvSub_Btn::BTN_CANCEL:
+		return TEXT("             CANCEL");
+	default:
+		return TEXT("");
+	}
+}
+
 CUI_InvSub_Btn* CUI_InvSub_Btn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_InvSub_Btn* pInstance = new CUI_InvSub_Btn(pDevice, pContext);
@@ -164,5 +193,5 @@ void CUI_InvSub_Btn::Free()
 {
 	__super::Free();
 
-
+	Safe_Release(m_pSelectBtn);
 }

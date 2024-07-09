@@ -10,6 +10,7 @@
 #include "UIGroup_Character.h"
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
+#include "UIGroup_InvSub.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -55,26 +56,10 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 }
 
-void CUI_Manager::Render_Logo(_bool isRender)
+void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
 {
-	// Logo¸¦ Ãâ·Â
-	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
-	(*logo).second->Set_Rend(isRender);
-}
-
-void CUI_Manager::Render_Loading(_bool isRender)
-{
-	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
-	(*loading).second->Set_Rend(isRender);
-}
-
-void CUI_Manager::Render_HUD(_bool isRender)
-{
-	map<string, CUIGroup*>::iterator hud_state = m_mapUIGroup.find("HUD_State");
-	(*hud_state).second->Set_Rend(isRender);
-
-	map<string, CUIGroup*>::iterator hud_weapon = m_mapUIGroup.find("HUD_WeaponSlot");
-	(*hud_weapon).second->Set_Rend(isRender);
+	map<string, CUIGroup*>::iterator uigroup = m_mapUIGroup.find(strKey);
+	(*uigroup).second->Set_Rend(isRender);
 }
 
 HRESULT CUI_Manager::Initialize()
@@ -117,6 +102,9 @@ HRESULT CUI_Manager::Create_UI()
 
 	// Weapon 
 	m_mapUIGroup.emplace("Weapon", dynamic_cast<CUIGroup_Weapon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Weapon"), &pDesc)));
+
+	// Inv Sub 
+	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
 
 	return S_OK;
 }

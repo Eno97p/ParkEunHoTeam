@@ -73,16 +73,17 @@
 #include "UI_WPEquipNone.h"
 #include "UI_WPFontaine.h"
 #include "UI_WeaponTab.h"
-
 #include "UIGroup_Weapon.h"
 #pragma endregion Weapon
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
+#include "UI_MenuPage_BGAlpha.h"
 #include "UI_Slot.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup_Inventory.h"
 #include "UI_FadeInOut.h"
+#include "UIGroup_InvSub.h"
 
 #pragma endregion UI
 
@@ -761,6 +762,12 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.png"), 1))))
 		return E_FAIL;
 
+
+	/* Prototype_Component_Texture_BG_Alpha */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BG_Alpha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion UI_Texture
 
 	return S_OK;
@@ -979,6 +986,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuPageTop"),
 		CUI_MenuPageTop::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MenuPage_BGAlpha*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuPage_BGAlpha"),
+		CUI_MenuPage_BGAlpha::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion MenuPage
 
 #pragma region Weapon
@@ -1021,6 +1033,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_FadeInOut*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_FadeInOut"),
 		CUI_FadeInOut::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_InvSub*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_InvSub"),
+		CUIGroup_InvSub::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion UI_Obj

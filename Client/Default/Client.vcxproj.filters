@@ -382,6 +382,18 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall">
       <UniqueIdentifier>{cb0ad04b-85e2-4407-9076-686705c77f2a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Weapon\SubPage">
+      <UniqueIdentifier>{1d42b181-11b6-43ff-8a3a-a2bfce1dac57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\BG_Alpha">
+      <UniqueIdentifier>{24ba0fa8-6961-4fea-9e7d-687585a0abb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage">
+      <UniqueIdentifier>{9d97ecb1-dd92-4ef0-85e0-1578cb148a01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage\SelectBtn">
+      <UniqueIdentifier>{1284269f-d108-45e2-a934-30622165c875}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -782,6 +794,12 @@
     <ClInclude Include="..\Public\UI_LoadingCircle.h">
       <Filter>02.GameObjects\07. UI\Loading\Circle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_MenuPage_BGAlpha.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\BG_Alpha</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_InvSub.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1161,6 +1179,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LoadingCircle.cpp">
       <Filter>02.GameObjects\07. UI\Loading\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MenuPage_BGAlpha.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\BG_Alpha</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_InvSub.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

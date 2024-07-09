@@ -1,6 +1,7 @@
 #include "UI_Slot.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "CMouse.h"
 #include "UI_Slot_Frame.h"
 
@@ -51,6 +52,11 @@ void CUI_Slot::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+	{
+		Open_SubPage(); // 여기 안 걸리는
+	}
 
 	if (nullptr != m_pSelectFrame)
 		m_pSelectFrame->Tick(fTimeDelta);
@@ -138,6 +144,17 @@ HRESULT CUI_Slot::Create_Frame()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_Slot::Open_SubPage()
+{
+	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
+	{
+		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
+
+		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
+
+	}
 }
 
 CUI_Slot* CUI_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

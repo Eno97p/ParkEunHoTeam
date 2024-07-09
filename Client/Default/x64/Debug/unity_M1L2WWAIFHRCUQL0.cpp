@@ -162,6 +162,9 @@
 #include "C:\Real3DProject\Client\Private\ThirdPersonCamera.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_InvSub.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Loading.cpp"
 
 
@@ -187,6 +190,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_LogoTitle.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_MenuPage_BGAlpha.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Ghost.cpp"

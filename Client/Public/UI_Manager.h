@@ -22,6 +22,8 @@ public:
 	_bool				Get_MenuPageState();
 	void				Set_MenuPageOpen();
 
+	CUIGroup*			Get_UIGroup(string strKey);
+
 public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 

@@ -40,6 +40,8 @@ private:
 
 	_tchar* Settiing_BtnText();
 
+	void	Mouse_Input();
+
 public:
 	static CUI_InvSub_Btn*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;

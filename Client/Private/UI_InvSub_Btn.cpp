@@ -1,6 +1,8 @@
 #include "UI_InvSub_Btn.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
+#include "UIGroup.h"
 #include "CMouse.h"
 #include "UI_InvSub_BtnSelect.h"
 
@@ -57,6 +59,8 @@ void CUI_InvSub_Btn::Tick(_float fTimeDelta)
 
 void CUI_InvSub_Btn::Late_Tick(_float fTimeDelta)
 {
+	Mouse_Input();
+
     CGameInstance::GetInstance()->Add_UI(this, FIFTEENTH); // THIRTEENTH
 
 	if (nullptr != m_pSelectBtn && m_isSelect)
@@ -160,6 +164,26 @@ _tchar* CUI_InvSub_Btn::Settiing_BtnText()
 		return TEXT("             CANCEL");
 	default:
 		return TEXT("");
+	}
+}
+
+void CUI_InvSub_Btn::Mouse_Input()
+{
+	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+	{
+		switch (m_eBtnType)
+		{
+		case Client::CUI_InvSub_Btn::BTN_SET:
+			break;
+		case Client::CUI_InvSub_Btn::BTN_USE:
+			break;
+		case Client::CUI_InvSub_Btn::BTN_CANCEL:
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+			break;
+		default:
+			break;
+		}
 	}
 }
 

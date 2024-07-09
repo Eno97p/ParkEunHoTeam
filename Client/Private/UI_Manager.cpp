@@ -42,6 +42,12 @@ void CUI_Manager::Set_MenuPageOpen()
 	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(true);
 }
 
+CUIGroup* CUI_Manager::Get_UIGroup(string strKey)
+{
+	map<string, CUIGroup*>::iterator group = m_mapUIGroup.find(strKey);
+	return (*group).second;
+}
+
 void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
@@ -115,8 +121,10 @@ void CUI_Manager::Key_Input()
 
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
 	_bool isMenuOpen = (*menu).second->Get_Rend();
 	_bool isQuickOpen = (*quick).second->Get_Rend();
+	_bool isInvSubOpen = (*invsub).second->Get_Rend();
 
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
@@ -130,23 +138,30 @@ void CUI_Manager::Key_Input()
 
 		if (isMenuOpen)
 		{
-			if (isChOpen)
+			if (!isInvSubOpen)
 			{
-				(*character).second->Set_RenderOnAnim(false);
-			}
-			else if (isInvOpen)
-			{
-				(*inventory).second->Set_RenderOnAnim(false);
-			}
-			else if (isWeaponOpen)
-			{
-				(*weapon).second->Set_RenderOnAnim(false);
+				if (isChOpen)
+				{
+					(*character).second->Set_RenderOnAnim(false);
+				}
+				else if (isInvOpen)
+				{
+					(*inventory).second->Set_RenderOnAnim(false);
+				}
+				else if (isWeaponOpen)
+				{
+					(*weapon).second->Set_RenderOnAnim(false);
+				}
+				else
+				{
+					(*menu).second->Set_RenderOnAnim(false);
+				}
+				dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 			}
 			else
 			{
-				(*menu).second->Set_RenderOnAnim(false);
+				(*invsub).second->Set_RenderOnAnim(false);
 			}
-			dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 		}
 		else
 		{

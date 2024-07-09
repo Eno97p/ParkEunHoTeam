@@ -95,8 +95,6 @@ void CMantari::Late_Tick(_float fTimeDelta)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);

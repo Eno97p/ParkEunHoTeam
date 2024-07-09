@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "Monster.h"
 
 BEGIN(Engine)
@@ -61,7 +60,6 @@ private:
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
-	_uint										m_iState = { 0 };
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 
 #pragma region 상태제어 bool변수

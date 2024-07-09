@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Body_Juggulus.h"
+#include "PartObject.h"
 #include "Juggulus_Hammer.h"
 #include "Juggulus_HandOne.h"
 #include "Juggulus_HandTwo.h"
@@ -39,7 +40,8 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pTransformCom->Scaling(1.5f, 1.5f, 1.5f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(160.f, 522.f, 98.f, 1.f));
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -52,11 +54,24 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 
 void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 {
-	
+	if (m_fDeadDelay < 2.f)
+	{
+		m_fDeadDelay -= fTimeDelta;
+		if (m_fDeadDelay < 0.f)
+		{
+			m_pGameInstance->Erase(this);
+		}
+	}
+
+	for (auto& pPartObject : m_PartObjects)
+		pPartObject.second->Priority_Tick(fTimeDelta);
+	m_isAnimFinished = dynamic_cast<CBody_Juggulus*>((*m_PartObjects.find("Body")).second)->Get_AnimFinished();
 }
 
 void CBoss_Juggulus::Tick(_float fTimeDelta)
 {
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
 	Check_AnimFinished();
 
 	m_pBehaviorCom->Update(fTimeDelta);

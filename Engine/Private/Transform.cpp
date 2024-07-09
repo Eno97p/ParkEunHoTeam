@@ -262,6 +262,8 @@ void CTransform::TurnToTarget(_float fTimeDelta, _fvector vTargetPosition)
 
 void CTransform::BillBoard()
 {
+	_float3 vScale = Get_Scaled();
+
 	XMVECTOR vPosition = Get_State(STATE_POSITION);
 	XMFLOAT4 pos;
 	XMStoreFloat4(&pos, vPosition);
@@ -271,6 +273,8 @@ void CTransform::BillBoard()
 	matView._42 = pos.y;
 	matView._43 = pos.z;
 	Set_WorldMatrix(XMLoadFloat4x4(&matView));
+
+	Set_Scale(vScale.x, vScale.y, vScale.z);
 }
 
 

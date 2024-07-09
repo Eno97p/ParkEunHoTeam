@@ -56,7 +56,7 @@ HRESULT CBody_Juggulus::Render()
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	for (size_t i = 0; i < iNumMeshes; i++)
+	for (size_t i = 1; i < iNumMeshes; i++)
 	{
 		m_pShaderCom->Unbind_SRVs();
 

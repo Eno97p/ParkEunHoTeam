@@ -44,15 +44,26 @@ void CUIGroup_Weapon::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Weapon::Tick(_float fTimeDelta)
 {
+	_bool isRender_End = false;
 	if (m_isRend)
 	{
-		if (m_pGameInstance->Key_Down(DIK_TAB))
-		{
-
-		}
-
 		for (auto& pUI : m_vecUI)
+		{
+			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
+			{
+				pUI->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+			{
+				pUI->Resset_Animation(false);
+			}
+
 			pUI->Tick(fTimeDelta);
+
+			isRender_End = pUI->isRender_End();
+		}
+		if (isRender_End)
+			m_isRend = false;
 	}
 }
 

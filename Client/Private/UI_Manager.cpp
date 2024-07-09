@@ -1,6 +1,8 @@
 #include "UI_Manager.h"
 
 #include "GameInstance.h"
+#include "UIGroup_Logo.h"
+#include "UIGroup_Loading.h"
 #include "UIGroup_State.h"
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Menu.h"
@@ -24,7 +26,19 @@ void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
 	// render true false  조절
 	map<string, CUIGroup*>::iterator iter = m_mapUIGroup.find(PageKey);
 	(*iter).second->Set_Rend(isOpen);
+	(*iter).second->Set_RenderOnAnim(true);
+}
 
+_bool CUI_Manager::Get_MenuPageState()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	return dynamic_cast<CUIGroup_Menu*>((*menu).second)->Get_MenuPageState();
+}
+
+void CUI_Manager::Set_MenuPageOpen()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(true);
 }
 
 void CUI_Manager::Tick(_float fTimeDelta)
@@ -41,6 +55,28 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 }
 
+void CUI_Manager::Render_Logo(_bool isRender)
+{
+	// Logo를 출력
+	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
+	(*logo).second->Set_Rend(isRender);
+}
+
+void CUI_Manager::Render_Loading(_bool isRender)
+{
+	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
+	(*loading).second->Set_Rend(isRender);
+}
+
+void CUI_Manager::Render_HUD(_bool isRender)
+{
+	map<string, CUIGroup*>::iterator hud_state = m_mapUIGroup.find("HUD_State");
+	(*hud_state).second->Set_Rend(isRender);
+
+	map<string, CUIGroup*>::iterator hud_weapon = m_mapUIGroup.find("HUD_WeaponSlot");
+	(*hud_weapon).second->Set_Rend(isRender);
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))
@@ -53,15 +89,15 @@ HRESULT CUI_Manager::Create_UI()
 {
 	CUIGroup::UIGROUP_DESC pDesc{};
 
+	pDesc.eLevel = LEVEL_STATIC;
 
-	//m_mapUIGroup.clear();
-	//for(auto& pair : m_mapUIGroup)
-	//{
-	//	
-	//}
+	// Logo
+	m_mapUIGroup.emplace("Logo", dynamic_cast<CUIGroup_Logo*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Logo"), &pDesc)));
+
+	// Loading
+	m_mapUIGroup.emplace("Loading", dynamic_cast<CUIGroup_Loading*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Loading"), &pDesc)));
 
 	// State
-	pDesc.eLevel = LEVEL_STATIC;
 	m_mapUIGroup.emplace("HUD_State", dynamic_cast<CUIGroup_State*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_State"), &pDesc)));
 
 	// WeaponSlot
@@ -87,12 +123,14 @@ HRESULT CUI_Manager::Create_UI()
 
 void CUI_Manager::Key_Input()
 {
+	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요
+
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	_bool isMenuOpen = (*menu).second->Get_Rend();
 	_bool isQuickOpen = (*quick).second->Get_Rend();
 
-	if (m_pGameInstance->Key_Down(DIK_ESCAPE)) // 다른 메뉴 실행중에는 켜지면 안 됨. 예외 처리 필요 
+	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
 		map<string, CUIGroup*>::iterator character = m_mapUIGroup.find("Menu_Ch");
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
@@ -106,26 +144,28 @@ void CUI_Manager::Key_Input()
 		{
 			if (isChOpen)
 			{
-				(*character).second->Set_Rend(false);
+				(*character).second->Set_RenderOnAnim(false);
 			}
 			else if (isInvOpen)
 			{
-				(*inventory).second->Set_Rend(false);
+				(*inventory).second->Set_RenderOnAnim(false);
 			}
 			else if (isWeaponOpen)
 			{
-				(*weapon).second->Set_Rend(false);
+				(*weapon).second->Set_RenderOnAnim(false);
 			}
 			else
 			{
-				(*menu).second->Set_Rend(!isMenuOpen);
+				(*menu).second->Set_RenderOnAnim(false);
 			}
+			dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 		}
 		else
 		{
 			if (!isQuickOpen)
 			{
-				(*menu).second->Set_Rend(!isMenuOpen);
+				(*menu).second->Set_Rend(true);
+				(*menu).second->Set_RenderOnAnim(true);
 			}
 		}
 	}
@@ -133,18 +173,17 @@ void CUI_Manager::Key_Input()
 	{
 		if (!isMenuOpen)
 		{
+			(*quick).second->Set_AnimFinished(false);
+
 			if (isQuickOpen) // 퀵슬롯이 켜져 있을 때 > 꺼지게
 			{
-				// 여기서 Render를 바로 false로 만들면 꺼져버리기 때문에 다른 방식으로 접근 필요
-				// > 꺼지는 애니메이션 On
-				(*quick).second->Set_AnimFinished(false);
 				(*quick).second->Set_RenderOnAnim(false);
 			}
 			else // 꺼져있을 때 > 켜지게
 			{
-				(*quick).second->Set_Rend(true); // 퀵슬롯의 Render를 true로
+				(*quick).second->Set_Rend(true);
+				(*quick).second->Set_RenderOnAnim(true);
 			}
-			// (*quick).second->Set_Rend(!isQuickOpen);
 		}
 	}
 }

@@ -1,60 +1,56 @@
-#include "UI_MenuPageTop.h"
+#include "UI_LogoBG.h"
 
 #include "GameInstance.h"
 
-CUI_MenuPageTop::CUI_MenuPageTop(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CUI{ pDevice, pContext }
+CUI_LogoBG::CUI_LogoBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    : CUI{ pDevice, pContext }
 {
 }
 
-CUI_MenuPageTop::CUI_MenuPageTop(const CUI_MenuPageTop& rhs)
-	: CUI{ rhs }
+CUI_LogoBG::CUI_LogoBG(const CUI_LogoBG& rhs)
+    : CUI{ rhs }
 {
 }
 
-HRESULT CUI_MenuPageTop::Initialize_Prototype()
+HRESULT CUI_LogoBG::Initialize_Prototype()
 {
-	return S_OK;
+    return S_OK;
 }
 
-HRESULT CUI_MenuPageTop::Initialize(void* pArg)
+HRESULT CUI_LogoBG::Initialize(void* pArg)
 {
-	UI_TOP_DESC* pDesc = static_cast<UI_TOP_DESC*>(pArg);
-
-	m_eTopType = pDesc->eTopType;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 280.f;
-	m_fY = 100.f;
-	m_fSizeX = 433.3f; // 650
-	m_fSizeY = 147.3f; // 221
+	m_fX = g_iWinSizeX >> 1;
+	m_fY = g_iWinSizeY >> 1;
+	m_fSizeX = g_iWinSizeX;
+	m_fSizeY = g_iWinSizeY;
 
 	Setting_Position();
 
 	return S_OK;
 }
 
-void CUI_MenuPageTop::Priority_Tick(_float fTimeDelta)
+void CUI_LogoBG::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_MenuPageTop::Tick(_float fTimeDelta)
+void CUI_LogoBG::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
-		Render_Animation(fTimeDelta);
+		Render_Animation(fTimeDelta); // 얘는 수치값등등 다르게 처리?
 }
 
-void CUI_MenuPageTop::Late_Tick(_float fTimeDelta)
+void CUI_LogoBG::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, NINETH);
+	CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
 
-HRESULT CUI_MenuPageTop::Render()
+HRESULT CUI_LogoBG::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -66,7 +62,7 @@ HRESULT CUI_MenuPageTop::Render()
 	return S_OK;
 }
 
-HRESULT CUI_MenuPageTop::Add_Components()
+HRESULT CUI_LogoBG::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -79,14 +75,14 @@ HRESULT CUI_MenuPageTop::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuickTop"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoBG"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_MenuPageTop::Bind_ShaderResources()
+HRESULT CUI_LogoBG::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -108,33 +104,33 @@ HRESULT CUI_MenuPageTop::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_MenuPageTop* CUI_MenuPageTop::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_LogoBG* CUI_LogoBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_MenuPageTop* pInstance = new CUI_MenuPageTop(pDevice, pContext);
+	CUI_LogoBG* pInstance = new CUI_LogoBG(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_MenuPageTop");
+		MSG_BOX("Failed To Created : CUI_LogoBG");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_MenuPageTop::Clone(void* pArg)
+CGameObject* CUI_LogoBG::Clone(void* pArg)
 {
-	CUI_MenuPageTop* pInstance = new CUI_MenuPageTop(*this);
+	CUI_LogoBG* pInstance = new CUI_LogoBG(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_MenuPageTop");
+		MSG_BOX("Failed To Cloned : CUI_LogoBG");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_MenuPageTop::Free()
+void CUI_LogoBG::Free()
 {
 	__super::Free();
 }

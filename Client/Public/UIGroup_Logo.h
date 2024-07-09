@@ -6,16 +6,12 @@
 BEGIN(Client)
 class CUI;
 
-class CUIGroup_Menu final : public CUIGroup
+class CUIGroup_Logo final : public CUIGroup
 {
 private:
-	CUIGroup_Menu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUIGroup_Menu(const CUIGroup_Menu& rhs);
-	virtual ~CUIGroup_Menu() = default;
-
-public:
-	_bool				Get_MenuPageState() { return m_isMenuPageOpen; }
-	void				Set_MenuPageState(_bool isOpen) { m_isMenuPageOpen = isOpen; }
+	CUIGroup_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUIGroup_Logo(const CUIGroup_Logo& rhs);
+	virtual ~CUIGroup_Logo() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -26,15 +22,14 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool					m_isMenuPageOpen;
-
 	vector<CUI*>			m_vecUI;
 
 private:
 	HRESULT					Create_UI();
+	HRESULT					Create_Selector();
 
 public:
-	static CUIGroup_Menu*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUIGroup_Logo*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

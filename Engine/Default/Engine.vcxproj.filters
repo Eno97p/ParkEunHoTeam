@@ -238,6 +238,9 @@
     <Filter Include="01.Utility\997. Profiler\ProfileScope">
       <UniqueIdentifier>{c3ca219b-9671-4a90-9e1d-27120fd31469}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\999.PhysX\ErrorCallBack">
+      <UniqueIdentifier>{b1c9970c-9fb9-40cd-9015-ce14073ecc95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -501,6 +504,9 @@
     <ClInclude Include="..\Public\VIBuffer_SwordTrail.h">
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Trail</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CUserErrorCallBack.h">
+      <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -748,6 +754,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_SwordTrail.cpp">
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CUserErrorCallBack.cpp">
+      <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

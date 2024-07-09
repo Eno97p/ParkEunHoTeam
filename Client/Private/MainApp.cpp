@@ -83,8 +83,9 @@
 #include "UI_Slot_Frame.h"
 #include "UIGroup_Inventory.h"
 #include "UI_FadeInOut.h"
+#include "UI_InvSub_Btn.h"
+#include "UI_InvSub_BtnSelect.h"
 #include "UIGroup_InvSub.h"
-
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -689,7 +690,15 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma endregion Quick
 
 #pragma region Inventory
+	/* Prototype_Component_Texture_UI_InvSub_Btn_None */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_None"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_None.png"), 1))))
+		return E_FAIL;
 
+	/* Prototype_Component_Texture_UI_InvSub_Btn_Select */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_Select"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_Select.png"), 1))))
+		return E_FAIL;
 #pragma endregion Inventory
 
 #pragma region Character
@@ -963,6 +972,18 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Character::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Character
+
+#pragma region Inventory
+	/* For.Prototype_GameObject_UI_InvSub_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InvSub_Btn"),
+		CUI_InvSub_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_InvSub_BtnSelect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InvSub_BtnSelect"),
+		CUI_InvSub_BtnSelect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Inventory
 
 #pragma region Slot
 	/* For.Prototype_GameObject_UI_Slot*/

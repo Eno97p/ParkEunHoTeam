@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 #include "UI_MenuPage_BGAlpha.h"
+#include "UI_Slot.h"
+#include "UI_InvSub_Btn.h"
 
 CUIGroup_InvSub::CUIGroup_InvSub(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -74,7 +76,6 @@ HRESULT CUIGroup_InvSub::Render()
 
 HRESULT CUIGroup_InvSub::Create_UI()
 {
-
 	// BG
 	CUI_MenuPage_BGAlpha::UI_MP_BGALPHA_DESC pBGDesc{};
 
@@ -82,7 +83,57 @@ HRESULT CUIGroup_InvSub::Create_UI()
 	pBGDesc.eUISort = TWELFTH;
 	m_vecUI.emplace_back(dynamic_cast<CUI*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuPage_BGAlpha"), &pBGDesc)));
 
+	Create_Slot();
+	Create_Btn();
 
+	return S_OK;
+}
+
+HRESULT CUIGroup_InvSub::Create_Slot()
+{
+	CUI_Slot::UI_SLOT_DESC pDesc{};
+
+	for (size_t i = 0; i < 2; ++i)
+	{
+		for (size_t j = 0; j < 6; ++j)
+		{
+			ZeroMemory(&pDesc, sizeof(pDesc));
+			pDesc.eLevel = LEVEL_STATIC;
+			pDesc.fX = (g_iWinSizeX >> 1) - 230.f + (j * 81.f); // 160
+			pDesc.fY = (g_iWinSizeY >> 1) + 100.f + (i * 81.f);
+			pDesc.fSizeX = 85.3f;
+			pDesc.fSizeY = 85.3f;
+			pDesc.eSlotType = CUI_Slot::SLOT_INVSUB;
+			pDesc.eUISort = THIRTEENTH;
+			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_InvSub::Create_Btn()
+{
+	CUI_InvSub_Btn::BTN_TYPE arrBtnType[CUI_InvSub_Btn::BTN_END] =
+	{
+		CUI_InvSub_Btn::BTN_SET, CUI_InvSub_Btn::BTN_USE, CUI_InvSub_Btn::BTN_CANCEL
+	};
+
+	CUI_InvSub_Btn::UI_BTN_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+
+	for (size_t i = 0; i < 3; ++i)
+	{
+		ZeroMemory(&pDesc, sizeof(pDesc));
+		pDesc.eLevel = LEVEL_STATIC;
+		pDesc.fX = (g_iWinSizeX >> 1) - 30.f;
+		pDesc.fY = (g_iWinSizeY >> 1) - 130.f + (i * 60.f);
+		pDesc.fSizeX = 360.f; // 512
+		pDesc.fSizeY = 50.f; // 128
+		pDesc.eBtnType = arrBtnType[i];
+		m_vecUI.emplace_back(dynamic_cast<CUI_InvSub_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_InvSub_Btn"), &pDesc)));
+	}
 
 	return S_OK;
 }

@@ -391,8 +391,11 @@
     <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage">
       <UniqueIdentifier>{9d97ecb1-dd92-4ef0-85e0-1578cb148a01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage\SelectBtn">
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn">
       <UniqueIdentifier>{1284269f-d108-45e2-a934-30622165c875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn">
+      <UniqueIdentifier>{764c4693-58b6-4522-a3a0-3ceb55a69034}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -800,6 +803,12 @@
     <ClInclude Include="..\Public\UIGroup_InvSub.h">
       <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_InvSub_Btn.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_InvSub_BtnSelect.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1185,6 +1194,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_InvSub.cpp">
       <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_InvSub_Btn.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_InvSub_BtnSelect.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

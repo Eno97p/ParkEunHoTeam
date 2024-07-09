@@ -25,6 +25,8 @@ private:
 
 private:
 	HRESULT					Create_UI();
+	HRESULT					Create_Slot();
+	HRESULT					Create_Btn();
 
 public:
 	static CUIGroup_InvSub*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

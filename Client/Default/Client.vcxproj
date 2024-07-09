@@ -239,6 +239,8 @@
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_Logo.h" />
     <ClInclude Include="..\Public\UI_FadeInOut.h" />
+    <ClInclude Include="..\Public\UI_InvSub_Btn.h" />
+    <ClInclude Include="..\Public\UI_InvSub_BtnSelect.h" />
     <ClInclude Include="..\Public\UI_LoadingBG.h" />
     <ClInclude Include="..\Public\UI_LoadingCircle.h" />
     <ClInclude Include="..\Public\UI_LogoBanner.h" />
@@ -370,6 +372,8 @@
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_Logo.cpp" />
     <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
+    <ClCompile Include="..\Private\UI_InvSub_Btn.cpp" />
+    <ClCompile Include="..\Private\UI_InvSub_BtnSelect.cpp" />
     <ClCompile Include="..\Private\UI_LoadingBG.cpp" />
     <ClCompile Include="..\Private\UI_LoadingCircle.cpp" />
     <ClCompile Include="..\Private\UI_LogoBanner.cpp" />

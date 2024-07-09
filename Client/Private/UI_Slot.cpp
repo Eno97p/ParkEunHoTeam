@@ -55,7 +55,7 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
 	{
-		Open_SubPage(); // 여기 안 걸리는
+		Open_SubPage();
 	}
 
 	if (nullptr != m_pSelectFrame)
@@ -134,10 +134,12 @@ HRESULT CUI_Slot::Create_Frame()
 	pDesc.fSizeX = 85.3f;
 	pDesc.fSizeY = 85.3f;
 	
-	if(SLOT_QUICK == m_eSlotType)
+	if (SLOT_QUICK == m_eSlotType)
 		pDesc.eUISort = ELEVENTH;
-	else if(SLOT_INV == m_eSlotType)
+	else if (SLOT_INV == m_eSlotType)
 		pDesc.eUISort = TENTH;
+	else if (SLOT_INVSUB == m_eSlotType)
+		pDesc.eUISort = FOURTEENTH;
 
 	m_pSelectFrame = dynamic_cast<CUI_Slot_Frame*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot_Frame"), &pDesc));
 	if (nullptr == m_pSelectFrame)

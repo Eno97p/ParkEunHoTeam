@@ -174,6 +174,12 @@
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_InvSub_Btn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_InvSub_BtnSelect.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_LoadingBG.cpp"
 
 

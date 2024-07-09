@@ -68,7 +68,7 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
 
 #ifdef _DEBUG
 
-    m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
+   m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 
 

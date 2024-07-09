@@ -1,5 +1,9 @@
 #pragma once
 
+#include"CProfileScope.h"
+#include"CProfiler.h"
+
+
 #include "Renderer.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"

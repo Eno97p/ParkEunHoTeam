@@ -317,12 +317,17 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 		//}
 		//else
 		{
-			// 다른 객체들은 개별적으로 생성
-			CMap_Element::MAP_ELEMENT_DESC pDesc{};
-			pDesc.mWorldMatrix = WorldMatrix;
-			pDesc.wstrModelName = wszModelName;
-			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
-				return E_FAIL;
+			//for (int i = 0; i < 5; ++i)
+			{
+				// 다른 객체들은 개별적으로 생성
+				CMap_Element::MAP_ELEMENT_DESC pDesc{};
+				pDesc.mWorldMatrix = WorldMatrix;
+				//pDesc.mWorldMatrix._41 += i * 100.f;
+				pDesc.wstrModelName = wszModelName;
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
+					return E_FAIL;
+			}
+			
 
 		}
 	}

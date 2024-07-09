@@ -26,13 +26,14 @@ public:
 	HRESULT End_ImGui();
 
 
-private:
+private:/*For. Property*/
 	void Render_MainMenu();
 	void Render_Layer();
 	void Render_Object(list<CGameObject*>& listGameObject);
 	void Render_Component(CGameObject* pGameObject);
 	void Render_Component_Properties(CComponent* pComponent,const char* szComponentName);
-
+private:/*For. Profile*/
+	void Render_Profile();
 	
 	
 private:/*For.Imgui Property*/

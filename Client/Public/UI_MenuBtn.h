@@ -38,8 +38,10 @@ private:
 
 	void	Setting_XY();
 	wstring	Setting_Texture();
+	_tchar* Settiing_BtnText();
 
 	void	Open_MenuPage();
+
 
 public:
 	static CUI_MenuBtn*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -78,6 +78,12 @@ HRESULT CUI_MenuBtn::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (m_isSelect)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), Settiing_BtnText(), _float2((g_iWinSizeX >> 1) - 340.f, (g_iWinSizeY >> 1) - 53.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -172,6 +178,27 @@ wstring CUI_MenuBtn::Setting_Texture()
 		return TEXT("Prototype_Component_Texture_MenuBtn_Set");
 	case Client::CUI_MenuBtn::MENU_COD:
 		return TEXT("Prototype_Component_Texture_MenuBtn_Cod");
+	default:
+		return TEXT("");
+	}
+}
+
+_tchar* CUI_MenuBtn::Settiing_BtnText()
+{
+	switch (m_eMenuType)
+	{
+	case Client::CUI_MenuBtn::MENU_CH:
+		return TEXT("CHARACTER");
+	case Client::CUI_MenuBtn::MENU_MAP:
+		return TEXT("        MAP");
+	case Client::CUI_MenuBtn::MENU_WEAPON:
+		return TEXT("  WEAPONS");
+	case Client::CUI_MenuBtn::MENU_INV:
+		return TEXT("INVENTORY");
+	case Client::CUI_MenuBtn::MENU_SET:
+		return TEXT("SETTINGS");
+	case Client::CUI_MenuBtn::MENU_COD:
+		return TEXT("    CODEX");
 	default:
 		return TEXT("");
 	}

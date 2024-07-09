@@ -21,6 +21,10 @@ private:
 	virtual ~CUI_WeaponTab() = default;
 
 public:
+	_bool			Get_isActivate() { return m_isActivate; }
+	void			Set_isActivate(_bool isActivate) { m_isActivate = isActivate; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -29,6 +33,10 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool			m_isActivate = { false }; // 활성화 여부
+
+	_float			m_fFontX = { 0.f };
+
 	TAB_TYPE		m_eTabType = { TAB_END };
 
 private:
@@ -36,9 +44,11 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	void	Setting_Data();
-
 	_tchar* Settiing_BtnText();
+
 	void	Render_Text();
+	void	Change_Activate();
+	void	Change_Size();
 
 public:
 	static CUI_WeaponTab*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -35,6 +35,8 @@ HRESULT CUIGroup_Weapon::Initialize(void* pArg)
 	if (FAILED(Create_UI()))
 		return E_FAIL;
 
+	m_eTabType = TAB_L; // ±âº» : Weapon
+
 	return S_OK;
 }
 
@@ -64,6 +66,11 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_TAB))
+	{
+		Change_Tab();
 	}
 }
 
@@ -144,7 +151,6 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 
 HRESULT CUIGroup_Weapon::Create_EquipSlot()
 {
-	// Prototype_GameObject_UI_WeaponSlot
 	CUI_WPEquipSlot::UI_EQUIPSLOT_DESC pDesc{};
 
 	CUI_WPEquipSlot::SLOT_NUM arrSlotNum[CUI_WPEquipSlot::NUM_END]
@@ -190,6 +196,17 @@ HRESULT CUIGroup_Weapon::Create_Tab()
 	}
 
 	return S_OK;
+}
+
+void CUIGroup_Weapon::Change_Tab()
+{
+	if (TAB_L == m_eTabType)
+		m_eTabType = TAB_R;
+	else if (TAB_R == m_eTabType)
+		m_eTabType = TAB_L;
+
+
+
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

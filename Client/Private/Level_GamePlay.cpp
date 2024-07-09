@@ -66,7 +66,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	
 
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -81,7 +81,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	}
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
-#endif
+//#endif
 }
 
 void CLevel_GamePlay::Late_Tick(_float fTimeDelta)

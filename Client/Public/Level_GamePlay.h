@@ -39,10 +39,10 @@ private:
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	_uint m_iMainCameraIdx = 0;
 	_uint m_iCamSize = 0;
-#endif
+//#endif
 
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

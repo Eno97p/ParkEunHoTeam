@@ -14,6 +14,9 @@ private:
 	virtual ~CUIGroup_MonsterHP() = default;
 
 public:
+	void			Set_Ratio(_float fRatio) { m_fHPRatio = fRatio; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -24,10 +27,10 @@ public:
 public:
 	void			Update_Pos(_vector vMonsterPos);
 
-	// 몬스터의 위치, HP등을 받아와서 관리?
-	// HP는 피격 당할 때마다 세팅
-
 private:
+	_uint					m_iDamage = { 0 }; // 누적 데미지
+	_float					m_fHPRatio = { 0.f };
+
 	_vector					m_vMonsterPos;
 
 	vector<CUI*>			m_vecUI;

@@ -36,7 +36,7 @@ void CUIGroup_MonsterHP::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_MonsterHP::Tick(_float fTimeDelta)
 {
-	/*_bool isRender_End = false;
+	_bool isRender_End = false;
 	if (m_isRend)
 	{
 		for (auto& pUI : m_vecUI)
@@ -56,7 +56,10 @@ void CUIGroup_MonsterHP::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
-	}*/
+	}
+
+	vector<CUI*>::iterator hp = m_vecUI.begin();
+	dynamic_cast<CUI_MonsterHP*>(*hp)->Set_Ratio(m_fHPRatio);
 
 	m_isRend = true;
 }

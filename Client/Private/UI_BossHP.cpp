@@ -42,6 +42,14 @@ void CUI_BossHP::Priority_Tick(_float fTimeDelta)
 
 void CUI_BossHP::Tick(_float fTimeDelta)
 {
+	if (m_fCurrentRatio < m_fPastRatio)
+	{
+		m_fPastRatio -= fTimeDelta * 0.2f;
+		if (m_fCurrentRatio > m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
+	}
 }
 
 void CUI_BossHP::Late_Tick(_float fTimeDelta)

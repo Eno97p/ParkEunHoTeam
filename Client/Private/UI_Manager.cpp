@@ -10,6 +10,7 @@
 #include "UIGroup_Character.h"
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
+#include "UIGroup_InvSub.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -41,6 +42,12 @@ void CUI_Manager::Set_MenuPageOpen()
 	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(true);
 }
 
+CUIGroup* CUI_Manager::Get_UIGroup(string strKey)
+{
+	map<string, CUIGroup*>::iterator group = m_mapUIGroup.find(strKey);
+	return (*group).second;
+}
+
 void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
@@ -55,26 +62,10 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 }
 
-void CUI_Manager::Render_Logo(_bool isRender)
+void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
 {
-	// Logo¸¦ Ãâ·Â
-	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
-	(*logo).second->Set_Rend(isRender);
-}
-
-void CUI_Manager::Render_Loading(_bool isRender)
-{
-	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
-	(*loading).second->Set_Rend(isRender);
-}
-
-void CUI_Manager::Render_HUD(_bool isRender)
-{
-	map<string, CUIGroup*>::iterator hud_state = m_mapUIGroup.find("HUD_State");
-	(*hud_state).second->Set_Rend(isRender);
-
-	map<string, CUIGroup*>::iterator hud_weapon = m_mapUIGroup.find("HUD_WeaponSlot");
-	(*hud_weapon).second->Set_Rend(isRender);
+	map<string, CUIGroup*>::iterator uigroup = m_mapUIGroup.find(strKey);
+	(*uigroup).second->Set_Rend(isRender);
 }
 
 HRESULT CUI_Manager::Initialize()
@@ -118,6 +109,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Weapon 
 	m_mapUIGroup.emplace("Weapon", dynamic_cast<CUIGroup_Weapon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Weapon"), &pDesc)));
 
+	// Inv Sub 
+	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
+
 	return S_OK;
 }
 
@@ -127,8 +121,10 @@ void CUI_Manager::Key_Input()
 
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
 	_bool isMenuOpen = (*menu).second->Get_Rend();
 	_bool isQuickOpen = (*quick).second->Get_Rend();
+	_bool isInvSubOpen = (*invsub).second->Get_Rend();
 
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
@@ -142,23 +138,30 @@ void CUI_Manager::Key_Input()
 
 		if (isMenuOpen)
 		{
-			if (isChOpen)
+			if (!isInvSubOpen)
 			{
-				(*character).second->Set_RenderOnAnim(false);
-			}
-			else if (isInvOpen)
-			{
-				(*inventory).second->Set_RenderOnAnim(false);
-			}
-			else if (isWeaponOpen)
-			{
-				(*weapon).second->Set_RenderOnAnim(false);
+				if (isChOpen)
+				{
+					(*character).second->Set_RenderOnAnim(false);
+				}
+				else if (isInvOpen)
+				{
+					(*inventory).second->Set_RenderOnAnim(false);
+				}
+				else if (isWeaponOpen)
+				{
+					(*weapon).second->Set_RenderOnAnim(false);
+				}
+				else
+				{
+					(*menu).second->Set_RenderOnAnim(false);
+				}
+				dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 			}
 			else
 			{
-				(*menu).second->Set_RenderOnAnim(false);
+				(*invsub).second->Set_RenderOnAnim(false);
 			}
-			dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 		}
 		else
 		{

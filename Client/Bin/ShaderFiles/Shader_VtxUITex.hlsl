@@ -13,6 +13,8 @@ float		g_fFlowTime;
 float		g_CurrentRatio;
 float		g_PastRatio;
 
+matrix		g_RotationMatrix; // 회전 행렬
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -36,6 +38,24 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);		
 	Out.vTexcoord = In.vTexcoord;
+
+	return Out;
+}
+
+VS_OUT VS_ROTATION(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+
+	float3 texCoord3 = float3(In.vTexcoord - 0.5, 1.0);
+	float3 rotatedTexcoord = mul(texCoord3, g_RotationMatrix);
+	Out.vTexcoord = rotatedTexcoord.xy + 0.5;
 
 	return Out;
 }
@@ -257,6 +277,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_FADE_DISSOLVE();
+	}
+
+		pass RotationPass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_ROTATION();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 }
 

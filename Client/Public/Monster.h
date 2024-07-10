@@ -64,9 +64,14 @@ protected:
 
 	CPlayer* m_pPlayer = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
+	
+	// UI
+	class CUIGroup_MonsterHP*		m_pUI_HP = { nullptr };
 
 protected:
 	virtual HRESULT		Add_Nodes();
+
+	void				Create_UI();
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

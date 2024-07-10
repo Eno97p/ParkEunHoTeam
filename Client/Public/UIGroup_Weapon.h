@@ -7,10 +7,16 @@ class CUI;
 
 class CUIGroup_Weapon final : public CUIGroup
 {
+public:
+	enum TAB_TYPE { TAB_L, TAB_R, TAB_END };
+
 private:
 	CUIGroup_Weapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_Weapon(const CUIGroup_Weapon& rhs);
 	virtual ~CUIGroup_Weapon() = default;
+
+public:
+	TAB_TYPE		Get_TabType() { return m_eTabType; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -23,12 +29,16 @@ public:
 private:
 	vector<CUI*>			m_vecUI;
 
+	TAB_TYPE				m_eTabType = { TAB_END };
+
 private:
 	HRESULT					Create_UI();
 	HRESULT					Create_Slot();
 	HRESULT					Create_EquipSlot();
 	HRESULT					Create_Fontaine();
 	HRESULT					Create_Tab();
+
+	void					Change_Tab();
 
 public:
 	static CUIGroup_Weapon*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

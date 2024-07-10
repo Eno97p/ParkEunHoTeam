@@ -89,6 +89,12 @@ HRESULT CUI_WPEquipSlot::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (m_isSelect)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("SLOT TO EQUIP:"), _float2(25.f, m_fY - 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 

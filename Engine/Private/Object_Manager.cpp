@@ -119,6 +119,7 @@ HRESULT CObject_Manager::Add_Camera(_uint iLevelIndex, const wstring& strLayerTa
 		pLayer = CLayer::Create();
 		pLayer->Add_GameObject(pCloneObject);
 		m_Cameras.emplace_back(dynamic_cast<CCamera*>(pCloneObject));
+		Safe_AddRef(pCloneObject);
 		Set_MainCamera(m_Cameras.size() - 1);
 
 		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
@@ -129,6 +130,7 @@ HRESULT CObject_Manager::Add_Camera(_uint iLevelIndex, const wstring& strLayerTa
 	{
 		pLayer->Add_GameObject(pCloneObject);
 		m_Cameras.emplace_back(dynamic_cast<CCamera*>(pCloneObject));
+		Safe_AddRef(pCloneObject);
 		Set_MainCamera(m_Cameras.size() - 1);
 	}
 
@@ -353,6 +355,7 @@ void CObject_Manager::Free()
 	{
 		Safe_Release(camera);
 	}
+	m_Cameras.clear();
 
 	for (_uint i = 0; i < m_iNumLevels; i++)
 	{

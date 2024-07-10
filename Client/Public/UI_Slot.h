@@ -8,7 +8,7 @@ class CUI_Slot_Frame;
 class CUI_Slot final : public CUI_Interaction
 {
 public:
-	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_END };
+	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
 	typedef struct UI_Slot_Desc : public UI_DESC
 	{
 		UISORT_PRIORITY	eUISort;
@@ -39,6 +39,8 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Frame();
+
+	void	Open_SubPage();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

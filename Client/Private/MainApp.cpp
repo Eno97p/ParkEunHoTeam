@@ -25,6 +25,7 @@
 
 #pragma region Loading
 #include "UI_LoadingBG.h"
+#include "UI_LoadingCircle.h"
 #include "UIGroup_Loading.h"
 #pragma endregion Loading
 
@@ -72,17 +73,27 @@
 #include "UI_WPEquipNone.h"
 #include "UI_WPFontaine.h"
 #include "UI_WeaponTab.h"
-
 #include "UIGroup_Weapon.h"
 #pragma endregion Weapon
 
+#pragma region Monster
+#include "UI_MonsterHP.h"
+#include "UIGroup_MonsterHP.h"
+#include "UI_BossHP.h"
+#include "UI_BossHPBar.h"
+#include "UIGroup_BossHP.h"
+#pragma endregion Monster
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
+#include "UI_MenuPage_BGAlpha.h"
 #include "UI_Slot.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup_Inventory.h"
 #include "UI_FadeInOut.h"
-
+#include "UI_InvSub_Btn.h"
+#include "UI_InvSub_BtnSelect.h"
+#include "UIGroup_InvSub.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -154,6 +165,15 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;*/
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_12.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo13"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_13.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo15"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_15.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
 		return E_FAIL;
 
 
@@ -448,6 +468,15 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Sword_Trail"),
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* SwordTrailShader */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Sword_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
+		return E_FAIL;
 #pragma endregion Component
 
 
@@ -468,8 +497,8 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 #pragma endregion MODEL
 
-	//if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
-	//	return E_FAIL;
+	if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -687,7 +716,15 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma endregion Quick
 
 #pragma region Inventory
+	/* Prototype_Component_Texture_UI_InvSub_Btn_None */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_None"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_None.png"), 1))))
+		return E_FAIL;
 
+	/* Prototype_Component_Texture_UI_InvSub_Btn_Select */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_Select"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_Select.png"), 1))))
+		return E_FAIL;
 #pragma endregion Inventory
 
 #pragma region Character
@@ -750,6 +787,19 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Weapon
 
+#pragma region Monstter
+	/* Prototype_Component_Texture_UI_BossHP */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHP"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHP.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_BossHPBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHPBar.png"), 1))))
+		return E_FAIL;
+#pragma endregion Monster
+
+#pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ShatteredCursor.png"), 1))))
@@ -759,6 +809,13 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FadeInOut"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.png"), 1))))
 		return E_FAIL;
+
+
+	/* Prototype_Component_Texture_BG_Alpha */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BG_Alpha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.png"), 1))))
+		return E_FAIL;
+#pragma endregion ETC
 
 #pragma endregion UI_Texture
 
@@ -812,6 +869,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_LoadingBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LoadingBG"),
 		CUI_LoadingBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_LoadingCircle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LoadingCircle"),
+		CUI_LoadingCircle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -951,6 +1013,18 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion Character
 
+#pragma region Inventory
+	/* For.Prototype_GameObject_UI_InvSub_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InvSub_Btn"),
+		CUI_InvSub_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_InvSub_BtnSelect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_InvSub_BtnSelect"),
+		CUI_InvSub_BtnSelect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Inventory
+
 #pragma region Slot
 	/* For.Prototype_GameObject_UI_Slot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Slot"),
@@ -972,6 +1046,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_MenuPageTop*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuPageTop"),
 		CUI_MenuPageTop::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MenuPage_BGAlpha*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuPage_BGAlpha"),
+		CUI_MenuPage_BGAlpha::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion MenuPage
 
@@ -1007,6 +1086,34 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion Weapon
 
+#pragma region Monster
+	/* For.Prototype_GameObject_UI_MonsterHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MonsterHP"),
+		CUI_MonsterHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_MonsterHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_MonsterHP"),
+		CUIGroup_MonsterHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BossHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossHP"),
+		CUI_BossHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BossHPBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossHPBar"),
+		CUI_BossHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_BossHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_BossHP"),
+		CUIGroup_BossHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Monster
+
+#pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Inventory"),
 		CUIGroup_Inventory::Create(m_pDevice, m_pContext))))
@@ -1016,6 +1123,12 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_FadeInOut"),
 		CUI_FadeInOut::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_InvSub*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_InvSub"),
+		CUIGroup_InvSub::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion ETC
 
 #pragma endregion UI_Obj
 

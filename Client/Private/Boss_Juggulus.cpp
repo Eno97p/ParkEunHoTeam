@@ -70,8 +70,6 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 
 void CBoss_Juggulus::Tick(_float fTimeDelta)
 {
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-
 	Check_AnimFinished();
 
 	m_pBehaviorCom->Update(fTimeDelta);

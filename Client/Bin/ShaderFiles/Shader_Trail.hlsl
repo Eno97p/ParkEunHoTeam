@@ -73,26 +73,19 @@ PS_OUT PS_SWORDTRAIL(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 	//Out.vColor
 	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
-	float2 adjustedTexcoord = In.vTexcoord;
-	adjustedTexcoord.x = lerp(1.0, 0.0, fRatio);
 
-	float4 Color = g_Texture.Sample(LinearSampler, adjustedTexcoord);
+	float4 Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 
 	if (Color.a == 0.f)
 		discard;
 
-	float brightness = 0.299 * Color.r + 0.587 * Color.g + 0.114 * Color.b;
-	float newAlpha = 1.0 - brightness;
-
-	Out.vColor = float4(Color.rgb, newAlpha);
+	Out.vColor = Color;
 
 	if (g_Alpha)
 	{
 		Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
 	}
-
-	
 
 	if (g_Desolve)
 	{
@@ -130,44 +123,6 @@ PS_OUT PS_BLOOM(PS_IN In)
 	return Out;
 }
 
-
-struct GS_IN
-{
-	float3		vPosition : POSITION;
-	float2		vPSize : TEXCOORD0;
-
-	float2		vLifeTime : COLOR0;
-};
-
-struct GS_OUT
-{
-	float4		vPosition : SV_POSITION;
-	float2		vTexcoord : TEXCOORD0;
-
-	float2		vLifeTime : COLOR0;
-};
-
-[maxvertexcount(6)]
-void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
-{
-	GS_OUT Out[4];
-	Out[0] = (GS_OUT)0;
-	Out[1] = (GS_OUT)0;
-	Out[2] = (GS_OUT)0;
-	Out[3] = (GS_OUT)0;
-
-
-	Triangles.Append(Out[0]);
-	Triangles.Append(Out[1]);
-	Triangles.Append(Out[2]);
-	Triangles.RestartStrip();
-
-	Triangles.Append(Out[0]);
-	Triangles.Append(Out[2]);
-	Triangles.Append(Out[3]);
-	Triangles.RestartStrip();
-
-}
 
 technique11 DefaultTechnique
 {

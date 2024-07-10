@@ -97,6 +97,8 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 #endif
 
+	Generate_Trail(0);
+
 }
 
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)

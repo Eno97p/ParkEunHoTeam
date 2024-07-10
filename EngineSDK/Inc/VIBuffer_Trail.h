@@ -34,7 +34,6 @@ public:
 
 private:
 	XMVECTOR CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t);
-	void Tick();
 private:
 	ID3D11Buffer*				m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC			m_InstanceBufferDesc = {};
@@ -52,7 +51,6 @@ private:
 
 	_bool						m_bInstanceDead = false;
 
-	_float4x4					m_UsingMat;
 public:
 	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

@@ -86,18 +86,13 @@ HRESULT CVIBuffer_SwordTrail::Initialize(void* pArg)
 	ZeroMemory(pInstanceVertices, sizeof(SwordTrailVertex) * m_iNumInstance);
 
 	_matrix ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
-	_vector vRight = XMVector4Normalize(ParentMat.r[0]);
 	_vector vUp = XMVector4Normalize(ParentMat.r[1]);
-	_vector vLook = XMVector4Normalize(ParentMat.r[2]);
-	_vector vPos = ParentMat.r[3];
-	_float3 Offset = m_pDesc->vOffsetPos;
+	_vector vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
 
-	vPos += vRight * m_pDesc->vOffsetPos.x;
-	vPos += vUp * m_pDesc->vOffsetPos.y;
-	vPos += vLook * m_pDesc->vOffsetPos.z;
-	ParentMat.r[3] = vPos;
-	_vector Top = vPos + vUp * m_pDesc->vSize.y;
-	_vector Bottom = vPos - vUp * m_pDesc->vSize.y;
+	_vector Top = vPos + vUp * m_pDesc->vSize;
+	_vector Bottom = vPos - vUp * m_pDesc->vSize;
+
+	m_pTrailVertex.emplace_back(make_pair(Top, Bottom));
 
 	//Zero = 왼쪽 위, One 왼쪽 아래, Two 오른쪽 아래, Three 오른쪽 위 
 	for (size_t i = 0; i < m_iNumInstance; i++)
@@ -157,64 +152,285 @@ HRESULT CVIBuffer_SwordTrail::Render()
 
 void CVIBuffer_SwordTrail::Tick(_float fDelta)
 {
-	_matrix ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
-	_vector vRight = XMVector4Normalize(ParentMat.r[0]);
-	_vector vUp = XMVector4Normalize(ParentMat.r[1]);
-	_vector vLook = XMVector4Normalize(ParentMat.r[2]);
-	_vector vPos = ParentMat.r[3];
-	_float3 Offset = m_pDesc->vOffsetPos;
+	bool allInstancesDead = true;
+	XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
+	XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
 
-	vPos += vRight * Offset.x;
-	vPos += vUp * Offset.y;
-	vPos += vLook * Offset.z;
-	ParentMat.r[3] = vPos;
+	XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
+	XMVECTOR Top = vPos + vUp * m_pDesc->vSize;
+	XMVECTOR Bottom = vPos - vUp * m_pDesc->vSize;
 
-	_vector Top = vPos + vUp * m_pDesc->vSize.y;
-	_vector Bottom = vPos - vUp * m_pDesc->vSize.y;
+	m_pTrailVertex.emplace_back(make_pair(Top, Bottom));
 
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 	SwordTrailVertex* pVertices = (SwordTrailVertex*)SubResource.pData;
 	for (_int i = m_iNumInstance-1; i >= 0; i--)
 	{
+		pVertices[i].lifetime.y += fDelta;
 		if (i == 0)
 		{
 			pVertices[i].Three = pVertices[i].Zero;
 			pVertices[i].Two = pVertices[i].One;
 			XMStoreFloat3(&pVertices[i].Zero, Top);
 			XMStoreFloat3(&pVertices[i].One, Bottom);
-
-			
 		}
-		else
+		else if (i == m_iNumInstance - 1)
 		{
-			pVertices[i].Three = pVertices[i].Zero;
-			pVertices[i].Two = pVertices[i].One;
-			pVertices[i].Zero = pVertices[i - 1].Three;
-			pVertices[i].One = pVertices[i - 1].Two;
-
-			_float2 a= pVertices[i].texCoord0;
-			_float2 b=pVertices[i].texCoord1;
-			_float2 c=pVertices[i].texCoord2;
-			_float2 d=pVertices[i].texCoord3;
+			XMStoreFloat3(&pVertices[i].Three,m_pTrailVertex[0].first);
+			XMStoreFloat3(&pVertices[i].Two,m_pTrailVertex[0].second);
+			XMStoreFloat3(&pVertices[i].Zero,m_pTrailVertex[0].first);
+			XMStoreFloat3(&pVertices[i].One,m_pTrailVertex[0].second);
 		}
+		//else
+		//{
+		//	pVertices[i].Three = pVertices[i].Zero;
+		//	pVertices[i].Two = pVertices[i].One;
+		//	pVertices[i].Zero = pVertices[i - 1].Three;
+		//	pVertices[i].One = pVertices[i - 1].Two;
+		//}
+
+		if (pVertices[i].lifetime.y >= pVertices[i].lifetime.x)
+		{
+			pVertices[i].lifetime.y = pVertices[i].lifetime.x;
+		}
+		if (pVertices[i].lifetime.y < pVertices[i].lifetime.x)
+		{
+			allInstancesDead = false;
+		}
+
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
+
+	m_bInstanceDead = allInstancesDead;
 }
 
+void CVIBuffer_SwordTrail::Tick_AI(_float fDelta)
+{
+	bool allInstancesDead = true;
+	XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
+	XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+
+	XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
+	XMVECTOR Top = vPos + vUp * m_pDesc->vSize;
+	XMVECTOR Bottom = vPos - vUp * m_pDesc->vSize;
+
+	XMFLOAT3 topPoint, bottomPoint;
+	XMStoreFloat3(&topPoint, Top);
+	XMStoreFloat3(&bottomPoint, Bottom);
+
+	m_TopPoints.push_back(topPoint);
+	m_BottomPoints.push_back(bottomPoint);
+
+	if (m_TopPoints.size() > m_iNumInstance)
+	{
+		m_TopPoints.erase(m_TopPoints.begin());
+		m_BottomPoints.erase(m_BottomPoints.begin());
+	}
+
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	SwordTrailVertex* pVertices = (SwordTrailVertex*)SubResource.pData;
+
+	size_t pointCount = m_TopPoints.size();
+
+	for (_int i = 0; i < m_iNumInstance; i++)
+	{
+		pVertices[i].lifetime.y += fDelta;
+
+		if (pVertices[i].lifetime.y < m_pDesc->fMaxTime)
+		{
+			float t = static_cast<float>(i) / (m_iNumInstance - 1);
+			float nextT = static_cast<float>(i + 1) / (m_iNumInstance - 1);
+
+			XMVECTOR topPos, bottomPos, nextTopPos, nextBottomPos;
+
+			if (pointCount < 2)
+			{
+				topPos = nextTopPos = Top;
+				bottomPos = nextBottomPos = Bottom;
+			}
+			else if (pointCount < 4)
+			{
+				XMVECTOR topStart = XMLoadFloat3(&m_TopPoints.front());
+				XMVECTOR topEnd = XMLoadFloat3(&m_TopPoints.back());
+				XMVECTOR bottomStart = XMLoadFloat3(&m_BottomPoints.front());
+				XMVECTOR bottomEnd = XMLoadFloat3(&m_BottomPoints.back());
+
+				topPos = XMVectorLerp(topStart, topEnd, t);
+				bottomPos = XMVectorLerp(bottomStart, bottomEnd, t);
+				nextTopPos = XMVectorLerp(topStart, topEnd, nextT);
+				nextBottomPos = XMVectorLerp(bottomStart, bottomEnd, nextT);
+			}
+			else
+			{
+				size_t index = min(static_cast<size_t>(t * (pointCount - 1)), pointCount - 1);
+				size_t p1 = min(max(index, (size_t)1), pointCount - 2);
+
+				XMVECTOR v0 = XMLoadFloat3(&m_TopPoints[p1 - 1]);
+				XMVECTOR v1 = XMLoadFloat3(&m_TopPoints[p1]);
+				XMVECTOR v2 = XMLoadFloat3(&m_TopPoints[p1 + 1]);
+				XMVECTOR v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_TopPoints[p1 + 2]) : v2;
+
+				float localT = t * (pointCount - 1) - p1;
+				float localNextT = nextT * (pointCount - 1) - p1;
+
+				topPos = CatmullRom(v0, v1, v2, v3, localT);
+				nextTopPos = CatmullRom(v0, v1, v2, v3, localNextT);
+
+				v0 = XMLoadFloat3(&m_BottomPoints[p1 - 1]);
+				v1 = XMLoadFloat3(&m_BottomPoints[p1]);
+				v2 = XMLoadFloat3(&m_BottomPoints[p1 + 1]);
+				v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_BottomPoints[p1 + 2]) : v2;
+
+				bottomPos = CatmullRom(v0, v1, v2, v3, localT);
+				nextBottomPos = CatmullRom(v0, v1, v2, v3, localNextT);
+			}
+
+			XMStoreFloat3(&pVertices[i].Zero, topPos);
+			XMStoreFloat3(&pVertices[i].One, bottomPos);
+			XMStoreFloat3(&pVertices[i].Two, nextBottomPos);
+			XMStoreFloat3(&pVertices[i].Three, nextTopPos);
 
 
-XMVECTOR CVIBuffer_SwordTrail::CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t)
+		}
+
+
+		if (pVertices[i].lifetime.y >= pVertices[i].lifetime.x)
+		{
+			pVertices[i].lifetime.y = pVertices[i].lifetime.x;
+		}
+		if (pVertices[i].lifetime.y < pVertices[i].lifetime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	m_bInstanceDead = allInstancesDead;
+}
+
+void CVIBuffer_SwordTrail::Tick_AI_UPgrade(_float fDelta)
+{
+	bool allInstancesDead = true;
+	XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
+	XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+
+	XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
+	XMVECTOR Top = vPos + vUp * m_pDesc->vSize;
+	XMVECTOR Bottom = vPos - vUp * m_pDesc->vSize;
+
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	SwordTrailVertex* pVertices = (SwordTrailVertex*)SubResource.pData;
+
+	// 첫 번째 인스턴스의 lifetime을 체크
+	bool shouldUpdatePositions = pVertices[0].lifetime.y <= 0.5f;
+
+	if (shouldUpdatePositions)
+	{
+		XMFLOAT3 topPoint, bottomPoint;
+		XMStoreFloat3(&topPoint, Top);
+		XMStoreFloat3(&bottomPoint, Bottom);
+
+		m_TopPoints.push_back(topPoint);
+		m_BottomPoints.push_back(bottomPoint);
+
+		if (m_TopPoints.size() > m_iNumInstance)
+		{
+			m_TopPoints.erase(m_TopPoints.begin());
+			m_BottomPoints.erase(m_BottomPoints.begin());
+		}
+	}
+
+	size_t pointCount = m_TopPoints.size();
+
+	for (_int i = 0; i < m_iNumInstance; i++)
+	{
+		pVertices[i].lifetime.y += fDelta;
+
+		if (shouldUpdatePositions)
+		{
+			float t = static_cast<float>(i) / (m_iNumInstance - 1);
+			float nextT = static_cast<float>(i + 1) / (m_iNumInstance - 1);
+
+			XMVECTOR topPos, bottomPos, nextTopPos, nextBottomPos;
+
+			if (pointCount < 2)
+			{
+				topPos = nextTopPos = Top;
+				bottomPos = nextBottomPos = Bottom;
+			}
+			else if (pointCount < 4)
+			{
+				XMVECTOR topStart = XMLoadFloat3(&m_TopPoints.front());
+				XMVECTOR topEnd = XMLoadFloat3(&m_TopPoints.back());
+				XMVECTOR bottomStart = XMLoadFloat3(&m_BottomPoints.front());
+				XMVECTOR bottomEnd = XMLoadFloat3(&m_BottomPoints.back());
+
+				topPos = XMVectorLerp(topStart, topEnd, t);
+				bottomPos = XMVectorLerp(bottomStart, bottomEnd, t);
+				nextTopPos = XMVectorLerp(topStart, topEnd, nextT);
+				nextBottomPos = XMVectorLerp(bottomStart, bottomEnd, nextT);
+			}
+			else
+			{
+				size_t index = min(static_cast<size_t>(t * (pointCount - 1)), pointCount - 1);
+				size_t p1 = min(max(index, (size_t)1), pointCount - 2);
+
+				XMVECTOR v0 = XMLoadFloat3(&m_TopPoints[p1 - 1]);
+				XMVECTOR v1 = XMLoadFloat3(&m_TopPoints[p1]);
+				XMVECTOR v2 = XMLoadFloat3(&m_TopPoints[p1 + 1]);
+				XMVECTOR v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_TopPoints[p1 + 2]) : v2;
+
+				float localT = t * (pointCount - 1) - p1;
+				float localNextT = nextT * (pointCount - 1) - p1;
+
+				topPos = CatmullRom(v0, v1, v2, v3, localT);
+				nextTopPos = CatmullRom(v0, v1, v2, v3, localNextT);
+
+				v0 = XMLoadFloat3(&m_BottomPoints[p1 - 1]);
+				v1 = XMLoadFloat3(&m_BottomPoints[p1]);
+				v2 = XMLoadFloat3(&m_BottomPoints[p1 + 1]);
+				v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_BottomPoints[p1 + 2]) : v2;
+
+				bottomPos = CatmullRom(v0, v1, v2, v3, localT);
+				nextBottomPos = CatmullRom(v0, v1, v2, v3, localNextT);
+			}
+
+			XMStoreFloat3(&pVertices[i].Zero, topPos);
+			XMStoreFloat3(&pVertices[i].One, bottomPos);
+			XMStoreFloat3(&pVertices[i].Two, nextBottomPos);
+			XMStoreFloat3(&pVertices[i].Three, nextTopPos);
+		}
+
+		if (pVertices[i].lifetime.y >= pVertices[i].lifetime.x)
+		{
+			pVertices[i].lifetime.y = pVertices[i].lifetime.x;
+		}
+		if (pVertices[i].lifetime.y < pVertices[i].lifetime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	m_bInstanceDead = allInstancesDead;
+}
+
+XMVECTOR CVIBuffer_SwordTrail::CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t)
 {
 	float t2 = t * t;
 	float t3 = t2 * t;
 
-	XMVECTOR result = (2.0f * P1) +
-		(-P0 + P2) * t +
-		(2.0f * P0 - 5.0f * P1 + 4.0f * P2 - P3) * t2 +
-		(-P0 + 3.0f * P1 - 3.0f * P2 + P3) * t3;
+	XMVECTOR a = v1;
+	XMVECTOR b = 0.5f * (-v0 + v2);
+	XMVECTOR c = 0.5f * (2.0f * v0 - 5.0f * v1 + 4.0f * v2 - v3);
+	XMVECTOR d = 0.5f * (-v0 + 3.0f * v1 - 3.0f * v2 + v3);
 
-	return result * 0.5f;
+	return a + b * t + c * t2 + d * t3;
 }
 
 

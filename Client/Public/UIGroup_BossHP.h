@@ -8,6 +8,14 @@ class CUI;
 
 class CUIGroup_BossHP final : public CUIGroup
 {
+public:
+	// enum으로 어떤 보스의 UI인지 구분?
+	enum BOSSUI_NAME { BOSSUI_JUGGULUS, BOSSUI_MANTARI, BOSSUI_END };
+	typedef struct UIGroup_BossHP_Desc : public UIGROUP_DESC
+	{
+		BOSSUI_NAME		eBossUIName;
+	}UIGROUP_BOSSHP_DESC;
+
 private:
 	CUIGroup_BossHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_BossHP(const CUIGroup_BossHP& rhs);
@@ -23,6 +31,8 @@ public:
 
 private:
 	vector<CUI*>			m_vecUI;
+
+	BOSSUI_NAME				m_eBossUIName = { BOSSUI_END };
 
 private:
 	HRESULT					Create_UI();

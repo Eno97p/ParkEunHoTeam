@@ -1,7 +1,7 @@
 #include "UIGroup_BossHP.h"
 
 #include "GameInstance.h"
-#include "UI.h"
+#include "UI_BossHPBar.h"
 
 CUIGroup_BossHP::CUIGroup_BossHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -20,6 +20,10 @@ HRESULT CUIGroup_BossHP::Initialize_Prototype()
 
 HRESULT CUIGroup_BossHP::Initialize(void* pArg)
 {
+	UIGROUP_BOSSHP_DESC* pDesc = static_cast<UIGROUP_BOSSHP_DESC*>(pArg);
+
+	m_eBossUIName = pDesc->eBossUIName;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -56,6 +60,7 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 		if (isRender_End)
 			m_isRend = false;
 	}
+	m_isRend = true;
 }
 
 void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)
@@ -74,9 +79,25 @@ HRESULT CUIGroup_BossHP::Render()
 
 HRESULT CUIGroup_BossHP::Create_UI()
 {
+	CUI::UI_DESC pDesc{};
 	// HP
 
 	// Bar
+	CUI_BossHPBar::UI_BOSSHPBAR_DESC pBarDesc{};
+
+	pBarDesc.eLevel = LEVEL_STATIC;
+
+	if (BOSSUI_JUGGULUS == m_eBossUIName)
+	{
+		pBarDesc.wszBossName = TEXT("RAS SAMRAH, GUILTY ONE");
+	}
+	else if (BOSSUI_MANTARI == m_eBossUIName)
+	{
+		pBarDesc.wszBossName = TEXT("Mantari");
+	}
+
+	pDesc.eLevel = LEVEL_STATIC;
+	m_vecUI.emplace_back(dynamic_cast<CUI_BossHPBar*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossHPBar"), &pBarDesc)));
 
 	return S_OK;
 }

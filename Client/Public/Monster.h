@@ -4,6 +4,8 @@
 #include "LandObject.h"
 #include "Player.h"
 
+#include "UIGroup_BossHP.h"
+
 BEGIN(Engine)
 class CCollider;
 class CShader;
@@ -66,12 +68,13 @@ protected:
 	CTransform* m_pPlayerTransform = { nullptr };
 	
 	// UI
-	class CUIGroup_MonsterHP*		m_pUI_HP = { nullptr };
+	class CUIGroup*		m_pUI_HP = { nullptr };
 
 protected:
 	virtual HRESULT		Add_Nodes();
 
 	void				Create_UI();
+	void				Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName); // 인자에 값을 넣어주는 게 좋을 듯함
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

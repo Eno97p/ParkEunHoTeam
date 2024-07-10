@@ -8,6 +8,8 @@
 #include "Juggulus_HandTwo.h"
 #include "Juggulus_HandThree.h"
 
+#include "UIGroup_BossHP.h"
+
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{pDevice, pContext}
 {
@@ -49,6 +51,8 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
+
 	return S_OK;
 }
 
@@ -80,6 +84,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_P))
 		m_iCurHp = 10;
 
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
@@ -88,6 +93,8 @@ void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject.second->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 }
 
 HRESULT CBoss_Juggulus::Render()

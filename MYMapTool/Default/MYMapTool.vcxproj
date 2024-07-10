@@ -189,6 +189,8 @@
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\CutSceneCamera.h" />
+    <ClInclude Include="..\public\DecalBox.h" />
+    <ClInclude Include="..\public\Elevator.h" />
     <ClInclude Include="..\public\EventTrigger.h" />
     <ClInclude Include="..\public\FakeWall.h" />
     <ClInclude Include="..\public\Grass.h" />
@@ -218,6 +220,7 @@
     <ClInclude Include="..\public\ThirdPersonCamera.h" />
     <ClInclude Include="..\Public\ToolObj.h" />
     <ClInclude Include="..\Public\ToolObj_Manager.h" />
+    <ClInclude Include="..\public\TrapMace.h" />
     <ClInclude Include="..\Public\TutorialMapBridge.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -234,7 +237,9 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
+    <ClCompile Include="..\private\DecalBox.cpp" />
     <ClCompile Include="..\Private\Default_Camera.cpp" />
+    <ClCompile Include="..\private\Elevator.cpp" />
     <ClCompile Include="..\private\EventTrigger.cpp" />
     <ClCompile Include="..\private\FakeWall.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
@@ -261,6 +266,7 @@
     <ClCompile Include="..\private\ThirdPersonCamera.cpp" />
     <ClCompile Include="..\Private\ToolObj.cpp" />
     <ClCompile Include="..\Private\ToolObj_Manager.cpp" />
+    <ClCompile Include="..\private\TrapMace.cpp" />
     <ClCompile Include="..\Private\TutorialMapBridge.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>

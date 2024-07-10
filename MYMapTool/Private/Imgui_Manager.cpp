@@ -111,7 +111,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         // Stage 선택(List Box)
         ImGui::TextColored({ 1.f, 0.f, 0.f, 1.f }, "Scene");
-        const char* Stages[] = { "Home", "Stage 1", "Stage 2", "Stage 3", "Boss Stage" };
+        const char* Stages[] = { "Ackbar", "Tutorial", "AndrasArena", "RasSamrahCastle", "Boss Stage" };
         static int Stage_current = 0;
         ImGui::ListBox("###Stage", &Stage_current, Stages, IM_ARRAYSIZE(Stages)); // item_current 변수에 선택 값 저장
         m_iStageIdx = Stage_current;
@@ -426,8 +426,10 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     }
     case LAYER_PASSIVE_ELEMENT:
     {
-        const char* items_MapElement[] = { "BasicCube", "BasicDonut",  "BasicGround", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT","RasSamrahCastle",
+        const char* items_MapElement[] = { "BasicCube", "BasicDonut",  "BasicGround", "TronesT03","AndrasTEST","AndrasArenaRocks","Grasses_TT",
+            "RasSamrahCastle",
             "RasSamrahCastle2",
+            "RasSamrahCastle3",
             
             //TUTORIAL
             "TutorialMap", "TutorialDecoStructure", "TutorialDecoCube", "TutorialDecoMaze",
@@ -441,6 +443,11 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             //STAGE 1 DECOS
             "BoxA", "BoxB",
             "YantraStatue",
+            "BannerPole1", "BannerPole2", "BannerPole3", "BannerPole4","BannerPole5",
+
+            "AckbarWell", "Remparts_CrenauxA", "Remparts_CrenauxB", "Remparts_HourdA","Remparts_WallMotifA",
+            "Remparts_WallRenfortA", "RichStairs_Rambarde",
+
             "Light_Brasero", "Light_BraseroSmall",
             "Light_Candle", "Light_CandleGroup",
             "Light_Crystal",

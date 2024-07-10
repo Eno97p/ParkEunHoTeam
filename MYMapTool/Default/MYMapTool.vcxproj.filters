@@ -138,6 +138,15 @@
     <ClCompile Include="..\private\EventTrigger.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\DecalBox.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TrapMace.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Elevator.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -270,6 +279,15 @@
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EventTrigger.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DecalBox.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\TrapMace.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Elevator.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
   </ItemGroup>

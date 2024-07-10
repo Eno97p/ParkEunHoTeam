@@ -26,10 +26,10 @@ HRESULT CUI_BossHP::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 390.f;
-	m_fY = 45.f;
-	m_fSizeX = 768.f;
-	m_fSizeY = 24.f;
+	m_fX = (g_iWinSizeX >> 1) + 46.f;
+	m_fY = g_iWinSizeY - 92.f;
+	m_fSizeX = 1265.3f; // 2048
+	m_fSizeY = 16.f; // 128
 
 	Setting_Position();
 
@@ -46,7 +46,7 @@ void CUI_BossHP::Tick(_float fTimeDelta)
 
 void CUI_BossHP::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, THIRD);
+	CGameInstance::GetInstance()->Add_UI(this, SECOND);
 }
 
 HRESULT CUI_BossHP::Render()

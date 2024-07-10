@@ -30,6 +30,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_uint					m_iDamage = { 0 }; // 누적 데미지
+	_float					m_fHPRatio = { 1.f };
+
 	vector<CUI*>			m_vecUI;
 
 	BOSSUI_NAME				m_eBossUIName = { BOSSUI_END };

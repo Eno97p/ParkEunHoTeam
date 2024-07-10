@@ -8,6 +8,8 @@
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
 
+#include "UIGroup_BossHP.h"
+
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -48,6 +50,8 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
+
 	return S_OK;
 }
 
@@ -87,6 +91,8 @@ void CMantari::Tick(_float fTimeDelta)
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -94,6 +100,8 @@ void CMantari::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

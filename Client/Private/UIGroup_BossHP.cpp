@@ -1,6 +1,7 @@
 #include "UIGroup_BossHP.h"
 
 #include "GameInstance.h"
+#include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
 
 CUIGroup_BossHP::CUIGroup_BossHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -53,6 +54,7 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 				pUI->Resset_Animation(false);
 			}
 
+
 			pUI->Tick(fTimeDelta);
 
 			isRender_End = pUI->isRender_End();
@@ -81,6 +83,8 @@ HRESULT CUIGroup_BossHP::Create_UI()
 {
 	CUI::UI_DESC pDesc{};
 	// HP
+	pDesc.eLevel = LEVEL_STATIC;
+	m_vecUI.emplace_back(dynamic_cast<CUI_BossHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossHP"), &pDesc)));
 
 	// Bar
 	CUI_BossHPBar::UI_BOSSHPBAR_DESC pBarDesc{};
@@ -93,10 +97,9 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	}
 	else if (BOSSUI_MANTARI == m_eBossUIName)
 	{
-		pBarDesc.wszBossName = TEXT("Mantari");
+		pBarDesc.wszBossName = TEXT("MANTARI, THE WANDERING SPECTER");
 	}
 
-	pDesc.eLevel = LEVEL_STATIC;
 	m_vecUI.emplace_back(dynamic_cast<CUI_BossHPBar*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossHPBar"), &pBarDesc)));
 
 	return S_OK;

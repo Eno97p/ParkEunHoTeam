@@ -52,6 +52,7 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 		return E_FAIL;
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
+	m_pUI_HP->Set_Rend(false); // 일단 출력 X
 
 	return S_OK;
 }

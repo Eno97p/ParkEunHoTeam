@@ -28,7 +28,7 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 1.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_iCurHp = 100;
+	m_fCurHp = 100.f;
 	m_iState = STATE_IDLE;
 
 	if (FAILED(__super::Initialize(pDesc)))
@@ -521,8 +521,8 @@ NodeStates CLegionnaire_Gun::Idle(_float fTimeDelta)
 
 void CLegionnaire_Gun::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0.f)
 	{
 		m_iState = STATE_DEAD;
 	}

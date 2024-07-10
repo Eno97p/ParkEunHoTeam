@@ -22,6 +22,9 @@ private:
 	virtual ~CUIGroup_BossHP() = default;
 
 public:
+	void			Set_Ratio(_float fRatio) { m_fHPRatio = fRatio; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;

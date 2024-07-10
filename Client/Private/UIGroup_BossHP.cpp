@@ -62,6 +62,10 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 		if (isRender_End)
 			m_isRend = false;
 	}
+
+	vector<CUI*>::iterator hp = m_vecUI.begin();
+	dynamic_cast<CUI_BossHP*>(*hp)->Set_Ratio(m_fHPRatio);
+
 	m_isRend = true;
 }
 

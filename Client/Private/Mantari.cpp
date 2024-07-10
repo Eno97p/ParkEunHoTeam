@@ -92,6 +92,7 @@ void CMantari::Tick(_float fTimeDelta)
 
 	m_pPhysXCom->Tick(fTimeDelta);
 
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
 	m_pUI_HP->Tick(fTimeDelta);
 }
 
@@ -583,8 +584,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 
 void CMantari::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
 	}

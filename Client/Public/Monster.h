@@ -29,6 +29,9 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	_float			Get_Ratio() { return m_fCurHp / m_fMaxHp; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -47,8 +50,8 @@ protected:
 	_bool							m_isAnimFinished = { false };
 
 #pragma region ∏ÛΩ∫≈Õ Ω∫≈»
-	_uint m_iMaxHp = 100;
-	_uint m_iCurHp = m_iMaxHp;
+	_float m_fMaxHp = 100.f;
+	_float m_fCurHp = m_fMaxHp;
 #pragma endregion ∏ÛΩ∫≈Õ Ω∫≈»
 
 	_bool m_bDead = false;

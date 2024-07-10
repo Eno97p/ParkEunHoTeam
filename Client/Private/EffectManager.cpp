@@ -24,9 +24,14 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("Failed_Ready_Prototype");
 		return E_FAIL;
 	}
-	if (FAILED(Load_Trails()))
+	//if (FAILED(Load_Trails()))
+	//{
+	//	MSG_BOX("FAILED_Load_Trail");
+	//	return E_FAIL;
+	//}
+	if (FAILED(Load_SwordTrails()))
 	{
-		MSG_BOX("FAILED_Load_Trail");
+		MSG_BOX("FAILED_Load_SwordTrail");
 		return E_FAIL;
 	}
 
@@ -41,6 +46,23 @@ HRESULT CEffectManager::Generate_Trail(const _int iIndex, const _float4x4* BindM
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 		TEXT("Layer_Trail"), TEXT("Prototype_GameObject_Trail"), traildesc);
 
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_SwordTrail(const _int iIndex, const _float4x4* Swordmat)
+{
+	if (iIndex >= m_pSwordTrailes.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CSTrail::STRAIL_DESC* SwordTrail = m_pSwordTrailes[iIndex].get();
+		SwordTrail->traildesc.ParentMat = Swordmat;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_SwordTrail"), TEXT("Prototype_GameObject_SwordTrail"), SwordTrail);
+	}
 	return S_OK;
 }
 
@@ -84,6 +106,36 @@ HRESULT CEffectManager::Load_Trails()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_SwordTrails()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/SwordTrail.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		shared_ptr<CSTrail::STRAIL_DESC> readFile = make_shared<CSTrail::STRAIL_DESC>();
+		inFile.read((char*)&readFile->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
+		readFile->traildesc.ParentMat = nullptr;
+		inFile.read((char*)&readFile->isBloom, sizeof(_bool));
+		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
+		inFile.read((char*)&readFile->vColor, sizeof(_float3));
+		readFile->Texture = load_wstring_from_stream(inFile);
+		readFile->TexturePath = load_wstring_from_stream(inFile);
+		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
+		m_pSwordTrailes.emplace_back(readFile);
+	}
+	inFile.close();
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -101,6 +153,11 @@ HRESULT CEffectManager::Ready_GameObjects()
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Trail"),
 		CParticle_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_SwordTrail"),
+		CSTrail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

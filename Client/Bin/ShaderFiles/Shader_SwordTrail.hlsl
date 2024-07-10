@@ -1,7 +1,8 @@
 #include "Engine_Shader_Defines.hlsli"
 
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture;
+texture2D	g_Texture, g_DesolveTexture;
+float3		g_DiffuseColor;
 
 struct VS_IN
 {
@@ -42,17 +43,22 @@ VS_OUT VS_MAIN(VS_IN In)
 	vector      Position2 = float4(In.Position2, 1.f);
 	vector      Position3 = float4(In.Position3, 1.f);
 
-	matrix		matWV, matWVP;
+	matrix		matWV, matWVP, matVP;
 
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
+	matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
-	Out.Position0 = mul(Position0, matWVP).xyz;
-	Out.Position1 = mul(Position1, matWVP).xyz;
-	Out.Position2 = mul(Position2, matWVP).xyz;
-	Out.Position3 = mul(Position3, matWVP).xyz;
+	Out.Position0 = mul(Position0, g_WorldMatrix).xyz;
+	Out.Position1 = mul(Position1, g_WorldMatrix).xyz;
+	Out.Position2 = mul(Position2, g_WorldMatrix).xyz;
+	Out.Position3 = mul(Position3, g_WorldMatrix).xyz;
 
 	Out.Lifetime = In.Lifetime;
+	Out.TexCoord0 = In.TexCoord0;
+	Out.TexCoord1 = In.TexCoord1;
+	Out.TexCoord2 = In.TexCoord2;
+	Out.TexCoord3 = In.TexCoord3;
 
 	return Out;
 }
@@ -96,25 +102,34 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
 	Out[0].vPosition = mul(float4(In[0].Position0, 1.f), matVP);
 	Out[0].vTexcoord = In[0].TexCoord0;
+	Out[0].vLifeTime = In[0].Lifetime;
 
+	
 	Out[1].vPosition = mul(float4(In[0].Position1, 1.f), matVP);
 	Out[1].vTexcoord = In[0].TexCoord1;
-
+	Out[1].vLifeTime = In[0].Lifetime;
+	
 	Out[2].vPosition = mul(float4(In[0].Position2, 1.f), matVP);
 	Out[2].vTexcoord = In[0].TexCoord2;
-
+	Out[2].vLifeTime = In[0].Lifetime;
+	
 	Out[3].vPosition = mul(float4(In[0].Position3, 1.f), matVP);
 	Out[3].vTexcoord = In[0].TexCoord3;
+	Out[3].vLifeTime = In[0].Lifetime;
+
+
 
 	Triangles.Append(Out[0]);
 	Triangles.Append(Out[3]);
-	Triangles.Append(Out[1]);
+	Triangles.Append(Out[2]);
 	Triangles.RestartStrip();
 
-	Triangles.Append(Out[3]);
+	Triangles.Append(Out[0]);
 	Triangles.Append(Out[2]);
 	Triangles.Append(Out[1]);
 	Triangles.RestartStrip();
+
+
 }
 
 
@@ -136,37 +151,23 @@ PS_OUT PS_DEFAULT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	//Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	if (vNoise.r < fRatio)
+	{
+		discard;
+	}
+	
+	Out.vColor.a *= 1 - Out.vColor.r;
+	//Out.vColor.a *= 1.3f;
+	Out.vColor.rgb = g_DiffuseColor;
 
-	Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
-	/*vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
-
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a < 0.2f)
 		discard;
 
-	if (g_Alpha)
-	{
-		Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
-	}
-	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	Out.vColor.a *= 1 - fRatio;
 
-	if (g_Color)
-	{
-		Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
-	}
-
-	if (g_Desolve)
-	{
-		if ((vNoise.r - fRatio) < g_DesolvePower * 0.01f)
-		{
-			Out.vColor.rgb = g_DesolveColor;
-		}
-
-		if (vNoise.r < fRatio)
-		{
-			discard;
-		}
-	}*/
 	return Out;
 }
 

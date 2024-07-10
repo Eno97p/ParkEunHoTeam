@@ -35,6 +35,8 @@ _uint CAnimation::Set_CurKeyFrame(_uint iChannelIdx)
 	return m_CurrentKeyFrameIndices[iChannelIdx];
 }
 
+
+
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);

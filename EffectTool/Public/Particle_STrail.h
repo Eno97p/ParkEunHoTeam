@@ -17,6 +17,9 @@ public:
 	typedef struct STRAIL_DESC
 	{
 		CVIBuffer_SwordTrail::SwordTrailDesc			traildesc;
+		_bool								isBloom = false;
+		_int								iDesolveNum = 0;
+		_float3								vColor = { 1.f,1.f,1.f };
 		wstring								Texture = TEXT("");
 		wstring								TexturePath = TEXT("");
 	};
@@ -33,10 +36,13 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Distortion() override;
+	virtual HRESULT Render_Bloom() override;
 
 private:
 	CShader*						m_pShaderCom = { nullptr };
 	CTexture*						m_pTextureCom = { nullptr };	
+	CTexture*						m_DesolveTexture = { nullptr };
 	CVIBuffer_SwordTrail*			m_pVIBufferCom = { nullptr };
 	shared_ptr<STRAIL_DESC>			m_pTrailDesc = { nullptr };
 

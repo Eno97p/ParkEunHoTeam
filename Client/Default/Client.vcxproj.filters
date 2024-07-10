@@ -779,6 +779,9 @@
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Particle_STrail.h">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1155,6 +1158,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Particle_STrail.cpp">
+      <Filter>02.GameObjects\06.Effect\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

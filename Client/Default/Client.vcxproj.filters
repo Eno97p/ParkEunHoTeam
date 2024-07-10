@@ -394,6 +394,21 @@
     <Filter Include="02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn">
       <UniqueIdentifier>{764c4693-58b6-4522-a3a0-3ceb55a69034}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster">
+      <UniqueIdentifier>{6f4140cd-e27c-4841-92d4-3343bd6ea106}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\MonsterHP">
+      <UniqueIdentifier>{a8f7e093-d7cc-4eac-ab15-edddd4416c50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossHP">
+      <UniqueIdentifier>{19f1aea8-9114-4a65-ae4b-25749a625edf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\MonsterHP\HP">
+      <UniqueIdentifier>{014e7567-3fcf-4454-9187-9aeefa31e6bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\MonsterHP\Bar">
+      <UniqueIdentifier>{430fadba-db92-4503-81fc-121ceeb503c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -806,6 +821,12 @@
     <ClInclude Include="..\Public\UI_InvSub_BtnSelect.h">
       <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_MonsterHP.h">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MonsterHP.h">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\HP</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1197,6 +1218,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_InvSub_BtnSelect.cpp">
       <Filter>02.GameObjects\07. UI\MenuPage\Inventory\SubPage\Btn\SelectBtn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_MonsterHP.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MonsterHP.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\HP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 
 #include "Particle_Rect.h"
+#include "UIGroup_MonsterHP.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLandObject{ pDevice, pContext }
@@ -37,6 +38,8 @@ HRESULT CMonster::Initialize(void * pArg)
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayer);
 	Safe_AddRef(m_pPlayerTransform);
+
+	Create_UI();
 
 	return S_OK;
 }
@@ -77,9 +80,19 @@ HRESULT CMonster::Add_Nodes()
 	return S_OK;
 }
 
+void CMonster::Create_UI()
+{
+	CUIGroup::UIGROUP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	m_pUI_HP = dynamic_cast<CUIGroup_MonsterHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_MonsterHP"), &pDesc));
+	if (nullptr == m_pUI_HP)
+		return;
+}
+
 void CMonster::Free()
 {
 	__super::Free();
+	Safe_Release(m_pUI_HP);
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

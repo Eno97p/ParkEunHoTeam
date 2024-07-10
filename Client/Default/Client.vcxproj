@@ -238,6 +238,7 @@
     <ClInclude Include="..\Public\UIGroup_InvSub.h" />
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
     <ClInclude Include="..\Public\UIGroup_Logo.h" />
+    <ClInclude Include="..\Public\UIGroup_MonsterHP.h" />
     <ClInclude Include="..\Public\UI_FadeInOut.h" />
     <ClInclude Include="..\Public\UI_InvSub_Btn.h" />
     <ClInclude Include="..\Public\UI_InvSub_BtnSelect.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="..\Public\UI_LogoSelector.h" />
     <ClInclude Include="..\Public\UI_LogoTitle.h" />
     <ClInclude Include="..\Public\UI_MenuPage_BGAlpha.h" />
+    <ClInclude Include="..\Public\UI_MonsterHP.h" />
     <ClInclude Include="..\Public\Weapon_Ghost.h" />
     <ClInclude Include="..\Public\Weapon_Homonculus.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h" />
@@ -371,6 +373,7 @@
     <ClCompile Include="..\Private\UIGroup_InvSub.cpp" />
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />
     <ClCompile Include="..\Private\UIGroup_Logo.cpp" />
+    <ClCompile Include="..\Private\UIGroup_MonsterHP.cpp" />
     <ClCompile Include="..\Private\UI_FadeInOut.cpp" />
     <ClCompile Include="..\Private\UI_InvSub_Btn.cpp" />
     <ClCompile Include="..\Private\UI_InvSub_BtnSelect.cpp" />
@@ -381,6 +384,7 @@
     <ClCompile Include="..\Private\UI_LogoSelector.cpp" />
     <ClCompile Include="..\Private\UI_LogoTitle.cpp" />
     <ClCompile Include="..\Private\UI_MenuPage_BGAlpha.cpp" />
+    <ClCompile Include="..\Private\UI_MonsterHP.cpp" />
     <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />
     <ClCompile Include="..\Private\Weapon_Legionnaire.cpp" />

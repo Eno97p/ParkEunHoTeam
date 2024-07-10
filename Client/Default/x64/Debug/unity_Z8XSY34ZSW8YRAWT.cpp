@@ -171,6 +171,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_MonsterHP.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"
 
 
@@ -199,6 +202,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_MenuPage_BGAlpha.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_MonsterHP.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Ghost.cpp"

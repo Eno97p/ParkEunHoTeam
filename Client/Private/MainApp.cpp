@@ -76,6 +76,11 @@
 #include "UIGroup_Weapon.h"
 #pragma endregion Weapon
 
+#pragma region Monster
+#include "UI_MonsterHP.h"
+#include "UIGroup_MonsterHP.h"
+#pragma endregion Monster
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -770,6 +775,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Weapon
 
+#pragma region Monstter
+
+#pragma endregion Monster
+
+#pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ShatteredCursor.png"), 1))))
@@ -785,6 +795,7 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BG_Alpha"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.png"), 1))))
 		return E_FAIL;
+#pragma endregion ETC
 
 #pragma endregion UI_Texture
 
@@ -1055,6 +1066,20 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion Weapon
 
+#pragma region Monster
+	/* For.Prototype_GameObject_UI_MonsterHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MonsterHP"),
+		CUI_MonsterHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UIGroup_MonsterHP*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_MonsterHP"),
+		CUIGroup_MonsterHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Monster
+
+#pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Inventory"),
 		CUIGroup_Inventory::Create(m_pDevice, m_pContext))))
@@ -1069,6 +1094,7 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_InvSub"),
 		CUIGroup_InvSub::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+#pragma endregion ETC
 
 #pragma endregion UI_Obj
 

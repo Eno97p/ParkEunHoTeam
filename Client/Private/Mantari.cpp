@@ -313,6 +313,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 		m_iState = STATE_HIT;
 		Add_Hp(-10);
+		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
 	case CCollider::COLL_CONTINUE:

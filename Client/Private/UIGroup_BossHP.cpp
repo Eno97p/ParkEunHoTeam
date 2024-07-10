@@ -31,6 +31,8 @@ HRESULT CUIGroup_BossHP::Initialize(void* pArg)
 	if (FAILED(Create_UI()))
 		return E_FAIL;
 
+	m_isRend = false;
+
 	return S_OK;
 }
 
@@ -66,7 +68,7 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 	vector<CUI*>::iterator hp = m_vecUI.begin();
 	dynamic_cast<CUI_BossHP*>(*hp)->Set_Ratio(m_fHPRatio);
 
-	m_isRend = true;
+	//m_isRend = true;
 }
 
 void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)

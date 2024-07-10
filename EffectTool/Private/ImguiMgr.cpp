@@ -9,8 +9,6 @@
 #include "Particle_STrail.h"
 
 
-
-
 CImguiMgr::CImguiMgr()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -71,7 +69,6 @@ void CImguiMgr::Render()
 	Visible_Data();
 	//코드
 	//EffectTool();
-
 
 	ImGui::Render();
 
@@ -1101,23 +1098,270 @@ void CImguiMgr::SwordTrail_Tool()
 	ImVec2 ButtonSize = { 100.f,30.f };
 
 	static CSTrail::STRAIL_DESC StaticDesc = {};
+
+	if (ChangedSwordTrail != true)
+	{
+		StaticDesc.traildesc.ParentMat = TrailMat;
+		StaticDesc.Texture = m_pTextureProtoName;
+		StaticDesc.TexturePath = m_pTextureFilePath;
+	}
+	else
+	{
+		StaticDesc.traildesc.ParentMat = TrailMat;
+		ChangedSwordTrail = false;
+	}
 	
 	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &StaticDesc.traildesc.iNumInstance, NULL, NULL, "%u");
 	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&StaticDesc.traildesc.vOffsetPos));
-	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&StaticDesc.traildesc.vSize));
+	ImGui::InputFloat("Size", reinterpret_cast<float*>(&StaticDesc.traildesc.vSize));
 	ImGui::InputFloat("LifeTime", &StaticDesc.traildesc.fLifeTime);
-	StaticDesc.traildesc.ParentMat = TrailMat;
+	ImGui::InputFloat("MovingTime", &StaticDesc.traildesc.fMaxTime);
+	ImGui::InputInt("DesolveNum", &StaticDesc.iDesolveNum);
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&StaticDesc.vColor));
+	ImGui::Checkbox("Bloom", &StaticDesc.isBloom);
 
-	StaticDesc.Texture = m_pTextureProtoName; 
-	StaticDesc.TexturePath = m_pTextureFilePath;
+	
 
+#pragma region BUTTONS
 	if (ImGui::Button("Add", ButtonSize))
 	{
-		m_pGameInstance->CreateObject(LEVEL_GAMEPLAY, TEXT("Layer_SwordTrail"),
-			TEXT("Prototype_GameObject_Sword_Trail"), &StaticDesc);
+		if (StaticDesc.Texture == TEXT("") || StaticDesc.TexturePath == TEXT("") || StaticDesc.traildesc.ParentMat == nullptr)
+			MSG_BOX("텍스쳐와 행렬을 선택해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(LEVEL_GAMEPLAY, TEXT("Layer_SwordTrail"),
+				TEXT("Prototype_GameObject_Sword_Trail"), &StaticDesc);
+		}
+	}
+
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(LEVEL_GAMEPLAY, TEXT("Layer_SwordTrail"));
+	}
+
+	static char Names[256] = "";
+	ImGui::InputText("Name", Names, IM_ARRAYSIZE(Names));
+	if (ImGui::Button("Store", ButtonSize))
+	{
+		if (Names[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			StoreSwordTrail(Names, StaticDesc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_SwordTrail()))
+		{
+			MSG_BOX("Failed_SaveTrail");
+		}
+		else
+			MSG_BOX("Save Success");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_SwordTrail()))
+		{
+			MSG_BOX("Failed_LoadTrail");
+		}
+		else
+			MSG_BOX("Load Success");
+	}
+#pragma endregion BUTTONS
+
+	SwordTrailListBox(&StaticDesc);
+
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::StoreSwordTrail(char* Name, CSTrail::STRAIL_DESC trail)
+{
+	string sName = Name;
+	shared_ptr<CSTrail::STRAIL_DESC> RawPtr = make_shared<CSTrail::STRAIL_DESC>(trail);
+	m_SwordTrails.emplace_back(RawPtr);
+	SwordTrailNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::SwordTrailListBox(CSTrail::STRAIL_DESC* trail)
+{
+	if (m_SwordTrails.size() < 1)
+		return;
+
+	if (m_SwordTrails.size() != SwordTrailNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Sword_Trail_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+
+	if (ImGui::BeginListBox("SwordTrailList", list_box_size))
+	{
+		for (int i = 0; i < SwordTrailNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(SwordTrailNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (current_item >= 0 && current_item < m_SwordTrails.size())
+	{
+		if (ImGui::Button("Add", ButtonSize))
+		{
+			CSTrail::STRAIL_DESC* traildesc = m_SwordTrails[current_item].get();
+			traildesc->traildesc.ParentMat = TrailMat;
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SwordTrail"), TEXT("Prototype_GameObject_Sword_Trail"), traildesc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*trail = *m_SwordTrails[current_item].get();
+			ChangedSwordTrail = true;
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			shared_ptr<CSTrail::STRAIL_DESC> newItem = make_shared<CSTrail::STRAIL_DESC>(*trail);
+			m_SwordTrails[current_item] = newItem;
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_SwordTrails[current_item].reset();
+			m_SwordTrails.erase(m_SwordTrails.begin() + current_item);
+			SwordTrailNames.erase(SwordTrailNames.begin() + current_item);
+
+			if (current_item >= m_SwordTrails.size())
+				current_item = m_SwordTrails.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_SwordTrails)
+				iter.reset();
+			m_SwordTrails.clear();
+			SwordTrailNames.clear();
+			current_item = 0;
+		}
+
 	}
 
 	ImGui::End();
+
+}
+
+HRESULT CImguiMgr::Save_SwordTrail()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/SwordTrail.Bin";
+
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_SwordTrails.size();
+	file.write((char*)&iSize, sizeof(_uint));
+
+	for (auto& iter : m_SwordTrails)
+	{
+		file.write((char*)&iter->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
+		file.write((char*)&iter->isBloom, sizeof(_bool));
+		file.write((char*)&iter->iDesolveNum, sizeof(_int));
+		file.write((char*)&iter->vColor, sizeof(_float3));
+		save_wstring_to_stream(iter->Texture, file);
+		save_wstring_to_stream(iter->TexturePath, file);
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/SwordTrail.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : SwordTrailNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/SwordTrail.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < SwordTrailNames.size(); ++i)
+	{
+		NumberFile << i << ". " << SwordTrailNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_SwordTrail()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/SwordTrail.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	for (auto& iter : m_SwordTrails)
+		iter.reset();
+	m_SwordTrails.clear();
+	SwordTrailNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		shared_ptr<CSTrail::STRAIL_DESC> readFile = make_shared<CSTrail::STRAIL_DESC>();
+		inFile.read((char*)&readFile->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
+		readFile->traildesc.ParentMat = nullptr;
+		inFile.read((char*)&readFile->isBloom, sizeof(_bool));
+		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
+		inFile.read((char*)&readFile->vColor, sizeof(_float3));
+		readFile->Texture = load_wstring_from_stream(inFile);
+		readFile->TexturePath = load_wstring_from_stream(inFile);
+		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
+		m_SwordTrails.emplace_back(readFile);
+	}
+	inFile.close();
+
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/SwordTrail.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		SwordTrailNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::FrameTextureTool()

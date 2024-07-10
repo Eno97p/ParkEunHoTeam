@@ -27,7 +27,16 @@ protected:
 	virtual ~CWeapon() = default;
 
 public:
-	void Set_Active(_bool isActive = true) { m_bIsActive = isActive; }
+	void Set_Active(_bool isActive = true)
+	{
+		if (m_bIsActive == false && isActive == true)
+		{
+			m_GenerateTrail = true;
+		}
+		m_bIsActive = isActive;
+	}
+	void Generate_Trail(_int iIndex);
+
 	_bool Get_Active() { return m_bIsActive; }
 
 protected:
@@ -36,6 +45,10 @@ protected:
 	const _float4x4*				m_pSocketMatrix = { nullptr };
 	_bool							m_bIsActive = false;
 
+
+
+protected:
+	_bool							m_GenerateTrail = false;
 public:
 	virtual void Free() override;
 };

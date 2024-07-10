@@ -116,16 +116,9 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 
 	m_pPivotPos = m_TrailDescription.vPivotPos;
 
+	_matrix ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
+	XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
 
-	_vector vPos = XMVectorSet(m_TrailDescription.ParentMat->_41, m_TrailDescription.ParentMat->_42, m_TrailDescription.ParentMat->_43, 1.f);
-	_vector vRight = XMVector3Normalize(XMVectorSet(m_TrailDescription.ParentMat->_11, m_TrailDescription.ParentMat->_12, m_TrailDescription.ParentMat->_13, 0.f));
-	_vector vUp = XMVector3Normalize(XMVectorSet(m_TrailDescription.ParentMat->_21, m_TrailDescription.ParentMat->_22, m_TrailDescription.ParentMat->_23, 0.f));
-	_vector vLook = XMVector3Normalize(XMVectorSet(m_TrailDescription.ParentMat->_31, m_TrailDescription.ParentMat->_32, m_TrailDescription.ParentMat->_33, 0.f));
-
-	vPos += vRight * m_pPivotPos.x;
-	vPos += vUp * m_pPivotPos.y;
-	vPos += vLook * m_pPivotPos.z;
-		
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		m_pOriginalSize[i] = m_pSize[i] = m_TrailDescription.vSize;
@@ -182,7 +175,12 @@ HRESULT CVIBuffer_Trail::Render()
 void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 {
 	//생성 시점을 나눠서 잡아줘야함
-	Tick();
+
+	//XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
+	//XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+	//
+	//XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
+	_matrix ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
@@ -202,36 +200,27 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
-			_vector vRight = XMVector4Normalize(XMVectorSet(m_UsingMat._11, m_UsingMat._12, m_UsingMat._13, 0.f));
-			_vector vUp = XMVector4Normalize(XMVectorSet(m_UsingMat._21, m_UsingMat._22, m_UsingMat._23, 0.f));
-			_vector vLook = XMVector4Normalize(XMVectorSet(m_UsingMat._31, m_UsingMat._32, m_UsingMat._33, 0.f));
-			_vector vPos = XMVectorSet(m_UsingMat._41,
-				m_UsingMat._42,
-				m_UsingMat._43, 1.f);
-			vPos += vRight * m_pPivotPos.x;
-			vPos += vUp * m_pPivotPos.y;
-			vPos += vLook * m_pPivotPos.z;
+			_vector vRight = XMVector4Normalize(ParentMat.r[0]);
+			_vector vUp = XMVector4Normalize(ParentMat.r[1]);
+			_vector vLook = XMVector4Normalize(ParentMat.r[2]);
+			XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vLook, vRight * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vRight, vLook * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 		}
-
 
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{
-	
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
-			
 		}
-
 		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
 		{
 			allInstancesDead = false;
@@ -247,7 +236,7 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 
 void CVIBuffer_Trail::EternalTrail(_float fDelta)
 {
-	Tick();
+	_matrix ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
@@ -265,30 +254,25 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
 			
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
 
 			float ratio = static_cast<float>(i) / static_cast<float>(m_iNumInstance - 1);
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x * ratio;
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
-			_vector vRight = XMVector4Normalize(XMVectorSet(m_UsingMat._11, m_UsingMat._12, m_UsingMat._13, 0.f));
-			_vector vUp = XMVector4Normalize(XMVectorSet(m_UsingMat._21, m_UsingMat._22, m_UsingMat._23, 0.f));
-			_vector vLook = XMVector4Normalize(XMVectorSet(m_UsingMat._31, m_UsingMat._32, m_UsingMat._33, 0.f));
+			_vector vRight = XMVector4Normalize(ParentMat.r[0]);
+			_vector vUp = XMVector4Normalize(ParentMat.r[1]);
+			_vector vLook = XMVector4Normalize(ParentMat.r[2]);
 			pVertices[i].vLifeTime.y = 0.f;
-			_vector vPos = XMVectorSet(m_UsingMat._41,
-				m_UsingMat._42,
-				m_UsingMat._43, 1.f);
-			vPos += vRight * m_pPivotPos.x;
-			vPos += vUp * m_pPivotPos.y;
-			vPos += vLook * m_pPivotPos.z;
+			XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vLook, vRight * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
 			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vRight, vLook * m_pSize[i].z);
+			XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 		}
 
 	}
@@ -310,10 +294,7 @@ XMVECTOR CVIBuffer_Trail::CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, con
 	return result * 0.5f;
 }
 
-void CVIBuffer_Trail::Tick()
-{
-	m_UsingMat = *m_TrailDescription.ParentMat;
-}
+
 
 CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -7,7 +7,7 @@
 #include "ParticleMesh.h"
 #include "Particle_Point.h"
 #include "TextureFrame.h"
-#include <variant>
+#include "Particle_STrail.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -70,7 +70,7 @@ private:	//for Trail
 	HRESULT Save_TrailList();
 	HRESULT Load_TrailList();
 
-	void SwordTrail_Tool();
+	
 
 	void Set_TrailMatrix(const _float4x4* mat)
 	{
@@ -79,6 +79,14 @@ private:	//for Trail
 
 private:	//for FrameTexture
 	void FrameTextureTool();
+
+
+private:	//for SwordTrail
+	void SwordTrail_Tool();
+	HRESULT StoreSwordTrail(char* Name, CSTrail::STRAIL_DESC trail);
+	void SwordTrailListBox(CSTrail::STRAIL_DESC* trail);
+	HRESULT Save_SwordTrail();
+	HRESULT Load_SwordTrail();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
@@ -99,6 +107,7 @@ private:
 	_bool ChangedDesc = false;
 	void* Variants = nullptr;
 	_bool ChangedTrail = false;
+	_bool ChangedSwordTrail = false;
 	const _float4x4* TrailMat = nullptr;
 
 private:
@@ -107,9 +116,11 @@ private:
 private:
 	vector<pair<PARTICLETYPE, void*>>		m_Types;
 	vector<shared_ptr<CParticle_Trail::TRAIL_DESC>> TrailEffects;
+	vector<shared_ptr<CSTrail::STRAIL_DESC>>	m_SwordTrails;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
+	vector<string> SwordTrailNames;
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

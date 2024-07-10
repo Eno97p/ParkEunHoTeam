@@ -41,28 +41,22 @@ void CSTrail::Priority_Tick(_float fTimeDelta)
 
 void CSTrail::Tick(_float fTimeDelta)
 {
-	//if (m_pVIBufferCom->Check_Instance_Dead())
-	//	m_pGameInstance->Erase(this);
+	if (m_pVIBufferCom->isDead())
+		m_pGameInstance->Erase(this);
 
-	//switch (m_pTrailDesc->eFuncType)
-	//{
-	//case TRAIL_EXTINCT:
-	//	m_pVIBufferCom->ExtinctTrail(fTimeDelta);
-	//	break;
-	//case TRAIL_ETERNAL:
-	//	m_pVIBufferCom->EternalTrail(fTimeDelta);
-	//	break;
-	//default:
-	//	break;
-	//}
-
-	m_pVIBufferCom->Tick(fTimeDelta);
-
+	m_pVIBufferCom->Tick_AI(fTimeDelta);
+	
 }
 void CSTrail::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
+
+	if (m_pTrailDesc->isBloom)
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	}
 
 }
 
@@ -73,6 +67,34 @@ HRESULT CSTrail::Render()
 
 	m_pShaderCom->Begin(0);
 	
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CSTrail::Render_Distortion()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
+
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CSTrail::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
+
 	m_pVIBufferCom->Bind_Buffers();
 
 	m_pVIBufferCom->Render();
@@ -100,6 +122,9 @@ HRESULT CSTrail::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;	
 	
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Desolve"), reinterpret_cast<CComponent**>(&m_DesolveTexture))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -113,6 +138,11 @@ HRESULT CSTrail::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DiffuseColor", &m_pTrailDesc->vColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_DesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", m_pTrailDesc->iDesolveNum)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

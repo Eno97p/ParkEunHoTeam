@@ -57,7 +57,7 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-	m_pPhysXCom->Late_Tick(fTimeDelta);
+	//m_pPhysXCom->Late_Tick(fTimeDelta);
 
 
 

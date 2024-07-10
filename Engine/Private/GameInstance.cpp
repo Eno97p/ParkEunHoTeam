@@ -165,7 +165,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	//PROFILE_SCOPE("Picking Update");
 #ifdef _DEBUG
-	PROFILE_CALL("Picking Update", m_pPicking->Update());
+	//PROFILE_CALL("Picking Update", m_pPicking->Update());
 #endif // _DEBUG
 
 	

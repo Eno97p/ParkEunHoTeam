@@ -66,7 +66,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	
 
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -81,7 +81,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	}
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
-#endif
+//#endif
 }
 
 void CLevel_GamePlay::Late_Tick(_float fTimeDelta)
@@ -235,7 +235,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring & strLayerTag, CLandOb
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
 	//for (size_t i = 0; i < 10; i++)
 	//{
@@ -261,8 +261,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		return E_FAIL;
+	for (size_t i = 0; i < 40; i++)
+	{
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
+	}
 	
 	return S_OK;
 }

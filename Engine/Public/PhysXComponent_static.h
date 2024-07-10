@@ -37,7 +37,7 @@ public:
 
 
 private:
-	HRESULT CreateActor();
+	HRESULT Create_PhysX_TriAngleMesh();
 	HRESULT Load_Buffer();
 
 
@@ -46,9 +46,8 @@ private:
 	virtual tuple<vector<PxVec3>, vector<PxU32>> CreateTriangleMeshDesc(void* pvoid) override;
 private:
 	string m_strFilePath;
-
+	vector<PxTriangleMesh*> m_pTriangleMesh;
 	PhysX_static_Editable_Desc m_OutDesc;
-
 public:
 	static CPhysXComponent_static* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, const wstring& FilePath);
 	virtual CComponent* Clone(void* pArg) override;

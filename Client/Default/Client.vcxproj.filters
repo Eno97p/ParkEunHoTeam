@@ -409,6 +409,12 @@
     <Filter Include="02.GameObjects\07. UI\Monster\MonsterHP\Bar">
       <UniqueIdentifier>{430fadba-db92-4503-81fc-121ceeb503c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossHP\HP">
+      <UniqueIdentifier>{bca13e18-5839-40b3-adfc-4d11536216e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Bar">
+      <UniqueIdentifier>{797cfed9-c9a5-491b-ba98-e9e7f7878711}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -827,6 +833,15 @@
     <ClInclude Include="..\Public\UI_MonsterHP.h">
       <Filter>02.GameObjects\07. UI\Monster\MonsterHP\HP</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_BossHP.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BossHP.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\HP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BossHPBar.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1224,6 +1239,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_MonsterHP.cpp">
       <Filter>02.GameObjects\07. UI\Monster\MonsterHP\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_BossHP.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossHP.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\HP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossHPBar.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

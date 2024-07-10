@@ -162,6 +162,9 @@
 #include "C:\Real3DProject\Client\Private\ThirdPersonCamera.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_BossHP.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_InvSub.cpp"
 
 
@@ -172,6 +175,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\UIGroup_MonsterHP.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossHP.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossHPBar.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_FadeInOut.cpp"

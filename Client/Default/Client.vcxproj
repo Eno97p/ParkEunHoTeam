@@ -234,6 +234,7 @@
     <ClInclude Include="..\Public\ParkEunHo\ParticleMesh.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Point.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Rect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Particle_STrail.h" />
     <ClInclude Include="..\Public\ParkEunHo\Particle_Trail.h" />
     <ClInclude Include="..\Public\ThirdPersonCamera.h" />
     <ClInclude Include="..\Public\UIGroup_Loading.h" />
@@ -364,6 +365,7 @@
     <ClCompile Include="..\Private\ParkEunHo\ParticleMesh.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Point.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Rect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Particle_STrail.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Particle_Trail.cpp" />
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp" />
     <ClCompile Include="..\Private\UIGroup_Loading.cpp" />

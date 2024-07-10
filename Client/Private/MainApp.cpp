@@ -448,6 +448,15 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Sword_Trail"),
+		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* SwordTrailShader */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Sword_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
+		return E_FAIL;
 #pragma endregion Component
 
 
@@ -468,8 +477,8 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 #pragma endregion MODEL
 
-	//if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
-	//	return E_FAIL;
+	if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
 
 	return S_OK;
 }

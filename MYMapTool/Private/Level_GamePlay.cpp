@@ -528,7 +528,7 @@ const _tchar* CLevel_GamePlay::Setting_FileName()
     case STAGE_TWO:
         return L"../Bin/MapData/Stage_AndrasArena.dat";
     case STAGE_THREE:
-        return L"../Data/Stage3.dat";
+        return L"../Bin/MapData/Stage_RasSamrahCastle.dat";
     case STAGE_BOSS:
         return L"../../Data/BossStage.dat";
     default:

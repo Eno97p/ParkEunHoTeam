@@ -5,7 +5,6 @@
 
 #include "Model.h"
 #include "Imgui_Manager.h"
-#include "EventTrigger.h"
 // IMGUI에서 생성할 모든 Obj들을 담당하는 클래스
 // 애니메이션 여부, 
 

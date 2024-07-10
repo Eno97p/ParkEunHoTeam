@@ -12,12 +12,14 @@ public:
     HRESULT Initialize();
 public:
     void PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
-    void PlayBGM(const TCHAR* pSoundKey, float fVolume);
+    void PlayBGM(const TCHAR* pSoundKey, float fVolume);            //일반 BGM 재생
+    void PlaySubBGM(const TCHAR* pSoundKey, float fVolume);         //서브 BGM 재생
     void StopAll();
     void StopSound(CHANNELID eID);
     void SetChannelVolume(CHANNELID eID, float fVolume);
 private:
     void LoadSoundFile();
+    FMOD_RESULT Load_SoundFile();
 private:
     // 사운드 리소스 정보를 갖는 객체 
     map<TCHAR*, FMOD_SOUND*> m_mapSound;

@@ -8,9 +8,10 @@ public:
 	{
 		_uint			iNumInstance = { 0 };
 		_float3			vOffsetPos;
-		_float3			vSize;
+		_float			vSize;
 		_float			fLifeTime;
-		const _float4x4* ParentMat;
+		_float			fMaxTime;
+		const _float4x4* ParentMat = nullptr;
 	};
 private:
 	CVIBuffer_SwordTrail(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -22,12 +23,14 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
+	_bool isDead() { return m_bInstanceDead; }
 
 public:
 	void Tick(_float fDelta);
-
+	void Tick_AI(_float fDelta);
+	void Tick_AI_UPgrade(_float fDelta);
 private:
-	XMVECTOR CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t);
+	XMVECTOR CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t);
 
 private:
 	ID3D11Buffer* m_pVBInstance = { nullptr };
@@ -37,9 +40,13 @@ private:
 	_uint						m_iIndexCountPerInstance = { 0 };
 
 private:
-	deque<SwordTrailVertex>		m_pTrailVertex;
+	deque<pair<XMVECTOR, XMVECTOR>>		m_pTrailVertex;
 
 	shared_ptr<SwordTrailDesc>	m_pDesc;
+	vector<XMFLOAT3> m_TopPoints;
+	vector<XMFLOAT3> m_BottomPoints;
+
+	_bool m_bInstanceDead = false;
 public:
 	static CVIBuffer_SwordTrail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

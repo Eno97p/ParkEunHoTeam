@@ -97,8 +97,10 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Boss_1P") };
 
     m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"), TEXT("Prototype_Component_Model_BasicGround"),
-                        TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), TEXT("Prototype_Component_Model_RasSamrahCastle"),
+                        TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), 
+        TEXT("Prototype_Component_Model_RasSamrahCastle"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
+                        TEXT("Prototype_Component_Model_RasSamrahCastle3"),
         //TUTORIAL
         TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
 
@@ -121,10 +123,29 @@ void CToolObj_Manager::Initialize()
         //DECO ELEMENTS
                         TEXT("Prototype_Component_Model_BoxA"), TEXT("Prototype_Component_Model_BoxB"),
                         TEXT("Prototype_Component_Model_YantraStatue"),
+
+                        TEXT("Prototype_Component_Model_BannerPole1"), TEXT("Prototype_Component_Model_BannerPole2"),
+                        TEXT("Prototype_Component_Model_BannerPole3"), TEXT("Prototype_Component_Model_BannerPole4"),
+                        TEXT("Prototype_Component_Model_BannerPole5"),
+        
+        
+                        TEXT("Prototype_Component_Model_AckbarWell"), 
+                        TEXT("Prototype_Component_Model_Remparts_CrenauxA"),
+                        TEXT("Prototype_Component_Model_Remparts_CrenauxB"), 
+                        TEXT("Prototype_Component_Model_Remparts_HourdA"),
+                        TEXT("Prototype_Component_Model_Remparts_WallMotifA"),
+                        TEXT("Prototype_Component_Model_Remparts_WallRenfortA"),
+                        TEXT("Prototype_Component_Model_RichStairs_Rambarde"),
+
+
+
+        //LightProps
                         TEXT("Prototype_Component_Model_Light_Brasero"), TEXT("Prototype_Component_Model_Light_BraseroSmall"),
                         TEXT("Prototype_Component_Model_Light_Candle"),  TEXT("Prototype_Component_Model_Light_CandleGroup"),
                         TEXT("Prototype_Component_Model_Light_Crystal"),
                         TEXT("Prototype_Component_Model_Light_TorchA"), TEXT("Prototype_Component_Model_Light_TorchB"),
+        
+        //DECO ELEMENTS
                         TEXT("Prototype_Component_Model_CharetteNew"), TEXT("Prototype_Component_Model_CharetteBroke"),
                         TEXT("Prototype_Component_Model_Facade1"), TEXT("Prototype_Component_Model_Facade2"),
                         TEXT("Prototype_Component_Model_Facade3"), TEXT("Prototype_Component_Model_Facade4"),

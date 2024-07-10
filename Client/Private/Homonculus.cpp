@@ -259,7 +259,6 @@ NodeStates CHomonculus::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Homonculus*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
-		fSlowValue = 0.4f;
 		m_iState = STATE_PARRIED;
 	}
 
@@ -267,7 +266,6 @@ NodeStates CHomonculus::Parried(_float fTimeDelta)
 	{
 		if (m_isAnimFinished)
 		{
-			fSlowValue = 1.f;
 			dynamic_cast<CWeapon_Homonculus*>(m_PartObjects[1])->Set_IsParried(false);
 			m_iState = STATE_IDLE;
 			return SUCCESS;

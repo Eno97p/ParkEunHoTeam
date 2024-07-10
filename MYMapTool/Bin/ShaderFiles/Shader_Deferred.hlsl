@@ -374,7 +374,7 @@ PS_OUT PS_DISTORTION(PS_IN In)
     float2 objectCenter = float2(0.5f, 0.5f); // 객체 중심의 텍스처 좌표 (화면 중심)
     float waveFrequency = 1.f; // 파동 주파수
     float waveAmplitude = 0.005f; // 파동 진폭
-    float distortionRadius = 0.1f; // 일그러짐 반경
+    float distortionRadius = 0.f; // 일그러짐 반경
 
     if (g_EffectTexture.Sample(LinearSampler, In.vTexcoord).a == 0.f) return Out;
 
@@ -388,8 +388,8 @@ PS_OUT PS_DISTORTION(PS_IN In)
     //{
         // 파동 효과 적용: 사인 함수를 사용하여 텍스처 좌표를 변형
         distortedTex = float2(
-            In.vTexcoord.x + sin(dist * waveFrequency + /*g_Time +*/ g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
-            In.vTexcoord.y + sin(dist * waveFrequency + /*g_Time +*/ g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
+            In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
+            In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
         );
     //}
 

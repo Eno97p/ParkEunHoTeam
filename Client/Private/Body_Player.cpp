@@ -62,7 +62,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
-	m_pWeapon->Set_Active(false);
 	*m_pCanCombo = false;
 	if (*m_pState == CPlayer::STATE_IDLE)
 	{
@@ -166,6 +165,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_BACKATTACK)
 	{
@@ -180,6 +183,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LCHARGEATTACK)
 	{
@@ -193,6 +200,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex > 150)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK)
@@ -212,6 +223,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK1)
@@ -228,6 +243,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK2)
 	{
@@ -243,6 +262,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK3)
 	{
@@ -253,6 +276,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_fDamageTiming > 0.4f && m_fDamageTiming < 0.7f)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK1)
@@ -269,6 +296,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK2)
 	{
@@ -282,6 +313,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex > 77)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
@@ -298,6 +333,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
 	{
@@ -311,6 +350,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex > 82)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNRATTACK)
@@ -326,6 +369,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_COUNTER)
 	{
@@ -339,6 +386,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 49 || m_iPastAnimIndex == 52)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_ROLL)
@@ -447,6 +498,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	if (m_bAnimFinished)
 	{
+		m_pWeapon->Set_Active(false);
 		m_fDamageTiming = 0.f;
 	}
 

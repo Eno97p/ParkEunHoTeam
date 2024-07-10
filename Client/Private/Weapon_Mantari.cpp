@@ -44,10 +44,6 @@ void CWeapon_Mantari::Priority_Tick(_float fTimeDelta)
 	{
 	case TYPE_DECREASE:
 		m_fDisolveValue -= fTimeDelta * 0.5f;
-		if (m_fDisolveValue < 0.f)
-		{
-			m_eDisolveType = TYPE_INCREASE;
-		}
 		break;
 	default:
 		break;

@@ -155,7 +155,7 @@ HRESULT CUI_LogoSelector::Click_Event()
     {
     case Client::CUI_LogoSelector::SELECTOR_CONTINUE: 
     {
-        CUI_Manager::GetInstance()->Render_Logo(false);
+        CUI_Manager::GetInstance()->Render_UIGroup(false, "Logo");
 
         if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
             return E_FAIL;
@@ -164,7 +164,7 @@ HRESULT CUI_LogoSelector::Click_Event()
     }
     case Client::CUI_LogoSelector::SELECTOR_NEWGAME:
     {
-        CUI_Manager::GetInstance()->Render_Logo(false);
+        CUI_Manager::GetInstance()->Render_UIGroup(false, "Logo");
 
         if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
             return E_FAIL;

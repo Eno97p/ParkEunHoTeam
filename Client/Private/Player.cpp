@@ -274,9 +274,9 @@ HRESULT CPlayer::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CPlayer::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CPlayer::Hit, this, std::placeholders::_1));
 
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Counter"), bind(&CPlayer::Counter, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("ParryCool"), 0.5f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ParryCool"), TEXT("Parry"), bind(&CPlayer::Parry, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Counter"), bind(&CPlayer::Counter, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CPlayer::JumpAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("RollAttack"), bind(&CPlayer::RollAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("LChargeAttack"), bind(&CPlayer::LChargeAttack, this, std::placeholders::_1));
@@ -359,6 +359,69 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 	return FAILURE;
 }
 
+NodeStates CPlayer::Counter(_float fTimeDelta)
+{
+	if (m_fCurStamina < 10.f)
+	{
+		return COOLING;
+	}
+
+	if (m_bParry)
+	{
+		fSlowValue = 0.2f;
+		if (m_fSlowDelay <= 0.2f)
+		{
+			m_fSlowDelay += fTimeDelta;
+		}
+		else if (m_fSlowDelay > 0.2f)
+		{
+			m_fSlowDelay = 0.f;
+			fSlowValue = 1.f;
+			m_bParry = false;
+		}
+	}
+
+	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
+	{
+		m_bParrying = false;
+		m_bStaminaCanDecrease = true;
+		// 스테미나 조절할 것
+		Add_Stamina(-10.f);
+		m_iState = STATE_COUNTER;
+		fSlowValue = 0.2f;
+		m_fSlowDelay = 0.f;
+	}
+
+	if (m_iState == STATE_COUNTER)
+	{
+		if (m_fSlowDelay <= 0.2f)
+		{
+			m_fSlowDelay += fTimeDelta;
+		}
+		else if (m_fSlowDelay > 0.2f)
+		{
+			m_fSlowDelay = 0.f;
+			fSlowValue = 1.f;
+		}
+		if (m_bAnimFinished)
+		{
+			m_bStaminaCanDecrease = true;
+			m_bParry = false;
+			m_fFightIdle += 0.01f;
+			m_iState = STATE_FIGHTIDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
 NodeStates CPlayer::Parry(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
@@ -397,52 +460,6 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 			m_fFightIdle += 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			m_bParrying = false;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
-}
-
-NodeStates CPlayer::Counter(_float fTimeDelta)
-{
-	if ((m_fCurStamina < 10.f && m_bStaminaCanDecrease))
-	{
-		return COOLING;
-	}
-
-	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
-	{
-		m_bStaminaCanDecrease = true;
-		// 스테미나 조절할 것
-		Add_Stamina(-10.f);
-		m_iState = STATE_COUNTER;
-		fSlowValue = 0.4f;
-	}
-
-	if (m_iState == STATE_COUNTER)
-	{
-		if (m_fSlowDelay <= 0.3f)
-		{
-			m_fSlowDelay += fTimeDelta;
-		}
-		else if (m_fSlowDelay > 0.3f)
-		{
-			m_fSlowDelay = 0.f;
-			fSlowValue = 1.f;
-		}
-		if (m_bAnimFinished)
-		{
-			m_bStaminaCanDecrease = true;
-			m_bParry = false;
-			m_fFightIdle += 0.01f;
-			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
 		else
@@ -1266,7 +1283,6 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 	}
 	else if (m_iState == STATE_IDLE)
 	{
-		m_bParry = false;
 		if (m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);

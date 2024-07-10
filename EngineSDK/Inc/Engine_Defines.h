@@ -54,6 +54,7 @@ using namespace physx::vehicle2;
 #include <filesystem>
 
 #include <queue>
+#include <deque>
 #include <stack>
 #include<cstring>
 #include<cassert>
@@ -78,9 +79,9 @@ namespace Engine
 	enum Decorator { CoolDown, Condition, Deco_End };								//베헤비어 트리 데코레이터
 	enum MOUSEWHEELSTATE { WHEEL_UP, WHEEL_DOWN, WHEEL_NONE };
 	enum UISORT_PRIORITY { FIRST, SECOND, THIRD, FOURTH, FIFTH, SIXTH, SEVENTH, EIGHT, NINETH, TENTH,
-		ELEVENTH, TWELFTH, SORT_END }; //UI정렬
+		ELEVENTH, TWELFTH, THIRTEENTH, FOURTEENTH, FIFTEENTH, SIXTEENTH, SEVENTEENTH,  SORT_END }; //UI정렬
 
-	enum CHANNELID { SOUND_EFFECT, SOUND_PLAYER, SOUND_MONSTER, SOUND_BOSS, SOUND_BGM, MAXCHANNEL };
+	enum CHANNELID { SOUND_EFFECT, SOUND_PLAYER, SOUND_MONSTER, SOUND_BOSS, SOUND_BGM, SOUND_SUBBGM, MAXCHANNEL };
 
 	enum class eEVENT_TYPE
 	{

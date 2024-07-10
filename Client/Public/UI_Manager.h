@@ -22,6 +22,8 @@ public:
 	_bool				Get_MenuPageState();
 	void				Set_MenuPageOpen();
 
+	CUIGroup*			Get_UIGroup(string strKey);
+
 public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
@@ -30,9 +32,7 @@ public:
 	void				Tick(_float fTimeDelta);
 	void				Late_Tick(_float fTimeDelta);
 
-	void				Render_Logo(_bool isRender);
-	void				Render_Loading(_bool isRender);
-	void				Render_HUD(_bool isRender);
+	void				Render_UIGroup(_bool isRender, string strKey);
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

@@ -35,7 +35,7 @@ protected:
 	CTransform*					m_pTerrainTransform = { nullptr };
 	CVIBuffer*					m_pTerrainVIBuffer = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
-	CCollider::COLLTYPE m_eColltype = CCollider::COLL_END;
+	CCollider::COLLTYPE m_eColltype = CCollider::COLL_NOCOLL;
 
 protected:
 	/* 태우고자하는 객체의 월드위치. * 지형월드역*/

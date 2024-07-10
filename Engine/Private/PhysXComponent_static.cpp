@@ -158,6 +158,7 @@ HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 		meshDesc.triangles.stride = sizeof(PxU32) * 3;
 		meshDesc.triangles.data = vecIndices.data();
 		
+		
 		//if (vecVertices.size() <= 65536) {
 		//	meshDesc.flags=PxMeshFlag::e16_BIT_INDICES;  // 16비트 인덱스 사용
 		//}
@@ -170,6 +171,10 @@ HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 		PxTolerancesScale scale;
 		scale= m_pGameInstance->GetPhysics()->getTolerancesScale();
 		PxCookingParams cookingParams(m_pGameInstance->GetPhysics()->getTolerancesScale());
+		cookingParams.meshWeldTolerance = 0.001f;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES;
+
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 		//cookingParams.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
@@ -183,7 +188,7 @@ HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 		if (!bSuccess)
 			return E_FAIL;
 
-		wstring filePath(m_strFilePath.begin(), m_strFilePath.end());
+		/*wstring filePath(m_strFilePath.begin(), m_strFilePath.end());
 		size_t pos = filePath.find(L".fbx");
 
 		wstring AddName = L" _PhysX";
@@ -196,7 +201,7 @@ HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 		PxU8* pMeshData = writeBuffer.getData();
 		PxU32 iMeshSize = writeBuffer.getSize();
 		
-		Save_Data(filePath, pMeshData, iMeshSize);
+		Save_Data(filePath, pMeshData, iMeshSize);*/
 
 		
 

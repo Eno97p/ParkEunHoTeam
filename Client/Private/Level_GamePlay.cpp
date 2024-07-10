@@ -235,7 +235,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring & strLayerTag, CLandOb
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
 	//for (size_t i = 0; i < 10; i++)
 	//{
@@ -261,8 +261,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring & strLayerTag, CLandO
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		return E_FAIL;
+	for (size_t i = 0; i < 40; i++)
+	{
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
+	}
 	
 	return S_OK;
 }

@@ -101,6 +101,14 @@ void CMonster::Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName)
 		return;
 }
 
+void CMonster::Update_UI(_float fHeight)
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] += fHeight;
+	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Update_Pos(vPos);
+	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Set_Ratio(m_fCurHp / m_fMaxHp);
+}
+
 void CMonster::Free()
 {
 	__super::Free();

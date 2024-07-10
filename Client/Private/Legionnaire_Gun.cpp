@@ -116,8 +116,7 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 	m_pPhysXCom->Tick(fTimeDelta);
 
-	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Update_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Set_Ratio(m_fCurHp / m_fMaxHp);
+	Update_UI(-0.3f);
 	m_pUI_HP->Tick(fTimeDelta);
 }
 

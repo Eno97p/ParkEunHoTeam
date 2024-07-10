@@ -79,6 +79,8 @@ protected:
 	void				Create_UI();
 	void				Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName); // 인자에 값을 넣어주는 게 좋을 듯함
 
+	void				Update_UI(_float fHeight = 0.f);
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

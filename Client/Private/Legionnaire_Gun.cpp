@@ -6,6 +6,8 @@
 #include "Weapon_Sword_LGGun.h"
 #include "Weapon_Arrow_LGGun.h"
 
+#include "UIGroup_MonsterHP.h"
+
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -44,6 +46,8 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
+
+	Create_UI();
 
 	return S_OK;
 }
@@ -111,6 +115,9 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Update_Pos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
@@ -118,6 +125,8 @@ void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

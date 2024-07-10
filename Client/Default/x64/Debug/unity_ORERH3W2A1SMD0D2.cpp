@@ -132,6 +132,9 @@
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Weapon_Arrow_LGGun.cpp"
 
 

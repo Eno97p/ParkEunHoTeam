@@ -78,6 +78,7 @@
 
 #pragma region Monster
 #include "UI_MonsterHP.h"
+#include "UI_MonsterHPBar.h"
 #include "UIGroup_MonsterHP.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
@@ -787,7 +788,17 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Weapon
 
-#pragma region Monstter
+#pragma region Monster
+	/* Prototype_Component_Texture_UI_MonsterHP */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHP"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHP.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_MonsterHPBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHPBar.png"), 1))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_UI_BossHP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHP"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHP.png"), 1))))
@@ -1090,6 +1101,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_MonsterHP*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MonsterHP"),
 		CUI_MonsterHP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MonsterHPBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MonsterHPBar"),
+		CUI_MonsterHPBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_MonsterHP*/

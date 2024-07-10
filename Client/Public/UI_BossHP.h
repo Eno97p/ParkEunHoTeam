@@ -25,7 +25,7 @@ public:
 
 private:
 	class CMonster*		m_pMonster = { nullptr }; // Boss로 변경
-	_float				m_fCurrentRatio = 1.f; // 임의로 1
+	_float				m_fCurrentRatio = 1.f;
 	_float				m_fPastRatio = 1.f;
 
 private:

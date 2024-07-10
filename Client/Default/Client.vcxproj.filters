@@ -841,15 +841,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_BossHPBar.h">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Weapon_Sword_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Particle_STrail.h">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MonsterHPBar.h">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1257,15 +1260,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_BossHPBar.cpp">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Weapon_Sword_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Particle_STrail.cpp">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MonsterHPBar.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

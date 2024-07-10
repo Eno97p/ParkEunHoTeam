@@ -646,15 +646,6 @@ PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMat
 {
 
 
-	//PxMat44 pxMat;
-	//for(int i=0;i<4;++i)
-	//	for (int j = 0; j < 4; ++j)
-	//		pxMat[i][j] = pWorldMatrix.m[i][j];
-
-
-
-	//return PxTransform(pxMat);
-
 
 	_vector vScale, vRotation, vPosition;
 	XMMatrixDecompose(&vScale, &vRotation, &vPosition, XMLoadFloat4x4(&pWorldMatrix));

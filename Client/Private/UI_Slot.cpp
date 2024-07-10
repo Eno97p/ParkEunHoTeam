@@ -1,8 +1,10 @@
 #include "UI_Slot.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "CMouse.h"
 #include "UI_Slot_Frame.h"
+#include "UIGroup.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -51,6 +53,11 @@ void CUI_Slot::Tick(_float fTimeDelta)
 	__super::Tick(fTimeDelta);
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+	{
+		Open_SubPage();
+	}
 
 	if (nullptr != m_pSelectFrame)
 		m_pSelectFrame->Tick(fTimeDelta);
@@ -128,16 +135,30 @@ HRESULT CUI_Slot::Create_Frame()
 	pDesc.fSizeX = 85.3f;
 	pDesc.fSizeY = 85.3f;
 	
-	if(SLOT_QUICK == m_eSlotType)
+	if (SLOT_QUICK == m_eSlotType)
 		pDesc.eUISort = ELEVENTH;
-	else if(SLOT_INV == m_eSlotType)
+	else if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 		pDesc.eUISort = TENTH;
+	else if (SLOT_INVSUB == m_eSlotType)
+		pDesc.eUISort = FOURTEENTH;
 
 	m_pSelectFrame = dynamic_cast<CUI_Slot_Frame*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot_Frame"), &pDesc));
 	if (nullptr == m_pSelectFrame)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_Slot::Open_SubPage()
+{
+	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
+	{
+		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
+
+		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
+		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+	}
 }
 
 CUI_Slot* CUI_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

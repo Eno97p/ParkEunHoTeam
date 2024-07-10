@@ -1,6 +1,8 @@
 #include "UI_WeaponTab.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
+#include "UIGroup_Weapon.h"
 
 CUI_WeaponTab::CUI_WeaponTab(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -32,6 +34,9 @@ HRESULT CUI_WeaponTab::Initialize(void* pArg)
 	Setting_Data();
 	Setting_Position();
 
+	if (TAB_L == m_eTabType)
+		m_isActivate = true;
+
 	return S_OK;
 }
 
@@ -43,6 +48,9 @@ void CUI_WeaponTab::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	Change_Activate();
+	Change_Size();
 }
 
 void CUI_WeaponTab::Late_Tick(_float fTimeDelta)
@@ -58,6 +66,8 @@ HRESULT CUI_WeaponTab::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	Render_Text();
 
 	return S_OK;
 }
@@ -127,6 +137,77 @@ void CUI_WeaponTab::Setting_Data()
 	}
 
 	m_fY = 80.f;
+}
+
+_tchar* CUI_WeaponTab::Settiing_BtnText()
+{
+	switch (m_eTabType)
+	{
+	case Client::CUI_WeaponTab::TAB_L:
+		m_fFontX = m_fX - 350.f;
+		return TEXT("WEAPONS");
+	case Client::CUI_WeaponTab::TAB_R:
+		m_fFontX = m_fX + 170.f;
+		return TEXT("ARTEFACTS");
+	default:
+		return TEXT("");
+	}
+}
+
+void CUI_WeaponTab::Render_Text()
+{
+	_tchar wszFont[MAX_PATH] = TEXT("");
+	_float fX = { 0.f };
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), TEXT("TAB"), _float2((g_iWinSizeX >> 1) - 17.f, m_fY - 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+
+	if (m_isActivate)
+	{
+		wcscpy_s(wszFont, TEXT("Font_Cardo17"));
+	}
+	else
+	{
+		wcscpy_s(wszFont, TEXT("Font_Cardo15"));
+	}
+
+	if (FAILED(m_pGameInstance->Render_Font(wszFont, Settiing_BtnText(), _float2(m_fFontX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+}
+
+void CUI_WeaponTab::Change_Activate()
+{
+	// Get_TabType
+	if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+	{
+		if (TAB_L == m_eTabType)
+			m_isActivate = true;
+		else
+			m_isActivate = false;
+	}
+	else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+	{
+		if (TAB_R == m_eTabType)
+			m_isActivate = true;
+		else
+			m_isActivate = false;
+	}
+}
+
+void CUI_WeaponTab::Change_Size()
+{
+	if (m_isActivate)
+	{
+		m_fSizeX = SELECT_SIZE;
+		m_fSizeY = SELECT_SIZE;
+	}
+	else
+	{
+		m_fSizeX = NONE_SIZE;
+		m_fSizeY = NONE_SIZE;
+	}
+
+	Setting_Position();
 }
 
 CUI_WeaponTab* CUI_WeaponTab::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

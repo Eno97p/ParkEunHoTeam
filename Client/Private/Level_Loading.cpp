@@ -44,7 +44,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 void CLevel_Loading::Tick(_float fTimeDelta)
 {
-	m_pUI_Manager->Render_Loading(true);
+	m_pUI_Manager->Render_UIGroup(true, "Loading");
+	m_pUI_Manager->Tick(fTimeDelta);
 
 	if (true == m_pLoader->is_Finished())
 	{
@@ -55,12 +56,13 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 			switch (m_eNextLevel)
 			{
 			case LEVEL_LOGO:
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
  				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Logo::Create(m_pDevice, m_pContext))))
 					return;
 				//pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_GAMEPLAY:
-				m_pUI_Manager->Render_Loading(false);
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;
 				//pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "UI_LoadingBG.h"
+#include "UI_LoadingCircle.h"
 
 CUIGroup_Loading::CUIGroup_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -69,6 +70,21 @@ HRESULT CUIGroup_Loading::Create_UI()
 
 	// LoadingBG 
 	m_vecUI.emplace_back(dynamic_cast<CUI_LoadingBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LoadingBG"), &pDesc)));
+
+	// LoadingCircle 1 
+
+	CUI_LoadingCircle::UI_CIRCLE_DESC pCircleDesc{};
+	pCircleDesc.eLevel = LEVEL_STATIC;
+	pCircleDesc.fX = g_iWinSizeX >> 1;
+	pCircleDesc.fY = g_iWinSizeY >> 1;
+	pCircleDesc.fSizeX = 512.f;
+	pCircleDesc.fSizeY = 512.f;
+	pCircleDesc.eCircleType = CUI_LoadingCircle::CIRCLE_ONE;
+	m_vecUI.emplace_back(dynamic_cast<CUI_LoadingCircle*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LoadingCircle"), &pCircleDesc)));
+
+	// LoadingCircle 2
+	pCircleDesc.eCircleType = CUI_LoadingCircle::CIRCLE_TWO;
+	m_vecUI.emplace_back(dynamic_cast<CUI_LoadingCircle*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LoadingCircle"), &pCircleDesc)));
 
 
 	return S_OK;

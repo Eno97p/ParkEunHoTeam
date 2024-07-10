@@ -15,7 +15,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	m_pUI_Manager->Render_Logo(true);
+	m_pUI_Manager->Render_UIGroup(true, "Logo");
 
 	return S_OK;
 }
@@ -26,7 +26,7 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		m_pUI_Manager->Render_Logo(false);
+		m_pUI_Manager->Render_UIGroup(false, "Logo");
 
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 			return;

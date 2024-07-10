@@ -78,6 +78,12 @@ HRESULT CUI_MenuBtn::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (m_isSelect)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), Settiing_BtnText(), _float2((g_iWinSizeX >> 1) - 340.f, (g_iWinSizeY >> 1) - 53.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -177,20 +183,44 @@ wstring CUI_MenuBtn::Setting_Texture()
 	}
 }
 
+_tchar* CUI_MenuBtn::Settiing_BtnText()
+{
+	switch (m_eMenuType)
+	{
+	case Client::CUI_MenuBtn::MENU_CH:
+		return TEXT("CHARACTER");
+	case Client::CUI_MenuBtn::MENU_MAP:
+		return TEXT("        MAP");
+	case Client::CUI_MenuBtn::MENU_WEAPON:
+		return TEXT("  WEAPONS");
+	case Client::CUI_MenuBtn::MENU_INV:
+		return TEXT("INVENTORY");
+	case Client::CUI_MenuBtn::MENU_SET:
+		return TEXT("SETTINGS");
+	case Client::CUI_MenuBtn::MENU_COD:
+		return TEXT("    CODEX");
+	default:
+		return TEXT("");
+	}
+}
+
 void CUI_MenuBtn::Open_MenuPage()
 {
 	switch (m_eMenuType)
 	{
 	case Client::CUI_MenuBtn::MENU_CH:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Menu_Ch");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_MAP:
 		break;
 	case Client::CUI_MenuBtn::MENU_WEAPON:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_INV:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Inventory");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_SET:
 		break;
@@ -200,7 +230,7 @@ void CUI_MenuBtn::Open_MenuPage()
 		break;
 	}
 
-	CUI_Manager::GetInstance()->Set_MenuPageOpen();
+	//CUI_Manager::GetInstance()->Set_MenuPageOpen(); // 예외 처리 위해 위에 코드 붙였지만 해당 코드로 적용해야 함
 }
 
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

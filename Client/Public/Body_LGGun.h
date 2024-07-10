@@ -21,6 +21,8 @@ private:
 
 public:
 	virtual bool	Get_AnimFinished() { return m_isAnimFinished; }
+	void Set_Gun(class CWeapon* pWeapon) { m_pGun = pWeapon; }
+	void Set_Sword(class CWeapon* pWeapon) { m_pSword = pWeapon; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -33,13 +35,14 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 
 private:
-	CCollider*	m_pColliderCom = { nullptr };
 	CShader*	m_pShaderCom = { nullptr };
 	CModel*		m_pModelCom = { nullptr };
-	CTexture*	m_pTextureCom = { nullptr };
 
 	_bool		m_isAnimFinished = { false };
 	_uint		m_iPastAnimIndex = 0;
+	class CWeapon* m_pGun = nullptr;
+	class CWeapon* m_pSword = nullptr;
+	_float m_fDamageTiming = 0.f;
 
 public:
 	HRESULT Add_Components();

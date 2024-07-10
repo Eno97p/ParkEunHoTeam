@@ -691,7 +691,7 @@
     <ClInclude Include="..\Public\Body_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LGGun_Weapon.h">
+    <ClInclude Include="..\Public\Weapon_Gun_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Ghost.h">
@@ -779,6 +779,12 @@
     <ClInclude Include="..\Public\Active_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Sword_LGGun.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Particle_STrail.h">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
     </ClInclude>
@@ -1074,7 +1080,7 @@
     <ClCompile Include="..\Private\Body_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Body</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\LGGun_Weapon.cpp">
+    <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Ghost.cpp">
@@ -1159,6 +1165,12 @@
     <ClCompile Include="..\Private\Active_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Sword_LGGun.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Particle_STrail.cpp">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
     </ClCompile>

@@ -38,12 +38,17 @@ public:
 	void Generate_Trail(_int iIndex);
 
 	_bool Get_Active() { return m_bIsActive; }
+	void Set_RenderAvailable(_bool render) { m_bRenderAvailable = render; }
+	void Set_Dir(_vector vDir) { m_vDir = vDir; }
 
 protected:
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	const _float4x4*				m_pSocketMatrix = { nullptr };
 	_bool							m_bIsActive = false;
+	_bool							m_bRenderAvailable = true;
+	_vector							m_vDir;
+	_bool							m_bGenerageTrail = false;
 
 
 

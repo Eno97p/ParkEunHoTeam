@@ -225,7 +225,8 @@
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
-    <ClInclude Include="..\Public\LGGun_Weapon.h" />
+    <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
+    <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Mantari.h" />
@@ -301,6 +302,7 @@
     <ClInclude Include="..\Public\ValnirSword.h" />
     <ClInclude Include="..\Public\VeilleurSword.h" />
     <ClInclude Include="..\Public\Weapon.h" />
+    <ClInclude Include="..\Public\Weapon_Sword_LGGun.h" />
     <ClInclude Include="..\Public\WhisperSword.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="Client.h" />
@@ -354,7 +356,8 @@
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
-    <ClCompile Include="..\Private\LGGun_Weapon.cpp" />
+    <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
+    <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Mantari.cpp" />
@@ -430,6 +433,7 @@
     <ClCompile Include="..\Private\ValnirSword.cpp" />
     <ClCompile Include="..\Private\VeilleurSword.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\Weapon_Sword_LGGun.cpp" />
     <ClCompile Include="..\Private\WhisperSword.cpp" />
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="Client.cpp" />

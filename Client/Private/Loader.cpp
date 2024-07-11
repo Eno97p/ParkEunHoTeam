@@ -63,6 +63,7 @@
 
 #pragma region ITEM
 #include "Item.h"
+#include "ItemData.h"
 #pragma endregion ITEM
 
 #include "Map_Element.h"
@@ -1034,6 +1035,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* For.Prototype_GameObject_Item*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
 		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ItemData*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ItemData"),
+		CItemData::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ITEM
 

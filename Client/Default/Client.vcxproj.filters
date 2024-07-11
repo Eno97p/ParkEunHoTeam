@@ -415,6 +415,12 @@
     <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Bar">
       <UniqueIdentifier>{797cfed9-c9a5-491b-ba98-e9e7f7878711}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\01.Item\ItemData">
+      <UniqueIdentifier>{e290039f-557c-4284-8a13-ba5ecfbdd0cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09. Inventory">
+      <UniqueIdentifier>{5d4f607a-2778-4276-b2fe-855b55a6f118}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -854,6 +860,12 @@
     <ClInclude Include="..\Public\UI_MonsterHPBar.h">
       <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ItemData.h">
+      <Filter>02.GameObjects\02.LandObject\01.Item\ItemData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Inventory.h">
+      <Filter>02.GameObjects\09. Inventory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1272,6 +1284,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp">
       <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemData.cpp">
+      <Filter>02.GameObjects\02.LandObject\01.Item\ItemData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Inventory.cpp">
+      <Filter>02.GameObjects\09. Inventory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

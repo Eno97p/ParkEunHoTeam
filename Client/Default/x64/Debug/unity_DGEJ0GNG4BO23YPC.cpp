@@ -99,7 +99,13 @@
 #include "C:\Real3DProject\Client\Private\ImGUi\imgui_widgets.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Inventory.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Item.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ItemData.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Juggulus_Hammer.cpp"

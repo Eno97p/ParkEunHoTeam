@@ -6,7 +6,6 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "Level_Loading.h"
-#include "UI_Manager.h"
 #include "BackGround.h"
 #include "CMouse.h"
 

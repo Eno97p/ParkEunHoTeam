@@ -5,6 +5,10 @@
 #include "PartObject.h"
 #include "Player.h"
 
+#include "ItemData.h"
+#include "Inventory.h"
+#include "UIGroup_DropItem.h"
+
 CItem::CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -63,6 +67,17 @@ void CItem::Tick(_float fTimeDelta)
 
 	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
 	{
+		// Inventory
+		// ItemData를 생성해서 Inventory에 넣어주고 Player는 Inventory를 참조해서(싱글톤) UI에 띄우거나 상호작용 등?
+		/*CItemData::DROPITEM_DESC pDesc{};
+		pDesc.isDropTem = true;
+		CInventory::GetInstance()->Add_Item(dynamic_cast<CItemData*>
+			(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));*/
+
+		CUIGroup_DropItem::UIGROUP_DESC pUIDesc{};
+		pUIDesc.eLevel = LEVEL_STATIC;
+		m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
 		// 아이템 획득 로직
 		m_pGameInstance->Erase(this);
 	}

@@ -32,7 +32,7 @@ public:
 
 	typedef struct DropItem_Desc : public ITEMDATA_DESC
 	{
-		DROPITEM_NAME	eDropItemName;
+		//DROPITEM_NAME	eDropItemName;
 	}DROPITEM_DESC;
 
 private:

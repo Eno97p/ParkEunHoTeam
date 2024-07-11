@@ -138,6 +138,12 @@
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
 
 

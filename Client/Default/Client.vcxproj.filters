@@ -421,6 +421,18 @@
     <Filter Include="02.GameObjects\09. Inventory">
       <UniqueIdentifier>{5d4f607a-2778-4276-b2fe-855b55a6f118}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item">
+      <UniqueIdentifier>{db2db847-41f5-41ab-a3a2-1540af63ba5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\DropItem">
+      <UniqueIdentifier>{c6fab907-2ff1-4d11-ae26-6f40a3e58d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\ItemIcon">
+      <UniqueIdentifier>{5b2719c6-e710-4e18-b60c-e7b875940d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\DropItem\BG">
+      <UniqueIdentifier>{eef70477-7e4f-4c87-aeaa-0e16eecf38b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -866,6 +878,12 @@
     <ClInclude Include="..\Public\Inventory.h">
       <Filter>02.GameObjects\09. Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_DropItem.h">
+      <Filter>02.GameObjects\07. UI\Item\DropItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_DropItemBG.h">
+      <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1290,6 +1308,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Inventory.cpp">
       <Filter>02.GameObjects\09. Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_DropItem.cpp">
+      <Filter>02.GameObjects\07. UI\Item\DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_DropItemBG.cpp">
+      <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

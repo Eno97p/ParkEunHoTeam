@@ -277,6 +277,18 @@ void CTransform::BillBoard()
 	Set_Scale(vScale.x, vScale.y, vScale.z);
 }
 
+void CTransform::Set_LookingAt(_fvector vLook)
+{
+	_float3 vScale = Get_Scaled();
+	_vector Look = XMVector3Normalize(vLook);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), Look));
+	_vector vUp = XMVector3Normalize(XMVector3Cross(Look, vRight));
+
+	Set_State(STATE_LOOK, Look * vScale.z);
+	Set_State(STATE_RIGHT, vRight * vScale.x);
+	Set_State(STATE_UP, vUp * vScale.y);
+}
+
 
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

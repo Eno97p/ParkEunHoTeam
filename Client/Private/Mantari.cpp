@@ -7,6 +7,7 @@
 #include "Weapon.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
+#include "EffectManager.h"
 
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -45,7 +46,8 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
-
+	m_iMaxHp = 1000.f;
+	m_iCurHp = m_iMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
 	return S_OK;
@@ -299,13 +301,25 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 
 NodeStates CMantari::Hit(_float fTimeDelta)
 {
+	
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
+	{
+		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
+		_float3 vOffset = { 0.f,1.f,0.f };
+		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
+		_float4 vResult;
+		XMStoreFloat4(&vResult, vStartPos);
+		_int Random = RandomSign();
+		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
+		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
+		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		Add_Hp(-10);
 		return RUNNING;
 		break;
+	}
 	case CCollider::COLL_CONTINUE:
 		m_iState = STATE_HIT;
 		return RUNNING;

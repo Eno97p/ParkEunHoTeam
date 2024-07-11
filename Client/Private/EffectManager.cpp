@@ -24,17 +24,22 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("Failed_Ready_Prototype");
 		return E_FAIL;
 	}
-	//if (FAILED(Load_Trails()))
-	//{
-	//	MSG_BOX("FAILED_Load_Trail");
-	//	return E_FAIL;
-	//}
+	if (FAILED(Load_Trails()))
+	{
+		MSG_BOX("FAILED_Load_Trail");
+		return E_FAIL;
+	}
 	if (FAILED(Load_SwordTrails()))
 	{
 		MSG_BOX("FAILED_Load_SwordTrail");
 		return E_FAIL;
 	}
 
+	if (FAILED(Load_Particles()))
+	{
+		MSG_BOX("FAILED_Load_SwordTrail");
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -65,6 +70,77 @@ HRESULT CEffectManager::Generate_SwordTrail(const _int iIndex, const _float4x4* 
 	}
 	return S_OK;
 }
+
+HRESULT CEffectManager::Generate_Particle(const _int iIndex,
+	const _float4 vStartpos,
+	CGameObject* pTarget,
+	const _vector vAxis,
+	const _float fRadians,
+	const _vector vLook)
+{
+	if (iIndex >= m_Particles.size())
+	{
+		MSG_BOX("인덱스 사이즈 초과, 파티클 생성 실패");
+		return S_OK;
+	}
+
+	PARTICLETYPE eType = m_Particles[iIndex].first;
+
+	switch (eType)
+	{
+	case Client::PART_POINT:
+	{
+		((CParticle_Point::PARTICLEPOINT*)m_Particles[iIndex].second)->SuperDesc.vStartPos = vStartpos;
+		CParticle_Point* pPoint = static_cast<CParticle_Point*>(CGameInstance::GetInstance()->Clone_Object(
+			TEXT("Prototype_GameObject_ParticlePoint"),
+			m_Particles[iIndex].second));
+		
+		if(!XMVector4Equal(vAxis, XMVectorZero()))
+			pPoint->Set_Rotation(fRadians, vAxis);
+		if (!XMVector4Equal(vLook, XMVectorZero()))
+			pPoint->AdJustLook(vLook);
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Particle"), pPoint);
+		break;
+	}
+	case Client::PART_MESH:
+	{
+		((CParticleMesh::PARTICLEMESH*)m_Particles[iIndex].second)->SuperDesc.vStartPos = vStartpos;
+		CParticleMesh* pMesh = static_cast<CParticleMesh*>(CGameInstance::GetInstance()->Clone_Object(
+			TEXT("Prototype_GameObject_ParticleMesh"),
+			m_Particles[iIndex].second));
+		if (!XMVector4Equal(vAxis, XMVectorZero()))
+			pMesh->Set_Rotation(fRadians, vAxis);
+		if (!XMVector4Equal(vLook, XMVectorZero()))
+			pMesh->AdJustLook(vLook);
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Particle"), pMesh);
+		break;
+	}
+	case Client::PART_RECT:
+	{
+		((CParticle_Rect::PARTICLERECT*)m_Particles[iIndex].second)->SuperDesc.vStartPos = vStartpos;
+		CParticle_Rect* pRect = static_cast<CParticle_Rect*>(CGameInstance::GetInstance()->Clone_Object(
+			TEXT("Prototype_GameObject_ParticleRect"),
+			m_Particles[iIndex].second));
+		if (!XMVector4Equal(vAxis, XMVectorZero()))
+			pRect->Set_Rotation(fRadians, vAxis);
+		if (!XMVector4Equal(vLook, XMVectorZero()))
+			pRect->AdJustLook(vLook);
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Particle"), pRect);
+		break;
+	}
+	case Client::PART_END:
+		return E_FAIL;
+	default:
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+
 
 HRESULT CEffectManager::Load_Trails()
 {
@@ -133,6 +209,68 @@ HRESULT CEffectManager::Load_SwordTrails()
 		m_pSwordTrailes.emplace_back(readFile);
 	}
 	inFile.close();
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_Particles()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Particles.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		PARTICLETYPE type;
+		inFile.read((char*)&type, sizeof(PARTICLETYPE));
+		switch (type)
+		{
+		case Client::PART_POINT:
+		{
+			CParticle_Point::PARTICLEPOINT* Arg = new CParticle_Point::PARTICLEPOINT;
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			Arg->SuperDesc.vStartPos = { 0.f,0.f,0.f,1.f };
+			Arg->Texture = load_wstring_from_stream(inFile);
+			Arg->TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(Arg->TexturePath, Arg->Texture);
+			Arg->particleType = PART_POINT;
+			m_Particles.emplace_back(make_pair(PART_POINT, Arg));
+			break;
+		}
+		case Client::PART_MESH:
+		{
+			CParticleMesh::PARTICLEMESH* Arg = new CParticleMesh::PARTICLEMESH();
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			Arg->SuperDesc.vStartPos = { 0.f,0.f,0.f,1.f };
+			inFile.read((char*)&Arg->eModelType, sizeof(EFFECTMODELTYPE));
+			Arg->particleType = PART_MESH;
+			m_Particles.emplace_back(make_pair(PART_MESH, Arg));
+			break;
+		}
+		case Client::PART_RECT:
+		{
+			CParticle_Rect::PARTICLERECT* Arg = new CParticle_Rect::PARTICLERECT();
+			inFile.read((char*)&Arg->SuperDesc, sizeof(CParticle::PARTICLEDESC));
+			Arg->SuperDesc.vStartPos = { 0.f,0.f,0.f,1.f };
+			Arg->Texture = load_wstring_from_stream(inFile);
+			Arg->TexturePath = load_wstring_from_stream(inFile);
+			Add_Texture_Prototype(Arg->TexturePath, Arg->Texture);
+			Arg->particleType = PART_RECT;
+			m_Particles.emplace_back(make_pair(PART_RECT, Arg));
+			break;
+		}
+		default:
+			break;
+		}
+	}
+	inFile.close();
+
 	return S_OK;
 }
 

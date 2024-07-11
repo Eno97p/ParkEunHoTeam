@@ -63,6 +63,7 @@ void CPassive_Element::Tick(_float fTimeDelta)
 
 void CPassive_Element::Late_Tick(_float fTimeDelta)
 {
+    {
     m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
 

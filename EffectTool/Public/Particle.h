@@ -50,6 +50,7 @@ protected:
 	CTexture* m_pDesolveTexture = { nullptr };
 	CShader*  m_pShaderCom = { nullptr };
 	CTransform* m_pTarget = { nullptr };
+	D3D11_BLEND_DESC blendStateDescription;
 public:
 	virtual void Free() override;
 };

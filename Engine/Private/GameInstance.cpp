@@ -114,12 +114,14 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_UISorter)
 		return E_FAIL;
 
+	D3D11_QUERY_DESC desc;
+	desc.Query = D3D11_QUERY_OCCLUSION;
 
 
 	
 	return S_OK;
 
-
+	
 }
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
@@ -636,6 +638,17 @@ void CGameInstance::CreateObject(_uint Level, const wchar_t* Layer, const wstrin
 {
 	CGameObject* pObj = Clone_Object(strPrototypeTag, pArg);
 
+	tEvent evn = {};
+	evn.eEven = eEVENT_TYPE::CREATE_OBJECT;
+	evn.lParam = (DWORD_PTR)Level;
+	evn.wParam = (DWORD_PTR)Layer;
+	evn.pParam = (DWORD_PTR)pObj;
+
+	m_pEvent_Manager->AddEvent(evn);
+}
+
+void CGameInstance::CreateObject_Self(_uint Level, const wchar_t* Layer, CGameObject* pObj)
+{
 	tEvent evn = {};
 	evn.eEven = eEVENT_TYPE::CREATE_OBJECT;
 	evn.lParam = (DWORD_PTR)Level;

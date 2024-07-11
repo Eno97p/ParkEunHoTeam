@@ -33,6 +33,10 @@ public:
 	PxControllerManager* GetControllerManager()const { return m_pControllerManager; }
 	static PxFilterFlags FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize);
 
+	PxParticleBuffer* CreateParticleBuffer(const PxParticleBufferDesc& desc, PxParticleBuffer* particleBuffer);
+
+
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

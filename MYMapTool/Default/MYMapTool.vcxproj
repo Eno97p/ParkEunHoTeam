@@ -215,6 +215,7 @@
     <ClInclude Include="..\Public\NaviMgr.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\ThirdPersonCamera.h" />
@@ -261,6 +262,7 @@
     <ClCompile Include="..\Private\NaviMgr.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\ThirdPersonCamera.cpp" />

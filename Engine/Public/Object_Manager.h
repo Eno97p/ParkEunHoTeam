@@ -49,6 +49,7 @@ public:
 	//FOR CAMERA SWITCH
 	HRESULT Add_Camera(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg);
 	void Set_MainCamera(_uint iCameraIndex);
+	CCamera* Get_MainCamera();
 	vector<class CCamera*> Get_Cameras();
 
 
@@ -62,6 +63,7 @@ private:
 
 	// For Camera
 	vector<class CCamera* >		m_Cameras;
+	_uint						m_iMainCameraIdx = 0;
 
 private:
 	class CGameObject* Find_Prototype(const wstring& strPrototypeTag);

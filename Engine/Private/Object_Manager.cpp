@@ -152,7 +152,14 @@ void CObject_Manager::Set_MainCamera(_uint iCameraIndex)
 
 	m_Cameras[iCameraIndex]->Activate();
 
+	m_iMainCameraIdx = iCameraIndex;
+
 	return;
+}
+
+CCamera* CObject_Manager::Get_MainCamera()
+{
+	return m_Cameras[m_iMainCameraIdx];
 }
 
 vector<class CCamera*> CObject_Manager::Get_Cameras()

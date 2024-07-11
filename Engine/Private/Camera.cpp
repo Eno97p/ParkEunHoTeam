@@ -58,6 +58,11 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
+_vector CCamera::Get_CamLook()
+{
+	return m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+}
+
 void CCamera::Free()
 {
 	__super::Free();

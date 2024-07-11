@@ -443,8 +443,8 @@ HRESULT CBody_Player::Render()
 
 		if (i == 2)
 		{
-		/*	if (FAILED(m_pDisolveCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
-				return E_FAIL;*/
+			if (FAILED(m_pDisolveCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+				return E_FAIL;
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 				return E_FAIL;
 			m_pShaderCom->Begin(7);

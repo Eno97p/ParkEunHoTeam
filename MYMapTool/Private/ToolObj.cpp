@@ -7,13 +7,9 @@
 #include <codecvt>
 #include <locale>
 
-//wstring char_to_wstring(const _char* str) {
-//	wstring_convert<codecvt_utf8<wchar_t>> converter;
-//	return converter.from_bytes(str);
-//}
-
 CToolObj::CToolObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
+	// CBlendObject{ pDevice, pContext }
 {
 }
 
@@ -44,6 +40,11 @@ string CToolObj::Get_ModelPath()
 	}
 
 	return "NoModel";
+}
+
+_vector CToolObj::Get_Position()
+{
+	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
 HRESULT CToolObj::Initialize_Prototype()
@@ -85,6 +86,9 @@ HRESULT CToolObj::Initialize(void* pArg)
 	strcat_s(m_szListName, m_szName);
 	CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
 
+	if (FAILED(Create_DepthStencilStates()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -97,44 +101,26 @@ void CToolObj::Tick(_float fTimeDelta)
 	if (CModel::TYPE_ANIM == m_eModelType)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
-
-	// 바람 방향 변화
-	static float fWindAngle = 0.0f;
-	fWindAngle += fTimeDelta * 0.1f;
-	m_WindDirection = XMFLOAT3(cos(fWindAngle), 0.0f, sin(fWindAngle));
-
 }
 
 void CToolObj::Late_Tick(_float fTimeDelta)
 {
 	m_fTimeDelta = fTimeDelta;
 
-	//CTransform* pPT = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
-	//_vector vPlayerPos = pPT->Get_State(CTransform::STATE_POSITION);
-	//_vector vCamPos = m_pGameInstance->Get_CamPosition();
-	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	//_vector vCamToPlayer = vPlayerPos - vCamPos;
-	//_vector vCamToObj = vPos - vCamPos;
-
-	//float fDistCamToPlayer = XMVectorGetX(XMVector3Length(vCamToPlayer));
-	//float fDistCamToObj = XMVectorGetX(XMVector3Length(vCamToObj));
-
-	//_vector vNormalizedCamToPlayer = XMVector3Normalize(vCamToPlayer);
-	//_vector vNormalizedCamToObj = XMVector3Normalize(vCamToObj);
-	//float fDot = XMVectorGetX(XMVector3Dot(vNormalizedCamToPlayer, vNormalizedCamToObj));
-
-	//// 일정 각도 내에 있고, 카메라와 플레이어 사이에 있는 경우
-	//if (fDot > 0.95f && fDistCamToObj < fDistCamToPlayer)
-	//{
-	//	// 알파 블렌딩 적용
-	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	//}
-	//else
+	//if (!m_bisAlphaBlend)
 	{
 		// 일반 렌더링
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_iShaderPath = 0;
+
 	}
+	//else
+	//{
+	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	//	m_iShaderPath = 5;
+
+	//}
 
 	// 그림자는 항상 렌더링
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
@@ -142,15 +128,6 @@ void CToolObj::Late_Tick(_float fTimeDelta)
 
 HRESULT CToolObj::Render()
 {
-	//풀떼기 내일 ㄱㄱ 지오메트리로 다시 정의해야할듯
-	//if (m_iShaderPath == 2) // ColoredDiffuse 패스인 경우
-	//{
-	//	m_pContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_POINTLIST);
-	//}
-	//else // 다른 패스인 경우
-	//{
-	//	m_pContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//}
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -172,6 +149,7 @@ HRESULT CToolObj::Render()
 		//if ( i != 29)
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
+		m_pContext->OMSetDepthStencilState(m_pDSS_MapObject_SecondPass, 1);
 
 	/*	_bool f = false;
 		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bNormal"), &f, sizeof(_bool))))
@@ -306,6 +284,48 @@ void CToolObj::Setting_WorldMatrix(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[0][1], pDesc->mWorldMatrix.m[0][2], pDesc->mWorldMatrix.m[0][3]));
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(pDesc->mWorldMatrix.m[1][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[1][2], pDesc->mWorldMatrix.m[1][3]));
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(pDesc->mWorldMatrix.m[2][0], pDesc->mWorldMatrix.m[2][1], pDesc->mWorldMatrix.m[2][2], pDesc->mWorldMatrix.m[2][3]));
+}
+
+
+HRESULT CToolObj::Create_DepthStencilStates()
+{
+	D3D11_DEPTH_STENCIL_DESC dssDesc;
+
+	// DSS_MapObject_FirstPass
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dssDesc.StencilEnable = FALSE;
+	if (FAILED(m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS_MapObject_FirstPass)))
+		return E_FAIL;
+
+	// DSS_MapObject_SecondPass
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dssDesc.StencilEnable = TRUE;
+	dssDesc.StencilReadMask = 0xFF;
+	dssDesc.StencilWriteMask = 0x00;
+	dssDesc.FrontFace.StencilFunc = D3D11_COMPARISON_EQUAL;
+	dssDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	dssDesc.BackFace = dssDesc.FrontFace;
+	if (FAILED(m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS_MapObject_SecondPass)))
+		return E_FAIL;
+
+	// DSS_RestObjects
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = TRUE;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dssDesc.StencilEnable = FALSE;
+	if (FAILED(m_pDevice->CreateDepthStencilState(&dssDesc, &m_pDSS_RestObjects)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CToolObj* CToolObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

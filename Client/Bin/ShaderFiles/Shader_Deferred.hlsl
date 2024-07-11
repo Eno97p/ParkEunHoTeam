@@ -2,7 +2,7 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix      g_ViewMatrixInv, g_ProjMatrixInv;
+matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
@@ -39,6 +39,7 @@ texture2D   g_SpecularMapTexture;
 
 texture2D   g_EffectTexture;
 texture2D   g_DistortionTexture;
+texture2D   g_BlurTexture;
 
 texture2D   g_LUTTexture;
 texture2D   g_ResultTexture;
@@ -447,6 +448,8 @@ PS_OUT PS_LUT(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+    vResult = (vResult + vBlur) * 0.5f;
 
     vector vDistortion = g_DistortionTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -471,6 +474,8 @@ PS_OUT PS_NOLUT(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+    vResult = vResult + vBlur;
 
     vector vDistortion = g_DistortionTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -529,7 +534,17 @@ PS_OUT PS_BLURX(PS_IN In)
 
     float2 vUV = (float2)0;
 
-    if (g_BlurNum == 1)
+    if (g_BlurNum == 0)
+    {
+        for (int i = -6; i < 7; ++i)
+        {
+            vUV = saturate(In.vTexcoord + float2(1.f / g_fTexW * i, 0));
+            Out.vColor += g_EffectTexture.Sample(LinearSampler, vUV);
+        }
+
+        Out.vColor.rgb /= 13.f;
+    }
+    else if (g_BlurNum == 1)
     {
        for (int i = -6; i < 7; ++i)
        {
@@ -572,7 +587,17 @@ PS_OUT PS_BLURY(PS_IN In)
 
     float2 vUV = (float2)0;
 
-    if (g_BlurNum == 1)
+    if (g_BlurNum == 0)
+    {
+        for (int i = -6; i < 7; ++i)
+        {
+            vUV = saturate(In.vTexcoord + float2(0, 1.f / g_fTexH * i));
+            Out.vColor += g_EffectTexture.Sample(LinearSampler, vUV);
+        }
+
+        Out.vColor.rgb /= 13.f;
+    }
+    else if (g_BlurNum == 1)
     {
        for (int i = -6; i < 7; ++i)
        {
@@ -580,7 +605,7 @@ PS_OUT PS_BLURY(PS_IN In)
           Out.vColor += g_fWeight[6 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
        }
 
-       Out.vColor /= g_fTotal;
+       Out.vColor /= 3;
     }
     else if (g_BlurNum == 2)
     {
@@ -619,6 +644,55 @@ PS_OUT PS_BLOOM(PS_IN In)
     //else
     //   Out.vColor = float4(0.f, 0.f, 0.f, 1.f);
     Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    return Out;
+}
+
+PS_OUT PS_DECAL(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    // G-Buffer에서 깊이 정보 샘플링
+    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 월드 공간 위치 재구성
+    float4 vPosition = float4(In.vTexcoord.x * 2.0f - 1.0f, In.vTexcoord.y * -2.0f + 1.0f, vDepthDesc.x, 1.0f);
+    vPosition = mul(vPosition, g_ProjMatrixInv);
+    vPosition /= vPosition.w; // Perspective divide
+    vPosition.z = vDepthDesc.y * 3000.f;
+    vPosition = mul(vPosition, g_ViewMatrixInv);
+
+    // 데칼 공간으로 변환
+    vPosition = mul(vPosition, g_WorldMatrixInv);
+
+    // //데칼 범위 체크
+    //if (any(abs(vPosition) > 0.5f))
+    //{
+    //    Out.vColor = g_DiffuseTexture.Sample(LinearSampler, screenUV);
+    //    return Out;
+    //}
+
+    // 데칼 UV 계산
+    float2 decalUV;
+    decalUV.x = (vPosition.x / vPosition.w) * 0.5f + 0.5f;
+    decalUV.y = (vPosition.y / vPosition.w) * -0.5f + 0.5f;
+
+    // 데칼 텍스처 샘플링
+    vector vDecal = g_EffectTexture.Sample(LinearSampler, decalUV);
+
+    // 기존 디퓨즈 색상 샘플링
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 데칼 블렌딩
+    if (vDecal.a == 0.f)
+    {
+        Out.vColor = vDiffuse;
+    }
+    else
+    {
+        Out.vColor = vDiffuse;
+        //Out.vColor = vDecal + vDiffuse * (1.f - vDecal.a);
+    }
 
     return Out;
 }
@@ -874,5 +948,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_NOLUT();
+    }
+
+    pass Decal_17
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DECAL();
     }
 }

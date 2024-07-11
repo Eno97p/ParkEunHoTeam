@@ -44,9 +44,6 @@ void CParticle_Rect::Priority_Tick(_float fTimeDelta)
 
 void CParticle_Rect::Tick(_float fTimeDelta)
 {
-
-
-
 	if (m_pVIBufferCom->Check_Instance_Dead())
 		m_pGameInstance->Erase(this);
 
@@ -108,6 +105,8 @@ void CParticle_Rect::Late_Tick(_float fTimeDelta)
 
 HRESULT CParticle_Rect::Render()
 {
+
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -181,6 +180,7 @@ HRESULT CParticle_Rect::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolvePower", &OwnDesc->SuperDesc.fDesolveLength, sizeof(_float))))
 		return E_FAIL;
+
 	return S_OK;
 }
 

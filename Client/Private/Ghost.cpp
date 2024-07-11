@@ -82,9 +82,10 @@ void CGhost::Tick(_float fTimeDelta)
 	// 플레이어 무기와 몬스터의 충돌 여부
 
 	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-	if (pPlayerWeapon->Get_Active())
+	m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+	if (!pPlayerWeapon->Get_Active())
 	{
-		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+		m_eColltype = CCollider::COLL_NOCOLL;
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
@@ -199,8 +200,8 @@ HRESULT CGhost::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CGhost::Idle, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CGhost::Dead, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CGhost::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CGhost::Hit, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CGhost::Parried, this, std::placeholders::_1));
 	
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("DefaultAttack"), bind(&CGhost::Default_Attack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("DownAttack"), bind(&CGhost::Down_Attack, this, std::placeholders::_1));
@@ -242,32 +243,6 @@ NodeStates CGhost::Dead(_float fTimeDelta)
 	}
 }
 
-NodeStates CGhost::Parried(_float fTimeDelta)
-{
-	if (dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
-	{
-		m_iState = STATE_PARRIED;
-	}
-
-	if (m_iState == STATE_PARRIED)
-	{
-		if (m_isAnimFinished)
-		{
-			dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Set_IsParried(false);
-			m_iState = STATE_IDLE;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
-}
-
 NodeStates CGhost::Hit(_float fTimeDelta)
 {
 	switch (m_eColltype)
@@ -296,6 +271,32 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	}
 
 	return FAILURE;
+}
+
+NodeStates CGhost::Parried(_float fTimeDelta)
+{
+	if (dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
+	{
+		m_iState = STATE_PARRIED;
+	}
+
+	if (m_iState == STATE_PARRIED)
+	{
+		if (m_isAnimFinished)
+		{
+			dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Set_IsParried(false);
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CGhost::Default_Attack(_float fTimeDelta)

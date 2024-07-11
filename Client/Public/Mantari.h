@@ -48,8 +48,8 @@ private:
 private:
 	NodeStates Revive(_float fTimeDelta);
 	NodeStates Dead(_float fTimeDelta);
-	NodeStates Parried(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
+	NodeStates Parried(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates Attack(_float fTimeDelta);
 	NodeStates CircleAttack(_float fTimeDelta);

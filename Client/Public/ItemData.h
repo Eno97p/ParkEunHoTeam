@@ -41,6 +41,9 @@ private:
 	virtual ~CItemData() = default;
 
 public:
+	wstring			Get_TextureName() { return m_wszTexture; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -49,6 +52,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	wstring					m_wszTexture;
+
 	// 플레이어에게 상호작용 하는 함수? 종류에 따라 다른 작용하도록 구현 필요
 	ITEM_TYPE				m_eItemType = { ITEMTYPE_END };
 	ITEM_NAME				m_eItemName = { ITEMNAME_END };

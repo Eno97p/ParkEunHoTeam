@@ -61,46 +61,55 @@ void CItemData::Set_DropItem_Type()
 	case Client::CItemData::DROPITEM_BUFF1:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
 	case Client::CItemData::DROPITEM_BUFF2:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
 	case Client::CItemData::DROPITEM_BUFF3:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
 	case Client::CItemData::DROPITEM_BUFF4:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}
 	case Client::CItemData::DROPITEM_SOUL:
 	{
 		m_eItemType = ITEMTYPE_ETC; // 먹자마자 소모되어야 하므로 >> 인벤에 들어가는 일 없음
+		m_wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
 		break;
 	}
 	case Client::CItemData::DROPITEM_ESEENCE:
 	{
 		m_eItemType = ITEMTYPE_USABLE;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Essence");
 		break;
 	}
 	case Client::CItemData::DROPITEM_ETHER:
 	{
 		m_eItemType = ITEMTYPE_USABLE;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
 		break;
 	}
 	case Client::CItemData::DROPITEM_UPGRADE1:
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0");
 		break;
 	}
 	case Client::CItemData::DROPITEM_UPGRADE2:
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}
 	default:

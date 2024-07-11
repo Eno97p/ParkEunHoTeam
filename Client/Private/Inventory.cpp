@@ -21,9 +21,13 @@ void CInventory::Tick(_float fTimeDelta)
 {
 }
 
-HRESULT CInventory::Add_Item(CItemData* pItemData)
+HRESULT CInventory::Add_DropItem()
 {
-	m_vecItem.emplace_back(pItemData);
+	CItemData::DROPITEM_DESC pDesc{};
+	pDesc.isDropTem = true;
+	//CItemData* pItemData = ;
+
+	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	return S_OK;
 }

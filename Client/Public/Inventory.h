@@ -23,7 +23,7 @@ public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);
 
-	HRESULT	Add_Item(CItemData* pItemData);
+	HRESULT	Add_DropItem();
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

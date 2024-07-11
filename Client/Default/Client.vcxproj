@@ -230,6 +230,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
+    <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
@@ -377,6 +378,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
+    <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />

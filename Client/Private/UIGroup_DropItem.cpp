@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_DropItemBG.h"
+#include "UI_ItemIcon.h"
 
 CUIGroup_DropItem::CUIGroup_DropItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUIGroup{ pDevice, pContext }
@@ -20,10 +21,14 @@ HRESULT CUIGroup_DropItem::Initialize_Prototype()
 
 HRESULT CUIGroup_DropItem::Initialize(void* pArg)
 {
+    UIGROUP_DROPITEM_DESC* pDesc = static_cast<UIGROUP_DROPITEM_DESC*>(pArg);
+
+
+
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Create_UI()))
+    if (FAILED(Create_UI(pDesc->wszTextureName)))
         return E_FAIL;
 
     return S_OK;
@@ -42,9 +47,9 @@ void CUIGroup_DropItem::Tick(_float fTimeDelta)
         pUI->Tick(fTimeDelta);
     }
 
-    m_fRenderTimer += fTimeDelta;
-    if (3.f <= m_fRenderTimer)
-        m_pGameInstance->Erase(this);
+    //m_fRenderTimer += fTimeDelta;
+    //if (3.f <= m_fRenderTimer)
+    //    m_pGameInstance->Erase(this);
 }
 
 void CUIGroup_DropItem::Late_Tick(_float fTimeDelta)
@@ -58,7 +63,7 @@ HRESULT CUIGroup_DropItem::Render()
     return S_OK;
 }
 
-HRESULT CUIGroup_DropItem::Create_UI()
+HRESULT CUIGroup_DropItem::Create_UI(wstring wstrTextureName)
 {
     CUI::UI_DESC pDesc{};
 
@@ -67,6 +72,15 @@ HRESULT CUIGroup_DropItem::Create_UI()
     // BG
     m_vecUI.emplace_back(dynamic_cast<CUI_DropItemBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_DropItemBG"), &pDesc)));
 
+    // Icon
+    CUI_ItemIcon::UI_ITEMICON_DESC pUIDesc{};
+    pUIDesc.eLevel = LEVEL_STATIC;
+    pUIDesc.fX = 100.f;
+    pUIDesc.fY = (g_iWinSizeY >> 1) + 70.f;
+    pUIDesc.fSizeX = 64.f;
+    pUIDesc.fSizeY= 64.f;
+    pUIDesc.wszTexture = wstrTextureName;
+    m_vecUI.emplace_back(dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pUIDesc)));
 
     return S_OK;
 }

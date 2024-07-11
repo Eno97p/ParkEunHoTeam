@@ -97,7 +97,7 @@ public:
 	void Speed_Scaling(_float fRatio) { m_fSpeedPerSec *= fRatio; }
 	void Set_Speed(_float fSpeed) { m_fSpeedPerSec = fSpeed; }
 	void BillBoard();			//빌보드 함수 추가 - 박은호
-
+	void Set_LookingAt(_fvector vLook);
 private:
 	//void Update_WorldMatrix();
 

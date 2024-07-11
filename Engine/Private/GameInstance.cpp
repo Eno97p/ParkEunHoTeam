@@ -645,6 +645,17 @@ void CGameInstance::CreateObject(_uint Level, const wchar_t* Layer, const wstrin
 	m_pEvent_Manager->AddEvent(evn);
 }
 
+void CGameInstance::CreateObject_Self(_uint Level, const wchar_t* Layer, CGameObject* pObj)
+{
+	tEvent evn = {};
+	evn.eEven = eEVENT_TYPE::CREATE_OBJECT;
+	evn.lParam = (DWORD_PTR)Level;
+	evn.wParam = (DWORD_PTR)Layer;
+	evn.pParam = (DWORD_PTR)pObj;
+
+	m_pEvent_Manager->AddEvent(evn);
+}
+
 void CGameInstance::Erase(CGameObject* _pObj)
 {
 	if (_pObj == nullptr)

@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 CWeapon_Arrow_LGGun::CWeapon_Arrow_LGGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -44,6 +45,7 @@ HRESULT CWeapon_Arrow_LGGun::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
+	EFFECTMGR->Generate_Trail(0, m_pTransformCom->Get_WorldFloat4x4());
 	return S_OK;
 }
 
@@ -53,8 +55,13 @@ void CWeapon_Arrow_LGGun::Priority_Tick(_float fTimeDelta)
 
 void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Straight(fTimeDelta);
+	fMaxLifeTime -= fTimeDelta;
+	if (fMaxLifeTime < 0.f)
+		m_pGameInstance->Erase(this);
 
+	m_pTransformCom->Go_Straight(fTimeDelta);
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 #ifdef _DEBUG
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
@@ -63,8 +70,11 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
 		if (m_eColltype == CCollider::COLL_START)
 		{
+
 			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
 			{
+				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				EFFECTMGR->Generate_Particle(5, fPos);
 				m_bIsParried = true;
 				m_pPlayer->Parry_Succeed();
 				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
@@ -76,6 +86,15 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 
 		}
 	}
+
+	fAccParticle -= fTimeDelta;
+	if (fAccParticle < 0.f)
+	{
+
+		EFFECTMGR->Generate_Particle(3, fPos, nullptr,XMVectorZero(),0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		fAccParticle = RandomFloat(0.1f, 0.2f);
+	}
+
 }
 
 void CWeapon_Arrow_LGGun::Late_Tick(_float fTimeDelta)

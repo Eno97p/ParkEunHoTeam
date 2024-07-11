@@ -147,6 +147,9 @@
     <ClCompile Include="..\private\Elevator.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\SideViewCamera.cpp">
+      <Filter>02. GameObjects\99. Camera\03. SideView</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -290,6 +293,9 @@
     <ClInclude Include="..\public\Elevator.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SideViewCamera.h">
+      <Filter>02. GameObjects\99. Camera\03. SideView</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -374,6 +380,9 @@
     </Filter>
     <Filter Include="02. GameObjects\06. Player">
       <UniqueIdentifier>{b764be88-de7b-415c-99ba-2bec26d5db62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\99. Camera\03. SideView">
+      <UniqueIdentifier>{bd188ce7-611d-45b7-b35a-437ea65077d6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

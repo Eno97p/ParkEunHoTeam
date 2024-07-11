@@ -39,6 +39,7 @@ public:
 	void Activate() { m_bCamActivated = true; }
 	void Inactivate() { m_bCamActivated = false; }
 
+	_vector Get_CamLook();
 	_bool Get_Activate() { return m_bCamActivated; }
 
 	void Set_CamDesc(CAMERA_DESC* desc)

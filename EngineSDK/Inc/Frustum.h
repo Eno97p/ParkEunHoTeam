@@ -21,7 +21,18 @@ public:
 	_bool isIn_WorldFrustum(_fvector vPosition, _float fRange = 0.f);
 	_bool isIn_LocalFrustum(_fvector vPosition, _float fRange);
 
+	_bool isVisible(_vector vPos, PxActor* actor);
 private:
+	struct ObjectVisibilityInfo
+	{
+		bool isVisible;
+		float lastCheckTime;
+	};
+
+	std::unordered_map<PxActor*, ObjectVisibilityInfo> m_visibilityCache;
+	float m_cacheUpdateInterval = 0.05f; // 0.1초마다 가시성 업데이트
+	float m_maxVisibleDistance = 1000.0f; // 최대 가시 거리
+	float m_fTotalTime = 0;
 	_float3					m_vPoints[8] = {};
 	_float4					m_vWorldPoints[8] = {};
 	class CGameInstance*	m_pGameInstance = { nullptr };

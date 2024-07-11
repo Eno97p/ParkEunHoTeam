@@ -44,6 +44,7 @@ protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
+	_bool						m_bisVisible = false;
 
 
 

@@ -337,6 +337,25 @@ PS_OUT PS_WIREFRAME(PS_IN In)
 	return Out;
 }
 
+struct PS_OUT_AB
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_AB PS_ALPHABLEND(PS_IN In)
+{
+	PS_OUT_AB Out = (PS_OUT_AB)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vColor = vDiffuse;
+	Out.vColor.a = 0.2f;
+
+	return Out;
+
+}
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -404,5 +423,18 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_WIREFRAME();
 	}
 
+		pass AlphaBlend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ALPHABLEND();
+
+	}
 }
 

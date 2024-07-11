@@ -46,6 +46,8 @@ HRESULT CPassive_Element::Initialize(void* pArg)
     //instanceDesc.iNumInstance = desc->iInstanceCount;
     //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
+    //FOR CULLING
+    //m_pGameInstance->AddCullingObject(this, m_pPhysXCom->Get_Actor());
 
     return S_OK;
 
@@ -57,14 +59,26 @@ void CPassive_Element::Priority_Tick(_float fTimeDelta)
 
 void CPassive_Element::Tick(_float fTimeDelta)
 {
-
-  
+    return;
 }
 
 void CPassive_Element::Late_Tick(_float fTimeDelta)
 {
+    //FOR CULLING
+    //_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+    //if (!m_bNoCullElement)
+    //{
+    //    if (m_pGameInstance->isVisible(vPos, m_pPhysXCom->Get_Actor()))
+    //        //if (m_pGameInstance->IsVisibleObject(this))
+    //    {
+    //        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+    //    }
+    //}
+    //else 
     {
-    m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+    }
+  
 
 
 #ifdef _DEBUG
@@ -152,6 +166,10 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
+    if (desc->wstrModelName == TEXT("Prototype_Component_Model_BasicCube") || desc->wstrModelName == TEXT("Prototype_Component_Model_BasicGround"))
+    {
+        m_bNoCullElement = true;
+    }
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

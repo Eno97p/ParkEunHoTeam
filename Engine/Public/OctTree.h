@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Base.h"
+#include "GameObject.h"
+#include "Frustum.h"
 
 BEGIN(Engine)
 
@@ -24,10 +26,16 @@ private:
 	virtual ~COctTree() = default;
 
 public:
-	HRESULT Initialize(const _float3& vMin, const _float3& vMax);
-	void Culling(const _float4* pVerticesPositions, _uint* pIndices, _uint* iNumIndices);
-	void Make_Neighbors();
+	HRESULT Initialize(const _float3& vMin, const _float3& vMax, _int depth);
+	void Update_OctTree();
+	void UpdateNodeVisibility();
 
+
+	void AddObject(CGameObject* pObject, PxActor* pActor);
+	bool IsOverlapping(const _float3& min, const _float3& max);
+	bool IsObjectVisible(CGameObject* pObject);
+	bool IsNodeVisible();
+	bool IsNodeOccluded();
 
 private:
 	COctTree* m_pChildren[CORNER_END] = { nullptr };
@@ -38,11 +46,16 @@ private:
 
 	_float3     m_vMin, m_vMax;  // 경계 박스
 
+	vector<CGameObject*> m_Objects;
+
+	PxVec3 m_CamPos = { 0.f, 0.f, 0.f };
 private:
+	bool IsNodeVisible(CFrustum* frustum);
 	_bool isDraw(const _float4* pVertexPositions);
 
+
 public:
-	static COctTree* Create(const _float3& vMin, const _float3& vMax);
+	static COctTree* Create(const _float3& vMin, const _float3& vMax, _int depth);
 	virtual void Free() override;
 };
 

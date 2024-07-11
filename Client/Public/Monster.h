@@ -4,6 +4,8 @@
 #include "LandObject.h"
 #include "Player.h"
 
+#include "UIGroup_BossHP.h"
+
 BEGIN(Engine)
 class CCollider;
 class CShader;
@@ -27,6 +29,9 @@ protected:
 	virtual ~CMonster() = default;
 
 public:
+	_float			Get_Ratio() { return m_fCurHp / m_fMaxHp; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -45,8 +50,8 @@ protected:
 	_bool							m_isAnimFinished = { false };
 
 #pragma region 몬스터 스탯
-	_uint m_iMaxHp = 100;
-	_uint m_iCurHp = m_iMaxHp;
+	_float m_fMaxHp = 100.f;
+	_float m_fCurHp = m_fMaxHp;
 #pragma endregion 몬스터 스탯
 
 	_bool m_bDead = false;
@@ -66,12 +71,15 @@ protected:
 	CTransform* m_pPlayerTransform = { nullptr };
 	
 	// UI
-	class CUIGroup_MonsterHP*		m_pUI_HP = { nullptr };
+	class CUIGroup*		m_pUI_HP = { nullptr };
 
 protected:
 	virtual HRESULT		Add_Nodes();
 
 	void				Create_UI();
+	void				Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName); // 인자에 값을 넣어주는 게 좋을 듯함
+
+	void				Update_UI(_float fHeight = 0.f);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

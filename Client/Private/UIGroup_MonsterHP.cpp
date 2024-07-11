@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_MonsterHP.h"
+#include "UI_MonsterHPBar.h"
 
 CUIGroup_MonsterHP::CUIGroup_MonsterHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -35,7 +36,7 @@ void CUIGroup_MonsterHP::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_MonsterHP::Tick(_float fTimeDelta)
 {
-	/*_bool isRender_End = false;
+	_bool isRender_End = false;
 	if (m_isRend)
 	{
 		for (auto& pUI : m_vecUI)
@@ -55,7 +56,10 @@ void CUIGroup_MonsterHP::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
-	}*/
+	}
+
+	vector<CUI*>::iterator hp = m_vecUI.begin();
+	dynamic_cast<CUI_MonsterHP*>(*hp)->Set_Ratio(m_fHPRatio);
 
 	m_isRend = true;
 }
@@ -76,12 +80,12 @@ HRESULT CUIGroup_MonsterHP::Render()
 
 void CUIGroup_MonsterHP::Update_Pos(_vector vMonsterPos)
 {
-	// Monster Pos 받아와서 적용해주기
-	_vector vPos = vMonsterPos;
-	vPos.m128_f32[1] += 50.f;
+	vMonsterPos.m128_f32[1] += 2.5f;
 
 	vector<CUI*>::iterator hp = m_vecUI.begin();
-	dynamic_cast<CUI_MonsterHP*>(*hp)->Update_Pos(vPos);
+	dynamic_cast<CUI_MonsterHP*>(*hp)->Update_Pos(vMonsterPos);
+	++hp;
+	dynamic_cast<CUI_MonsterHPBar*>(*hp)->Update_Pos(vMonsterPos);
 }
 
 HRESULT CUIGroup_MonsterHP::Create_UI()
@@ -94,7 +98,7 @@ HRESULT CUIGroup_MonsterHP::Create_UI()
 	m_vecUI.emplace_back(dynamic_cast<CUI_MonsterHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MonsterHP"), &pDesc)));
 
 	// Bar
-
+	m_vecUI.emplace_back(dynamic_cast<CUI_MonsterHPBar*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MonsterHPBar"), &pDesc)));
 
 	return S_OK;
 }

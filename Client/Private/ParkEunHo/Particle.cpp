@@ -19,7 +19,7 @@ HRESULT CParticle::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&((PARTICLEDESC*)pArg)->vStartPos));
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve18"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
 		TEXT("Com_DesolveTexture"), reinterpret_cast<CComponent**>(&m_pDesolveTexture))))
 		return E_FAIL;
 
@@ -30,6 +30,16 @@ HRESULT CParticle::Initialize(void* pArg)
 void CParticle::Set_Target(CGameObject* Target)
 {
 	m_pTarget = (CTransform*)Target->Get_Component(TEXT("Com_Transform"));
+}
+
+void CParticle::Set_Rotation(_float Radian, _vector Axis)
+{
+	m_pTransformCom->Rotation(Axis, XMConvertToRadians(Radian));
+}
+
+void CParticle::AdJustLook(_vector vLook)
+{
+	m_pTransformCom->Set_LookingAt(vLook);
 }
 
 void CParticle::Free()

@@ -5,6 +5,7 @@
 
 #include "Particle_Rect.h"
 #include "UIGroup_MonsterHP.h"
+#include "UIGroup_BossHP.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLandObject{ pDevice, pContext }
@@ -39,7 +40,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	Safe_AddRef(m_pPlayer);
 	Safe_AddRef(m_pPlayerTransform);
 
-	Create_UI();
+	//Create_UI(); >> 자식 객체에서 직접 호출해주기 (Boss와 구분 위해)
 
 	return S_OK;
 }
@@ -87,6 +88,25 @@ void CMonster::Create_UI()
 	m_pUI_HP = dynamic_cast<CUIGroup_MonsterHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_MonsterHP"), &pDesc));
 	if (nullptr == m_pUI_HP)
 		return;
+}
+
+void CMonster::Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName)
+{
+	// Boss HP UI 생성 함수
+	CUIGroup_BossHP::UIGROUP_BOSSHP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eBossUIName = eBossName;
+	m_pUI_HP = dynamic_cast<CUIGroup_BossHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_BossHP"), &pDesc));
+	if (nullptr == m_pUI_HP)
+		return;
+}
+
+void CMonster::Update_UI(_float fHeight)
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vPos.m128_f32[1] += fHeight;
+	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Update_Pos(vPos);
+	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Set_Ratio(m_fCurHp / m_fMaxHp);
 }
 
 void CMonster::Free()

@@ -415,6 +415,27 @@
     <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Bar">
       <UniqueIdentifier>{797cfed9-c9a5-491b-ba98-e9e7f7878711}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\01.Item\ItemData">
+      <UniqueIdentifier>{e290039f-557c-4284-8a13-ba5ecfbdd0cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09. Inventory">
+      <UniqueIdentifier>{5d4f607a-2778-4276-b2fe-855b55a6f118}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item">
+      <UniqueIdentifier>{db2db847-41f5-41ab-a3a2-1540af63ba5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\DropItem">
+      <UniqueIdentifier>{c6fab907-2ff1-4d11-ae26-6f40a3e58d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\ItemIcon">
+      <UniqueIdentifier>{5b2719c6-e710-4e18-b60c-e7b875940d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Item\DropItem\BG">
+      <UniqueIdentifier>{eef70477-7e4f-4c87-aeaa-0e16eecf38b4}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\09. Decal">
+      <UniqueIdentifier>{f8256433-8ec3-4da6-b973-98aef5a48e42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -841,15 +862,33 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_BossHPBar.h">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Weapon_Sword_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Particle_STrail.h">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MonsterHPBar.h">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemData.h">
+      <Filter>02.GameObjects\02.LandObject\01.Item\ItemData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Inventory.h">
+      <Filter>02.GameObjects\09. Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_DropItem.h">
+      <Filter>02.GameObjects\07. UI\Item\DropItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_DropItemBG.h">
+      <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Decal.h">
+      <Filter>02.GameObjects\09. Decal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1257,15 +1296,33 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_BossHPBar.cpp">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Bar</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Weapon_Sword_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Legionnaire_Gun\PartObject\Weapon</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Particle_STrail.cpp">
       <Filter>02.GameObjects\06.Effect\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MonsterHPBar.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\MonsterHP\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemData.cpp">
+      <Filter>02.GameObjects\02.LandObject\01.Item\ItemData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Inventory.cpp">
+      <Filter>02.GameObjects\09. Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_DropItem.cpp">
+      <Filter>02.GameObjects\07. UI\Item\DropItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_DropItemBG.cpp">
+      <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Decal.cpp">
+      <Filter>02.GameObjects\09. Decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

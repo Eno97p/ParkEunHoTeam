@@ -58,7 +58,7 @@ HRESULT CTexture::Initialize_Prototype(istream& os)
 	os.read(reinterpret_cast<char*>(&m_iNumTextures), sizeof(_uint));
 
 	os.read(reinterpret_cast<char*>(m_szTextureFilePath), sizeof(_tchar) * MAX_PATH);
-	//TransformFilePath(m_szTextureFilePath);
+	TransformFilePath(m_szTextureFilePath);
 
 	m_Textures.reserve(m_iNumTextures);
 

@@ -6,7 +6,6 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "Level_Loading.h"
-#include "UI_Manager.h"
 #include "BackGround.h"
 #include "CMouse.h"
 
@@ -78,11 +77,17 @@
 
 #pragma region Monster
 #include "UI_MonsterHP.h"
+#include "UI_MonsterHPBar.h"
 #include "UIGroup_MonsterHP.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
 #include "UIGroup_BossHP.h"
 #pragma endregion Monster
+
+#pragma region Item
+#include "UI_DropItemBG.h"
+#include "UIGroup_DropItem.h"
+#pragma endregion Item
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -633,6 +638,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Item
 
+	/* Prototype_Component_Texture_DropItemBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_DropItemBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DropItem.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion Icon
 
 #pragma region Menu
@@ -787,7 +797,17 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Weapon
 
-#pragma region Monstter
+#pragma region Monster
+	/* Prototype_Component_Texture_UI_MonsterHP */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHP"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHP.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_MonsterHPBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHPBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHPBar.png"), 1))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_UI_BossHP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHP"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHP.png"), 1))))
@@ -1092,6 +1112,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_MonsterHP::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_MonsterHPBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MonsterHPBar"),
+		CUI_MonsterHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_MonsterHP*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_MonsterHP"),
 		CUIGroup_MonsterHP::Create(m_pDevice, m_pContext))))
@@ -1112,6 +1137,18 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_BossHP::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Monster
+
+#pragma region Item
+	/* For.Prototype_GameObject_UI_DropItemBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_DropItemBG"),
+		CUI_DropItemBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_DropItem*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_DropItem"),
+		CUIGroup_DropItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Item
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

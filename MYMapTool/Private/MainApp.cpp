@@ -57,6 +57,8 @@ void CMainApp::Tick(_float fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 	m_pGameInstance->Tick_Engine(fTimeDelta);
+
+	m_pGameInstance->Update_Picking();
 	m_pImgui_Manager->Tick(fTimeDelta);
 }
 

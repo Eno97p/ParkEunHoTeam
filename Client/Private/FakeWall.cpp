@@ -88,6 +88,18 @@ HRESULT CFakeWall::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	// wstrModelName을 수정하여 physxName 생성
+
+
+	CPhysXComponent::PHYSX_DESC		PhysXDesc{};
+	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
+	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	PhysXDesc.pComponent = m_pModelCom;
+	PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_PhysX_BasicDonut"),
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -139,4 +151,5 @@ void CFakeWall::Free()
 
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pPhysXCom);
 }

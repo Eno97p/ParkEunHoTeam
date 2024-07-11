@@ -19,6 +19,7 @@
 #include "SoundMgr.h"
 #include "UISorter.h"
 
+#include "OctTree.h"
 
 
 
@@ -114,12 +115,16 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_UISorter)
 		return E_FAIL;
 
+	D3D11_QUERY_DESC desc;
+	desc.Query = D3D11_QUERY_OCCLUSION;
 
-
+	m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
+	if (nullptr == m_pOctTree)
+		return E_FAIL;
 	
 	return S_OK;
 
-
+	
 }
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
@@ -170,6 +175,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	
 	
+	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 
 	
 	//PROFILE_SCOPE("Object Manager Late_Tick");
@@ -185,9 +191,6 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	
 	//PROFILE_SCOPE("UISorting Tick");
 	PROFILE_CALL("UISorting Tick",m_UISorter->Sorting());
-	
-
-
 
 }
 
@@ -389,6 +392,11 @@ vector<class CCamera*> CGameInstance::Get_Cameras()
 	return m_pObject_Manager->Get_Cameras();
 }
 
+CCamera* CGameInstance::Get_MainCamera()
+{
+	return m_pObject_Manager->Get_MainCamera();
+}
+
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)
 {
 	return m_pComponent_Manager->Add_Prototype(iLevelIndex, strPrototypeTag, pPrototype);	
@@ -478,6 +486,11 @@ _bool CGameInstance::Get_PickPos(_float4* pPickPos)
 {
 	return m_pPicking->Get_PickPos(pPickPos);
 	
+}
+
+void CGameInstance::Update_Picking()
+{
+	m_pPicking->Update();
 }
 
 const LIGHT_DESC * CGameInstance::Get_LightDesc(_uint iIndex) const
@@ -594,6 +607,11 @@ _bool CGameInstance::isIn_LocalFrustum(_fvector vPosition, _float fRange)
 	return m_pFrustum->isIn_LocalFrustum(vPosition, fRange);
 }
 
+_bool CGameInstance::isVisible(_vector vPos, PxActor* actor)
+{
+	return m_pFrustum->isVisible(vPos, actor);
+}
+
 _vector CGameInstance::Get_RayPos()
 {
 	if (m_pCalculator == nullptr)
@@ -636,6 +654,17 @@ void CGameInstance::CreateObject(_uint Level, const wchar_t* Layer, const wstrin
 {
 	CGameObject* pObj = Clone_Object(strPrototypeTag, pArg);
 
+	tEvent evn = {};
+	evn.eEven = eEVENT_TYPE::CREATE_OBJECT;
+	evn.lParam = (DWORD_PTR)Level;
+	evn.wParam = (DWORD_PTR)Layer;
+	evn.pParam = (DWORD_PTR)pObj;
+
+	m_pEvent_Manager->AddEvent(evn);
+}
+
+void CGameInstance::CreateObject_Self(_uint Level, const wchar_t* Layer, CGameObject* pObj)
+{
 	tEvent evn = {};
 	evn.eEven = eEVENT_TYPE::CREATE_OBJECT;
 	evn.lParam = (DWORD_PTR)Level;
@@ -701,6 +730,16 @@ HRESULT CGameInstance::Add_UI(CGameObject* ui, UISORT_PRIORITY type)
 	return m_UISorter->Add_UI(ui, type);
 }
 
+_bool CGameInstance::IsVisibleObject(CGameObject* obj)
+{
+	return m_pOctTree->IsObjectVisible(obj);
+}
+
+void CGameInstance::AddCullingObject(CGameObject* obj, PxActor* pActor)
+{
+	m_pOctTree->AddObject(obj, pActor);
+}
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RTDebug(const wstring & strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -743,6 +782,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pCalculator);
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_UISorter);
+
+	Safe_Release(m_pOctTree);
 
 
 

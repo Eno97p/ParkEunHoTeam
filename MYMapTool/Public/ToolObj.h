@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.h"
+#include "BlendObject.h"
 #include "MYMapTool_Defines.h"
 
 #include "Model.h"
@@ -15,7 +15,7 @@ END
 
 BEGIN(MYMapTool)
 
-class CToolObj : public CGameObject
+class CToolObj : public CGameObject//CBlendObject
 {
 public:
 	// Client에 객체 생성 시 들고 가야 할 정보를 담을 구조체
@@ -49,6 +49,10 @@ public:
 
 	string	Get_ModelPath();
 
+	_bool Get_AlphaBlend() { return m_bisAlphaBlend; }
+	void Set_AlphaBlendOn() { m_bisAlphaBlend = true;  }
+	void Set_AlphaBlendOff() { m_bisAlphaBlend = false;  }
+	_vector Get_Position();
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -84,6 +88,13 @@ private:
 	float m_WindGustiness;
 	_float				m_fTimeDelta = 0.f;
 
+	_bool				m_bisAlphaBlend = false;
+
+	ID3D11DepthStencilState* m_pDSS_MapObject_FirstPass = nullptr;
+	ID3D11DepthStencilState* m_pDSS_MapObject_SecondPass = nullptr;
+	ID3D11DepthStencilState* m_pDSS_RestObjects = nullptr;
+
+
 public:
 	HRESULT	Add_Component();
 	HRESULT	Bind_ShaderResources();
@@ -92,6 +103,7 @@ public:
 	void	Setting_WorldMatrix(void* pArg);
 
 public:
+	HRESULT Create_DepthStencilStates();
 	static CToolObj* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void	Free() override;

@@ -67,6 +67,11 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
         Load_Data_PhysX();
     }
 
+    if (m_pGameInstance->Key_Down(DIK_1))
+    {
+        m_pGameInstance->Set_MainCamera(1);
+    }
+
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("Level : GamePlay"));
 #endif
@@ -178,7 +183,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     //    return E_FAIL;
 
 
-  /*  CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
+    CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
 
     pTPCDesc.fSensor = 0.1f;
 
@@ -194,7 +199,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
     pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
     if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
-        return E_FAIL;*/
+        return E_FAIL;
 
     return S_OK;
 }

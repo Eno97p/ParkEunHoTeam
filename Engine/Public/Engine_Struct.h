@@ -385,6 +385,31 @@ namespace Engine
 
 	}
 
+	struct ENGINE_DLL PxParticleBufferDesc
+	{
+		PxVec4* positions;               // 파티클의 위치와 반질량(1/mass)
+		PxVec4* velocities;              // 파티클의 속도
+		PxU32* phases;                  // 파티클의 phase 정보
+		PxParticleVolume* volumes;       // 파티클의 볼륨 정보 (선택적)
+		PxU32   numActiveParticles;      // 활성화된 파티클 수
+		PxU32   maxParticles;            // 최대 파티클 수
+		PxU32   numVolumes;              // 볼륨 수 (선택적)
+		PxU32   maxVolumes;              // 최대 볼륨 수 (선택적)
+
+		PxParticleBufferDesc()           // 초기화 리스트를 통한 기본 생성자
+			: positions(NULL),
+			velocities(NULL),
+			phases(NULL),
+			volumes(NULL),
+			numActiveParticles(0),
+			maxParticles(0),
+			numVolumes(0),
+			maxVolumes(0)
+		{ }
+	};
+
+
+
 
 
 	

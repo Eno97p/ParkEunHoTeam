@@ -114,12 +114,14 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_UISorter)
 		return E_FAIL;
 
+	D3D11_QUERY_DESC desc;
+	desc.Query = D3D11_QUERY_OCCLUSION;
 
 
 	
 	return S_OK;
 
-
+	
 }
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)

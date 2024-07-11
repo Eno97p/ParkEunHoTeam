@@ -48,6 +48,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\CorruptedSword.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Decal.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Distortion.cpp"
 
 
@@ -99,7 +102,13 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ImGUi\imgui_widgets.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Inventory.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Item.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ItemData.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Juggulus_Hammer.cpp"
@@ -130,6 +139,15 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\Level_Logo.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_DropItemBG.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Arrow_LGGun.cpp"

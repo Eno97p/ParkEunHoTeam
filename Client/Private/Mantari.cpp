@@ -48,8 +48,8 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
-	m_iMaxHp = 1000.f;
-	m_iCurHp = m_iMaxHp;
+	m_fMaxHp = 1000.f;
+	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
@@ -303,6 +303,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		Add_Hp(-10);
+		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
 	}
@@ -350,36 +351,6 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 	{
 		return FAILURE;
 	}
-}
-
-NodeStates CMantari::Hit(_float fTimeDelta)
-{
-	switch (m_eColltype)
-	{
-	case CCollider::COLL_START:
-		m_iState = STATE_HIT;
-		Add_Hp(-10);
-		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
-		return RUNNING;
-		break;
-	case CCollider::COLL_CONTINUE:
-		m_iState = STATE_HIT;
-		return RUNNING;
-		break;
-	case CCollider::COLL_FINISH:
-		m_iState = STATE_HIT;
-		break;
-	case CCollider::COLL_NOCOLL:
-		break;
-	}
-
-	if (m_iState == STATE_HIT && m_isAnimFinished)
-	{
-		m_iState = STATE_IDLE;
-		return SUCCESS;
-	}
-
-	return FAILURE;
 }
 
 

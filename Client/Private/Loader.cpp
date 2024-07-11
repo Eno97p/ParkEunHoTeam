@@ -252,6 +252,10 @@ HRESULT CLoader::Loading_Map()
 
 		}
 
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_PhysX_BasicDonut"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Basic/Donut/BasicDonut.fbx", TEXT("../Bin/MapData/Stage_Ackbar.bin")))))
+			return hr = E_FAIL;
+
 		CloseHandle(hFile);
 
 		MSG_BOX("PhysX Data Loaded");

@@ -93,9 +93,7 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
-#ifdef _DEBUG
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
-#endif
 
 	Generate_Trail(0);
 

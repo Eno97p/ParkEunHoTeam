@@ -61,9 +61,7 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
-#ifdef _DEBUG
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
-#endif
 
 	// 몬스터 무기와 플레이어 충돌처리
 	if (Get_Active())

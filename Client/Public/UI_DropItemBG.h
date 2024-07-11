@@ -4,18 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_BossHPBar final : public CUI
+class CUI_DropItemBG final : public CUI
 {
-public:
-	typedef struct UI_BossHPBar_Desc : public UI_DESC
-	{
-		_tchar*		wszBossName;
-	}UI_BOSSHPBAR_DESC;
-
 private:
-	CUI_BossHPBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_BossHPBar(const CUI_BossHPBar& rhs);
-	virtual ~CUI_BossHPBar() = default;
+	CUI_DropItemBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_DropItemBG(const CUI_DropItemBG& rhs);
+	virtual ~CUI_DropItemBG() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -26,14 +20,12 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_tchar			m_wszBossName[MAX_PATH];
-
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_BossHPBar*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_DropItemBG*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

@@ -6,6 +6,8 @@
 #include "Body_Homonculus.h"
 #include "Weapon_Homonculus.h"
 
+#include "UIGroup_MonsterHP.h"
+
 CHomonculus::CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -28,7 +30,7 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 3.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_iCurHp = 100;
+	m_fCurHp = 100.f;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
@@ -36,11 +38,15 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(160.f, 522.f, 98.f, 1.f)); // Test
+
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
+
+	Create_UI();
 
 	return S_OK;
 }
@@ -83,6 +89,9 @@ void CHomonculus::Tick(_float fTimeDelta)
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	Update_UI(1.5f);
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CHomonculus::Late_Tick(_float fTimeDelta)
@@ -90,6 +99,8 @@ void CHomonculus::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -473,8 +484,8 @@ NodeStates CHomonculus::Idle(_float fTimeDelta)
 
 void CHomonculus::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0.f)
 	{
 		m_iState = STATE_EXPLOSION;
 	}

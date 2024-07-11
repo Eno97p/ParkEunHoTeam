@@ -9,6 +9,8 @@
 #include "Weapon_Mantari.h"
 #include "EffectManager.h"
 
+#include "UIGroup_BossHP.h"
+
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -49,6 +51,8 @@ HRESULT CMantari::Initialize(void* pArg)
 	m_iMaxHp = 1000.f;
 	m_iCurHp = m_iMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
+
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
 	return S_OK;
 }
@@ -93,6 +97,9 @@ void CMantari::Tick(_float fTimeDelta)
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -100,6 +107,8 @@ void CMantari::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -342,6 +351,37 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 		return FAILURE;
 	}
 }
+
+NodeStates CMantari::Hit(_float fTimeDelta)
+{
+	switch (m_eColltype)
+	{
+	case CCollider::COLL_START:
+		m_iState = STATE_HIT;
+		Add_Hp(-10);
+		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
+		return RUNNING;
+		break;
+	case CCollider::COLL_CONTINUE:
+		m_iState = STATE_HIT;
+		return RUNNING;
+		break;
+	case CCollider::COLL_FINISH:
+		m_iState = STATE_HIT;
+		break;
+	case CCollider::COLL_NOCOLL:
+		break;
+	}
+
+	if (m_iState == STATE_HIT && m_isAnimFinished)
+	{
+		m_iState = STATE_IDLE;
+		return SUCCESS;
+	}
+
+	return FAILURE;
+}
+
 
 NodeStates CMantari::JumpAttack(_float fTimeDelta)
 {
@@ -592,8 +632,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 
 void CMantari::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
 	}

@@ -43,20 +43,27 @@ void CUI_MonsterHP::Priority_Tick(_float fTimeDelta)
 
 void CUI_MonsterHP::Tick(_float fTimeDelta)
 {
+	if (m_fCurrentRatio < m_fPastRatio)
+	{
+		m_fPastRatio -= fTimeDelta * 0.2f;
+		if (m_fCurrentRatio > m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
+	}
 }
 
 void CUI_MonsterHP::Late_Tick(_float fTimeDelta)
 {
 	m_pTransformCom->BillBoard();
 
-	m_pTransformCom->Set_Scale(10.f, 10.f, 10.f);
+	m_pTransformCom->Set_Scale(1.f, 1.f, 1.f);
 
 	CGameInstance::GetInstance()->Add_UI(this, SECOND);
 }
 
 HRESULT CUI_MonsterHP::Render()
 {
-	// 서서히 나타나는 효과 해야 할지? 그러면 pass 추가 필요
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -66,7 +73,7 @@ HRESULT CUI_MonsterHP::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(2);
+	m_pShaderCom->Begin(2); // 비율을 위해 2로 하니 출력 크기가 안 맞는 이슈 있음
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -91,7 +98,7 @@ HRESULT CUI_MonsterHP::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateHP"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHP"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -103,9 +110,9 @@ HRESULT CUI_MonsterHP::Bind_ShaderResources()
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))

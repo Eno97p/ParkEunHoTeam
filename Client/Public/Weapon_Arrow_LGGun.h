@@ -36,6 +36,8 @@ public:
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	_bool m_bIsParried = false;
+	_float fAccParticle = 0.f;
+	_float fMaxLifeTime = 3.f;
 
 public:
 	static CWeapon_Arrow_LGGun* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

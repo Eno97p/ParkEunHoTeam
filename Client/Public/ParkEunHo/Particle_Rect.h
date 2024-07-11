@@ -48,6 +48,7 @@ private:
 
 private:
 	PARTICLERECT*		OwnDesc = nullptr;
+	 
 
 public:
 	static CParticle_Rect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -27,6 +27,7 @@ public:
 
 private:
 	CPhysXComponent* m_pPhysXCom = { nullptr };
+	_bool			 m_bNoCullElement = false;
 
 
 public:

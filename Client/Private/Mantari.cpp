@@ -7,6 +7,9 @@
 #include "Weapon.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
+#include "EffectManager.h"
+
+#include "UIGroup_BossHP.h"
 
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -45,8 +48,11 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
-
+	m_fMaxHp = 1000.f;
+	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
+
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
 	return S_OK;
 }
@@ -81,12 +87,19 @@ void CMantari::Tick(_float fTimeDelta)
 	// 플레이어 무기와 몬스터의 충돌 여부
 
 	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-	if (pPlayerWeapon->Get_Active())
+	if (!pPlayerWeapon->Get_Active())
+	{
+		m_eColltype = CCollider::COLL_NOCOLL;
+	}
+	else
 	{
 		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -94,6 +107,8 @@ void CMantari::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -112,8 +127,7 @@ HRESULT CMantari::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
-	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vExtents = _float3(0.7f, 1.7f, 0.7f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -205,8 +219,8 @@ HRESULT CMantari::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CMantari::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CMantari::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMantari::Dead, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMantari::Hit, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CMantari::JumpAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack"), bind(&CMantari::Attack, this, std::placeholders::_1));
@@ -271,6 +285,48 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 	}
 }
 
+NodeStates CMantari::Hit(_float fTimeDelta)
+{
+	
+	switch (m_eColltype)
+	{
+	case CCollider::COLL_START:
+	{
+		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
+		_float3 vOffset = { 0.f,1.f,0.f };
+		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
+		_float4 vResult;
+		XMStoreFloat4(&vResult, vStartPos);
+		_int Random = RandomSign();
+		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
+		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
+		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
+		m_iState = STATE_HIT;
+		Add_Hp(-10);
+		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
+		return RUNNING;
+		break;
+	}
+	case CCollider::COLL_CONTINUE:
+		m_iState = STATE_HIT;
+		return RUNNING;
+		break;
+	case CCollider::COLL_FINISH:
+		m_iState = STATE_HIT;
+		break;
+	case CCollider::COLL_NOCOLL:
+		break;
+	}
+
+	if (m_iState == STATE_HIT && m_isAnimFinished)
+	{
+		m_iState = STATE_IDLE;
+		return SUCCESS;
+	}
+
+	return FAILURE;
+}
+
 NodeStates CMantari::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
@@ -297,34 +353,6 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 	}
 }
 
-NodeStates CMantari::Hit(_float fTimeDelta)
-{
-	switch (m_eColltype)
-	{
-	case CCollider::COLL_START:
-		m_iState = STATE_HIT;
-		Add_Hp(-10);
-		return RUNNING;
-		break;
-	case CCollider::COLL_CONTINUE:
-		m_iState = STATE_HIT;
-		return RUNNING;
-		break;
-	case CCollider::COLL_FINISH:
-		m_iState = STATE_HIT;
-		break;
-	case CCollider::COLL_NOCOLL:
-		break;
-	}
-
-	if (m_iState == STATE_HIT && m_isAnimFinished)
-	{
-		m_iState = STATE_IDLE;
-		return SUCCESS;
-	}
-
-	return FAILURE;
-}
 
 NodeStates CMantari::JumpAttack(_float fTimeDelta)
 {
@@ -575,8 +603,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 
 void CMantari::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
 	}

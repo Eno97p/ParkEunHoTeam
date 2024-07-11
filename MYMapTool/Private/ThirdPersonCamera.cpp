@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Monster.h"
 
+#include "ToolObj.h"
+
 CThirdPersonCamera::CThirdPersonCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {
@@ -127,8 +129,51 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         return;
     }
 
-    _float4 vPlayerPosition;
-    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+    // 플레이어 위치 얻기
+    _vector vPlayerPos = m_pPlayerTrans->Get_State(CTransform::STATE_POSITION);
+    _vector vCamPos = m_pGameInstance->Get_CamPosition();
+
+    // 맵 오브젝트 리스트 얻기
+    list<CGameObject*> mapObjects = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Obj"));
+    if (!mapObjects.empty())
+    {
+        for (auto& obj : mapObjects)
+        {
+            CToolObj* mapObj = dynamic_cast<CToolObj*>(obj);
+            if (mapObj == nullptr) continue;
+
+            _vector vMapObjPos = mapObj->Get_Position();
+
+            // 플레이어, 카메라, 맵 오브젝트 위치를 Float3로 변환
+            _float3 f3PlayerPos, f3CamPos, f3MapObjPos;
+            XMStoreFloat3(&f3PlayerPos, vPlayerPos);
+            XMStoreFloat3(&f3CamPos, vCamPos);
+            XMStoreFloat3(&f3MapObjPos, vMapObjPos);
+
+            // 플레이어와 맵 오브젝트 사이의 거리 계산
+            _float fDistToPlayer = XMVectorGetX(XMVector3Length(vMapObjPos - vPlayerPos));
+
+            // 카메라와 맵 오브젝트 사이의 거리 계산
+            _float fDistToCam = XMVectorGetX(XMVector3Length(vMapObjPos - vCamPos));
+
+            // 플레이어와 카메라 사이의 거리 계산
+            _float fDistPlayerToCam = XMVectorGetX(XMVector3Length(vPlayerPos - vCamPos));
+
+            // 맵 오브젝트가 플레이어와 카메라 사이에 있는지 판단
+            if (fDistToCam < fDistPlayerToCam && fDistToPlayer < fDistPlayerToCam)
+            {
+                // 맵 오브젝트가 플레이어와 카메라 사이에 있다면 알파 블렌딩 적용
+                _float fAlpha = fDistToCam / fDistPlayerToCam; // 카메라와의 거리에 따른 알파 값 계산
+                mapObj->Set_AlphaBlendOn(); // 맵 오브젝트의 알파 값 설정
+            }
+            else
+            {
+                // 그 외의 경우 알파 값을 1로 설정하여 불투명하게 렌더링
+                mapObj->Set_AlphaBlendOff();
+            }
+        }
+    }
+   
 
     if (m_bIsTargetLocked)
     {

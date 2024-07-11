@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Client_Macro.h" />
     <ClInclude Include="..\Public\Clone.h" />
     <ClInclude Include="..\Public\CorruptedSword.h" />
+    <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\Public\Distortion.h" />
     <ClInclude Include="..\Public\DurgaSword.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
@@ -214,7 +215,9 @@
     <ClInclude Include="..\Public\ImGUi\imstb_rectpack.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_textedit.h" />
     <ClInclude Include="..\Public\ImGUi\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Inventory.h" />
     <ClInclude Include="..\Public\Item.h" />
+    <ClInclude Include="..\Public\ItemData.h" />
     <ClInclude Include="..\Public\Juggulus_Hammer.h" />
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
@@ -225,6 +228,9 @@
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\UIGroup_DropItem.h" />
+    <ClInclude Include="..\Public\UI_DropItemBG.h" />
+    <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -338,6 +344,7 @@
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\CorruptedSword.cpp" />
+    <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />
     <ClCompile Include="..\Private\DurgaSword.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />
@@ -355,7 +362,9 @@
     <ClCompile Include="..\Private\ImGUi\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_tables.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Inventory.cpp" />
     <ClCompile Include="..\Private\Item.cpp" />
+    <ClCompile Include="..\Private\ItemData.cpp" />
     <ClCompile Include="..\Private\Juggulus_Hammer.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
@@ -366,6 +375,9 @@
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
+    <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
+    <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />

@@ -82,11 +82,12 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 		m_pSize[i] -= fTimeDelta * 0.1f;
 		if (m_pSize[i] < 0.f)
 			m_pSize[i] = 0.f;
-	
+		
+		pVertices[i].vGravity = m_pOriginalGravity[i] * (pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x);
 		_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc.vOffsetPos), 0.f);
-		/*pVertices[i].vGravity += fTimeDelta;*/
-	
-		pVertices[i].vTranslation.y -= pVertices[i].vGravity * fTimeDelta;
+		vDir -= XMVectorSet(0.f, pVertices[i].vGravity, 0.f, 0.f);
+
+	/*	pVertices[i].vTranslation.y -= pVertices[i].vGravity * fTimeDelta;*/
 	
 	
 		XMVECTOR vLook = XMVector3Normalize(vDir);

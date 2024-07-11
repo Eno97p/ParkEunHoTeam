@@ -74,6 +74,8 @@ public: /* For.Object_Manager */
 	HRESULT Add_Camera(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr); // 카메라 추가 시 이 함수 불러야됨
 	void Set_MainCamera(_uint iCameraIndex); // 카메라 전환 시 호출, 추가 순서가 인덱스
 	vector<class CCamera*> Get_Cameras();
+	CCamera* Get_MainCamera();
+
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);
@@ -104,6 +106,7 @@ public: /* For.PipeLine */
 
 public: /* For.Picking */	
 	_bool Get_PickPos(_float4* pPickPos);
+	void Update_Picking();
 
 public: /* For.Light_Manager */
 	const LIGHT_DESC* Get_LightDesc(_uint iIndex) const;
@@ -138,6 +141,7 @@ public:
 	_bool isIn_WorldFrustum(_fvector vPosition, _float fRange = 0.f);
 	_bool isIn_LocalFrustum(_fvector vPosition, _float fRange = 0.f);
 
+
 public: /*for Calculator*/
 	_vector Get_RayPos();					//마우스 레이와 충돌하기 위한 함수들임
 	_vector Get_RayDir();					
@@ -148,6 +152,7 @@ public: /*for Calculator*/
 public:		//for Event_Manager
 	HRESULT EventUpdate();				//메인 앱에서 렌더함수 끝나고 호출
 	void CreateObject(_uint Level, const wchar_t* Layer, const wstring& strPrototypeTag, void* pArg = nullptr); // 동적으로 객체 생성하는 기능
+	void CreateObject_Self(_uint Level, const wchar_t* Layer, class CGameObject* pObj); //뭔가 동작을 해주고 만들어야 할 때
 	void Erase(CGameObject* _pObj); //동적으로 객체 삭제하는 기능
 
 public: /* For PhysX */
@@ -165,9 +170,11 @@ public: // Sound Mgr
 public:	//for UISorter 박은호
 	HRESULT Add_UI(class CGameObject* ui, UISORT_PRIORITY type);
 
-//이민영 추가 240622 1804PM
-public: // For Camera
-	
+//이민영 추가 240710 2204PM
+public: // For OctTree
+	_bool IsVisibleObject(CGameObject* obj);
+	_bool isVisible(_vector vPos, PxActor* actor);
+	void AddCullingObject(CGameObject* obj, PxActor* pActor);
 
 #ifdef _DEBUG
 public:
@@ -195,6 +202,9 @@ private:
 
 	class CSoundMgr*				m_pSound_Manager = { nullptr };
 	class CUISorter*				m_UISorter = { nullptr };
+
+
+	class COctTree*				m_pOctTree = { nullptr };
 public:	
 	static void Release_Engine();
 	virtual void Free() override;

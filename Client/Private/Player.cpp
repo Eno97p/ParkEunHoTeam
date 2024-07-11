@@ -366,7 +366,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_bParry)
+	if (m_bParry && m_iState != STATE_COUNTER)
 	{
 		fSlowValue = 0.2f;
 		if (m_fSlowDelay <= 0.2f)

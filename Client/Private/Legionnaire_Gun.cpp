@@ -6,6 +6,8 @@
 #include "Weapon_Sword_LGGun.h"
 #include "Weapon_Arrow_LGGun.h"
 
+#include "UIGroup_MonsterHP.h"
+
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -28,7 +30,7 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 1.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_iCurHp = 100;
+	m_fCurHp = 100.f;
 	m_iState = STATE_IDLE;
 
 	if (FAILED(__super::Initialize(pDesc)))
@@ -44,6 +46,8 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
+
+	Create_UI();
 
 	return S_OK;
 }
@@ -68,6 +72,7 @@ void CLegionnaire_Gun::Priority_Tick(_float fTimeDelta)
 		if (m_fArrowLifeTime < 0.f)
 		{
 			m_pGameInstance->Erase(m_pArrow);
+			m_pArrow = nullptr;
 			m_fArrowLifeTime = 3.f;
 		}
 	}
@@ -88,29 +93,36 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부
-	if (m_eColltype == CCollider::COLL_NOCOLL)
+	if (!m_pArrow || (m_pArrow && m_eColltype == CCollider::COLL_NOCOLL))
 	{
 		CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-		if (pPlayerWeapon->Get_Active())
+		
+		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+		if (!pPlayerWeapon->Get_Active())
 		{
-			m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+			m_eColltype = CCollider::COLL_NOCOLL;
 		}
 	}
-	
-	if (m_eColltype == CCollider::COLL_NOCOLL && m_pArrow)
+
+	if (m_pArrow)
 	{
 		CWeapon_Arrow_LGGun* pReversedArrow = m_pArrow;
 		if (m_pArrow->Get_IsParried())
 		{
 			m_eColltype = m_pColliderCom->Intersect(m_pArrow->Get_Collider());
-			if (m_eColltype != CCollider::COLL_NOCOLL)
+			if (m_eColltype == CCollider::COLL_START)
 			{
 				m_pGameInstance->Erase(m_pArrow);
+				m_pArrow = nullptr;
+				m_fArrowLifeTime = 3.f;
 			}
 		}
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
+
+	Update_UI(-0.3f);
+	m_pUI_HP->Tick(fTimeDelta);
 }
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
@@ -118,6 +130,8 @@ void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
+	m_pUI_HP->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -250,8 +264,8 @@ HRESULT CLegionnaire_Gun::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CLegionnaire_Gun::Idle, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CLegionnaire_Gun::Dead, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CLegionnaire_Gun::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CLegionnaire_Gun::Hit, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CLegionnaire_Gun::Parried, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("MeleeAttack"), bind(&CLegionnaire_Gun::MeleeAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("GunAttack"), bind(&CLegionnaire_Gun::GunAttack, this, std::placeholders::_1));
@@ -293,13 +307,52 @@ NodeStates CLegionnaire_Gun::Dead(_float fTimedelta)
 	}
 }
 
+NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
+{
+	switch (m_eColltype)
+	{
+	case CCollider::COLL_START:
+		m_iState = STATE_HIT;
+		Add_Hp(-10);
+		return RUNNING;
+		break;
+	case CCollider::COLL_CONTINUE:
+		m_iState = STATE_HIT;
+		return RUNNING;
+		break;
+	case CCollider::COLL_FINISH:
+		m_iState = STATE_HIT;
+		break;
+	case CCollider::COLL_NOCOLL:
+		break;
+	}
+
+	if(m_iState == STATE_HIT)
+
+	if (m_iState == STATE_HIT)
+	{
+		if (m_isAnimFinished)
+		{
+			m_eColltype = CCollider::COLL_NOCOLL;
+			Set_Idle();
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+
+	return FAILURE;
+}
+
 NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 {
 	if (static_cast<CWeapon*>(m_PartObjects[1])->Get_Active() && !m_pArrow)
 	{
 		list<CGameObject*> ArrowList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Arrow"));
 		m_pArrow = dynamic_cast<CWeapon_Arrow_LGGun*>(ArrowList.back());
-		Safe_AddRef(m_pArrow);
+		//Safe_AddRef(m_pArrow);
 	}
 
 	if (dynamic_cast<CWeapon_Sword_LGGun*>(m_PartObjects[2])->Get_IsParried() && m_iState != STATE_PARRIED)
@@ -324,35 +377,6 @@ NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 	{
 		return FAILURE;
 	}
-}
-
-NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
-{
-	switch (m_eColltype)
-	{
-	case CCollider::COLL_START:
-		m_iState = STATE_HIT;
-		Add_Hp(-10);
-		return RUNNING;
-		break;
-	case CCollider::COLL_CONTINUE:
-		m_iState = STATE_HIT;
-		return RUNNING;
-		break;
-	case CCollider::COLL_FINISH:
-		m_iState = STATE_HIT;
-		break;
-	case CCollider::COLL_NOCOLL:
-		break;
-	}
-
-	if (m_iState == STATE_HIT && m_isAnimFinished)
-	{
-		Set_Idle();
-		return SUCCESS;
-	}
-
-	return FAILURE;
 }
 
 NodeStates CLegionnaire_Gun::GunAttack(_float fTimedelta)
@@ -521,8 +545,8 @@ NodeStates CLegionnaire_Gun::Idle(_float fTimeDelta)
 
 void CLegionnaire_Gun::Add_Hp(_int iValue)
 {
-	m_iCurHp = min(m_iMaxHp, max(0, m_iCurHp + iValue));
-	if (m_iCurHp == 0)
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0.f)
 	{
 		m_iState = STATE_DEAD;
 	}

@@ -99,7 +99,7 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
 	if(OwnDesc->SuperDesc.IsBlur)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -241,7 +241,6 @@ CGameObject * CParticle_Rect::Clone(void * pArg)
 void CParticle_Rect::Free()
 {
 	__super::Free();
-
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Delete(OwnDesc);

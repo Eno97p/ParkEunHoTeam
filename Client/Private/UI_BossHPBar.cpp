@@ -19,16 +19,20 @@ HRESULT CUI_BossHPBar::Initialize_Prototype()
 
 HRESULT CUI_BossHPBar::Initialize(void* pArg)
 {
+	UI_BOSSHPBAR_DESC* pDesc = static_cast<UI_BOSSHPBAR_DESC*>(pArg);
+
+	wcscpy_s(m_wszBossName, pDesc->wszBossName);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 390.f;
-	m_fY = 45.f;
-	m_fSizeX = 768.f;
-	m_fSizeY = 24.f;
+	m_fX = (g_iWinSizeX >> 1) + 50.f;
+	m_fY = g_iWinSizeY - 100.f;
+	m_fSizeX = 1265.3f; // 2048
+	m_fSizeY = 128.f; // 128
 
 	Setting_Position();
 
@@ -56,6 +60,10 @@ HRESULT CUI_BossHPBar::Render()
 	m_pShaderCom->Begin(0);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	// Render m_wszBossName
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wszBossName, _float2(m_fX - 330.f, m_fY - 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }

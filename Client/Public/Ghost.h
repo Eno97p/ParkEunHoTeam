@@ -44,8 +44,8 @@ private:
 
 private:
 	NodeStates			Dead(_float fTimeDelta);
-	NodeStates			Parried(_float fTimeDelta);
 	NodeStates			Hit(_float fTimeDelta);
+	NodeStates			Parried(_float fTimeDelta);
 
 	NodeStates			Default_Attack(_float fTimeDelta);
 	NodeStates			Down_Attack(_float fTimeDelta);

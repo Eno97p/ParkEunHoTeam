@@ -83,7 +83,11 @@ void CMantari::Tick(_float fTimeDelta)
 	// 플레이어 무기와 몬스터의 충돌 여부
 
 	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-	if (pPlayerWeapon->Get_Active())
+	if (!pPlayerWeapon->Get_Active())
+	{
+		m_eColltype = CCollider::COLL_NOCOLL;
+	}
+	else
 	{
 		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
@@ -114,8 +118,7 @@ HRESULT CMantari::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
-	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vExtents = _float3(0.7f, 1.7f, 0.7f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -207,8 +210,8 @@ HRESULT CMantari::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CMantari::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CMantari::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMantari::Dead, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMantari::Hit, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CMantari::Parried, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CMantari::JumpAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack"), bind(&CMantari::Attack, this, std::placeholders::_1));
@@ -273,32 +276,6 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 	}
 }
 
-NodeStates CMantari::Parried(_float fTimeDelta)
-{
-	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
-	{
-		m_iState = STATE_PARRIED;
-	}
-
-	if (m_iState == STATE_PARRIED)
-	{
-		if (m_isAnimFinished)
-		{
-			dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Set_IsParried(false);
-			m_iState = STATE_IDLE;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
-}
-
 NodeStates CMantari::Hit(_float fTimeDelta)
 {
 	
@@ -338,6 +315,32 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	}
 
 	return FAILURE;
+}
+
+NodeStates CMantari::Parried(_float fTimeDelta)
+{
+	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
+	{
+		m_iState = STATE_PARRIED;
+	}
+
+	if (m_iState == STATE_PARRIED)
+	{
+		if (m_isAnimFinished)
+		{
+			dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Set_IsParried(false);
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+	else
+	{
+		return FAILURE;
+	}
 }
 
 NodeStates CMantari::JumpAttack(_float fTimeDelta)

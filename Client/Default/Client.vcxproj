@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Client_Macro.h" />
     <ClInclude Include="..\Public\Clone.h" />
     <ClInclude Include="..\Public\CorruptedSword.h" />
+    <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\Public\Distortion.h" />
     <ClInclude Include="..\Public\DurgaSword.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
@@ -338,6 +339,7 @@
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\CorruptedSword.cpp" />
+    <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />
     <ClCompile Include="..\Private\DurgaSword.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />

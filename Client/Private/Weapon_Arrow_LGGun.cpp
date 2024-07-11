@@ -62,9 +62,9 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	_float4 fPos;
 	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-#ifdef _DEBUG
+
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-#endif
+
 	if (!m_bIsParried)
 	{
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());

@@ -65,6 +65,10 @@
 #include "Item.h"
 #pragma endregion ITEM
 
+#pragma region DECAL
+#include "Decal.h"
+#pragma endregion DECAL
+
 #include "Map_Element.h"
 #include "Passive_Element.h"
 #include "Passive_Element.h"
@@ -665,6 +669,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Item/Item.fbx", PreTransformMatrix))))
 		return E_FAIL;
 #pragma endregion ITEM
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Decal"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Decal/Decal.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma region DECAL
+
+
+#pragma endregion DECAL
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
@@ -1036,6 +1048,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CItem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ITEM
+
+#pragma region DECAL
+	/* For.Prototype_GameObject_Decal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Decal"),
+		CDecal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion DECAL
 
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),

@@ -56,8 +56,8 @@ private:
 
 private:
 	NodeStates			Dead(_float fTimeDelta);
-	NodeStates			Parried(_float fTimeDelta);
 	NodeStates			Hit(_float fTimeDelta);
+	NodeStates			Parried(_float fTimeDelta);
 	
 	NodeStates			GunAttack(_float fTimeDelta);
 	NodeStates			MeleeAttack(_float fTimeDelta);

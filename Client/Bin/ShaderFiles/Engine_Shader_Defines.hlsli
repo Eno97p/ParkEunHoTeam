@@ -77,6 +77,17 @@ BlendState		BS_AlphaBlend
 	BlendOp = Add;
 };
 
+BlendState BS_ParticleBlend
+{
+    BlendEnable[0] = true;
+    BlendEnable[1] = true;
+
+    SrcBlend = Src_Alpha;
+    DestBlend = Inv_Src_Alpha;
+    BlendOp = Add;
+    BlendOpAlpha = Add;
+};
+
 BlendState		BS_Blend
 {
 	BlendEnable[0] = true;

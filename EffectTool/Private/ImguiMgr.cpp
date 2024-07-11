@@ -174,6 +174,13 @@ void CImguiMgr::EffectTool_Rework()
 		}
 		ChangedDesc = false;
 	}
+	else
+	{
+		PointDesc.Texture = m_pTextureProtoName;
+		PointDesc.TexturePath = m_pTextureFilePath;
+		RectDesc.Texture = m_pTextureProtoName;
+		RectDesc.TexturePath = m_pTextureFilePath;
+	}
 
 
 
@@ -314,8 +321,6 @@ void CImguiMgr::EffectTool_Rework()
 	switch (eParticleType)
 	{
 	case PARTICLETYPE::PART_POINT:
-		PointDesc.Texture = m_pTextureProtoName;
-		PointDesc.TexturePath = m_pTextureFilePath;
 		PointDesc.SuperDesc = parentsDesc;
 		value2 = &PointDesc;
 		break;
@@ -324,8 +329,6 @@ void CImguiMgr::EffectTool_Rework()
 		value2 = &MeshDesc;
 		break;
 	case PARTICLETYPE::PART_RECT:
-		RectDesc.Texture = m_pTextureProtoName;
-		RectDesc.TexturePath = m_pTextureFilePath;
 		RectDesc.SuperDesc = parentsDesc;
 		value2 = &RectDesc;
 		break;

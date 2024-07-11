@@ -39,6 +39,7 @@ void CFrustum::Update()
 	Make_Planes(m_vWorldPoints, m_vWorldPlanes);
 
 	m_fTotalTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
+
 }
 
 void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

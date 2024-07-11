@@ -152,6 +152,7 @@ public: /*for Calculator*/
 public:		//for Event_Manager
 	HRESULT EventUpdate();				//메인 앱에서 렌더함수 끝나고 호출
 	void CreateObject(_uint Level, const wchar_t* Layer, const wstring& strPrototypeTag, void* pArg = nullptr); // 동적으로 객체 생성하는 기능
+	void CreateObject_Self(_uint Level, const wchar_t* Layer, class CGameObject* pObj); //뭔가 동작을 해주고 만들어야 할 때
 	void Erase(CGameObject* _pObj); //동적으로 객체 삭제하는 기능
 
 public: /* For PhysX */

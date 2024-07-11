@@ -192,7 +192,7 @@ void CObject_Manager::Priority_Tick(_float fTimeDelta)
 			Pair.second->Priority_Tick(fTimeDelta);
 	}
 
-
+	
 }
 
 void CObject_Manager::Tick(_float fTimeDelta)

@@ -159,7 +159,6 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (g_bEmissive) Out.vEmissive = vEmissive;
 	if (g_bRoughness) Out.vRoughness = vRoughness;
 	if (g_bMetalic) Out.vMetalic = vMetalic;
-
 	return Out;
 }
 
@@ -313,25 +312,25 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 	return Out;
 }
 
-struct PS_OUT_DISTORTION
+struct PS_OUT_COLOR
 {
-	vector		vDistortion : SV_TARGET0;
+	vector		vColor : SV_TARGET0;
 };
 
-PS_OUT_DISTORTION PS_DISTORTION(PS_IN In)
+PS_OUT_COLOR PS_DISTORTION(PS_IN In)
 {
-	PS_OUT_DISTORTION Out = (PS_OUT_DISTORTION)0;
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
 
-	vector vDistortion = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-	if (vDistortion.a < 0.1f)
+	if (vColor.a < 0.1f)
 		discard;
 
-	if (g_bDiffuse) Out.vDistortion = vDistortion;
+	if (g_bDiffuse) Out.vColor = vColor;
 
 	if (g_Hit)
 	{
-		Out.vDistortion = float4(1.f, 0.f, 0.f, 0.3f);
+		Out.vColor = float4(1.f, 0.f, 0.f, 0.3f);
 	}
 
 	return Out;
@@ -379,6 +378,23 @@ PS_OUT PS_DISOLVE(PS_IN In)
 	{
 		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
 	}
+
+	return Out;
+}
+
+PS_OUT_COLOR PS_BLUR(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vDiffuse.a *= vOpacity.r;
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vDiffuse;
 
 	return Out;
 }
@@ -496,5 +512,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_DISOLVE();
+	}
+
+	pass Blur_8
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLUR();
 	}
 }

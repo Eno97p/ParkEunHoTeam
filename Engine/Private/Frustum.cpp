@@ -37,6 +37,9 @@ void CFrustum::Update()
 		XMStoreFloat4(&m_vWorldPoints[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
 
 	Make_Planes(m_vWorldPoints, m_vWorldPlanes);
+
+
+	
 }
 
 void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

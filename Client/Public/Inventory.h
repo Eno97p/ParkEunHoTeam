@@ -22,6 +22,10 @@ public:
 	virtual ~CInventory() = default;
 
 public:
+	CItemData*			Get_ItemData(_uint iSlotIdx);
+	_uint				Get_vecItemSize() { return m_vecItem.size(); }
+
+public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);
 

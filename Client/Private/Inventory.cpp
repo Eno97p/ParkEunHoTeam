@@ -1,6 +1,7 @@
 #include "Inventory.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "Player.h"
 #include "ItemData.h"
 #include "UIGroup_DropItem.h"
@@ -11,6 +12,15 @@ CInventory::CInventory()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
+}
+
+CItemData* CInventory::Get_ItemData(_uint iSlotIdx)
+{
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++item;
+
+	return (*item);
 }
 
 HRESULT CInventory::Initialize()
@@ -42,6 +52,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	// 여기서 UI Manager로 접근하여 UIGroup Inventory를 갱신?
+	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
 
 	return S_OK;
 }

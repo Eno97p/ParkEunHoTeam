@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 #include "CMouse.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup.h"
@@ -62,6 +63,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pSelectFrame)
 		m_pSelectFrame->Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Tick(fTimeDelta);
 }
 
 void CUI_Slot::Late_Tick(_float fTimeDelta)
@@ -70,6 +74,9 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pSelectFrame && m_isSelect)
 		m_pSelectFrame->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -150,7 +157,7 @@ HRESULT CUI_Slot::Create_Frame()
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Create_ItemIcon()
+HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 대한 작용인지 받아올 것?
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -159,8 +166,8 @@ HRESULT CUI_Slot::Create_ItemIcon()
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
-	//pDesc.wszTexture = wstrTextureName; // Inventory로부터 받아와서 적용
-
+	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	return S_OK;
 }

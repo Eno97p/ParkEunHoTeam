@@ -62,6 +62,20 @@ void CUIGroup_Inventory::Tick(_float fTimeDelta)
 		if (isRender_End)
 			m_isRend = false;
 	}
+
+	for (auto& pSlot : m_vecSlot)
+	{
+		if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+		{
+			pSlot->Resset_Animation(true);
+		}
+		else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+		{
+			pSlot->Resset_Animation(false);
+		}
+
+		pSlot->Tick(fTimeDelta);
+	}
 }
 
 void CUIGroup_Inventory::Late_Tick(_float fTimeDelta)
@@ -70,12 +84,25 @@ void CUIGroup_Inventory::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pSlot : m_vecSlot)
+			pSlot->Late_Tick(fTimeDelta);
 	}
 }
 
 HRESULT CUIGroup_Inventory::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
+{
+	// Create_ItemIcon
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon(iSlotIdx);
 }
 
 HRESULT CUIGroup_Inventory::Create_UI()
@@ -131,7 +158,7 @@ HRESULT CUIGroup_Inventory::Create_Slot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_INV;
 			pDesc.eUISort = NINETH;
-			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -170,4 +197,9 @@ void CUIGroup_Inventory::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+	m_vecUI.clear();
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
+	m_vecSlot.clear();
 }

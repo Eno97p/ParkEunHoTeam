@@ -29,6 +29,8 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	HRESULT			Create_ItemIcon(_uint iSlotIdx);
+
 private:
 	UISORT_PRIORITY		m_eUISort = { SORT_END };
 	SLOT_TYPE			m_eSlotType = { SLOT_END };
@@ -41,7 +43,6 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Frame();
-	HRESULT	Create_ItemIcon();
 
 	void	Open_SubPage();
 

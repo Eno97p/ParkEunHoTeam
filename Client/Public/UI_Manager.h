@@ -24,7 +24,6 @@ public:
 
 	CUIGroup*			Get_UIGroup(string strKey);
 
-public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
 public:
@@ -33,6 +32,10 @@ public:
 	void				Late_Tick(_float fTimeDelta);
 
 	void				Render_UIGroup(_bool isRender, string strKey);
+
+	//UIGroup_Inventory의 Slot에 Create Icon을 해주어야 하는 상황
+	// 인벤토리의 해당 index를 넘겨주어 거기에 해당하는 slot에다가 처리하도록?
+	void				Update_Inventory_Add(_uint iSlotIdx);
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

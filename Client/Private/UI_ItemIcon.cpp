@@ -51,7 +51,7 @@ void CUI_ItemIcon::Tick(_float fTimeDelta)
 
 void CUI_ItemIcon::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, SECOND);
+	CGameInstance::GetInstance()->Add_UI(this, ELEVENTH); // SECOND
 }
 
 HRESULT CUI_ItemIcon::Render()

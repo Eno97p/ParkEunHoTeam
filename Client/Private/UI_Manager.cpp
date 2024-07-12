@@ -68,6 +68,14 @@ void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
 	(*uigroup).second->Set_Rend(isRender);
 }
 
+void CUI_Manager::Update_Inventory_Add(_uint iSlotIdx)
+{
+	map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+	// Update_Inventory_Add
+	dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Update_Inventory_Add(iSlotIdx);
+
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

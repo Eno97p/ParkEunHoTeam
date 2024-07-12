@@ -62,6 +62,9 @@
 #include "C:\Real3DProject\Engine\private\CUserErrorCallBack.cpp"
 
 
+#include "C:\Real3DProject\Engine\private\CWorker.cpp"
+
+
 #include "C:\Real3DProject\Engine\private\OctTree.cpp"
 
 

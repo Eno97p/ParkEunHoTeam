@@ -89,7 +89,7 @@ HRESULT CUI_Slot::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if (m_isSelect)
+	if (m_isSelect && nullptr != m_pItemIcon)
 		Render_Font();
 
 	return S_OK;

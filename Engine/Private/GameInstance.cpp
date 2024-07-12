@@ -21,7 +21,7 @@
 
 #include "OctTree.h"
 
-
+#include"CWorker.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -115,13 +115,25 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_UISorter)
 		return E_FAIL;
 
-	D3D11_QUERY_DESC desc;
-	desc.Query = D3D11_QUERY_OCCLUSION;
+
 
 	m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
 	if (nullptr == m_pOctTree)
 		return E_FAIL;
 	
+
+
+
+	size_t iNumThreadPool = PxThread::getNbPhysicalCores() - 1;
+
+	m_pWorker = CWorker::Create(iNumThreadPool);
+	if (nullptr == m_pWorker)
+		return E_FAIL;
+
+	
+
+
+
 	return S_OK;
 
 	
@@ -134,35 +146,54 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	if (nullptr == m_pLevel_Manager)
 		return;
 
-	//PROFILE_SCOPE("Input Device Update");
 	PROFILE_CALL("Input Device Update", m_pInput_Device->Update_InputDev());
-	
-	//PROFILE_SCOPE("Object Manager Priority Tick");
-	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
+	vector<future<void>> futures;
+
+	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+		PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
+		}));
+	//PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
 	
-	//PROFILE_SCOPE("Object Manager Tick");
+
+	
+
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+	//	}));
+
 	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
-	
+
 
 	
-	//PROFILE_SCOPE("PipeLine Tick");
+
+	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+		PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+		}));
+
+	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+
+
+	for (auto& worker : futures)
+	{
+		worker.get();
+	}
+
+
+
+
+
 	PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 	
 
-	
-	//PROFILE_SCOPE("PhysX Tick");
-	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	
+
 
 	
-	//PROFILE_SCOPE("Frustum Tick");
 	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
 
 	
-	//PROFILE_SCOPE("Calculator Tick");
 	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
 
@@ -178,18 +209,14 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 
 	
-	//PROFILE_SCOPE("Object Manager Late_Tick");
 	PROFILE_CALL("Object Manager Late_Tick", m_pObject_Manager->Late_Tick(fTimeDelta));
 	
 
 
-	//PROFILE_SCOPE("Level Manager Tick");
 	PROFILE_CALL("Level Manager Tick", m_pLevel_Manager->Tick(fTimeDelta));
 	
-	//PROFILE_SCOPE("Level Manager Late_Tick");
 	PROFILE_CALL("Level Manager Late_Tick",m_pLevel_Manager->Late_Tick(fTimeDelta));
 	
-	//PROFILE_SCOPE("UISorting Tick");
 	PROFILE_CALL("UISorting Tick",m_UISorter->Sorting());
 
 }
@@ -750,6 +777,14 @@ void CGameInstance::AddCullingObject(CGameObject* obj, PxActor* pActor)
 	m_pOctTree->AddObject(obj, pActor);
 }
 
+template<typename T, typename... Args>
+void CGameInstance::AddWork(T&& Func, Args&&... args)
+{
+	m_pWorker->Add_Job(Func, args...);
+}
+
+
+
 #ifdef _DEBUG
 
 HRESULT CGameInstance::Ready_RTDebug(const wstring & strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
@@ -794,7 +829,7 @@ void CGameInstance::Free()
 	Safe_Release(m_UISorter);
 
 	Safe_Release(m_pOctTree);
-
+	Safe_Release(m_pWorker);
 
 
 

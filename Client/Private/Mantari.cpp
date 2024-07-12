@@ -11,6 +11,9 @@
 
 #include "UIGroup_BossHP.h"
 
+
+
+
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -54,6 +57,10 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
+
+
+
+
 	return S_OK;
 }
 
@@ -77,11 +84,20 @@ void CMantari::Tick(_float fTimeDelta)
 {
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
+
+	
+
 	m_pBehaviorCom->Update(fTimeDelta);
+
+
+
+
+
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
+	
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부

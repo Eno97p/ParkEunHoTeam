@@ -224,7 +224,7 @@ HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
-	//m_pController->move(PxVec3(0,0,1),)
+
 
 	return S_OK;
 }
@@ -321,8 +321,8 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
-
-
+	
+	
 	if (flags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 	{
 		m_bIsJump = false;

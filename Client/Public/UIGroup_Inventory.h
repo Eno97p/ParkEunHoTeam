@@ -20,8 +20,11 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Update_Inventory_Add(_uint iSlotIdx);
+
 private:
 	vector<CUI*>			m_vecUI;
+	vector<CUI_Slot*>		m_vecSlot;
 
 private:
 	HRESULT					Create_UI();

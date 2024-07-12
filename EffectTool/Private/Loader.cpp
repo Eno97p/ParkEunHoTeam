@@ -13,6 +13,7 @@
 #include "TextureFrame.h"
 #include "WhisperSword_Anim.h"
 #include "Particle_STrail.h"
+#include "Distortion_Effect.h"
 
 
 
@@ -266,6 +267,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FrameTexture"),
 		CTextureFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Distortion_Effect"),
+		CDistortionEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

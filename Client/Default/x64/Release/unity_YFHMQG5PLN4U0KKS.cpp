@@ -48,6 +48,9 @@
 #include "C:\Tlqkf\Client\Private\CorruptedSword.cpp"
 
 
+#include "C:\Tlqkf\Client\Private\Decal.cpp"
+
+
 #include "C:\Tlqkf\Client\Private\Distortion.cpp"
 
 
@@ -99,7 +102,13 @@
 #include "C:\Tlqkf\Client\Private\ImGUi\imgui_widgets.cpp"
 
 
+#include "C:\Tlqkf\Client\Private\Inventory.cpp"
+
+
 #include "C:\Tlqkf\Client\Private\Item.cpp"
+
+
+#include "C:\Tlqkf\Client\Private\ItemData.cpp"
 
 
 #include "C:\Tlqkf\Client\Private\Juggulus_Hammer.cpp"
@@ -130,6 +139,18 @@
 
 
 #include "C:\Tlqkf\Client\private\Level_Logo.cpp"
+
+
+#include "C:\Tlqkf\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\Tlqkf\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\Tlqkf\Client\Private\UI_DropItemBG.cpp"
+
+
+#include "C:\Tlqkf\Client\Private\UI_MonsterHPBar.cpp"
 
 
 #include "C:\Tlqkf\Client\Private\Weapon_Arrow_LGGun.cpp"

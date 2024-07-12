@@ -13,13 +13,21 @@ class CCollider;
 END
 
 BEGIN(Client)
+class CPlayer;
 
 class CItem final : public CGameObject
 {
+public:
+	// 드랍템에 한정함
+	enum ITEM_NAME { ITEM_BUFF1 = 0, ITEM_BUFF2, ITEM_BUFF3, ITEM_BUFF4, ITEM_SOUL, ITEM_ESSENCE, ITEM_ETHER, ITEM_UPGRADE1, ITEM_UPGRADE2, ITEM_END };
+
 private:
 	CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CItem(const CItem& rhs);
 	virtual ~CItem() = default;
+
+public:
+	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -42,6 +50,8 @@ private:
 	CCollider* m_pColliderCom = { nullptr };
 
 	CPlayer* m_pPlayer = { nullptr };
+
+	ITEM_NAME	m_eItemName = { ITEM_END };
 
 public:
 	HRESULT Add_Components();

@@ -27,6 +27,7 @@ private:
 	class CMonster*		m_pMonster = { nullptr }; // Boss·Î º¯°æ
 	_float				m_fCurrentRatio = 1.f;
 	_float				m_fPastRatio = 1.f;
+	_float m_fHudRatio = 0.55f;
 
 private:
 	HRESULT	Add_Components();

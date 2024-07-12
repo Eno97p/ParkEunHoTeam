@@ -11,6 +11,9 @@
 
 #include "UIGroup_BossHP.h"
 
+
+
+
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -48,11 +51,15 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
+
+
+
+
 
 	return S_OK;
 }
@@ -77,11 +84,20 @@ void CMantari::Tick(_float fTimeDelta)
 {
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
+
+	
+
 	m_pBehaviorCom->Update(fTimeDelta);
+
+
+
+
+
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
+	
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부

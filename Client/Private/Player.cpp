@@ -262,6 +262,20 @@ void CPlayer::PlayerHit(_float fValue)
 	Add_Hp(-fValue);
 }
 
+void CPlayer::Parry_Succeed()
+{
+	_float4x4 WeaponMat = *static_cast<CPartObject*>(m_PartObjects[1])->Get_Part_Mat();
+	_float4 vParticlePos = { WeaponMat._41,WeaponMat._42,WeaponMat._43,1.f };
+	_float4 PlayerPos;
+	XMStoreFloat4(&PlayerPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	PlayerPos.y += 1.f;
+	EFFECTMGR->Generate_Distortion(0, PlayerPos);
+	EFFECTMGR->Generate_Particle(6, vParticlePos);
+	//EFFECTMGR->Generate_Particle(7, vParticlePos);
+	m_bParry = true;
+	m_bParrying = false;
+}
+
 HRESULT CPlayer::Add_Nodes()
 {
 	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);

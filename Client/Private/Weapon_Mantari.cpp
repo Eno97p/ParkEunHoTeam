@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 
+
 CWeapon_Mantari::CWeapon_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
 {
@@ -71,6 +72,7 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 		{
 			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
 			{
+
 				m_bIsParried = true;
 				m_pPlayer->Parry_Succeed();
 			}

@@ -23,6 +23,9 @@
 #include "C:\Tlqkf\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\Tlqkf\EffectTool\Private\Distortion_Effect.cpp"
+
+
 #include "C:\Tlqkf\EffectTool\Private\ImguiMgr.cpp"
 
 

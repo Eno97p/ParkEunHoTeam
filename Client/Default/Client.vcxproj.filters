@@ -432,7 +432,7 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Item\DropItem\BG">
       <UniqueIdentifier>{eef70477-7e4f-4c87-aeaa-0e16eecf38b4}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\09. Decal">
       <UniqueIdentifier>{f8256433-8ec3-4da6-b973-98aef5a48e42}</UniqueIdentifier>
     </Filter>
@@ -886,9 +886,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_DropItemBG.h">
       <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02.GameObjects\09. Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h">
+      <Filter>02.GameObjects\06.Effect\Distortion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ItemIcon.h">
+      <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1320,9 +1326,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_DropItemBG.cpp">
       <Filter>02.GameObjects\07. UI\Item\DropItem\BG</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02.GameObjects\09. Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp">
+      <Filter>02.GameObjects\06.Effect\Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ItemIcon.cpp">
+      <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1393,6 +1405,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

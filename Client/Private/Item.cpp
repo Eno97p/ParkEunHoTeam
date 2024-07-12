@@ -39,6 +39,8 @@ HRESULT CItem::Initialize(void* pArg)
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 
+	m_eItemName = static_cast<ITEM_NAME>(rand() % ITEM_END); // 랜덤으로 아이템 종류 설정
+
 	return S_OK;
 }
 
@@ -67,16 +69,7 @@ void CItem::Tick(_float fTimeDelta)
 
 	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
 	{
-		// Inventory
-		// ItemData를 생성해서 Inventory에 넣어주고 Player는 Inventory를 참조해서(싱글톤) UI에 띄우거나 상호작용 등?
-		/*CItemData::DROPITEM_DESC pDesc{};
-		pDesc.isDropTem = true;
-		CInventory::GetInstance()->Add_Item(dynamic_cast<CItemData*>
-			(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));*/
-
-		CUIGroup_DropItem::UIGROUP_DESC pUIDesc{};
-		pUIDesc.eLevel = LEVEL_STATIC;
-		m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+		CInventory::GetInstance()->Add_DropItem(m_eItemName);
 
 		// 아이템 획득 로직
 		m_pGameInstance->Erase(this);
@@ -245,6 +238,8 @@ CGameObject* CItem::Clone(void* pArg)
 void CItem::Free()
 {
 	__super::Free();
+
+	m_pPlayer = nullptr;
 
 	Safe_Release(m_pTextureShaderCom);
 	Safe_Release(m_pTextureTransformCom);

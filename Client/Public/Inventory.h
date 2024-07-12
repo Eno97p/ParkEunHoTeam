@@ -3,6 +3,8 @@
 #include "Base.h"
 #include "Client_Defines.h"
 
+#include "Item.h"
+
 BEGIN(Engine)
 class CGameInstance;
 class CGameObject;
@@ -20,10 +22,14 @@ public:
 	virtual ~CInventory() = default;
 
 public:
+	CItemData*			Get_ItemData(_uint iSlotIdx);
+	_uint				Get_vecItemSize() { return m_vecItem.size(); }
+
+public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);
 
-	HRESULT	Add_Item(CItemData* pItemData);
+	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -31,6 +37,7 @@ private:
 
 private:
 	vector<class CItemData*>		m_vecItem;
+	// 무기, 서브무기 등 추가 필요
 
 public:
 	virtual void Free() override;

@@ -3,11 +3,20 @@
 #include "UIGroup.h"
 #include "Client_Defines.h"
 
+#include "ItemData.h"
+
 BEGIN(Client)
 class CUI;
 
 class CUIGroup_DropItem final : public CUIGroup
 {
+public:
+	typedef struct UIGroup_DropItem_Desc : public UIGROUP_DESC
+	{
+		CItemData::ITEM_NAME	eItemName;
+		wstring		wszTextureName;
+	}UIGROUP_DROPITEM_DESC;
+
 private:
 	CUIGroup_DropItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_DropItem(const CUIGroup_DropItem& rhs);
@@ -27,7 +36,7 @@ private:
 	vector<CUI*>			m_vecUI;
 
 private:
-	HRESULT					Create_UI();
+	HRESULT					Create_UI(CItemData::ITEM_NAME eItemName, wstring wstrTextureName);
 
 public:
 	static CUIGroup_DropItem*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

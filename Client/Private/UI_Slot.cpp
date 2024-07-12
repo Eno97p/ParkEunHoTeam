@@ -2,9 +2,11 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 #include "CMouse.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup.h"
+#include "UI_ItemIcon.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -54,13 +56,17 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+	if (m_isSelect)
 	{
-		Open_SubPage();
+		if(m_pGameInstance->Mouse_Down(DIM_LB))
+			Open_SubPage();		
 	}
 
 	if (nullptr != m_pSelectFrame)
 		m_pSelectFrame->Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Tick(fTimeDelta);
 }
 
 void CUI_Slot::Late_Tick(_float fTimeDelta)
@@ -69,6 +75,9 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pSelectFrame && m_isSelect)
 		m_pSelectFrame->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -79,6 +88,9 @@ HRESULT CUI_Slot::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (m_isSelect && nullptr != m_pItemIcon)
+		Render_Font();
 
 	return S_OK;
 }
@@ -149,6 +161,23 @@ HRESULT CUI_Slot::Create_Frame()
 	return S_OK;
 }
 
+HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 대한 작용인지 받아올 것?
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	// 이거 하는 순간 출력하려는 Item 정보 가지고 있도록 만들기?
+
+	return S_OK;
+}
+
 void CUI_Slot::Open_SubPage()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
@@ -158,6 +187,21 @@ void CUI_Slot::Open_SubPage()
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+	}
+}
+
+void CUI_Slot::Render_Font()
+{
+	if (SLOT_INV == m_eSlotType)
+	{
+		// 여기서 ItemIcon과 Item 정보들 출력?
+		// Title
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("Test Title"), _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+
+		// Explain >> 한글 폰트 뽑아서 새로 적용하긴 해야 함
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), TEXT("Test Explain"), _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
 	}
 }
 
@@ -191,5 +235,6 @@ void CUI_Slot::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectFrame);
 }

@@ -172,6 +172,10 @@ HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 
 	pDesc.fSizeY = 64.f;
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+	
+	//m_iSlotIdx = CInventory::GetInstance()->Get_vecItemSize() - 1; // ?
+	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
+	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
 	// 이거 하는 순간 출력하려는 Item 정보 가지고 있도록 만들기?
 
@@ -196,12 +200,12 @@ void CUI_Slot::Render_Font()
 	{
 		// 여기서 ItemIcon과 Item 정보들 출력?
 		// Title
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("Test Title"), _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wszItemName, _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return;
 
-		// Explain >> 한글 폰트 뽑아서 새로 적용하긴 해야 함
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), TEXT("Test Explain"), _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
-			return;
+		// Explain >> 한글 폰트 뽑아서 새로 적용하긴 해야 함 Font_HeirofLight13   Font_Cardo
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain, _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return; 
 	}
 }
 

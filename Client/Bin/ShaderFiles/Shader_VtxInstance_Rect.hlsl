@@ -157,7 +157,7 @@ technique11 DefaultTechnique
 
    pass BloomPass
    {
-      SetRasterizerState(RS_Default);
+      SetRasterizerState(RS_NoCull);
       SetDepthStencilState(DSS_Default, 0);
       SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

@@ -56,7 +56,7 @@ public:
 	_float Get_HpRatio() { return m_fCurHp / m_fMaxHp; }
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
-	void Parry_Succeed() { m_bParry = true; m_bParrying = false;}
+	void Parry_Succeed();
 
 private:
 	HRESULT Add_Nodes();

@@ -159,6 +159,7 @@
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Distortion_Effect.h" />
     <ClInclude Include="..\Public\Effect_Define.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

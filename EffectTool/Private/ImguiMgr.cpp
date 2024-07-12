@@ -91,7 +91,7 @@ void CImguiMgr::Visible_Data()
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
 
-	static _bool bShow[4] = { false,false,false,false };
+	static _bool bShow[6] = { false,false,false,false,false,false };
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -119,10 +119,13 @@ void CImguiMgr::Visible_Data()
 		FrameTextureTool();
 	}
 
-	ImGui::Checkbox("SwordTrailTest", &bShow[4]);
+	ImGui::Checkbox("SwordTrailTool", &bShow[4]);
 	if(bShow[4] == true)
 		SwordTrail_Tool();
 
+	ImGui::Checkbox("DistortionTool", &bShow[5]);
+	if (bShow[5] == true)
+		Distortion_Tool();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -1361,6 +1364,267 @@ HRESULT CImguiMgr::Load_SwordTrail()
 		string str(length, '\0');
 		NameFile.read(&str[0], length);
 		SwordTrailNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
+}
+
+void CImguiMgr::Distortion_Tool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Distortion_Editor");
+	static CDistortionEffect::DISTORTIONEFFECT DisDesc{};
+	if (!ChangedDistortion)
+	{
+		DisDesc.Texture = m_pTextureProtoName;
+		DisDesc.TexturePath = m_pTextureFilePath;
+	}
+	else
+	{
+		DisDesc.vStartpos = { 0.f,0.f,0.f,1.f };
+		ChangedDistortion = false;
+	}
+
+	ImGui::Checkbox("Extinct&Grow", &DisDesc.bFuncType);
+	ImGui::Checkbox("Desolve", &DisDesc.bDisolve);
+	if (DisDesc.bDisolve == true)
+	{
+		ImGui::InputInt("DesolveNum", &DisDesc.iDesolveNum);
+	}
+	ImGui::InputFloat2("StartScale", reinterpret_cast<float*>(&DisDesc.vStartScale));
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&DisDesc.vStartpos));
+	ImGui::InputFloat("Speed", &DisDesc.fSpeed);
+	ImGui::InputFloat("LifeTime", &DisDesc.fLifeTime);
+
+#pragma region BUTTONS
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (DisDesc.Texture == TEXT("") || DisDesc.TexturePath == TEXT(""))
+			MSG_BOX("텍스쳐를 선택해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(LEVEL_GAMEPLAY, TEXT("Layer_Distortion"),
+				TEXT("Prototype_GameObject_Distortion_Effect"), &DisDesc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Distortion"));
+	}
+
+	static char Names[256] = "";
+	ImGui::InputText("Name", Names, IM_ARRAYSIZE(Names));
+	if (ImGui::Button("Store", ImVec2(200,30)))
+	{
+		if (Names[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			StoreDistortion(Names, DisDesc);
+		}
+	}
+
+	if (ImGui::Button("Save", ImVec2(100, 30)))
+	{
+		if (FAILED(Save_Distortion()))
+			MSG_BOX("Failed_Save");
+		else
+			MSG_BOX("Succeed_Save");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ImVec2(100, 30)))
+	{
+		if (FAILED(Load_Distortion()))
+			MSG_BOX("Failed_Load");
+		else
+			MSG_BOX("Succeed_Load");
+	}
+
+#pragma endregion BUTTONS
+	Distortion_ListBox(&DisDesc);
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::StoreDistortion(char* Name, CDistortionEffect::DISTORTIONEFFECT distortion)
+{
+	string sName = Name;
+	shared_ptr<CDistortionEffect::DISTORTIONEFFECT> RawPtr = make_shared<CDistortionEffect::DISTORTIONEFFECT>(distortion);
+	m_Distortions.emplace_back(RawPtr);
+	DistortionNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Distortion_ListBox(CDistortionEffect::DISTORTIONEFFECT* distortion)
+{
+	if (m_Distortions.size() < 1)
+		return;
+	if (m_Distortions.size() != DistortionNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+	ImGui::Begin("Distortion_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+
+	if (ImGui::BeginListBox("Distortion_List", list_box_size))
+	{
+		for (int i = 0; i < DistortionNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(DistortionNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma region BUTTONS
+	if (current_item >= 0 && current_item < m_Distortions.size())
+	{
+		if (ImGui::Button("Add", ButtonSize))
+		{
+			m_pGameInstance->CreateObject(LEVEL_GAMEPLAY, TEXT("Layer_Distortion"),
+				TEXT("Prototype_GameObject_Distortion_Effect"), m_Distortions[current_item].get());
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*distortion = *m_Distortions[current_item].get();
+			ChangedDistortion = true;
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			shared_ptr<CDistortionEffect::DISTORTIONEFFECT> newItem = make_shared<CDistortionEffect::DISTORTIONEFFECT>(*distortion);
+			m_Distortions[current_item] = newItem;
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Distortions[current_item].reset();
+			m_Distortions.erase(m_Distortions.begin() + current_item);
+			DistortionNames.erase(DistortionNames.begin() + current_item);
+
+			if (current_item >= m_Distortions.size())
+				current_item = m_Distortions.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Distortions)
+				iter.reset();
+			m_Distortions.clear();
+			DistortionNames.clear();
+			current_item = 0;
+		}
+
+
+	}
+#pragma endregion BUTTONS
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Distortion()
+{
+	//CDistortionEffect::DISTORTIONEFFECT
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Distortion.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Distortions.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Distortions)
+	{
+		file.write((char*)&iter->bFuncType, sizeof(_bool));
+		file.write((char*)&iter->bDisolve, sizeof(_bool));
+		file.write((char*)&iter->iDesolveNum, sizeof(_int));
+		file.write((char*)&iter->vStartScale, sizeof(_float2));
+		file.write((char*)&iter->vStartpos, sizeof(_float4));
+		file.write((char*)&iter->fSpeed, sizeof(_float));
+		file.write((char*)&iter->fLifeTime, sizeof(_float));
+		save_wstring_to_stream(iter->Texture, file);
+		save_wstring_to_stream(iter->TexturePath, file);
+	}
+	file.close();
+
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Distortion.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : DistortionNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Distortion.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < DistortionNames.size(); ++i)
+	{
+		NumberFile << i << ". " << DistortionNames[i] << std::endl;
+	}
+	NumberFile.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Distortion()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Distortion.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Distortions)
+		iter.reset();
+	m_Distortions.clear();
+	DistortionNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		shared_ptr<CDistortionEffect::DISTORTIONEFFECT> readFile = make_shared<CDistortionEffect::DISTORTIONEFFECT>();
+		inFile.read((char*)&readFile->bFuncType, sizeof(_bool));
+		inFile.read((char*)&readFile->bDisolve, sizeof(_bool));
+		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
+		inFile.read((char*)&readFile->vStartScale, sizeof(_float2));
+		inFile.read((char*)&readFile->vStartpos, sizeof(_float4));
+		inFile.read((char*)&readFile->fSpeed, sizeof(_float));
+		inFile.read((char*)&readFile->fLifeTime, sizeof(_float));
+		readFile->Texture = load_wstring_from_stream(inFile);
+		readFile->TexturePath = load_wstring_from_stream(inFile);
+		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
+		m_Distortions.emplace_back(readFile);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Distortion.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		DistortionNames.emplace_back(str);
 	}
 	NameFile.close();
 

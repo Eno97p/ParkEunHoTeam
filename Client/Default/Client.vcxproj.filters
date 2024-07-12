@@ -890,6 +890,9 @@
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02.GameObjects\09. Decal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h">
+      <Filter>02.GameObjects\06.Effect\Distortion</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\UI_ItemIcon.h">
       <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
     </ClInclude>
@@ -1327,6 +1330,9 @@
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02.GameObjects\09. Decal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp">
+      <Filter>02.GameObjects\06.Effect\Distortion</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\UI_ItemIcon.cpp">
       <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
     </ClCompile>
@@ -1399,6 +1405,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

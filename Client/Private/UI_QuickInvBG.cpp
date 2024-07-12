@@ -62,6 +62,9 @@ HRESULT CUI_QuickInvBG::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	// Title / 내용 출력하기
+
+
 	return S_OK;
 }
 

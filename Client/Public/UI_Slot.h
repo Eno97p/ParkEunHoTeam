@@ -45,6 +45,7 @@ private:
 	HRESULT	Create_Frame();
 
 	void	Open_SubPage();
+	void	Render_Font();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

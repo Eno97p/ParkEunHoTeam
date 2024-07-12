@@ -56,9 +56,10 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+	if (m_isSelect)
 	{
-		Open_SubPage();
+		if(m_pGameInstance->Mouse_Down(DIM_LB))
+			Open_SubPage();		
 	}
 
 	if (nullptr != m_pSelectFrame)
@@ -87,6 +88,9 @@ HRESULT CUI_Slot::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (m_isSelect)
+		Render_Font();
 
 	return S_OK;
 }
@@ -169,6 +173,8 @@ HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
+	// 이거 하는 순간 출력하려는 Item 정보 가지고 있도록 만들기?
+
 	return S_OK;
 }
 
@@ -181,6 +187,21 @@ void CUI_Slot::Open_SubPage()
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+	}
+}
+
+void CUI_Slot::Render_Font()
+{
+	if (SLOT_INV == m_eSlotType)
+	{
+		// 여기서 ItemIcon과 Item 정보들 출력?
+		// Title
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("Test Title"), _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+
+		// Explain >> 한글 폰트 뽑아서 새로 적용하긴 해야 함
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), TEXT("Test Explain"), _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 100.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
 	}
 }
 

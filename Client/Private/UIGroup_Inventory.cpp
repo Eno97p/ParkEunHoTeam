@@ -61,20 +61,20 @@ void CUIGroup_Inventory::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
-	}
 
-	for (auto& pSlot : m_vecSlot)
-	{
-		if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+		for (auto& pSlot : m_vecSlot)
 		{
-			pSlot->Resset_Animation(true);
-		}
-		else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
-		{
-			pSlot->Resset_Animation(false);
-		}
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
 
-		pSlot->Tick(fTimeDelta);
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 }
 

@@ -367,9 +367,11 @@ HRESULT CRenderer::Initialize()
         float currentX = startX;
         float currentY = startY;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_BlurY"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DecalResult"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
+
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DecalResult"), currentX, currentY, targetWidth, targetHeight)))
         //   return E_FAIL;
@@ -738,10 +740,10 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
     
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
-        return;
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
     //    return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+        return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
@@ -1270,9 +1272,10 @@ void CRenderer::Render_Debug()
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample4x4_2"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample5x5"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Bloom"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_DecalResult"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+
 }
 
 #endif

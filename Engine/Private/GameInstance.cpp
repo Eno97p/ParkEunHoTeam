@@ -447,6 +447,11 @@ _vector CGameInstance::Get_ShadowFocus()
 	return m_pRenderer->Get_ShadowFocus();
 }
 
+ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
+{
+	return m_pRenderer->Get_PrevDepthTex();
+}
+
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
 	return m_pPipeLine->Get_Transform_float4x4(eState);
@@ -590,6 +595,11 @@ HRESULT CGameInstance::Bind_RenderTargetSRV_Compute(const wstring& strTargetTag,
 HRESULT CGameInstance::Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D * pDesc)
 {
 	return m_pTarget_Manager->Copy_Resource(strTargetTag, pDesc);	
+}
+
+_float CGameInstance::Sample_HZB(_float2 uv, UINT mipLevel)
+{
+	return m_pRenderer->Sample_HZB(uv, mipLevel);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

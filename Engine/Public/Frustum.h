@@ -22,6 +22,14 @@ public:
 	_bool isIn_LocalFrustum(_fvector vPosition, _float fRange);
 
 	_bool isVisible(_vector vPos, PxActor* actor);
+	
+	//void SetHZBResource(ID3D11ShaderResourceView** pHZBSRV, UINT mipLevels)
+	//{
+	//	m_pHZBSRV = pHZBSRV;
+	//	m_HZBMipLevels = mipLevels;
+	//}
+	float SampleHZB(ID3D11ShaderResourceView* pHZBSRV, float x, float y, UINT level);
+
 private:
 	struct ObjectVisibilityInfo
 	{

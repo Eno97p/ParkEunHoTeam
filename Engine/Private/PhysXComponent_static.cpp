@@ -71,9 +71,14 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 
 	m_pActor = m_pGameInstance->GetPhysics()->createRigidStatic(pxTrans);
 	m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(0.5f, 0.5f, 0.5f);
+	PxTriangleMeshGeometry triGeom;
+	PxMeshScale TriangleScale;
 	for (auto& TriangleMesh : m_pTriangleMesh)
 	{
-		PxTriangleMeshGeometry triGeom(TriangleMesh, PxMeshScale(PxVec3(fScale.x, fScale.y, fScale.z)));
+		TriangleScale.scale = PxVec3(fScale.x, fScale.y, fScale.z);
+		triGeom.triangleMesh = TriangleMesh;
+		triGeom.scale = TriangleScale;
+		//(TriangleMesh, PxMeshScale(PxVec3(fScale.x, fScale.y, fScale.z)));
 		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial);
 		m_pActor->attachShape(*shape);
 		shape->release();

@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "Client_Defines.h"
 
+#include "Item.h"
+
 BEGIN(Engine)
 
 END
@@ -20,19 +22,18 @@ public:
 		ITEMNAME_OPH, ITEMNAME_ETHERBOLT, ITEMNAME_AEGIS,
 		ITEMNAME_CATALYST, 
 		ITEMNAME_HOVERBOARD, ITEMNAME_FIREFLY, ITEMNAME_WHISPERER,
-		ITEMNAME_END }; // 아이템 이름 >>> 안쓸듯
+		ITEMNAME_BUFF1, ITEMNAME_BUFF2, ITEMNAME_BUFF3, ITEMNAME_BUFF4, ITEMNAME_SOUL, ITEMNAME_ESSENCE, ITEMNAME_ETHER, ITEMNAME_UPGRADE1, ITEMNAME_UPGRADE2,
+		ITEMNAME_END };
 
-	enum DROPITEM_NAME{ DROPITEM_BUFF1 = 0, DROPITEM_BUFF2, DROPITEM_BUFF3, DROPITEM_BUFF4, DROPITEM_SOUL, DROPITEM_ESEENCE, DROPITEM_ETHER, DROPITEM_UPGRADE1, DROPITEM_UPGRADE2, DROPITEM_END };
-
-	// 드랍되는 것의 경우에만 랜덤으로 종류를 결정해야함
 	typedef struct ItemData_Desc : public GAMEOBJECT_DESC 
 	{
 		_bool			isDropTem; // 드탑템 여부
+		
 	}ITEMDATA_DESC;
 
 	typedef struct DropItem_Desc : public ITEMDATA_DESC
 	{
-		//DROPITEM_NAME	eDropItemName;
+		CItem::ITEM_NAME		eItemName;
 	}DROPITEM_DESC;
 
 private:
@@ -42,7 +43,7 @@ private:
 
 public:
 	wstring			Get_TextureName() { return m_wszTexture; }
-	DROPITEM_NAME	Get_DropItemName() { return m_eDropItemName; }
+	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -55,13 +56,11 @@ public:
 private:
 	wstring					m_wszTexture;
 
-	// 플레이어에게 상호작용 하는 함수? 종류에 따라 다른 작용하도록 구현 필요
 	ITEM_TYPE				m_eItemType = { ITEMTYPE_END };
 	ITEM_NAME				m_eItemName = { ITEMNAME_END };
-	DROPITEM_NAME			m_eDropItemName = { DROPITEM_END };
 
 private:
-	void					Set_DropItem_Type(); // 드랍 아이템의 종류를 결정
+	void					Set_DropItem_Data(CItem::ITEM_NAME eItemName);
 
 public:
 	static CItemData*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

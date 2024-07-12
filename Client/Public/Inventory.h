@@ -3,6 +3,8 @@
 #include "Base.h"
 #include "Client_Defines.h"
 
+#include "Item.h"
+
 BEGIN(Engine)
 class CGameInstance;
 class CGameObject;
@@ -23,7 +25,7 @@ public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);
 
-	HRESULT	Add_DropItem();
+	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

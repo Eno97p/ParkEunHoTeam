@@ -39,6 +39,8 @@ HRESULT CItem::Initialize(void* pArg)
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 
+	m_eItemName = static_cast<ITEM_NAME>(rand() % ITEM_END); // 랜덤으로 아이템 종류 설정
+
 	return S_OK;
 }
 
@@ -67,7 +69,7 @@ void CItem::Tick(_float fTimeDelta)
 
 	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
 	{
-		CInventory::GetInstance()->Add_DropItem();
+		CInventory::GetInstance()->Add_DropItem(m_eItemName);
 
 		// 아이템 획득 로직
 		m_pGameInstance->Erase(this);

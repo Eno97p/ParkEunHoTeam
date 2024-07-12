@@ -26,7 +26,7 @@ HRESULT CUIGroup_DropItem::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Create_UI(pDesc->eDropItemName, pDesc->wszTextureName)))
+    if (FAILED(Create_UI(pDesc->eItemName, pDesc->wszTextureName)))
         return E_FAIL;
 
     return S_OK;
@@ -61,13 +61,13 @@ HRESULT CUIGroup_DropItem::Render()
     return S_OK;
 }
 
-HRESULT CUIGroup_DropItem::Create_UI(CItemData::DROPITEM_NAME eDropItemName, wstring wstrTextureName)
+HRESULT CUIGroup_DropItem::Create_UI(CItemData::ITEM_NAME eItemName, wstring wstrTextureName)
 {
     //CUI::UI_DESC pDesc{};
     CUI_DropItemBG::UI_DROPITEM_DESC pDesc{};
 
     pDesc.eLevel = LEVEL_STATIC;
-    pDesc.eDropItemName = eDropItemName;
+    pDesc.eItemName = eItemName;
     // BG
     m_vecUI.emplace_back(dynamic_cast<CUI_DropItemBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_DropItemBG"), &pDesc)));
 

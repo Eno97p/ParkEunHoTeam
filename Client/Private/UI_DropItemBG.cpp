@@ -21,7 +21,7 @@ HRESULT CUI_DropItemBG::Initialize(void* pArg)
 {
 	UI_DROPITEM_DESC* pDesc = static_cast<UI_DROPITEM_DESC*>(pArg);
 
-	Setting_ItemName(pDesc->eDropItemName);
+	Setting_ItemName(pDesc->eItemName);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -111,35 +111,35 @@ HRESULT CUI_DropItemBG::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUI_DropItemBG::Setting_ItemName(CItemData::DROPITEM_NAME eDropItemName)
+void CUI_DropItemBG::Setting_ItemName(CItemData::ITEM_NAME eDropItemName)
 {
 	switch (eDropItemName)
 	{
-	case Client::CItemData::DROPITEM_BUFF1:
+	case Client::CItemData::ITEMNAME_BUFF1:
 		m_wstrItemName = TEXT("BUFF 1");
 		break;
-	case Client::CItemData::DROPITEM_BUFF2:
+	case Client::CItemData::ITEMNAME_BUFF2:
 		m_wstrItemName = TEXT("BUFF 2");
 		break;
-	case Client::CItemData::DROPITEM_BUFF3:
+	case Client::CItemData::ITEMNAME_BUFF3:
 		m_wstrItemName = TEXT("BUFF 3");
 		break;
-	case Client::CItemData::DROPITEM_BUFF4:
+	case Client::CItemData::ITEMNAME_BUFF4:
 		m_wstrItemName = TEXT("BUFF 4");
 		break;
-	case Client::CItemData::DROPITEM_SOUL:
+	case Client::CItemData::ITEMNAME_SOUL:
 		m_wstrItemName = TEXT("SOUL");
 		break;
-	case Client::CItemData::DROPITEM_ESEENCE:
+	case Client::CItemData::ITEMNAME_ESSENCE:
 		m_wstrItemName = TEXT("EESENCE");
 		break;
-	case Client::CItemData::DROPITEM_ETHER:
+	case Client::CItemData::ITEMNAME_ETHER:
 		m_wstrItemName = TEXT("ETHER");
 		break;
-	case Client::CItemData::DROPITEM_UPGRADE1:
+	case Client::CItemData::ITEMNAME_UPGRADE1:
 		m_wstrItemName = TEXT("UPGRADE 1");
 		break;
-	case Client::CItemData::DROPITEM_UPGRADE2:
+	case Client::CItemData::ITEMNAME_UPGRADE2:
 		m_wstrItemName = TEXT("UPGRADE 2");
 		break;
 	default:

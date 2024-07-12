@@ -24,6 +24,7 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 	_float m_fCurrentRatio = 1.f;
 	_float m_fPastRatio = 1.f;
+	_float m_fHudRatio = 0.8f;
 
 private:
 	HRESULT	Add_Components();

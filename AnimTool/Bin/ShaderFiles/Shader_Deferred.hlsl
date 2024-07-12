@@ -659,7 +659,7 @@ PS_OUT PS_DECAL(PS_IN In)
     float4 vPosition = float4(In.vTexcoord.x * 2.0f - 1.0f, In.vTexcoord.y * -2.0f + 1.0f, vDepthDesc.x, 1.0f);
     vPosition = mul(vPosition, g_ProjMatrixInv);
     vPosition /= vPosition.w; // Perspective divide
-    vPosition.z = vDepthDesc.y * 3000.f;
+    //vPosition.z = vDepthDesc.y * 3000.f;
     vPosition = mul(vPosition, g_ViewMatrixInv);
 
     // µ¥Ä® °ø°£À¸·Î º¯È¯
@@ -674,8 +674,8 @@ PS_OUT PS_DECAL(PS_IN In)
 
     // µ¥Ä® UV °è»ê
     float2 decalUV;
-    decalUV.x = (vPosition.x / vPosition.w) * 0.5f + 0.5f;
-    decalUV.y = (vPosition.y / vPosition.w) * -0.5f + 0.5f;
+    decalUV.x = vPosition.x * 0.5f + 0.5f;
+    decalUV.y = vPosition.y * -0.5f + 0.5f;
 
     // µ¥Ä® ÅØ½ºÃ³ »ùÇÃ¸µ
     vector vDecal = g_EffectTexture.Sample(LinearSampler, decalUV);
@@ -690,8 +690,7 @@ PS_OUT PS_DECAL(PS_IN In)
     }
     else
     {
-        Out.vColor = vDiffuse;
-        //Out.vColor = vDecal + vDiffuse * (1.f - vDecal.a);
+        Out.vColor = lerp(vDiffuse, vDecal, vDecal.a);
     }
 
     return Out;

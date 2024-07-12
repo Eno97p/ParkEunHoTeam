@@ -72,6 +72,8 @@ HRESULT CUI_MonsterHP::Render()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
+		return E_FAIL;
 
 	m_pShaderCom->Begin(2); // 비율을 위해 2로 하니 출력 크기가 안 맞는 이슈 있음
 	m_pVIBufferCom->Bind_Buffers();

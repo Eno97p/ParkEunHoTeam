@@ -244,6 +244,9 @@
     <Filter Include="01.Utility\08.Frustum\OctTree">
       <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\996 .Worker">
+      <UniqueIdentifier>{36b86822-d906-4595-be78-eb1fe1cfe95b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -510,6 +513,9 @@
     <ClInclude Include="..\public\CUserErrorCallBack.h">
       <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CWorker.h">
+      <Filter>01.Utility\996 .Worker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -760,6 +766,9 @@
     </ClCompile>
     <ClCompile Include="..\private\OctTree.cpp">
       <Filter>01.Utility\08.Frustum\OctTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CWorker.cpp">
+      <Filter>01.Utility\996 .Worker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -79,6 +79,9 @@ bool ComponentMiddle::update(const PxReal dt, const PxVehicleSimulationContext& 
 
 void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, PxVehicleArrayData<const VehicleBeginState>& beginStates, PxVehicleArrayData<VehicleMiddleState>& middleStates, PxReal dt)
 {
+	PxReal steeringAngle= middleParam->steeringAngle;
+
+	
 	for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 	{
 		middleStates[i].wheelSpeeds[i] += middleParam->engineTorque * dt;

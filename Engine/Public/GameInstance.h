@@ -176,6 +176,15 @@ public: // For OctTree
 	_bool isVisible(_vector vPos, PxActor* actor);
 	void AddCullingObject(CGameObject* obj, PxActor* pActor);
 
+
+public:	// For Worker
+	template<typename T, typename... Args>
+	void AddWork(T&& Func, Args&&... args);
+	
+
+
+
+
 #ifdef _DEBUG
 public:
 	HRESULT Ready_RTDebug(const wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
@@ -205,6 +214,8 @@ private:
 
 
 	class COctTree*				m_pOctTree = { nullptr };
+
+	class CWorker*				m_pWorker = { nullptr };
 public:	
 	static void Release_Engine();
 	virtual void Free() override;
@@ -220,3 +231,4 @@ public:
 };
 
 END
+

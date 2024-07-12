@@ -67,27 +67,34 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 {
 	VehicleMiddleParams& middleParams = m_pVehicle->getMiddleParams();
 
+	const float maxEngineTorque = 100.0f;
 	// 예시: 키보드 입력 처리
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
 		// 전진
-		middleParams.engineTorque = 500.0f;
+		middleParams.engineTorque = maxEngineTorque;
 	}
 	else if (GetAsyncKeyState('S') & 0x8000)
 	{
 		// 후진
-		middleParams.engineTorque = -500.0f;
+		middleParams.engineTorque = -maxEngineTorque;
 	}
 	else
 	{
 		// 엔진 토크 해제
 		middleParams.engineTorque = 0.0f;
 	}
+	const float maxSteeringAngle = 0.5f;
+	const float steeringTorque = 1000.0f;  // 적절한 값으로 조정 필요
+
+
+
 
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		// 좌회전
 		middleParams.steeringAngle = -0.5f;
+		
 	}
 	else if (GetAsyncKeyState('D') & 0x8000)
 	{
@@ -146,12 +153,12 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 	//		return E_FAIL;
 	
 	VehicleBeginParams& beginParams = m_pVehicle->getBeginParams();
-	beginParams.mass = 1000.0f;		//차량 질량 (kg)
+	beginParams.mass = 1500.0f;		//차량 질량 (kg)
 	beginParams.dimensions = PxVec3(2.0f, 1.5f, 4.0f);  // 차량 크기 (m)
 	beginParams.numWheels = 4;  // 바퀴 수
 
 	for(PxU32 i = 0; i < 4; i++)
-		beginParams.wheelRadius[i] = 0.5f;  // 바퀴 반지름 (m)
+		beginParams.wheelRadius[i] = 0.4f;  // 바퀴 반지름 (m)
 
 	VehicleMiddleParams& middleParams = m_pVehicle->getMiddleParams();
 	middleParams.engineTorque = 500.0f;  // 엔진 토크 (Nm)
@@ -159,7 +166,7 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 	middleParams.steeringAngle = 0.0f;  // 초기 조향각도 (rad)
 
 	VehicleEndParams& endParams = m_pVehicle->getEndParams();
-	endParams.maxSpeed = 250.0f;  // 최대 속도 (km/h)
+	endParams.maxSpeed = 50.0f;  // 최대 속도 (km/h)
 
 	if (FAILED(m_pVehicle->createSequence()))
 		return E_FAIL;

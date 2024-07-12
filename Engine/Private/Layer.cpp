@@ -2,6 +2,9 @@
 #include "GameObject.h"
 #include "GameInstance.h"
 
+
+#include"CWorker.h"
+
 CLayer::CLayer()
 {
 
@@ -45,6 +48,8 @@ list<class CGameObject* > CLayer::Get_GameObjects_Ref()
 
 HRESULT CLayer::Initialize()
 {
+
+
 	return S_OK;
 }
 
@@ -90,12 +95,15 @@ void CLayer::Priority_Tick(_float fTimeDelta)
 
 void CLayer::Tick(_float fTimeDelta)
 {
+
+
 	for (auto& pGameObject : m_GameObjects)
 	{
 		if (pGameObject->Get_Dead() == true)
 			continue;
 		pGameObject->Tick(fTimeDelta);
 	}
+
 }
 
 void CLayer::Late_Tick(_float fTimeDelta)

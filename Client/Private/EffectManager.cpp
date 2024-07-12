@@ -34,10 +34,14 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_SwordTrail");
 		return E_FAIL;
 	}
-
 	if (FAILED(Load_Particles()))
 	{
 		MSG_BOX("FAILED_Load_SwordTrail");
+		return E_FAIL;
+	}
+	if (FAILED(Load_Distortions()))
+	{
+		MSG_BOX("FAILED_Load_Distortion");
 		return E_FAIL;
 	}
 
@@ -137,6 +141,23 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		return E_FAIL;
 	}
 
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Distortion(const _int iIndex, const _float4 vStartpos)
+{
+	if (iIndex >= m_pDistortions.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CDistortionEffect::DISTORTIONEFFECT* Distortion = m_pDistortions[iIndex].get();
+		Distortion->vStartpos = vStartpos;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Distortion"), TEXT("Prototype_GameObject_Distortion_Effect"), Distortion);
+	}
 	return S_OK;
 }
 
@@ -274,6 +295,38 @@ HRESULT CEffectManager::Load_Particles()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Distortions()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Distortion.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		shared_ptr<CDistortionEffect::DISTORTIONEFFECT> readFile = make_shared<CDistortionEffect::DISTORTIONEFFECT>();
+		inFile.read((char*)&readFile->bFuncType, sizeof(_bool));
+		inFile.read((char*)&readFile->bDisolve, sizeof(_bool));
+		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
+		inFile.read((char*)&readFile->vStartScale, sizeof(_float2));
+		inFile.read((char*)&readFile->vStartpos, sizeof(_float4));
+		inFile.read((char*)&readFile->fSpeed, sizeof(_float));
+		inFile.read((char*)&readFile->fLifeTime, sizeof(_float));
+		readFile->Texture = load_wstring_from_stream(inFile);
+		readFile->TexturePath = load_wstring_from_stream(inFile);
+		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
+		m_pDistortions.emplace_back(readFile);
+	}
+	inFile.close();
+
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -296,6 +349,9 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CSTrail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Distortion_Effect"),
+		CDistortionEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

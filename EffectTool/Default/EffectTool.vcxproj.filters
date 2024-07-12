@@ -71,6 +71,9 @@
     <Filter Include="Objects\02. Particle\04. SwordTrail">
       <UniqueIdentifier>{8b0154dd-d31c-4f95-981e-7a021c554134}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Particle\05. Distortion">
+      <UniqueIdentifier>{379e86d4-c910-4278-bda9-796ed379b7f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -178,6 +181,9 @@
     <ClInclude Include="..\Public\Particle_STrail.h">
       <Filter>Objects\02. Particle\04. SwordTrail</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Distortion_Effect.h">
+      <Filter>Objects\02. Particle\05. Distortion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -269,6 +275,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_STrail.cpp">
       <Filter>Objects\02. Particle\04. SwordTrail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Distortion_Effect.cpp">
+      <Filter>Objects\02. Particle\05. Distortion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 #include "Particle_Point.h"
 #include "TextureFrame.h"
 #include "Particle_STrail.h"
+#include "Distortion_Effect.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -88,11 +89,15 @@ private:	//for SwordTrail
 	HRESULT Save_SwordTrail();
 	HRESULT Load_SwordTrail();
 
+private:	//for Distortion
+	void Distortion_Tool();
+	HRESULT StoreDistortion(char* Name, CDistortionEffect::DISTORTIONEFFECT distortion);
+	void Distortion_ListBox(CDistortionEffect::DISTORTIONEFFECT* distortion);
+	HRESULT Save_Distortion();
+	HRESULT Load_Distortion();
+
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
-
-private:
-
 
 private:
 	HRESULT ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath);
@@ -108,6 +113,7 @@ private:
 	void* Variants = nullptr;
 	_bool ChangedTrail = false;
 	_bool ChangedSwordTrail = false;
+	_bool ChangedDistortion = false;
 	const _float4x4* TrailMat = nullptr;
 
 private:
@@ -117,10 +123,13 @@ private:
 	vector<pair<PARTICLETYPE, void*>>		m_Types;
 	vector<shared_ptr<CParticle_Trail::TRAIL_DESC>> TrailEffects;
 	vector<shared_ptr<CSTrail::STRAIL_DESC>>	m_SwordTrails;
+	vector<shared_ptr<CDistortionEffect::DISTORTIONEFFECT>> m_Distortions;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
 	vector<string> SwordTrailNames;
+	vector<string> DistortionNames;
+
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

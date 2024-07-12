@@ -99,7 +99,7 @@ void CParticle_Point::Late_Tick(_float fTimeDelta)
 
 	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	if(OwnDesc->SuperDesc.IsBlur)
+	if(OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 

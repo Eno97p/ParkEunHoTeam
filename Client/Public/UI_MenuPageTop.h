@@ -33,6 +33,8 @@ private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
+	void	Render_MenuTitle();
+
 public:
 	static CUI_MenuPageTop*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(void* pArg) override;

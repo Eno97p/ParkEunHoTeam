@@ -12,6 +12,7 @@ float		g_DisolveValue = 1.f;
 float		g_fFlowTime;
 float		g_CurrentRatio;
 float		g_PastRatio;
+float		g_HudRatio = 1.f;
 
 matrix		g_RotationMatrix; // 회전 행렬
 
@@ -123,12 +124,12 @@ PS_OUT PS_HUD(PS_IN In)
 		discard;
 	if (g_PastRatio > g_CurrentRatio)
 	{
-		if (In.vTexcoord.x > g_PastRatio * 0.8f + 0.1f) discard;
-		else if (In.vTexcoord.x > g_CurrentRatio * 0.8f + 0.1f) Out.vColor = float4(1.f, 1.f, 0.5f, Out.vColor.a);
+		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) discard;
+		else if (In.vTexcoord.x > g_CurrentRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) Out.vColor = float4(1.f, 1.f, 0.5f, Out.vColor.a);
 	}
 	else
 	{
-		if (In.vTexcoord.x > g_PastRatio * 0.8f + 0.1f) discard;
+		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) discard;
 	}
 
 

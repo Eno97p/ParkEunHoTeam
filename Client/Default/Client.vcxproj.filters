@@ -893,6 +893,9 @@
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_ItemIcon.h">
+      <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1329,6 +1332,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp">
       <Filter>02.GameObjects\06.Effect\Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ItemIcon.cpp">
+      <Filter>02.GameObjects\07. UI\Item\ItemIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

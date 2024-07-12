@@ -5,6 +5,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 #include "Level_Loading.h"
 #include "BackGround.h"
 #include "CMouse.h"
@@ -85,6 +86,7 @@
 #pragma endregion Monster
 
 #pragma region Item
+#include "UI_ItemIcon.h"
 #include "UI_DropItemBG.h"
 #include "UIGroup_DropItem.h"
 #pragma endregion Item
@@ -108,12 +110,14 @@
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 	, m_pUI_Manager{CUI_Manager::GetInstance()}
+	, m_pInventory{CInventory::GetInstance()}
 #ifdef _DEBUG
 	,m_pImGuiMgr{CImGuiMgr::GetInstance()}
 #endif // _DEBUG
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pUI_Manager);
+	Safe_AddRef(m_pInventory);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pImGuiMgr);
@@ -634,10 +638,55 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma endregion Weapon
 
 #pragma region Item
+
+#pragma region DropItem
+	/* Prototype_Component_Texture_Icon_Item_Buff0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff0.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Buff1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff1.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Buff2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff2.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Buff3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff3.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Essence */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Essence"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Essence.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Ether */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Ether"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Ether.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Upgrade0 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade0.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Item_Upgrade1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade1.png"), 1))))
+		return E_FAIL;
+
+#pragma endregion DropItem
+
 	/* Prototype_Component_Texture_Icon_Whisperer */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Whisperer"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Whisperer.png"), 1))))
 		return E_FAIL;
+
 	/* Prototype_Component_Texture_Item */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item.png"), 1))))
@@ -1145,6 +1194,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion Monster
 
 #pragma region Item
+	/* For.Prototype_GameObject_UI_ItemIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ItemIcon"),
+		CUI_ItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UI_DropItemBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_DropItemBG"),
 		CUI_DropItemBG::Create(m_pDevice, m_pContext))))
@@ -1196,6 +1250,9 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 	
+	Safe_Release(m_pInventory);
+	CInventory::GetInstance()->DestroyInstance();
+
 	Safe_Release(m_pUI_Manager);
 	CUI_Manager::GetInstance()->DestroyInstance();
 	//CUI_Manager::DestroyInstance();

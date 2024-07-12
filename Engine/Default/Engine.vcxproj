@@ -207,6 +207,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\CProfiler.cpp" />
     <ClCompile Include="..\private\CProfileScope.cpp" />
     <ClCompile Include="..\private\CUserErrorCallBack.cpp" />
+    <ClCompile Include="..\private\CWorker.cpp" />
     <ClCompile Include="..\private\OctTree.cpp" />
     <ClCompile Include="..\private\Collider.cpp" />
     <ClCompile Include="..\private\Component.cpp" />
@@ -304,6 +305,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\CSimulationCallBack.h" />
     <ClInclude Include="..\public\CUserErrorCallBack.h" />
     <ClInclude Include="..\public\CustomFont.h" />
+    <ClInclude Include="..\public\CWorker.h" />
     <ClInclude Include="..\Public\DebugDraw.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Function.hpp" />
@@ -365,6 +367,8 @@ call Copy.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Calculate.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Float4.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_HZB.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SampleHZB.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Instance_Mesh_Compute.hlsl">

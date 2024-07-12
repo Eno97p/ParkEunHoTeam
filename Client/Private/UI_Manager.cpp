@@ -68,6 +68,14 @@ void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
 	(*uigroup).second->Set_Rend(isRender);
 }
 
+void CUI_Manager::Update_Inventory_Add(_uint iSlotIdx)
+{
+	map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+	// Update_Inventory_Add
+	dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Update_Inventory_Add(iSlotIdx);
+
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))
@@ -119,12 +127,19 @@ void CUI_Manager::Key_Input()
 {
 	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요
 
+	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
+	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
+	_bool isLogoOpen = (*logo).second->Get_Rend();
+	_bool isLoadingOpen = (*loading).second->Get_Rend();
 	_bool isMenuOpen = (*menu).second->Get_Rend();
 	_bool isQuickOpen = (*quick).second->Get_Rend();
 	_bool isInvSubOpen = (*invsub).second->Get_Rend();
+
+	if (isLogoOpen || isLoadingOpen)
+		return;
 
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{

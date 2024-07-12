@@ -28,6 +28,7 @@ private:
 	class CMonster*	m_pMonster = { nullptr }; // Monster가 해당 UI를 가지고 있고 변수로 값을 넘겨주는 식으로 해도 ㄱㅊ을듯
 	_float			m_fCurrentRatio = 1.f;
 	_float			m_fPastRatio = 1.f;
+	_float			m_fHudRatio = 1.f;
 
 private:
 	HRESULT	Add_Components();

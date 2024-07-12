@@ -42,6 +42,7 @@ private:
 
 public:
 	wstring			Get_TextureName() { return m_wszTexture; }
+	DROPITEM_NAME	Get_DropItemName() { return m_eDropItemName; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

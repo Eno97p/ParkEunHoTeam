@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UI.h"
+#include "ItemData.h"
 
 BEGIN(Client)
 

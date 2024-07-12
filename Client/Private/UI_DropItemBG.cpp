@@ -19,6 +19,10 @@ HRESULT CUI_DropItemBG::Initialize_Prototype()
 
 HRESULT CUI_DropItemBG::Initialize(void* pArg)
 {
+	UI_DROPITEM_DESC* pDesc = static_cast<UI_DROPITEM_DESC*>(pArg);
+
+	Setting_ItemName(pDesc->eDropItemName);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -58,6 +62,9 @@ HRESULT CUI_DropItemBG::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrItemName, _float2(m_fX - 125.f, m_fY - 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -102,6 +109,42 @@ HRESULT CUI_DropItemBG::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_DropItemBG::Setting_ItemName(CItemData::DROPITEM_NAME eDropItemName)
+{
+	switch (eDropItemName)
+	{
+	case Client::CItemData::DROPITEM_BUFF1:
+		m_wstrItemName = TEXT("BUFF 1");
+		break;
+	case Client::CItemData::DROPITEM_BUFF2:
+		m_wstrItemName = TEXT("BUFF 2");
+		break;
+	case Client::CItemData::DROPITEM_BUFF3:
+		m_wstrItemName = TEXT("BUFF 3");
+		break;
+	case Client::CItemData::DROPITEM_BUFF4:
+		m_wstrItemName = TEXT("BUFF 4");
+		break;
+	case Client::CItemData::DROPITEM_SOUL:
+		m_wstrItemName = TEXT("SOUL");
+		break;
+	case Client::CItemData::DROPITEM_ESEENCE:
+		m_wstrItemName = TEXT("EESENCE");
+		break;
+	case Client::CItemData::DROPITEM_ETHER:
+		m_wstrItemName = TEXT("ETHER");
+		break;
+	case Client::CItemData::DROPITEM_UPGRADE1:
+		m_wstrItemName = TEXT("UPGRADE 1");
+		break;
+	case Client::CItemData::DROPITEM_UPGRADE2:
+		m_wstrItemName = TEXT("UPGRADE 2");
+		break;
+	default:
+		break;
+	}
 }
 
 CUI_DropItemBG* CUI_DropItemBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

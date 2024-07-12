@@ -4,6 +4,7 @@
 
 BEGIN(Client)
 class CUI_Slot_Frame;
+class CUI_ItemIcon;
 
 class CUI_Slot final : public CUI_Interaction
 {
@@ -33,12 +34,14 @@ private:
 	SLOT_TYPE			m_eSlotType = { SLOT_END };
 
 	CUI_Slot_Frame*		m_pSelectFrame = { nullptr };
+	CUI_ItemIcon*		m_pItemIcon = { nullptr };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Frame();
+	HRESULT	Create_ItemIcon();
 
 	void	Open_SubPage();
 

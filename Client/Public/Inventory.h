@@ -31,6 +31,7 @@ private:
 
 private:
 	vector<class CItemData*>		m_vecItem;
+	// 무기, 서브무기 등 추가 필요
 
 public:
 	virtual void Free() override;

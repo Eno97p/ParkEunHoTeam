@@ -40,6 +40,8 @@ HRESULT CInventory::Add_DropItem()
 	pUIDesc.wszTextureName = (*item)->Get_TextureName();
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
+	// 여기서 UI Manager로 접근하여 UIGroup Inventory를 갱신?
+
 	return S_OK;
 }
 

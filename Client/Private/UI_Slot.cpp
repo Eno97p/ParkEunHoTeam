@@ -5,6 +5,7 @@
 #include "CMouse.h"
 #include "UI_Slot_Frame.h"
 #include "UIGroup.h"
+#include "UI_ItemIcon.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -149,6 +150,21 @@ HRESULT CUI_Slot::Create_Frame()
 	return S_OK;
 }
 
+HRESULT CUI_Slot::Create_ItemIcon()
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	//pDesc.wszTexture = wstrTextureName; // Inventory로부터 받아와서 적용
+
+
+	return S_OK;
+}
+
 void CUI_Slot::Open_SubPage()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
@@ -191,5 +207,6 @@ void CUI_Slot::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectFrame);
 }

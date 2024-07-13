@@ -700,6 +700,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DropItem.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_ItemIcon_None */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemIcon_None"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_None.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion Icon
 
 #pragma region Menu

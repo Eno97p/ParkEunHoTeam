@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
+class CUI_ItemIcon;
 
 class CUIGroup_WeaponSlot final : public CUIGroup
 {
@@ -22,6 +23,10 @@ public:
 
 private:
 	vector<CUI*>			m_vecUI;
+	CUI_ItemIcon*			m_pWeaponSlot;
+	CUI_ItemIcon*			m_pSkillSlot;
+	CUI_ItemIcon*			m_pQuickSlot;
+
 
 private:
 	HRESULT					Create_UI();

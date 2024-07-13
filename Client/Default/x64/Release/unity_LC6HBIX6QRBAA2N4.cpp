@@ -141,10 +141,16 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UIGroup_DropItem.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_DropItemBG.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_ItemIcon.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"

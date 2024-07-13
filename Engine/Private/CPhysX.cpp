@@ -85,12 +85,29 @@ HRESULT CPhysX::Initialize()
 	//int iDeviceVersion = m_pCudaContextManager->getDriverVersion();
 
 	
-
+	
 	
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	PxU32 numCores = PxThread::getNbPhysicalCores();
-	m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(numCores == 0 ? 0 : numCores - 1);
+	PxU32 numThreads = (numCores ==1 ) ? 0: numCores - 1;
+	vector<PxU32> affinityMasks(numThreads);
+	for (PxU32 i = 0; i < numThreads; i++)
+		affinityMasks[i] = 1 << i;
+
+	PxDefaultCpuDispatcherWaitForWorkMode::Enum waitForWorkMode = PxDefaultCpuDispatcherWaitForWorkMode::eWAIT_FOR_WORK;
+	PxU32 yieldProcessorCount = 0;
+
+	m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(
+		numThreads,
+		affinityMasks.empty() ? NULL : affinityMasks.data(),
+		waitForWorkMode,
+		yieldProcessorCount
+	);
+
+
+	
+	//m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(0);
 	if(!m_pCPUDispatcher)
 	{
 		MSG_BOX("Failed To Create : Physx_CPUDispatcher");

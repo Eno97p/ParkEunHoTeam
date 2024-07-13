@@ -532,7 +532,6 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
-	//}
 
 
 }

@@ -72,7 +72,6 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 		{
 			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
 			{
-
 				m_bIsParried = true;
 				m_pPlayer->Parry_Succeed();
 			}
@@ -164,7 +163,7 @@ HRESULT CWeapon_Mantari::Add_Components()
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.4f, 1.5f, 0.4f);
+	ColliderDesc.vExtents = _float3(0.2f, 1.f, 0.2f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 

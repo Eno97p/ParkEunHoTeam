@@ -34,8 +34,6 @@ private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
-	void	Setting_ItemName(CItemData::ITEM_NAME eDropItemName); // wstring보다 ItemData의 Name을 받아와서 활용하는 게 
-
 public:
 	static CUI_DropItemBG*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;

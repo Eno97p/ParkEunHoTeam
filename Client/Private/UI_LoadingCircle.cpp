@@ -31,6 +31,8 @@ HRESULT CUI_LoadingCircle::Initialize(void* pArg)
 
 	Setting_Position();
 
+	m_vFontColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+
 	return S_OK;
 }
 
@@ -40,10 +42,12 @@ void CUI_LoadingCircle::Priority_Tick(_float fTimeDelta)
 
 void CUI_LoadingCircle::Tick(_float fTimeDelta)
 {
-	/*if (!m_isRenderAnimFinished)
-		Render_Animation(fTimeDelta);*/
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
 
 	Turn_Animation(fTimeDelta);
+
+	Change_FontColor(fTimeDelta);
 
 }
 
@@ -60,6 +64,8 @@ HRESULT CUI_LoadingCircle::Render()
 	m_pShaderCom->Begin(5);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	Render_Font();
 
 	return S_OK;
 }
@@ -113,8 +119,6 @@ HRESULT CUI_LoadingCircle::Bind_ShaderResources()
 
 void CUI_LoadingCircle::Turn_Animation(_float fTimeDelta)
 {
-	//m_pTransformCom->Turn(XMVectorSet(0.f, 0.f, 1.f, 0.f), fTimeDelta * 1.f);
-
 	if(CIRCLE_ONE == m_eCircleType)
 		m_fRotationAngle += fTimeDelta * XMConvertToRadians(5.f);
 	else
@@ -124,6 +128,46 @@ void CUI_LoadingCircle::Turn_Animation(_float fTimeDelta)
 		m_fRotationAngle -= XM_2PI;
 
 	m_RotationMatrix = XMMatrixRotationZ(m_fRotationAngle); // XMMatrix
+}
+
+void CUI_LoadingCircle::Render_Font()
+{
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"),
+		TEXT("              자칭 GEODESIAN이라는 자에 대해 알려진 것은 거의 없다.\n"
+		TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
+		TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
+		TEXT("                                   스스로를 창조자로 여겼을 것인가.")),
+		_float2((g_iWinSizeX>> 1) - 340.f, (g_iWinSizeY >> 1) - 70.f), XMVectorSet(m_fFontRGB, m_fFontRGB, m_fFontRGB, 1.f))))
+		return;
+}
+
+void CUI_LoadingCircle::Change_FontColor(_float fTimeDelta)
+{
+	m_fFontTimer += fTimeDelta;
+
+
+	if (m_isFontOn)
+	{
+		m_fFontRGB += 0.05f;
+		if (m_fFontRGB >= 1.f)
+			m_fFontRGB = 1.f;
+		if (3.f <= m_fFontTimer)
+		{
+			m_isFontOn = false;
+			m_fFontTimer = 0.f;
+		}
+	}
+	else
+	{
+		m_fFontRGB -= 0.05f;
+		if (m_fFontRGB <= 0.f)
+			m_fFontRGB = 0.f;
+		if (1.5f <= m_fFontTimer)
+		{
+			m_isFontOn = true;
+			m_fFontTimer = 0.f;
+		}
+	}
 }
 
 CUI_LoadingCircle* CUI_LoadingCircle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

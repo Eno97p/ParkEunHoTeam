@@ -309,6 +309,12 @@ HRESULT CPhysXComponent_Character::Go_Jump(_float fTimeDelta, _float fJumpSpeed)
 	return S_OK;
 }
 
+void CPhysXComponent_Character::Set_Position(_vector vPos)
+{
+	PxExtendedVec3 vPosition = PxExtendedVec3(XMVectorGetX(vPos), XMVectorGetY(vPos), XMVectorGetZ(vPos));
+	m_pController->setFootPosition(vPosition);
+}
+
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {
 	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;

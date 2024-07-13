@@ -57,6 +57,8 @@ public:
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	void Parry_Succeed();
+	void Set_ParriedMonsterTransform(CTransform* pTransform) { m_pParriedMonsterTransform = pTransform; }
+
 
 private:
 	HRESULT Add_Nodes();
@@ -66,6 +68,7 @@ private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
 	NodeStates Counter(_float fTimeDelta);
+	void Move_Counter();
 	NodeStates Parry(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates RollAttack(_float fTimeDelta);
@@ -117,6 +120,7 @@ private:
 	_bool										m_bCanCombo = false;
 	_float										m_fSlowDelay = 0.f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
+	CTransform* m_pParriedMonsterTransform = { nullptr };
 
 #pragma region 플레이어 스탯
 	_float m_fMaxHp = 100.f;

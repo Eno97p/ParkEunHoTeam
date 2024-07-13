@@ -273,7 +273,6 @@ void CPlayer::Parry_Succeed()
 	EFFECTMGR->Generate_Particle(6, vParticlePos);
 	//EFFECTMGR->Generate_Particle(7, vParticlePos);
 	m_bParry = true;
-	m_bParrying = false;
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -356,11 +355,16 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 NodeStates CPlayer::Hit(_float fTimeDelta)
 {
+	if (m_iState == STATE_COUNTER || m_bParry)
+	{
+		return COOLING;
+	}
+
 	if (m_iState == STATE_HIT)
 	{
 		if (m_bAnimFinished)
 		{
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -382,6 +386,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 	if (m_bParry && m_iState != STATE_COUNTER)
 	{
+		m_iState = STATE_PARRY;
 		fSlowValue = 0.2f;
 		if (m_fSlowDelay <= 0.2f)
 		{
@@ -392,22 +397,29 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 			m_fSlowDelay = 0.f;
 			fSlowValue = 1.f;
 			m_bParry = false;
+			m_pParriedMonsterTransform = nullptr;
 		}
 	}
 
-	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
+	// 패링 성공 && 왼클릭
+	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER && m_pParriedMonsterTransform)
 	{
-		m_bParrying = false;
-		m_bStaminaCanDecrease = true;
-		// 스테미나 조절할 것
-		Add_Stamina(-10.f);
-		m_iState = STATE_COUNTER;
-		fSlowValue = 0.2f;
-		m_fSlowDelay = 0.f;
+		// 일정거리 이하일 때 카운터 발동
+		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION))) < 4.f)
+		{
+			m_bParrying = false;
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-10.f);
+			m_iState = STATE_COUNTER;
+			fSlowValue = 0.2f;
+			m_fSlowDelay = 0.f;
+		}
 	}
 
 	if (m_iState == STATE_COUNTER)
 	{
+		Move_Counter();
 		if (m_fSlowDelay <= 0.2f)
 		{
 			m_fSlowDelay += fTimeDelta;
@@ -419,9 +431,11 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
+			m_fSlowDelay = 0.f;
 			m_bStaminaCanDecrease = true;
 			m_bParry = false;
-			m_fFightIdle += 0.01f;
+			m_pParriedMonsterTransform = nullptr;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -434,6 +448,23 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 	{
 		return FAILURE;
 	}
+}
+
+void CPlayer::Move_Counter()
+{
+	// 플레이어 위치 보정
+	_float3 fScale = m_pTransformCom->Get_Scaled();
+	_vector vMonsterLook = XMVector3Normalize(m_pParriedMonsterTransform->Get_State(CTransform::STATE_LOOK));
+	_vector vMonsterPos = m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+	_vector vPlayerLook = XMVector3Normalize(-vMonsterLook) * fScale.z;
+	_vector vPlayerRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook)) * fScale.x;
+	_vector vPlayerUp = XMVector3Normalize(XMVector3Cross(vPlayerLook, vPlayerRight)) * fScale.y;
+
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vPlayerRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vPlayerUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vPlayerLook);
+	m_pPhysXCom->Set_Position(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vMonsterPos + vMonsterLook * 2.f, 0.1f));
 }
 
 NodeStates CPlayer::Parry(_float fTimeDelta)
@@ -471,7 +502,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 				static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 				m_bDisolved_Yaak = true;
 			}
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			m_bParrying = false;
 			return SUCCESS;
@@ -522,7 +553,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		{
 			m_bStaminaCanDecrease = true;
 			m_bLAttacking = false;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -575,7 +606,7 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 		{
 			m_bStaminaCanDecrease = true;
 			m_bLAttacking = false;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			if (m_bRunning)
 			{
@@ -662,7 +693,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 			m_bStaminaCanDecrease = true;
 			m_iAttackCount = 1;
 			m_fLChargeAttack = 0.f;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -743,7 +774,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 			m_bStaminaCanDecrease = true;
 			m_iAttackCount = 1;
 			m_fRChargeAttack = 0.f;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -827,7 +858,7 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 			m_bIsRunAttack = false;
 			m_bLAttacking = false;
 			m_iAttackCount++;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -870,7 +901,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 			m_bStaminaCanDecrease = true;
 			m_bRAttacking = false;
 			m_iAttackCount++;
-			m_fFightIdle += 0.01f;
+			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
 		}
@@ -1035,7 +1066,7 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 			else
 			{
 				m_iState = STATE_FIGHTIDLE;
-				m_fFightIdle += 0.01f;
+				m_fFightIdle = 0.01f;
 			}
 			m_bIsLanded = true;
 		}

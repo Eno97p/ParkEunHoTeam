@@ -357,6 +357,10 @@ NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 
 	if (dynamic_cast<CWeapon_Sword_LGGun*>(m_PartObjects[2])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		if (!m_pArrow)
+		{
+			m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
+		}
 		m_iState = STATE_PARRIED;
 	}
 

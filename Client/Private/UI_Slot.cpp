@@ -163,7 +163,7 @@ HRESULT CUI_Slot::Create_Frame()
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 대한 작용인지 받아올 것?
+HRESULT CUI_Slot::Create_ItemIcon_Inv()
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -172,13 +172,31 @@ HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = ELEVENTH;
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
-	// 이거 하는 순간 출력하려는 Item 정보 가지고 있도록 만들기?
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Create_ItemIcon_Quick(_uint iSlotIdx)
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = SIXTEENTH;
+	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemNameText();
+	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemExplainText();
 
 	return S_OK;
 }

@@ -102,7 +102,7 @@ void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;
 
-	(*slot)->Create_ItemIcon(iSlotIdx);
+	(*slot)->Create_ItemIcon_Inv();
 }
 
 HRESULT CUIGroup_Inventory::Create_UI()

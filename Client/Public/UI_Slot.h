@@ -30,7 +30,8 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-	HRESULT			Create_ItemIcon(_uint iSlotIdx);
+	HRESULT			Create_ItemIcon_Inv();
+	HRESULT			Create_ItemIcon_Quick(_uint iSlotIdx);
 
 private:
 	_uint				m_iSlotIdx = { 0 };

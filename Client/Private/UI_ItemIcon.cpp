@@ -21,6 +21,7 @@ HRESULT CUI_ItemIcon::Initialize(void* pArg)
 {
 	UI_ITEMICON_DESC* pDesc = static_cast<UI_ITEMICON_DESC*>(pArg);
 
+	m_eUISort = pDesc->eUISort;
 	m_wszTexture = pDesc->wszTexture;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -51,7 +52,7 @@ void CUI_ItemIcon::Tick(_float fTimeDelta)
 
 void CUI_ItemIcon::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, ELEVENTH); // SECOND
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort); // SECOND
 }
 
 HRESULT CUI_ItemIcon::Render()

@@ -57,6 +57,20 @@ void CUIGroup_InvSub::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -66,12 +80,24 @@ void CUIGroup_InvSub::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pSlot : m_vecSlot)
+			pSlot->Late_Tick(fTimeDelta);
 	}
 }
 
 HRESULT CUIGroup_InvSub::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_InvSub::Update_InvSub_QuickSlot()
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < m_iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon_Quick(m_iSlotIdx);
 }
 
 HRESULT CUIGroup_InvSub::Create_UI()
@@ -106,7 +132,7 @@ HRESULT CUIGroup_InvSub::Create_Slot()
 			pDesc.eSlotType = CUI_Slot::SLOT_INVSUB;
 			pDesc.iSlotIdx = m_iSlotIdx;
 			pDesc.eUISort = THIRTEENTH;
-			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -168,6 +194,9 @@ CGameObject* CUIGroup_InvSub::Clone(void* pArg)
 void CUIGroup_InvSub::Free()
 {
 	__super::Free();
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);

@@ -10,7 +10,8 @@ class CUI_ItemIcon final : public CUI
 public:
 	typedef struct UI_ItemIcon_Desc : public UI_DESC
 	{
-		wstring		wszTexture;
+		UISORT_PRIORITY	eUISort;
+		wstring			wszTexture;
 	}UI_ITEMICON_DESC;
 
 private:
@@ -27,6 +28,8 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	UISORT_PRIORITY	m_eUISort = { SORT_END };
+
 	wstring			m_wszTexture;
 
 private:

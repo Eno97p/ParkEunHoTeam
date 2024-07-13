@@ -153,6 +153,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_ItemIcon.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MenuAlphaBG.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
 
 

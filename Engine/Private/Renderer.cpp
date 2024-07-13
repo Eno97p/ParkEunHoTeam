@@ -526,10 +526,10 @@ void CRenderer::Draw()
 #endif
 
     //////FOR OCCULUSION CULLING
-    if (FAILED(m_pGameInstance->Copy_Resource(TEXT("Target_Depth"), m_pPrevDepthTexture)))
-        return;
+    //if (FAILED(m_pGameInstance->Copy_Resource(TEXT("Target_Depth"), m_pPrevDepthTexture)))
+    //    return;
 
-    PROFILE_CALL("Render HZB", Update_HZB());
+    //PROFILE_CALL("Render HZB", Update_HZB());
 
 }
 #ifdef _DEBUG

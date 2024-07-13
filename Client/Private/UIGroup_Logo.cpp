@@ -6,6 +6,7 @@
 #include "UI_LogoBanner.h"
 #include "UI_LogoTitle.h"
 #include "UI_LogoSelector.h"
+#include "UI_LogoFlow.h"
 
 CUIGroup_Logo::CUIGroup_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -79,6 +80,9 @@ HRESULT CUIGroup_Logo::Create_UI()
 
 	// LogoTitle 
 	m_vecUI.emplace_back(dynamic_cast<CUI_LogoTitle*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoTitle"), &pDesc)));
+
+	// LogoFlow
+	m_vecUI.emplace_back(dynamic_cast<CUI_LogoFlow*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_LogoFlow"), &pDesc)));
 
 	Create_Selector();
 

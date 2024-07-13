@@ -1,6 +1,7 @@
 #include "UIGroup_InvSub.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 #include "UI_MenuPage_BGAlpha.h"
 #include "UI_Slot.h"
 #include "UI_InvSub_Btn.h"
@@ -94,9 +95,10 @@ HRESULT CUIGroup_InvSub::Render()
 void CUIGroup_InvSub::Update_InvSub_QuickSlot()
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
-	for (size_t i = 0; i < m_iSlotIdx; ++i)
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize()-1; ++i)
 		++slot;
 
+	// m_iSlotIdx
 	(*slot)->Create_ItemIcon_Quick(m_iSlotIdx);
 }
 

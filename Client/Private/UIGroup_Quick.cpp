@@ -60,6 +60,20 @@ void CUIGroup_Quick::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -71,12 +85,23 @@ void CUIGroup_Quick::Late_Tick(_float fTimeDelta)
 		{
 			pUI->Late_Tick(fTimeDelta);
 		}
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			pSlot->Late_Tick(fTimeDelta);
+		}
 	}
 }
 
 HRESULT CUIGroup_Quick::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_Quick::Update_QuickSlot_Add()
+{
+	// Inventory에서 Quick에 Item 등록 시 실제 Quick에도 등록해주기 (제거의 경우도 고려해서 함수 이름 제작)
+	// 해당 클래스에서는 m_iSlotIdx의 개념이 없기 때문에 >> InvSubQuick의 정보를 얻어오거나...? 아니면 vecQuick의 정보를 그대로?
 }
 
 HRESULT CUIGroup_Quick::Create_UI()
@@ -125,7 +150,7 @@ HRESULT CUIGroup_Quick::Create_Slot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_QUICK;
 			pDesc.eUISort = FIFTH;
-			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -187,4 +212,7 @@ void CUIGroup_Quick::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
 }

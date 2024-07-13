@@ -25,6 +25,8 @@ public:
 	CItemData*			Get_ItemData(_uint iSlotIdx);
 	_uint				Get_vecItemSize() { return m_vecItem.size(); }
 
+	_uint				Get_QuickSize() { return m_vecQuickAccess.size(); }
+
 public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);

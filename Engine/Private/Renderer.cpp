@@ -399,13 +399,13 @@ HRESULT CRenderer::Initialize()
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Distortion"), currentX, currentY, targetWidth, targetHeight)))
         //   return E_FAIL;
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
@@ -516,10 +516,10 @@ void CRenderer::Draw()
 #endif
 
     //////FOR OCCULUSION CULLING
-    //if (FAILED(m_pGameInstance->Copy_Resource(TEXT("Target_Depth"), m_pPrevDepthTexture)))
-    //    return;
+    if (FAILED(m_pGameInstance->Copy_Resource(TEXT("Target_Depth"), m_pPrevDepthTexture)))
+        return;
 
-    //PROFILE_CALL("Render HZB", Update_HZB());
+    PROFILE_CALL("Render HZB", Update_HZB());
 
 }
 #ifdef _DEBUG
@@ -1150,11 +1150,8 @@ void CRenderer::Update_HZB()
     UINT width = static_cast<UINT>(ViewportDesc.Width);
     UINT height = static_cast<UINT>(ViewportDesc.Height);
 
-    m_pHZBComputeShader->Begin(0);  // CS_BuildHZB 패스 사용
-
     // 현재 프레임의 깊이 버퍼를 m_pPrevDepthTexture에 복사
     ID3D11ShaderResourceView* pCurrentDepthSRV = m_pPrevDepthSRV;
-
     if (pCurrentDepthSRV)
     {
         ID3D11Resource* pCurrentDepthResource = nullptr;
@@ -1163,26 +1160,35 @@ void CRenderer::Update_HZB()
         Safe_Release(pCurrentDepthResource);
     }
 
-    // 첫 번째 레벨은 이전 프레임의 깊이 버퍼를 사용
+    // 첫 번째 레벨 생성
+    m_pHZBComputeShader->Begin(0);
     m_pHZBComputeShader->Bind_SRV("gInput", m_pPrevDepthSRV);
-    m_pHZBComputeShader->Bind_UAV("gOutput", m_pHZBUAV[0]);
     m_pHZBComputeShader->Bind_RawValue("gInputWidth", &width, sizeof(UINT));
     m_pHZBComputeShader->Bind_RawValue("gInputHeight", &height, sizeof(UINT));
     UINT mipLevel = 0;
     m_pHZBComputeShader->Bind_RawValue("gMipLevel", &mipLevel, sizeof(UINT));
     m_pHZBComputeShader->Compute((width + 15) / 16, (height + 15) / 16, 1);
 
+    // 첫 번째 레벨의 결과를 m_pHZBSRV[0]에 저장
+    ID3D11ShaderResourceView* pFirstLevelSRV = m_pHZBComputeShader->Get_SRV(0);
+    m_pHZBSRV[0] = pFirstLevelSRV;
+
     // 나머지 밉맵 레벨 생성
     for (UINT i = 1; i < MAX_MIP_LEVELS; ++i)
     {
         width = max(width / 2, 1);
         height = max(height / 2, 1);
+
+        m_pHZBComputeShader->Begin(0);  // 매 반복마다 Begin 호출
         m_pHZBComputeShader->Bind_SRV("gInput", m_pHZBSRV[i - 1]);
-        m_pHZBComputeShader->Bind_UAV("gOutput", m_pHZBUAV[i]);
         m_pHZBComputeShader->Bind_RawValue("gInputWidth", &width, sizeof(UINT));
         m_pHZBComputeShader->Bind_RawValue("gInputHeight", &height, sizeof(UINT));
         m_pHZBComputeShader->Bind_RawValue("gMipLevel", &i, sizeof(UINT));
         m_pHZBComputeShader->Compute((width + 15) / 16, (height + 15) / 16, 1);
+
+        // 결과를 m_pHZBSRV[i]에 저장
+        ID3D11ShaderResourceView* pCurrentLevelSRV = m_pHZBComputeShader->Get_SRV(0);
+        m_pHZBSRV[i] = pCurrentLevelSRV;
     }
 }
 
@@ -1264,7 +1270,7 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Distortion"), m_pShader, m_pVIBuffer);

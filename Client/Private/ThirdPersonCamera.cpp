@@ -103,29 +103,30 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
         }
     }
 
-    if (m_pGameInstance->Mouse_Down(DIM_LB))
+    if (m_pGameInstance->Mouse_Down(DIM_RB))
     {
-       // m_bIsShaking = true;
-        //m_fShakeTimer = 0.0f;
+        Shake_Camera(true);
     }
 
+  
+    //else
+    //{
+    //    m_fFovy =  XMConvertToRadians(60.f);
+    //}
 }
 
 void CThirdPersonCamera::Tick(_float fTimeDelta)
 {
     if (m_pPlayerTrans == nullptr)
         return;
-
     if (m_bIsFirstUpdate)
     {
         m_bIsFirstUpdate = false;
         return;
     }
-
     _float4 vPlayerPosition;
     XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-
-    if (m_bIsTargetLocked)
+    if (m_bIsTargetLocked && !m_bZoomIn)
     {
         Update_LockOnCam(fTimeDelta);
     }
@@ -133,37 +134,51 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
     {
         Update_ThirdCam(fTimeDelta);
     }
-
-    // 셰이킹 적용
+    _float4 vShakeCameraPosition = m_vCameraPosition;
     if (m_bIsShaking)
     {
         m_fShakeTimer += fTimeDelta;
         m_fShakeIntervalTimer += fTimeDelta;
 
+        // 감쇠 효과
+        m_fShakeAmount *= (1.0f - fTimeDelta * 2.0f);
+
+        // 주파수 변조
+        float frequency = 1.0f + sin(m_fShakeTimer * 5.0f) * 0.5f;
+
         if (m_fShakeIntervalTimer >= m_fShakeInterval)
         {
-            m_fShakeIntervalTimer = 0.0f;
-            m_vShakeStart = m_vCameraPosition;
-            Shaking();
+            m_fShakeIntervalTimer = 0.f;
+            m_vCameraPosition = m_vShakeTargetPosition;
+
+            // 3축 셰이크
+            float noiseX = PerlinNoise(m_fShakeTimer * m_fShakeSpeed * frequency, 0, 10, 0.5f);
+            float noiseY = PerlinNoise(0, m_fShakeTimer * m_fShakeSpeed * frequency, 10, 0.8f);
+            float noiseZ = PerlinNoise(m_fShakeTimer * m_fShakeSpeed * frequency, m_fShakeTimer * m_fShakeSpeed * frequency, 10, 0.5f);
+
+            XMVECTOR shake = XMVectorSet(noiseX, noiseY, noiseZ, 0) * m_fShakeAmount;
+            XMStoreFloat4(&m_vShakeTargetPosition, XMLoadFloat4(&m_vCameraPosition) + shake);
+
+            // 회전 셰이크
+            XMVECTOR rotationShake = XMQuaternionRotationRollPitchYaw(noiseX * 0.05f, noiseY * 0.05f, noiseZ * 0.05f);
+             XMStoreFloat4(&m_qShakeRotation,  XMLoadFloat4(&m_qShakeRotation) * rotationShake);
         }
 
-        // 보간을 사용하여 카메라 위치 업데이트
+        // 부드러운 전환
         float t = m_fShakeIntervalTimer / m_fShakeInterval;
-        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
-            XMLoadFloat4(&m_vShakeStart),
-            XMLoadFloat4(&m_vShakeTarget),
-            t
-        ));
+        t = t * t * (3.0f - 2.0f * t); // Smoothstep
+        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(XMLoadFloat4(&m_vCameraPosition), XMLoadFloat4(&m_vShakeTargetPosition), t));
 
         if (m_fShakeTimer > m_fShakeDuration)
         {
             m_bIsShaking = false;
+            m_fShakeTimer = 0.f;
+            m_fShakeIntervalTimer = 0.f;
         }
     }
-
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
+    // 카메라 위치 설정
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vShakeCameraPosition));
     m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
-
     __super::Tick(fTimeDelta);
 }
 
@@ -280,6 +295,51 @@ void CThirdPersonCamera::Update_TransitionCam(_float fTimeDelta)
     ));
 }
 
+void CThirdPersonCamera::ParryingZoomIn(_float fTimeDelta)
+{
+    m_fDistance -= 30.f * fTimeDelta;
+    m_fFovy -= XMConvertToRadians(1.f);
+
+    if (m_fDistance < 4.5f && m_fFovy < XMConvertToRadians(45.f))
+    {
+        m_fFovy = XMConvertToRadians(45.f);
+        m_bZoomIn = false;
+    }
+
+
+   /* if ()
+    {
+    }*/
+}
+
+void CThirdPersonCamera::ParryingZoomOut(_float fTimeDelta)
+{
+    bool bDistanceReached = false;
+    bool bFovyReached = false;
+
+    m_fDistance += 6.f * fTimeDelta;
+    m_fFovy += XMConvertToRadians(1.f);
+
+    if (m_fDistance > 5.3f)
+    {
+        m_fDistance = 5.3f;
+        bDistanceReached = true;
+    }
+
+    if (m_fFovy > XMConvertToRadians(60.f))
+    {
+        m_fFovy = XMConvertToRadians(60.f);
+        bFovyReached = true;
+    }
+
+    // 두 조건이 모두 만족되면 m_bZoomOut을 false로 설정
+    if (bDistanceReached && bFovyReached)
+    {
+        m_bZoomOut = false;
+        m_fShakeDuration = 0.4f;
+    }
+}
+
 
 
 void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
@@ -287,6 +347,16 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
     if (!m_bCamActivated) return;
     Mouse_Move(fTimeDelta);
     Key_Input(fTimeDelta);
+
+    if (m_bZoomIn)
+    {
+        ParryingZoomIn(fTimeDelta);
+    }
+
+    if (m_bZoomOut)
+    {
+        ParryingZoomOut(fTimeDelta);
+    }
 }
 
 HRESULT CThirdPersonCamera::Render()
@@ -468,6 +538,65 @@ void CThirdPersonCamera::Shaking()
 
 }
 
+float CThirdPersonCamera::PerlinNoise(float x, float y, int octaves, float persistence)
+{
+    float total = 0;
+    float frequency = 1;
+    float amplitude = 1;
+    float maxValue = 0;
+
+    for (int i = 0; i < octaves; i++)
+    {
+        total += InterpolatedNoise(x * frequency, y * frequency) * amplitude;
+        maxValue += amplitude;
+        amplitude *= persistence;
+        frequency *= 2;
+    }
+
+    // 정규화된 값을 -1에서 1 사이로 매핑
+    float normalizedValue = total / maxValue;
+    return normalizedValue;
+}
+
+float CThirdPersonCamera::InterpolatedNoise(float x, float y)
+{
+    int intX = static_cast<int>(floor(x));
+    float fracX = x - intX;
+    int intY = static_cast<int>(floor(y));
+    float fracY = y - intY;
+
+    float v1 = SmoothNoise(intX, intY);
+    float v2 = SmoothNoise(intX + 1, intY);
+    float v3 = SmoothNoise(intX, intY + 1);
+    float v4 = SmoothNoise(intX + 1, intY + 1);
+
+    float i1 = CosineInterpolate(v1, v2, fracX);
+    float i2 = CosineInterpolate(v3, v4, fracX);
+
+    return CosineInterpolate(i1, i2, fracY);
+}
+
+float CThirdPersonCamera::SmoothNoise(int x, int y)
+{
+    float corners = (Noise(x - 1, y - 1) + Noise(x + 1, y - 1) + Noise(x - 1, y + 1) + Noise(x + 1, y + 1)) / 16.0f;
+    float sides = (Noise(x - 1, y) + Noise(x + 1, y) + Noise(x, y - 1) + Noise(x, y + 1)) / 8.0f;
+    float center = Noise(x, y) / 4.0f;
+    return corners + sides + center;
+}
+
+float CThirdPersonCamera::Noise(int x, int y)
+{
+    int n = x + y * 57;
+    n = (n << 13) ^ n;
+    return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
+}
+
+float CThirdPersonCamera::CosineInterpolate(float a, float b, float t)
+{
+    float ft = t * 3.1415927f;
+    float f = (1 - cos(ft)) * 0.5f;
+    return a * (1 - f) + b * f;
+}
 
 void CThirdPersonCamera::Key_Input(_float fTimeDelta)
 {
@@ -501,6 +630,27 @@ void CThirdPersonCamera::Mouse_Move(_float fTimeDelta)
         ClientToScreen(g_hWnd, &ptCenter);
         SetCursorPos(ptCenter.x, ptCenter.y);
     }
+}
+
+void CThirdPersonCamera::Shake_Camera(_bool bSlowMo, _float fDuration)
+{
+    if (bSlowMo)
+    {
+        fDuration *= 1.5f;
+    }
+
+    m_fShakeDuration =  fDuration;
+
+    m_fFovy = XMConvertToRadians(60.f);
+
+    m_bIsShaking = true;
+    m_fShakeTimer = 0.f;
+
+    // 펄린 노이즈를 이용한 초기 셰이크 타겟 위치 계산
+    float noiseX = PerlinNoise(0, 0, 10, 0.5f);
+    float noiseY = PerlinNoise(0, 0, 10, 0.5f);
+    XMVECTOR shake = XMVectorSet(noiseX, noiseY, noiseY, 0) * m_fShakeAmount;
+    XMStoreFloat4(&m_vShakeTargetPosition, XMLoadFloat4(&m_vCameraPosition) + shake);
 }
 
 void CThirdPersonCamera::RotateCamera(float fDeltaX, float fDeltaY)

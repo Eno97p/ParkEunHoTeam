@@ -10,6 +10,7 @@
 
 #include"CHitReport.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -397,6 +398,8 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER)
 	{
+		dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
+
 		m_bParrying = false;
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
@@ -419,6 +422,8 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
+			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
+
 			m_bStaminaCanDecrease = true;
 			m_bParry = false;
 			m_fFightIdle += 0.01f;

@@ -6,6 +6,7 @@
 BEGIN(Client)
 class CUI;
 class CUI_Slot;
+class CItemData;
 
 class CUIGroup_Quick final : public CUIGroup
 {
@@ -22,7 +23,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void			Update_QuickSlot_Add();
+	void			Update_QuickSlot_Add(CItemData* pItemData);
 
 private:
 	vector<CUI*>			m_vecUI;

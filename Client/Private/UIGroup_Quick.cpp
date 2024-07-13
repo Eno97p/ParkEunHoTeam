@@ -1,6 +1,7 @@
 #include "UIGroup_Quick.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 #include "UI_QuickBG.h"
 #include "UI_QuickTop.h"
@@ -98,10 +99,13 @@ HRESULT CUIGroup_Quick::Render()
 	return S_OK;
 }
 
-void CUIGroup_Quick::Update_QuickSlot_Add()
+void CUIGroup_Quick::Update_QuickSlot_Add(CItemData* pItemData)
 {
-	// Inventory에서 Quick에 Item 등록 시 실제 Quick에도 등록해주기 (제거의 경우도 고려해서 함수 이름 제작)
-	// 해당 클래스에서는 m_iSlotIdx의 개념이 없기 때문에 >> InvSubQuick의 정보를 얻어오거나...? 아니면 vecQuick의 정보를 그대로?
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize() - 1; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon_Quick(pItemData);
 }
 
 HRESULT CUIGroup_Quick::Create_UI()

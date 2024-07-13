@@ -21,6 +21,9 @@ private:
 	virtual ~CUI_InvSub_Btn() = default;
 
 public:
+	void			Set_SlotIdx(_uint iSlotIdx) { m_iSlotIdx = iSlotIdx; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;

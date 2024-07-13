@@ -1,6 +1,8 @@
 #include "UI_Manager.h"
 
 #include "GameInstance.h"
+#include "ItemData.h"
+
 #include "UIGroup_Logo.h"
 #include "UIGroup_Loading.h"
 #include "UIGroup_State.h"
@@ -77,8 +79,14 @@ void CUI_Manager::Update_Inventory_Add(_uint iSlotIdx)
 
 void CUI_Manager::Update_InvSub_Quick_Add()
 {
-	map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("InvSub");
-	dynamic_cast<CUIGroup_InvSub*>((*inventory).second)->Update_InvSub_QuickSlot();
+	map<string, CUIGroup*>::iterator invsubQuick = m_mapUIGroup.find("InvSub");
+	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot();
+}
+
+void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
+{
+	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
 }
 
 HRESULT CUI_Manager::Initialize()

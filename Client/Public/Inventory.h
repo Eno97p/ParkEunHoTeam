@@ -22,10 +22,10 @@ public:
 	virtual ~CInventory() = default;
 
 public:
-	CItemData*			Get_ItemData(_uint iSlotIdx);
-	_uint				Get_vecItemSize() { return m_vecItem.size(); }
-
-	_uint				Get_QuickSize() { return m_vecQuickAccess.size(); }
+	CItemData*							Get_ItemData(_uint iSlotIdx);
+	_uint								Get_vecItemSize() { return m_vecItem.size(); }
+	_uint								Get_QuickSize() { return m_vecQuickAccess.size(); }
+	vector<class CItemData*>			Get_QuickAccess() { return m_vecQuickAccess; }
 
 public:
 	HRESULT Initialize();

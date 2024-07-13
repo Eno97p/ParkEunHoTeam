@@ -5,6 +5,7 @@
 BEGIN(Client)
 class CUI;
 class CUI_Slot;
+class CUI_InvSub_Btn;
 
 class CUIGroup_InvSub final : public CUIGroup
 {
@@ -30,6 +31,7 @@ private:
 	_uint					m_iSlotIdx = { 0 }; // 이 SubPage가 현재 Inventory의 몇 번째 Slot에 있는 Item에 대한 정보를 가지고 있는지
 	
 	vector<CUI*>			m_vecUI;
+	vector<CUI_InvSub_Btn*>	m_vecBtn;
 	vector<CUI_Slot*>		m_vecSlot;
 
 private:

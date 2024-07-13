@@ -72,6 +72,21 @@ void CUIGroup_InvSub::Tick(_float fTimeDelta)
 
 			pSlot->Tick(fTimeDelta);
 		}
+
+		for (auto& pBtn : m_vecBtn)
+		{
+			if (!m_isRenderOnAnim && !(pBtn->Get_RenderOnAnim()))
+			{
+				pBtn->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pBtn->Get_RenderOnAnim())
+			{
+				pBtn->Resset_Animation(false);
+			}
+
+			pBtn->Set_SlotIdx(m_iSlotIdx);
+			pBtn->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -84,6 +99,9 @@ void CUIGroup_InvSub::Late_Tick(_float fTimeDelta)
 
 		for (auto& pSlot : m_vecSlot)
 			pSlot->Late_Tick(fTimeDelta);
+
+		for (auto& pBtn : m_vecBtn)
+			pBtn->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -99,7 +117,7 @@ void CUIGroup_InvSub::Update_InvSub_QuickSlot()
 		++slot;
 
 	// m_iSlotIdx
-	(*slot)->Create_ItemIcon_Quick(m_iSlotIdx);
+	(*slot)->Create_ItemIcon_SubQuick(m_iSlotIdx);
 }
 
 HRESULT CUIGroup_InvSub::Create_UI()
@@ -161,7 +179,7 @@ HRESULT CUIGroup_InvSub::Create_Btn()
 		pDesc.fSizeX = 360.f; // 512
 		pDesc.fSizeY = 50.f; // 128
 		pDesc.eBtnType = arrBtnType[i];
-		m_vecUI.emplace_back(dynamic_cast<CUI_InvSub_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_InvSub_Btn"), &pDesc)));
+		m_vecBtn.emplace_back(dynamic_cast<CUI_InvSub_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_InvSub_Btn"), &pDesc)));
 	}
 
 	return S_OK;
@@ -202,4 +220,7 @@ void CUIGroup_InvSub::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pBtn : m_vecBtn)
+		Safe_Release(pBtn);
 }

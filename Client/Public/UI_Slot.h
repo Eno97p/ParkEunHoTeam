@@ -5,6 +5,7 @@
 BEGIN(Client)
 class CUI_Slot_Frame;
 class CUI_ItemIcon;
+class CItemData;
 
 class CUI_Slot final : public CUI_Interaction
 {
@@ -31,7 +32,8 @@ public:
 	virtual HRESULT	Render() override;
 
 	HRESULT			Create_ItemIcon_Inv();
-	HRESULT			Create_ItemIcon_Quick(_uint iSlotIdx);
+	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
+	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
 
 private:
 	_uint				m_iSlotIdx = { 0 };

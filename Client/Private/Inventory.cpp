@@ -63,10 +63,10 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 	m_vecQuickAccess.emplace_back(pItemData);
 
 	// InvSub QuickAccess Slot UI에 출력하기
-	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(); // 인덱스 어떻게 넣지
-	// 여기서 Quick에 넣을 때 Quick만의 Index를 가지고 출력해야 하는데 Inventory의 Index를 따라가는 오류 있음
+	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add();
 
-	// QuickAccess에도 출력 필요(추후)
+	// QuickAccess에도 출력 필요
+	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData);
 
 	return S_OK;
 }

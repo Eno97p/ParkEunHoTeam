@@ -182,7 +182,7 @@ HRESULT CUI_Slot::Create_ItemIcon_Inv()
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Create_ItemIcon_Quick(_uint iSlotIdx)
+HRESULT CUI_Slot::Create_ItemIcon_SubQuick(_uint iSlotIdx)
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -197,6 +197,25 @@ HRESULT CUI_Slot::Create_ItemIcon_Quick(_uint iSlotIdx)
 
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemExplainText();
+
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = SIXTEENTH;
+	pDesc.wszTexture = pItemData->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = pItemData->Get_ItemNameText();
+	m_wszItemExplain = pItemData->Get_ItemExplainText();
 
 	return S_OK;
 }

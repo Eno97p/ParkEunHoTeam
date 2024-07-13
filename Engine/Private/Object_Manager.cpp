@@ -200,7 +200,11 @@ void CObject_Manager::Tick(_float fTimeDelta)
 	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
 		for (auto& Pair : m_pLayers[i])
+		{
+			//CGameInstance::GetInstance()->AddWork([Pair, fTimeDelta]() {
+			//	Pair.second->Tick(fTimeDelta); });
 			Pair.second->Tick(fTimeDelta);
+		}
 	}
 }
 

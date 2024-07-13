@@ -62,6 +62,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\CUserErrorCallBack.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\CWorker.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\OctTree.cpp"
 
 

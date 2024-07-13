@@ -82,84 +82,78 @@ bool CFrustum::isVisible(_vector vPos, PxActor* actor)
     _vector vCamPos = m_pGameInstance->Get_CamPosition();
     float distanceToCamera = XMVector3Length(XMVectorSubtract(vPos, vCamPos)).m128_f32[0];
     if (distanceToCamera > m_maxVisibleDistance)
-    {
         return false;
-    }
 
     // 바운딩 박스 정보 얻기
     PxBounds3 bounds = actor->getWorldBounds();
     PxVec3 center = bounds.getCenter();
     PxVec3 extents = bounds.getExtents();
 
-    // 바운딩 박스의 8개 코너 점 계산
-    std::vector<PxVec3> corners(8);
-    corners[0] = center + PxVec3(-extents.x, -extents.y, -extents.z);
-    corners[1] = center + PxVec3(extents.x, -extents.y, -extents.z);
-    corners[2] = center + PxVec3(extents.x, extents.y, -extents.z);
-    corners[3] = center + PxVec3(-extents.x, extents.y, -extents.z);
-    corners[4] = center + PxVec3(-extents.x, -extents.y, extents.z);
-    corners[5] = center + PxVec3(extents.x, -extents.y, extents.z);
-    corners[6] = center + PxVec3(extents.x, extents.y, extents.z);
-    corners[7] = center + PxVec3(-extents.x, extents.y, extents.z);
-
-    // 프러스텀 컬링
-    bool isInFrustum = false;
-    for (const auto& corner : corners)
-    {
-        _vector vCorner = XMVectorSet(corner.x, corner.y, corner.z, 1.0f);
-        if (isIn_WorldFrustum(vCorner, 0.0f))
-        {
-            isInFrustum = true;
-            break;
-        }
-    }
-
-    if (!isInFrustum)
-    {
+    // 바운딩 구를 사용한 프러스텀 컬링
+    float radius = extents.magnitude();
+    if (!isIn_WorldFrustum(XMLoadFloat3(&XMFLOAT3(center.x, center.y, center.z)), radius))
         return false;
-    }
 
-    // 오클루전 컬링
-    PxVec3 cameraPosition(XMVectorGetX(vCamPos), XMVectorGetY(vCamPos), XMVectorGetZ(vCamPos));
+    // 뷰 프로젝션 변환
+    _matrix viewProjMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) *
+        m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
 
-    // 적응형 샘플링: 거리에 따라 샘플 수 조절
-    int numSamples = (distanceToCamera < 100.f) ? 8 : (distanceToCamera < 500.0f) ? 4 : 1;
-
-    // 전략적 포인트 선택
-    std::vector<PxVec3> samplePoints;
-    samplePoints.push_back(center); // 중심점
-    if (numSamples > 1)
+    // 바운딩 박스의 8개 코너를 변환
+    std::vector<_vector> transformedCorners(8);
+    for (int i = 0; i < 8; ++i)
     {
-        // 바운딩 박스의 주요 축 방향으로 포인트 추가
-        samplePoints.push_back(PxVec3(center.x + extents.x, center.y, center.z));
-        samplePoints.push_back(PxVec3(center.x - extents.x, center.y, center.z));
-        samplePoints.push_back(PxVec3(center.x, center.y + extents.y, center.z));
-        samplePoints.push_back(PxVec3(center.x, center.y - extents.y, center.z));
-        samplePoints.push_back(PxVec3(center.x, center.y, center.z + extents.z));
-        samplePoints.push_back(PxVec3(center.x, center.y, center.z - extents.z));
+        _vector corner = XMLoadFloat3(&XMFLOAT3(
+            center.x + (i & 1 ? extents.x : -extents.x),
+            center.y + (i & 2 ? extents.y : -extents.y),
+            center.z + (i & 4 ? extents.z : -extents.z)
+        ));
+        transformedCorners[i] = XMVector3TransformCoord(corner, viewProjMatrix);
     }
 
-    // 레이캐스트 수행
-    for (const auto& point : samplePoints)
+    // 변환된 AABB 계산
+    _vector vMin = transformedCorners[0], vMax = transformedCorners[0];
+    for (int i = 1; i < 8; ++i)
     {
-        PxVec3 direction = point - cameraPosition;
-        float distance = direction.magnitude();
-        direction.normalize();
-
-        PxRaycastBuffer hit;
-        PxQueryFilterData filterData;
-        filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC;
-
-        bool isHit = m_pGameInstance->GetScene()->raycast(cameraPosition, direction, distance, hit, PxHitFlag::eDEFAULT, filterData);
-        if (!isHit || hit.block.actor == actor)
-        {
-            // 하나라도 보이면 visible로 간주
-            return true;
-        }
+        vMin = XMVectorMin(vMin, transformedCorners[i]);
+        vMax = XMVectorMax(vMax, transformedCorners[i]);
     }
 
-    // 모든 샘플 포인트가 가려져 있으면 not visible
-    return false;
+    // 화면 공간 좌표 계산
+    float minX = max(-1.f, min(1.f, XMVectorGetX(vMin)));
+    float maxX = max(-1.f, min(1.f, XMVectorGetX(vMax)));
+    float minY = max(-1.f, min(1.f, XMVectorGetY(vMin)));
+    float maxY = max(-1.f, min(1.f, XMVectorGetY(vMax)));
+    float minZ = XMVectorGetZ(vMin);
+    float maxZ = XMVectorGetZ(vMax);
+
+    // 화면 크기 동적 획득
+    UINT screenWidth = 1280;
+    UINT screenHeight = 720;
+
+    // UV 좌표 계산
+    _float2 minUV, maxUV;
+    minUV.x = (minX + 1.0f) * 0.5f;
+    minUV.y = (1.0f - maxY) * 0.5f;
+    maxUV.x = (maxX + 1.0f) * 0.5f;
+    maxUV.y = (1.0f - minY) * 0.5f;
+
+    // HZB 밉맵 레벨 선택
+    float boxSize = max(maxUV.x - minUV.x, maxUV.y - minUV.y) * max(screenWidth, screenHeight);
+    UINT mipLevel = static_cast<UINT>(min(16, max(0, log2(boxSize))));
+
+    // HZB를 사용한 오클루전 테스트
+    float hzbDepth = m_pGameInstance->Sample_HZB(_float2((minUV.x + maxUV.x) * 0.5f, (minUV.y + maxUV.y) * 0.5f), mipLevel);
+
+    return minZ <= hzbDepth;
+}
+float CFrustum::SampleHZB(ID3D11ShaderResourceView* pHZBSRV, float x, float y, UINT level)
+{
+    // 이 함수는 HZB를 샘플링하는 간단한 구현입니다.
+    // 실제 구현에서는 GPU를 사용하여 더 효율적으로 샘플링해야 합니다.
+
+    // 텍스처에서 깊이 값을 읽어오는 코드를 여기에 구현해야 합니다.
+    // 이 예제에서는 간단히 고정된 값을 반환합니다.
+    return 1.0f;
 }
 
 

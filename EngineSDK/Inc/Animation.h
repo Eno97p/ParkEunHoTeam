@@ -50,7 +50,7 @@ private:
 
 
 	CAnimation* m_pNextAnimation = nullptr;
-	_double m_LerpTime = 1.2f;
+	_double m_LerpTime = 2.4f;
 	_double m_LerpTimeAcc = 0.f;
 
 public:

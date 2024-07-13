@@ -263,7 +263,7 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	case CCollider::COLL_NOCOLL:
 		break;
 	}
-
+	
 	if (m_iState == STATE_HIT && m_isAnimFinished)
 	{
 		m_iState = STATE_IDLE;
@@ -277,6 +277,7 @@ NodeStates CGhost::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 

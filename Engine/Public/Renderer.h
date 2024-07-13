@@ -65,6 +65,24 @@ public:
 
 	_vector Get_ShadowEye() { return m_vShadowEye; };
 	_vector Get_ShadowFocus() { return m_vShadowFocus; };
+
+	ID3D11Texture2D* Get_PrevDepthTex() { return m_pPrevDepthTexture; }
+	_float Sample_HZB(_float2 uv, UINT mipLevel);
+
+	//이민영 추가 240711 2002PM
+private:
+	ID3D11Texture2D* m_pPrevDepthTexture = nullptr;
+	ID3D11ShaderResourceView* m_pPrevDepthSRV = { nullptr };
+	class CComputeShader_Texture* m_pHZBComputeShader = { nullptr };
+
+	static const UINT MAX_MIP_LEVELS = 16;  // 예상되는 최대 밉맵 레벨 수
+	ID3D11ShaderResourceView* m_pHZBSRV[MAX_MIP_LEVELS] = { nullptr };
+	ID3D11UnorderedAccessView* m_pHZBUAV[MAX_MIP_LEVELS] = { nullptr };
+	ID3D11Texture2D* m_pHZBTexture[MAX_MIP_LEVELS] = { nullptr };
+
+
+	UINT m_HZBMipLevels = 0;
+
 private:
 	//LUT TEXTURE
 	class CTexture* m_pLUTTex = { nullptr };
@@ -91,7 +109,10 @@ private:
 	void Render_Distortion();
 	void Render_Final();
 	void Compute_HDR();
+
 	void Render_UI();
+
+	void Update_HZB();
 
 #ifdef _DEBUG
 private:

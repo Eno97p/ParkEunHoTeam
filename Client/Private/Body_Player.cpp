@@ -143,7 +143,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 210;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 1.f;
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{
@@ -532,7 +532,6 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
-	//}
 
 
 }

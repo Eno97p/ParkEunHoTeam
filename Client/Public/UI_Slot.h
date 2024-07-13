@@ -4,6 +4,7 @@
 
 BEGIN(Client)
 class CUI_Slot_Frame;
+class CUI_ItemIcon;
 
 class CUI_Slot final : public CUI_Interaction
 {
@@ -28,11 +29,18 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	HRESULT			Create_ItemIcon(_uint iSlotIdx);
+
 private:
+	//_uint				m_iSlotIdx = { 0 };
+	wstring					m_wszItemName = TEXT("");
+	wstring					m_wszItemExplain = TEXT("");
+
 	UISORT_PRIORITY		m_eUISort = { SORT_END };
 	SLOT_TYPE			m_eSlotType = { SLOT_END };
 
 	CUI_Slot_Frame*		m_pSelectFrame = { nullptr };
+	CUI_ItemIcon*		m_pItemIcon = { nullptr };
 
 private:
 	HRESULT	Add_Components();
@@ -41,6 +49,7 @@ private:
 	HRESULT	Create_Frame();
 
 	void	Open_SubPage();
+	void	Render_Font();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

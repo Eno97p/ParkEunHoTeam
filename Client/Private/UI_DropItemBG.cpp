@@ -1,6 +1,7 @@
 #include "UI_DropItemBG.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 CUI_DropItemBG::CUI_DropItemBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -19,6 +20,10 @@ HRESULT CUI_DropItemBG::Initialize_Prototype()
 
 HRESULT CUI_DropItemBG::Initialize(void* pArg)
 {
+	UI_DROPITEM_DESC* pDesc = static_cast<UI_DROPITEM_DESC*>(pArg);
+
+	m_wstrItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -58,6 +63,9 @@ HRESULT CUI_DropItemBG::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrItemName, _float2(m_fX - 125.f, m_fY - 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }

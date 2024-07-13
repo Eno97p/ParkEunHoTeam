@@ -63,6 +63,8 @@ HRESULT CUI_MenuPageTop::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	Render_MenuTitle();
+
 	return S_OK;
 }
 
@@ -106,6 +108,16 @@ HRESULT CUI_MenuPageTop::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_MenuPageTop::Render_MenuTitle()
+{
+	// Menu에 따라 제목 출력하기 (Weapon은 제외)
+	if (TOP_INV == m_eTopType)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), TEXT("INVENTORY"), _float2(m_fX - 43.f, m_fY - 37.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+	}
 }
 
 CUI_MenuPageTop* CUI_MenuPageTop::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

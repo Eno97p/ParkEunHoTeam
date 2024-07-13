@@ -94,6 +94,7 @@ public:
 	void Set_ShadowEyeFocus(_vector vEye, _vector vFocus, _float fThreshold);
 	_vector Get_ShadowEye();
 	_vector Get_ShadowFocus();
+	ID3D11Texture2D* Get_PrevDepthTex();
 
 public: /* For.PipeLine */
 	const _float4x4* Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
@@ -135,6 +136,7 @@ public: /* For.Target_Manager */
 	HRESULT Bind_RenderTargetSRV(const wstring & strTargetTag, class CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_RenderTargetSRV_Compute(const wstring& strTargetTag, class CComputeShader_Texture* pComputeShader, const _char* pConstantName);
 	HRESULT Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D* pDesc);
+	_float	Sample_HZB(_float2 uv, UINT mipLevel);
 
 public:
 	void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);

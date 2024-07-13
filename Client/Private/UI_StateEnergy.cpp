@@ -88,6 +88,8 @@ HRESULT CUI_StateEnergy::Render()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
+		return E_FAIL;
 
 	m_pShaderCom->Begin(2);
 	m_pVIBufferCom->Bind_Buffers();

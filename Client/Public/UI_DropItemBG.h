@@ -1,11 +1,19 @@
 #pragma once
 
 #include "UI.h"
+#include "ItemData.h"
 
 BEGIN(Client)
 
 class CUI_DropItemBG final : public CUI
 {
+public:
+	typedef struct UI_DropItemBG_Desc : public UI_DESC
+	{
+		CItemData::ITEM_NAME	eItemName;
+		wstring wstrTextureName;
+	}UI_DROPITEM_DESC;
+
 private:
 	CUI_DropItemBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_DropItemBG(const CUI_DropItemBG& rhs);
@@ -20,6 +28,8 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	wstring			m_wstrItemName;
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

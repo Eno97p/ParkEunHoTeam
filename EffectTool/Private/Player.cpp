@@ -3,6 +3,7 @@
 #include "Particle_Trail.h"
 #include "Weapon.h"
 
+
 CPlayerDummy::CPlayerDummy(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -33,8 +34,6 @@ HRESULT CPlayerDummy::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(15, true));
-
-
 
 	return S_OK;
 }

@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 
+
 CWeapon_Mantari::CWeapon_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
 {
@@ -162,7 +163,7 @@ HRESULT CWeapon_Mantari::Add_Components()
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.4f, 1.5f, 0.4f);
+	ColliderDesc.vExtents = _float3(0.2f, 1.f, 0.2f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 

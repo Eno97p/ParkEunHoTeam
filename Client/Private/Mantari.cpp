@@ -51,7 +51,7 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -143,7 +143,7 @@ HRESULT CMantari::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(0.7f, 1.7f, 0.7f);
+	ColliderDesc.vExtents = _float3(0.7f, 1.2f, 0.7f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -347,7 +347,16 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
+		if (m_iAttackCount == 3)
+		{
+			m_iAttackCount = 0;
+		}
+		else
+		{
+			m_iAttackCount++;
+		}
 	}
 
 	if (m_iState == STATE_PARRIED)

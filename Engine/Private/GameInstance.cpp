@@ -159,44 +159,53 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	
 
-	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-	//	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
-	//	}));
+	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+		PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+		}));
 
-	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+	//PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+
+
+	
+	
+
+	
+
+	
 
 
 	
 
+
+
+	futures.push_back(m_pWorker->Add_Job([this]() {
+		PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
+		}));
+	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
+	
 	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
 		PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 		}));
 
-	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-
 
 	for (auto& worker : futures)
 	{
-		worker.get();
+		worker.wait();
 	}
+	futures.clear();
 
 
-
-
-
-	PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
-	
-
-
-
-	
+	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());	
+	//	}));
 	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
-
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+	//	}));
 	
 	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
-	
-
 	
 
 	//PROFILE_SCOPE("Picking Update");
@@ -204,14 +213,26 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	//PROFILE_CALL("Picking Update", m_pPicking->Update());
 #endif // _DEBUG
 
+
 	
+
+
+
+
+
+
 	
+
+
+
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
+	//	}));
+
+
 	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 
-	
 	PROFILE_CALL("Object Manager Late_Tick", m_pObject_Manager->Late_Tick(fTimeDelta));
-	
-
 
 	PROFILE_CALL("Level Manager Tick", m_pLevel_Manager->Tick(fTimeDelta));
 	
@@ -474,6 +495,11 @@ _vector CGameInstance::Get_ShadowFocus()
 	return m_pRenderer->Get_ShadowFocus();
 }
 
+ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
+{
+	return m_pRenderer->Get_PrevDepthTex();
+}
+
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
 	return m_pPipeLine->Get_Transform_float4x4(eState);
@@ -617,6 +643,11 @@ HRESULT CGameInstance::Bind_RenderTargetSRV_Compute(const wstring& strTargetTag,
 HRESULT CGameInstance::Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D * pDesc)
 {
 	return m_pTarget_Manager->Copy_Resource(strTargetTag, pDesc);	
+}
+
+_float CGameInstance::Sample_HZB(_float2 uv, UINT mipLevel)
+{
+	return m_pRenderer->Sample_HZB(uv, mipLevel);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

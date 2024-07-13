@@ -367,6 +367,8 @@ call Copy.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Blur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Calculate.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Float4.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_HZB.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SampleHZB.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Instance_Mesh_Compute.hlsl">

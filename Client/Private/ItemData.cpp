@@ -23,8 +23,10 @@ HRESULT CItemData::Initialize(void* pArg)
 
 	if (pDesc->isDropTem) // 드랍 템의 경우
 	{
-		m_eDropItemName = static_cast<DROPITEM_NAME>(rand() % DROPITEM_END); // 랜덤으로 종류 결정
-		Set_DropItem_Type(); 
+		
+		//m_eDropItemName = static_cast<DROPITEM_NAME>(rand() % DROPITEM_END); // 랜덤으로 종류 결정
+		//Set_DropItem_Type(); 
+		Set_DropItem_Data(static_cast<DROPITEM_DESC*>(pDesc)->eItemName);
 	}
 	else
 	{
@@ -54,53 +56,77 @@ HRESULT CItemData::Render()
 	return S_OK;
 }
 
-void CItemData::Set_DropItem_Type()
+void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 {
-	switch (m_eDropItemName)
+	switch (eItemName)
 	{
-	case Client::CItemData::DROPITEM_BUFF1:
-	{
-		m_eItemType = ITEMTYPE_BUFF;
-		break;
-	}
-	case Client::CItemData::DROPITEM_BUFF2:
+	case Client::CItem::ITEM_BUFF1:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemName = ITEMNAME_BUFF1;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
-	case Client::CItemData::DROPITEM_BUFF3:
+	case Client::CItem::ITEM_BUFF2:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemName = ITEMNAME_BUFF2;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
-	case Client::CItemData::DROPITEM_BUFF4:
+	case Client::CItem::ITEM_BUFF3:
 	{
 		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemName = ITEMNAME_BUFF3;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
-	case Client::CItemData::DROPITEM_SOUL:
+	case Client::CItem::ITEM_BUFF4:
+	{
+		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemName = ITEMNAME_BUFF4;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
+		break;
+	}
+	case Client::CItem::ITEM_SOUL:
 	{
 		m_eItemType = ITEMTYPE_ETC; // 먹자마자 소모되어야 하므로 >> 인벤에 들어가는 일 없음
+		m_eItemName = ITEMNAME_SOUL;
+		m_wszItemName = TEXT("SOUL");
+		m_wszItemExplain = TEXT("인벤토리에 출력하지 않을 예정인 아이템");
+		m_wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
 		break;
 	}
-	case Client::CItemData::DROPITEM_ESEENCE:
+	case Client::CItem::ITEM_ESSENCE:
 	{
 		m_eItemType = ITEMTYPE_USABLE;
+		m_eItemName = ITEMNAME_ESSENCE;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Essence");
+		m_wszItemName = TEXT("STABILIZED ESSENCE");
+		m_wszItemExplain = TEXT("안정적인 데이터 [컴파일링 완료]\n보류중인 메모리 분석");
 		break;
 	}
-	case Client::CItemData::DROPITEM_ETHER:
+	case Client::CItem::ITEM_ETHER:
 	{
 		m_eItemType = ITEMTYPE_USABLE;
+		m_eItemName = ITEMNAME_ETHER;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
 		break;
 	}
-	case Client::CItemData::DROPITEM_UPGRADE1:
+	case Client::CItem::ITEM_UPGRADE1:
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
+		m_eItemName = ITEMNAME_UPGRADE1;
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0");
 		break;
 	}
-	case Client::CItemData::DROPITEM_UPGRADE2:
+	case Client::CItem::ITEM_UPGRADE2:
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
+		m_eItemName = ITEMNAME_UPGRADE2;
+		m_wszItemName = TEXT("HADRONITE");
+		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}
 	default:

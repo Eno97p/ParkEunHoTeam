@@ -51,7 +51,6 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	_float fAnimSpeed = 1.f;
 
 	*m_pCanCombo = false;
-	m_pWeapon->Set_Active(false);
 	if (*m_pState == CMantari::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
@@ -227,6 +226,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	}
 	if (m_bAnimFinished)
 	{
+		m_pWeapon->Set_Active(false);
 		m_fDamageTiming = 0.f;
 	}
 

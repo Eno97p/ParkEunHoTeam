@@ -47,6 +47,8 @@ public:
 	HRESULT	Ready_Texture_UI();
 	HRESULT	Ready_Prototype_UI();
 
+	HRESULT	Ready_Fonts();
+
 public:
 	static CMainApp* Create();
 	virtual void Free() override;

@@ -24,7 +24,7 @@ auto CWorker::Add_Job(T&& Func, Args&&...args) -> future<decltype(Func(args...))
 
 	}
 
-	m_condition.notify_one();
+	m_condition.notify_all();
 
 	return result;
 }
@@ -71,31 +71,42 @@ void CWorker::WorkerThread()
 	std::thread::id this_id = std::this_thread::get_id();
 	std::cerr << "Thread " << this_id << " started." << std::endl;
 
-	try {
+	
+		std::unique_lock<std::mutex> lock(m_JobMutex);
 		while (true)
 		{
 			std::function<void()> job;
 			{
-				std::unique_lock<std::mutex> lock(m_JobMutex);
 				m_condition.wait(lock, [this] { return m_bIsShutdown || !m_Jobs.empty(); });
 				if (m_bIsShutdown && m_Jobs.empty())
-					return;
-				job = std::move(m_Jobs.front());
-				m_Jobs.pop();
+					break;
+				if (!m_Jobs.empty())
+				{
+					job = std::move(m_Jobs.front());
+					m_Jobs.pop();
+				}
+					
+				
 			}
-			job();
+
+			if (job)
+			{
+				try
+				{
+					job();
+				}
+				catch (const std::exception& e)
+				{
+					std::cerr << "Exception in WorkerThread " << this_id << ": " << e.what() << std::endl;
+				}
+				catch (...)
+				{
+					std::cerr << "Unknown exception in WorkerThread " << this_id << "." << std::endl;
+				}
+			}
 		}
-	}
-	catch (const std::exception& e) {
-		std::cerr << "Exception in WorkerThread " << this_id << ": " << e.what() << std::endl;
-	}
-	catch (...) {
-		std::cerr << "Unknown exception in WorkerThread " << this_id << "." << std::endl;
-	}
-
-	std::cerr << "Thread " << this_id << " finished." << std::endl;
-
-
+	
+		
 
 
 	//while (true)

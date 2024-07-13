@@ -6,6 +6,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "UIGroup_Loading.h"
 
 #pragma region LEVEL_HEADER
 #include "Level_Logo.h"
@@ -44,7 +45,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 void CLevel_Loading::Tick(_float fTimeDelta)
 {
-	m_pUI_Manager->Render_UIGroup(true, "Loading");
+	if(LEVEL_LOGO != m_eNextLevel)
+		m_pUI_Manager->Render_UIGroup(true, "Loading");
 	m_pUI_Manager->Tick(fTimeDelta);
 
 	if (true == m_pLoader->is_Finished())

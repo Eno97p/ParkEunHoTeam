@@ -39,7 +39,8 @@ public:
 	void Update_ThirdCam(_float fTimeDelta);
 	void Update_TransitionCam(_float fTimeDelta);
 
-
+	void ParryingZoomIn(_float fTimeDelta);
+	void ParryingZoomOut(_float fTimeDelta);
 
 
 public:
@@ -47,6 +48,9 @@ public:
 	void Mouse_Move(_float fTimeDelta);
 
 	//연출용
+	void Shake_Camera(_bool bSlowMo = false, _float fDuration = 0.4f);
+
+
 	void ZoomIn(_float fTimeDelta);
 	void Revolution360(_float fTime);
 	void TiltAdjust(_float fAngle);
@@ -72,6 +76,11 @@ public:
 	void Set_ZoomSpeed(float fZoomSpeed) { m_fZoomSpeed = fZoomSpeed; }
 	void Set_MaxZoomDistance(float fMaxZoomDistance) { m_fMaxZoomDistance = fMaxZoomDistance; }
 
+
+	//
+	void Set_ZoomIn() { m_bZoomIn = true; }
+	void Set_ZoomOut() { m_bZoomOut = true; }
+	
 //락온 기능
 public:
 	void TargetLock_On(_vector vTargetPos);
@@ -144,12 +153,9 @@ private:
 
 private:
 	bool m_bIsShaking = false;
-	float m_fShakeDuration = 0.5f;  // 셰이킹 지속 시간 (초)
 	float m_fShakeTimer = 0.0f;
 	float m_fIntensity = 0.1f;  // 셰이킹 강도
 	bool m_bLockWidth = false;  // 가로 방향 셰이킹 잠금 여부
-	float m_fShakeInterval = 0.05f;  // 셰이킹 갱신 간격 (초)
-	float m_fShakeIntervalTimer = 0.0f;
 	_float4 m_vShakeStart = { 0.f, 0.f, 0.f, 1.f };
 	_float4 m_vShakeTarget = { 0.f, 0.f, 0.f, 1.f };
 
@@ -163,7 +169,10 @@ private:
 	_float m_fHeightChangeSpeed = 2.f;
 	_float m_fZoomAccTime = 0.f;
 	_float m_fMaxZoomDistance = 10.f;
+
 	_bool m_bZoomIn = false;
+	_bool m_bZoomOut = false;
+
 	_bool m_bRevolution360 = false;
 	_bool m_bTiltAdjust = false;
 	_bool m_bHeightChange = false;
@@ -175,11 +184,30 @@ private:
 	_float m_fZoomDelay = 0.f;
 	_bool m_bZoomNow = false;
 
+	_float m_fShakeDuration = 0.4f;  // 셰이킹 지속 시간 (초)
+	_float m_fShakeSpeed = 1.5f;
+	_float m_fShakeAmount = 5.f;
+	_float m_fShakeTargetThreshold = 0.01f;
+	_vector m_vBeforeShakePos = { 0.f, 0.f, 0.f, 1.f };
+	_float4 m_vShakeTargetPosition = { 0.f, 0.f, 0.f, 1.f };
+
+	_float4 m_qShakeRotation = { 0.f, 0.f, 0.f, 1.f };
+
+	_float m_fShakeInterval = 0.1f;  // 셰이킹 갱신 간격 (초)
+	_float m_fShakeIntervalTimer = 0.0f;
+
+
 public:
 	static CThirdPersonCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 	void Shaking();
+	float PerlinNoise(float x, float y, int octaves, float persistence);
+	float InterpolatedNoise(float x, float y);
+	float SmoothNoise(int x, int y);
+	float Noise(int x, int y);
+	float CosineInterpolate(float a, float b, float t);
+	float LinearInterpolate(float a, float b, float x);
 	void Key_Input(_float fTimeDelta);
 };
 

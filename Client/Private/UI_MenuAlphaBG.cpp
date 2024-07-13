@@ -41,6 +41,14 @@ void CUI_MenuAlphaBG::Priority_Tick(_float fTimeDelta)
 
 void CUI_MenuAlphaBG::Tick(_float fTimeDelta)
 {
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
+
+	m_fFlowTimer += fTimeDelta * 0.03f;
+	if (10.f <= m_fFlowTimer)
+	{
+		m_fFlowTimer = 0.f;
+	}
 }
 
 void CUI_MenuAlphaBG::Late_Tick(_float fTimeDelta)
@@ -53,7 +61,7 @@ HRESULT CUI_MenuAlphaBG::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3); // 흐르는 것으로 pass 전환 필요
+	m_pShaderCom->Begin(6); // 흐르는 것으로 pass 전환 필요
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -93,7 +101,9 @@ HRESULT CUI_MenuAlphaBG::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	// 던져주는 값 수정 필요
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowTime", &m_fFlowTimer, sizeof(_float))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
 		return E_FAIL;
 

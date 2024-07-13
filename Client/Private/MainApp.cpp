@@ -47,6 +47,7 @@
 
 #pragma region Menu
 #include "UI_MenuBG.h"
+#include "UI_MenuAlphaBG.h"
 #include "UI_MenuFontaine.h"
 #include "UI_MenuBtn.h"
 #include "UI_Menu_SelectFrame.h"
@@ -1015,6 +1016,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_MenuBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuBG"),
 		CUI_MenuBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MenuAlphaBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuAlphaBG"),
+		CUI_MenuAlphaBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UI_MenuFontaine*/

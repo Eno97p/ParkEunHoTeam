@@ -115,6 +115,37 @@ PS_OUT PS_MAIN_FLOW(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_FLOW_HORIZONTAL(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float2 vDetailUV = In.vTexcoord;
+	vDetailUV.x -= g_fFlowTime;
+
+	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
+
+	Out.vColor = vDestDiffuse;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	if (g_bIsFadeIn)
+	{
+		Out.vColor.a = 1.f - g_fAlphaTimer;
+	}
+	else
+	{
+		float fResultAlpha = g_fAlphaTimer;
+
+		if (0.2 < fResultAlpha)
+			fResultAlpha = 0.2;
+
+		Out.vColor.a = fResultAlpha;
+	}
+
+	return Out;
+}
+
 PS_OUT PS_HUD(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -291,6 +322,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+			pass FlowHorizontalPass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLOW_HORIZONTAL();
 	}
 }
 

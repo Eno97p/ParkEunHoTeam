@@ -10,6 +10,7 @@
 
 #include"CHitReport.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -404,9 +405,11 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 	// 패링 성공 && 왼클릭
 	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER && m_pParriedMonsterTransform)
 	{
+
 		// 일정거리 이하일 때 카운터 발동
 		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION))) < 4.f)
 		{
+			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
 			m_bParrying = false;
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
@@ -415,6 +418,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 			fSlowValue = 0.2f;
 			m_fSlowDelay = 0.f;
 		}
+
 	}
 
 	if (m_iState == STATE_COUNTER)
@@ -431,7 +435,11 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
+
+			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
+
 			m_fSlowDelay = 0.f;
+
 			m_bStaminaCanDecrease = true;
 			m_bParry = false;
 			m_pParriedMonsterTransform = nullptr;

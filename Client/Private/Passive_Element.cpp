@@ -41,10 +41,10 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
     //m_pTransformCom->Scaling(100.f, 100.f, 100.f);
     
-    //CVIBuffer_Instance::INSTANCE_DESC instanceDesc{};
-    //instanceDesc.WorldMats = desc->WorldMats;
-    //instanceDesc.iNumInstance = desc->iInstanceCount;
-    //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
+   //CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
+   //instanceDesc.WorldMats = desc->WorldMats;
+   //instanceDesc.iNumInstance = desc->iInstanceCount;
+   //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
     //FOR CULLING
     //m_pGameInstance->AddCullingObject(this, m_pPhysXCom->Get_Actor());
@@ -148,9 +148,6 @@ HRESULT CPassive_Element::Render()
 
         if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;
-        // 모든 객체의 인스턴스를 한 번에 렌더링
-        //if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
-        //    return E_FAIL;
     }
 
 

@@ -43,6 +43,9 @@ private:
 
 public:
 	wstring			Get_TextureName() { return m_wszTexture; }
+	wstring			Get_ItemNameText() { return m_wszItemName; }
+	wstring			Get_ItemExplainText() { return m_wszItemExplain; }
+
 	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 
 public:
@@ -54,7 +57,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	wstring					m_wszTexture;
+	wstring					m_wszTexture = TEXT("");
+	wstring					m_wszItemName = TEXT("");
+	wstring					m_wszItemExplain = TEXT("");
 
 	ITEM_TYPE				m_eItemType = { ITEMTYPE_END };
 	ITEM_NAME				m_eItemName = { ITEMNAME_END };

@@ -46,7 +46,8 @@ HRESULT CItem::Initialize(void* pArg)
 
 void CItem::Set_Texture()
 {
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 524.f, 98.f, 1.f));
+	// m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 524.f, 98.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 10 + 145, 524.f, 98.f, 1.f));
 	m_pTextureTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
 	m_pTextureTransformCom->Set_Scale(0.3f, 0.3f, 0.3f);
 	m_pTextureTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(

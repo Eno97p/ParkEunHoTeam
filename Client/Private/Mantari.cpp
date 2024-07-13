@@ -143,7 +143,7 @@ HRESULT CMantari::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(0.7f, 1.7f, 0.7f);
+	ColliderDesc.vExtents = _float3(0.7f, 1.2f, 0.7f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -347,7 +347,16 @@ NodeStates CMantari::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Mantari*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
+		if (m_iAttackCount == 3)
+		{
+			m_iAttackCount = 0;
+		}
+		else
+		{
+			m_iAttackCount++;
+		}
 	}
 
 	if (m_iState == STATE_PARRIED)

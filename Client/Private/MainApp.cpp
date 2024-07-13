@@ -173,18 +173,8 @@ HRESULT CMainApp::Initialize()
 	/*if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/NotoSansR.spritefont"))))
 		return E_FAIL;*/
 
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_12.spritefont"))))
+	if (FAILED(Ready_Fonts()))
 		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo13"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_13.spritefont"))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo15"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_15.spritefont"))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
-		return E_FAIL;
-
 
 
 	if (FAILED(Ready_Gara()))
@@ -712,6 +702,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_Fontaine.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_MenuAlphaBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuAlphaBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Unknown/T_SmallCloud.png"), 1))))
+		return E_FAIL;
+
 #pragma region Btn
 	/* Prototype_Component_Texture_MenuBtn_Ch */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Ch"),
@@ -1230,6 +1225,27 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion UI_Obj
 
 	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Fonts()
+{
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_12.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo13"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_13.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo15"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_15.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight13"), TEXT("../Bin/Resources/Fonts/HeirofLight13.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight15"), TEXT("../Bin/Resources/Fonts/HeirofLight15.spritefont"))))
+		return E_FAIL;
 }
 
 CMainApp * CMainApp::Create()

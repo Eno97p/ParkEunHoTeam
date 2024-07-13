@@ -22,6 +22,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+
 	vector<CUI*>			m_vecUI;
 
 private:

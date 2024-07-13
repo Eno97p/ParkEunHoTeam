@@ -493,8 +493,18 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
+   
+
+    //futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
+//	}));
+  
+
+
 	PROFILE_CALL("Render Priority", Render_Priority());
 	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
+
+
 	PROFILE_CALL("Render NonBlend", Render_NonBlend());
 	PROFILE_CALL("Render Decal", Render_Decal());
 	PROFILE_CALL("Render LightAcc", Render_LightAcc());

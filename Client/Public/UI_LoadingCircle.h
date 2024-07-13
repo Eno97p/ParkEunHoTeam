@@ -27,7 +27,11 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool			m_isFontOn = { false };
+	_float			m_fFontTimer = { 0.f };
 	_float			m_fRotationAngle = { 0.f };
+	_float			m_fFontRGB = { 0.f };
+	_vector			m_vFontColor;
 	_matrix			m_RotationMatrix;
 
 	CIRCLE_TYPE		m_eCircleType = { CIRCLE_END };
@@ -37,6 +41,9 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	void	Turn_Animation(_float fTimeDelta);
+
+	void	Render_Font();
+	void	Change_FontColor(_float fTimeDelta);
 
 public:
 	static CUI_LoadingCircle*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

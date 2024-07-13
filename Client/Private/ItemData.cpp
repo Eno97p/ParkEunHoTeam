@@ -92,6 +92,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_ETC; // 먹자마자 소모되어야 하므로 >> 인벤에 들어가는 일 없음
 		m_eItemName = ITEMNAME_SOUL;
+		m_wszItemName = TEXT("SOUL");
+		m_wszItemExplain = TEXT("인벤토리에 출력하지 않을 예정인 아이템");
 		m_wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
 		break;
 	}
@@ -100,6 +102,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_ESSENCE;
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Essence");
+		m_wszItemName = TEXT("STABILIZED ESSENCE");
+		m_wszItemExplain = TEXT("안정적인 데이터 [컴파일링 완료]\n보류중인 메모리 분석");
 		break;
 	}
 	case Client::CItem::ITEM_ETHER:
@@ -120,6 +124,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
 		m_eItemName = ITEMNAME_UPGRADE2;
+		m_wszItemName = TEXT("HADRONITE");
+		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}

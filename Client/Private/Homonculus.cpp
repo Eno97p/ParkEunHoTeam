@@ -302,6 +302,7 @@ NodeStates CHomonculus::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Homonculus*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
+		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 

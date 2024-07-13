@@ -172,8 +172,7 @@ HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 
 	pDesc.fSizeY = 64.f;
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
-	
-	//m_iSlotIdx = CInventory::GetInstance()->Get_vecItemSize() - 1; // ?
+
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 

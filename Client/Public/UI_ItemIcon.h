@@ -27,6 +27,8 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Change_Texture(wstring wstrTextureName);
+
 private:
 	UISORT_PRIORITY	m_eUISort = { SORT_END };
 

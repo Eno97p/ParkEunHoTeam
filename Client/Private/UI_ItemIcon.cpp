@@ -67,6 +67,20 @@ HRESULT CUI_ItemIcon::Render()
 	return S_OK;
 }
 
+void CUI_ItemIcon::Change_Texture(wstring wstrTextureName)
+{
+	// Texture를 변경하기
+	Safe_Release(m_pTextureCom);
+	if (Delete_Component(TEXT("Com_Texture")));
+
+	m_wszTexture = wstrTextureName;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_wszTexture,
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return;
+}
+
 HRESULT CUI_ItemIcon::Add_Components()
 {
 	/* For. Com_VIBuffer */

@@ -32,6 +32,18 @@ CComponent * CGameObject::Get_Component(const wstring & strComponentTag)
 	return iter->second;	
 }
 
+HRESULT CGameObject::Delete_Component(const wstring& strComponentTag)
+{
+	auto iter = m_Components.find(strComponentTag.c_str());
+	if (iter == m_Components.end())
+		return E_FAIL;
+
+	Safe_Release((*iter).second);
+	m_Components.erase(iter);
+
+	return S_OK;
+}
+
 HRESULT CGameObject::Initialize_Prototype()
 {
 	return S_OK;

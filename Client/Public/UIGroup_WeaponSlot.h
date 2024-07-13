@@ -21,6 +21,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Update_QuickSlot(wstring wstrTextureName);
+
 private:
 	vector<CUI*>			m_vecUI;
 	CUI_ItemIcon*			m_pWeaponSlot;

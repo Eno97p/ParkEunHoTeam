@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "ItemData.h"
 #include "UIGroup_DropItem.h"
+#include "UIGroup_WeaponSlot.h"
 
 IMPLEMENT_SINGLETON(CInventory)
 
@@ -67,6 +68,8 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 
 	// QuickAccess에도 출력 필요
 	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData);
+
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_QuickSlot(pItemData->Get_TextureName());
 
 	return S_OK;
 }

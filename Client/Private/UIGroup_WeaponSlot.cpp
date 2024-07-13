@@ -51,7 +51,7 @@ void CUIGroup_WeaponSlot::Tick(_float fTimeDelta)
             m_pSkillSlot->Tick(fTimeDelta);
 
         if (nullptr != m_pQuickSlot)
-            m_pQuickSlot->Tick(fTimeDelta);
+            m_pQuickSlot->Tick(fTimeDelta); // Inventory의 Quick vector에서 얻어올 것
     }
 }
 
@@ -78,6 +78,11 @@ HRESULT CUIGroup_WeaponSlot::Render()
     return S_OK;
 }
 
+void CUIGroup_WeaponSlot::Update_QuickSlot(wstring wstrTextureName)
+{
+    m_pQuickSlot->Change_Texture(wstrTextureName); // 터짐 (null 이슈?)
+}
+
 HRESULT CUIGroup_WeaponSlot::Create_UI()
 {
     // WeaponSlot BG
@@ -88,8 +93,9 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
 
     CUI_ItemIcon::UI_ITEMICON_DESC pIconDesc{};
 
+    ZeroMemory(&pIconDesc, sizeof(pIconDesc));
     pIconDesc.eLevel = LEVEL_STATIC;
-    pIconDesc.fX = 90.f;
+    pIconDesc.fX = 190.f;
     pIconDesc.fY = g_iWinSizeY - 100.f;
     pIconDesc.fSizeX = 64.f;
     pIconDesc.fSizeY = 64.f;

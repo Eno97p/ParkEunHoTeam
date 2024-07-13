@@ -13,6 +13,9 @@ private:
 	virtual ~CUIGroup_InvSub() = default;
 
 public:
+	void			Set_SlotIdx(_uint iSlotIdx) { m_iSlotIdx = iSlotIdx; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -21,6 +24,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_uint					m_iSlotIdx = { 0 }; // 이 SubPage가 현재 Inventory의 몇 번째 Slot에 있는 Item에 대한 정보를 가지고 있는지
 	vector<CUI*>			m_vecUI;
 
 private:

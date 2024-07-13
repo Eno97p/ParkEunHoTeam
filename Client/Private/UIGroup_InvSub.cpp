@@ -104,6 +104,7 @@ HRESULT CUIGroup_InvSub::Create_Slot()
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_INVSUB;
+			pDesc.iSlotIdx = m_iSlotIdx;
 			pDesc.eUISort = THIRTEENTH;
 			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}

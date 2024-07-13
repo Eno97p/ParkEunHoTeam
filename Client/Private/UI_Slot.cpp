@@ -7,6 +7,7 @@
 #include "UI_Slot_Frame.h"
 #include "UIGroup.h"
 #include "UI_ItemIcon.h"
+#include "UIGroup_InvSub.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -27,6 +28,7 @@ HRESULT CUI_Slot::Initialize(void* pArg)
 {
 	UI_SLOT_DESC* pDesc = static_cast<UI_SLOT_DESC*>(pArg);
 
+	m_iSlotIdx = pDesc->iSlotIdx;
 	m_eUISort = pDesc->eUISort;
 	m_eSlotType = pDesc->eSlotType;
 
@@ -56,9 +58,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if (m_isSelect)
+	if (m_isSelect && nullptr != m_pItemIcon)
 	{
-		if(m_pGameInstance->Mouse_Down(DIM_LB))
+		if(m_pGameInstance->Mouse_Down(DIM_LB)) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
 			Open_SubPage();		
 	}
 
@@ -186,7 +188,8 @@ void CUI_Slot::Open_SubPage()
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
 	{
 		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
-
+		
+		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Set_SlotIdx(m_iSlotIdx);
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);

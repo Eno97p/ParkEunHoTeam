@@ -12,6 +12,7 @@ public:
 	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
 	typedef struct UI_Slot_Desc : public UI_DESC
 	{
+		_uint			iSlotIdx;
 		UISORT_PRIORITY	eUISort;
 		SLOT_TYPE		eSlotType;
 	}UI_SLOT_DESC;
@@ -32,9 +33,9 @@ public:
 	HRESULT			Create_ItemIcon(_uint iSlotIdx);
 
 private:
-	//_uint				m_iSlotIdx = { 0 };
-	wstring					m_wszItemName = TEXT("");
-	wstring					m_wszItemExplain = TEXT("");
+	_uint				m_iSlotIdx = { 0 };
+	wstring				m_wszItemName = TEXT("");
+	wstring				m_wszItemExplain = TEXT("");
 
 	UISORT_PRIORITY		m_eUISort = { SORT_END };
 	SLOT_TYPE			m_eSlotType = { SLOT_END };

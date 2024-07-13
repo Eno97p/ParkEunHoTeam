@@ -30,6 +30,7 @@ public:
 	void	Tick(_float fTimeDelta);
 
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
+	HRESULT	Add_QuickAccess(CItemData* pItemData);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -37,6 +38,7 @@ private:
 
 private:
 	vector<class CItemData*>		m_vecItem;
+	vector<class CItemData*>		m_vecQuickAccess;
 	// 무기, 서브무기 등 추가 필요
 
 public:

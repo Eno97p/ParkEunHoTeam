@@ -11,6 +11,7 @@ public:
 	enum BTN_TYPE { BTN_SET = 0, BTN_USE, BTN_CANCEL, BTN_END };
 	typedef struct UI_Btn_Desc : public UI_DESC
 	{
+		_uint		iSlotIdx;
 		BTN_TYPE	eBtnType;
 	}UI_BTN_DESC;
 
@@ -28,6 +29,8 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_uint					m_iSlotIdx = { 0 };
+
 	BTN_TYPE				m_eBtnType = { BTN_END };
 
 	CUI_InvSub_BtnSelect*	m_pSelectBtn = { nullptr };

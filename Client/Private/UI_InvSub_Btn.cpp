@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 #include "UIGroup.h"
 #include "CMouse.h"
 #include "UI_InvSub_BtnSelect.h"
@@ -25,6 +26,7 @@ HRESULT CUI_InvSub_Btn::Initialize(void* pArg)
 {
 	UI_BTN_DESC* pDesc = static_cast<UI_BTN_DESC*>(pArg);
 
+	m_iSlotIdx = pDesc->iSlotIdx;
     m_eBtnType = pDesc->eBtnType;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -174,6 +176,8 @@ void CUI_InvSub_Btn::Mouse_Input()
 		switch (m_eBtnType)
 		{
 		case Client::CUI_InvSub_Btn::BTN_SET:
+			// Quick Access에 빈 자리부터 순서대로 추가되어야 함. 추가되고 나서 화면 꺼져야 함
+			CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
 			break;
 		case Client::CUI_InvSub_Btn::BTN_USE:
 			break;

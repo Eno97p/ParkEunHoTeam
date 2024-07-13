@@ -702,6 +702,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_Fontaine.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_MenuAlphaBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuAlphaBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Unknown/T_SmallCloud.png"), 1))))
+		return E_FAIL;
+
 #pragma region Btn
 	/* Prototype_Component_Texture_MenuBtn_Ch */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Ch"),

@@ -70,7 +70,7 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 		if (m_eColltype == CCollider::COLL_START)
 		{
 
-			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
+			if (m_pPlayer->Get_Parry())
 			{
 				
 				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));

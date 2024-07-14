@@ -25,6 +25,9 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Set_ZoomIn();
+	void Set_ZoomOut();
 private:
 	_float		m_fSensor = { 0.0f };
 	bool		m_bIsNoMove = false;

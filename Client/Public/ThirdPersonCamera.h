@@ -48,10 +48,9 @@ public:
 	void Mouse_Move(_float fTimeDelta);
 
 	//연출용
-	void Shake_Camera(_bool bSlowMo = false, _float fDuration = 0.4f);
+	void Shake_Camera(_bool bSlowMo = false, _float fDuration = 0.4f); //매개변수 : 슬로우모션 true false , 셰이크 지속 시간
 
 
-	void ZoomIn(_float fTimeDelta);
 	void Revolution360(_float fTime);
 	void TiltAdjust(_float fAngle);
 	void Set_Camera_Phase(CAMERA_PHASE ePhase)
@@ -104,6 +103,8 @@ private:
 private:
 	_float		m_fSensor = { 0.0f };
 	CTransform* m_pPlayerTrans = { nullptr };
+
+	CTransform* m_pTargetTrans = { nullptr };
 private:
 	const _vector m_HeightOffset = { 0.f, 10.f, 0.f, 0.f };
 	_bool		m_bActivatePick = false;
@@ -186,13 +187,16 @@ private:
 
 	_float m_fShakeDuration = 0.4f;  // 셰이킹 지속 시간 (초)
 	_float m_fShakeSpeed = 1.5f;
-	_float m_fShakeAmount = 5.f;
+	_float m_fShakeAmount = 3.f;
 	_float m_fShakeTargetThreshold = 0.01f;
 	_vector m_vBeforeShakePos = { 0.f, 0.f, 0.f, 1.f };
+	_float4 m_vShakeOffset = { 0.f, 0.f, 0.f, 1.f };
 	_float4 m_vShakeTargetPosition = { 0.f, 0.f, 0.f, 1.f };
 
 	_float4 m_qShakeRotation = { 0.f, 0.f, 0.f, 1.f };
 
+	const _float m_fInitialShakeInterval = 0.1f;
+	const _float m_fInitialShakeAmount = 3.f;
 	_float m_fShakeInterval = 0.1f;  // 셰이킹 갱신 간격 (초)
 	_float m_fShakeIntervalTimer = 0.0f;
 

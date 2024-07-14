@@ -5,6 +5,9 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+
+class CTexture;
+class CVIBuffer_Cube;
 END
 
 BEGIN(Client)
@@ -26,6 +29,9 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CVIBuffer_Cube* m_pVIBufferCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
+
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

@@ -4,6 +4,7 @@
 
 BEGIN(Client)
 class CUI;
+class CUI_Slot;
 
 class CUIGroup_Weapon final : public CUIGroup
 {
@@ -26,8 +27,11 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Update_Weapon_Add();
+
 private:
 	vector<CUI*>			m_vecUI;
+	vector<CUI_Slot*>		m_vecSlot;
 
 	TAB_TYPE				m_eTabType = { TAB_END };
 

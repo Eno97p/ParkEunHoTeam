@@ -21,7 +21,13 @@ HRESULT CItemData::Initialize(void* pArg)
 {
 	ITEMDATA_DESC* pDesc = static_cast<ITEMDATA_DESC*>(pArg);
 
-	Set_DropItem_Data(pDesc->eItemName);
+	if (pDesc->isDropTem)
+		Set_DropItem_Data(pDesc->eDropItemName);
+	else
+	{
+		m_eItemName = pDesc->eItemName;
+		Set_Item_Data();
+	}
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -131,6 +137,59 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}
+	default:
+		break;
+	}
+}
+
+void CItemData::Set_Item_Data()
+{
+	switch (m_eItemName)
+	{
+	case Client::CItemData::ITEMNAME_CATHARSIS:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("CATHARSIS");
+		m_wszItemExplain = TEXT("순수한 영혼과 강력한 마력의 결합체\n그 자체로 살아있는 존재처럼 사용자의 의지에 반응한다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catharsis");
+		break;
+	}
+	case Client::CItemData::ITEMNAME_CENDRES:
+		break;
+	case Client::CItemData::ITEMNAME_CORRUPTEDSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_DURGASWORD:
+		break;
+	case Client::CItemData::ITEMNAME_ICEBLADE:
+		break;
+	case Client::CItemData::ITEMNAME_NARUEHSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_PRETORIANSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_RADAMANTHESWORD:
+		break;
+	case Client::CItemData::ITEMNAME_SITRASWORD:
+		break;
+	case Client::CItemData::ITEMNAME_VALNIRSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_VEILLEURSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_WHISPERSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_OPH:
+		break;
+	case Client::CItemData::ITEMNAME_ETHERBOLT:
+		break;
+	case Client::CItemData::ITEMNAME_AEGIS:
+		break;
+	case Client::CItemData::ITEMNAME_CATALYST:
+		break;
+	case Client::CItemData::ITEMNAME_HOVERBOARD:
+		break;
+	case Client::CItemData::ITEMNAME_FIREFLY:
+		break;
+	case Client::CItemData::ITEMNAME_WHISPERER:
+		break;
 	default:
 		break;
 	}

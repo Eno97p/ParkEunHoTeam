@@ -89,6 +89,13 @@ void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
 	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
 }
 
+void CUI_Manager::Update_Weapon_Add()
+{
+	// Inventory에 접근해서 마지막으로 추가된 Weapon의 정보를 넘겨준다면 인자가 필요 X
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Weapon_Add();
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

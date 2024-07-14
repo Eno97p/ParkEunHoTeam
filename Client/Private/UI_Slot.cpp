@@ -220,6 +220,29 @@ HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
 	return S_OK;
 }
 
+HRESULT CUI_Slot::Create_ItemIcon_Weapon()
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = ELEVENTH;
+
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+		++weapon;
+	pDesc.wszTexture = (*weapon)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = (*weapon)->Get_ItemNameText();
+	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
+
+	return S_OK;
+}
+
 void CUI_Slot::Open_SubPage()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우

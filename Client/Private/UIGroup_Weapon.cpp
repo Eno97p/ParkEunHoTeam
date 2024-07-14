@@ -1,6 +1,7 @@
 #include "UIGroup_Weapon.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -66,6 +67,19 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_TAB))
@@ -80,12 +94,27 @@ void CUIGroup_Weapon::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pSlot : m_vecSlot)
+			pSlot->Late_Tick(fTimeDelta);
 	}
 }
 
 HRESULT CUIGroup_Weapon::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_Weapon::Update_Weapon_Add()
+{
+	// 해당 함수가 호출될 때는 Weapon Page의 Slot에 새로운 무기가 추가될 때!
+	// Inventory의 Weapon vector에 마지막으로 추가된 녀석을 ItemIcon으로 넣어주자
+	
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon_Weapon();
 }
 
 HRESULT CUIGroup_Weapon::Create_UI()
@@ -142,7 +171,7 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_WEAPON; // Inv가 아니라 Weapon을 만들어야 예외처리 가능
 			pDesc.eUISort = NINETH;
-			m_vecUI.emplace_back(dynamic_cast<CUI*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -204,9 +233,6 @@ void CUIGroup_Weapon::Change_Tab()
 		m_eTabType = TAB_R;
 	else if (TAB_R == m_eTabType)
 		m_eTabType = TAB_L;
-
-
-
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -241,4 +267,7 @@ void CUIGroup_Weapon::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
 }

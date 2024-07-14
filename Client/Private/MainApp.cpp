@@ -91,6 +91,7 @@
 #include "UI_ItemIcon.h"
 #include "UI_DropItemBG.h"
 #include "UIGroup_DropItem.h"
+#include "ItemData.h"
 #pragma endregion Item
 
 #include "UI_MenuPageBG.h"
@@ -527,6 +528,9 @@ HRESULT CMainApp::Ready_UI()
 	if (FAILED(m_pUI_Manager->Initialize()))
 		return E_FAIL;
 
+	if (FAILED(m_pInventory->Initialize()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -623,8 +627,8 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma region Icon
 #pragma region Weapon
-	/* Prototype_Component_Texture_Icon_LimboBlade */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_LimboBlade"),
+	/* Prototype_Component_Texture_Icon_Catharsis */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Catharsis"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_LimboBlade.png"), 1))))
 		return E_FAIL;
 
@@ -1246,6 +1250,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UIGroup_InvSub*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_InvSub"),
 		CUIGroup_InvSub::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ItemData*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ItemData"),
+		CItemData::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

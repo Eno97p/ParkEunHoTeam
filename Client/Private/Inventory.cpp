@@ -26,6 +26,9 @@ CItemData* CInventory::Get_ItemData(_uint iSlotIdx)
 
 HRESULT CInventory::Initialize()
 {
+	if (FAILED(Initialize_DefaultItem()))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -33,12 +36,30 @@ void CInventory::Tick(_float fTimeDelta)
 {
 }
 
+HRESULT CInventory::Initialize_DefaultItem()
+{
+	// 게임 처음 시작 시 기본적으로 가지고 있는 아이템 
+	// Weapon에 추가
+	CItemData::ITEMDATA_DESC pDesc{};
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_CATHARSIS;
+
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	return S_OK;
+}
+
 HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 {
 	// Inventory에 ItemData 추가
 	CItemData::ITEMDATA_DESC pDesc{};
-		
-	pDesc.eItemName = eItemType;
+	
+	pDesc.isDropTem = true;
+	pDesc.eDropItemName = eItemType;
 	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI 출력
@@ -81,6 +102,9 @@ void CInventory::Free()
 
 	for (auto& pQuickItem : m_vecQuickAccess)
 		Safe_Release(pQuickItem);
+
+	for (auto& pWeaponItem : m_vecWeapon)
+		Safe_Release(pWeaponItem);
 
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pGameInstance);

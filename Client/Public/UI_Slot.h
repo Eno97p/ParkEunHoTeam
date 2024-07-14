@@ -34,6 +34,7 @@ public:
 	HRESULT			Create_ItemIcon_Inv();
 	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
 	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
+	HRESULT			Create_ItemIcon_Weapon();
 
 private:
 	_uint				m_iSlotIdx = { 0 };

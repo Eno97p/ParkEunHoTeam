@@ -19,6 +19,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Mirror() override;
 
 public:
 	HRESULT Add_Components(MAP_ELEMENT_DESC* desc);
@@ -28,7 +29,7 @@ public:
 private:
 	CPhysXComponent* m_pPhysXCom = { nullptr };
 	_bool			 m_bNoCullElement = false;
-
+	_uint			 m_iTest = 0;
 
 public:
 	static CPassive_Element* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

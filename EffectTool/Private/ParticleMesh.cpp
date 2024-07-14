@@ -102,13 +102,19 @@ void CParticleMesh::Tick(_float fTimeDelta)
 	case GROWOUTY:
 		m_InstModelCom->GrowOutY(fTimeDelta);
 		break;
+	case GROWOUT_SPEEDDOWN:
+		m_InstModelCom->GrowOut_Speed_Down(fTimeDelta);
+		break;
 	}
 }
 
 void CParticleMesh::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	if (OwnDesc->SuperDesc.IsBlur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
 	if (OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -116,7 +122,6 @@ void CParticleMesh::Late_Tick(_float fTimeDelta)
 
 HRESULT CParticleMesh::Render()
 {
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -148,6 +153,26 @@ HRESULT CParticleMesh::Render_Bloom()
 			return E_FAIL;
 
 		m_pShaderCom->Begin(1);
+
+		m_InstModelCom->Render_Instance(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CParticleMesh::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_InstModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(0);
 
 		m_InstModelCom->Render_Instance(i);
 	}

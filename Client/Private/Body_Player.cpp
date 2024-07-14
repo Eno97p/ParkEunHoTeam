@@ -273,7 +273,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.f;
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.4f && m_fDamageTiming < 0.7f)
+		if (m_fDamageTiming > 0.5f && m_fDamageTiming < 0.8f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -526,6 +526,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	else
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
@@ -597,6 +598,89 @@ HRESULT CBody_Player::Bind_ShaderResources()
 	return S_OK;
 }
 
+
+HRESULT CBody_Player::Render_Reflection()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix;
+	const _float4x4* matCam = m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+
+	// 원래 뷰 행렬 로드
+	XMMATRIX mOriginalView = XMLoadFloat4x4(matCam);
+
+	// 카메라 위치 추출
+	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
+
+	// 바닥 평면의 높이 (예: Y = 0)
+	float floorHeight = 521.9f;
+
+	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
+	XMVECTOR vReflectedCamPos = vCamPos;
+	vReflectedCamPos = XMVectorSetY(vReflectedCamPos, 2 * floorHeight - XMVectorGetY(vCamPos));
+
+	// 카메라 방향 벡터 추출
+	XMVECTOR vCamLook = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 0, 1, 0), mOriginalView) - vCamPos);
+	XMVECTOR vCamUp = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 1, 0, 0), mOriginalView) - vCamPos);
+
+	// 반사된 카메라 방향 벡터 계산
+	XMVECTOR vReflectedCamLook = XMVectorSetY(vCamLook, -XMVectorGetY(vCamLook));
+	XMVECTOR vReflectedCamUp = XMVectorSetY(vCamUp, -XMVectorGetY(vCamUp));
+
+	// 반사된 뷰 행렬 생성
+	XMMATRIX mReflectedView = XMMatrixLookToLH(vReflectedCamPos, vReflectedCamLook, vReflectedCamUp);
+
+	// 변환된 행렬 저장
+	XMStoreFloat4x4(&ViewMatrix, mReflectedView);
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (i == 0)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+				return E_FAIL;
+		}
+		else if (i == 1)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
+				return E_FAIL;
+		}
+
+		if (i == 2)
+		{
+			if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+				return E_FAIL;
+			m_pShaderCom->Begin(10);
+		}
+		else
+		{
+			m_pShaderCom->Begin(9);
+		}
+
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
 
 HRESULT CBody_Player::Render_Distortion()
 {

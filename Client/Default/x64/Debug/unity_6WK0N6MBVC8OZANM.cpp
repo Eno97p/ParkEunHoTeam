@@ -153,6 +153,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\UI_ItemIcon.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\UI_MenuAlphaBG.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UI_MonsterHPBar.cpp"
 
 

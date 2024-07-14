@@ -6,3 +6,6 @@
 5. ArrowParried2
 6. Parried
 7. Blood_Split2
+8. Homunculus_Suicide0
+9. Homunculus_Suicide1
+10. PlayerPassiveTest

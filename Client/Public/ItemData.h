@@ -27,14 +27,10 @@ public:
 
 	typedef struct ItemData_Desc : public GAMEOBJECT_DESC 
 	{
-		_bool			isDropTem; // 드탑템 여부
+		_bool					isDropTem; // 드탑템 여부
+		CItem::ITEM_NAME		eItemName;
 		
 	}ITEMDATA_DESC;
-
-	typedef struct DropItem_Desc : public ITEMDATA_DESC
-	{
-		CItem::ITEM_NAME		eItemName;
-	}DROPITEM_DESC;
 
 private:
 	CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

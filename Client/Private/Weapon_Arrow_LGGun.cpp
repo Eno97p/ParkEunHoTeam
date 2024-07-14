@@ -3,7 +3,6 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "EffectManager.h"
-
 CWeapon_Arrow_LGGun::CWeapon_Arrow_LGGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
 {
@@ -71,8 +70,9 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 		if (m_eColltype == CCollider::COLL_START)
 		{
 
-			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
+			if (m_pPlayer->Get_Parry())
 			{
+				
 				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				EFFECTMGR->Generate_Particle(5, fPos);
 				m_bIsParried = true;

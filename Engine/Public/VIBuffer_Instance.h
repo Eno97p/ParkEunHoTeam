@@ -66,6 +66,8 @@ public:
 	void Gather(_float fTimeDelta);
 	void Extinction(_float fTimeDelta);
 	void GrowOutY(_float fTimeDelta);
+	void GrowOut_Speed_Down(_float fTimeDelta);
+
 
 	
 

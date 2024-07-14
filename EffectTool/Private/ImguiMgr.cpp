@@ -304,6 +304,10 @@ void CImguiMgr::EffectTool_Rework()
 	{
 		parentsDesc.eType = GROWOUTY;
 	}
+	if (ImGui::RadioButton("GrowOutSpeedDown", parentsDesc.eType == GROWOUT_SPEEDDOWN))
+	{
+		parentsDesc.eType = GROWOUT_SPEEDDOWN;
+	}
 #pragma endregion FUNCTYPE
 	
 #pragma endregion PARTICLEDESC

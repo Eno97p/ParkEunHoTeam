@@ -103,6 +103,9 @@ void CParticleMesh::Tick(_float fTimeDelta)
 	case GROWOUTY:
 		m_InstModelCom->GrowOutY(fTimeDelta);
 		break;
+	case GROWOUT_SPEEDDOWN:
+		m_InstModelCom->GrowOut_Speed_Down(fTimeDelta);
+		break;
 	}
 }
 
@@ -156,6 +159,25 @@ HRESULT CParticleMesh::Render_Bloom()
 	return S_OK;
 }
 
+HRESULT CParticleMesh::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_InstModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(0);
+
+		m_InstModelCom->Render_Instance(i);
+	}
+
+	return S_OK;
+}
 
 HRESULT CParticleMesh::Add_Components(const wstring& strModelPrototype)
 {

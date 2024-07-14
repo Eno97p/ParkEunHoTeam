@@ -8,6 +8,8 @@
 #include "BlendObject.h"
 #include "VIBuffer_Rect.h"
 #include "RenderTarget.h"
+
+#include"CRenderWorker.h"
 _uint      g_iSizeX = 8192;
 _uint      g_iSizeY = 4608;
 
@@ -458,7 +460,15 @@ HRESULT CRenderer::Initialize()
            //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
            //   return E_FAIL;
 
-#endif
+
+#endif	
+        size_t iNumThreadPool = PxThread::getNbPhysicalCores();
+        m_pRenderWorker = CRenderWorker::Create(iNumThreadPool, m_pDevice);
+        if (nullptr == m_pRenderWorker)
+            return E_FAIL;
+
+
+        
 
         return S_OK;
     
@@ -493,22 +503,36 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
-   
-
-    //futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
-//	}));
-  
-
-
+    vector<future<void>> futures;
+    
+ 
+    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
+    //    PROFILE_CALL("Render Priority", Render_Priority());
+    //    }));
 	PROFILE_CALL("Render Priority", Render_Priority());
+    
+    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
+    //    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
+    //    }));
+
 	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
 
+
+    for (auto& future : futures)
+        future.get();
+
+    m_pRenderWorker->ExecuteCommandLists(m_pContext);
+
 	PROFILE_CALL("Render NonBlend", Render_NonBlend());
+   
+
+
 	PROFILE_CALL("Render Decal", Render_Decal());
+
 	PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
+   
 
 	PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 
@@ -530,6 +554,11 @@ void CRenderer::Draw()
     //    return;
 
     //PROFILE_CALL("Render HZB", Update_HZB());
+
+   
+
+    int tmep = 0;
+    
 
 }
 #ifdef _DEBUG
@@ -1339,7 +1368,7 @@ void CRenderer::Free()
 	//Safe_Release(m_pBloomComputeShader);
 	Safe_Release(m_pVIBuffer);
 
-
+    Safe_Release(m_pRenderWorker);
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);

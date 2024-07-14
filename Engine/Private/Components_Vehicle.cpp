@@ -82,6 +82,8 @@ void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, Px
 	PxReal steeringAngle= middleParam->steeringAngle;
 
 	
+	PxQuat steeringRotation = PxQuat(steeringAngle * dt, PxVec3(0, 1, 0));
+	middleStates[0].bodyRotation = steeringRotation * middleStates[0].bodyRotation;
 	for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 	{
 		middleStates[i].wheelSpeeds[i] += middleParam->engineTorque * dt;
@@ -123,8 +125,19 @@ void ComponentEnd::CFunctionEnd(const VehicleEndParams* endParam, PxVehicleArray
 	}
 
 	VehicleEndState& bodyEndState = endStates[0];
+
+	PxVec3 rotatedVelocity = middleStates[0].bodyRotation.rotate(totalVelocity);
+
 	bodyEndState.finalVelocity = totalVelocity;
 	bodyEndState.finalPose.p += totalVelocity * dt;
+
+
+
+	// 최종 회전 적용
+	bodyEndState.finalPose.q = middleStates[0].bodyRotation * bodyEndState.finalPose.q;
+
+	// 각속도 계산 (간단한 예시)
+	bodyEndState.finalAngularVelocity = PxVec3(0, middleStates[0].bodyRotation.getAngle() / dt, 0);
 
 
 }

@@ -10,7 +10,7 @@
 #include "EffectManager.h"
 
 #include "UIGroup_BossHP.h"
-
+#include "TargetLock.h"
 
 
 
@@ -57,9 +57,10 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
-
-
-
+	// Body의 m_pModelCom를 넣어야 함
+	vector<CGameObject*>::iterator body = m_PartObjects.begin();
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end")))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -116,6 +117,8 @@ void CMantari::Tick(_float fTimeDelta)
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
 	m_pUI_HP->Tick(fTimeDelta);
+
+	m_pTargetLock->Tick(fTimeDelta);
 }
 
 void CMantari::Late_Tick(_float fTimeDelta)
@@ -125,6 +128,8 @@ void CMantari::Late_Tick(_float fTimeDelta)
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
+
+	m_pTargetLock->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

@@ -218,6 +218,7 @@ private:
 	class COctTree*				m_pOctTree = { nullptr };
 
 	class CWorker*				m_pWorker = { nullptr };
+	class CRenderWorker*		m_pRenderWorker = { nullptr };
 public:	
 	static void Release_Engine();
 	virtual void Free() override;

@@ -89,6 +89,7 @@ private:
 	class CTexture* m_pDistortionTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
 
+	class CRenderWorker*		 m_pRenderWorker = { nullptr };
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);

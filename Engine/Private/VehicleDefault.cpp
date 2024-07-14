@@ -30,7 +30,20 @@ HRESULT CVehicleDefault::createActor(PxPhysics* pPhysics, PxScene* pScene, const
 	if(!mActor) //생성 실패 하면	실패
 		return E_FAIL;
 	mActor->setMass(m_beginParams.mass);
-	PxRigidBodyExt::updateMassAndInertia(*mActor, 10.f);
+
+	PxVec3 momentOfInertia = PxVec3(
+		m_beginParams.mass * (m_beginParams.dimensions.y * m_beginParams.dimensions.y + m_beginParams.dimensions.z * m_beginParams.dimensions.z) / 12,
+		m_beginParams.mass * (m_beginParams.dimensions.x * m_beginParams.dimensions.x + m_beginParams.dimensions.z * m_beginParams.dimensions.z) / 12,
+		m_beginParams.mass * (m_beginParams.dimensions.x * m_beginParams.dimensions.x + m_beginParams.dimensions.y * m_beginParams.dimensions.y) / 12
+	);
+	mActor->setMassSpaceInertiaTensor(momentOfInertia);
+
+
+
+
+
+
+	//PxRigidBodyExt::updateMassAndInertia(*mActor, 10.f);
 
 	PxBoxGeometry boxGeometry(m_beginParams.dimensions.x * 0.5f, m_beginParams.dimensions.y * 0.5f, m_beginParams.dimensions.z * 0.5f);
 	PxMaterial* material = pPhysics->createMaterial(0.5f, 0.5f, 0.1f);
@@ -53,11 +66,13 @@ bool CVehicleDefault::update(const PxReal dt, const PxVehicleSimulationContext& 
 		const VehicleEndState& endState = m_endState[0];
 		PxTransform pose = endState.finalPose;
 		PxVec3 velocity = endState.finalVelocity;
+		PxVec3 angularVelocity = endState.finalAngularVelocity;
 
 		//if (pose.isValid())
 		{
 			mActor->setGlobalPose(pose);
 			mActor->setLinearVelocity(velocity);
+			mActor->setAngularVelocity(angularVelocity);
 		}
 	}
 
@@ -81,6 +96,7 @@ HRESULT CVehicleDefault::Initialize()
 		m_middleState[i].setToDefault();
 		m_endState[i].setToDefault();
 	}
+	m_middleState[0].bodyRotation = PxQuat(PxIdentity);
 
 	return S_OK;
 }

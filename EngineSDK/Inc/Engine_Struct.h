@@ -246,13 +246,13 @@ namespace Engine
 		public:
 			//디폴트로 초기화 필요하다면 초기화
 			PX_FORCE_INLINE VehicleBeginParams()
-				: mass(1000.0f), dimensions(1.0f, 1.0f, 1.0f), numWheels(4)
+				: mass(1000.0f), dimensions(1.0f, 1.0f, 1.0f), numWheels(4) , maxSteeringAngle(PxPi / 4)
 			{
 				for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 					wheelRadius[i] = 0.5f;
 			}
-			PX_FORCE_INLINE VehicleBeginParams(PxReal _mass, PxVec3 _dimensions, PxU32 _numWheels, PxReal _wheelRadius)
-				: mass(_mass), dimensions(_dimensions), numWheels(_numWheels)
+			PX_FORCE_INLINE VehicleBeginParams(PxReal _mass, PxVec3 _dimensions, PxU32 _numWheels, PxReal _wheelRadius, PxReal _maxSteeringAngle)
+				: mass(_mass), dimensions(_dimensions), numWheels(_numWheels), maxSteeringAngle(_maxSteeringAngle)
 			{
 				for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 					wheelRadius[i] = _wheelRadius;
@@ -265,7 +265,7 @@ namespace Engine
 			PxVec3 dimensions;		//차량의 크기
 			PxU32 numWheels;		//차량의 바퀴 갯수
 			PxReal wheelRadius[MAX_NUM_WHEELS];		//바퀴의 반지름
-
+			PxReal maxSteeringAngle;  // 최대 조향 각도 추가
 		};
 
 		struct ENGINE_DLL VehicleBeginState
@@ -299,11 +299,11 @@ namespace Engine
 		{
 		public:
 			PX_FORCE_INLINE VehicleMiddleParams()
-				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f)
+				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f), steeringSpeed(PxPi / 2)
 			{
 			}
-			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle)
-				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle)
+			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed)
+				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle), steeringSpeed(_steeringSpeed)
 			{
 			}
 
@@ -314,6 +314,7 @@ namespace Engine
 			PxReal engineTorque;		//엔진 토크
 			PxReal brakeTorque;			//브레이크 토크
 			PxReal steeringAngle;		//핸들 각도
+			PxReal steeringSpeed;		//핸들 속도
 		};
 
 		struct ENGINE_DLL VehicleMiddleState
@@ -323,14 +324,16 @@ namespace Engine
 				{
 					PxMemZero(wheelSpeeds, sizeof(PxReal) * MAX_NUM_WHEELS);
 					PxMemZero(suspensionCompression, sizeof(PxReal) * MAX_NUM_WHEELS);
+					PxMemZero(&bodyRotation, sizeof(PxQuat));
 				}
-				PX_FORCE_INLINE VehicleMiddleState(PxReal _wheelSpeeds[MAX_NUM_WHEELS], PxReal _suspensionCompression[MAX_NUM_WHEELS])
+				PX_FORCE_INLINE VehicleMiddleState(PxReal _wheelSpeeds[MAX_NUM_WHEELS], PxReal _suspensionCompression[MAX_NUM_WHEELS], const PxQuat& BodyRotation  )
 				{
 					for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 					{
 						wheelSpeeds[i] = _wheelSpeeds[i];
 						suspensionCompression[i] = _suspensionCompression[i];
 					}
+					bodyRotation = BodyRotation;
 				}
 				PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleMiddleState)); }
 				PX_FORCE_INLINE void setData(const VehicleMiddleState& other)
@@ -340,10 +343,12 @@ namespace Engine
 						wheelSpeeds[i] = other.wheelSpeeds[i];
 						suspensionCompression[i] = other.suspensionCompression[i];
 					}
+					bodyRotation = other.bodyRotation;
 				}
 
 				PxReal wheelSpeeds[MAX_NUM_WHEELS];				//바퀴 속도
 				PxReal suspensionCompression[MAX_NUM_WHEELS];	//서스펜션 압축
+				PxQuat bodyRotation;							//바디 회전
 		};
 
 		struct ENGINE_DLL VehicleEndParams
@@ -365,7 +370,7 @@ namespace Engine
 		{
 		public:
 			PX_FORCE_INLINE VehicleEndState()
-				: finalPose(PxTransform(PxIdentity)), finalVelocity(PxVec3(0))
+				: finalPose(PxTransform(PxIdentity)), finalVelocity(PxVec3(0)), finalAngularVelocity(PxVec3(0))
 			{
 			}
 			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleEndState)); }
@@ -373,12 +378,14 @@ namespace Engine
 			{
 				finalPose = other.finalPose;
 				finalVelocity = other.finalVelocity;
+				finalAngularVelocity = other.finalAngularVelocity;
 			}
 
 
 
 			PxTransform finalPose;	//최종 위치
 			PxVec3 finalVelocity;	//최종 속도
+			PxVec3 finalAngularVelocity;  // 최종 각속도
 
 		};
 

@@ -59,6 +59,8 @@ void CUIGroup_WeaponSlot::Late_Tick(_float fTimeDelta)
 {
     if (m_isRend)
     {
+        Key_Input();
+
         for (auto& pUI : m_vecUI)
             pUI->Late_Tick(fTimeDelta);
 
@@ -95,8 +97,8 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
 
     //ZeroMemory(&pIconDesc, sizeof(pIconDesc));
     pIconDesc.eLevel = LEVEL_STATIC;
-    pIconDesc.fX = 190.f;
-    pIconDesc.fY = g_iWinSizeY - 100.f;
+    pIconDesc.fX = 186.f;
+    pIconDesc.fY = g_iWinSizeY - 96.f;
     pIconDesc.fSizeX = 64.f;
     pIconDesc.fSizeY = 64.f;
     pIconDesc.eUISort = SECOND;
@@ -124,6 +126,27 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
     //m_vecUI.emplace_back(dynamic_cast<CUI_WeaponSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WeaponSlot"), &pSlotDesc)));
 
     return S_OK;
+}
+
+void CUIGroup_WeaponSlot::Key_Input()
+{
+    if (m_pGameInstance->Key_Down(DIK_V)) // Quick Slot Change
+    {
+        if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
+        {
+            ++m_iQuickIdx;
+        }
+        else
+        {
+            m_iQuickIdx = 0;
+        }
+
+        vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+        for (size_t i = 0; i < m_iQuickIdx; ++i)
+            ++quickaccess;
+
+        m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
+    }
 }
 
 CUIGroup_WeaponSlot* CUIGroup_WeaponSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

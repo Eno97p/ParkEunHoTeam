@@ -59,6 +59,9 @@
 #include "C:\Real3DProject\Engine\private\CProfileScope.cpp"
 
 
+#include "C:\Real3DProject\Engine\Private\CRenderWorker.cpp"
+
+
 #include "C:\Real3DProject\Engine\private\CUserErrorCallBack.cpp"
 
 

@@ -133,6 +133,12 @@ void CPlayer::Tick(_float fTimeDelta)
 	{
 		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	}
+	m_fParticleAcctime -= fTimeDelta;
+	if (m_fParticleAcctime < 0.f)
+	{
+		EFFECTMGR->Generate_Particle(10,_float4(0.f,2.f,0.f,1.f), this);
+		m_fParticleAcctime = 0.1f;
+	}
 
 }
 
@@ -265,6 +271,7 @@ void CPlayer::PlayerHit(_float fValue)
 
 void CPlayer::Parry_Succeed()
 {
+	dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
 	_float4x4 WeaponMat = *static_cast<CPartObject*>(m_PartObjects[1])->Get_Part_Mat();
 	_float4 vParticlePos = { WeaponMat._41,WeaponMat._42,WeaponMat._43,1.f };
 	_float4 PlayerPos;
@@ -486,6 +493,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && !m_bParrying)
 	{
+		
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -504,6 +512,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
+			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
 			m_bStaminaCanDecrease = true;
 			if (!m_bDisolved_Yaak)
 			{

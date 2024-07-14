@@ -22,6 +22,7 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Update_QuickSlot(wstring wstrTextureName);
+	void			Update_WeaponSlot(wstring wstrTextureName);
 
 private:
 	_uint					m_iQuickIdx = { 0 }; // Quick Access¿« Index

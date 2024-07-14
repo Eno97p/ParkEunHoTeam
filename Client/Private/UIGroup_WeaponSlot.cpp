@@ -82,7 +82,12 @@ HRESULT CUIGroup_WeaponSlot::Render()
 
 void CUIGroup_WeaponSlot::Update_QuickSlot(wstring wstrTextureName)
 {
-    m_pQuickSlot->Change_Texture(wstrTextureName); // 터짐 (null 이슈?)
+    m_pQuickSlot->Change_Texture(wstrTextureName);
+}
+
+void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName)
+{
+    m_pWeaponSlot->Change_Texture(wstrTextureName);
 }
 
 HRESULT CUIGroup_WeaponSlot::Create_UI()
@@ -95,35 +100,24 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
 
     CUI_ItemIcon::UI_ITEMICON_DESC pIconDesc{};
 
-    //ZeroMemory(&pIconDesc, sizeof(pIconDesc));
+    // QuickSlot
+    //ZeroMemory(&pIconDesc, sizeof(pIconDesc)); >> wstring 있을 때는 Zeromemory 사용 X
     pIconDesc.eLevel = LEVEL_STATIC;
     pIconDesc.fX = 186.f;
     pIconDesc.fY = g_iWinSizeY - 96.f;
     pIconDesc.fSizeX = 64.f;
     pIconDesc.fSizeY = 64.f;
     pIconDesc.eUISort = SECOND;
-    pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None"); // 임시로? 투명 텍스쳐
+    pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
     m_pQuickSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
-    //// WeaponSlot
-    //CUI_WeaponSlot::UI_WEAPONSLOT_DESC pSlotDesc;
+    // Weapon Slot
+    pIconDesc.fX = 90.f;
+    pIconDesc.fY = g_iWinSizeY - 100.f;
+    pIconDesc.eUISort = SECOND;
+    pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
+    m_pWeaponSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
-    //// Slot One
-    //pSlotDesc.eLevel = LEVEL_STATIC;
-    //pSlotDesc.eSlotNum = CUI_WeaponSlot::SLOT_ONE;
-    //m_vecUI.emplace_back(dynamic_cast<CUI_WeaponSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WeaponSlot"), &pSlotDesc)));
-
-    //// Slot Two
-    //ZeroMemory(&pSlotDesc, sizeof(pSlotDesc));
-    //pSlotDesc.eLevel = LEVEL_STATIC;
-    //pSlotDesc.eSlotNum = CUI_WeaponSlot::SLOT_TWO;
-    //m_vecUI.emplace_back(dynamic_cast<CUI_WeaponSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WeaponSlot"), &pSlotDesc)));
-
-    //// Slot Three
-    //ZeroMemory(&pSlotDesc, sizeof(pSlotDesc));
-    //pSlotDesc.eLevel = LEVEL_STATIC;
-    //pSlotDesc.eSlotNum = CUI_WeaponSlot::SLOT_THREE;
-    //m_vecUI.emplace_back(dynamic_cast<CUI_WeaponSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WeaponSlot"), &pSlotDesc)));
 
     return S_OK;
 }
@@ -132,20 +126,25 @@ void CUIGroup_WeaponSlot::Key_Input()
 {
     if (m_pGameInstance->Key_Down(DIK_V)) // Quick Slot Change
     {
-        if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
+        // 아무 것도 없을 때 예외 처리 필요
+        if (0 < CInventory::GetInstance()->Get_QuickSize())
         {
-            ++m_iQuickIdx;
-        }
-        else
-        {
-            m_iQuickIdx = 0;
-        }
+            if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
+            {
+                ++m_iQuickIdx;
+            }
+            else
+            {
+                m_iQuickIdx = 0;
+            }
 
-        vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
-        for (size_t i = 0; i < m_iQuickIdx; ++i)
-            ++quickaccess;
+            vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+            for (size_t i = 0; i < m_iQuickIdx; ++i)
+                ++quickaccess;
 
-        m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
+            m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
+
+        }
     }
 }
 

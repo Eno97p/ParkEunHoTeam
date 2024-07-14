@@ -266,7 +266,7 @@ void CUI_Slot::Open_SubPage()
 
 void CUI_Slot::Render_Font()
 {
-	if (SLOT_INV == m_eSlotType)
+	if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 	{
 		// 여기서 ItemIcon과 Item 정보들 출력?
 		// Title

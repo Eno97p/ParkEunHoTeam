@@ -98,13 +98,13 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 {
 	// Weapon의 Slot에서 현재 선택한 아이템을 EquipWeapon에 넣어주기
-	// 순서대로가 아니라 Weapon Slot에서 선택한 녀석을 Equip Weapon Slot 중 선택한 슬롯에다가 넣어주어야 함 >>> 슬롯의 Index 정보도 필요할 듯함(UI를 띄울 때도 이를 활용)
-	// 애초에 Inventory의 Equip Weapon에서부터 순서가 필요함 >> vector가 아니라 list?    m_listEquipWeapon >>> list가 아니라 배열?
 	m_arrEquipWeapon[iEquipSlotIdx] = pItemData;
 
 	// Weapon Equip Slot UI에 출력
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
 
+	// HUD
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName());
 
 	return S_OK;
 }

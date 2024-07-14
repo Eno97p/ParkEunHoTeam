@@ -38,7 +38,7 @@ public:														//파티클 함수들
 	void Gather(_float fTimeDelta);
 	void Extinction(_float fTimeDelta);
 	void GrowOutY(_float fTimeDelta);
-
+	void GrowOut_Speed_Down(_float fTimeDelta);
 
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 

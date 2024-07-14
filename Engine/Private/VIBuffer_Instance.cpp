@@ -199,7 +199,6 @@ void CVIBuffer_Instance::GrowOut(_float fTimeDelta)
 		pVertices[i].vUp.y = m_pSize[i];
 		pVertices[i].vLook.z = m_pSize[i];
 
-
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{
 			if (true == m_InstanceDesc.isLoop)
@@ -783,6 +782,60 @@ void CVIBuffer_Instance::GrowOutY(_float fTimeDelta)
 				pVertices[i].vUp.y = m_pOriginalSize[i];
 				pVertices[i].vLook.z = m_pOriginalSize[i];
 				m_pSize[i] = m_pOriginalSize[i];
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+
+		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	if (!m_InstanceDesc.isLoop && allInstancesDead)
+	{
+		m_bInstanceDead = true;
+	}
+	else
+	{
+		m_bInstanceDead = false;
+	}
+}
+
+void CVIBuffer_Instance::GrowOut_Speed_Down(_float fTimeDelta)
+{
+	bool allInstancesDead = true;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		m_pSize[i] += fTimeDelta * m_pSpeeds[i];
+		m_pSpeeds[i] -= fTimeDelta * 0.1f;
+
+		pVertices[i].vRight.x = m_pSize[i];
+		pVertices[i].vUp.y = m_pSize[i];
+		pVertices[i].vLook.z = m_pSize[i];
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc.isLoop)
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				pVertices[i].vRight.x = m_pOriginalSize[i];
+				pVertices[i].vUp.y = m_pOriginalSize[i];
+				pVertices[i].vLook.z = m_pOriginalSize[i];
+				m_pSize[i] = m_pOriginalSize[i];
+				m_pSpeeds[i] = m_pOriginalSpeed[i];
 			}
 			else
 			{

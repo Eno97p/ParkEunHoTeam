@@ -521,6 +521,11 @@ void CModel::GrowOutY(_float fTimeDelta)
 	for (auto& iter : m_InstanseMesh)
 		iter->GrowOutY(fTimeDelta);
 }
+void CModel::GrowOut_Speed_Down(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->GrowOut_Speed_Down(fTimeDelta);
+}
 #pragma endregion Effect
 
 _uint CModel::Get_Model_Vertices()

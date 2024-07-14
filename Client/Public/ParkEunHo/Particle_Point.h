@@ -36,7 +36,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
-
+	virtual HRESULT Render_Blur() override;
 private:
 	CTexture*						m_pTextureCom = { nullptr };
 	CVIBuffer_Instance_Point*		m_pVIBufferCom = { nullptr };	

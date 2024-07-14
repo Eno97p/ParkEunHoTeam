@@ -90,6 +90,9 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 	case GROWOUTY:
 		m_pVIBufferCom->GrowOutY(fTimeDelta);
 		break;
+	case GROWOUT_SPEEDDOWN:
+		m_pVIBufferCom->GrowOut_Speed_Down(fTimeDelta);
+		break;
 	}
 }
 
@@ -97,7 +100,10 @@ void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
 	m_pTransformCom->BillBoard();
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	if (OwnDesc->SuperDesc.IsBlur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
 	if(OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -125,6 +131,20 @@ HRESULT CParticle_Rect::Render_Bloom()
 		return E_FAIL;
 
 	m_pShaderCom->Begin(1);
+
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CParticle_Rect::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Bind_Buffers();
 

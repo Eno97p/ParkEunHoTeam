@@ -1,6 +1,7 @@
 #include "UIGroup_Quick.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 #include "UI_QuickBG.h"
 #include "UI_QuickTop.h"
@@ -60,6 +61,20 @@ void CUIGroup_Quick::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -71,12 +86,26 @@ void CUIGroup_Quick::Late_Tick(_float fTimeDelta)
 		{
 			pUI->Late_Tick(fTimeDelta);
 		}
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			pSlot->Late_Tick(fTimeDelta);
+		}
 	}
 }
 
 HRESULT CUIGroup_Quick::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_Quick::Update_QuickSlot_Add(CItemData* pItemData)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize() - 1; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon_Quick(pItemData);
 }
 
 HRESULT CUIGroup_Quick::Create_UI()
@@ -125,7 +154,7 @@ HRESULT CUIGroup_Quick::Create_Slot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_QUICK;
 			pDesc.eUISort = FIFTH;
-			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -187,4 +216,7 @@ void CUIGroup_Quick::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
 }

@@ -4,6 +4,8 @@
 
 BEGIN(Client)
 class CUI;
+class CUI_Slot;
+class CUI_InvSub_Btn;
 
 class CUIGroup_InvSub final : public CUIGroup
 {
@@ -13,6 +15,9 @@ private:
 	virtual ~CUIGroup_InvSub() = default;
 
 public:
+	void			Set_SlotIdx(_uint iSlotIdx) { m_iSlotIdx = iSlotIdx; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -20,8 +25,14 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Update_InvSub_QuickSlot();
+
 private:
+	_uint					m_iSlotIdx = { 0 }; // 이 SubPage가 현재 Inventory의 몇 번째 Slot에 있는 Item에 대한 정보를 가지고 있는지
+	
 	vector<CUI*>			m_vecUI;
+	vector<CUI_InvSub_Btn*>	m_vecBtn;
+	vector<CUI_Slot*>		m_vecSlot;
 
 private:
 	HRESULT					Create_UI();

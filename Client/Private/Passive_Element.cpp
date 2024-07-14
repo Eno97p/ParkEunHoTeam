@@ -95,6 +95,12 @@ HRESULT CPassive_Element::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
+    if (m_pGameInstance->Key_Down(DIK_UP))
+    {
+        m_iTest++;
+    }
+
+
     _uint   iNumMeshes = m_pModelCom->Get_NumMeshes();
 
     for (size_t i = 0; i < iNumMeshes; i++)
@@ -141,6 +147,15 @@ HRESULT CPassive_Element::Render()
         //   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
         //      return E_FAIL;
         //}
+
+
+        
+        //_uint red = i;
+        //if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &red, sizeof(_uint))))
+        //    return E_FAIL;
+
+        //if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
+        //    return E_FAIL;
 
         m_pShaderCom->Begin(0);
 
@@ -191,7 +206,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         m_bNoCullElement = true;
     }
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 

@@ -24,7 +24,7 @@ auto CWorker::Add_Job(T&& Func, Args&&...args) -> future<decltype(Func(args...))
 
 	}
 
-	m_condition.notify_all();
+	m_condition.notify_one();
 
 	return result;
 }
@@ -107,7 +107,7 @@ void CWorker::WorkerThread()
 		}
 	
 		
-
+		std::cerr << "Thread " << this_id << " finished." << std::endl;
 
 	//while (true)
 	//{

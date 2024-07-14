@@ -26,6 +26,9 @@ public:
 	void Get_Components(map<const wstring, class CComponent*>& pOut) const { pOut = m_Components; } //함수를 통해 복사본을 만들어서 반환 무거움
 	const map<const wstring, class CComponent*>& Get_Components() const  { return m_Components; }//직접 참조로 반환 가벼움 // 캡슐화 깨트림
 
+	// 0713 김보민 추가
+	HRESULT				Delete_Component(const wstring& strComponentTag);
+
 
 public:
 	virtual HRESULT Initialize_Prototype();

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "UI_MenuBG.h"
+#include "UI_MenuAlphaBG.h"
 #include "UI_MenuFontaine.h"
 #include "UI_MenuBtn.h"
 #include "UI_Menu_SelectFrame.h"
@@ -83,6 +84,9 @@ HRESULT CUIGroup_Menu::Create_UI()
 	// Menu BG
 	pDesc.eLevel = LEVEL_STATIC;
 	m_vecUI.emplace_back(dynamic_cast<CUI_MenuBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuBG"), &pDesc)));
+
+	// Menu AlphaBG
+	m_vecUI.emplace_back(dynamic_cast<CUI_MenuAlphaBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuAlphaBG"), &pDesc)));
 
 	// Menu Fontaine
 	ZeroMemory(&pDesc, sizeof(pDesc));

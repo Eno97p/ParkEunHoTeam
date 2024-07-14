@@ -22,14 +22,17 @@ public:
 	virtual ~CInventory() = default;
 
 public:
-	CItemData*			Get_ItemData(_uint iSlotIdx);
-	_uint				Get_vecItemSize() { return m_vecItem.size(); }
+	CItemData*							Get_ItemData(_uint iSlotIdx);
+	_uint								Get_vecItemSize() { return m_vecItem.size(); }
+	_uint								Get_QuickSize() { return m_vecQuickAccess.size(); }
+	vector<class CItemData*>			Get_QuickAccess() { return m_vecQuickAccess; }
 
 public:
 	HRESULT Initialize();
 	void	Tick(_float fTimeDelta);
 
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
+	HRESULT	Add_QuickAccess(CItemData* pItemData);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -37,6 +40,7 @@ private:
 
 private:
 	vector<class CItemData*>		m_vecItem;
+	vector<class CItemData*>		m_vecQuickAccess;
 	// 무기, 서브무기 등 추가 필요
 
 public:

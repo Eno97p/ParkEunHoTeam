@@ -141,7 +141,7 @@ private:
 	_float m_iMoney = 0;
 #pragma endregion 플레이어 스탯
 
-
+	_float m_fParticleAcctime = 0.f;
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

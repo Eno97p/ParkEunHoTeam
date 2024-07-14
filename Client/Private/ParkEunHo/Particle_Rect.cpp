@@ -93,6 +93,9 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 	case GROWOUTY:
 		m_pVIBufferCom->GrowOutY(fTimeDelta);
 		break;
+	case GROWOUT_SPEEDDOWN:
+		m_pVIBufferCom->GrowOut_Speed_Down(fTimeDelta);
+		break;
 	}
 }
 
@@ -133,6 +136,19 @@ HRESULT CParticle_Rect::Render_Bloom()
 	return S_OK;
 }
 
+HRESULT CParticle_Rect::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
+
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
 HRESULT CParticle_Rect::Add_Components()
 {
 	/* For.Com_VIBuffer */

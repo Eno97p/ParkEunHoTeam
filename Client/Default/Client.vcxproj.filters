@@ -439,6 +439,9 @@
     <Filter Include="02.GameObjects\07. UI\Menu\AlphaBG">
       <UniqueIdentifier>{5d8ee429-87e2-475c-931d-e2535718ae55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Logo\Flow">
+      <UniqueIdentifier>{39d3674a-c4c9-4eca-a448-de7b46c88df2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -902,6 +905,9 @@
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h">
       <Filter>02.GameObjects\07. UI\Menu\AlphaBG</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_LogoFlow.h">
+      <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1344,6 +1350,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp">
       <Filter>02.GameObjects\07. UI\Menu\AlphaBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LogoFlow.cpp">
+      <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

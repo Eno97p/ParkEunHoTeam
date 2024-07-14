@@ -20,6 +20,7 @@
 #include "UI_LogoBanner.h"
 #include "UI_LogoTitle.h"
 #include "UI_LogoSelector.h"
+#include "UI_LogoFlow.h"
 #include "UIGroup_Logo.h"
 #pragma endregion Logo
 
@@ -47,6 +48,7 @@
 
 #pragma region Menu
 #include "UI_MenuBG.h"
+#include "UI_MenuAlphaBG.h"
 #include "UI_MenuFontaine.h"
 #include "UI_MenuBtn.h"
 #include "UI_Menu_SelectFrame.h"
@@ -553,6 +555,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Title.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_LogoFlow */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoFlow"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffect1.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LogoFlowMask */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoFlowMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffectMask.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion Logo
 
 #pragma region Loading
@@ -686,6 +698,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_DropItemBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_DropItemBG"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DropItem.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_ItemIcon_None */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemIcon_None"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_None.png"), 1))))
 		return E_FAIL;
 
 #pragma endregion Icon
@@ -928,6 +945,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_LogoSelector::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_LogoFlow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LogoFlow"),
+		CUI_LogoFlow::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_Logo*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Logo"),
 		CUIGroup_Logo::Create(m_pDevice, m_pContext))))
@@ -1015,6 +1037,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_MenuBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuBG"),
 		CUI_MenuBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MenuAlphaBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MenuAlphaBG"),
+		CUI_MenuAlphaBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UI_MenuFontaine*/

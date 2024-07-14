@@ -22,6 +22,7 @@
 #include "OctTree.h"
 
 #include"CWorker.h"
+#include"CRenderWorker.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -130,7 +131,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_pWorker)
 		return E_FAIL;
 
-	
+	//m_pRenderWorker = CRenderWorker::Create(iNumThreadPool, *ppDevice);
+	//if (nullptr == m_pRenderWorker)
+	//	return E_FAIL;
+	//
 
 
 
@@ -183,9 +187,9 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		}));
 	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 	
-	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-		PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-		}));
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+	//	}));
 
 
 	for (auto& worker : futures)
@@ -194,7 +198,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	}
 	futures.clear();
 
-
+	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	//futures.push_back(m_pWorker->Add_Job([this]() {
 	//	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());	
@@ -851,6 +855,7 @@ void CGameInstance::Free()
 
 	Safe_Release(m_pOctTree);
 	Safe_Release(m_pWorker);
+	//Safe_Release(m_pRenderWorker);
 
 
 

@@ -7,6 +7,7 @@
 #include "UI_Slot_Frame.h"
 #include "UIGroup.h"
 #include "UI_ItemIcon.h"
+#include "UIGroup_InvSub.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -27,6 +28,7 @@ HRESULT CUI_Slot::Initialize(void* pArg)
 {
 	UI_SLOT_DESC* pDesc = static_cast<UI_SLOT_DESC*>(pArg);
 
+	m_iSlotIdx = pDesc->iSlotIdx;
 	m_eUISort = pDesc->eUISort;
 	m_eSlotType = pDesc->eSlotType;
 
@@ -56,9 +58,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if (m_isSelect)
+	if (m_isSelect && nullptr != m_pItemIcon)
 	{
-		if(m_pGameInstance->Mouse_Down(DIM_LB))
+		if(m_pGameInstance->Mouse_Down(DIM_LB)) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
 			Open_SubPage();		
 	}
 
@@ -161,7 +163,7 @@ HRESULT CUI_Slot::Create_Frame()
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 대한 작용인지 받아올 것?
+HRESULT CUI_Slot::Create_ItemIcon_Inv()
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -170,13 +172,50 @@ HRESULT CUI_Slot::Create_ItemIcon(_uint iSlotIdx) // Inventory의 몇 번째 녀석에 
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = ELEVENTH;
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
-	// 이거 하는 순간 출력하려는 Item 정보 가지고 있도록 만들기?
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Create_ItemIcon_SubQuick(_uint iSlotIdx)
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = SIXTEENTH;
+	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemNameText();
+	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemExplainText();
+
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = SIXTEENTH;
+	pDesc.wszTexture = pItemData->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = pItemData->Get_ItemNameText();
+	m_wszItemExplain = pItemData->Get_ItemExplainText();
 
 	return S_OK;
 }
@@ -186,7 +225,8 @@ void CUI_Slot::Open_SubPage()
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
 	{
 		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
-
+		
+		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Set_SlotIdx(m_iSlotIdx);
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);

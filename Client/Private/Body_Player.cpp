@@ -526,7 +526,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	else
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
+		//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 

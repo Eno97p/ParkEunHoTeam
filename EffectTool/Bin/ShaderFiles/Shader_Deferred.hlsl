@@ -996,7 +996,7 @@ technique11 DefaultTechnique
     pass Reflection_18
     {
         SetRasterizerState(RS_NoCull);
-        SetDepthStencilState(DSS_Greater, 0);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */

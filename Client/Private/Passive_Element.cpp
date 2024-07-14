@@ -76,8 +76,8 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //}
     //else 
     {
-        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
-        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+       //m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
+       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
     }
   
 
@@ -206,7 +206,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         m_bNoCullElement = true;
     }
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 

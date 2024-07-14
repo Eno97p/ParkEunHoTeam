@@ -93,7 +93,7 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
 
     CUI_ItemIcon::UI_ITEMICON_DESC pIconDesc{};
 
-    ZeroMemory(&pIconDesc, sizeof(pIconDesc));
+    //ZeroMemory(&pIconDesc, sizeof(pIconDesc));
     pIconDesc.eLevel = LEVEL_STATIC;
     pIconDesc.fX = 190.f;
     pIconDesc.fY = g_iWinSizeY - 100.f;

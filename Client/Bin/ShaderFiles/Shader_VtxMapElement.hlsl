@@ -34,6 +34,8 @@ bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
 
+bool g_bMetalic = false;
+
 float g_fFlowSpeed = 0.1f;
 float g_fTimeDelta;
 

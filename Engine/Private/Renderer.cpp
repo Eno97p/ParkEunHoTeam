@@ -917,7 +917,7 @@ void CRenderer::Render_Reflection()
 
     m_pGameInstance->End_MRT();
 
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection"), true, m_pReflectionDepthStencilView);
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
 
     for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
     {

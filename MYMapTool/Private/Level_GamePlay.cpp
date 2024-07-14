@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Default_Camera.h"
 #include "ThirdPersonCamera.h"
+#include "SideViewCamera.h"
 
 #include "Imgui_Manager.h"
 #include "ToolObj_Manager.h"
@@ -183,7 +184,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     //    return E_FAIL;
 
 
-    CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
+  /*  CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
 
     pTPCDesc.fSensor = 0.1f;
 
@@ -199,6 +200,27 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
     pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
     if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
+        return E_FAIL;*/
+
+
+
+
+    CSideViewCamera::SIDEVIEWCAMERA_DESC pSVDesc = {};
+
+    pSVDesc.fSensor = 0.1f;
+
+    pSVDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+    pSVDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+    pSVDesc.fFovy = XMConvertToRadians(60.f);
+    pSVDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+    pSVDesc.fNear = 0.1f;
+    pSVDesc.fFar = 3000.f;
+
+    pSVDesc.fSpeedPerSec = 40.f;
+    pSVDesc.fRotationPerSec = XMConvertToRadians(90.f);
+    pSVDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+    if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVDesc)))
         return E_FAIL;
 
     return S_OK;

@@ -82,6 +82,8 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 
 		}
 	}
+
+	Generate_Trail(5);
 }
 
 void CWeapon_Mantari::Late_Tick(_float fTimeDelta)

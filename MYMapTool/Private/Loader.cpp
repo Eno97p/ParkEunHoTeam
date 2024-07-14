@@ -8,6 +8,7 @@
 
 #include "Default_Camera.h"
 #include "ThirdPersonCamera.h"
+#include "SideViewCamera.h"
 
 #include "ToolObj.h"
 
@@ -766,6 +767,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	// Prototype_GameObject_ThirdPersonCamera
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
 		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	// Prototype_GameObject_SideViewCamera
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SideViewCamera"),
+		CSideViewCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	// Prototype_GameObject_Monster

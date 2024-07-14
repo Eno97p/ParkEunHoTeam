@@ -21,17 +21,7 @@ HRESULT CItemData::Initialize(void* pArg)
 {
 	ITEMDATA_DESC* pDesc = static_cast<ITEMDATA_DESC*>(pArg);
 
-	if (pDesc->isDropTem) // 드랍 템의 경우
-	{
-		
-		//m_eDropItemName = static_cast<DROPITEM_NAME>(rand() % DROPITEM_END); // 랜덤으로 종류 결정
-		//Set_DropItem_Type(); 
-		Set_DropItem_Data(static_cast<DROPITEM_DESC*>(pDesc)->eItemName);
-	}
-	else
-	{
-
-	}
+	Set_DropItem_Data(pDesc->eItemName);
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

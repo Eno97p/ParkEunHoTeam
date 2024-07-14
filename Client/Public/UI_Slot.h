@@ -5,6 +5,7 @@
 BEGIN(Client)
 class CUI_Slot_Frame;
 class CUI_ItemIcon;
+class CItemData;
 
 class CUI_Slot final : public CUI_Interaction
 {
@@ -12,6 +13,7 @@ public:
 	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
 	typedef struct UI_Slot_Desc : public UI_DESC
 	{
+		_uint			iSlotIdx;
 		UISORT_PRIORITY	eUISort;
 		SLOT_TYPE		eSlotType;
 	}UI_SLOT_DESC;
@@ -29,12 +31,14 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-	HRESULT			Create_ItemIcon(_uint iSlotIdx);
+	HRESULT			Create_ItemIcon_Inv();
+	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
+	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
 
 private:
-	//_uint				m_iSlotIdx = { 0 };
-	wstring					m_wszItemName = TEXT("");
-	wstring					m_wszItemExplain = TEXT("");
+	_uint				m_iSlotIdx = { 0 };
+	wstring				m_wszItemName = TEXT("");
+	wstring				m_wszItemExplain = TEXT("");
 
 	UISORT_PRIORITY		m_eUISort = { SORT_END };
 	SLOT_TYPE			m_eSlotType = { SLOT_END };

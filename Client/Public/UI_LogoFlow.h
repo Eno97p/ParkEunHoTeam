@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_MenuAlphaBG final : public CUI
+class CUI_LogoFlow final : public CUI
 {
 private:
-	CUI_MenuAlphaBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_MenuAlphaBG(const CUI_MenuAlphaBG& rhs);
-	virtual ~CUI_MenuAlphaBG() = default;
+	CUI_LogoFlow(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_LogoFlow(const CUI_LogoFlow& rhs);
+	virtual ~CUI_LogoFlow() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -22,12 +22,14 @@ public:
 private:
 	_float			m_fFlowTimer = { 0.f };
 
+	CTexture*		m_pMaskTextureCom = { nullptr };
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_MenuAlphaBG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_LogoFlow*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

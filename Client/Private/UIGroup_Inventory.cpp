@@ -102,7 +102,7 @@ void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;
 
-	(*slot)->Create_ItemIcon(iSlotIdx);
+	(*slot)->Create_ItemIcon_Inv();
 }
 
 HRESULT CUIGroup_Inventory::Create_UI()
@@ -146,6 +146,7 @@ HRESULT CUIGroup_Inventory::Create_Slot()
 {
 	CUI_Slot::UI_SLOT_DESC pDesc{};
 
+	_uint iSlotIdx = { 0 };
 	for (size_t i = 0; i < 4; ++i)
 	{
 		for (size_t j = 0; j < 5; ++j)
@@ -156,9 +157,12 @@ HRESULT CUIGroup_Inventory::Create_Slot()
 			pDesc.fY = 200.f + (i * 76.f);
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
+			pDesc.iSlotIdx = iSlotIdx;
 			pDesc.eSlotType = CUI_Slot::SLOT_INV;
 			pDesc.eUISort = NINETH;
 			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+		
+			++iSlotIdx;
 		}
 	}
 

@@ -17,7 +17,7 @@ BEGIN(Engine)
 class CRenderer final : public CBase
 {
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -51,6 +51,7 @@ private:
 	_float4x4							m_ProjMatrix = {};
 
 	ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
+	ID3D11DepthStencilView* m_pReflectionDepthStencilView = { nullptr };
 	_float	m_fTime = 0.f;
 	_float m_fValue = 2.2f;
 
@@ -89,6 +90,7 @@ private:
 	class CTexture* m_pDistortionTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
 
+	class CRenderWorker*		 m_pRenderWorker = { nullptr };
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
@@ -104,6 +106,7 @@ private:
 	void Render_DeferredResult();
 	void Render_NonLight();
 	void Render_Blend();
+	void Render_Reflection();
 	void Render_Blur();
 	void Render_Bloom();
 	void Render_Distortion();

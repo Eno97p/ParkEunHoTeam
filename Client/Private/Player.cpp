@@ -133,6 +133,12 @@ void CPlayer::Tick(_float fTimeDelta)
 	{
 		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
 	}
+	m_fParticleAcctime -= fTimeDelta;
+	if (m_fParticleAcctime < 0.f)
+	{
+		EFFECTMGR->Generate_Particle(10,_float4(0.f,2.f,0.f,1.f), this);
+		m_fParticleAcctime = 0.1f;
+	}
 
 }
 
@@ -265,6 +271,7 @@ void CPlayer::PlayerHit(_float fValue)
 
 void CPlayer::Parry_Succeed()
 {
+	dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
 	_float4x4 WeaponMat = *static_cast<CPartObject*>(m_PartObjects[1])->Get_Part_Mat();
 	_float4 vParticlePos = { WeaponMat._41,WeaponMat._42,WeaponMat._43,1.f };
 	_float4 PlayerPos;
@@ -388,6 +395,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 	if (m_bParry && m_iState != STATE_COUNTER)
 	{
 		m_iState = STATE_PARRY;
+		m_fParryFrame = 0.f;
 		fSlowValue = 0.2f;
 		if (m_fSlowDelay <= 0.2f)
 		{
@@ -472,7 +480,7 @@ void CPlayer::Move_Counter()
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vPlayerRight);
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vPlayerUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vPlayerLook);
-	m_pPhysXCom->Set_Position(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vMonsterPos + vMonsterLook * 2.f, 0.1f));
+	m_pPhysXCom->Set_Position(XMVectorLerp(m_pTransformCom->Get_State(CTransform::STATE_POSITION), vMonsterPos + vMonsterLook * 1.5f, 0.1f));
 }
 
 NodeStates CPlayer::Parry(_float fTimeDelta)
@@ -484,26 +492,39 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && !m_bParrying)
+	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && m_iState != STATE_PARRY)
 	{
+		
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
-		m_bParrying = true;
-		
+		m_iState = STATE_PARRY;
 		m_bStaminaCanDecrease = true;
+		m_fParryFrame = 0.f;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);
 	}
 
-	if (m_bParrying)
+	if (m_iState == STATE_PARRY)
 	{
-		m_iState = STATE_PARRY;
-
+		m_fParryFrame += fTimeDelta;
+		if (m_fParryFrame > PARRYSTART && m_fParryFrame < PARRYEND)
+		{
+			m_bParrying = true;
+		}
+		else 
+		{
+			m_bParrying = false;
+		}
+		
 		if (m_bAnimFinished)
 		{
+
+			m_fParryFrame = 0.f;
+
+			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
 			m_bStaminaCanDecrease = true;
 			if (!m_bDisolved_Yaak)
 			{

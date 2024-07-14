@@ -98,7 +98,9 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		CParticle_Point* pPoint = static_cast<CParticle_Point*>(CGameInstance::GetInstance()->Clone_Object(
 			TEXT("Prototype_GameObject_ParticlePoint"),
 			m_Particles[iIndex].second));
-		
+		if (pTarget != nullptr)
+			pPoint->Set_Target(pTarget);
+
 		if(!XMVector4Equal(vAxis, XMVectorZero()))
 			pPoint->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
@@ -113,6 +115,8 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		CParticleMesh* pMesh = static_cast<CParticleMesh*>(CGameInstance::GetInstance()->Clone_Object(
 			TEXT("Prototype_GameObject_ParticleMesh"),
 			m_Particles[iIndex].second));
+		if (pTarget != nullptr)
+			pMesh->Set_Target(pTarget);
 		if (!XMVector4Equal(vAxis, XMVectorZero()))
 			pMesh->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
@@ -127,6 +131,8 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		CParticle_Rect* pRect = static_cast<CParticle_Rect*>(CGameInstance::GetInstance()->Clone_Object(
 			TEXT("Prototype_GameObject_ParticleRect"),
 			m_Particles[iIndex].second));
+		if (pTarget != nullptr)
+			pRect->Set_Target(pTarget);
 		if (!XMVector4Equal(vAxis, XMVectorZero()))
 			pRect->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))

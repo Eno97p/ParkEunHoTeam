@@ -21,6 +21,7 @@ HRESULT CUI_ItemIcon::Initialize(void* pArg)
 {
 	UI_ITEMICON_DESC* pDesc = static_cast<UI_ITEMICON_DESC*>(pArg);
 
+	m_eUISort = pDesc->eUISort;
 	m_wszTexture = pDesc->wszTexture;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -51,7 +52,7 @@ void CUI_ItemIcon::Tick(_float fTimeDelta)
 
 void CUI_ItemIcon::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, ELEVENTH); // SECOND
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort); // SECOND
 }
 
 HRESULT CUI_ItemIcon::Render()
@@ -64,6 +65,20 @@ HRESULT CUI_ItemIcon::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+void CUI_ItemIcon::Change_Texture(wstring wstrTextureName)
+{
+	// Texture를 변경하기
+	Safe_Release(m_pTextureCom);
+	if (Delete_Component(TEXT("Com_Texture")));
+
+	m_wszTexture = wstrTextureName;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_wszTexture,
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+		return;
 }
 
 HRESULT CUI_ItemIcon::Add_Components()
@@ -82,6 +97,7 @@ HRESULT CUI_ItemIcon::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_wszTexture,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+
 
 	return S_OK;
 }

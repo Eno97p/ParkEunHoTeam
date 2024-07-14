@@ -24,6 +24,8 @@ class CPlayer final : public CLandObject
 #define ROLLSPEED 10.f
 #define ATTACKPOSTDELAY 1.5f
 #define STAMINARECOVERDELAY 1.5f
+#define PARRYSTART 0.1f
+#define PARRYEND 0.3f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
@@ -56,6 +58,7 @@ public:
 	_float Get_HpRatio() { return m_fCurHp / m_fMaxHp; }
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
+	_bool Get_Parry() { return m_bParrying; }
 	void Parry_Succeed();
 	void Set_ParriedMonsterTransform(CTransform* pTransform) { m_pParriedMonsterTransform = pTransform; }
 
@@ -101,12 +104,14 @@ private:
 	_bool										m_bLAttacking = false;
 	_bool										m_bRAttacking = false;
 	_bool										m_bRunning = false;
+	// 패링중
 	_bool										m_bParrying = false;
+	// 패링 성공
+	_bool										m_bParry = false;
 	_bool										m_bIsLanded = false;
 	_bool										m_bIsRunAttack = false;
 	_bool										m_bDisolved_Weapon = false;
 	_bool										m_bDisolved_Yaak = false;
-	_bool										m_bParry = false;
 	_bool										m_bStaminaCanDecrease = true;
 #pragma endregion 상태제어 bool변수
 
@@ -119,6 +124,7 @@ private:
 	_uint										m_iAttackCount = 1;
 	_bool										m_bCanCombo = false;
 	_float										m_fSlowDelay = 0.f;
+	_float										m_fParryFrame = 0.f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
 	CTransform* m_pParriedMonsterTransform = { nullptr };
 
@@ -135,7 +141,7 @@ private:
 	_float m_iMoney = 0;
 #pragma endregion 플레이어 스탯
 
-
+	_float m_fParticleAcctime = 0.f;
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

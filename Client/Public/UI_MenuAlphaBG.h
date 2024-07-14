@@ -20,6 +20,9 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_float			m_fFlowTimer = { 0.f };
+
+private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 

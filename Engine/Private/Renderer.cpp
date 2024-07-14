@@ -8,6 +8,8 @@
 #include "BlendObject.h"
 #include "VIBuffer_Rect.h"
 #include "RenderTarget.h"
+
+#include"CRenderWorker.h"
 _uint      g_iSizeX = 8192;
 _uint      g_iSizeY = 4608;
 
@@ -197,6 +199,19 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pLUTTex)
         return E_FAIL;
 
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Mirror"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Mirror"), TEXT("Target_Mirror"))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Reflection"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Reflection"), TEXT("Target_Reflection"))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_ReflectionResult"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ReflectionResult"), TEXT("Target_ReflectionResult"))))
+        return E_FAIL;
+
 #pragma endregion MRT_Effect
 
 #pragma region MRT_Result
@@ -267,6 +282,49 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
 
     Safe_Release(pDepthStencilTexture);
+
+
+
+    /* 화면을 꽉 채워주기 위한 월드변환행렬. */
+    XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
+
+    XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+
+    XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+    if (nullptr == m_pDevice)
+        return E_FAIL;
+
+    ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+    TextureDesc.Width = 1280.f;
+    TextureDesc.Height = 720.f;
+    TextureDesc.MipLevels = 1;
+    TextureDesc.ArraySize = 1;
+    TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+    TextureDesc.SampleDesc.Quality = 0;
+    TextureDesc.SampleDesc.Count = 1;
+
+    TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+    TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL
+        /*| D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE*/;
+    TextureDesc.CPUAccessFlags = 0;
+    TextureDesc.MiscFlags = 0;
+
+    if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+        return E_FAIL;
+
+    /* RenderTarget */
+    /* ShaderResource */
+    /* DepthStencil */
+
+    if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pReflectionDepthStencilView)))
+        return E_FAIL;
+
+    Safe_Release(pDepthStencilTexture);
+
+
 
 #pragma region 계층적 Z 버퍼 구현
     //PrevDepth
@@ -368,8 +426,14 @@ HRESULT CRenderer::Initialize()
         float currentY = startY;
 
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DecalResult"), currentX, currentY, targetWidth, targetHeight)))
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
        return E_FAIL;
+    currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
     currentX += targetWidth + gap;
 
 
@@ -458,7 +522,15 @@ HRESULT CRenderer::Initialize()
            //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
            //   return E_FAIL;
 
-#endif
+
+#endif	
+        size_t iNumThreadPool = PxThread::getNbPhysicalCores();
+        m_pRenderWorker = CRenderWorker::Create(iNumThreadPool, m_pDevice);
+        if (nullptr == m_pRenderWorker)
+            return E_FAIL;
+
+
+        
 
         return S_OK;
     
@@ -493,27 +565,42 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
-   
-
-    //futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
-//	}));
-  
-
-
+    vector<future<void>> futures;
+    
+ 
+    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
+    //    PROFILE_CALL("Render Priority", Render_Priority());
+    //    }));
 	PROFILE_CALL("Render Priority", Render_Priority());
+    
+    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
+    //    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
+    //    }));
+
 	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
 
+
+    for (auto& future : futures)
+        future.get();
+
+    m_pRenderWorker->ExecuteCommandLists(m_pContext);
+
 	PROFILE_CALL("Render NonBlend", Render_NonBlend());
+   
+
+
 	PROFILE_CALL("Render Decal", Render_Decal());
+
 	PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
+   
 
 	PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 
 	PROFILE_CALL("Render Render_NonLight", Render_NonLight());
 	PROFILE_CALL("Render Blend", Render_Blend());
+	PROFILE_CALL("Render Reflection", Render_Reflection());
 	PROFILE_CALL("Render Blur", Render_Blur());
 	PROFILE_CALL("Render Bloom", Render_Bloom());
 	PROFILE_CALL("Render Distortion", Render_Distortion());
@@ -530,6 +617,11 @@ void CRenderer::Draw()
     //    return;
 
     //PROFILE_CALL("Render HZB", Update_HZB());
+
+   
+
+    int tmep = 0;
+    
 
 }
 #ifdef _DEBUG
@@ -810,6 +902,59 @@ void  CRenderer::Render_Blend()
     m_pGameInstance->End_MRT();
 }
 
+void CRenderer::Render_Reflection()
+{
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Mirror"));
+
+    for (auto& pGameObject : m_RenderGroup[RENDER_MIRROR])
+    {
+        if (nullptr != pGameObject)
+            pGameObject->Render_Mirror();
+
+        Safe_Release(pGameObject);
+    }
+    m_RenderGroup[RENDER_MIRROR].clear();
+
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
+
+    for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
+    {
+        if (nullptr != pGameObject)
+            pGameObject->Render_Reflection();
+
+        Safe_Release(pGameObject);
+    }
+    m_RenderGroup[RENDER_REFLECTION].clear();
+
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_ReflectionResult"));
+
+    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+        return;
+
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture")))
+        return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Mirror"), m_pShader, "g_MirrorTexture")))
+        return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Reflection"), m_pShader, "g_EffectTexture")))
+        return;
+
+    m_pShader->Begin(18);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();
+}
+
 void CRenderer::Render_Blur()
 {
     m_pGameInstance->Begin_MRT(TEXT("MRT_Blur"));
@@ -1031,7 +1176,7 @@ void CRenderer::Render_Bloom()
 	// 업샘플링
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
 
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
 
     m_pShader->Begin(11);
@@ -1281,17 +1426,11 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
 	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Distortion"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample4x4"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample4x4_2"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_DownSample5x5"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Bloom"), m_pShader, m_pVIBuffer);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_DecalResult"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
-
 }
 
 #endif
@@ -1339,9 +1478,10 @@ void CRenderer::Free()
 	//Safe_Release(m_pBloomComputeShader);
 	Safe_Release(m_pVIBuffer);
 
-
+    Safe_Release(m_pRenderWorker);
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);
     Safe_Release(m_pDistortionTex);
+    Safe_Release(m_pReflectionDepthStencilView);
 }

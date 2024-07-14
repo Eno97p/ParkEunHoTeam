@@ -34,6 +34,8 @@ bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
 
+bool g_bMetalic = false;
+
 float g_fFlowSpeed = 0.1f;
 float g_fTimeDelta;
 
@@ -201,10 +203,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
 	Out.vSpecular = g_vMtrlSpecular;
 	//Out.vEmissive = 0.5f;
-	/*if (g_Red == 0 || g_Red == 29)
-	{
-		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
-	}*/
+	//if (g_Red == g_Test)
+	//{
+	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	//}
 	return Out;
 }
 

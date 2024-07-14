@@ -1,6 +1,7 @@
 #include "UIGroup_InvSub.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 #include "UI_MenuPage_BGAlpha.h"
 #include "UI_Slot.h"
 #include "UI_InvSub_Btn.h"
@@ -57,6 +58,35 @@ void CUIGroup_InvSub::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+
+			pSlot->Tick(fTimeDelta);
+		}
+
+		for (auto& pBtn : m_vecBtn)
+		{
+			if (!m_isRenderOnAnim && !(pBtn->Get_RenderOnAnim()))
+			{
+				pBtn->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pBtn->Get_RenderOnAnim())
+			{
+				pBtn->Resset_Animation(false);
+			}
+
+			pBtn->Set_SlotIdx(m_iSlotIdx);
+			pBtn->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -66,12 +96,28 @@ void CUIGroup_InvSub::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pSlot : m_vecSlot)
+			pSlot->Late_Tick(fTimeDelta);
+
+		for (auto& pBtn : m_vecBtn)
+			pBtn->Late_Tick(fTimeDelta);
 	}
 }
 
 HRESULT CUIGroup_InvSub::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_InvSub::Update_InvSub_QuickSlot()
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize()-1; ++i)
+		++slot;
+
+	// m_iSlotIdx
+	(*slot)->Create_ItemIcon_SubQuick(m_iSlotIdx);
 }
 
 HRESULT CUIGroup_InvSub::Create_UI()
@@ -104,8 +150,9 @@ HRESULT CUIGroup_InvSub::Create_Slot()
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_INVSUB;
+			pDesc.iSlotIdx = m_iSlotIdx;
 			pDesc.eUISort = THIRTEENTH;
-			m_vecUI.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
+			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
 
@@ -132,7 +179,7 @@ HRESULT CUIGroup_InvSub::Create_Btn()
 		pDesc.fSizeX = 360.f; // 512
 		pDesc.fSizeY = 50.f; // 128
 		pDesc.eBtnType = arrBtnType[i];
-		m_vecUI.emplace_back(dynamic_cast<CUI_InvSub_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_InvSub_Btn"), &pDesc)));
+		m_vecBtn.emplace_back(dynamic_cast<CUI_InvSub_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_InvSub_Btn"), &pDesc)));
 	}
 
 	return S_OK;
@@ -168,6 +215,12 @@ void CUIGroup_InvSub::Free()
 {
 	__super::Free();
 
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
+
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pBtn : m_vecBtn)
+		Safe_Release(pBtn);
 }

@@ -4,6 +4,7 @@
 
 BEGIN(Client)
 class CUI;
+class CUI_Slot;
 
 class CUIGroup_Inventory final : public CUIGroup
 {

@@ -28,6 +28,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
+	virtual HRESULT Render_Blur() override;
 
 private:
 	CModel*	 m_InstModelCom = { nullptr };

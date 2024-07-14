@@ -7,6 +7,7 @@
 #include "Weapon_Homonculus.h"
 
 #include "UIGroup_MonsterHP.h"
+#include "EffectManager.h"
 
 CHomonculus::CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -228,6 +229,12 @@ NodeStates CHomonculus::Explosion(_float fTimeDelta)
 	{
 		if (m_isAnimFinished)
 		{
+			_matrix Worldmat = m_pTransformCom->Get_WorldMatrix();
+			_float4 vParticlePos;
+			XMStoreFloat4(&vParticlePos, Worldmat.r[3]);
+			EFFECTMGR->Generate_Particle(8, vParticlePos);
+			vParticlePos.y += 1.5f;
+			EFFECTMGR->Generate_Particle(9, vParticlePos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			// Æø¹ß ÀÌÆåÆ®
 			if (m_fLengthFromPlayer < EXPLOSIONRANGE)
 			{

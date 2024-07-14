@@ -96,6 +96,13 @@ void CUI_Manager::Update_Weapon_Add()
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Weapon_Add();
 }
 
+void CUI_Manager::Update_EquipWeapon_Add(_uint iEquipSlotIdx)
+{
+	// CItemData* pItemData, _uint iEquipSlotIdx
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Add(iEquipSlotIdx);
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

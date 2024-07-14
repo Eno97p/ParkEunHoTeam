@@ -3,6 +3,7 @@
 #include "UI_Interaction.h"
 
 BEGIN(Client)
+class CUI_ItemIcon;
 class CUI_WPEquipNone;
 
 class CUI_WPEquipSlot final : public CUI_Interaction
@@ -10,7 +11,7 @@ class CUI_WPEquipSlot final : public CUI_Interaction
 	const _float DEFAULT_Y = (g_iWinSizeY >> 1) + 150.f;
 	const _float SELECT_Y = DEFAULT_Y - 30.f;
 public:
-	enum SLOT_NUM { NUM_ONE, NUM_TWO, NUM_THREE, NUM_END };
+	enum SLOT_NUM { NUM_ONE = 0, NUM_TWO, NUM_THREE, NUM_END };
 	typedef struct UI_EquipSlot_Desc : public UI_DESC
 	{
 		SLOT_NUM		eSlotNum;
@@ -29,10 +30,13 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	HRESULT			Create_ItemIcon();
+
 private:
 	SLOT_NUM			m_eSlotNum = { NUM_END };
 
-	CUI_WPEquipNone* m_pNoneFrame = { nullptr };
+	CUI_WPEquipNone*	m_pNoneFrame = { nullptr };
+	CUI_ItemIcon*		m_pItemIcon = { nullptr };
 
 private:
 	HRESULT	Add_Components();
@@ -40,6 +44,8 @@ private:
 
 	HRESULT	Create_Frame();
 	void	Setting_XY();
+
+	void	Click_Event();
 
 public:
 	static CUI_WPEquipSlot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

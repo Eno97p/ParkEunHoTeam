@@ -28,6 +28,7 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Change_Texture(wstring wstrTextureName);
+	void			Update_Pos(_float fX, _float fY);
 
 private:
 	UISORT_PRIORITY	m_eUISort = { SORT_END };

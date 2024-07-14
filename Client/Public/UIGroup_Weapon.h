@@ -19,6 +19,12 @@ private:
 public:
 	TAB_TYPE		Get_TabType() { return m_eTabType; }
 
+	_bool			Get_EquipMode() { return m_isEquipMode; }
+	void			Set_EquipMode(_bool isEquipMode) { m_isEquipMode = isEquipMode; }
+
+	_uint			Get_CurSlotIdx() { return m_iCurSlotIdx; }
+	void			Set_CurSlotIdx(_uint iCurSlotIdx) { m_iCurSlotIdx = iCurSlotIdx; }
+	
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -28,10 +34,16 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Update_Weapon_Add();
+	void			Update_EquipSlot_Add(_uint iEquipSlotIdx);
 
 private:
-	vector<CUI*>			m_vecUI;
-	vector<CUI_Slot*>		m_vecSlot;
+	_bool						m_isEquipMode = { false }; // 장착 활성화 여부
+	_uint						m_iCurSlotIdx = { 0 }; // 현재 선택한 Weapon Slot의 Idx
+
+	vector<CUI*>					m_vecUI;
+	vector<CUI_Slot*>				m_vecSlot;
+	vector<class CUI_WPEquipSlot*>	m_vecEquipSlot;
+	class CUI_MenuPage_BGAlpha*		m_pAlphaBG = { nullptr };
 
 	TAB_TYPE				m_eTabType = { TAB_END };
 

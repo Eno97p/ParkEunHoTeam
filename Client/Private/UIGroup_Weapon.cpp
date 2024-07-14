@@ -12,6 +12,8 @@
 #include "UI_WPEquipSlot.h"
 #include "UI_WPFontaine.h"
 #include "UI_WeaponTab.h"
+#include "UI_MenuAlphaBG.h"
+#include "UI_MenuPage_BGAlpha.h"
 
 CUIGroup_Weapon::CUIGroup_Weapon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -50,35 +52,55 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 	_bool isRender_End = false;
 	if (m_isRend)
 	{
-		for (auto& pUI : m_vecUI)
+		if (!m_isEquipMode)
 		{
-			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
+			for (auto& pUI : m_vecUI)
 			{
-				pUI->Resset_Animation(true);
+				if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
+				{
+					pUI->Resset_Animation(true);
+				}
+				else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+				{
+					pUI->Resset_Animation(false);
+				}
+
+				pUI->Tick(fTimeDelta);
+
+				isRender_End = pUI->isRender_End();
 			}
-			else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
+			if (isRender_End)
+				m_isRend = false;
+
+			for (auto& pSlot : m_vecSlot)
 			{
-				pUI->Resset_Animation(false);
+				if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+				{
+					pSlot->Resset_Animation(true);
+				}
+				else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+				{
+					pSlot->Resset_Animation(false);
+				}
+				pSlot->Tick(fTimeDelta);
 			}
-
-			pUI->Tick(fTimeDelta);
-
-			isRender_End = pUI->isRender_End();
 		}
-		if (isRender_End)
-			m_isRend = false;
-
-		for (auto& pSlot : m_vecSlot)
+		else
 		{
-			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			m_pAlphaBG->Tick(fTimeDelta);
+		}
+
+		for (auto& pEquipSlot : m_vecEquipSlot)
+		{
+			if (!m_isRenderOnAnim && !(pEquipSlot->Get_RenderOnAnim()))
 			{
-				pSlot->Resset_Animation(true);
+				pEquipSlot->Resset_Animation(true);
 			}
-			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			else if (m_isRenderOnAnim && pEquipSlot->Get_RenderOnAnim())
 			{
-				pSlot->Resset_Animation(false);
+				pEquipSlot->Resset_Animation(false);
 			}
-			pSlot->Tick(fTimeDelta);
+			pEquipSlot->Tick(fTimeDelta);
 		}
 	}
 
@@ -97,6 +119,12 @@ void CUIGroup_Weapon::Late_Tick(_float fTimeDelta)
 
 		for (auto& pSlot : m_vecSlot)
 			pSlot->Late_Tick(fTimeDelta);
+
+		for (auto& pEquipSlot : m_vecEquipSlot)
+			pEquipSlot->Late_Tick(fTimeDelta);
+
+		if(m_isEquipMode)
+			m_pAlphaBG->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -107,14 +135,20 @@ HRESULT CUIGroup_Weapon::Render()
 
 void CUIGroup_Weapon::Update_Weapon_Add()
 {
-	// 해당 함수가 호출될 때는 Weapon Page의 Slot에 새로운 무기가 추가될 때!
-	// Inventory의 Weapon vector에 마지막으로 추가된 녀석을 ItemIcon으로 넣어주자
-	
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
 		++slot;
 
 	(*slot)->Create_ItemIcon_Weapon();
+}
+
+void CUIGroup_Weapon::Update_EquipSlot_Add(_uint iEquipSlotIdx)
+{
+	vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+	for (size_t i = 0; i < iEquipSlotIdx; ++i)
+		++equipslot;
+
+	(*equipslot)->Create_ItemIcon();
 }
 
 HRESULT CUIGroup_Weapon::Create_UI()
@@ -137,20 +171,27 @@ HRESULT CUIGroup_Weapon::Create_UI()
 	pInvBGDesc.isInv = true;
 	m_vecUI.emplace_back(dynamic_cast<CUI_QuickInvBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickInvBG"), &pInvBGDesc)));
 
-	// Explain
-	CUI_QuickExplain::UI_EXPLAIN_DESC pExplainDesc{};
-	pExplainDesc.eLevel = LEVEL_STATIC;
-	pExplainDesc.isInv = true;
-	m_vecUI.emplace_back(dynamic_cast<CUI_QuickExplain*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickExplain"), &pExplainDesc)));
-
 	// RTop
 	pDesc.eLevel = LEVEL_STATIC;
 	m_vecUI.emplace_back(dynamic_cast<CUI_WeaponRTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WeaponRTop"), &pDesc)));
 
 	Create_Tab();
 	Create_Slot();
-	Create_EquipSlot();
+
+	// Alpha BG // 9번째로 깔아보기
+	CUI_MenuPage_BGAlpha::UI_MP_BGALPHA_DESC pBGDesc{};
+	pBGDesc.eLevel = LEVEL_STATIC;
+	pBGDesc.eUISort = TENTH;
+	m_pAlphaBG = dynamic_cast<CUI_MenuPage_BGAlpha*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuPage_BGAlpha"), &pBGDesc));
+
+	// Explain
+	CUI_QuickExplain::UI_EXPLAIN_DESC pExplainDesc{};
+	pExplainDesc.eLevel = LEVEL_STATIC;
+	pExplainDesc.eUISort = TENTH;
+	m_vecUI.emplace_back(dynamic_cast<CUI_QuickExplain*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickExplain"), &pExplainDesc)));
+
 	Create_Fontaine();
+	Create_EquipSlot();
 
 	return S_OK;
 }
@@ -190,7 +231,7 @@ HRESULT CUIGroup_Weapon::Create_EquipSlot()
 		ZeroMemory(&pDesc, sizeof(pDesc));
 		pDesc.eLevel = LEVEL_STATIC;
 		pDesc.eSlotNum = arrSlotNum[i];
-		m_vecUI.emplace_back(dynamic_cast<CUI_WPEquipSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WPEquipSlot"), &pDesc)));
+		m_vecEquipSlot.emplace_back(dynamic_cast<CUI_WPEquipSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_WPEquipSlot"), &pDesc)));
 	}
 
 	return S_OK;
@@ -270,4 +311,9 @@ void CUIGroup_Weapon::Free()
 
 	for (auto& pSlot : m_vecSlot)
 		Safe_Release(pSlot);
+
+	for (auto& pEquipSlot : m_vecEquipSlot)
+		Safe_Release(pEquipSlot);
+
+	Safe_Release(m_pAlphaBG);
 }

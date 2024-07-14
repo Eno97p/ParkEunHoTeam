@@ -4,10 +4,12 @@
 #include "UI_Manager.h"
 #include "Inventory.h"
 #include "CMouse.h"
+
 #include "UI_Slot_Frame.h"
-#include "UIGroup.h"
 #include "UI_ItemIcon.h"
+
 #include "UIGroup_InvSub.h"
+#include "UIGroup_Weapon.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -229,7 +231,7 @@ HRESULT CUI_Slot::Create_ItemIcon_Weapon()
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
-	pDesc.eUISort = ELEVENTH;
+	pDesc.eUISort = NINETH;
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
@@ -253,6 +255,12 @@ void CUI_Slot::Open_SubPage()
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+	}
+	else if (SLOT_WEAPON == m_eSlotType) // Weapon에 있는 슬롯을 클릭한 경우
+	{
+		// Alpha BG 활성화
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_CurSlotIdx(m_iSlotIdx);
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(true);
 	}
 }
 

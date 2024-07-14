@@ -28,6 +28,7 @@ public:
 	_uint								Get_WeaponSize() { return m_vecWeapon.size(); }
 	vector<class CItemData*>*			Get_QuickAccess() { return &m_vecQuickAccess; }
 	vector<class CItemData*>*			Get_Weapons() { return &m_vecWeapon; }
+	class CItemData*					Get_EquipWeapon(_uint iArrIdx) { return m_arrEquipWeapon[iArrIdx]; }
 
 public:
 	HRESULT Initialize();
@@ -36,6 +37,7 @@ public:
 	HRESULT	Initialize_DefaultItem();
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 	HRESULT	Add_QuickAccess(CItemData* pItemData);
+	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
@@ -45,7 +47,7 @@ private:
 	vector<class CItemData*>		m_vecItem;
 	vector<class CItemData*>		m_vecQuickAccess;
 	vector<class CItemData*>		m_vecWeapon;
-	// 무기, 서브무기 등 추가 필요
+	class CItemData*				m_arrEquipWeapon[3];
 
 public:
 	virtual void Free() override;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <process.h>
-#include "vld.h"
+//#include "vld.h"
 
 namespace MYMapTool
 {

@@ -118,9 +118,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 
 
-	m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
-	if (nullptr == m_pOctTree)
-		return E_FAIL;
+	//m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
+	//if (nullptr == m_pOctTree)
+	//	return E_FAIL;
 	
 
 
@@ -234,7 +234,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	//	}));
 
 
-	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
+	//PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 
 	PROFILE_CALL("Object Manager Late_Tick", m_pObject_Manager->Late_Tick(fTimeDelta));
 
@@ -874,7 +874,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_UISorter);
 
-	Safe_Release(m_pOctTree);
+	//
+	// Safe_Release(m_pOctTree);
 	Safe_Release(m_pWorker);
 	//Safe_Release(m_pRenderWorker);
 

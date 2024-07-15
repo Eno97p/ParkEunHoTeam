@@ -62,6 +62,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(0.5);
 	}
 	else if (*m_pState == CMantari::STATE_PARRIED)
 	{

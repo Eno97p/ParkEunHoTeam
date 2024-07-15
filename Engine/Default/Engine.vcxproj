@@ -265,6 +265,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\VIBuffer_Instance_Mesh.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Instance_Point.cpp" />
     <ClCompile Include="..\private\VIBuffer_Instance_Rect.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Lightning.cpp" />
     <ClCompile Include="..\Private\VIBuffer_PhysXBuffer.cpp" />
     <ClCompile Include="..\private\VIBuffer_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_SwordTrail.cpp" />
@@ -358,6 +359,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\VIBuffer_Instance_Mesh.h" />
     <ClInclude Include="..\Public\VIBuffer_Instance_Point.h" />
     <ClInclude Include="..\public\VIBuffer_Instance_Rect.h" />
+    <ClInclude Include="..\Public\VIBuffer_Lightning.h" />
     <ClInclude Include="..\Public\VIBuffer_PhysXBuffer.h" />
     <ClInclude Include="..\public\VIBuffer_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_SwordTrail.h" />
@@ -381,6 +383,7 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli" />
+    <None Include="..\Bin\ShaderFiles\ShaderFunctor.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

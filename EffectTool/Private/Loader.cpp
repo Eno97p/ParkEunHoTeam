@@ -14,6 +14,7 @@
 #include "WhisperSword_Anim.h"
 #include "Particle_STrail.h"
 #include "Distortion_Effect.h"
+#include "Electronic.h"
 
 
 
@@ -114,6 +115,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SwordTrail_Rotated"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Texture/SwordTrail_Rotated.png"), 1))))
 		return E_FAIL;
+
+	//퍼린 노이즈
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_PerlinNoise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Noise/Perlin%d.png"), 2))))
+		return E_FAIL;
+
 #pragma endregion TEXTURE
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트를 로딩 중 입니다."));
 #pragma region COMPONENT
@@ -131,6 +138,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Sword_Trail"),
 		CVIBuffer_SwordTrail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Lightning"),
+		CVIBuffer_Lightning::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion COMPONENT
@@ -167,16 +178,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Weapons/WhisperSword/WhisperSword_Anim.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	///* Mantari */
-	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mantari"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Mantari/Mantari.fbx", PreTransformMatrix))))
-	//	return E_FAIL;
-
-	///* Mantari Sword */
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_MantariSword"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Mantari/MatariSword.fbx", PreTransformMatrix))))
-	//	return E_FAIL;
 
 
 #pragma endregion MODEL
@@ -219,6 +220,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* SwordTrailShader */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Sword_Trail"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
+		return E_FAIL;
+
+	/* LightningShader */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Lightning"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_Lightning.hlsl"), VTXELECTRON::Elements, VTXELECTRON::iNumElements))))
 		return E_FAIL;
 
 
@@ -271,6 +277,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Distortion_Effect"),
 		CDistortionEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Electronic_Effect"),
+		CElectronic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

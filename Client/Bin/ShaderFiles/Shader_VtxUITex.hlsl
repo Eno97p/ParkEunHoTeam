@@ -150,7 +150,7 @@ PS_OUT PS_MAIN_FLOW_VERTICAL(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	float2 vDetailUV = In.vTexcoord * 4;
+	float2 vDetailUV = In.vTexcoord * 3;
 	vDetailUV.y += g_fFlowTime;
 
 	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
@@ -163,7 +163,7 @@ PS_OUT PS_MAIN_FLOW_VERTICAL(PS_IN In)
 
 	Out.vColor = vResult;
 
-	if (Out.vColor.a < 0.1f)
+	if (Out.vColor.a < 0.9f)
 		discard;
 
 	if (g_bIsFadeIn)

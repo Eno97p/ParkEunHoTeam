@@ -122,9 +122,10 @@ HRESULT CUIGroup_Quick::Create_UI()
 	m_vecUI.emplace_back(dynamic_cast<CUI_QuickTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickTop"), &pDesc)));
 
 	// Quick Explain
-	ZeroMemory(&pDesc, sizeof(pDesc));
-	pDesc.eLevel = LEVEL_STATIC;
-	m_vecUI.emplace_back(dynamic_cast<CUI_QuickExplain*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickExplain"), &pDesc)));
+	CUI_QuickExplain::UI_EXPLAIN_DESC pExplainDesc{};
+	pExplainDesc.eLevel = LEVEL_STATIC;
+	pExplainDesc.eUISort = FIFTH;
+	m_vecUI.emplace_back(dynamic_cast<CUI_QuickExplain*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickExplain"), &pExplainDesc)));
 
 	// Quick InvBG
 	CUI_QuickInvBG::UI_INVBG_DESC pInvBGDesc{};

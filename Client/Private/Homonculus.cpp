@@ -86,6 +86,7 @@ void CHomonculus::Tick(_float fTimeDelta)
 	m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	if (!pPlayerWeapon->Get_Active())
 	{
+		m_pColliderCom->Reset();
 		m_eColltype = CCollider::COLL_NOCOLL;
 	}
 

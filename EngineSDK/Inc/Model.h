@@ -78,6 +78,9 @@ public:														//파티클 함수들
 		return m_Animations[iAnimIdx]->Get_CurrentPos();
 	}
 
+	// 현재 애니메이션의 Duration 체크
+	_bool			Check_CurDuration(_double CurDuration);
+
 
 public:/*For.Physx*/
 	vector<CMesh*> Get_Meshes() { return m_Meshes; }

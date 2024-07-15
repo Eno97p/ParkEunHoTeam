@@ -1,6 +1,7 @@
 #pragma once
 
 #include "UI_Interaction.h"
+#include "UIGroup_Weapon.h"
 
 BEGIN(Client)
 class CUI_Slot_Frame;
@@ -13,9 +14,10 @@ public:
 	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
 	typedef struct UI_Slot_Desc : public UI_DESC
 	{
-		_uint			iSlotIdx;
-		UISORT_PRIORITY	eUISort;
-		SLOT_TYPE		eSlotType;
+		_uint						iSlotIdx;
+		UISORT_PRIORITY				eUISort;
+		SLOT_TYPE					eSlotType;
+		CUIGroup_Weapon::TAB_TYPE	eTabType;
 	}UI_SLOT_DESC;
 
 private:
@@ -34,17 +36,22 @@ public:
 	HRESULT			Create_ItemIcon_Inv();
 	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
 	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
+	HRESULT			Create_ItemIcon_Weapon();
+
+	void			Change_TabType(CUIGroup_Weapon::TAB_TYPE eTabType);
 
 private:
-	_uint				m_iSlotIdx = { 0 };
-	wstring				m_wszItemName = TEXT("");
-	wstring				m_wszItemExplain = TEXT("");
+	_uint						m_iSlotIdx = { 0 };
+	wstring						m_wszItemName = TEXT("");
+	wstring						m_wszItemExplain = TEXT("");
 
-	UISORT_PRIORITY		m_eUISort = { SORT_END };
-	SLOT_TYPE			m_eSlotType = { SLOT_END };
+	UISORT_PRIORITY				m_eUISort = { SORT_END };
+	SLOT_TYPE					m_eSlotType = { SLOT_END };
 
-	CUI_Slot_Frame*		m_pSelectFrame = { nullptr };
-	CUI_ItemIcon*		m_pItemIcon = { nullptr };
+	CUI_Slot_Frame*				m_pSelectFrame = { nullptr };
+	CUI_ItemIcon*				m_pItemIcon = { nullptr };
+
+	CUIGroup_Weapon::TAB_TYPE	m_eTabType = { CUIGroup_Weapon::TAB_END };
 
 private:
 	HRESULT	Add_Components();
@@ -54,6 +61,8 @@ private:
 
 	void	Open_SubPage();
 	void	Render_Font();
+
+	void	Update_ItemIcon_TabChange();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

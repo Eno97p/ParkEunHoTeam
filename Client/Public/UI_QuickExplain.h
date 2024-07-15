@@ -9,7 +9,7 @@ class CUI_QuickExplain final : public CUI
 public:
 	typedef struct UI_Explain_Desc : public UI_DESC
 	{
-		_bool			isInv = { false };
+		UISORT_PRIORITY	eUISort;
 	}UI_EXPLAIN_DESC;
 private:
 	CUI_QuickExplain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,7 +25,7 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_bool		m_isInv = { false };
+	UISORT_PRIORITY		m_eUISort = { SORT_END };
 
 private:
 	HRESULT	Add_Components();

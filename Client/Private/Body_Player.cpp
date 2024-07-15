@@ -273,7 +273,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.f;
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.5f && m_fDamageTiming < 0.8f)
+		if (m_fDamageTiming > 0.35f && m_fDamageTiming < 0.5f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -526,7 +526,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	else
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 

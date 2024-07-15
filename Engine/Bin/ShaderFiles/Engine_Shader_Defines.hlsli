@@ -109,3 +109,23 @@ float4 CatmullRom(float4 P0, float4 P1, float4 P2, float4 P3, float t)
 
     return result * 0.5f;
 }
+
+float2 PerlinRandom(float2 st)
+{
+    st = float2(dot(st, float2(127.1, 311.7)),
+                dot(st, float2(269.5, 183.3)));
+    return -1.0 + 2.0 * frac(sin(st) * 43758.5453123);
+}
+
+float PerlinNoise(float2 st)
+{
+    float2 i = floor(st);
+    float2 f = frac(st);
+    float2 u = f * f * (3.0 - 2.0 * f);
+    return lerp(
+        lerp(dot(PerlinRandom(i + float2(0.0, 0.0)), f - float2(0.0, 0.0)),
+             dot(PerlinRandom(i + float2(1.0, 0.0)), f - float2(1.0, 0.0)), u.x),
+        lerp(dot(PerlinRandom(i + float2(0.0, 1.0)), f - float2(0.0, 1.0)),
+             dot(PerlinRandom(i + float2(1.0, 1.0)), f - float2(1.0, 1.0)), u.x),
+        u.y);
+}

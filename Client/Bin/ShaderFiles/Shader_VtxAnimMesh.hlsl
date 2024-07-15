@@ -399,6 +399,101 @@ PS_OUT_COLOR PS_BLUR(PS_IN In)
 	return Out;
 }
 
+PS_OUT_COLOR PS_MAIN_REFLECTION(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vColor.a *= vOpacity.r;
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vColor;
+
+	if (g_Hit)
+	{
+		Out.vColor = float4(1.f, 0.f, 0.f, 0.3f);
+	}
+
+	return Out;
+}
+
+PS_OUT_COLOR PS_DISOLVE_REFLECTION(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vColor.a *= vOpacity.r;
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vColor;
+
+	if (g_Hit)
+	{
+		Out.vColor = float4(1.f, 0.f, 0.f, 0.3f);
+	}
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vColor.rgb = float3(0.f, 1.f, 1.f);
+	}
+
+	return Out;
+}
+
+PS_OUT_COLOR PS_WHISPERSWORD_REFLECTION(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bOpacity) vColor.a *= vOpacity.r;
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vColor;
+
+	if (In.vTexcoord.y > 757.f / 2048.f && In.vTexcoord.x > 435.f / 2048.f && In.vTexcoord.x < 821.f / 2048.f)
+	{
+		Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.f;
+		if (Out.vColor.a < 0.25f) discard;
+	}
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vColor.rgb = float3(0.f, 1.f, 1.f);
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -539,7 +634,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_REFLECTION();
 	}
 
 	pass Reflection_Disolve_10
@@ -553,10 +648,10 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_DISOLVE();
+		PixelShader = compile ps_5_0 PS_DISOLVE_REFLECTION();
 	}
 
-	pass WhisperSword_Reflection_11
+	pass Reflection_WhisperSword_11
 	{
 		SetRasterizerState(RS_NoCull);
 		SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -567,6 +662,6 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_WHISPERSWORD();
+		PixelShader = compile ps_5_0 PS_WHISPERSWORD_REFLECTION();
 	}
 }

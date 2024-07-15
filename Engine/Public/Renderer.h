@@ -30,6 +30,9 @@ public:
 	void Clear();
 	void Draw();
 
+
+
+
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pComponent);
@@ -55,6 +58,7 @@ private:
 	_float	m_fTime = 0.f;
 	_float m_fValue = 2.2f;
 
+#pragma region MINYOUNG
 	//ÀÌ¹Î¿µ Ãß°¡ 240621 1423PM
 public:
 	void Set_ShadowEyeFocus(_vector vEye, _vector vFocus, _float fThreshold)
@@ -84,13 +88,51 @@ private:
 
 	UINT m_HZBMipLevels = 0;
 
+#pragma endregion
+
+
+
+
+
+#pragma region PARKJAEWON
+public:
+	void ProcessByThread(DWORD dwThreadIndex);
+	void ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext);
+private:
+	HRESULT InitRenderThreadPool(DWORD dwThreadCount);
+	void ClearRenderThreadPool();
+public:
+	struct RENDER_THREAD_DESC
+	{
+		HANDLE hEventList[RENDER_THREAD_EVENT_TYPE_COUNT];
+		CRenderer* pRenderer;
+		DWORD dwThreadIndex;
+		HANDLE hThread;
+	};
+private:
+	RENDER_THREAD_DESC* m_pThreadDescList = nullptr;
+	HANDLE m_hCompleteEvent = nullptr;
+	LONG m_lActiveThreadCount = 0;
+	DWORD m_dwThreadCount = 0;
+	vector<ID3D11DeviceContext*> m_DeferredContexts;
+	vector<ID3D11CommandList*> m_CommandLists;
+	const UINT MAX_OBJECTS_PER_COMMANDLIST = 400;
+#pragma endregion
+
+	
+
+
+
+	
+
+
 private:
 	//LUT TEXTURE
 	class CTexture* m_pLUTTex = { nullptr };
 	class CTexture* m_pDistortionTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
 
-	class CRenderWorker*		 m_pRenderWorker = { nullptr };
+	
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);

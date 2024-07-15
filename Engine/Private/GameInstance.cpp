@@ -622,6 +622,7 @@ HRESULT CGameInstance::Add_Font(const wstring & strFontTag, const wstring & strF
 HRESULT CGameInstance::Render_Font(const wstring & strFontTag, const wstring & strText, const _float2 & vPosition, _fvector vColor)
 {
 	return m_pFont_Manager->Render_Font(strFontTag, strText, vPosition, vColor);
+	//return S_OK;
 }
 
 HRESULT CGameInstance::Add_RenderTarget(const wstring & strTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
@@ -639,9 +640,19 @@ HRESULT CGameInstance::Begin_MRT(const wstring& strMRTTag, _bool isClear, ID3D11
 	return m_pTarget_Manager->Begin_MRT(strMRTTag, isClear, pDSView);
 }
 
+HRESULT CGameInstance::Begin_MRT(const wstring& strMRTTag, ID3D11DeviceContext* pDeferredContext, _bool isClear, ID3D11DepthStencilView* pDSView)
+{
+	return m_pTarget_Manager->Begin_MRT(strMRTTag, pDeferredContext,isClear, pDSView);
+}
+
 HRESULT CGameInstance::End_MRT()
 {
 	return m_pTarget_Manager->End_MRT();
+}
+
+HRESULT CGameInstance::End_MRT(ID3D11DeviceContext* pDeferredContext)
+{
+	return m_pTarget_Manager->End_MRT(pDeferredContext);
 }
 
 HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)

@@ -97,6 +97,9 @@ private:	//for Distortion
 	HRESULT Load_Distortion();
 
 private:
+	void Electron_Tool();
+
+private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
 private:

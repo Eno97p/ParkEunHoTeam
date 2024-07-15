@@ -21,7 +21,7 @@ HRESULT CUI_QuickExplain::Initialize(void* pArg)
 {
 	UI_EXPLAIN_DESC* pDesc = static_cast<UI_EXPLAIN_DESC*>(pArg);
 
-	m_isInv = pDesc->isInv;
+	m_eUISort = pDesc->eUISort;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -51,10 +51,7 @@ void CUI_QuickExplain::Tick(_float fTimeDelta)
 
 void CUI_QuickExplain::Late_Tick(_float fTimeDelta)
 {
-	if(m_isInv)
-		CGameInstance::GetInstance()->Add_UI(this, NINETH);
-	else
-		CGameInstance::GetInstance()->Add_UI(this, FIFTH);
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
 }
 
 HRESULT CUI_QuickExplain::Render()

@@ -451,6 +451,12 @@
     <Filter Include="01.Levels\04. Jugglas">
       <UniqueIdentifier>{bdd32a81-1b29-46c9-8804-6329141cd4b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\TargetLock">
+      <UniqueIdentifier>{e17294db-7aca-494a-9b65-3b6be763a9b7}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Bullet">
+      <UniqueIdentifier>{8e5b6bfa-306f-41fc-aadf-8254e5f711f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -926,6 +932,9 @@
     <ClInclude Include="..\Public\Level_Ackbar.h">
       <Filter>01.Levels\03. Ackbar</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TargetLock.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1381,6 +1390,9 @@
     <ClCompile Include="..\Private\Level_Ackbar.cpp">
       <Filter>01.Levels\03. Ackbar</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TargetLock.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1453,6 +1465,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

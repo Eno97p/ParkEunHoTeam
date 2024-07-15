@@ -89,6 +89,24 @@ void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
 	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
 }
 
+void CUI_Manager::Update_Weapon_Add()
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Weapon_Add();
+}
+
+void CUI_Manager::Update_EquipWeapon_Add(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Add(iEquipSlotIdx);
+}
+
+void CUI_Manager::Update_EquipWeapon_Delete(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

@@ -3,7 +3,12 @@
 #pragma warning (disable : 4251)
 
 #include <vld.h>
-#include <d3d11.h>
+#include <d3d11_4.h>
+
+
+#ifndef __ID3D11Multithread_INTERFACE_DEFINED__
+#define __ID3D11Multithread_INTERFACE_DEFINED__
+#endif
 
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
@@ -103,7 +108,12 @@ namespace Engine
 		GROUP_ENEMY = 1 << 3,
 		GROUP_NONCOLLIDE = 1 << 4
 	};
-
+	enum RENDER_THREAD_EVENT_TYPE
+	{
+		RENDER_THREAD_EVENT_TYPE_PROCESS,
+		RENDER_THREAD_EVENT_TYPE_DESTROY,
+		RENDER_THREAD_EVENT_TYPE_COUNT
+	};
 
 
 	

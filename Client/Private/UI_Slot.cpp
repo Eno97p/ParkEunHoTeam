@@ -4,10 +4,12 @@
 #include "UI_Manager.h"
 #include "Inventory.h"
 #include "CMouse.h"
+
 #include "UI_Slot_Frame.h"
-#include "UIGroup.h"
 #include "UI_ItemIcon.h"
+
 #include "UIGroup_InvSub.h"
+#include "UIGroup_Weapon.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -17,6 +19,13 @@ CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Slot::CUI_Slot(const CUI_Slot& rhs)
 	: CUI_Interaction{ rhs }
 {
+}
+
+void CUI_Slot::Change_TabType(CUIGroup_Weapon::TAB_TYPE eTabType)
+{
+	m_eTabType = eTabType;
+
+	Update_ItemIcon_TabChange();
 }
 
 HRESULT CUI_Slot::Initialize_Prototype()
@@ -31,6 +40,9 @@ HRESULT CUI_Slot::Initialize(void* pArg)
 	m_iSlotIdx = pDesc->iSlotIdx;
 	m_eUISort = pDesc->eUISort;
 	m_eSlotType = pDesc->eSlotType;
+
+	if (SLOT_WEAPON == m_eSlotType)
+		m_eTabType = pDesc->eTabType;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -220,6 +232,35 @@ HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
 	return S_OK;
 }
 
+HRESULT CUI_Slot::Create_ItemIcon_Weapon()
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = NINETH;
+
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+		++weapon;
+	pDesc.wszTexture = (*weapon)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	m_wszItemName = (*weapon)->Get_ItemNameText();
+	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
+
+	return S_OK;
+}
+
+void CUI_Slot::Update_ItemIcon_TabChange()
+{
+	// Inventory가 가지고 있는 Sub Weapon의 정보를 가져와서 인덱스에 해당하는 ItemIcon을 출력하기?
+	// 기존의 ItemIcon 없애고 새로 할당
+}
+
 void CUI_Slot::Open_SubPage()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
@@ -231,11 +272,17 @@ void CUI_Slot::Open_SubPage()
 		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
 		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
 	}
+	else if (SLOT_WEAPON == m_eSlotType) // Weapon에 있는 슬롯을 클릭한 경우
+	{
+		// Alpha BG 활성화
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_CurSlotIdx(m_iSlotIdx);
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(true);
+	}
 }
 
 void CUI_Slot::Render_Font()
 {
-	if (SLOT_INV == m_eSlotType)
+	if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 	{
 		// 여기서 ItemIcon과 Item 정보들 출력?
 		// Title

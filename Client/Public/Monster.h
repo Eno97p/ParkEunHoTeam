@@ -72,12 +72,14 @@ protected:
 	
 	// UI
 	class CUIGroup*		m_pUI_HP = { nullptr };
+	class CTargetLock*	m_pTargetLock = { nullptr };
 
 protected:
 	virtual HRESULT		Add_Nodes();
 
 	void				Create_UI();
 	void				Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName); // 인자에 값을 넣어주는 게 좋을 듯함
+	HRESULT				Create_TargetLock(CModel* pBodyModel, string strBoneName);
 
 	void				Update_UI(_float fHeight = 0.f);
 

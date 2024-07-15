@@ -38,6 +38,7 @@ public:
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 	HRESULT	Add_QuickAccess(CItemData* pItemData);
 	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
+	HRESULT	Delete_EquipWeapon(_uint iEquipSlotIdx);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

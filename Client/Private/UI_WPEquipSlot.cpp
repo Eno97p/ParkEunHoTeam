@@ -135,6 +135,14 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon()
 	return S_OK;
 }
 
+HRESULT CUI_WPEquipSlot::Delete_ItemIcon()
+{
+	Safe_Release(m_pItemIcon);
+	m_pItemIcon = nullptr;
+
+	return S_OK;
+}
+
 HRESULT CUI_WPEquipSlot::Add_Components()
 {
 	/* For. Com_VIBuffer */
@@ -218,20 +226,19 @@ void CUI_WPEquipSlot::Click_Event()
 	
 	if (isAlphaBG_On) // 장착
 	{
-		// Equip Slot에 ItemIcon을 추가하고 >>> 이것은 HUD의 Weapon Slot과 연결되어야 함
-		// Inventory에 Equip Slot vector를 만들고 그 정보를 HUD에 띄우거나 Player가 가져다 사용하는 것으로?
-
 		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
 			++weapon;
 
 		CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 
+		// AlphaBG 비활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
 	}
 	else // 장착 해제
 	{
-
+		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
+		CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
 	}
 	
 }

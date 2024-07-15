@@ -38,6 +38,7 @@ public:
 	void				Update_Quick_Add(CItemData* pItemData);
 	void				Update_Weapon_Add();
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);
+	void				Update_EquipWeapon_Delete(_uint iEquipSlotIdx);
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

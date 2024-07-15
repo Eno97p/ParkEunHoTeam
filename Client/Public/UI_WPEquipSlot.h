@@ -31,6 +31,7 @@ public:
 	virtual HRESULT	Render() override;
 
 	HRESULT			Create_ItemIcon();
+	HRESULT			Delete_ItemIcon();
 
 private:
 	SLOT_NUM			m_eSlotNum = { NUM_END };

@@ -90,6 +90,11 @@ void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName)
     m_pWeaponSlot->Change_Texture(wstrTextureName);
 }
 
+void CUIGroup_WeaponSlot::Reset_SlotTexture()
+{
+    m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+}
+
 HRESULT CUIGroup_WeaponSlot::Create_UI()
 {
     // WeaponSlot BG
@@ -126,8 +131,7 @@ void CUIGroup_WeaponSlot::Key_Input()
 {
     if (m_pGameInstance->Key_Down(DIK_V)) // Quick Slot Change
     {
-        // 아무 것도 없을 때 예외 처리 필요
-        if (0 < CInventory::GetInstance()->Get_QuickSize())
+        if (0 < CInventory::GetInstance()->Get_QuickSize()) // 아무 것도 없을 때 예외 처리
         {
             if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
             {

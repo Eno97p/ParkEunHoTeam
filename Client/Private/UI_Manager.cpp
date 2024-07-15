@@ -91,16 +91,20 @@ void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
 
 void CUI_Manager::Update_Weapon_Add()
 {
-	// Inventory에 접근해서 마지막으로 추가된 Weapon의 정보를 넘겨준다면 인자가 필요 X
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Weapon_Add();
 }
 
 void CUI_Manager::Update_EquipWeapon_Add(_uint iEquipSlotIdx)
 {
-	// CItemData* pItemData, _uint iEquipSlotIdx
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Add(iEquipSlotIdx);
+}
+
+void CUI_Manager::Update_EquipWeapon_Delete(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
 }
 
 HRESULT CUI_Manager::Initialize()

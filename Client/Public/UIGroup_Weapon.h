@@ -35,6 +35,7 @@ public:
 
 	void			Update_Weapon_Add();
 	void			Update_EquipSlot_Add(_uint iEquipSlotIdx);
+	void			Update_EquipSlot_Delete(_uint iEquipSlotIdx);
 
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부

@@ -109,6 +109,20 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 	return S_OK;
 }
 
+HRESULT CInventory::Delete_EquipWeapon(_uint iEquipSlotIdx)
+{
+	// 인자로 들어온 Slot의 정보를 제거
+	m_arrEquipWeapon[iEquipSlotIdx] = nullptr;
+
+	// Weapon Equip Slot UI에서 제거
+	CUI_Manager::GetInstance()->Update_EquipWeapon_Delete(iEquipSlotIdx);
+
+	// HUD에서도 출력 제거 
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture();
+
+	return S_OK;
+}
+
 void CInventory::Free()
 {
 	for (auto& pItemData : m_vecItem)

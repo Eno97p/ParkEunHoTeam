@@ -151,6 +151,16 @@ void CUIGroup_Weapon::Update_EquipSlot_Add(_uint iEquipSlotIdx)
 	(*equipslot)->Create_ItemIcon();
 }
 
+void CUIGroup_Weapon::Update_EquipSlot_Delete(_uint iEquipSlotIdx)
+{
+	// Weapon Equip Slot에서 제거할 것
+	vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+	for (size_t i = 0; i < iEquipSlotIdx; ++i)
+		++equipslot;
+
+	(*equipslot)->Delete_ItemIcon();
+}
+
 HRESULT CUIGroup_Weapon::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

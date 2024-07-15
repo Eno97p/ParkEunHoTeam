@@ -28,7 +28,7 @@ HRESULT CThirdPersonCamera::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    __super::Activate();
+    //__super::Activate();
 
     // 초기 카메라 위치 설정
     _float4 vPlayerPosition;

@@ -57,6 +57,7 @@ public: /* For.Timer_Manager */
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	_uint Get_CurrentLevel();			//현재 레벨 받아오기
+	void Set_NextLevel(_uint iNextLevel);			//현재 레벨 받아오기
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);
@@ -75,6 +76,7 @@ public: /* For.Object_Manager */
 	void Set_MainCamera(_uint iCameraIndex); // 카메라 전환 시 호출, 추가 순서가 인덱스
 	vector<class CCamera*> Get_Cameras();
 	CCamera* Get_MainCamera();
+	void Clear_Cameras();
 
 
 public: /* For.Component_Manager */

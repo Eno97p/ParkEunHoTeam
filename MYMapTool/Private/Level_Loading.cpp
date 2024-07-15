@@ -42,6 +42,8 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 		{
 			CLevel* pNewLevel = { nullptr };
 
+			m_pGameInstance->Set_NextLevel(m_eNextLevel);
+
 			switch (m_eNextLevel)
 			{
 			case MYMapTool::LEVEL_LOGO:
@@ -55,7 +57,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 			if (nullptr == pNewLevel)
 				return;
 
-			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+ 			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
 				return;
 		}
 	}

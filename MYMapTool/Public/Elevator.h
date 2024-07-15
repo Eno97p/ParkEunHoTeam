@@ -22,6 +22,10 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Bloom() override;
+
+public:
+	void Elevate() { m_bElevate = true; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -48,13 +52,10 @@ private:
 	}
 
 private:
+	_bool m_bElevate = false;
+	_float m_fElevateTimer= 0.f;
+	_uint m_iTest = 0;
 
-private:
-	float m_fAccTime = 0.f;
-	float m_fWindStrength = 1.f;
-	float m_fTargetWindStrength = 1.f;
-	float m_fWindChangeTime = 0.f;
-	const float m_fWindChangeDuration = 5.f;
 
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
 

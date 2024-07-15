@@ -40,6 +40,8 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 	{
 		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
+			m_pGameInstance->Set_NextLevel(m_eNextLevel);
+
 			CLevel* pNewLevel = { nullptr };
 
 			switch (m_eNextLevel)

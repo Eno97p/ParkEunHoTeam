@@ -98,6 +98,9 @@ HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& st
 	if (m_Components.end() != m_Components.find(strComponentTag))
 		return E_FAIL;
 
+	//LEVEL_STATIC 제외하고 알아서 자기 레벨 받아오게함.
+	if (iPrototypeLevelIndex != 0) iPrototypeLevelIndex = m_pGameInstance->Get_CurrentLevel();
+	
 	CComponent*	pComponent = m_pGameInstance->Clone_Component(iPrototypeLevelIndex, strPrototypeTag, pArg);
 	if (nullptr == pComponent)
 		return E_FAIL;	

@@ -37,12 +37,6 @@
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{ed2dbd76-33a5-4980-9df3-580a42d076cc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.Camers">
-      <UniqueIdentifier>{76ad73bb-b076-4596-bcf9-4cd613663360}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Camers\Free">
-      <UniqueIdentifier>{0c037ddb-f937-42d8-bd6d-e3d8f1af58f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject">
       <UniqueIdentifier>{8cfc0980-be7a-4c23-9895-bdd82c98ac51}</UniqueIdentifier>
     </Filter>
@@ -349,9 +343,6 @@
     <Filter Include="02.GameObjects\02.LandObject\01.Item">
       <UniqueIdentifier>{4584d7f8-8826-4ed4-8a75-fd7c16382134}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.Camers\ThirdPerson">
-      <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Logo">
       <UniqueIdentifier>{a0e9d04e-21ca-4d17-8e09-8c9eaf2d8469}</UniqueIdentifier>
     </Filter>
@@ -442,6 +433,24 @@
     <Filter Include="02.GameObjects\07. UI\Logo\Flow">
       <UniqueIdentifier>{39d3674a-c4c9-4eca-a448-de7b46c88df2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.Cameras">
+      <UniqueIdentifier>{76ad73bb-b076-4596-bcf9-4cd613663360}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\Free">
+      <UniqueIdentifier>{0c037ddb-f937-42d8-bd6d-e3d8f1af58f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\ThirdPerson">
+      <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\SideView">
+      <UniqueIdentifier>{6cbae87c-1690-4d5d-8859-ce47f8fed19b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\03. Ackbar">
+      <UniqueIdentifier>{8684d1fa-42aa-4b3a-8c6e-b6f745010d40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\04. Jugglas">
+      <UniqueIdentifier>{bdd32a81-1b29-46c9-8804-6329141cd4b3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\TargetLock">
       <UniqueIdentifier>{e17294db-7aca-494a-9b65-3b6be763a9b7}</UniqueIdentifier>
 	</Filter>
@@ -487,7 +496,7 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FreeCamera.h">
-      <Filter>02.GameObjects\99.Camers\Free</Filter>
+      <Filter>02.GameObjects\99.Cameras\Free</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster</Filter>
@@ -810,7 +819,7 @@
       <Filter>02.GameObjects\02.LandObject\01.Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ThirdPersonCamera.h">
-      <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+      <Filter>02.GameObjects\99.Cameras\ThirdPerson</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_Logo.h">
       <Filter>02.GameObjects\07. UI\Logo</Filter>
@@ -914,6 +923,15 @@
     <ClInclude Include="..\Public\UI_LogoFlow.h">
       <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Jugglas.h">
+      <Filter>01.Levels\04. Jugglas</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SideViewCamera.h">
+      <Filter>02.GameObjects\99.Cameras\SideView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Ackbar.h">
+      <Filter>01.Levels\03. Ackbar</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\TargetLock.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>
     </ClInclude>
@@ -947,7 +965,7 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FreeCamera.cpp">
-      <Filter>02.GameObjects\99.Camers\Free</Filter>
+      <Filter>02.GameObjects\99.Cameras\Free</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster</Filter>
@@ -1262,7 +1280,7 @@
       <Filter>02.GameObjects\02.LandObject\01.Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp">
-      <Filter>02.GameObjects\99.Camers\ThirdPerson</Filter>
+      <Filter>02.GameObjects\99.Cameras\ThirdPerson</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Logo.cpp">
       <Filter>02.GameObjects\07. UI\Logo</Filter>
@@ -1362,6 +1380,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LogoFlow.cpp">
       <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Jugglas.cpp">
+      <Filter>01.Levels\04. Jugglas</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SideViewCamera.cpp">
+      <Filter>02.GameObjects\99.Cameras\SideView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Ackbar.cpp">
+      <Filter>01.Levels\03. Ackbar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TargetLock.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>

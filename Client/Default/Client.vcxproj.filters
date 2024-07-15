@@ -442,6 +442,9 @@
     <Filter Include="02.GameObjects\07. UI\Logo\Flow">
       <UniqueIdentifier>{39d3674a-c4c9-4eca-a448-de7b46c88df2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Bullet">
+      <UniqueIdentifier>{8e5b6bfa-306f-41fc-aadf-8254e5f711f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

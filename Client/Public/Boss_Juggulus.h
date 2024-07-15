@@ -9,9 +9,6 @@ class CBoss_Juggulus final : public CMonster
 {
 public:
 	enum STATE { STATE_IDLE_FIRST = 0, STATE_IDLE_SEC, STATE_NEXTPHASE, STATE_CREATE_HAMMER,
-		STATE_HANDONE_TARGETING, STATE_HANDONE_ATTACK,
-		STATE_HANDTWO_SCOOP, STATE_HANDTWO_ATTACK,
-		STATE_HANDTHREE_ATTACK,
 		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_END };
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
 
@@ -55,13 +52,14 @@ private:
 
 	PHASE							m_ePhase = { PHASE_END };
 
+	_float m_fHammerCreationDelay = 4.f;
+
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();
 
 	virtual HRESULT		Add_Nodes() override;
 
-	void				Key_Input();
 	HRESULT				Create_Hammer();
 	void				Check_AnimFinished();
 
@@ -71,14 +69,8 @@ private:
 	NodeStates			CreateHammer(_float fTimedelta);
 	NodeStates			Idle(_float fTimeDelta);
 
-	NodeStates			HandOne_Targeting(_float fTimeDelta);
-	NodeStates			HandOne_Attack(_float fTimeDelta);
-	NodeStates			HandTwo_Scoop(_float fTimeDedelta);
-	NodeStates			HandTwo_Attack(_float fTimeDelta);
-	NodeStates			HandThree_Attack(_float fTimeDelta);
-
-	NodeStates			FlameAttack(_float fTimeDelta);
 	NodeStates			HammerAttack(_float fTimeDelta);
+	NodeStates			FlameAttack(_float fTimeDelta);
 	NodeStates			SphereAttack(_float fTimeDelta);
 	NodeStates			ThunderAttack(_float fTimeDelta);
 

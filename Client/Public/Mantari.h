@@ -60,7 +60,6 @@ private:
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
-	CBehaviorTree* m_pBehaviorCom = { nullptr };
 
 #pragma region 상태제어 bool변수
 	_bool										m_bReviving = false;

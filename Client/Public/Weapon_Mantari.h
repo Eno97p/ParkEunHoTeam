@@ -19,6 +19,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Reflection() override;
 	virtual HRESULT Render_LightDepth() override;
 	_bool Get_IsParried() { return m_bIsParried; }
 	void Set_IsParried(_bool isParried) { m_bIsParried = isParried; }

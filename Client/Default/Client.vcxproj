@@ -229,6 +229,7 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
+    <ClInclude Include="..\Public\TargetLock.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
@@ -380,6 +381,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
+    <ClCompile Include="..\Private\TargetLock.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />

@@ -6,6 +6,7 @@
 #include "Particle_Rect.h"
 #include "UIGroup_MonsterHP.h"
 #include "UIGroup_BossHP.h"
+#include "TargetLock.h"
 
 CMonster::CMonster(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLandObject{ pDevice, pContext }
@@ -101,6 +102,20 @@ void CMonster::Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName)
 		return;
 }
 
+HRESULT CMonster::Create_TargetLock(CModel* pBodyModel, string strBoneName)
+{
+	CTargetLock::TARGETLOCK_DESC pDesc{};
+
+	pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	pDesc.pCombinedTransformationMatrix = pBodyModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+
+	m_pTargetLock = dynamic_cast<CTargetLock*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TargetLock"), &pDesc));
+	if (nullptr == m_pTargetLock)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CMonster::Update_UI(_float fHeight)
 {
 	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -119,4 +134,5 @@ void CMonster::Free()
 	Safe_Release(m_pBehaviorCom);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pPlayerTransform);
+	Safe_Release(m_pTargetLock);
 }

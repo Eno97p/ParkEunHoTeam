@@ -32,10 +32,14 @@ _uint CAnimation::Get_CurKeyFrame(_uint iChannelIdx)
 
 _uint CAnimation::Set_CurKeyFrame(_uint iChannelIdx)
 {
-	return m_CurrentKeyFrameIndices[iChannelIdx];
+	return m_CurrentKeyFrameIndices[iChannelIdx]; // 이게 뭘까요?
 }
 
-
+_bool CAnimation::Check_CurDuration(_double CurDuration)
+{
+	// 오차 범위 설정해주어야 할듯
+	return (0.25 >= abs(m_CurrentPosition - CurDuration)); // 0.3 >= abs(m_CurrentPosition - CurDuration)
+}
 
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
 {

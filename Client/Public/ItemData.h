@@ -28,7 +28,8 @@ public:
 	typedef struct ItemData_Desc : public GAMEOBJECT_DESC 
 	{
 		_bool					isDropTem; // 드탑템 여부
-		CItem::ITEM_NAME		eItemName;
+		CItem::ITEM_NAME		eDropItemName;
+		ITEM_NAME				eItemName;
 		
 	}ITEMDATA_DESC;
 
@@ -62,6 +63,7 @@ private:
 
 private:
 	void					Set_DropItem_Data(CItem::ITEM_NAME eItemName);
+	void					Set_Item_Data();
 
 public:
 	static CItemData*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

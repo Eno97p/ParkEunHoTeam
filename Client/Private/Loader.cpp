@@ -59,11 +59,12 @@
 #include "Body_Homonculus.h"
 #include "Weapon_Homonculus.h"
 
+#include "TargetLock.h"
+
 #pragma endregion Monster
 
 #pragma region ITEM
 #include "Item.h"
-#include "ItemData.h"
 #pragma endregion ITEM
 
 #pragma region DECAL
@@ -929,6 +930,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Legionnaire/Legionnaire.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Mst_TargetLock */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mst_TargetLock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 #pragma region ITEM
@@ -1309,17 +1316,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CWeapon_Homonculus::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_TargetLock */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TargetLock"),
+		CTargetLock::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 #pragma region ITEM
 	/* For.Prototype_GameObject_Item*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
 		CItem::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ItemData*/
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ItemData"),
-		CItemData::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ITEM
 

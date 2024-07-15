@@ -442,6 +442,9 @@
     <Filter Include="02.GameObjects\07. UI\Logo\Flow">
       <UniqueIdentifier>{39d3674a-c4c9-4eca-a448-de7b46c88df2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\TargetLock">
+      <UniqueIdentifier>{e17294db-7aca-494a-9b65-3b6be763a9b7}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Bullet">
       <UniqueIdentifier>{8e5b6bfa-306f-41fc-aadf-8254e5f711f1}</UniqueIdentifier>
     </Filter>
@@ -911,6 +914,9 @@
     <ClInclude Include="..\Public\UI_LogoFlow.h">
       <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TargetLock.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1356,6 +1362,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_LogoFlow.cpp">
       <Filter>02.GameObjects\07. UI\Logo\Flow</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TargetLock.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\TargetLock</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

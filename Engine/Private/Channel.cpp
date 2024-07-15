@@ -22,7 +22,6 @@ HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, const vector<class CB
 		});
 
 	m_iBoneIndex = iBoneIndex;
-
 	/* 이 뼈의 전체 애니메이션 과정 중, 특정 시간대에 취해야할 상태들을 모두 다 읽어서 저장해놓는다.*/
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);

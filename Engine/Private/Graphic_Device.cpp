@@ -20,6 +20,20 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0, iFlag, nullptr, 0, D3D11_SDK_VERSION, &m_pDevice, &FeatureLV, &m_pDeviceContext)))
 		return E_FAIL;
 
+	ID3D11Multithread* pMultithread = nullptr;
+	if (SUCCEEDED(m_pDeviceContext->QueryInterface(__uuidof(ID3D11Multithread), (void**)&pMultithread)))
+	{
+		pMultithread->SetMultithreadProtected(TRUE);
+		pMultithread->Release();
+	}
+	else
+	{
+		MSG_BOX("Failed to Create Multithread");
+		return E_FAIL;
+	}
+
+
+
 	/* SwapChain 전면과 후면버퍼를 번갈아가며 화면에 보여준다.(Present) */
 
 	/* 백버퍼를 생성하기 위한 texture2D 만든거야. */

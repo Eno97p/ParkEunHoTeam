@@ -54,6 +54,7 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 	{
 		if (!m_isEquipMode)
 		{
+
 			for (auto& pUI : m_vecUI)
 			{
 				if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
@@ -284,6 +285,11 @@ void CUIGroup_Weapon::Change_Tab()
 		m_eTabType = TAB_R;
 	else if (TAB_R == m_eTabType)
 		m_eTabType = TAB_L;
+
+	for (auto& pSlot : m_vecSlot)
+		pSlot->Change_TabType(m_eTabType);
+
+	// Equipµµ 
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

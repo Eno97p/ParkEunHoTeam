@@ -29,6 +29,7 @@ public:
 	vector<class CItemData*>*			Get_QuickAccess() { return &m_vecQuickAccess; }
 	vector<class CItemData*>*			Get_Weapons() { return &m_vecWeapon; }
 	class CItemData*					Get_EquipWeapon(_uint iArrIdx) { return m_arrEquipWeapon[iArrIdx]; }
+	vector<class CItemData*>*			Get_Artefact() { return &m_vecArtefact; }
 
 public:
 	HRESULT Initialize();
@@ -49,6 +50,7 @@ private:
 	vector<class CItemData*>		m_vecQuickAccess;
 	vector<class CItemData*>		m_vecWeapon;
 	class CItemData*				m_arrEquipWeapon[3];
+	vector<class CItemData*>		m_vecArtefact;
 
 public:
 	virtual void Free() override;

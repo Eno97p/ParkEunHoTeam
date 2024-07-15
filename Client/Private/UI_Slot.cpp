@@ -21,6 +21,13 @@ CUI_Slot::CUI_Slot(const CUI_Slot& rhs)
 {
 }
 
+void CUI_Slot::Change_TabType(CUIGroup_Weapon::TAB_TYPE eTabType)
+{
+	m_eTabType = eTabType;
+
+	Update_ItemIcon_TabChange();
+}
+
 HRESULT CUI_Slot::Initialize_Prototype()
 {
 	return S_OK;
@@ -33,6 +40,9 @@ HRESULT CUI_Slot::Initialize(void* pArg)
 	m_iSlotIdx = pDesc->iSlotIdx;
 	m_eUISort = pDesc->eUISort;
 	m_eSlotType = pDesc->eSlotType;
+
+	if (SLOT_WEAPON == m_eSlotType)
+		m_eTabType = pDesc->eTabType;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -243,6 +253,12 @@ HRESULT CUI_Slot::Create_ItemIcon_Weapon()
 	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
 
 	return S_OK;
+}
+
+void CUI_Slot::Update_ItemIcon_TabChange()
+{
+	// Inventory가 가지고 있는 Sub Weapon의 정보를 가져와서 인덱스에 해당하는 ItemIcon을 출력하기?
+	// 기존의 ItemIcon 없애고 새로 할당
 }
 
 void CUI_Slot::Open_SubPage()

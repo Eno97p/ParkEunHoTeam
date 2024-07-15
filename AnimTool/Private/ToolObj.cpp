@@ -98,6 +98,10 @@ void CToolObj::Tick(_float fTimeDelta)
 		m_pModelCom->Play_Animation(fTimeDelta);
 		// 여기에서 Channel의 keyframe 할당하기?
 		//m_pModelCom->Set_CurKeyFrame(0, 0); // Imgui에서 받아온 값으로 넣어주어야 함
+
+
+		/*if (m_pModelCom->Check_CurDuration(2.0)) // Test
+			int i = 1;*/
 	}
 
 	break;

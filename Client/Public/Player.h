@@ -143,6 +143,8 @@ private:
 
 	_float m_fParticleAcctime = 0.f;
 
+	//초기 위치
+	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 

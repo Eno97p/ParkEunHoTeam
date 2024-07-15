@@ -9,7 +9,7 @@ void CSimulationCallBack::onContact(const PxContactPairHeader& pairHeader, const
 		if ((pairHeader.actors[0]->getName() == "Player" && pairHeader.actors[1]->getName() == "Weapon") ||
 			(pairHeader.actors[0]->getName() == "Weapon" && pairHeader.actors[1]->getName() == "Player"))
 		{
-
+			
 			int tmep = 0;
 			// 이 충돌을 무시
 			// 

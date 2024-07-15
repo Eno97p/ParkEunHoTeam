@@ -223,6 +223,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
     PhysXDesc.pComponent = m_pModelCom;
     PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
+    PhysXDesc.filterData.word0 = GROUP_ENVIRONMENT;
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
         TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
         return E_FAIL;

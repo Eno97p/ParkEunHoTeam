@@ -368,6 +368,11 @@ _uint CGameInstance::Get_CurrentLevel()
 	return m_pLevel_Manager->Get_CurrentLevel();
 }
 
+void CGameInstance::Set_NextLevel(_uint iNextLevel)
+{
+	return m_pLevel_Manager->Set_NextLevelIndex(iNextLevel);
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring & strPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr == m_pObject_Manager)
@@ -447,6 +452,11 @@ vector<class CCamera*> CGameInstance::Get_Cameras()
 CCamera* CGameInstance::Get_MainCamera()
 {
 	return m_pObject_Manager->Get_MainCamera();
+}
+
+void CGameInstance::Clear_Cameras()
+{
+	m_pObject_Manager->Clear_Cameras();
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)

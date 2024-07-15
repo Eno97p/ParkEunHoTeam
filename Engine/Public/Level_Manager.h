@@ -23,13 +23,15 @@ public:
 public:
 	/* 새로운 레벨로 교체한다. */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
-	_uint Get_CurrentLevel() { return m_iLevelIndex; }
+	void Set_NextLevelIndex(_uint iNext) { m_iNextLevelIndex = iNext; }
+	_uint Get_CurrentLevel() { return m_iNextLevelIndex; }
 
 private:
 	class CLevel*			m_pCurrentLevel = { nullptr };
 	class CGameInstance*	m_pGameInstance = { nullptr };
 
 	_uint					m_iLevelIndex = { 0 };
+	_uint					m_iNextLevelIndex = { 0 };
 
 public:
 	static CLevel_Manager* Create();

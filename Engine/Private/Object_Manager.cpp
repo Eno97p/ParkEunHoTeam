@@ -167,6 +167,15 @@ vector<class CCamera*> CObject_Manager::Get_Cameras()
 	return m_Cameras; 
 }
 
+void CObject_Manager::Clear_Cameras()
+{
+	for (auto& camera : m_Cameras)
+	{
+		Safe_Release(camera);
+	}
+	m_Cameras.clear();
+}
+
 
 
 

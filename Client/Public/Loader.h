@@ -81,6 +81,11 @@ private:
 	HRESULT Loading_For_GamePlayLevel();
 	HRESULT Loading_For_GamePlayLevel_For_Shader();
 
+	HRESULT Loading_For_AckbarLevel();
+	HRESULT Loading_For_AckbarLevel_For_Shader();
+
+	HRESULT Loading_For_JugglasLevel();
+	HRESULT Loading_For_JugglasLevel_For_Shader();
 
 
 public:

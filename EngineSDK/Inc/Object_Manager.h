@@ -51,6 +51,7 @@ public:
 	void Set_MainCamera(_uint iCameraIndex);
 	CCamera* Get_MainCamera();
 	vector<class CCamera*> Get_Cameras();
+	void Clear_Cameras();
 
 
 

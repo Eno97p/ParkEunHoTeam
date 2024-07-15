@@ -46,9 +46,9 @@ private:
     _float4 m_vCameraPosition;
     _float4 m_vLookAtPosition;
 
-    _float m_fDistance = 5.0f;        // 플레이어로부터의 거리
-    _float m_fHeightOffset = 1.0f;    // 높이 오프셋
-    _float m_fFixedZPosition = 10.0f;  // 고정된 Z 위치
+    _float m_fDistance = 8.5f;        // 플레이어로부터의 거리
+    _float m_fHeightOffset = 3.5f;    // 높이 오프셋
+    _float m_fFixedZPosition = -7.5f;  // 고정된 Z 위치
     _float m_fLookAtOffset = 1.0f;    // 카메라가 바라보는 위치의 오프셋
     _float m_fFollowSpeed = 5.0f;     // 카메라 추적 속도
 

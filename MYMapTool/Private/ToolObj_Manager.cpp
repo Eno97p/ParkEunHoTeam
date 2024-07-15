@@ -78,6 +78,10 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
     }
     else if (iLayerIdx == 3)
     {
+        //TRIG TYPE@@
+        //TRIG TYPE@@
+        //TRIG TYPE@@
+        //TRIG TYPE@@
         pDesc.TriggerType = /*(CEventTrigger::TRIGGER_TYPE)*/iSelectIdx;
         if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
             return E_FAIL;
@@ -172,7 +176,7 @@ void CToolObj_Manager::Initialize()
         TEXT("Prototype_Component_Model_BasicCube"),
         TEXT("Prototype_Component_Model_SkySphere"),
         
-        TEXT("Prototype_Component_Model_Item_Hell"),
+        TEXT("Prototype_Component_Model_Elevator"),
         TEXT("Prototype_Component_Model_Boss_Gun"), TEXT("Prototype_Component_Model_Cannon") };
 }
 
@@ -335,7 +339,7 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 6:
             return "Prototype_GameObject_EventTrigger";
         case 7:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_Elevator";
         case 8:
             return "Prototype_GameObject_Active_Element";
         default:

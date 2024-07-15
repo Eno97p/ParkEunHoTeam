@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 
+#include "Elevator.h"
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CToolObj(pDevice, pContext)
 {
@@ -97,6 +98,46 @@ void CEventTrigger::Tick(_float fTimeDelta)
 				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
 				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_BasicDonut");
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_FakeWall"), &pDesc);
+			}
+			break;
+			case TRIG_JUGGLAS_SPAWNSECONDROOM:
+			{
+				m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
+				CToolObj::TOOLOBJ_DESC pDesc = {};
+				_matrix vMat = XMMatrixIdentity();
+				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_RasSamrahCastle2");
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_ToolObj"), &pDesc);
+			}
+				break;
+			case TRIG_JUGGLAS_SPAWNTHIRDROOM:
+			{
+				m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
+				CToolObj::TOOLOBJ_DESC pDesc = {};
+				_matrix vMat = XMMatrixIdentity();
+				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_RasSamrahCastle3");
+
+
+
+
+
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_ToolObj"), &pDesc);
+			}
+			break;
+			case TRIG_VIEWCHANGE_TTOS:
+			{
+				m_pGameInstance->Set_MainCamera(2);
+			}
+			break;
+			case TRIG_VIEWCHANGE_STOT:
+			{
+				m_pGameInstance->Set_MainCamera(1);
+			}
+			break;
+			case TRIG_ACTIVATE_ELEVATOR:
+			{
+				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Elevate(); //LEVEL_JUGGLAS·Î º¯°æ
 			}
 			break;
 			default:

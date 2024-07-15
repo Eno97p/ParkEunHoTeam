@@ -42,6 +42,7 @@ private:
 	_double			m_Duration = { 0.0 };
 	_double			m_TickPerSecond = { 0.0 };
 	_double			m_CurrentPosition = { 0.0 };
+	_double			m_PrevPosition = { 0.0 };
 	_bool			m_isFinished = { false };
 	_double			currentPositionRatio = { 0.0 };
 

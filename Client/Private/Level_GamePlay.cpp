@@ -274,8 +274,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	pDesc->eLevel = LEVEL_GAMEPLAY;*/
 
 	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
+	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -283,7 +283,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
 	//	return E_FAIL;
-	
+	//
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -293,8 +293,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
 	//}
 
 	return S_OK;

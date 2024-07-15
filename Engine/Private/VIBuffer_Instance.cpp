@@ -25,7 +25,7 @@ CVIBuffer_Instance::CVIBuffer_Instance(const CVIBuffer_Instance& rhs)
 HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDesc)
 {
 	m_iNumInstance = InstanceDesc.iNumInstance;
-	m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
+	//m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
 	m_RandomNumber = mt19937_64(m_RandomDevice());
 
 

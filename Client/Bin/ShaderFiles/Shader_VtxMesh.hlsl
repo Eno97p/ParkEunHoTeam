@@ -193,22 +193,50 @@ PS_OUT PS_WEAPON(PS_IN In)
 	return Out;
 }
 
-struct PS_OUT_BLOOM
+struct PS_OUT_COLOR
 {
 	vector vColor : SV_TARGET0;
 };
 
-PS_OUT_BLOOM PS_BLOOM(PS_IN In)
+PS_OUT_COLOR PS_BLOOM(PS_IN In)
 {
-	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
 	Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 	return Out;
 }
 
-PS_OUT_BLOOM PS_BLUR(PS_IN In)
+PS_OUT_COLOR PS_BLUR(PS_IN In)
 {
-	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
 	Out.vColor = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+	return Out;
+}
+
+PS_OUT_COLOR PS_WEAPON_REFLECTION(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vColor;
+
+	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	if ((g_DisolveValue - disolveValue) > 0.05f)
+	{
+		return Out;
+	}
+	else if (disolveValue > g_DisolveValue)
+	{
+		discard;
+	}
+	else
+	{
+		Out.vColor.rgb = float3(0.f, 1.f, 1.f);
+	}
+
 	return Out;
 }
 
@@ -285,9 +313,9 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_BLUR();
 	}
 
-	pass Mirror_5
+	pass Weapons_Reflection_5
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_NoCull);
 		SetDepthStencilState(DSS_None_Test_None_Write, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -296,7 +324,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_WEAPON_REFLECTION();
 	}
 }
 

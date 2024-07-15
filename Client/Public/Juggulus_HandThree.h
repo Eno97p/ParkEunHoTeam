@@ -14,6 +14,11 @@ BEGIN(Client)
 
 class CJuggulus_HandThree final : public CPartObject
 {
+public:
+	enum STATE {
+		STATE_IDLE, STATE_ATTACK, STATE_END
+	};
+
 private:
 	CJuggulus_HandThree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CJuggulus_HandThree(const CJuggulus_HandThree& rhs);
@@ -29,19 +34,30 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual HRESULT Render_Distortion();
 	virtual HRESULT Render_LightDepth() override;
 
 private:
-	_bool		m_isRender = { false };
+	HRESULT Add_Nodes();
+	NodeStates Attack(_float fTimeDelta);
+	NodeStates Idle(_float fTimeDelta);
+	void Add_Hp(_int iValue);
 
-	CCollider*	m_pColliderCom = { nullptr };
-	CShader*	m_pShaderCom = { nullptr };
-	CModel*		m_pModelCom = { nullptr };
-	CTexture*	m_pTextureCom = { nullptr };
+private:
+	CBehaviorTree* m_pBehaviorCom = { nullptr };
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	CTexture* m_pTextureCom = { nullptr };
 
+	_vector m_vParentPos;
 	_bool			m_isAnimFinished = { false };
 	_uint			m_iPastAnimIndex = 0;
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+	_float* m_pCurHp;
+	_float* m_pMaxHp;
+	_uint m_iState = 0;
+	_float m_fAttackDelay = 2.f;
+	_uint m_iAttackCount = 0;
 
 public:
 	HRESULT Add_Components();
@@ -50,9 +66,9 @@ public:
 	void					Change_Animation(_float fTimeDelta);
 
 public:
-	static CJuggulus_HandThree*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*			Clone(void* pArg) override;
-	virtual void					Free() override;
+	static CJuggulus_HandThree* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void				Free() override;
 };
 
 END

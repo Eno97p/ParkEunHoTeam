@@ -23,6 +23,8 @@ public:
 		const _uint* pState;
 		_bool* pCanCombo;
 		LEVEL					eLevel;
+		_float* pCurHp;
+		_float* pMaxHp;
 	}PARTOBJ_DESC;
 
 protected:

@@ -33,6 +33,15 @@ HRESULT CBody_Juggulus::Initialize(void* pArg)
 
 void CBody_Juggulus::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 0.5f;
+		break;
+	default:
+		break;
+
+	}
 }
 
 void CBody_Juggulus::Tick(_float fTimeDelta)
@@ -45,6 +54,7 @@ void CBody_Juggulus::Tick(_float fTimeDelta)
 void CBody_Juggulus::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 
 	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 }
@@ -68,18 +78,13 @@ HRESULT CBody_Juggulus::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
 
-		if (i == 0)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;*/
-		}
-		else if (i == 1)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
-				return E_FAIL;*/
-		}
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(7);
 
 		m_pModelCom->Render(i);
 	}
@@ -109,10 +114,10 @@ HRESULT CBody_Juggulus::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Distortion"),
-	//	TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -124,6 +129,10 @@ HRESULT CBody_Juggulus::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -149,11 +158,13 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 2;
+		fAnimSpeed = 0.5f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_CREATE_HAMMER)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
+		fAnimSpeed = 0.5f;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_FLAME_ATTACK)
 	{
@@ -164,6 +175,7 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
+		m_pWeapon->Set_Active();
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_SPHERE_ATTACK)
 	{

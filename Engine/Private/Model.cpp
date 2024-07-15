@@ -337,6 +337,11 @@ _bool CModel::Check_CurDuration(_double CurDuration)
 	return m_Animations[m_AnimDesc.iAnimIndex]->Check_CurDuration(CurDuration);
 }
 
+void CModel::Set_LerpTime(_double LerpTime)
+{
+	m_Animations[m_AnimDesc.iAnimIndex]->Set_LerpTime(LerpTime);
+}
+
 vector<string> CModel::Get_BoneNameVec()
 {
 	vector<string> _Names;

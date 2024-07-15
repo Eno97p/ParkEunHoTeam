@@ -153,6 +153,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\SideViewCamera.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\TargetLock.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UIGroup_DropItem.cpp"
 
 

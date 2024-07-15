@@ -10,6 +10,7 @@
 
 #include "Light.h"
 #include "UI_FadeInOut.h"
+#include "Level_Loading.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -84,6 +85,16 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		m_pGameInstance->Set_MainCamera(m_iMainCameraIdx);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_F5))
+	{
+		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+		{
+			MSG_BOX("Failed to Open Level JUGGLAS");
+			return;
+		}
+	}
+	
+
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
 //#endif
 }
@@ -136,6 +147,8 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 {
+	m_pGameInstance->Clear_Cameras();
+
 	CFreeCamera::FREE_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
@@ -201,8 +214,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring & strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -217,8 +230,8 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
@@ -235,6 +248,11 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
+	pLandObjDesc->mWorldMatrix._41 = 140.f;
+	pLandObjDesc->mWorldMatrix._42 = 528.f;
+	pLandObjDesc->mWorldMatrix._43 = 98.f;
+	pLandObjDesc->mWorldMatrix._44 = 1.f;
+
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
 
@@ -256,8 +274,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	pDesc->eLevel = LEVEL_GAMEPLAY;*/
 
 	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
+		return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -265,7 +283,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
 	//	return E_FAIL;
-	//
+	
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -275,8 +293,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-			return E_FAIL;
+		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+		//	return E_FAIL;
 	//}
 
 	return S_OK;

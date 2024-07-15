@@ -21,7 +21,13 @@ HRESULT CItemData::Initialize(void* pArg)
 {
 	ITEMDATA_DESC* pDesc = static_cast<ITEMDATA_DESC*>(pArg);
 
-	Set_DropItem_Data(pDesc->eItemName);
+	if (pDesc->isDropTem)
+		Set_DropItem_Data(pDesc->eDropItemName);
+	else
+	{
+		m_eItemName = pDesc->eItemName;
+		Set_Item_Data();
+	}
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -54,6 +60,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF1;
+		m_wszItemName = TEXT("SIGIL OF STRENGTH");
+		m_wszItemExplain = TEXT("버프 1");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
@@ -61,6 +69,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF2;
+		m_wszItemName = TEXT("SIGIL OF PROTECTION");
+		m_wszItemExplain = TEXT("버프 2");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
@@ -68,6 +78,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF3;
+		m_wszItemName = TEXT("SIGIL OF RECOVERY");
+		m_wszItemExplain = TEXT("버프 3");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
@@ -75,6 +87,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF4;
+		m_wszItemName = TEXT("SIGIL OF ETHER");
+		m_wszItemExplain = TEXT("버프 4");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}
@@ -92,7 +106,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_ESSENCE;
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Essence");
-		m_wszItemName = TEXT("STABILIZED ESSENCE");
+		m_wszItemName = TEXT("GRACEFUL ESSENCE");
 		m_wszItemExplain = TEXT("안정적인 데이터 [컴파일링 완료]\n보류중인 메모리 분석");
 		break;
 	}
@@ -100,6 +114,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_ETHER;
+		m_wszItemName = TEXT("RADIANT ETHER");
+		m_wszItemExplain = TEXT("섬세하게 조각된 반투명 수정 조각\n풍부한 천상 에너지를 발산");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
 		break;
 	}
@@ -107,6 +123,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
 		m_eItemName = ITEMNAME_UPGRADE1;
+		m_wszItemName = TEXT("HADRONITE");
+		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0");
 		break;
 	}
@@ -114,11 +132,64 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 		m_eItemType = ITEMTYPE_UPGRADE;
 		m_eItemName = ITEMNAME_UPGRADE2;
-		m_wszItemName = TEXT("HADRONITE");
+		m_wszItemName = TEXT("GRACEFUL HADRONITE");
 		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}
+	default:
+		break;
+	}
+}
+
+void CItemData::Set_Item_Data()
+{
+	switch (m_eItemName)
+	{
+	case Client::CItemData::ITEMNAME_CATHARSIS:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("CATHARSIS");
+		m_wszItemExplain = TEXT("순수한 영혼과 강력한 마력의\n결합체\n그 자체로 살아있는 존재처럼\n사용자의 의지에 반응한다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catharsis");
+		break;
+	}
+	case Client::CItemData::ITEMNAME_CENDRES:
+		break;
+	case Client::CItemData::ITEMNAME_CORRUPTEDSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_DURGASWORD:
+		break;
+	case Client::CItemData::ITEMNAME_ICEBLADE:
+		break;
+	case Client::CItemData::ITEMNAME_NARUEHSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_PRETORIANSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_RADAMANTHESWORD:
+		break;
+	case Client::CItemData::ITEMNAME_SITRASWORD:
+		break;
+	case Client::CItemData::ITEMNAME_VALNIRSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_VEILLEURSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_WHISPERSWORD:
+		break;
+	case Client::CItemData::ITEMNAME_OPH:
+		break;
+	case Client::CItemData::ITEMNAME_ETHERBOLT:
+		break;
+	case Client::CItemData::ITEMNAME_AEGIS:
+		break;
+	case Client::CItemData::ITEMNAME_CATALYST:
+		break;
+	case Client::CItemData::ITEMNAME_HOVERBOARD:
+		break;
+	case Client::CItemData::ITEMNAME_FIREFLY:
+		break;
+	case Client::CItemData::ITEMNAME_WHISPERER:
+		break;
 	default:
 		break;
 	}

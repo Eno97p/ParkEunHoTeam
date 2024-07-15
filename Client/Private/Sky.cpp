@@ -25,6 +25,7 @@ HRESULT CSky::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_iSkyTex = m_pGameInstance->Get_CurrentLevel() - LEVEL_GAMEPLAY;
 
 	return S_OK;
 }
@@ -54,7 +55,7 @@ HRESULT CSky::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iSkyTex)))
 		return E_FAIL;
 
 
@@ -80,7 +81,7 @@ HRESULT CSky::Render()
 HRESULT CSky::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
+ 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Cube"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 

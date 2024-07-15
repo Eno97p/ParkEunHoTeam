@@ -457,9 +457,9 @@ HRESULT CRenderer::Initialize()
         //   return E_FAIL;
         //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
+           return E_FAIL;
+        currentX += targetWidth + gap;
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Distortion"), currentX, currentY, targetWidth, targetHeight)))
         //   return E_FAIL;
@@ -638,6 +638,19 @@ void CRenderer::Render_Priority()
     }
     m_RenderGroup[RENDER_PRIORITY].clear();
     
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
+
+    for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
+    {
+        if (nullptr != pGameObject)
+            pGameObject->Render_Reflection();
+
+        Safe_Release(pGameObject);
+    }
+    m_RenderGroup[RENDER_REFLECTION].clear();
+
     m_pGameInstance->End_MRT();
 }
 
@@ -906,19 +919,6 @@ void CRenderer::Render_Reflection()
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_MIRROR].clear();
-
-    m_pGameInstance->End_MRT();
-
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
-
-    for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
-    {
-        if (nullptr != pGameObject)
-            pGameObject->Render_Reflection();
-
-        Safe_Release(pGameObject);
-    }
-    m_RenderGroup[RENDER_REFLECTION].clear();
 
     m_pGameInstance->End_MRT();
 
@@ -1515,11 +1515,11 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }
 

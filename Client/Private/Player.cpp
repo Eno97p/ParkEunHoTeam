@@ -34,6 +34,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	pDesc->fSpeedPerSec = 3.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+	m_InitialPosition = { pDesc->mWorldMatrix._41, pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43 }; //초기 위치 설정
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
@@ -184,7 +185,8 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 528.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(m_InitialPosition.x, PhysXDesc.height * 0.5f + PhysXDesc.radius + m_InitialPosition.y, m_InitialPosition.z);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	//PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 528.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
@@ -196,7 +198,7 @@ HRESULT CPlayer::Add_Components()
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
 	PhysXDesc.pName = "Player";
 	PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
-	//PhysXDesc.filterData.word1 = Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY;
+	PhysXDesc.filterData.word1 = (Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY) & ~GROUP_NONCOLLIDE;
 	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 	
 	
@@ -1132,7 +1134,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
 		}
-		if (GetKeyState('W') & 0x8000)
+		else
 		{
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
@@ -1409,7 +1411,7 @@ void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 		return;
 	}
 	// 충돌한 객체가 환경(지형, 벽 등)인 경우
-	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_ENVIRONMENT)
+	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_NONCOLLIDE)
 	{
 		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
 		int temp = 0;

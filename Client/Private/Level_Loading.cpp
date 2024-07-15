@@ -11,6 +11,8 @@
 #pragma region LEVEL_HEADER
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
+#include "Level_Ackbar.h"
+#include "Level_Jugglas.h"
 #pragma endregion
 
 
@@ -53,6 +55,8 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 	{
 		if (GetKeyState(VK_RETURN) & 0x8000)
 		{
+			m_pGameInstance->Set_NextLevel(m_eNextLevel);
+			
 			CLevel*		pNewLevel = { nullptr };
 
 			switch (m_eNextLevel)
@@ -67,7 +71,16 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				m_pUI_Manager->Render_UIGroup(false, "Loading");
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;
-				//pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_ACKBAR:
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Ackbar::Create(m_pDevice, m_pContext))))
+					return;
+				break;
+			case LEVEL_JUGGLAS:
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Jugglas::Create(m_pDevice, m_pContext))))
+					return;
 				break;
 			}
 
@@ -109,6 +122,7 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 CLevel_Loading * CLevel_Loading::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVEL eNextLevel)
 {
+	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
 	CLevel_Loading*		pInstance = new CLevel_Loading(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize(eNextLevel)))

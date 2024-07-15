@@ -295,44 +295,35 @@ HRESULT CPhysX::AddActor(PxActor* pActor)
 	return S_OK;
 }
 
-PxFilterFlags CPhysX::FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0, PxFilterObjectAttributes attributes1, PxFilterData filterData1, PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
+PxFilterFlags CPhysX::FilterShaderExample(PxFilterObjectAttributes attributes0, PxFilterData filterData0,
+	PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+	PxPairFlags& pairFlags, const void* constantBlock, PxU32 constantBlockSize)
 {
-
 	PX_UNUSED(attributes0);
 	PX_UNUSED(attributes1);
-	PX_UNUSED(filterData0);
-	PX_UNUSED(filterData1);
-	PX_UNUSED(constantBlockSize);
 	PX_UNUSED(constantBlock);
+	PX_UNUSED(constantBlockSize);
 
+	// NONCOLLIDE 그룹은 어떤 그룹과도 충돌하지 않음
+	if ((filterData0.word0 & GROUP_NONCOLLIDE) || (filterData1.word0 & GROUP_NONCOLLIDE))
+	{
+		return PxFilterFlag::eSUPPRESS;
+	}
 
-
+	// 플레이어와 무기 사이의 충돌 방지 (기존 로직 유지)
 	if ((filterData0.word0 & GROUP_PLAYER && filterData1.word0 & GROUP_WEAPON) ||
 		(filterData0.word0 & GROUP_WEAPON && filterData1.word0 & GROUP_PLAYER))
 	{
-		return PxFilterFlag::eSUPPRESS; // 충돌 억제
+		return PxFilterFlag::eSUPPRESS;
 	}
 
-
-
-	// all initial and persisting reports for everything, with per-point data
+	// 기본 충돌 설정
 	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
 		| PxPairFlag::eNOTIFY_TOUCH_FOUND
 		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
 		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+
 	return PxFilterFlag::eDEFAULT;
-
-
-
-	//if ((filterData0.word0 & filterData1.word1) & (Engine::CollisionGropuID::GROUP_PLAYER | Engine::CollisionGropuID::GROUP_WEAPON))
-	//{
-	//	return PxFilterFlag::eSUPPRESS; // 충돌 억제
-	//}
-	//
-	//// 기본적인 충돌 설정 (필요에 따라 추가적인 설정 가능)
-	//pairFlags = PxPairFlag::eCONTACT_DEFAULT;
-	//
-	//return PxFilterFlag::eDEFAULT;
 }
 
 PxParticleBuffer* CPhysX::CreateParticleBuffer(const PxParticleBufferDesc& desc, PxParticleBuffer* particleBuffer)

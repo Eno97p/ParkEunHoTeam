@@ -8,6 +8,7 @@ texture2D	g_SpecularTexture;
 
 texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
+texture2D g_EmissiveTexture;
 //FOR DISSOLVE
 texture2D	g_NoiseTexture;
 float		g_fAccTime;
@@ -221,9 +222,18 @@ PS_OUT PS_MAIN(PS_IN In)
 	float finalRoughness = saturate(baseRoughness + (calculatedRoughness - 0.5) * roughnessContrast);
 
 	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 
+	if (g_bEmissive) Out.vEmissive = vEmissive;
 	if (g_bRoughness) Out.vRoughness = 0.01f/*vector(finalRoughness, finalRoughness, finalRoughness, 1.0)*/;
 	if (g_bMetalic) Out.vMetalic = 1.f - vMetalic;
+
+	//if (g_Red == g_Test)
+	//{
+	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	//}
+
+
 	return Out;
 }
 
@@ -356,6 +366,24 @@ PS_OUT_AB PS_ALPHABLEND(PS_IN In)
 	return Out;
 
 }
+
+struct PS_OUT_BLOOM
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_BLOOM PS_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	Out.vColor = vColor;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -436,5 +464,20 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_ALPHABLEND();
 
 	}
+
+		pass Bloom
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLOOM();
+	}
+
 }
 

@@ -1,6 +1,7 @@
 #include "UIGroup_Inventory.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -8,6 +9,7 @@
 #include "UI_QuickExplain.h"
 #include "UI_Slot.h"
 #include "UI_QuickInvBG.h"
+#include "UIGroup_InvSub.h"
 
 CUIGroup_Inventory::CUIGroup_Inventory(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -42,7 +44,8 @@ void CUIGroup_Inventory::Priority_Tick(_float fTimeDelta)
 void CUIGroup_Inventory::Tick(_float fTimeDelta)
 {
 	_bool isRender_End = false;
-	if (m_isRend)
+	if (m_isRend &&
+		!(dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Get_Rend()))
 	{
 		for (auto& pUI : m_vecUI)
 		{
@@ -134,7 +137,7 @@ HRESULT CUIGroup_Inventory::Create_UI()
 	// Explain
 	CUI_QuickExplain::UI_EXPLAIN_DESC pExplainDesc{};
 	pExplainDesc.eLevel = LEVEL_STATIC;
-	pExplainDesc.isInv = true;
+	pExplainDesc.eUISort = NINETH;
 	m_vecUI.emplace_back(dynamic_cast<CUI_QuickExplain*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QuickExplain"), &pExplainDesc)));
 
 	Create_Slot();

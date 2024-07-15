@@ -68,7 +68,7 @@ void CEventTrigger::Tick(_float fTimeDelta)
 void CEventTrigger::Late_Tick(_float fTimeDelta)
 {
 
-	CCollider* pPlayerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Collider")));
+	CCollider* pPlayerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_Collider")));
 	if (nullptr != pPlayerCollider)
 	{
 		if (CCollider::COLL_START == m_pColliderCom->Intersect(pPlayerCollider))
@@ -85,6 +85,36 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
 				pDesc.wstrModelName = TEXT("Prototype_Component_Model_BasicDonut");
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_FakeWall"), &pDesc);
+			}
+			break;
+			case TRIG_JUGGLAS_SPAWNSECONDROOM:
+			{
+				m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
+				CMap_Element::MAP_ELEMENT_DESC pDesc = {};
+				_matrix vMat = XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f);
+				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle2");
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+			}
+			break;
+			case TRIG_JUGGLAS_SPAWNTHIRDROOM:
+			{
+				//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
+				CMap_Element::MAP_ELEMENT_DESC pDesc = {};
+				_matrix vMat = XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f);
+				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle3");
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+			}
+			break;
+			case TRIG_VIEWCHANGE_TTOS:
+			{
+				m_pGameInstance->Set_MainCamera(2);
+			}
+			break;
+			case TRIG_VIEWCHANGE_STOT:
+			{
+				m_pGameInstance->Set_MainCamera(1);
 			}
 			break;
 			default:

@@ -16,6 +16,7 @@
 #include "Body_Player.h"
 #include "Grass.h"
 #include "FakeWall.h"
+#include "Elevator.h"
 
 #include "TutorialMapBridge.h"
 
@@ -129,6 +130,7 @@ HRESULT CLoader::Loading_Map()
 
 		break;
 	}
+	break;
 
 	}
 
@@ -658,6 +660,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 #pragma region  Active Element Model Load
 	lstrcpy(m_szLoadingText, TEXT("Active Element ¸ðµ¨ ·Îµù Áß"));
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elevator"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -801,6 +807,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EventTrigger"), CEventTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Elevator"), CElevator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

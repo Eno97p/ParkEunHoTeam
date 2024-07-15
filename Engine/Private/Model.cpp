@@ -331,6 +331,12 @@ void CModel::Set_CurKeyFrame(_uint iAnimIdx, _uint iChannelIdx)
 	(*iter)->Set_CurKeyFrame(m_Animations[iAnimIdx]->Set_CurKeyFrame(iChannelIdx));
 }
 
+_bool CModel::Check_CurDuration(_double CurDuration)
+{
+	// 현재 재생 중인 애니메이션의 Duration에 접근
+	return m_Animations[m_AnimDesc.iAnimIndex]->Check_CurDuration(CurDuration);
+}
+
 vector<string> CModel::Get_BoneNameVec()
 {
 	vector<string> _Names;

@@ -20,6 +20,8 @@ public:
 	_uint	Get_CurKeyFrame(_uint iChannelIdx);
 	_uint	Set_CurKeyFrame(_uint iChannelIdx); // 현재 KeyFrame 세팅을 위해 값을 반환
 
+	_bool	Check_CurDuration(_double CurDuration); // 현재 Duration을 체크
+
 public:
 	HRESULT Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);

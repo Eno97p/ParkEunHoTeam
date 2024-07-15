@@ -1132,7 +1132,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
 		}
-		if (GetKeyState('W') & 0x8000)
+		else
 		{
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}

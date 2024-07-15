@@ -59,6 +59,9 @@
 #include "C:\3D_TeamProj\Engine\private\CProfileScope.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\Private\CRenderWorker.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\CUserErrorCallBack.cpp"
 
 

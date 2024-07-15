@@ -202,9 +202,11 @@ struct PS_OUT_COLOR
 
 PS_OUT_COLOR PS_BLOOM(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
-    Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
-    return Out;
+
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+	Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+	return Out;
+
 }
 
 PS_OUT_COLOR PS_BLUR(PS_IN In)
@@ -247,7 +249,9 @@ PS_OUT_COLOR PS_TARGETLOCK(PS_IN In)
     PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
     Out.vColor = g_fColor;
     return Out;
+
 }
+
 
 technique11 DefaultTechnique
 {
@@ -321,19 +325,18 @@ technique11 DefaultTechnique
        DomainShader = NULL;
        PixelShader = compile ps_5_0 PS_BLUR();
     }
-
-    pass Weapons_Reflection_5
+        pass Weapons_Reflection_5
     {
-       SetRasterizerState(RS_NoCull);
-       SetDepthStencilState(DSS_None_Test_None_Write, 0);
-       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetRasterizerState(RS_NoCull);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-       VertexShader = compile vs_5_0 VS_MAIN();
-       GeometryShader = NULL;
-       HullShader = NULL;
-       DomainShader = NULL;
-       PixelShader = compile ps_5_0 PS_WEAPON_REFLECTION();
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_WEAPON_REFLECTION();
     }
 
     pass TargetLockPass_6
@@ -349,5 +352,8 @@ technique11 DefaultTechnique
        DomainShader = NULL;
        PixelShader = compile ps_5_0 PS_TARGETLOCK();
     }
+
+
+
 }
 

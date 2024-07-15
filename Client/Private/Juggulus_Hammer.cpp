@@ -1,6 +1,7 @@
 #include "Juggulus_Hammer.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
 CJuggulus_Hammer::CJuggulus_Hammer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -33,11 +34,23 @@ HRESULT CJuggulus_Hammer::Initialize(void* pArg)
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -6.5f, -1.f, 1.f));
 
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+
 	return S_OK;
 }
 
 void CJuggulus_Hammer::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 0.5f;
+		break;
+	default:
+		break;
+	}
 }
 
 void CJuggulus_Hammer::Tick(_float fTimeDelta)
@@ -49,11 +62,30 @@ void CJuggulus_Hammer::Tick(_float fTimeDelta)
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
+
+	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+	// 몬스터 무기와 플레이어 충돌처리
+	if (Get_Active())
+	{
+		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+		if (m_eColltype == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+	}
 }
 
 void CJuggulus_Hammer::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+#ifdef _DEBUG
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
+#endif
 }
 
 HRESULT CJuggulus_Hammer::Render()
@@ -70,6 +102,15 @@ HRESULT CJuggulus_Hammer::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+			return E_FAIL;
+
 		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
@@ -84,6 +125,18 @@ HRESULT CJuggulus_Hammer::Render_LightDepth()
 
 HRESULT CJuggulus_Hammer::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_OBB;
+	ColliderDesc.vExtents = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 9.f);
+
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_JuggulusHammer"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -92,6 +145,11 @@ HRESULT CJuggulus_Hammer::Add_Components()
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -104,6 +162,10 @@ HRESULT CJuggulus_Hammer::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -138,4 +200,5 @@ CGameObject* CJuggulus_Hammer::Clone(void* pArg)
 void CJuggulus_Hammer::Free()
 {
 	__super::Free();
+	Safe_Release(m_pPlayer);
 }

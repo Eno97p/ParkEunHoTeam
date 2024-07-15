@@ -31,6 +31,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Distortion();
 	virtual HRESULT Render_LightDepth() override;
+	void Set_Weapon(class CWeapon* pWeapon) { m_pWeapon = pWeapon; }
 
 private:
 	CCollider*		m_pColliderCom = { nullptr };
@@ -40,6 +41,8 @@ private:
 
 	_bool			m_isAnimFinished = { false };
 	_uint			m_iPastAnimIndex = 0;
+	_float m_fDamageTiming = 0.f;
+	class CWeapon* m_pWeapon = nullptr;
 
 public:
 	HRESULT Add_Components();

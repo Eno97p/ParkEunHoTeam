@@ -524,13 +524,13 @@ HRESULT CRenderer::Initialize()
 
 
 #endif	
-        size_t iNumThreadPool = PxThread::getNbPhysicalCores();
-        m_pRenderWorker = CRenderWorker::Create(iNumThreadPool, m_pDevice);
-        if (nullptr == m_pRenderWorker)
-            return E_FAIL;
-
-
+    
+        m_dwThreadCount = (DWORD)PxThread::getNbPhysicalCores();
         
+        if(FAILED(InitRenderThreadPool(m_dwThreadCount)))
+			return E_FAIL;
+
+
 
         return S_OK;
     
@@ -565,29 +565,19 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
-    vector<future<void>> futures;
-    
- 
-    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
-    //    PROFILE_CALL("Render Priority", Render_Priority());
-    //    }));
+   
+        
+
 	PROFILE_CALL("Render Priority", Render_Priority());
     
-    //futures.push_back(m_pRenderWorker->Add_Job([this]() {
-    //    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
-    //    }));
+    
 
 	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
 
-
-    for (auto& future : futures)
-        future.get();
-
-    m_pRenderWorker->ExecuteCommandLists(m_pContext);
-
 	PROFILE_CALL("Render NonBlend", Render_NonBlend());
    
+ 
 
 
 	PROFILE_CALL("Render Decal", Render_Decal());
@@ -636,16 +626,30 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 #endif
 void CRenderer::Render_Priority()
 {
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
 
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
+    
     for (auto& pGameObject : m_RenderGroup[RENDER_PRIORITY])
     {
         if (nullptr != pGameObject)
             pGameObject->Render();
-
+    
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_PRIORITY].clear();
+    
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
+
+    for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
+    {
+        if (nullptr != pGameObject)
+            pGameObject->Render_Reflection();
+
+        Safe_Release(pGameObject);
+    }
+    m_RenderGroup[RENDER_REFLECTION].clear();
 
     m_pGameInstance->End_MRT();
 }
@@ -692,19 +696,20 @@ void CRenderer::Render_ShadowObjects()
 
 void  CRenderer::Render_NonBlend()
 {
+
     /* Diffuse + Normal */
     if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"))))
         return;
-
+    
     for (auto& pGameObject : m_RenderGroup[RENDER_NONBLEND])
     {
         if (nullptr != pGameObject)
             pGameObject->Render();
-
+    
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_NONBLEND].clear();
-
+    
     if (FAILED(m_pGameInstance->End_MRT()))
         return;
 }
@@ -914,19 +919,6 @@ void CRenderer::Render_Reflection()
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_MIRROR].clear();
-
-    m_pGameInstance->End_MRT();
-
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
-
-    for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
-    {
-        if (nullptr != pGameObject)
-            pGameObject->Render_Reflection();
-
-        Safe_Release(pGameObject);
-    }
-    m_RenderGroup[RENDER_REFLECTION].clear();
 
     m_pGameInstance->End_MRT();
 
@@ -1399,6 +1391,104 @@ float CRenderer::Sample_HZB(_float2 uv, UINT mipLevel)
     return depth;
 }
 
+
+
+UINT WINAPI RenderThread(void* pArg)
+{
+    CRenderer::RENDER_THREAD_DESC* pDesc = (CRenderer::RENDER_THREAD_DESC*)pArg;
+    CRenderer* pRenderer = pDesc->pRenderer;
+    DWORD dwThreadIndex = pDesc->dwThreadIndex;
+    const HANDLE* phEventList = pDesc->hEventList;
+    while (1)
+    {
+        DWORD dwEventIndex = WaitForMultipleObjects(RENDER_THREAD_EVENT_TYPE_COUNT, phEventList, FALSE, INFINITE);
+
+        switch (dwEventIndex)
+        {
+        case RENDER_THREAD_EVENT_TYPE_PROCESS:
+            pRenderer->ProcessByThread(dwThreadIndex);
+            break;
+        case RENDER_THREAD_EVENT_TYPE_DESTROY:
+            goto lb_exit;
+        default:
+            __debugbreak();
+        }
+    }
+lb_exit:
+    _endthreadex(0);
+    return 0;
+}
+
+
+HRESULT CRenderer::InitRenderThreadPool(DWORD dwThreadCount)
+{
+    m_pThreadDescList = new RENDER_THREAD_DESC[dwThreadCount];
+    memset(m_pThreadDescList, 0, sizeof(RENDER_THREAD_DESC) * dwThreadCount);
+    if (nullptr == m_pThreadDescList)
+		return E_FAIL;
+
+    m_hCompleteEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+    m_DeferredContexts.resize(dwThreadCount);
+    m_CommandLists.resize(dwThreadCount);
+
+    for (DWORD i = 0; i < dwThreadCount; i++)
+    {
+        for (DWORD j = 0; j < RENDER_THREAD_EVENT_TYPE_COUNT; j++)
+        {
+            m_pThreadDescList[i].hEventList[j] = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+        }
+        m_pThreadDescList[i].pRenderer = this;
+        m_pThreadDescList[i].dwThreadIndex = i;
+        UINT uiThreadID = 0;
+        m_pThreadDescList[i].hThread = (HANDLE)_beginthreadex(nullptr, 0, RenderThread, m_pThreadDescList + i, 0, &uiThreadID);
+
+        m_pDevice->CreateDeferredContext(0, &m_DeferredContexts[i]);
+    }
+    return S_OK;
+
+}
+
+void CRenderer::ClearRenderThreadPool()
+{
+    if (m_pThreadDescList)
+    {
+        for (DWORD i = 0; i < m_dwThreadCount; i++)
+		{
+			SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_DESTROY]);
+
+			WaitForSingleObject(m_pThreadDescList[i].hThread, INFINITE);
+			CloseHandle(m_pThreadDescList[i].hThread);
+            m_pThreadDescList[i].hThread = nullptr;
+			for (DWORD j = 0; j < RENDER_THREAD_EVENT_TYPE_COUNT; j++)
+			{
+				CloseHandle(m_pThreadDescList[i].hEventList[j]);
+                m_pThreadDescList[i].hEventList[j] = nullptr;
+
+			}
+		}
+		delete[] m_pThreadDescList;
+        m_pThreadDescList = nullptr;
+
+    }
+    if (m_hCompleteEvent)
+    {
+        CloseHandle(m_hCompleteEvent);
+        m_hCompleteEvent = nullptr;
+    }
+}
+
+void CRenderer::ProcessByThread(DWORD dwThreadIndex)
+{
+    ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
+    //ID3D11RenderTargetView* pRTV = ;
+}
+
+void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext)
+{
+}
+
+
+
 void  CRenderer::Render_UI()
 {
     for (auto& pGameObject : m_RenderGroup[RENDER_UI])
@@ -1425,11 +1515,11 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }
 
@@ -1474,11 +1564,26 @@ void CRenderer::Free()
 
     }
 
+    ClearRenderThreadPool();
+    for(auto& pDeferredContext : m_DeferredContexts)
+	{
+		Safe_Release(pDeferredContext);
+	}
+    m_DeferredContexts.clear();
+
+    for (auto& pCommandList : m_CommandLists)
+    {
+        Safe_Release(pCommandList);
+    }
+    m_CommandLists.clear();
+
+
+
 	Safe_Release(m_pShader);
 	//Safe_Release(m_pBloomComputeShader);
 	Safe_Release(m_pVIBuffer);
 
-    Safe_Release(m_pRenderWorker);
+    
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);

@@ -7,6 +7,7 @@
 #include "PartObject.h"
 #include "Player.h"
 #include "Particle_STrail.h"
+#include "Electronic.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -91,7 +92,7 @@ void CImguiMgr::Visible_Data()
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
 
-	static _bool bShow[6] = { false,false,false,false,false,false };
+	static _bool bShow[7] = { false,false,false,false,false,false,false };
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -126,6 +127,11 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("DistortionTool", &bShow[5]);
 	if (bShow[5] == true)
 		Distortion_Tool();
+
+	ImGui::Checkbox("ElectronicTool", &bShow[6]);
+	if (bShow[6] == true)
+		Electron_Tool();
+
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -1633,6 +1639,36 @@ HRESULT CImguiMgr::Load_Distortion()
 	NameFile.close();
 
 	return S_OK;
+}
+
+void CImguiMgr::Electron_Tool()
+{
+	ImGui::Begin("Electric_Editor");
+	ImVec2 ButtonSize = { 100.f,30.f };
+
+	static CElectronic::ELECTRONICDESC Desc{};
+	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &Desc.BufferDesc.iNumInstance, NULL, NULL, "%u");
+	ImGui::InputFloat3("Top", reinterpret_cast<float*>(&Desc.BufferDesc.vStartpos));
+	ImGui::InputFloat3("Bottom", reinterpret_cast<float*>(&Desc.BufferDesc.vEndpos));
+	ImGui::InputFloat2("Thick", reinterpret_cast<float*>(&Desc.BufferDesc.fThickness));
+	ImGui::InputFloat2("LifeTime", reinterpret_cast<float*>(&Desc.BufferDesc.fLifeTime));
+	ImGui::InputInt2("NumSegments", Desc.BufferDesc.NumSegments);
+	ImGui::InputInt("NumNoise", &Desc.iNumNoise);
+	ImGui::InputFloat2("Amplitude", reinterpret_cast<float*>(&Desc.BufferDesc.Amplitude));
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+
+	Desc.Texture = m_pTextureProtoName;
+	Desc.TexturePath = m_pTextureFilePath;
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		//Prototype_GameObject_Electronic_Effect
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Electronic"), TEXT("Prototype_GameObject_Electronic_Effect"), &Desc);
+	}
+
+
+	ImGui::End();
 }
 
 void CImguiMgr::FrameTextureTool()

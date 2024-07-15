@@ -55,7 +55,7 @@ private:
 	ID3D11Texture2D*			m_pDepthTexture = { nullptr };
 
 	ID3D11DepthStencilView*		m_pDepthStencilView = { nullptr };
-
+	ID3D11Multithread* 		m_pMultiThread = { nullptr };
 private:
 	/* 스왑체인에게 필수적으로 필요한 데이터는 백버퍼가 필요하여 백버퍼를 생성하기위한 정보를 던져준다. */
 	/* 스왑체인을 만들었다 == 백버퍼(텍스쳐)가 생성된다. */

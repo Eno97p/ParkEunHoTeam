@@ -59,6 +59,9 @@
 #include "C:\NewRepo\Engine\private\CProfileScope.cpp"
 
 
+#include "C:\NewRepo\Engine\Private\CRenderWorker.cpp"
+
+
 #include "C:\NewRepo\Engine\private\CUserErrorCallBack.cpp"
 
 
@@ -231,6 +234,9 @@
 
 
 #include "C:\NewRepo\Engine\private\VIBuffer_Instance_Rect.cpp"
+
+
+#include "C:\NewRepo\Engine\Private\VIBuffer_Lightning.cpp"
 
 
 #include "C:\NewRepo\Engine\Private\VIBuffer_PhysXBuffer.cpp"

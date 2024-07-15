@@ -38,6 +38,7 @@ public:
 
 public:
 	COLLTYPE Intersect(CCollider* pTargetCollider);
+	void Reset();
 	_bool IntersectRay(_vector vRayOrigin, _vector vRayDirection, _float fDistance); //콜라이더 레이 충돌
 	_float3 Get_Center();															//콜라이더의 센터벡터 반환
 

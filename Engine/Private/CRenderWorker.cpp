@@ -2,97 +2,31 @@
 
 
 CRenderWorker::CRenderWorker(size_t iNumThreadPool, ID3D11Device* pDevice)
-	: m_ThreadCount(iNumThreadPool)
-	, m_bIsShutdown(false)
-	, m_pDevice(pDevice)
+	:m_iNumThreadPool(iNumThreadPool)
 {
 
-	Safe_AddRef(m_pDevice);
 }
-
-
-
-template<typename T, typename... Args>
-auto CRenderWorker::Add_Job(T&& Func)->future<void>
-{
-	auto job = make_shared<packaged_task<void()>>(forward<T>(Func));
-	future<void> result = job->get_future();
-
-	{
-		lock_guard<mutex> lock(m_JobMutex);
-		m_RenderJobs.push([this, job]() {
-			ID3D11DeviceContext* pDeferredContext = this->GetDeferredContext();
-			(*job)();
-			ID3D11CommandList* pCommandList = nullptr;
-			pDeferredContext->FinishCommandList(FALSE, &pCommandList);
-			this->AddCommandList(pCommandList);
-			});
-
-	}
-	m_condition.notify_one();
-	return result;
-}
-
 
 void CRenderWorker::Shutdown()
 {
 	{
-		std::lock_guard<std::mutex> lock(m_JobMutex);
-		m_bIsShutdown = true;
+		std::unique_lock<std::mutex> lock(m_queueMutex);
+		m_stop = true;
 	}
-
 	m_condition.notify_all();
-
-	for (auto& worker : m_RenderWorkers)
-	{
-		if (worker.joinable())
-			worker.join();
-	}
-
-	for (auto& context : m_pDeferredContexts)
-	{
-		if (context)
-			Safe_Release(context);
-	}
-
+	for (std::thread& worker : m_workers)
+		worker.join();
 }
 
-void CRenderWorker::ExecuteCommandLists(ID3D11DeviceContext* pImmediateContext)
-{
-	lock_guard<mutex> lock(m_ContextMutex);
-	
-	for(auto& pCommandList : m_pCommandLists)
-	{
-		pImmediateContext->ExecuteCommandList(pCommandList, FALSE);
-		Safe_Release(pCommandList);
-	}
-	m_pCommandLists.clear();
 
 
-}
 
-void CRenderWorker::AddCommandList(ID3D11CommandList* pCommandList)
-{
-	lock_guard<mutex> lock(m_ContextMutex);
-	m_pCommandLists.push_back(pCommandList);
-}
-
-ID3D11DeviceContext* CRenderWorker::GetDeferredContext()
-{
-	size_t index = hash<thread::id>{}(this_thread::get_id()) % m_ThreadCount;
-	return m_pDeferredContexts[index];
-}
 
 HRESULT CRenderWorker::Initialize()
 {
-	m_pDeferredContexts.resize(m_ThreadCount);
-
-	for (size_t i = 0; i < m_ThreadCount; ++i)
+	for (size_t i = 0; i < m_iNumThreadPool; ++i)
 	{
-		if (FAILED(m_pDevice->CreateDeferredContext(0, &m_pDeferredContexts[i])))
-			return E_FAIL;
-
-		m_RenderWorkers.emplace_back(&CRenderWorker::RenderWorkerThread, this);
+		m_workers.emplace_back(&CRenderWorker::RenderWorkerThread, this);
 	}
 
 	return S_OK;
@@ -104,20 +38,14 @@ void CRenderWorker::RenderWorkerThread()
 	{
 		function<void()> job;
 		{
-			unique_lock<mutex> lock(m_JobMutex);
-			m_condition.wait(lock, [this] { return m_bIsShutdown || !m_RenderJobs.empty(); });
-			if (m_bIsShutdown && m_RenderJobs.empty())
+			unique_lock<std::mutex> lock(m_queueMutex);
+			m_condition.wait(lock, [this] { return m_stop || !m_jobs.empty(); });
+			if (m_stop && m_jobs.empty())
 				return;
-			if (!m_RenderJobs.empty())
-			{
-				job = move(m_RenderJobs.front());
-				m_RenderJobs.pop();
-			}
+			job = std::move(m_jobs.front());
+			m_jobs.pop();
 		}
-		if (job)
-		{
-			job();
-		}
+		job();
 	}
 }
 
@@ -140,7 +68,7 @@ CRenderWorker* CRenderWorker::Create(size_t iNumThreadPool, ID3D11Device* pDevic
 void CRenderWorker::Free()
 {
 	Shutdown();
-	Safe_Release(m_pDevice);
+
 
 
 }

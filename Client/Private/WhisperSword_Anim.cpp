@@ -102,7 +102,7 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 
 
@@ -197,18 +197,6 @@ HRESULT CWhisperSword_Anim::Render_Reflection()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
 			return E_FAIL;
 
 		m_pShaderCom->Begin(11);

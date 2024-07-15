@@ -85,15 +85,7 @@ void CMantari::Tick(_float fTimeDelta)
 {
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
-
-	
-
 	m_pBehaviorCom->Update(fTimeDelta);
-
-
-
-
-
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
@@ -106,6 +98,7 @@ void CMantari::Tick(_float fTimeDelta)
 	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
 	if (!pPlayerWeapon->Get_Active())
 	{
+		m_pColliderCom->Reset();
 		m_eColltype = CCollider::COLL_NOCOLL;
 	}
 	else

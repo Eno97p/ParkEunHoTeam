@@ -29,23 +29,8 @@
     <Filter Include="Objects\01. Map">
       <UniqueIdentifier>{6b57afe2-b062-4c85-8497-ab2a986a3155}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\02. Particle">
-      <UniqueIdentifier>{ca76c706-dc25-4408-9796-b4cd184d434f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Objects\03. Player">
       <UniqueIdentifier>{47091793-1175-49db-b7a7-47edd653a4f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\02. Particle\00. Point">
-      <UniqueIdentifier>{a50811a6-c4a2-439d-9277-a56a7819a0e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\02. Particle\01. Rect">
-      <UniqueIdentifier>{e6947a54-5820-4d01-b9d9-f5182906a973}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\02. Particle\02. Mesh">
-      <UniqueIdentifier>{ecb3c875-4547-4ab0-9855-72c4852a3202}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Objects\02. Particle\03. Trail">
-      <UniqueIdentifier>{c4c389d4-3e59-422d-89e3-3ea652862297}</UniqueIdentifier>
     </Filter>
     <Filter Include="Objects\03. Player\PartObj">
       <UniqueIdentifier>{8f68e98f-4af0-4bbc-9136-e939cf91677c}</UniqueIdentifier>
@@ -68,11 +53,29 @@
     <Filter Include="99. Default\999. Imgui\Backend">
       <UniqueIdentifier>{6b658bc0-f7d3-4e45-8167-ab476c1782b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\02. Particle\04. SwordTrail">
+    <Filter Include="Objects\02. Effects">
+      <UniqueIdentifier>{ca76c706-dc25-4408-9796-b4cd184d434f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\00. Point">
+      <UniqueIdentifier>{a50811a6-c4a2-439d-9277-a56a7819a0e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\01. Rect">
+      <UniqueIdentifier>{e6947a54-5820-4d01-b9d9-f5182906a973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\02. Mesh">
+      <UniqueIdentifier>{ecb3c875-4547-4ab0-9855-72c4852a3202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\03. Trail">
+      <UniqueIdentifier>{c4c389d4-3e59-422d-89e3-3ea652862297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\04. SwordTrail">
       <UniqueIdentifier>{8b0154dd-d31c-4f95-981e-7a021c554134}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Objects\02. Particle\05. Distortion">
+    <Filter Include="Objects\02. Effects\05. Distortion">
       <UniqueIdentifier>{379e86d4-c910-4278-bda9-796ed379b7f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\06. Electron">
+      <UniqueIdentifier>{5e49ad1e-1c74-4c61-bf13-50ed2b7eeb43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -149,19 +152,19 @@
       <Filter>Objects\03. Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Particle.h">
-      <Filter>Objects\02. Particle</Filter>
+      <Filter>Objects\02. Effects</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Point.h">
-      <Filter>Objects\02. Particle\00. Point</Filter>
+      <Filter>Objects\02. Effects\00. Point</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Rect.h">
-      <Filter>Objects\02. Particle\01. Rect</Filter>
+      <Filter>Objects\02. Effects\01. Rect</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParticleMesh.h">
-      <Filter>Objects\02. Particle\02. Mesh</Filter>
+      <Filter>Objects\02. Effects\02. Mesh</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Trail.h">
-      <Filter>Objects\02. Particle\03. Trail</Filter>
+      <Filter>Objects\02. Effects\03. Trail</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\WhisperSword_Anim.h">
       <Filter>Objects\03. Player\PartObj\Weapons\WhisperSword</Filter>
@@ -179,10 +182,13 @@
       <Filter>Objects\03. Player\PartObj\Head</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Particle_STrail.h">
-      <Filter>Objects\02. Particle\04. SwordTrail</Filter>
+      <Filter>Objects\02. Effects\04. SwordTrail</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Distortion_Effect.h">
-      <Filter>Objects\02. Particle\05. Distortion</Filter>
+      <Filter>Objects\02. Effects\05. Distortion</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Electronic.h">
+      <Filter>Objects\02. Effects\06. Electron</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -244,19 +250,19 @@
       <Filter>Objects\03. Player</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Particle.cpp">
-      <Filter>Objects\02. Particle</Filter>
+      <Filter>Objects\02. Effects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Point.cpp">
-      <Filter>Objects\02. Particle\00. Point</Filter>
+      <Filter>Objects\02. Effects\00. Point</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Rect.cpp">
-      <Filter>Objects\02. Particle\01. Rect</Filter>
+      <Filter>Objects\02. Effects\01. Rect</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParticleMesh.cpp">
-      <Filter>Objects\02. Particle\02. Mesh</Filter>
+      <Filter>Objects\02. Effects\02. Mesh</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Trail.cpp">
-      <Filter>Objects\02. Particle\03. Trail</Filter>
+      <Filter>Objects\02. Effects\03. Trail</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
       <Filter>Objects\03. Player\PartObj\Weapons</Filter>
@@ -274,10 +280,13 @@
       <Filter>Objects\03. Player\PartObj\Head</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Particle_STrail.cpp">
-      <Filter>Objects\02. Particle\04. SwordTrail</Filter>
+      <Filter>Objects\02. Effects\04. SwordTrail</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Distortion_Effect.cpp">
-      <Filter>Objects\02. Particle\05. Distortion</Filter>
+      <Filter>Objects\02. Effects\05. Distortion</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Electronic.cpp">
+      <Filter>Objects\02. Effects\06. Electron</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

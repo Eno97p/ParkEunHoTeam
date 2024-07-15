@@ -21,7 +21,7 @@ public:
 	virtual HRESULT Render();
 
 public:
-	virtual _float Compute_Height(const _float3& vLocalPos) { return 0.f; }
+	virtual float Compute_Height(const XMFLOAT3& vLocalPos) { return 0.f; }
 
 public:
 	virtual HRESULT Bind_Buffers();
@@ -43,7 +43,7 @@ protected:
 	_uint						m_iNumIndices = { 0 };
 	_uint						m_iNumPrimitive = { 0 };
 
-	_float4*					m_pVertexPositions = { nullptr };
+	XMFLOAT4*					m_pVertexPositions = { nullptr };
 
 protected:
 	HRESULT Create_Buffer(ID3D11Buffer** ppVIBuffer);

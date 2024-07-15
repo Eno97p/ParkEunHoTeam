@@ -19,6 +19,7 @@
 #include "VIBuffer_SwordTrail.h"
 #include "VIBuffer_Instance_Rect.h"
 #include "VIBuffer_Instance_Point.h"
+#include "VIBuffer_Lightning.h"
 #pragma endregion
 
 

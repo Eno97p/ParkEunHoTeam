@@ -15,7 +15,7 @@ BEGIN(Client)
 class CEventTrigger final : public CMap_Element
 {
 public:
-	enum TRIGGER_TYPE {TRIG_TUTORIAL_BOSSENCOUNTER, TRIG_END};
+	enum TRIGGER_TYPE { TRIG_TUTORIAL_BOSSENCOUNTER, TRIG_JUGGLAS_SPAWNSECONDROOM, TRIG_JUGGLAS_SPAWNTHIRDROOM, TRIG_VIEWCHANGE_TTOS, TRIG_VIEWCHANGE_STOT, TRIG_END };
 private:
 	CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CEventTrigger(const CEventTrigger& rhs);

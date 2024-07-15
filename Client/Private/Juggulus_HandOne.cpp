@@ -1,7 +1,8 @@
 #include "Juggulus_HandOne.h"
 
 #include "GameInstance.h"
-#include "Boss_Juggulus.h"
+#include "Player.h"
+#include "Weapon.h"
 
 CJuggulus_HandOne::CJuggulus_HandOne(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -20,19 +21,30 @@ HRESULT CJuggulus_HandOne::Initialize_Prototype()
 
 HRESULT CJuggulus_HandOne::Initialize(void* pArg)
 {
+	CPartObject::PARTOBJ_DESC* pDesc = (CPartObject::PARTOBJ_DESC*)pArg;
+	m_pCurHp = pDesc->pCurHp;
+	m_pMaxHp = pDesc->pMaxHp;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_isRender = true;
+	if (FAILED(Add_Nodes()))
+		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
-	/*m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-80.f));
-	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(-90.f));*/
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, -3.f, 1.f));
+	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
+	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
 
 	return S_OK;
 }
@@ -43,20 +55,60 @@ void CJuggulus_HandOne::Priority_Tick(_float fTimeDelta)
 
 void CJuggulus_HandOne::Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_INCREASE:
+		m_fDisolveValue += fTimeDelta * 2.f;
+		if (m_fDisolveValue > 1.f)
+		{
+			m_eDisolveType = TYPE_IDLE;
+			m_fDisolveValue = 1.f;
+		}
+		break;
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 3.f;
+		if (m_fDisolveValue < 0.f)
+		{
+			m_eDisolveType = TYPE_INCREASE;
+		}
+		break;
+	default:
+		break;
+	}
+
 	Change_Animation(fTimeDelta);
 
-	// 손들은 부모의 위치와 이을 필요는 없을 수도
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+	m_pBehaviorCom->Update(fTimeDelta);
+
+	m_pHitColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	m_pAttackColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	// 몬스터 무기와 플레이어 충돌처리
+	if (m_bIsActive)
+	{
+		if (m_pAttackColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+	}
+	else
+	{
+		m_pAttackColliderCom->Reset();
+	}
+
 }
 
 void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
 {
-	if (m_isRender)
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-		m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+#ifdef _DEBUG
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pHitColliderCom);
+		m_pGameInstance->Add_DebugComponent(m_pAttackColliderCom);
 	}
+#endif
 }
 
 HRESULT CJuggulus_HandOne::Render()
@@ -78,18 +130,10 @@ HRESULT CJuggulus_HandOne::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
 
-		if (i == 0)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;*/
-		}
-		else if (i == 1)
-		{
-			/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
-				return E_FAIL;*/
-		}
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(7);
 
 		m_pModelCom->Render(i);
 	}
@@ -97,14 +141,174 @@ HRESULT CJuggulus_HandOne::Render()
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Render_Distortion()
+HRESULT CJuggulus_HandOne::Render_LightDepth()
 {
 	return S_OK;
 }
 
-HRESULT CJuggulus_HandOne::Render_LightDepth()
+HRESULT CJuggulus_HandOne::Add_Nodes()
 {
+	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Move_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CJuggulus_HandOne::Idle, this, std::placeholders::_1));
+
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CJuggulus_HandOne::Hit, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("ChaseCool"), 10.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("ChaseCool"), TEXT("Chase"), bind(&CJuggulus_HandOne::Chase, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack"), bind(&CJuggulus_HandOne::Attack, this, std::placeholders::_1));
+
 	return S_OK;
+}
+
+NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
+{
+	// 플레이어 무기와 몬스터의 충돌 여부
+
+	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+	if (!pPlayerWeapon->Get_Active())
+	{
+		m_pHitColliderCom->Reset();
+		m_eColltype = CCollider::COLL_NOCOLL;
+	}
+	else
+	{
+		m_eColltype = m_pHitColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+	}
+
+	switch (m_eColltype)
+	{
+	case CCollider::COLL_START:
+		//_matrix vMat = m_pTransformCom->Get_WorldMatrix();
+		//_float3 vOffset = { 0.f,1.f,0.f };
+		//_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
+		//_float4 vResult;
+		//XMStoreFloat4(&vResult, vStartPos);
+		//_int Random = RandomSign();
+		//EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
+		//EFFECTMGR->Generate_Particle(1, vResult, nullptr);
+		//EFFECTMGR->Generate_Particle(2, vResult, nullptr);
+		Add_Hp(-10);
+		break;
+	default:
+		break;
+	}
+
+	return COOLING;
+}
+
+NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
+{
+	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_CHASE)
+	{
+		m_eDisolveType = TYPE_DECREASE;
+	}
+
+	if (m_eDisolveType == TYPE_INCREASE)
+	{
+		m_iState = STATE_CHASE;
+	}
+	
+	if (m_iState == STATE_CHASE && m_eDisolveType != TYPE_DECREASE)
+	{
+		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		vPlayerPos.m128_f32[1] -= 31.f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
+		m_fAttackDelay -= fTimeDelta;
+		{
+			if (m_fAttackDelay < 0.f)
+			{
+				m_fColliderActiveTime -= 0.01f;
+				m_iState = STATE_ATTACK;
+				return SUCCESS;
+			}
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
+{
+	if (m_iAttackCount == 0 && m_fColliderActiveTime != 0.5f)
+	{
+		m_fColliderActiveTime -= fTimeDelta;
+	}
+	if (m_fColliderActiveTime < 0.f)
+	{
+		m_bIsActive = true;
+		m_fColliderActiveTime = 0.5f;
+	}
+
+	if (m_iState == STATE_ATTACK)
+	{
+		if (m_isAnimFinished)
+		{
+			if (m_eDisolveType == TYPE_IDLE)
+			{
+				if (m_fDamageTime == 3.f)
+				{
+					m_iAttackCount++;
+				}
+				
+				if(m_iAttackCount != 3 || m_fDamageTime < 0.f)
+				{
+					m_fAttackDelay = 2.f;
+					m_eDisolveType = TYPE_DECREASE;
+				}
+				else if (m_iAttackCount == 3)
+				{
+					m_fDamageTime -= fTimeDelta;
+				}
+			}
+			else if(m_eDisolveType == TYPE_INCREASE)
+			{
+				if (m_iAttackCount >= 3)
+				{
+					m_fColliderActiveTime = 0.5f;
+					m_fDamageTime = 3.f;
+					m_iAttackCount = 0;
+					m_iState = STATE_IDLE;
+				}
+				else
+				{
+					_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+					vPlayerPos.m128_f32[1] -= 31.f;
+					m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
+					m_iPastAnimIndex = 6;
+				}
+				return SUCCESS;
+			}
+			else if (m_eDisolveType == TYPE_DECREASE)
+			{
+				m_bIsActive = false;
+			}
+		}
+		else if(m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0)
+		{
+			m_bIsActive = true;
+		}
+		
+		return RUNNING;
+	}
+	else return FAILURE;
+}
+
+NodeStates CJuggulus_HandOne::Idle(_float fTimeDelta)
+{
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
+	m_iState = STATE_IDLE;
+	return SUCCESS;
+}
+
+void CJuggulus_HandOne::Add_Hp(_int iValue)
+{
+	*m_pCurHp = min(*m_pMaxHp, max(0, *m_pCurHp + iValue));
 }
 
 HRESULT CJuggulus_HandOne::Add_Components()
@@ -119,21 +323,44 @@ HRESULT CJuggulus_HandOne::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	///* For.Com_Texture */
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Distortion"),
-	//	TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-	//	return E_FAIL;
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(0.8f, 0.3f, 0.8f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y + 15.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pHitColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider2"), reinterpret_cast<CComponent**>(&m_pAttackColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),
+		TEXT("Com_Behavior"), reinterpret_cast<CComponent**>(&m_pBehaviorCom))))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CJuggulus_HandOne::Bind_ShaderResources()
 {
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -144,29 +371,51 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
-	if (*m_pState == CBoss_Juggulus::STATE_HANDONE_TARGETING)
+	if (m_iState == STATE_IDLE)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 9;
+		fAnimSpeed = 1.f;
+	}
+	else if (m_iState == STATE_CHASE)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 1.f;
-		m_isRender = true;
 	}
-	else if (*m_pState == CBoss_Juggulus::STATE_HANDONE_ATTACK)
+	else if (m_iState == STATE_ATTACK)
 	{
+		if (m_iPastAnimIndex < 6 || m_iPastAnimIndex > 7)
+		{
+			m_iPastAnimIndex = 6;
+		}
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 7;
-		fAnimSpeed = 0.5f;
-		m_isRender = true;
-	}
-	else
-	{
-		m_isRender = false;
+		AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		fAnimSpeed = 2.f;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
-	_bool isLerp = false; // false
+	_bool isLerp = true; // false
+	if ((m_iPastAnimIndex >= 7 && m_iPastAnimIndex < 8) || AnimDesc.iAnimIndex == 3 || AnimDesc.iAnimIndex == 9)
+	{
+		isLerp = false;
+	}
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
+
+	m_isAnimFinished = false;
+	_bool animFinished = m_pModelCom->Get_AnimFinished();
+	if (animFinished)
+	{
+		if (AnimDesc.iAnimIndex >= 6 && AnimDesc.iAnimIndex < 7)
+		{
+			m_iPastAnimIndex++;
+		}
+		else
+		{
+			m_isAnimFinished = true;
+		}
+	}
 }
 
 CJuggulus_HandOne* CJuggulus_HandOne::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -199,8 +448,12 @@ void CJuggulus_HandOne::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pAttackColliderCom);
+	Safe_Release(m_pHitColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pPlayerTransform);
+	Safe_Release(m_pBehaviorCom);
 }

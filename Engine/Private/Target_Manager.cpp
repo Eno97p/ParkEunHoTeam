@@ -87,10 +87,52 @@ HRESULT CTarget_Manager::Begin_MRT(const wstring& strMRTTag, _bool isClear, ID3D
 
 }
 
+HRESULT CTarget_Manager::Begin_MRT(const wstring& strMRTTag, ID3D11DeviceContext* pDeferredContext, _bool isClear, ID3D11DepthStencilView* pDSView)
+{
+	ID3D11ShaderResourceView* pSRV[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {
+  nullptr
+	};
+
+	pDeferredContext->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, pSRV);
+
+
+	list<CRenderTarget*>* pMRTList = Find_MRT(strMRTTag);
+	if (nullptr == pMRTList)
+		return E_FAIL;
+
+
+	_uint      iNumRenderTargets = {};
+
+	ID3D11RenderTargetView* pRenderTargets[8] = {};
+
+	for (auto& pRenderTarget : *pMRTList)
+	{
+		if (true == isClear)
+			pRenderTarget->Clear();
+		pRenderTargets[iNumRenderTargets++] = pRenderTarget->Get_RTV();
+	}
+
+	if (nullptr != pDSView)
+		pDeferredContext->ClearDepthStencilView(pDSView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+
+	pDeferredContext->OMSetRenderTargets(iNumRenderTargets, pRenderTargets, nullptr == pDSView ? m_pDepthStencilView : pDSView);
+
+	return S_OK;
+
+}
+
+
 HRESULT CTarget_Manager::End_MRT()
 {
 	m_pContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
 	
+	return S_OK;
+}
+
+HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pDeferredContext)
+{
+	pDeferredContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
 	return S_OK;
 }
 

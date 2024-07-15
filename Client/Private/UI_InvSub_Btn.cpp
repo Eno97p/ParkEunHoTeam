@@ -177,7 +177,7 @@ void CUI_InvSub_Btn::Mouse_Input()
 		{
 		case Client::CUI_InvSub_Btn::BTN_SET:
 			// Quick Access에 빈 자리부터 순서대로 추가되어야 함. 추가되고 나서 화면 꺼져야 함
-			CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx)); // m_iSlotIdx가 갱신이 안 돼서 오류 발생
+			CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
 			break;
 		case Client::CUI_InvSub_Btn::BTN_USE:
 			break;

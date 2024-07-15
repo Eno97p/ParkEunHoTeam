@@ -184,7 +184,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     //    return E_FAIL;
 
 
-  /*  CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
+    CThirdPersonCamera::THIRDPERSONCAMERA_DESC pTPCDesc = {};
 
     pTPCDesc.fSensor = 0.1f;
 
@@ -200,7 +200,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
     pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
     if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
-        return E_FAIL;*/
+        return E_FAIL;
 
 
 
@@ -555,7 +555,7 @@ const _tchar* CLevel_GamePlay::Setting_FileName()
     case STAGE_TWO:
         return L"../Bin/MapData/Stage_AndrasArena.dat";
     case STAGE_THREE:
-        return L"../Bin/MapData/Stage_RasSamrahCastle.dat";
+        return L"../Bin/MapData/Stage_Jugglas.dat";
     case STAGE_BOSS:
         return L"../../Data/BossStage.dat";
     default:

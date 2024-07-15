@@ -67,6 +67,7 @@ private:
 	const float m_fWindChangeDuration = 5.f; 
 
 	_float3 m_vPivotPos = {0.f, 0.f, 0.f};
+	_float4x4 m_World;
 
 public:
 	static CTutorialMapBridge* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -475,13 +475,15 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Boss_Gun", "Cannon" };
+                                        "Elevator", "Cannon" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
     case LAYER_TRIGGER:
     {
-        const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER", "STAGE1_LightsOn" };
+        const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER",  "Jugglas_Room2_Spawn",  "Jugglas_Room3_Spawn", "Viewchange 3 to Side", "Viewchange Side to 3",
+            "Acticate Elevate",
+            "STAGE1_LightsOn" };
         ImGui::ListBox("###Obj", &item_current, items_Trigger, IM_ARRAYSIZE(items_Trigger)); // item_current 변수에 선택 값 저장
         break;
     }

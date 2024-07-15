@@ -5,6 +5,13 @@ CChannel::CChannel()
 {
 }
 
+_bool CChannel::Check_KeyframeChange(_uint iChangeKeyFrame) // 인자로 들어온 keyframe이 되는 순간을 체크
+{
+	m_iChangeKeyframe = iChangeKeyFrame;
+
+	return m_isKeyframeChange;
+}
+
 HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAIChannel->mNodeName.data);
@@ -22,7 +29,6 @@ HRESULT CChannel::Initialize(const aiNodeAnim* pAIChannel, const vector<class CB
 		});
 
 	m_iBoneIndex = iBoneIndex;
-
 	/* 이 뼈의 전체 애니메이션 과정 중, 특정 시간대에 취해야할 상태들을 모두 다 읽어서 저장해놓는다.*/
 	m_iNumKeyFrames = max(pAIChannel->mNumScalingKeys, pAIChannel->mNumRotationKeys);
 	m_iNumKeyFrames = max(m_iNumKeyFrames, pAIChannel->mNumPositionKeys);
@@ -61,7 +67,6 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	if (0.0 == CurrentPosition)
 		*pCurrentKeyFrameIndex = 0;
 
-
 	KEYFRAME		LastKeyFrame = m_KeyFrames.back();
 
 	_vector			vScale, vRotation, vTranslation;
@@ -76,8 +81,15 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	/* 특정 키프레임들 사이에 있을거다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */
 	else
 	{
-		while (CurrentPosition >= m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time)
+		while (CurrentPosition >= m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time) // +++ 다음으로 넘어간 순간
+		{
 			++*pCurrentKeyFrameIndex;
+			if (*pCurrentKeyFrameIndex == m_iChangeKeyframe) // 다음 keyframe으로 넘어갔는데 체크해야 하는 keyframe인 상황이면
+				m_isKeyframeChange = true;
+		}
+
+		if (CurrentPosition < m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time) // keyframe이 아직 다음으로 넘어가지 않은 상태라면
+			m_isKeyframeChange = false;
 
 		/* 현재 위치에서 왼쪽에 있는 키프렝미의 위치를 뺀다. / 내 오른쪽 키프레임의 위치 - 내 왼쪽 키프레임의 위치. */
 		_float		fRatio = (CurrentPosition - m_KeyFrames[*pCurrentKeyFrameIndex].Time) / (m_KeyFrames[*pCurrentKeyFrameIndex + 1].Time - m_KeyFrames[*pCurrentKeyFrameIndex].Time);

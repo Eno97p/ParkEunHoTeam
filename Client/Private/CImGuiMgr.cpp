@@ -154,7 +154,7 @@ void CImGuiMgr::Render_MainMenu()
 		if (NowLevel != selected_level)
 		{
 			// 레벨 변경 로직
-			
+			m_pGameInstance->Set_NextLevel(selected_level);
 			switch (selected_level)
 			{
 			case LEVEL_STATIC:
@@ -176,7 +176,20 @@ void CImGuiMgr::Render_MainMenu()
 					MSG_BOX("IMGUI::Failed to Open Level");
 					return;
 				}
-				
+				break;
+			case LEVEL_ACKBAR:
+				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+				{
+					MSG_BOX("IMGUI::Failed to Open Level");
+					return;
+				}
+				break;
+			case LEVEL_JUGGLAS:
+				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
+				{
+					MSG_BOX("IMGUI::Failed to Open Level");
+					return;
+				}
 				break;
 			case LEVEL_END:
 				

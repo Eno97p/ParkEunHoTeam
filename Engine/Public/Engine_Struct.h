@@ -221,6 +221,18 @@ namespace Engine
 	};
 
 
+	typedef struct ENGINE_DLL  VTXELECTRON
+	{
+		XMFLOAT3		vStartpos;
+		XMFLOAT3		vEndpos;
+		XMFLOAT2		vLifeTime;
+		_float			fThickness;
+		_float			fAmplitude;
+		_int			iNumSegments;
+		static const unsigned int		iNumElements = { 6 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[6];
+	};
+
 
 	typedef struct ENGINE_DLL tEvent //이벤트 매니저 파라미터
 	{
@@ -414,7 +426,6 @@ namespace Engine
 			maxVolumes(0)
 		{ }
 	};
-
 
 
 

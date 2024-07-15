@@ -1,8 +1,12 @@
 #include "UI_WPEquipSlot.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
+#include "UI_Manager.h"
 #include "CMouse.h"
 #include "UI_WPEquipNone.h"
+#include "UIGroup_Weapon.h"
+#include "UI_ItemIcon.h"
 
 CUI_WPEquipSlot::CUI_WPEquipSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -59,6 +63,9 @@ void CUI_WPEquipSlot::Tick(_float fTimeDelta)
 	{
 		m_fY = SELECT_Y;
 		m_pNoneFrame->Set_PosY(SELECT_Y);
+
+		if (m_pGameInstance->Mouse_Down(DIM_LB))
+			Click_Event();
 	}
 	else
 	{
@@ -70,6 +77,12 @@ void CUI_WPEquipSlot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pNoneFrame)
 		m_pNoneFrame->Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+	{
+		m_pItemIcon->Update_Pos(m_fX - 3.f, m_fY - 6.f);
+		m_pItemIcon->Tick(fTimeDelta);
+	}
 }
 
 void CUI_WPEquipSlot::Late_Tick(_float fTimeDelta)
@@ -78,6 +91,9 @@ void CUI_WPEquipSlot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pNoneFrame && !m_isSelect)
 		m_pNoneFrame->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_WPEquipSlot::Render()
@@ -94,6 +110,35 @@ HRESULT CUI_WPEquipSlot::Render()
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("SLOT TO EQUIP:"), _float2(25.f, m_fY - 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return E_FAIL;
 	}
+
+	return S_OK;
+}
+
+HRESULT CUI_WPEquipSlot::Create_ItemIcon()
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = TWELFTH;
+
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
+		++weapon;
+
+	pDesc.wszTexture = (*weapon)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	return S_OK;
+}
+
+HRESULT CUI_WPEquipSlot::Delete_ItemIcon()
+{
+	Safe_Release(m_pItemIcon);
+	m_pItemIcon = nullptr;
 
 	return S_OK;
 }
@@ -175,6 +220,29 @@ void CUI_WPEquipSlot::Setting_XY()
 	m_fY = DEFAULT_Y;
 }
 
+void CUI_WPEquipSlot::Click_Event()
+{
+	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();
+	
+	if (isAlphaBG_On) // 장착
+	{
+		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
+			++weapon;
+
+		CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
+
+		// AlphaBG 비활성화
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
+	}
+	else // 장착 해제
+	{
+		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
+		CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+	}
+	
+}
+
 CUI_WPEquipSlot* CUI_WPEquipSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_WPEquipSlot* pInstance = new CUI_WPEquipSlot(pDevice, pContext);
@@ -204,5 +272,7 @@ CGameObject* CUI_WPEquipSlot::Clone(void* pArg)
 void CUI_WPEquipSlot::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pNoneFrame);
+	Safe_Release(m_pItemIcon);
 }

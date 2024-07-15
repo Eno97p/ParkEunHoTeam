@@ -114,6 +114,11 @@ CCollider::COLLTYPE CCollider::Intersect(CCollider * pTargetCollider)
 	return COLL_NOCOLL;
 }
 
+void CCollider::Reset()
+{
+	m_isColl = false;
+}
+
 _bool CCollider::IntersectRay(_vector vRayOrigin, _vector vRayDirection, _float fDistance)
 {
 	return m_pBounding->IntersectRay(vRayOrigin, vRayDirection, fDistance);

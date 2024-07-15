@@ -57,6 +57,7 @@ public: /* For.Timer_Manager */
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	_uint Get_CurrentLevel();			//현재 레벨 받아오기
+	void Set_NextLevel(_uint iNextLevel);			//현재 레벨 받아오기
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);
@@ -75,6 +76,7 @@ public: /* For.Object_Manager */
 	void Set_MainCamera(_uint iCameraIndex); // 카메라 전환 시 호출, 추가 순서가 인덱스
 	vector<class CCamera*> Get_Cameras();
 	CCamera* Get_MainCamera();
+	void Clear_Cameras();
 
 
 public: /* For.Component_Manager */
@@ -132,7 +134,9 @@ public: /* For.Target_Manager */
 	HRESULT Add_RenderTarget(const wstring & strTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	HRESULT Add_MRT(const wstring& strMRTTag, const wstring & strTargetTag);
 	HRESULT Begin_MRT(const wstring& strMRTTag, _bool isClear = true, ID3D11DepthStencilView* pDSView = nullptr);
+	HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DeviceContext* pDeferredContext, _bool isClear = true, ID3D11DepthStencilView* pDSView = nullptr);
 	HRESULT End_MRT();
+	HRESULT End_MRT(ID3D11DeviceContext* pDeferredContext);
 	HRESULT Bind_RenderTargetSRV(const wstring & strTargetTag, class CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_RenderTargetSRV_Compute(const wstring& strTargetTag, class CComputeShader_Texture* pComputeShader, const _char* pConstantName);
 	HRESULT Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D* pDesc);

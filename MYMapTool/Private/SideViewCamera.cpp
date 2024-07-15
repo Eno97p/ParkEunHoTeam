@@ -96,7 +96,9 @@ void CSideViewCamera::Get_SideViewCamPos(const _float4& vPlayerPosition, _float4
     pOutCameraPosition->w = 1.f;
 
     // 카메라가 바라보는 위치 계산 (플레이어 위치)
+
     *pOutLookAtPosition = vPlayerPosition;
+    pOutLookAtPosition->y = vPlayerPosition.y + m_fHeightOffset * 0.5f;
     pOutLookAtPosition->w = 1.f;
 }
 

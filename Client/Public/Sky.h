@@ -36,6 +36,7 @@ private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 	_float	fTime = 0.f;
+	_uint	m_iSkyTex = 0;
 
 public:
 	static CSky* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

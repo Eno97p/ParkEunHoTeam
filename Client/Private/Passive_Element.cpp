@@ -76,7 +76,7 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //}
     //else 
     {
-       //m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
+       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
     }
   
@@ -180,15 +180,14 @@ HRESULT CPassive_Element::Render_Mirror()
         
         m_pShaderCom->Unbind_SRVs();
 
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_DIFFUSE)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(5);
+        m_pShaderCom->Begin(3);
 
         if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;
     }
-
     return S_OK;
 }
 
@@ -223,6 +222,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
     PhysXDesc.pComponent = m_pModelCom;
     PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
+    PhysXDesc.filterData.word0 = GROUP_ENVIRONMENT;
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
         TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
         return E_FAIL;

@@ -81,6 +81,13 @@ void CUI_ItemIcon::Change_Texture(wstring wstrTextureName)
 		return;
 }
 
+void CUI_ItemIcon::Update_Pos(_float fX, _float fY)
+{
+	m_fX = fX;
+	m_fY = fY;
+	Setting_Position();
+}
+
 HRESULT CUI_ItemIcon::Add_Components()
 {
 	/* For. Com_VIBuffer */

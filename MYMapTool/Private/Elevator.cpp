@@ -33,8 +33,8 @@ HRESULT CElevator::Initialize(void* pArg)
 
 		CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
 		strcpy_s(m_szName, "Prototype_GameObject_Elevator");
-		strcpy_s(m_szLayer, "Layer_Trigger");
-		strcpy_s(m_szModelName, "Prototype_Component_Model_BasicCube");
+		strcpy_s(m_szLayer, "Layer_Acitve_Element");
+		strcpy_s(m_szModelName, "Prototype_Component_Model_Elevator");
 		m_eModelType = CModel::TYPE_NONANIM;
 		m_iTriggerType = pDesc->TriggerType;
 
@@ -77,18 +77,22 @@ void CElevator::Priority_Tick(_float fTimeDelta)
 
 void CElevator::Tick(_float fTimeDelta)
 {
-
-	CCollider* pPlayerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Collider")));
-	if (nullptr != pPlayerCollider)
+	if (m_bElevate)
 	{
-		if (CCollider::COLL_START == m_pColliderCom->Intersect(pPlayerCollider))
+		m_fElevateTimer += fTimeDelta;
+
+		_vector tmp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		tmp = XMVectorSetY(tmp, XMVectorGetY(tmp) + 0.05f);
+		
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, tmp);
+
+		if (m_fElevateTimer > 5.f)
 		{
-			
+			m_bElevate = false;
+			m_fElevateTimer = 0;
 		}
 	}
-
-
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CElevator::Late_Tick(_float fTimeDelta)
@@ -99,6 +103,7 @@ void CElevator::Late_Tick(_float fTimeDelta)
 
 	//DECAL
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CElevator::Render()
@@ -106,26 +111,75 @@ HRESULT CElevator::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+	if (m_pGameInstance->Key_Down(DIK_UP))
+	{
+		m_iTest++;
+	}
+
+
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i) // 해당 Model의 Mesh만큼 순회
 	{
+		m_pShaderCom->Unbind_SRVs();
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+			return E_FAIL;
+
 		//if ( i != 29)
-
-
+		
 		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &i, sizeof(_uint))))
 		//	return E_FAIL;
 
-		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &i, sizeof(_uint))))
-		//	return;
+		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
+		//	return E_FAIL;
 
-		m_pShaderCom->Begin(4);
+		if (i == 1)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+				return E_FAIL;
+		}
+		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
 	}
+}
+
+HRESULT CElevator::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (m_pGameInstance->Key_Down(DIK_UP))
+	{
+		m_iTest++;
+	}
+
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	
+
+		m_pShaderCom->Unbind_SRVs();
+
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", 1, aiTextureType_EMISSIVE)))
+				return E_FAIL;
+
+
+		m_pShaderCom->Begin(6);
+
+		m_pModelCom->Render(1);
 }
 
 HRESULT CElevator::Add_Components(void* pArg)
@@ -176,9 +230,6 @@ HRESULT CElevator::Bind_ShaderResources()
 
 	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))
 		return E_FAIL;*/
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
-		return E_FAIL;
 
 	return S_OK;
 }

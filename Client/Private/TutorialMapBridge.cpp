@@ -26,6 +26,9 @@ HRESULT CTutorialMapBridge::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	m_World = *m_pTransformCom->Get_WorldFloat4x4();
+	m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+
 	return S_OK;
 }
 
@@ -33,12 +36,14 @@ void CTutorialMapBridge::Priority_Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_5))
 	{
+		m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 		m_eDSState = DS_FADEOUT;
 		m_bPhysxOff = true;
 	}
 
 	if (m_pGameInstance->Key_Down(DIK_6))
 	{
+		m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
 		m_eDSState = DS_FADEIN;
 		m_bPhysxOff = false;
 
@@ -75,13 +80,16 @@ void CTutorialMapBridge::Tick(_float fTimeDelta)
 
 	}
 
-	if(!m_bPhysxOff)
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_World));
+	if (!m_bPhysxOff)
+	{
 		m_pPhysXCom->Tick(m_pTransformCom->Get_WorldFloat4x4());
+	}
 }
 
 void CTutorialMapBridge::Late_Tick(_float fTimeDelta)
 {
-	if (m_bPhysxOff)
+	if (!m_bPhysxOff)
 	{
 		m_pPhysXCom->Late_Tick(m_pTransformCom->Get_WorldFloat4x4Ref());
 	}	
@@ -147,14 +155,16 @@ HRESULT CTutorialMapBridge::Add_Components(void* pArg)
 
 	CPhysXComponent::PHYSX_DESC		PhysXDesc{};
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
-	PhysXDesc.fBoxProperty = _float3(10.f, 1.f, 10.f);				//박스 크기
+	PhysXDesc.fBoxProperty = _float3(100.f, 1.f, 4.f);				//박스 크기
 	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix,  XMMatrixRotationX(XMConvertToRadians(90.0f))* XMMatrixTranslation(20.f, 10.f, 0.f));  //오프셋 위치
+	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix,  XMMatrixRotationX(XMConvertToRadians(0.0f))* XMMatrixTranslation(40.f, 0.f, 0.f));  //오프셋 위치
 	
 
 	PhysXDesc.pComponent = m_pModelCom;
 	PhysXDesc.eGeometryType = PxGeometryType::eBOX;
 	PhysXDesc.pName = "Bridge";
+	PhysXDesc.filterData.word0 = GROUP_NONCOLLIDE;
+	PhysXDesc.filterData.word1 = 0;  // 어떤 그룹과도 충돌하지 않음
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;

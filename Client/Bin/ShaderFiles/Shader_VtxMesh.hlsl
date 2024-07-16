@@ -268,6 +268,25 @@ PS_OUT_COLOR PS_ASPIRATION(PS_IN In)
     return Out;
 }
 
+struct PS_OUT_DECAL
+{
+    vector vDiffuse : SV_TARGET0;
+    vector vDepth : SV_TARGET1;
+};
+
+PS_OUT_DECAL PS_DECAL(PS_IN In)
+{
+    PS_OUT_DECAL Out = (PS_OUT_DECAL)0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (vDiffuse.a < 0.1f)
+        discard;
+
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     /* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -380,6 +399,20 @@ technique11 DefaultTechnique
        HullShader = NULL;
        DomainShader = NULL;
        PixelShader = compile ps_5_0 PS_ASPIRATION();
+    }
+
+    pass Decal_8
+    {
+       SetRasterizerState(RS_Default);
+       SetDepthStencilState(DSS_Default, 0);
+       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+       VertexShader = compile vs_5_0 VS_MAIN();
+       GeometryShader = NULL;
+       HullShader = NULL;
+       DomainShader = NULL;
+       PixelShader = compile ps_5_0 PS_DECAL();
     }
 }
 

@@ -214,6 +214,49 @@ HRESULT CModel::Bind_Material_Instance(CShader* pShaderCom, const _char* pConsta
 	return m_Materials[m_InstanseMesh[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
 }
 
+HRESULT CModel::Bind_Material_Instance_ForMapElements(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
+{
+	_bool bResource = true;
+
+	if (strcmp(pConstantName, "g_DiffuseTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bDiffuse"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_NormalTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bNormal"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_SpecularTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bSpecular"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_OpacityTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bOpacity"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_EmissiveTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bEmissive"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_RoughnessTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bRoughness"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+	else if (strcmp(pConstantName, "g_MetalicTexture") == 0)
+	{
+		if (FAILED(pShaderCom->Bind_RawValue(("g_bMetalic"), &bResource, sizeof(_bool))))
+			return E_FAIL;
+	}
+
+	return m_Materials[m_InstanseMesh[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
+}
+
 HRESULT CModel::Bind_BoneMatrices(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex)
 {
 	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);

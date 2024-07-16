@@ -34,7 +34,6 @@ HRESULT CDecal::Initialize(void* pArg)
 
 void CDecal::Priority_Tick(_float fTimeDelta)
 {
-	//s
 }
 
 void CDecal::Tick(_float fTimeDelta)
@@ -57,10 +56,10 @@ HRESULT CDecal::Render()
 	{
 		m_pShaderCom->Unbind_SRVs();
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_BlurTexture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(4);
+		m_pShaderCom->Begin(8);
 
 		m_pModelCom->Render(i);
 	}

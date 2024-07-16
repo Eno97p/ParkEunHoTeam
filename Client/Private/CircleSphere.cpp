@@ -3,14 +3,16 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
+#include "Monster.h"
 
 CCircleSphere::CCircleSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CWeapon{ pDevice, pContext }
 {
 }
 
 CCircleSphere::CCircleSphere(const CCircleSphere& rhs)
-	: CGameObject{ rhs }
+	: CWeapon{ rhs }
 {
 }
 
@@ -34,6 +36,8 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	m_fPlayerY = XMVectorGetY(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
+	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Boss")).front());
 	return S_OK;
 }
 
@@ -68,13 +72,46 @@ void CCircleSphere::Tick(_float fTimeDelta)
 
 void CCircleSphere::Late_Tick(_float fTimeDelta)
 {
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	if (!m_bIsParried)
 	{
-		m_pPlayer->PlayerHit(10);
-		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
-		m_pGameInstance->Erase(this);
+		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+		if (m_eColltype == CCollider::COLL_START)
+		{
+
+			if (m_pPlayer->Get_Parry())
+			{
+				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				EFFECTMGR->Generate_Particle(5, fPos);
+				m_bIsParried = true;
+				m_pPlayer->Parry_Succeed();
+				// º¸½º Å¸°ÙÆÃ
+				CTransform* bossTransform = dynamic_cast<CTransform*>(m_pJuggulus->Get_Component(TEXT("Com_Transform")));
+				_vector vBossPos = bossTransform->Get_State(CTransform::STATE_POSITION);
+				vBossPos.m128_f32[1] += 15.f;
+				m_pTransformCom->LookAt(vBossPos);
+			}
+			else
+			{
+				m_pPlayer->PlayerHit(10);
+				// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+				m_pGameInstance->Erase(this);
+			}
+
+		}
+	}
+	else
+	{
+		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pJuggulus->Add_Hp(-10);
+			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+			m_pGameInstance->Erase(this);
+		}
 	}
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);

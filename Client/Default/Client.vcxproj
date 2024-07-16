@@ -199,9 +199,11 @@
     <ClInclude Include="..\Public\Clone.h" />
     <ClInclude Include="..\Public\CorruptedSword.h" />
     <ClInclude Include="..\Public\Decal.h" />
+    <ClInclude Include="..\Public\Deco_Element.h" />
     <ClInclude Include="..\Public\Distortion.h" />
     <ClInclude Include="..\Public\DurgaSword.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
+    <ClInclude Include="..\Public\Elevator.h" />
     <ClInclude Include="..\Public\EventTrigger.h" />
     <ClInclude Include="..\Public\FakeWall.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
@@ -358,9 +360,11 @@
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\CorruptedSword.cpp" />
     <ClCompile Include="..\Private\Decal.cpp" />
+    <ClCompile Include="..\Private\Deco_Element.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />
     <ClCompile Include="..\Private\DurgaSword.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />
+    <ClCompile Include="..\Private\Elevator.cpp" />
     <ClCompile Include="..\Private\EventTrigger.cpp" />
     <ClCompile Include="..\Private\FakeWall.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />

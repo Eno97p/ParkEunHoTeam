@@ -956,6 +956,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping && m_iState != STATE_DASH)
 	{
+
 		m_pPhysXCom->Set_JumpSpeed(0.f);
 		m_pPhysXCom->Go_Jump(fTimeDelta);
 		m_iState = STATE_DASH;

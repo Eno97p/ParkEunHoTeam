@@ -68,7 +68,7 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
     }
     else if(iLayerIdx == 0) 
     {
-        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Monster"), &pDesc)))
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_ToolObj"), &pDesc)))
             return E_FAIL;
     }
     else if (iLayerIdx == 1)
@@ -94,11 +94,11 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
 void CToolObj_Manager::Initialize()
 {
     m_Monsters = {   TEXT("Prototype_Component_Model_Fiona"), 
-                        TEXT("Prototype_Component_Model_Lantern"),
-                        TEXT("Prototype_Component_Model_Octopus"),
-                        TEXT("Prototype_Component_Model_Crab"),
-                        TEXT("Prototype_Component_Model_EliteMst"),
-                        TEXT("Prototype_Component_Model_Boss_1P") };
+                        TEXT("Prototype_Component_Model_Mantari"),
+                        TEXT("Prototype_Component_Model_Legionnaire_Gun"),
+                        TEXT("Prototype_Component_Model_Ghost"),
+                        TEXT("Prototype_Component_Model_Homonculus"),
+                        TEXT("Prototype_Component_Model_Juggulus") };
 
     m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"), TEXT("Prototype_Component_Model_BasicGround"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), 
@@ -281,24 +281,20 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
     // Monster
     if (0 == iLayerIdx)
     {
-        return "Prototype_GameObject_Monster";
-
-        //추후 몬스터 종류별로 이름 추가
-
         switch (iSelectIdx)
         {
         case 0:
-            return "Prototype_GameObject_Mst_CatFish_Gunner";
+            return "Prototype_GameObject_Mantari";
         case 1:
-            return "Prototype_GameObject_Mst_Lantern";
+            return "Prototype_GameObject_Mantari";
         case 2:
-            return "Prototype_GameObject_Mst_Octopus";
+            return "Prototype_GameObject_Legionnaire_Gun";
         case 3:
-            return "Prototype_GameObject_Mst_Crab";
+            return "Prototype_GameObject_Ghost";
         case 4:
-            return "Prototype_GameObject_Mst_EliteMst";
+            return "Prototype_GameObject_Homonculus";
         case 5:
-            return "Prototype_GameObject_Mst_Boss";
+            return "Prototype_GameObject_Boss_Juggulus";
         default:
             break;
         }

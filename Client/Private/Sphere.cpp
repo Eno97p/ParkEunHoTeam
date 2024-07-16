@@ -3,14 +3,18 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
+
+#include "Monster.h"
+
 
 CSphere::CSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CWeapon{ pDevice, pContext }
 {
 }
 
 CSphere::CSphere(const CSphere& rhs)
-	: CGameObject{ rhs }
+	: CWeapon{ rhs }
 {
 }
 
@@ -36,6 +40,7 @@ HRESULT CSphere::Initialize(void* pArg)
 	m_pTransformCom->LookAt(pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 5.f);
 
+	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Boss")).front());
 	return S_OK;
 }
 
@@ -45,27 +50,72 @@ void CSphere::Priority_Tick(_float fTimeDelta)
 
 void CSphere::Tick(_float fTimeDelta)
 {
+	
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
 	{
 		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+		_vector vPos = Mat.r[3];
+		_float4 vStartPos;
+		XMStoreFloat4(&vStartPos, vPos);
+		EFFECTMGR->Generate_Particle(14, vStartPos);
+		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 		m_pGameInstance->Erase(this);
 	}
 }
 
 void CSphere::Late_Tick(_float fTimeDelta)
 {
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	if (!m_bIsParried)
 	{
-		m_pPlayer->PlayerHit(10);
-		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
-		m_pGameInstance->Erase(this);
+		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+		if (m_eColltype == CCollider::COLL_START)
+		{
+
+			if (m_pPlayer->Get_Parry())
+			{
+				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+				EFFECTMGR->Generate_Particle(5, fPos);
+				m_bIsParried = true;
+				m_pPlayer->Parry_Succeed();
+				// º¸½º Å¸°ÙÆÃ
+				CTransform* bossTransform = dynamic_cast<CTransform*>(m_pJuggulus->Get_Component(TEXT("Com_Transform")));
+				_vector vBossPos = bossTransform->Get_State(CTransform::STATE_POSITION);
+				vBossPos.m128_f32[1] += 30.f;
+				m_pTransformCom->LookAt(vBossPos);
+			}
+			else
+			{
+				m_pPlayer->PlayerHit(10);
+				// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+				_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+				_vector vPos = Mat.r[3];
+				_float4 vStartPos;
+				XMStoreFloat4(&vStartPos, vPos);
+				EFFECTMGR->Generate_Particle(14, vStartPos);
+				EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+				m_pGameInstance->Erase(this);
+			}
+
+		}
+
 	}
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+	else
+	{
+		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pJuggulus->Add_Hp(-10);
+			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+			m_pGameInstance->Erase(this);
+		}
+	}
+
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 

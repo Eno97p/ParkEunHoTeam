@@ -22,10 +22,15 @@ HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring & str
 	if (nullptr != Find_Prototype(iLevelIndex, strPrototypeTag))
 	{
 		Safe_Release(pPrototype);
+		auto& Temp = m_pPrototypes[iLevelIndex];
 		return S_OK;
 	}
 
 	m_pPrototypes[iLevelIndex].emplace(strPrototypeTag, pPrototype);
+	auto& Temp = m_pPrototypes[iLevelIndex];
+
+
+	int temp = 0;
 
 	return S_OK;
 }
@@ -63,6 +68,8 @@ void CComponent_Manager::Clear(_uint iLevelIndex)
 CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag)
 {
 	auto	iter = m_pPrototypes[iLevelIndex].find(strPrototypeTag);
+	auto&   temp = m_pPrototypes[iLevelIndex];
+
 
 	if (iter == m_pPrototypes[iLevelIndex].end())
 		return nullptr;

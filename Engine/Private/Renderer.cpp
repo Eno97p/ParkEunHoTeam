@@ -566,13 +566,13 @@ void CRenderer::Clear()
 void CRenderer::Draw()
 {
     //m_lActiveThreadCount = m_dwThreadCount;
-
+    //
     //for (DWORD i = 0; i < m_dwThreadCount; i++)
     //{
     //    SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_PROCESS]);
     //}
     //WaitForSingleObject(m_hCompleteEvent, INFINITE);
-
+    //
     //// CommandList 실행
     //for (auto& pCommandList : m_CommandLists)
     //{
@@ -1502,10 +1502,10 @@ void CRenderer::ClearRenderThreadPool()
 void CRenderer::ProcessByThread(DWORD dwThreadIndex)
 {
     ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
+    PROFILE_CALL("Render Priority",  ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY, TEXT("MRT_Result")));
+    ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_REFLECTION, TEXT("MRT_Reflection"));
 
-    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY);
-    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_SHADOWOBJ);
-    ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_NONBLEND);
+  
 
     pDeferredContext->FinishCommandList(FALSE, &m_CommandLists[dwThreadIndex]);
 
@@ -1517,54 +1517,71 @@ void CRenderer::ProcessByThread(DWORD dwThreadIndex)
     //ID3D11RenderTargetView* pRTV = ;
 }
 
-void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup)
+void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup, const wchar_t* mrtTarget)
 {
-    switch (eRenderGroup)
-    {
-    case RENDER_PRIORITY:
-        m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), pDeferredContext);
-        break;
-    case RENDER_SHADOWOBJ:
-        //m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), true, m_pLightDepthStencilView, pDeferredContext);
-        break;
-    case RENDER_NONBLEND:
-        m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), pDeferredContext);
-        break;
-        // ... 다른 렌더 그룹에 대한 설정
-    default:
-        break;
-    }
-    UINT processedCount = 0;
+
+    m_pGameInstance->Begin_MRT(mrtTarget, pDeferredContext);
+
+
     auto& renderGroup = m_RenderGroup[eRenderGroup];
+    size_t totalObjects = renderGroup.size();
+    size_t objectsPerThread = (totalObjects + m_dwThreadCount - 1) / m_dwThreadCount; // 각 스레드에 할당될 객체 수
 
-    for (auto it = renderGroup.begin(); it != renderGroup.end() && processedCount < MAX_OBJECTS_PER_COMMANDLIST;)
-    {
-        CGameObject* pGameObject = *it;
-        if (pGameObject)
-        {
-            switch (eRenderGroup)
-            {
-            case RENDER_SHADOWOBJ:
-                //pGameObject->Render_LightDepth(pDeferredContext);
-                break;
-            case RENDER_REFLECTION:
-                //pGameObject->Render_Reflection(pDeferredContext);
-                break;
-            default:
-                pGameObject->Render();
-                break;
-            }
+    size_t start = dwThreadIndex * objectsPerThread;
+    size_t end = min(start + objectsPerThread, totalObjects);
 
-            Safe_Release(pGameObject);
-        }
-        it = renderGroup.erase(it);
-        ++processedCount;
+    auto it = renderGroup.begin();
+    std::advance(it, start);
 
-        if (processedCount >= MAX_OBJECTS_PER_COMMANDLIST)
-            break;
-    }
 
     m_pGameInstance->End_MRT(pDeferredContext);
+
+    //switch (eRenderGroup)
+    //{
+    //case RENDER_PRIORITY:
+    //    m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), pDeferredContext);
+    //    break;
+    //case RENDER_SHADOWOBJ:
+    //    //m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), true, m_pLightDepthStencilView, pDeferredContext);
+    //    break;
+    //case RENDER_NONBLEND:
+    //    m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), pDeferredContext);
+    //    break;
+    //    // ... 다른 렌더 그룹에 대한 설정
+    //default:
+    //    break;
+    //}
+    //UINT processedCount = 0;
+    //auto& renderGroup = m_RenderGroup[eRenderGroup];
+
+    //for (auto it = renderGroup.begin(); it != renderGroup.end() && processedCount < MAX_OBJECTS_PER_COMMANDLIST;)
+    //{
+    //    CGameObject* pGameObject = *it;
+    //    if (pGameObject)
+    //    {
+    //        switch (eRenderGroup)
+    //        {
+    //        case RENDER_SHADOWOBJ:
+    //            //pGameObject->Render_LightDepth(pDeferredContext);
+    //            break;
+    //        case RENDER_REFLECTION:
+    //            //pGameObject->Render_Reflection(pDeferredContext);
+    //            break;
+    //        default:
+    //            pGameObject->Render();
+    //            break;
+    //        }
+
+    //        Safe_Release(pGameObject);
+    //    }
+    //    it = renderGroup.erase(it);
+    //    ++processedCount;
+
+    //    if (processedCount >= MAX_OBJECTS_PER_COMMANDLIST)
+    //        break;
+    //}
+
+    //m_pGameInstance->End_MRT(pDeferredContext);
 }
 
 

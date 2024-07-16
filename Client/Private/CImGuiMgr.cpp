@@ -202,6 +202,18 @@ void CImGuiMgr::Render_MainMenu()
 			
 		}
 	}
+	
+	if (ImGui::Button("Reset Current Level"))
+	{
+		//if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel))))
+		//{
+		//	MSG_BOX("IMGUI::Failed to Open Level");
+		//	return;
+		//}
+		//int temp = 0;
+
+		return;
+	}
 
 	m_pGameInstance->Get_LayerTags_String(current_level_index, &m_LayerTags);
 	

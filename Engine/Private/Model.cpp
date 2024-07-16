@@ -129,6 +129,15 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext)
+{
+	m_Meshes[iMeshIndex]->Bind_Buffers(pDeferredContext);
+	m_Meshes[iMeshIndex]->Render(pDeferredContext);
+
+
+	return S_OK;
+}
+
 HRESULT CModel::Render_Instance(_uint iMeshIndex)
 {
 	m_InstanseMesh[iMeshIndex]->Bind_Buffers();

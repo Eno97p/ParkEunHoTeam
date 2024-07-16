@@ -118,9 +118,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 
 
-	m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
-	if (nullptr == m_pOctTree)
-		return E_FAIL;
+	//m_pOctTree = COctTree::Create({ -600.f, -50.f, -200.f }, {350.f, 200.f, 100.f}, 0);
+	//if (nullptr == m_pOctTree)
+	//	return E_FAIL;
 	
 
 
@@ -187,9 +187,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		}));
 	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 	
-	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//	}));
+
 
 
 	for (auto& worker : futures)
@@ -199,15 +197,12 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	futures.clear();
 
 	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//futures.push_back(m_pWorker->Add_Job([this]() {
-	//	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());	
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	//	}));
-	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+
 	
-	//futures.push_back(m_pWorker->Add_Job([this]() {
-	//	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
-	//	}));
+	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
 	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
@@ -220,21 +215,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	
 
-
-
-
-
-
-	
-
-
-
-	//futures.push_back(m_pWorker->Add_Job([this]() {
-	//	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
-	//	}));
-
-
-	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
+	//PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 
 	PROFILE_CALL("Object Manager Late_Tick", m_pObject_Manager->Late_Tick(fTimeDelta));
 
@@ -874,7 +855,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_UISorter);
 
-	Safe_Release(m_pOctTree);
+	//Safe_Release(m_pOctTree);
 	Safe_Release(m_pWorker);
 	//Safe_Release(m_pRenderWorker);
 

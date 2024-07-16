@@ -107,6 +107,10 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal"))))
         return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_Depth"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal_Depth"))))
+        return E_FAIL;
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalResult"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DecalResult"), TEXT("Target_DecalResult"))))
@@ -566,13 +570,13 @@ void CRenderer::Clear()
 void CRenderer::Draw()
 {
     //m_lActiveThreadCount = m_dwThreadCount;
-
+    //
     //for (DWORD i = 0; i < m_dwThreadCount; i++)
     //{
     //    SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_PROCESS]);
     //}
     //WaitForSingleObject(m_hCompleteEvent, INFINITE);
-
+    //
     //// CommandList 실행
     //for (auto& pCommandList : m_CommandLists)
     //{
@@ -643,9 +647,6 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 #endif
 void CRenderer::Render_Priority()
 {
-
-
-
     m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
     
     for (auto& pGameObject : m_RenderGroup[RENDER_PRIORITY])
@@ -661,7 +662,7 @@ void CRenderer::Render_Priority()
    
 
 
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection"));
 
     for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
     {
@@ -780,7 +781,7 @@ void CRenderer::Render_Decal()
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal_Depth"), m_pShader, "g_DepthTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
         return;
@@ -869,10 +870,10 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
     
- /*   if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
-        return;*/
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
         return;
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    //    return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
@@ -1502,10 +1503,10 @@ void CRenderer::ClearRenderThreadPool()
 void CRenderer::ProcessByThread(DWORD dwThreadIndex)
 {
     ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
+    PROFILE_CALL("Render Priority",  ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY, TEXT("MRT_Result")));
+    ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_REFLECTION, TEXT("MRT_Reflection"));
 
-    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY);
-    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_SHADOWOBJ);
-    ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_NONBLEND);
+  
 
     pDeferredContext->FinishCommandList(FALSE, &m_CommandLists[dwThreadIndex]);
 
@@ -1517,54 +1518,71 @@ void CRenderer::ProcessByThread(DWORD dwThreadIndex)
     //ID3D11RenderTargetView* pRTV = ;
 }
 
-void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup)
+void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup, const wchar_t* mrtTarget)
 {
-    switch (eRenderGroup)
-    {
-    case RENDER_PRIORITY:
-        m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), pDeferredContext);
-        break;
-    case RENDER_SHADOWOBJ:
-        //m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), true, m_pLightDepthStencilView, pDeferredContext);
-        break;
-    case RENDER_NONBLEND:
-        m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), pDeferredContext);
-        break;
-        // ... 다른 렌더 그룹에 대한 설정
-    default:
-        break;
-    }
-    UINT processedCount = 0;
+
+    m_pGameInstance->Begin_MRT(mrtTarget, pDeferredContext);
+
+
     auto& renderGroup = m_RenderGroup[eRenderGroup];
+    size_t totalObjects = renderGroup.size();
+    size_t objectsPerThread = (totalObjects + m_dwThreadCount - 1) / m_dwThreadCount; // 각 스레드에 할당될 객체 수
 
-    for (auto it = renderGroup.begin(); it != renderGroup.end() && processedCount < MAX_OBJECTS_PER_COMMANDLIST;)
-    {
-        CGameObject* pGameObject = *it;
-        if (pGameObject)
-        {
-            switch (eRenderGroup)
-            {
-            case RENDER_SHADOWOBJ:
-                //pGameObject->Render_LightDepth(pDeferredContext);
-                break;
-            case RENDER_REFLECTION:
-                //pGameObject->Render_Reflection(pDeferredContext);
-                break;
-            default:
-                pGameObject->Render();
-                break;
-            }
+    size_t start = dwThreadIndex * objectsPerThread;
+    size_t end = min(start + objectsPerThread, totalObjects);
 
-            Safe_Release(pGameObject);
-        }
-        it = renderGroup.erase(it);
-        ++processedCount;
+    auto it = renderGroup.begin();
+    std::advance(it, start);
 
-        if (processedCount >= MAX_OBJECTS_PER_COMMANDLIST)
-            break;
-    }
 
     m_pGameInstance->End_MRT(pDeferredContext);
+
+    //switch (eRenderGroup)
+    //{
+    //case RENDER_PRIORITY:
+    //    m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), pDeferredContext);
+    //    break;
+    //case RENDER_SHADOWOBJ:
+    //    //m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), true, m_pLightDepthStencilView, pDeferredContext);
+    //    break;
+    //case RENDER_NONBLEND:
+    //    m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), pDeferredContext);
+    //    break;
+    //    // ... 다른 렌더 그룹에 대한 설정
+    //default:
+    //    break;
+    //}
+    //UINT processedCount = 0;
+    //auto& renderGroup = m_RenderGroup[eRenderGroup];
+
+    //for (auto it = renderGroup.begin(); it != renderGroup.end() && processedCount < MAX_OBJECTS_PER_COMMANDLIST;)
+    //{
+    //    CGameObject* pGameObject = *it;
+    //    if (pGameObject)
+    //    {
+    //        switch (eRenderGroup)
+    //        {
+    //        case RENDER_SHADOWOBJ:
+    //            //pGameObject->Render_LightDepth(pDeferredContext);
+    //            break;
+    //        case RENDER_REFLECTION:
+    //            //pGameObject->Render_Reflection(pDeferredContext);
+    //            break;
+    //        default:
+    //            pGameObject->Render();
+    //            break;
+    //        }
+
+    //        Safe_Release(pGameObject);
+    //    }
+    //    it = renderGroup.erase(it);
+    //    ++processedCount;
+
+    //    if (processedCount >= MAX_OBJECTS_PER_COMMANDLIST)
+    //        break;
+    //}
+
+    //m_pGameInstance->End_MRT(pDeferredContext);
 }
 
 
@@ -1641,7 +1659,6 @@ void CRenderer::Free()
         Safe_Release(m_pHZBSRV[i]);
         Safe_Release(m_pHZBUAV[i]);
         Safe_Release(m_pHZBTexture[i]);
-
     }
 
     ClearRenderThreadPool();

@@ -228,6 +228,7 @@ NodeStates CHomonculus::Explosion(_float fTimeDelta)
 {
 	if (m_iState == STATE_EXPLOSION)
 	{
+
 		if (m_isAnimFinished)
 		{
 			_matrix Worldmat = m_pTransformCom->Get_WorldMatrix();

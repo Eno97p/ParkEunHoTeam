@@ -159,6 +159,15 @@ HRESULT CBoss_Juggulus::Render()
 	return S_OK;
 }
 
+void CBoss_Juggulus::Add_Hp(_int iValue)
+{
+	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurHp == 0.f)
+	{
+		m_iState = STATE_DEAD;
+	}
+}
+
 HRESULT CBoss_Juggulus::Add_Components()
 {
 	/* For.Com_Collider */

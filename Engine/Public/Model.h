@@ -82,7 +82,9 @@ public:														//파티클 함수들
 	_bool			Check_CurDuration(_double CurDuration);
 
 	// 애니메이션 보완
-	void         Set_LerpTime(_double LerpTime);
+
+	void			Set_LerpTime(_double LerpTime);
+
 
 
 public:/*For.Physx*/
@@ -111,6 +113,7 @@ public:
 	HRESULT Save_BoneName();										// 뼈이름 텍스트로 저장하는거
 	_bool Picking(class CTransform* pTransform, _float3* pOut);		// 메쉬피킹
 
+	_bool Culling(_uint iIndex, PxActor* actor);
 private:
 	const aiScene* m_pAIScene = { nullptr };
 	Assimp::Importer			m_Importer;
@@ -122,7 +125,7 @@ private:
 	_uint						m_iNumMeshes = { 0 };
 	vector<class CMesh*>		m_Meshes;
 	vector<class CInstance_Mesh*>	m_InstanseMesh;
-
+	
 private:
 	_uint						m_iNumMaterials = { 0 };
 	vector<MESH_MATERIAL>		m_Materials;

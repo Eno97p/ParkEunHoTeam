@@ -128,9 +128,6 @@ void CInventory::Free()
 	for (auto& pItemData : m_vecItem)
 		Safe_Release(pItemData);
 
-	for (auto& pQuickItem : m_vecQuickAccess)
-		Safe_Release(pQuickItem);
-
 	for (auto& pWeaponItem : m_vecWeapon)
 		Safe_Release(pWeaponItem);
 

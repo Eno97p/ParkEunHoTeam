@@ -32,13 +32,12 @@ _uint CAnimation::Get_CurKeyFrame(_uint iChannelIdx)
 
 _uint CAnimation::Set_CurKeyFrame(_uint iChannelIdx)
 {
-	return m_CurrentKeyFrameIndices[iChannelIdx]; // 이게 뭘까요?
+	return m_CurrentKeyFrameIndices[iChannelIdx];
 }
 
 _bool CAnimation::Check_CurDuration(_double CurDuration)
 {
-	// 오차 범위 설정해주어야 할듯
-	return (0.25 >= abs(m_CurrentPosition - CurDuration)); // 0.3 >= abs(m_CurrentPosition - CurDuration)
+	return (CurDuration > m_PrevPosition && CurDuration < m_CurrentPosition);
 }
 
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
@@ -69,6 +68,7 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<cla
 
 void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop)
 {
+	m_PrevPosition = m_CurrentPosition;
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 
 
@@ -99,6 +99,7 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 void CAnimation::Reset()
 {
 	m_CurrentPosition = 0.0;
+	m_PrevPosition = 0.0;
 	m_isFinished = false;
 	ZeroMemory(&m_CurrentKeyFrameIndices.front(), sizeof(_uint) * m_iNumChannels);
 }
@@ -106,6 +107,7 @@ void CAnimation::Reset()
 void CAnimation::Reset(const vector<class CBone*>& Bones)
 {
 	m_CurrentPosition = 0.0;
+	m_PrevPosition = 0.0;
 	m_isFinished = false;
 
 	_uint		iChannelIndex = { 0 };

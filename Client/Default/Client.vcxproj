@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
     <ClInclude Include="..\Public\Body_Homonculus.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\Public\Cendres.h" />
     <ClInclude Include="..\public\CHoverboard.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
+    <ClInclude Include="..\Public\CircleSphere.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Function.hpp" />
     <ClInclude Include="..\Public\Client_Macro.h" />
@@ -232,6 +234,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
+    <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
@@ -337,6 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />
     <ClCompile Include="..\Private\Body_Homonculus.cpp" />
@@ -350,6 +354,7 @@
     <ClCompile Include="..\Private\Cendres.cpp" />
     <ClCompile Include="..\private\CHoverboard.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
+    <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\CorruptedSword.cpp" />
     <ClCompile Include="..\Private\Decal.cpp" />
@@ -387,6 +392,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
+    <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />

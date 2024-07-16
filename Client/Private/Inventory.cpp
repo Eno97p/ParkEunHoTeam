@@ -134,9 +134,6 @@ void CInventory::Free()
 	for (auto& pWeaponItem : m_vecWeapon)
 		Safe_Release(pWeaponItem);
 
-	for (auto& pEquipWeaponItem : m_arrEquipWeapon)
-		Safe_Release(pEquipWeaponItem);
-
 	for (auto& pArtefact : m_vecArtefact)
 		Safe_Release(pArtefact);
 

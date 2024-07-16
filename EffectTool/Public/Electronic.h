@@ -16,6 +16,7 @@ public:
 		CVIBuffer_Lightning::LIGHTNINGDESC		 BufferDesc;
 		_float4									 vStartPos = { 0.f,0.f,0.f,1.f };
 		_int									 iNumNoise = 0;
+		_float3									 vColor = { 0.f,0.f,0.f };
 		wstring									 Texture = TEXT("");
 		wstring									 TexturePath = TEXT("");
 	};

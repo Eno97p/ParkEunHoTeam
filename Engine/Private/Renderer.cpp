@@ -565,8 +565,26 @@ void CRenderer::Clear()
 
 void CRenderer::Draw()
 {
-   
-        
+    //m_lActiveThreadCount = m_dwThreadCount;
+
+    //for (DWORD i = 0; i < m_dwThreadCount; i++)
+    //{
+    //    SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_PROCESS]);
+    //}
+    //WaitForSingleObject(m_hCompleteEvent, INFINITE);
+
+    //// CommandList 실행
+    //for (auto& pCommandList : m_CommandLists)
+    //{
+    //    if (pCommandList)
+    //    {
+    //        m_pContext->ExecuteCommandList(pCommandList, FALSE);
+    //        pCommandList->Release();
+    //        pCommandList = nullptr;
+    //    }
+    //}
+
+
 
 	PROFILE_CALL("Render Priority", Render_Priority());
     
@@ -574,6 +592,7 @@ void CRenderer::Draw()
 
 	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
+ 
 
 	PROFILE_CALL("Render NonBlend", Render_NonBlend());
  
@@ -625,6 +644,8 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 void CRenderer::Render_Priority()
 {
 
+
+
     m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
     
     for (auto& pGameObject : m_RenderGroup[RENDER_PRIORITY])
@@ -637,6 +658,8 @@ void CRenderer::Render_Priority()
     m_RenderGroup[RENDER_PRIORITY].clear();
     
     m_pGameInstance->End_MRT();
+   
+
 
     m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
 
@@ -1280,7 +1303,7 @@ void CRenderer::Render_Final()
     _tchar               m_szFPS[MAX_PATH] = TEXT("");
     _int i = (_int)(m_fValue * 100);
     wsprintf(m_szFPS, TEXT("1. reinhard   2. ACES   3. HDR Decrease   4. HDR Increase\n5. LUT\nValue : %d"), i);
-    m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+    m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 }
 
 void CRenderer::Compute_HDR()
@@ -1479,11 +1502,69 @@ void CRenderer::ClearRenderThreadPool()
 void CRenderer::ProcessByThread(DWORD dwThreadIndex)
 {
     ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
+
+    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY);
+    //ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_SHADOWOBJ);
+    ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_NONBLEND);
+
+    pDeferredContext->FinishCommandList(FALSE, &m_CommandLists[dwThreadIndex]);
+
+    LONG lCurCount = _InterlockedDecrement(&m_lActiveThreadCount);
+    if (0 == lCurCount)
+    {
+        SetEvent(m_hCompleteEvent);
+    }
     //ID3D11RenderTargetView* pRTV = ;
 }
 
-void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext)
+void CRenderer::ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup)
 {
+    switch (eRenderGroup)
+    {
+    case RENDER_PRIORITY:
+        m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), pDeferredContext);
+        break;
+    case RENDER_SHADOWOBJ:
+        //m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), true, m_pLightDepthStencilView, pDeferredContext);
+        break;
+    case RENDER_NONBLEND:
+        m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), pDeferredContext);
+        break;
+        // ... 다른 렌더 그룹에 대한 설정
+    default:
+        break;
+    }
+    UINT processedCount = 0;
+    auto& renderGroup = m_RenderGroup[eRenderGroup];
+
+    for (auto it = renderGroup.begin(); it != renderGroup.end() && processedCount < MAX_OBJECTS_PER_COMMANDLIST;)
+    {
+        CGameObject* pGameObject = *it;
+        if (pGameObject)
+        {
+            switch (eRenderGroup)
+            {
+            case RENDER_SHADOWOBJ:
+                //pGameObject->Render_LightDepth(pDeferredContext);
+                break;
+            case RENDER_REFLECTION:
+                //pGameObject->Render_Reflection(pDeferredContext);
+                break;
+            default:
+                pGameObject->Render();
+                break;
+            }
+
+            Safe_Release(pGameObject);
+        }
+        it = renderGroup.erase(it);
+        ++processedCount;
+
+        if (processedCount >= MAX_OBJECTS_PER_COMMANDLIST)
+            break;
+    }
+
+    m_pGameInstance->End_MRT(pDeferredContext);
 }
 
 

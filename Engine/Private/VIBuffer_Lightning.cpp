@@ -21,14 +21,14 @@ HRESULT CVIBuffer_Lightning::Initialize(void* pArg)
 	m_pDesc =  make_shared<LIGHTNINGDESC>(*((LIGHTNINGDESC*)pArg));
 	m_iNumInstance = m_pDesc->iNumInstance;
 
-	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
 	m_iIndexFormat = DXGI_FORMAT_R16_UINT;
 	m_iNumVertexBuffers = 2;
 	m_iVertexStride = sizeof(VTXPOINT);
 	m_iNumVertices = 1;
 
 	m_iIndexStride = 2;
-	m_iIndexCountPerInstance = 1;
+	m_iIndexCountPerInstance = m_pDesc->NumSegments[1] + 1;;
 	m_iNumIndices = m_iIndexCountPerInstance * m_iNumInstance;
 	m_iInstanceStride = sizeof(VTXELECTRON);
 
@@ -66,7 +66,13 @@ HRESULT CVIBuffer_Lightning::Initialize(void* pArg)
 
 	_ushort* pIndices = new _ushort[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
-
+	for (size_t i = 0; i < m_iNumInstance; ++i)
+	{
+		for (size_t j = 0; j < m_iIndexCountPerInstance; ++j)
+		{
+			pIndices[i * m_iIndexCountPerInstance + j] = j;
+		}
+	}
 	m_InitialData.pSysMem = pIndices;
 	
 	if (FAILED(__super::Create_Buffer(&m_pIB)))
@@ -92,6 +98,8 @@ HRESULT CVIBuffer_Lightning::Initialize(void* pArg)
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
+		pInstanceVertices[i].vPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);  // 초기 위치
+		pInstanceVertices[i].vPSize = XMFLOAT2(1.0f, 1.0f);  // 기본 크기
 		pInstanceVertices[i].vStartpos = m_pDesc->vStartpos;
 		pInstanceVertices[i].vEndpos = m_pDesc->vEndpos;
 		pInstanceVertices[i].vLifeTime.x = LifeTime(m_RandomNumber);
@@ -155,10 +163,7 @@ void CVIBuffer_Lightning::Tick(_float fTimeDelta)
 		_float3 vTop = pVertices[i].vStartpos;
 		_float3 vBottom = pVertices[i].vEndpos;
 
-		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
-		{
-			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
-		}
+
 		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
 		{
 			allInstancesDead = false;

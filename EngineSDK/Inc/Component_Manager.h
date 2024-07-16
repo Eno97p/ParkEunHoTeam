@@ -20,6 +20,7 @@
 #include "VIBuffer_Instance_Rect.h"
 #include "VIBuffer_Instance_Point.h"
 #include "VIBuffer_Lightning.h"
+#include "VIBuffer_Line.h"
 #pragma endregion
 
 

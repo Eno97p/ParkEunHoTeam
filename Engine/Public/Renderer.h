@@ -97,7 +97,7 @@ private:
 #pragma region PARKJAEWON
 public:
 	void ProcessByThread(DWORD dwThreadIndex);
-	void ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext);
+	void ProcessRenderQueue(DWORD dwThreadIndex, ID3D11DeviceContext* pDeferredContext, RENDERGROUP eRenderGroup);
 private:
 	HRESULT InitRenderThreadPool(DWORD dwThreadCount);
 	void ClearRenderThreadPool();

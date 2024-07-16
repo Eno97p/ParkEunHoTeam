@@ -227,6 +227,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_Lightning.hlsl"), VTXELECTRON::Elements, VTXELECTRON::iNumElements))))
 		return E_FAIL;
 
+	/* Line */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Line"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_Cell.hlsl"), VTXELECTRON::Elements, VTXELECTRON::iNumElements))))
+		return E_FAIL;
+
 
 #pragma endregion SHADER
 	lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩 중 입니다."));

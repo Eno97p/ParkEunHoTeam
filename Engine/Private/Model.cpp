@@ -129,6 +129,15 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext)
+{
+	m_Meshes[iMeshIndex]->Bind_Buffers(pDeferredContext);
+	m_Meshes[iMeshIndex]->Render(pDeferredContext);
+
+
+	return S_OK;
+}
+
 HRESULT CModel::Render_Instance(_uint iMeshIndex)
 {
 	m_InstanseMesh[iMeshIndex]->Bind_Buffers();
@@ -335,6 +344,11 @@ _bool CModel::Check_CurDuration(_double CurDuration)
 {
 	// 현재 재생 중인 애니메이션의 Duration에 접근
 	return m_Animations[m_AnimDesc.iAnimIndex]->Check_CurDuration(CurDuration);
+}
+
+void CModel::Set_LerpTime(_double LerpTime)
+{
+	m_Animations[m_AnimDesc.iAnimIndex]->Set_LerpTime(LerpTime);
 }
 
 vector<string> CModel::Get_BoneNameVec()

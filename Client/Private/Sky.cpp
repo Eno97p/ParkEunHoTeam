@@ -78,6 +78,29 @@ HRESULT CSky::Render()
 
 }
 
+HRESULT CSky::Render(ID3D11DeviceContext* pDeferredContext)
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iSkyTex)))
+		return E_FAIL;
+
+
+	m_pShaderCom->Begin(0, pDeferredContext);
+
+	m_pVIBufferCom->Bind_Buffers(pDeferredContext);
+
+	m_pVIBufferCom->Render(pDeferredContext);
+
+
+
+	return S_OK;
+}
+
 HRESULT CSky::Add_Components()
 {
 	/* For.Com_VIBuffer */

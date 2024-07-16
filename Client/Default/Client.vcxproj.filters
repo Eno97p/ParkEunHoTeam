@@ -472,6 +472,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere">
       <UniqueIdentifier>{b119cff7-f0a9-4e5b-a7f6-239808aa03d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator">
+      <UniqueIdentifier>{fefc47bf-3d3a-4277-9bb8-1fe3af7fedb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -959,6 +962,12 @@
     <ClInclude Include="..\Public\CircleSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Deco_Element.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Elevator.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1425,6 +1434,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CircleSphere.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Deco_Element.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\00. Passive_Element\00. Deco_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Elevator.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -116,7 +116,7 @@ HRESULT CPassive_Element::Render()
          /*   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;  */
             
-            if (FAILED(m_pModelCom->Bind_Material_Instance(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+            if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;
             
 

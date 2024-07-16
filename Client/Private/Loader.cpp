@@ -77,11 +77,12 @@
 
 #include "Map_Element.h"
 #include "Passive_Element.h"
-#include "Passive_Element.h"
+#include "Deco_Element.h"
 #include "Active_Element.h"
 #include "TutorialMapBridge.h"
 
 #include "FakeWall.h"
+#include "Elevator.h"
 #include "EventTrigger.h"
 
 #include"CHoverboard.h"
@@ -618,17 +619,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Light_TorchB"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_TorchB.fbx", PreTransformMatrix))))
 		return E_FAIL;
-	//Charette
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CharetteNew"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Charette/CharetteNew.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CharetteBroke"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Charette/CharetteBroke.fbx", PreTransformMatrix))))
-		return E_FAIL;
 
 #pragma endregion   DECO ELEMENTS
 
+#pragma region  Active Element Model Load
+	lstrcpy(m_szLoadingText, TEXT("Active Element ¸ðµ¨ ·Îµù Áß"));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Elevator"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion   Active Element Model Load
 
 
 
@@ -1013,6 +1014,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CPassive_Element::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Deco_Element */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Deco_Element"),
+		CDeco_Element::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Active_Element */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Active_Element"),
 		CActive_Element::Create(m_pDevice, m_pContext))))
@@ -1031,6 +1037,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	// Prototype_GameObject_FakeWall
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FakeWall"),
 		CFakeWall::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
+	// Prototype_GameObject_Elevator
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Elevator"),
+		CElevator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//Prototype_GameObject_EventTrigger
@@ -1094,7 +1105,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	/* For.Prototype_GameObject_Body_Mantari */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Mantari"),
-		CBody_Mantari::Create(m_pDevice, m_pContext))))
+		CBody_Mantari::Create(m_pDevice, m_pContext)))) // Á¶½ÉÇØ¶ó ±èº¸¹Î °¡¸¸¾ÈµÖ (±«µµ·çÆÎ)
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Weapon_Mantari */
@@ -1614,10 +1625,6 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 
 
 #pragma endregion   DECO ELEMENTS
-
-
-
-
 
 #pragma endregion
 

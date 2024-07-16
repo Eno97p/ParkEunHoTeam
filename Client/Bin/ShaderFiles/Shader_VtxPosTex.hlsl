@@ -111,7 +111,7 @@ PS_OUT PS_ITEM_BLOOM(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 
-	Out.vColor.a = Out.vColor.r * 0.15f;
+	Out.vColor.a = Out.vColor.r * 0.5f;
 
 	if (Out.vColor.a < 0.1f) discard;
 

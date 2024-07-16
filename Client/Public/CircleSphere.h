@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "Weapon.h"
 
 BEGIN(Engine)
 class CShader;
@@ -13,7 +13,7 @@ END
 BEGIN(Client)
 class CPlayer;
 
-class CCircleSphere final : public CGameObject
+class CCircleSphere final : public CWeapon
 {
 private:
 	CCircleSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -33,9 +33,15 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	_float m_fPlayerY = 0.f;
+
 	class CPlayer* m_pPlayer = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
+	_bool m_bIsParried = false;
+
+	class CMonster* m_pJuggulus = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
+
 	_float m_fShootDelay = 3.f;
 	_bool m_bLookatPlayer = false;
 

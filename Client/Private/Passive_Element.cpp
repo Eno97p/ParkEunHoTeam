@@ -76,7 +76,7 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //}
     //else 
     {
-      // m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
+       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
     }
   
@@ -190,12 +190,12 @@ HRESULT CPassive_Element::Render_Mirror()
         
         m_pShaderCom->Unbind_SRVs();
 
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_DIFFUSE)))
+        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
             return E_FAIL;
 
-        m_pShaderCom->Begin(3);
+        m_pShaderCom->Begin(1);
 
-        if (FAILED(m_pModelCom->Render(i)))
+        if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
             return E_FAIL;
     }
     return S_OK;

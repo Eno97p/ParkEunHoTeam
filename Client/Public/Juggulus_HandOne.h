@@ -65,6 +65,7 @@ private:
 	_float m_fDamageTime = 3.f;
 	_bool							m_bIsActive = false;
 	_float m_fColliderActiveTime = 0.5f;
+	_int m_icount = 0;
 
 public:
 	HRESULT Add_Components();

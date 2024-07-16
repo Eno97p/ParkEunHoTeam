@@ -1203,7 +1203,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	
 
 
 	return S_OK;
@@ -1817,7 +1817,7 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 		CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("LEVEL ACKBAR"));
+	//lstrcpy(m_szLoadingText, TEXT("LEVEL ACKBAR"));
 
 
 	return S_OK;
@@ -2431,7 +2431,7 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("LEVEL JUGGLAS"));
+	//lstrcpy(m_szLoadingText, TEXT("LEVEL JUGGLAS"));
 
 	return S_OK;
 }

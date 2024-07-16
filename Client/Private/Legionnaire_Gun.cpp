@@ -588,7 +588,7 @@ void CLegionnaire_Gun::Free()
 	__super::Free();
 
 	Safe_Release(m_pBehaviorCom);
-	Safe_Release(m_pArrow);
+	//Safe_Release(m_pArrow);
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);

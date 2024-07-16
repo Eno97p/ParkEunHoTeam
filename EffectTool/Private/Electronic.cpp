@@ -57,6 +57,7 @@ HRESULT CElectronic::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
+
 	m_pShaderCom->Begin(0);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
@@ -111,15 +112,17 @@ HRESULT CElectronic::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
+	//if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+	//	return E_FAIL;
 	if (FAILED(m_pNoiseTex->Bind_ShaderResource(m_pShaderCom, "g_PerlinNoise", OwnDesc->iNumNoise)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTime", &fTime, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &OwnDesc->vColor, sizeof(_float3))))
+		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 

@@ -166,6 +166,7 @@
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
+    <ClInclude Include="..\public\LineTest.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\Main.h" />
     <ClInclude Include="..\Public\Map.h" />
@@ -203,6 +204,7 @@
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
+    <ClCompile Include="..\private\LineTest.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\Main.cpp" />
     <ClCompile Include="..\Private\Map.cpp" />

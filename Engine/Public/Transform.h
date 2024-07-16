@@ -24,6 +24,7 @@ public:
 			0.0f, 0.0f, 0.0f, 1.0f
 		};
 
+		_float		fInitialDegree = 0.f;
 		_float		fSpeedPerSec;
 		_float		fRotationPerSec;
 	}TRANSFORM_DESC;

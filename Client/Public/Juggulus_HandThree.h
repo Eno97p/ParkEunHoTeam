@@ -14,6 +14,8 @@ BEGIN(Client)
 
 class CJuggulus_HandThree final : public CPartObject
 {
+#define ASPIRATIONDELAY 0.5f
+
 public:
 	enum STATE {
 		STATE_IDLE, STATE_ATTACK, STATE_END
@@ -46,7 +48,6 @@ private:
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
 
 	_vector m_vParentPos;
 	_bool			m_isAnimFinished = { false };
@@ -58,6 +59,7 @@ private:
 	_uint m_iState = 0;
 	_float m_fAttackDelay = 2.f;
 	_uint m_iAttackCount = 0;
+	_float m_fAspirationDelay = 0.f;
 
 public:
 	HRESULT Add_Components();

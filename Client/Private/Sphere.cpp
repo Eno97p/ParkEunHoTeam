@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 CSphere::CSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -45,10 +46,17 @@ void CSphere::Priority_Tick(_float fTimeDelta)
 
 void CSphere::Tick(_float fTimeDelta)
 {
+	
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
 	{
 		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+		_vector vPos = Mat.r[3];
+		_float4 vStartPos;
+		XMStoreFloat4(&vStartPos, vPos);
+		EFFECTMGR->Generate_Particle(14, vStartPos);
+		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 		m_pGameInstance->Erase(this);
 	}
 }
@@ -61,6 +69,12 @@ void CSphere::Late_Tick(_float fTimeDelta)
 	{
 		m_pPlayer->PlayerHit(10);
 		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+		_vector vPos = Mat.r[3];
+		_float4 vStartPos;
+		XMStoreFloat4(&vStartPos, vPos);
+		EFFECTMGR->Generate_Particle(14, vStartPos);
+		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 		m_pGameInstance->Erase(this);
 	}
 #ifdef _DEBUG

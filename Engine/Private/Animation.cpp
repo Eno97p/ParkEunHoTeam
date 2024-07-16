@@ -71,14 +71,16 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 	m_PrevPosition = m_CurrentPosition;
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 
-
-
 	if (m_CurrentPosition >= m_Duration)
 	{
-		m_CurrentPosition = 0.0;
-
 		if (false == isLoop)
+		{
 			m_isFinished = true;
+		}
+		else
+		{
+			m_CurrentPosition = 0.0;
+		}
 	}
 	currentPositionRatio = m_CurrentPosition / m_Duration;
 	currentPositionRatio = min(currentPositionRatio, 1.0);
@@ -87,13 +89,14 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 
 	if (false == m_isFinished)
 	{
-		_uint		iChannelIndex = { 0 };
+		_uint      iChannelIndex = { 0 };
 
 		for (auto& pChannel : m_Channels)
 		{
 			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++]);
 		}
 	}
+
 }
 
 void CAnimation::Reset()

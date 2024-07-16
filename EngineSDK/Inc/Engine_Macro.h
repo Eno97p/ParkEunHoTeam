@@ -23,8 +23,8 @@
 
 #define NO_COPY(CLASSNAME)								\
 		private:										\
-		CLASSNAME(const CLASSNAME&);					\
-		CLASSNAME& operator = (const CLASSNAME&);		
+		CLASSNAME(const CLASSNAME&) = delete;					\
+		CLASSNAME& operator = (const CLASSNAME&) = delete;		
 
 #define DECLARE_SINGLETON(CLASSNAME)					\
 		NO_COPY(CLASSNAME)								\

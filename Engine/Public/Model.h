@@ -92,6 +92,7 @@ public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const  _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT	Initialize(void* pArg) override;
 	HRESULT Render(_uint iMeshIndex);
+	HRESULT Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext);
 	HRESULT Render_Instance(_uint iMeshIndex);
 	HRESULT Render_Instance_ForMapElements(_uint iMeshIndex);
 

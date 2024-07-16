@@ -1656,6 +1656,7 @@ void CImguiMgr::Electron_Tool()
 	ImGui::InputInt("NumNoise", &Desc.iNumNoise);
 	ImGui::InputFloat2("Amplitude", reinterpret_cast<float*>(&Desc.BufferDesc.Amplitude));
 	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+	ImGui::ColorEdit3("StartColor", reinterpret_cast<float*>(&Desc.vColor));
 
 	Desc.Texture = m_pTextureProtoName;
 	Desc.TexturePath = m_pTextureFilePath;

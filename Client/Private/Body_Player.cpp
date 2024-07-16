@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Weapon.h"
+#include "EffectManager.h"
 
 
 CBody_Player::CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -113,6 +114,12 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_DOUBLEJUMPSTART)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_float4 vPos = { m_WorldMatrix._41,m_WorldMatrix._42 ,m_WorldMatrix._43 ,1.f };
+			EFFECTMGR->Generate_Particle(12, vPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+		}
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.f;
@@ -395,12 +402,34 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_ROLL)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
 		fAnimSpeed = 2.f;
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
 		fAnimSpeed = 2.f;

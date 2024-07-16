@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Homonculus.h"
 #include "Weapon.h"
+#include "EffectManager.h"
 
 CBody_Homonculus::CBody_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -156,6 +157,12 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	}
 	else if (*m_pState == CHomonculus::STATE_EXPLOSION)
 	{
+		if (m_pModelCom->Check_CurDuration(8.51f))
+		{
+			_float4 vStartPos = { m_WorldMatrix._41,m_WorldMatrix._42 ,m_WorldMatrix._43 ,1.f };
+			EFFECTMGR->Generate_Distortion(4, vStartPos);
+		}
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
 		fAnimSpeed = 0.3f;

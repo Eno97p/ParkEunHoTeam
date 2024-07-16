@@ -388,6 +388,7 @@ NodeStates CMantari::JumpAttack(_float fTimeDelta)
 
 		if (m_bChasing && m_fChasingDelay < 0.f)
 		{
+
 			_float3 fScale = m_pTransformCom->Get_Scaled();
 
 			_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);

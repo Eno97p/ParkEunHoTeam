@@ -27,6 +27,7 @@ public:
 
 public:
 	HRESULT Begin(_uint iPassIndex);
+	HRESULT Begin(_uint iPassIndex, ID3D11DeviceContext* pDeferredContext);
 	HRESULT Bind_RawValue(const _char* pConstantName, const void* pValue, _uint iLength);
 	HRESULT Bind_Matrix(const _char* pConstantName, const _float4x4* pMatrix);
 	HRESULT Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrices, _uint iNumMatrices);

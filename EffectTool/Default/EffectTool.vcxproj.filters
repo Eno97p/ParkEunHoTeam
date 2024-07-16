@@ -77,6 +77,9 @@
     <Filter Include="Objects\02. Effects\06. Electron">
       <UniqueIdentifier>{5e49ad1e-1c74-4c61-bf13-50ed2b7eeb43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\07. Line">
+      <UniqueIdentifier>{857372ea-31f6-4878-bfa7-7fc1a2979bc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -190,6 +193,9 @@
     <ClInclude Include="..\public\Electronic.h">
       <Filter>Objects\02. Effects\06. Electron</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\LineTest.h">
+      <Filter>Objects\02. Effects\07. Line</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -287,6 +293,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Electronic.cpp">
       <Filter>Objects\02. Effects\06. Electron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\LineTest.cpp">
+      <Filter>Objects\02. Effects\07. Line</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

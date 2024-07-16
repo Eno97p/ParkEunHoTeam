@@ -30,7 +30,7 @@ private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 	CImGuiMgr*				m_pImGuiMgr = { nullptr };
 	CUI_Manager*			m_pUI_Manager = { nullptr };
-	CInventory*				m_pInventory = { nullptr };
+	
 
 private:
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");

@@ -79,7 +79,6 @@ void CJuggulus_HandThree::Tick(_float fTimeDelta)
 	Change_Animation(fTimeDelta);
 
 	m_pBehaviorCom->Update(fTimeDelta);
-
 }
 
 void CJuggulus_HandThree::Late_Tick(_float fTimeDelta)
@@ -154,15 +153,31 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 
 	if (m_iState == STATE_ATTACK)
 	{
+		m_fAspirationDelay -= fTimeDelta;
+		if (m_fAspirationDelay < 0.f)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Aspiration"));
+			m_fAspirationDelay = 100.f;
+		}
 		if (m_isAnimFinished)
 		{
-			m_iAttackCount++;
+			m_fAspirationDelay = ASPIRATIONDELAY;
 			if (m_iAttackCount == 3)
 			{
-				m_eDisolveType = TYPE_DECREASE;
-				m_iState = STATE_IDLE;
-				m_iAttackCount = 0;
-				return SUCCESS;
+				if (m_eDisolveType == TYPE_IDLE)
+				{
+					m_eDisolveType = TYPE_DECREASE;
+				}
+				if (m_eDisolveType == TYPE_INCREASE)
+				{
+					m_iState = STATE_IDLE;
+					m_iAttackCount = 0;
+					return SUCCESS;
+				}
+			}
+			else
+			{
+				m_iAttackCount++;
 			}
 		}
 		return RUNNING;
@@ -291,7 +306,6 @@ void CJuggulus_HandThree::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pPlayerTransform);
 	Safe_Release(m_pBehaviorCom);

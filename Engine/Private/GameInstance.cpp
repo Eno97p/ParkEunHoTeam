@@ -159,9 +159,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		}));
 	//PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
-	
 
-	
 
 	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
 		PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
@@ -170,26 +168,12 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	//PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
 
 
-	
-	
-
-	
-
-	
-
-
-	
-
-
-
 	futures.push_back(m_pWorker->Add_Job([this]() {
 		PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 		}));
 	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 	
-	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//	}));
+
 
 
 	for (auto& worker : futures)
@@ -199,39 +183,26 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	futures.clear();
 
 	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//futures.push_back(m_pWorker->Add_Job([this]() {
-	//	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());	
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	//	}));
-	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+
 	
-	//futures.push_back(m_pWorker->Add_Job([this]() {
-	//	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
-	//	}));
+	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
 	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
 
-	//PROFILE_SCOPE("Picking Update");
 #ifdef _DEBUG
 	//PROFILE_CALL("Picking Update", m_pPicking->Update());
 #endif // _DEBUG
-
-
-	
-
-
-
-
-
-
-	
 
 
 
 	//futures.push_back(m_pWorker->Add_Job([this]() {
 	//	PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
 	//	}));
+
 
 
 	//PROFILE_CALL("OctTree Update", m_pOctTree->Update_OctTree());
@@ -874,8 +845,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_UISorter);
 
-	//
-	// Safe_Release(m_pOctTree);
+	//Safe_Release(m_pOctTree);
+
 	Safe_Release(m_pWorker);
 	//Safe_Release(m_pRenderWorker);
 

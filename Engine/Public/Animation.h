@@ -38,7 +38,9 @@ public:
 	const _double* Get_CurrentPos() const { return &m_CurrentPosition; }
 
 	// 애니메이션 보완
+
 	void			Set_LerpTime(_double LerpTime) { m_LerpTime = LerpTime; }
+
 
 private:
 	_char			m_szName[MAX_PATH] = "";

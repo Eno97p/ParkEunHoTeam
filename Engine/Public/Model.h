@@ -82,7 +82,9 @@ public:														//파티클 함수들
 	_bool			Check_CurDuration(_double CurDuration);
 
 	// 애니메이션 보완
+
 	void			Set_LerpTime(_double LerpTime);
+
 
 
 public:/*For.Physx*/
@@ -95,6 +97,7 @@ public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const  _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT	Initialize(void* pArg) override;
 	HRESULT Render(_uint iMeshIndex);
+	HRESULT Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext);
 	HRESULT Render_Instance(_uint iMeshIndex);
 	HRESULT Render_Instance_ForMapElements(_uint iMeshIndex);
 

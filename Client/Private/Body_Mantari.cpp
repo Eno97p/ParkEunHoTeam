@@ -56,43 +56,49 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_HIT)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 15;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(0.5);
+		fAnimSpeed = 0.9f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_PARRIED)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 15;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 0.7f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_WALKLEFT)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 28;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.3f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_WALKRIGHT)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 29;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.8f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_WALKFRONT)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 27;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.3f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_WALKBACK)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 26;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.3f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_JUMPATTACK)
 	{
@@ -100,9 +106,13 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 17;
 		}
+		if (m_iPastAnimIndex == 24)
+			fAnimSpeed = 1.3f;
+		else
+			fAnimSpeed = 1.f;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 2.7f && m_fDamageTiming < 3.f)
 		{
@@ -113,12 +123,14 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	{
 		if (m_iPastAnimIndex < 0 || m_iPastAnimIndex > 1)
 		{
+			fAnimSpeed = 0.9f;
 			m_iPastAnimIndex = 0;
-		}
+		}else
+			fAnimSpeed = 1.2f;
 		if (m_iPastAnimIndex == 1) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.1f)
 		{
@@ -130,13 +142,16 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex < 2 || m_iPastAnimIndex > 4)
 		{
 			m_iPastAnimIndex = 2;
+			fAnimSpeed = 0.9f;
 		}
+		if(m_iPastAnimIndex == 3)
+			fAnimSpeed = 1.2f;
 		if (m_iPastAnimIndex == 4) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
 		if (m_iPastAnimIndex == 3)
-		{
+		{ 
 			m_pWeapon->Set_Active();
 		}
 	}
@@ -146,10 +161,15 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 5;
 		}
-		if (m_iPastAnimIndex == 6) *m_pCanCombo = true;
+		if (m_iPastAnimIndex == 6)
+		{
+			*m_pCanCombo = true;
+			fAnimSpeed = 1.2f;
+		}else
+			fAnimSpeed = 0.9f;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
 		if (m_iPastAnimIndex > 5)
 		{
 			m_pWeapon->Set_Active();
@@ -161,9 +181,14 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 7;
 		}
+		if(m_iPastAnimIndex == 9)
+			fAnimSpeed = 1.2f;
+		else
+			fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 1.3f && m_fDamageTiming < 1.6f)
 		{
@@ -174,7 +199,8 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 0.8f;
+		m_pModelCom->Set_LerpTime(1.3);
 	}
 	else if (*m_pState == CMantari::STATE_REVIVE)
 	{

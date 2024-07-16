@@ -173,7 +173,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 9;
 		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(0.8); // 0.9
+		m_pModelCom->Set_LerpTime(0.9); // 0.9
 	}
 	else if (*m_pState == CHomonculus::STATE_PARRIED)
 	{

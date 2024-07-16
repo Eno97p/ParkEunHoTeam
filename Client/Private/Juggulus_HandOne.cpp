@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Weapon.h"
-
+#include "EffectManager.h"
 CJuggulus_HandOne::CJuggulus_HandOne(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {
@@ -390,11 +390,16 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 			m_iPastAnimIndex = 6;
 		}
 
-		if (m_iPastAnimIndex == 7 && m_pModelCom->Check_CurDuration(1.f))
-		{
-			m_icount++;
-		}
 
+		if (m_iPastAnimIndex == 6)
+		{
+			if (m_pModelCom->Check_CurDuration(0.01f))
+			{
+				_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
+				_float4 vStartPos = { vGetCenter.x,vGetCenter.y + 2.f,vGetCenter.z, 1.f };
+				EFFECTMGR->Generate_Distortion(4, vStartPos);
+			}
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;

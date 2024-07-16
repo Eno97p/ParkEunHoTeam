@@ -104,6 +104,7 @@ public:
 
 	HRESULT Bind_Material(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_Material_Instance(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
+	HRESULT Bind_Material_Instance_ForMapElements(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 
 	void Play_Animation(_float fTimeDelta, _bool isLerp = true);

@@ -42,7 +42,10 @@ private:
 	{
 		m_bIsFinish[iIndex] = true;
 		if (++m_iFinishedThreadCount == USED_THREAD_COUNT)
+		{
+			lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 			m_isFinished = true;
+		}
 	}
 
 private:

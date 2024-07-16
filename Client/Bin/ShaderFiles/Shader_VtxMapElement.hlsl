@@ -6,6 +6,11 @@ texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
 
+
+texture2D g_RoughnessTexture;
+texture2D g_MetalicTexture;
+texture2D g_EmissiveTexture;
+
 //FOR DISSOLVE
 texture2D	g_NoiseTexture;
 float		g_fAccTime;
@@ -33,7 +38,6 @@ bool g_bSpecular = false;
 bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
-
 bool g_bMetalic = false;
 
 float g_fFlowSpeed = 0.1f;
@@ -178,35 +182,61 @@ struct PS_OUT
 	vector		vSpecular : SV_TARGET3;
 	vector		vEmissive : SV_TARGET4;
 	vector		vRoughness : SV_TARGET5;
+	vector		vMetalic : SV_TARGET6;
 
 };
 
+
 PS_OUT PS_MAIN(PS_IN In)
 {
-	PS_OUT		Out = (PS_OUT)0;
-
-	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	PS_OUT Out = (PS_OUT)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 	if (vDiffuse.a < 0.1f)
 		discard;
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
 
-	vector		vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+	float3 vNormal;
+	if (g_bNormal)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	}
+	else
+	{
+		vNormal = In.vNormal.xyz * 2.f - 1.f;
+	}
 
-	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
-
-	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
-
-	Out.vDiffuse = vDiffuse/* * 0.9f*/;
+	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
 	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
-	Out.vSpecular = g_vMtrlSpecular;
-	//Out.vEmissive = 0.5f;
+	if (g_bSpecular) Out.vSpecular = vSpecular;
+
+	// 디퓨즈 맵을 사용하여 러프니스 계산
+	float intensity = dot(vDiffuse.rgb, float3(0.299, 0.587, 0.114));
+	float calculatedRoughness = 1.0 - intensity;
+
+	// 아티스트 조정 가능한 파라미터 (셰이더 상수로 설정 가능)
+	float baseRoughness = 0.8;
+	float roughnessContrast = 2.0;
+
+	// 최종 러프니스 계산
+	float finalRoughness = saturate(baseRoughness + (calculatedRoughness - 0.5) * roughnessContrast);
+
+	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (g_bEmissive) Out.vEmissive = vEmissive;
+	if (g_bRoughness) Out.vRoughness = 0.01f/*vector(finalRoughness, finalRoughness, finalRoughness, 1.0)*/;
+	if (g_bMetalic) Out.vMetalic = 1.f - vMetalic;
+
 	//if (g_Red == g_Test)
 	//{
 	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
 	//}
+
+
 	return Out;
 }
 
@@ -321,6 +351,46 @@ PS_OUT PS_WIREFRAME(PS_IN In)
 }
 
 
+struct PS_OUT_AB
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_AB PS_ALPHABLEND(PS_IN In)
+{
+	PS_OUT_AB Out = (PS_OUT_AB)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vColor = vDiffuse;
+	Out.vColor.a = 0.2f;
+
+	return Out;
+
+}
+
+struct PS_OUT_BLOOM
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_BLOOM PS_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	Out.vColor = vColor;
+
+	return Out;
+}
+
+
+
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -387,5 +457,34 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_WIREFRAME();
 	}
+
+		pass AlphaBlend
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ALPHABLEND();
+
+	}
+
+		pass Bloom
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLOOM();
+	}
+
 }
 

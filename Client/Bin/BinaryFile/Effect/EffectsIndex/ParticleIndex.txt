@@ -9,3 +9,8 @@
 8. Homunculus_Suicide0
 9. Homunculus_Suicide1
 10. PlayerPassiveTest
+11. PlayerBlood
+12. DashEffect
+13. BigDashEffect
+14. JugglusEnergeBall0
+15. JugglusEnergeBall1

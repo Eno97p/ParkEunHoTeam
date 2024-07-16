@@ -77,21 +77,62 @@ void CElevator::Priority_Tick(_float fTimeDelta)
 
 void CElevator::Tick(_float fTimeDelta)
 {
-	if (m_bElevate)
+	switch (m_eElevatorState)
 	{
-		m_fElevateTimer += fTimeDelta;
+	case ELEVATOR_IDLE:
+		// 대기 상태, 아무 동작도 하지 않음
+		break;
 
-		_vector tmp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	case ELEVATOR_ASCEND:
+	{
+		_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) + 0.05f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, newPos);
 
-		tmp = XMVectorSetY(tmp, XMVectorGetY(tmp) + 0.05f);
-		
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, tmp);
-
-		if (m_fElevateTimer > 5.f)
+		if (XMVectorGetY(newPos) >= XMVectorGetY(m_vTargetPos))
 		{
-			m_bElevate = false;
-			m_fElevateTimer = 0;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vTargetPos);
+			m_eElevatorState = ELEVATOR_REBOUND;
+			m_fReboundTimer = 0.f;
 		}
+		break;
+	}
+
+	case ELEVATOR_DESCEND:
+	{
+		_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) - 0.05f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, newPos);
+
+		if (XMVectorGetY(newPos) <= XMVectorGetY(m_vTargetPos))
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vTargetPos);
+			m_eElevatorState = ELEVATOR_REBOUND;
+			m_fReboundTimer = 0.f;
+		}
+		break;
+	}
+
+	case ELEVATOR_REBOUND:
+	{
+		m_fReboundTimer += fTimeDelta;
+
+		// 덜컹거리는 효과 구현
+		_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float reboundOffset = sin(m_fReboundTimer * 10.f) * 0.3f; // 주기와 강도 조절 가능
+		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) + reboundOffset);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, newPos);
+
+		if (m_fReboundTimer > 1.f) // 1초 동안 덜컹거림
+		{
+			m_eElevatorState = ELEVATOR_IDLE;
+			m_fReboundTimer = 0.f;
+		}
+		break;
+	}
+
+	default:
+		break;
 	}
 }
 

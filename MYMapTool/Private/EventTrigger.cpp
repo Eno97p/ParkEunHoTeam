@@ -135,9 +135,14 @@ void CEventTrigger::Tick(_float fTimeDelta)
 				m_pGameInstance->Set_MainCamera(1);
 			}
 			break;
-			case TRIG_ACTIVATE_ELEVATOR:
+			case TRIG_ASCEND_ELEVATOR:
 			{
-				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Elevate(); //LEVEL_JUGGLAS로 변경
+				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-389.f, 86.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
+			}
+			break;
+			case TRIG_DESCEND_ELEVATOR:
+			{
+				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Descend(XMVectorSet(-389.f, 7.485f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
 			}
 			break;
 			default:

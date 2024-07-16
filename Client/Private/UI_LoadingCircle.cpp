@@ -148,10 +148,10 @@ void CUI_LoadingCircle::Change_FontColor(_float fTimeDelta)
 
 	if (m_isFontOn)
 	{
-		m_fFontRGB += 0.05f;
+		m_fFontRGB += 0.02f;
 		if (m_fFontRGB >= 1.f)
 			m_fFontRGB = 1.f;
-		if (3.f <= m_fFontTimer)
+		if (5.f <= m_fFontTimer)
 		{
 			m_isFontOn = false;
 			m_fFontTimer = 0.f;
@@ -159,10 +159,10 @@ void CUI_LoadingCircle::Change_FontColor(_float fTimeDelta)
 	}
 	else
 	{
-		m_fFontRGB -= 0.05f;
+		m_fFontRGB -= 0.02f;
 		if (m_fFontRGB <= 0.f)
 			m_fFontRGB = 0.f;
-		if (1.f <= m_fFontTimer)
+		if (0.4f <= m_fFontTimer)
 		{
 			m_isFontOn = true;
 			m_fFontTimer = 0.f;

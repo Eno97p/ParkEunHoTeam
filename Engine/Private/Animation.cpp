@@ -89,13 +89,14 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 
 	if (false == m_isFinished)
 	{
-		_uint		iChannelIndex = { 0 };
+		_uint      iChannelIndex = { 0 };
 
 		for (auto& pChannel : m_Channels)
 		{
 			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++]);
 		}
 	}
+
 }
 
 void CAnimation::Reset()

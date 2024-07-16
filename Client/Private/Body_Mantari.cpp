@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Mantari.h"
 #include "Weapon.h"
+#include "EffectManager.h"
 
 CBody_Mantari::CBody_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -102,6 +103,21 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CMantari::STATE_JUMPATTACK)
 	{
+		if (m_iPastAnimIndex == 20)
+		{
+			if (m_pModelCom->Check_CurDuration(0.01f))
+			{
+				_matrix Mat = XMLoadFloat4x4(&m_WorldMatrix);
+				_vector vPos = Mat.r[3];
+				_vector vLook = XMVector4Normalize(Mat.r[2]);
+				_float4 vStartPos;
+				XMStoreFloat4(&vStartPos, vPos);
+				vStartPos.y += 1.f;
+
+				EFFECTMGR->Generate_Particle(13, vStartPos, nullptr, XMVectorZero(), 0.f, vLook);
+			}
+		}
+
 		if (m_iPastAnimIndex < 17 || m_iPastAnimIndex > 25)
 		{
 			m_iPastAnimIndex = 17;

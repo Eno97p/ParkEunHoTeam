@@ -125,7 +125,7 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 
 
-	size_t iNumThreadPool = PxThread::getNbPhysicalCores() - 1;
+	size_t iNumThreadPool = PxThread::getNbPhysicalCores();
 
 	m_pWorker = CWorker::Create(iNumThreadPool);
 	if (nullptr == m_pWorker)

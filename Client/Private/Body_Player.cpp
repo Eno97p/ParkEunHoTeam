@@ -69,48 +69,56 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(2.4);
 	}
 	else if (*m_pState == CPlayer::STATE_FIGHTIDLE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 14;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
 	}
 	else if (*m_pState == CPlayer::STATE_WALK)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 44;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_USEITEM)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 199;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_BUFF)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 199;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_RUN)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 38;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.3f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_HIT)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 13;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 0.8f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPSTART)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DOUBLEJUMPSTART)
 	{
@@ -123,18 +131,21 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_JUMP)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_LAND)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 17;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 0.6f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_PARRY)
 	{
@@ -142,21 +153,28 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 26;
 		}
+		if(m_iPastAnimIndex == 28)
+			fAnimSpeed = 2.f;
+		else
+			fAnimSpeed = 3.f;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 4.f;
+
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 210;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 209;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 0.8f;
+		m_pModelCom->Set_LerpTime(0.5);
 		m_pWeapon->Set_Active();
 	}
 	else if (*m_pState == CPlayer::STATE_ROLLATTACK)
@@ -168,6 +186,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 34)
 		{
 			m_pWeapon->Set_Active();
@@ -186,6 +205,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 72)
 		{
 			m_pWeapon->Set_Active();
@@ -204,6 +224,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 150)
 		{
 			m_pWeapon->Set_Active();
@@ -222,6 +243,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 133)
 		{
 			m_pWeapon->Set_Active(false);
@@ -246,6 +268,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
 			m_pWeapon->Set_Active();
@@ -265,6 +288,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138 && m_iPastAnimIndex < 142)
 		{
 			m_pWeapon->Set_Active();
@@ -279,6 +303,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 0.35f && m_fDamageTiming < 0.5f)
 		{
@@ -299,6 +324,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 122)
 		{
 			m_pWeapon->Set_Active();
@@ -317,6 +343,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
 			m_pWeapon->Set_Active();
@@ -326,16 +353,17 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
+	else if (*m_pState == CPlayer::STATE_RUNLATTACK1) // ²÷±è êó
 	{
 		if (m_iPastAnimIndex < 137 || m_iPastAnimIndex > 142)
 		{
-			m_iPastAnimIndex = 137;
+			m_iPastAnimIndex = 139;
 		}
 		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138)
 		{
 			m_pWeapon->Set_Active();
@@ -361,10 +389,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
 		
 	}
-	else if (*m_pState == CPlayer::STATE_RUNRATTACK)
+	else if (*m_pState == CPlayer::STATE_RUNRATTACK) // X
 	{
 		if (m_iPastAnimIndex < 75 || m_iPastAnimIndex > 79)
 		{
@@ -373,6 +402,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
 			m_pWeapon->Set_Active();
@@ -391,6 +421,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 49 || m_iPastAnimIndex == 52)
 		{
 			m_pWeapon->Set_Active();
@@ -416,6 +447,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)
 	{
@@ -433,18 +465,21 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
 		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DEAD)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 9;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_REVIVE)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 40;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

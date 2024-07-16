@@ -3,6 +3,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\Active_Element.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\Aspiration.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\private\BackGround.cpp"
 
 
@@ -42,6 +45,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\CImGuiMgr.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\CircleSphere.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\Clone.cpp"
 
 
@@ -51,6 +57,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\Decal.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\Deco_Element.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\Distortion.cpp"
 
 
@@ -58,6 +67,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\EffectManager.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\Elevator.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\EventTrigger.cpp"
@@ -151,6 +163,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\SideViewCamera.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\Sphere.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\TargetLock.cpp"

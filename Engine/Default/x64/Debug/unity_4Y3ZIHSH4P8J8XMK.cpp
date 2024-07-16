@@ -239,6 +239,9 @@
 #include "E:\3D_ShatteredNew\Engine\Private\VIBuffer_Lightning.cpp"
 
 
+#include "E:\3D_ShatteredNew\Engine\Private\VIBuffer_Line.cpp"
+
+
 #include "E:\3D_ShatteredNew\Engine\Private\VIBuffer_PhysXBuffer.cpp"
 
 

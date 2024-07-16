@@ -41,6 +41,7 @@ HRESULT CTransform::Initialize(void * pArg)
 
 		m_fSpeedPerSec = pTransformDesc->fSpeedPerSec;
 		m_fRotationPerSec = pTransformDesc->fRotationPerSec;
+		Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(pTransformDesc->fInitialDegree));
 	}
 
 	//수정 가능하게 할 항목 값 참조

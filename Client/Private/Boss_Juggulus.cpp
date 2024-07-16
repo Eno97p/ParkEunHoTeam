@@ -108,6 +108,36 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
 	m_pUI_HP->Tick(fTimeDelta);
+
+	if (m_fCircleSphereSpawnTime < CIRCLESPHERESPAWNTIME)
+	{
+		m_fCircleSphereSpawnTime -= fTimeDelta;
+
+		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
+		{
+			CTransform::TRANSFORM_DESC transformDesc;
+			transformDesc.fSpeedPerSec = 3.f;
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_iCircleSphereCount++;
+		}
+		else if (m_fCircleSphereSpawnTime < 1.33f && m_iCircleSphereCount == 1)
+		{
+			CTransform::TRANSFORM_DESC transformDesc;
+			transformDesc.fSpeedPerSec = 3.f;
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_iCircleSphereCount++;
+		}
+		else if (m_fCircleSphereSpawnTime < 0.66f && m_iCircleSphereCount == 2)
+		{
+			CTransform::TRANSFORM_DESC transformDesc;
+			transformDesc.fSpeedPerSec = 3.f;
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_iCircleSphereCount = 0;
+			m_fCircleSphereSpawnTime = CIRCLESPHERESPAWNTIME;
+		}
+	}
+
+
 }
 
 void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
@@ -226,15 +256,12 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
 
 	// 2Phase Attack
-	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("HammerCool"), 8.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("HammerCool"), TEXT("HammerAttack"), bind(&CBoss_Juggulus::HammerAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("FlameCool"), 5.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("FlameCool"), TEXT("FlameAttack"), bind(&CBoss_Juggulus::FlameAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("SphereCool"), 4.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("SphereCool"), TEXT("SphereAttack"), bind(&CBoss_Juggulus::SphereAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("ThunderCool"), 3.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("ThunderCool"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
-
+	m_pBehaviorCom->Add_CoolDown(TEXT("TwoP_Attack"), TEXT("Select_PatternCool"), 5.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("Select_PatternCool"), TEXT("Select_Pattern"), bind(&CBoss_Juggulus::Select_Pattern, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("HammerAttack"), bind(&CBoss_Juggulus::HammerAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("FlameAttack"), bind(&CBoss_Juggulus::FlameAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("SphereAttack"), bind(&CBoss_Juggulus::SphereAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -495,6 +522,33 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 //	}
 //}
 
+NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
+{
+	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState
+		|| STATE_HAMMER_ATTACK == m_iState)
+	{
+		return FAILURE;
+	}
+
+	_int iRand = RandomInt(0, 3);
+	switch (iRand)
+	{
+	case 0:
+		m_iState = STATE_HAMMER_ATTACK;
+		break;
+	case 1:
+		m_iState = STATE_FLAME_ATTACK;
+		break;
+	case 2:
+		m_iState = STATE_SPHERE_ATTACK;
+		break;
+	case 3:
+		m_iState = STATE_THUNDER_ATTACK;
+		break;
+	}
+	return SUCCESS;
+}
+
 NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 {
 	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
@@ -502,14 +556,18 @@ NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	if (!m_isAnimFinished)
+	if (m_iState == STATE_HAMMER_ATTACK)
 	{
-		m_iState = STATE_HAMMER_ATTACK;
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE_SEC;
+			return SUCCESS;
+		}
 		return RUNNING;
 	}
 	else
 	{
-		return SUCCESS;
+		return FAILURE;
 	}
 }
 
@@ -520,14 +578,18 @@ NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	if (!m_isAnimFinished)
+	if (m_iState == STATE_FLAME_ATTACK)
 	{
-		m_iState = STATE_FLAME_ATTACK;
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE_SEC;
+			return SUCCESS;
+		}
 		return RUNNING;
 	}
 	else
 	{
-		return SUCCESS;
+		return FAILURE;
 	}
 }
 
@@ -538,30 +600,45 @@ NodeStates CBoss_Juggulus::SphereAttack(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	if (!m_isAnimFinished)
+	if (m_iState == STATE_SPHERE_ATTACK)
 	{
-		m_iState = STATE_SPHERE_ATTACK;
+		if (m_fCircleSphereSpawnTime == CIRCLESPHERESPAWNTIME)
+		{
+			m_fCircleSphereSpawnTime -= 0.01f;
+		}
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE_SEC;
+			
+			return SUCCESS;
+		}
 		return RUNNING;
 	}
 	else
 	{
-		return SUCCESS;
+		return FAILURE;
 	}
 }
 
 NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 {
 	if (PHASE_ONE == m_ePhase)
-		return FAILURE;
-
-	if (!m_isAnimFinished)
 	{
-		m_iState = STATE_THUNDER_ATTACK;
+		return FAILURE;
+	}
+
+	if (m_iState == STATE_THUNDER_ATTACK)
+	{
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE_SEC;
+			return SUCCESS;
+		}
 		return RUNNING;
 	}
 	else
 	{
-		return SUCCESS;
+		return FAILURE;
 	}
 }
 

@@ -50,6 +50,12 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 
 HRESULT CEffectManager::Generate_Trail(const _int iIndex, const _float4x4* BindMat)
 {
+	if (iIndex >= Trailes.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+
 	CParticle_Trail::TRAIL_DESC* traildesc = Trailes[iIndex].get();
 	traildesc->traildesc.ParentMat = BindMat;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),

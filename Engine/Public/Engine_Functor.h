@@ -47,6 +47,15 @@ namespace Engine
         }
     };
 
+    inline _float LerpFloat(_float fStart, _float fEnd, _float _t)
+    {
+        XMVECTOR startVec = XMVectorSet(fStart, 0.0f, 0.0f, 0.0f);
+        XMVECTOR endVec = XMVectorSet(fEnd, 0.0f, 0.0f, 0.0f);
+        XMVECTOR resultVec = XMVectorLerp(startVec, endVec, _t);
+        _float result;
+        XMStoreFloat(&result, resultVec);
+        return result;
+    }
 
     //matrix를 선형보간 해주는 함수
     inline _matrix XMMatrixSlerp(_matrix matStart, _matrix matEnd, float _t)

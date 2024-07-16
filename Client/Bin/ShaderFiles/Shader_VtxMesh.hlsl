@@ -21,6 +21,8 @@ bool g_bEmissive = false;
 bool g_bRoughness = false;
 bool g_bMetalic = false;
 
+float g_TexcoordY = 1.f;
+
 float4		g_fColor = { 1.f, 1.f, 1.f, 1.f };
 
 struct VS_IN
@@ -252,6 +254,19 @@ PS_OUT_COLOR PS_TARGETLOCK(PS_IN In)
 
 }
 
+PS_OUT_COLOR PS_ASPIRATION(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+    vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vColor.a = (vColor.r + vColor.g + vColor.b) / 3.f;
+    if (vColor.a < 0.1f || In.vTexcoord.y > g_TexcoordY || In.vTexcoord.y < g_TexcoordY - 0.3f)
+        discard;
+
+    if (g_bDiffuse) Out.vColor = float4(0.5f, 0.5f, 1.f, 1.f);
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -353,7 +368,18 @@ technique11 DefaultTechnique
        PixelShader = compile ps_5_0 PS_TARGETLOCK();
     }
 
+    pass Aspiration_7
+    {
+       SetRasterizerState(RS_NoCull);
+       SetDepthStencilState(DSS_Default, 0);
+       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-
+       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+       VertexShader = compile vs_5_0 VS_MAIN();
+       GeometryShader = NULL;
+       HullShader = NULL;
+       DomainShader = NULL;
+       PixelShader = compile ps_5_0 PS_ASPIRATION();
+    }
 }
 

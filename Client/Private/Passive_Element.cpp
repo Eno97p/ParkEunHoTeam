@@ -31,7 +31,7 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
 
     MAP_ELEMENT_DESC* desc = (MAP_ELEMENT_DESC*)(pArg);
-     m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
+    // m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 
     if (FAILED(Add_Components((MAP_ELEMENT_DESC*)(pArg))))
         return E_FAIL;
@@ -41,10 +41,10 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
     //m_pTransformCom->Scaling(100.f, 100.f, 100.f);
     
-   //CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
-   //instanceDesc.WorldMats = desc->WorldMats;
-   //instanceDesc.iNumInstance = desc->iInstanceCount;
-   //m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
+   CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
+   instanceDesc.WorldMats = desc->WorldMats;
+   instanceDesc.iNumInstance = desc->iInstanceCount;
+   m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
     //FOR CULLING
     //m_pGameInstance->AddCullingObject(this, m_pPhysXCom->Get_Actor());
@@ -65,7 +65,7 @@ void CPassive_Element::Tick(_float fTimeDelta)
 void CPassive_Element::Late_Tick(_float fTimeDelta)
 {
     //FOR CULLING
-    //_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+   // _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     //if (!m_bNoCullElement)
     //{
     //    if (m_pGameInstance->isVisible(vPos, m_pPhysXCom->Get_Actor()))
@@ -76,7 +76,7 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //}
     //else 
     {
-       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
+      // m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
     }
   
@@ -84,7 +84,11 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
 
 #ifdef _DEBUG
 
-   m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
+    for (_int i = 0; i < m_iInstanceCount; ++i)
+    {
+        m_pGameInstance->Add_DebugComponent(m_pPhysXCom[i]);
+
+    }
 #endif
 
 
@@ -109,9 +113,12 @@ HRESULT CPassive_Element::Render()
         {
             m_pShaderCom->Unbind_SRVs();
 
-            if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+         /*   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+                return E_FAIL;  */
+            
+            if (FAILED(m_pModelCom->Bind_Material_Instance(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;
-
+            
 
 			   /* if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 					return E_FAIL;*/
@@ -159,7 +166,10 @@ HRESULT CPassive_Element::Render()
 
         m_pShaderCom->Begin(0);
 
-        if (FAILED(m_pModelCom->Render(i)))
+     /*   if (FAILED(m_pModelCom->Render(i)))
+            return E_FAIL;   */
+        
+        if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
             return E_FAIL;
     }
 
@@ -205,10 +215,12 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         m_bNoCullElement = true;
     }
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
+
+    //PHYSX COM 배열
     // wstrModelName을 수정하여 physxName 생성
     wstring physxName = desc->wstrModelName;
     size_t pos = physxName.find(L"Model_");
@@ -219,13 +231,22 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
 
     CPhysXComponent::PHYSX_DESC		PhysXDesc{};
     PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
-    XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
     PhysXDesc.pComponent = m_pModelCom;
     PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
     PhysXDesc.filterData.word0 = GROUP_ENVIRONMENT;
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
-        TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
-        return E_FAIL;
+
+    m_iInstanceCount = desc->iInstanceCount;
+    m_pPhysXCom.resize(m_iInstanceCount);
+
+    for (_int i = 0; i < m_iInstanceCount; ++i)
+    {
+        wstring idxStr = to_wstring(i);
+        XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, XMLoadFloat4x4(desc->WorldMats[i]));
+        if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
+            TEXT("Com_PhysX") + idxStr, reinterpret_cast<CComponent**>(&m_pPhysXCom[i]), &PhysXDesc)))
+            return E_FAIL;
+    }
+   
 
     return S_OK;
 }
@@ -273,8 +294,13 @@ void CPassive_Element::Free()
 {
     __super::Free();
 
+    for (_int i = 0; i < m_iInstanceCount; ++i)
+    {
+        Safe_Release(m_pPhysXCom[i]);
+        m_pPhysXCom[i] = nullptr;
+    }
+    m_pPhysXCom.clear();
 
-    Safe_Release(m_pPhysXCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }

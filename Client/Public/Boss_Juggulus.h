@@ -7,6 +7,8 @@ BEGIN(Client)
 
 class CBoss_Juggulus final : public CMonster
 {
+#define CIRCLESPHERESPAWNTIME 4.5f
+
 public:
 	enum STATE { STATE_IDLE_FIRST = 0, STATE_IDLE_SEC, STATE_NEXTPHASE, STATE_CREATE_HAMMER,
 		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_END };
@@ -53,6 +55,8 @@ private:
 	PHASE							m_ePhase = { PHASE_END };
 
 	_float m_fHammerCreationDelay = 4.f;
+	_float m_fCircleSphereSpawnTime = CIRCLESPHERESPAWNTIME;
+	_uint m_iCircleSphereCount = 0;
 
 private:
 	HRESULT				Add_Components();
@@ -69,6 +73,7 @@ private:
 	NodeStates			CreateHammer(_float fTimedelta);
 	NodeStates			Idle(_float fTimeDelta);
 
+	NodeStates			Select_Pattern(_float fTimeDelta);
 	NodeStates			HammerAttack(_float fTimeDelta);
 	NodeStates			FlameAttack(_float fTimeDelta);
 	NodeStates			SphereAttack(_float fTimeDelta);

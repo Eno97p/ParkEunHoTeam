@@ -27,10 +27,11 @@ public:
 
 
 private:
-	CPhysXComponent* m_pPhysXCom = { nullptr };
+	vector<CPhysXComponent*> m_pPhysXCom = { nullptr };
 	_bool			 m_bNoCullElement = false;
 	_uint			 m_iTest = 0;
 
+	_uint			m_iInstanceCount = 0;
 public:
 	static CPassive_Element* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

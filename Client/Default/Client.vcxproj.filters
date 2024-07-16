@@ -454,8 +454,23 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\TargetLock">
       <UniqueIdentifier>{e17294db-7aca-494a-9b65-3b6be763a9b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Bullet">
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern">
+      <UniqueIdentifier>{1eff1286-9325-4c32-8ccc-b1d100a78a7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning">
+      <UniqueIdentifier>{c118e00a-1bf7-4b2a-9140-460f81a21d0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Flame">
+      <UniqueIdentifier>{723137b7-921d-4ae5-bf90-488591323968}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Aspiration">
       <UniqueIdentifier>{8e5b6bfa-306f-41fc-aadf-8254e5f711f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Sphere">
+      <UniqueIdentifier>{25dfd320-8b51-4364-96ea-4b400298b495}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere">
+      <UniqueIdentifier>{b119cff7-f0a9-4e5b-a7f6-239808aa03d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -935,6 +950,15 @@
     <ClInclude Include="..\Public\SideViewCamera.h">
       <Filter>02.GameObjects\99.Cameras\SideView</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Aspiration.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Aspiration</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sphere.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CircleSphere.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1392,6 +1416,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\SideViewCamera.cpp">
       <Filter>02.GameObjects\99.Cameras\SideView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Aspiration.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Aspiration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sphere.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CircleSphere.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\CircleSphere</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

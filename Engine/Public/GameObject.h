@@ -37,6 +37,7 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 	virtual HRESULT Render();
+	virtual HRESULT Render(ID3D11DeviceContext* pDeferredContext){ return S_OK; }
 	virtual HRESULT Render_LightDepth() { return S_OK; }
 	virtual HRESULT Render_Mirror() { return S_OK; }
 	virtual HRESULT Render_Reflection() { return S_OK; }

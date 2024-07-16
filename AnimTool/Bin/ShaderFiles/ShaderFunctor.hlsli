@@ -1,4 +1,4 @@
-static const int perm[256] =
+const int perm[256] =
 {
     151, 160, 137, 91, 90, 15, 131, 13, 201, 95,
     96, 53, 194, 233, 7, 225, 140, 36, 103, 30,
@@ -30,7 +30,7 @@ static const int perm[256] =
 
 int hash(int x, int y)
 {
-    return perm[(perm[x & 255] + y) & 255];
+    return perm[(perm[x % 255] + y) % 255];
 }
 
 float lerp(float a, float b, float t)
@@ -80,3 +80,53 @@ float perlinNoise(float2 pos)
 
     return res;
 }
+
+
+//PS_IN output = (PS_IN) 0;
+
+//float3 start = input[0].vStartpos;
+//float3 end = input[0].vEndpos;
+//float3 direction = normalize(end - start);
+//float length = distance(start, end);
+
+//int numSegments = input[0].iNumSegments;
+//float segmentLength = length / numSegments;
+//float size = input[0].fThickness * 0.5f; // 사각형의 크기
+
+//    for (
+//int i = 0;i <
+//numSegments; i++)
+//    {
+//float t = (float) i / (float) (numSegments - 1);
+//float3 pos = lerp(start, end, t);
+
+//        // 빌보딩을 위한 방향 계산
+//float3 look = normalize(g_vCamPosition - pos);
+//float3 right = normalize(cross(float3(0, 1, 0), look));
+//float3 up = normalize(cross(look, right));
+
+//        // 선의 방향을 고려한 회전 적용
+//float3 adjustedRight = normalize(cross(direction, up));
+//        up = normalize(cross(adjustedRight, look));
+
+//        // 사각형의 네 꼭지점 계산
+//float3 vertices[4] =
+//{
+//    pos + (-adjustedRight - up) * size,
+//            pos + (adjustedRight - up) * size,
+//            pos + (-adjustedRight + up) * size,
+//            pos + (adjustedRight + up) * size
+//};
+
+//        for (
+//int j = 0;j < 4; j++)
+//        {
+//            output.vPosition = mul(float4(vertices[j], 1.0f), g_ViewMatrix);
+//            output.vPosition = mul(output.vPosition, g_ProjMatrix);
+//            output.vTexcoord = float2((j == 1 || j == 3) ? 1 : 0, (j == 2 || j == 3) ? 1 : 0);
+//            output.fLifeTime = 1.0f -
+//t;  // 시작점에서 1, 끝점에서 0
+//            outputStream.Append(output);
+//        }
+//        outputStream.RestartStrip();
+//    }

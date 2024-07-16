@@ -643,9 +643,6 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 #endif
 void CRenderer::Render_Priority()
 {
-
-
-
     m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
     
     for (auto& pGameObject : m_RenderGroup[RENDER_PRIORITY])
@@ -661,7 +658,7 @@ void CRenderer::Render_Priority()
    
 
 
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection")/*, true, m_pReflectionDepthStencilView*/);
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection"));
 
     for (auto& pGameObject : m_RenderGroup[RENDER_REFLECTION])
     {
@@ -869,10 +866,10 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
     
- /*   if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
-        return;*/
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
         return;
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    //    return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
@@ -1641,7 +1638,6 @@ void CRenderer::Free()
         Safe_Release(m_pHZBSRV[i]);
         Safe_Release(m_pHZBUAV[i]);
         Safe_Release(m_pHZBTexture[i]);
-
     }
 
     ClearRenderThreadPool();

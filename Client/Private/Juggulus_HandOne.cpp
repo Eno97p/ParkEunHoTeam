@@ -173,7 +173,7 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 		m_pHitColliderCom->Reset();
 		m_eColltype = CCollider::COLL_NOCOLL;
 	}
-	else
+	else if(m_bIsActive)
 	{
 		m_eColltype = m_pHitColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
@@ -389,6 +389,12 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 		{
 			m_iPastAnimIndex = 6;
 		}
+
+		if (m_iPastAnimIndex == 7 && m_pModelCom->Check_CurDuration(1.f))
+		{
+			m_icount++;
+		}
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;

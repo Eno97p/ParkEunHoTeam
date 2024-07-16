@@ -34,7 +34,6 @@ HRESULT CDecal::Initialize(void* pArg)
 
 void CDecal::Priority_Tick(_float fTimeDelta)
 {
-	//s
 }
 
 void CDecal::Tick(_float fTimeDelta)

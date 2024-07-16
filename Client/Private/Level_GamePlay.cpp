@@ -109,18 +109,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	//Load_Lights();
+	Load_Lights();
 
 
-	LIGHT_DESC			LightDesc{};
+	//LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -274,8 +274,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	pDesc->eLevel = LEVEL_GAMEPLAY;*/
 
 	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
+	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -283,18 +283,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
 	//	return E_FAIL;
-	
+	//
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
+		return E_FAIL;
 
 
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
 	//}
 
 	return S_OK;
@@ -360,21 +360,26 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 				break;
 
 
-			//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
-			//{
-			//	// 모델 이름별로 월드 매트릭스 저장
-			//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
-			//	modelMatrices[wszModelName].push_back(pWorldMatrix);
-			//}
-			//else
+			if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
 			{
-				// 다른 객체들은 개별적으로 생성
-				CMap_Element::MAP_ELEMENT_DESC pDesc{};
+				// 모델 이름별로 월드 매트릭스 저장
+				_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+				modelMatrices[wszModelName].push_back(pWorldMatrix);
+			}
+			else
+			{
+				//for (int i = 0; i < 40; i++)
+				{
+					// 다른 객체들은 개별적으로 생성
+					CMap_Element::MAP_ELEMENT_DESC pDesc{};
 
-				pDesc.mWorldMatrix = WorldMatrix;
-				pDesc.wstrModelName = wszModelName;
-				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
-					return E_FAIL;
+
+					pDesc.mWorldMatrix = WorldMatrix;
+					pDesc.wstrModelName = wszModelName;
+					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wszLayer, wszName, &pDesc)))
+						return E_FAIL;
+				}
+				
 
 			}
 		}
@@ -386,27 +391,27 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 	CloseHandle(hFile);
 
 	// Passive_Element 객체들을 인스턴싱하여 생성
-	//for (const auto& pair : modelMatrices)
-	//{
-	//	CMap_Element::MAP_ELEMENT_DESC pDesc{};
-	//	pDesc.WorldMats = pair.second;
-	//	pDesc.iInstanceCount = pair.second.size();
-	//	pDesc.wstrModelName = pair.first;
+	for (const auto& pair : modelMatrices)
+	{
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+		pDesc.WorldMats = pair.second;
+		pDesc.iInstanceCount = pair.second.size();
+		pDesc.wstrModelName = pair.first;
 
-	//	pDesc.mWorldMatrix = WorldMatrix;
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"),
-	//		TEXT("Prototype_GameObject_Passive_Element"), &pDesc)))
-	//		return E_FAIL;
-	//}
+		pDesc.mWorldMatrix = WorldMatrix;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"),
+			TEXT("Prototype_GameObject_Passive_Element"), &pDesc)))
+			return E_FAIL;
+	}
 
-	//// 동적 할당된 메모리 해제
-	//for (auto& pair : modelMatrices)
-	//{
-	//	for (auto pWorldMatrix : pair.second)
-	//	{
-	//		Safe_Delete(pWorldMatrix);
-	//	}
-	//}
+	// 동적 할당된 메모리 해제
+	for (auto& pair : modelMatrices)
+	{
+		for (auto pWorldMatrix : pair.second)
+		{
+			Safe_Delete(pWorldMatrix);
+		}
+	}
 
 	return S_OK;
 }

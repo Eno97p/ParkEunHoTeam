@@ -25,6 +25,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render(ID3D11DeviceContext* pDeferredContext) override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };

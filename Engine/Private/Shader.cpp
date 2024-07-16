@@ -106,8 +106,33 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
+HRESULT CShader::Begin(_uint iPassIndex, ID3D11DeviceContext* pDeferredContext)
+{
+	m_ShaderComponentDesc.iCurrentPass = iPassIndex;
+	if (nullptr == m_InputLayouts[iPassIndex])
+		return E_FAIL;
+
+
+
+	pDeferredContext->IASetInputLayout(m_InputLayouts[iPassIndex]);
+
+	ID3DX11EffectPass* pPass = m_pEffect->GetTechniqueByIndex(0)->GetPassByIndex(iPassIndex);
+	if (nullptr == pPass)
+		return E_FAIL;
+
+	/* 이 쉐이더에 이 패스로 그립니다. */
+	/* 쉐이더에 전달해야할 모든 데이터를 다 던져놓아야한다. */
+	pPass->Apply(0, pDeferredContext);
+
+
+
+
+	return S_OK;
+}
+
 HRESULT CShader::Bind_RawValue(const _char * pConstantName, const void * pValue, _uint iLength)
 {
+	
 	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
 	if (nullptr == pVariable)
 		return E_FAIL;

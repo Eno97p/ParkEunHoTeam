@@ -113,18 +113,18 @@ HRESULT CLevel_Ackbar::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	//Load_Lights();
+	Load_Lights();
 
 
-	LIGHT_DESC			LightDesc{};
+	//LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -375,13 +375,13 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 				break;
 
 
-			//if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
-			//{
-			//	// 모델 이름별로 월드 매트릭스 저장
-			//	_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
-			//	modelMatrices[wszModelName].push_back(pWorldMatrix);
-			//}
-			//else
+			if (wstring(wszName) == TEXT("Prototype_GameObject_Passive_Element"))
+			{
+				// 모델 이름별로 월드 매트릭스 저장
+				_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+				modelMatrices[wszModelName].push_back(pWorldMatrix);
+			}
+			else
 			{
 				// 다른 객체들은 개별적으로 생성
 				CMap_Element::MAP_ELEMENT_DESC pDesc{};
@@ -400,28 +400,28 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 
 	CloseHandle(hFile);
 
-	// Passive_Element 객체들을 인스턴싱하여 생성
-	//for (const auto& pair : modelMatrices)
-	//{
-	//	CMap_Element::MAP_ELEMENT_DESC pDesc{};
-	//	pDesc.WorldMats = pair.second;
-	//	pDesc.iInstanceCount = pair.second.size();
-	//	pDesc.wstrModelName = pair.first;
+	 //Passive_Element 객체들을 인스턴싱하여 생성
+	for (const auto& pair : modelMatrices)
+	{
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+		pDesc.WorldMats = pair.second;
+		pDesc.iInstanceCount = pair.second.size();
+		pDesc.wstrModelName = pair.first;
 
-	//	pDesc.mWorldMatrix = WorldMatrix;
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Passive_Element"),
-	//		TEXT("Prototype_GameObject_Passive_Element"), &pDesc)))
-	//		return E_FAIL;
-	//}
+		pDesc.mWorldMatrix = WorldMatrix;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Passive_Element"),
+			TEXT("Prototype_GameObject_Passive_Element"), &pDesc)))
+			return E_FAIL;
+	}
 
-	//// 동적 할당된 메모리 해제
-	//for (auto& pair : modelMatrices)
-	//{
-	//	for (auto pWorldMatrix : pair.second)
-	//	{
-	//		Safe_Delete(pWorldMatrix);
-	//	}
-	//}
+	// 동적 할당된 메모리 해제
+	for (auto& pair : modelMatrices)
+	{
+		for (auto pWorldMatrix : pair.second)
+		{
+			Safe_Delete(pWorldMatrix);
+		}
+	}
 
 	return S_OK;
 }
@@ -456,7 +456,7 @@ void CLevel_Ackbar::Load_Lights()
 	//	return;
 	//}
 
-	wstring LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
+	wstring LightsDataPath = L"../Bin/MapData/LightsData/Ackbar_Lights.dat";
 
 	HANDLE hFile = CreateFile(LightsDataPath.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (nullptr == hFile)

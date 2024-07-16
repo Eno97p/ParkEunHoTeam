@@ -81,6 +81,11 @@ public:														//파티클 함수들
 	// 현재 애니메이션의 Duration 체크
 	_bool			Check_CurDuration(_double CurDuration);
 
+	// 애니메이션 보완
+
+	void			Set_LerpTime(_double LerpTime);
+
+
 
 public:/*For.Physx*/
 	vector<CMesh*> Get_Meshes() { return m_Meshes; }
@@ -92,6 +97,7 @@ public:
 	virtual HRESULT	Initialize_Prototype(MODELTYPE eModelType, const  _char* pModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT	Initialize(void* pArg) override;
 	HRESULT Render(_uint iMeshIndex);
+	HRESULT Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext);
 	HRESULT Render_Instance(_uint iMeshIndex);
 	HRESULT Render_Instance_ForMapElements(_uint iMeshIndex);
 
@@ -107,6 +113,7 @@ public:
 	HRESULT Save_BoneName();										// 뼈이름 텍스트로 저장하는거
 	_bool Picking(class CTransform* pTransform, _float3* pOut);		// 메쉬피킹
 
+	_bool Culling(_uint iIndex, PxActor* actor);
 private:
 	const aiScene* m_pAIScene = { nullptr };
 	Assimp::Importer			m_Importer;
@@ -118,7 +125,7 @@ private:
 	_uint						m_iNumMeshes = { 0 };
 	vector<class CMesh*>		m_Meshes;
 	vector<class CInstance_Mesh*>	m_InstanseMesh;
-
+	
 private:
 	_uint						m_iNumMaterials = { 0 };
 	vector<MESH_MATERIAL>		m_Materials;

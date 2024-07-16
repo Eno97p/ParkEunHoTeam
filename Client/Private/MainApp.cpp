@@ -113,14 +113,13 @@
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 	, m_pUI_Manager{CUI_Manager::GetInstance()}
-	, m_pInventory{CInventory::GetInstance()}
 #ifdef _DEBUG
 	,m_pImGuiMgr{CImGuiMgr::GetInstance()}
 #endif // _DEBUG
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pUI_Manager);
-	Safe_AddRef(m_pInventory);
+
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pImGuiMgr);
@@ -252,7 +251,7 @@ HRESULT CMainApp::Render()
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);		//프로파일링 하기 위해 Draw다음으로 옮김
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
 		return E_FAIL;
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->End_ImGui())) return E_FAIL;);
@@ -528,7 +527,7 @@ HRESULT CMainApp::Ready_UI()
 	if (FAILED(m_pUI_Manager->Initialize()))
 		return E_FAIL;
 
-	if (FAILED(m_pInventory->Initialize()))
+	if (FAILED(CInventory::GetInstance()->Initialize()))
 		return E_FAIL;
 
 	return S_OK;
@@ -1302,7 +1301,7 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 	
-	Safe_Release(m_pInventory);
+
 	CInventory::GetInstance()->DestroyInstance();
 
 	Safe_Release(m_pUI_Manager);

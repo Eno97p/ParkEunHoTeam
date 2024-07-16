@@ -223,14 +223,16 @@ namespace Engine
 
 	typedef struct ENGINE_DLL  VTXELECTRON
 	{
+		XMFLOAT3		vPosition;
+		XMFLOAT2		vPSize;
 		XMFLOAT3		vStartpos;
 		XMFLOAT3		vEndpos;
 		XMFLOAT2		vLifeTime;
 		_float			fThickness;
 		_float			fAmplitude;
 		_int			iNumSegments;
-		static const unsigned int		iNumElements = { 6 };
-		static const D3D11_INPUT_ELEMENT_DESC	Elements[6];
+		static const unsigned int		iNumElements = { 8 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	};
 
 

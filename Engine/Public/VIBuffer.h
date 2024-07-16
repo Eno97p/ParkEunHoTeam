@@ -19,12 +19,14 @@ public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual HRESULT Render();
+	virtual HRESULT Render(ID3D11DeviceContext* pDeferredContext);
 
 public:
 	virtual float Compute_Height(const XMFLOAT3& vLocalPos) { return 0.f; }
 
 public:
 	virtual HRESULT Bind_Buffers();
+	virtual HRESULT Bind_Buffers(ID3D11DeviceContext* pDeferredContext);
 
 protected:
 	ID3D11Buffer*				m_pVB = { nullptr };

@@ -27,7 +27,7 @@ HRESULT CDecal::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(150.f, 522.f, 98.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(155.f, 522.f, 113.f, 1.f));
 
 	return S_OK;
 }
@@ -65,6 +65,8 @@ HRESULT CDecal::Render()
 		m_pModelCom->Render(i);
 	}
 
+	_vector v;
+	_matrix mat = XMMatrixInverse(&v, m_pTransformCom->Get_WorldMatrix());
 	return S_OK;
 }
 

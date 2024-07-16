@@ -37,6 +37,9 @@
 #include "Juggulus_HandOne.h"
 #include "Juggulus_HandTwo.h"
 #include "Juggulus_HandThree.h"
+#include "Aspiration.h"
+#include "CircleSphere.h"
+#include "Sphere.h"
 
 #include "Mantari.h"
 #include "Body_Mantari.h"
@@ -760,6 +763,24 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	// Aspiration
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Aspiration"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Aspiration.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	// Sphere
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	// CircleSphere
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_CircleSphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Legionnaire_Gun */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Legionnaire_Gun"),
@@ -768,17 +789,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Gun_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Sword_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Sword.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Sword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Arrow_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Ghost */
@@ -1051,6 +1072,20 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CJuggulus_HandThree::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Aspiration */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Aspiration"),
+		CAspiration::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Sphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sphere"),
+		CSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CircleSphere */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CircleSphere"),
+		CCircleSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_Mantari */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
@@ -2286,6 +2321,21 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	// Aspiration
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Aspiration"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Aspiration.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	// Sphere
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	// CircleSphere
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_CircleSphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Legionnaire_Gun */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Legionnaire_Gun"),
@@ -2294,17 +2344,17 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Weapon_Gun_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Gun.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Weapon_Sword_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Sword.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Sword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Weapon_LGGun */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Weapon_Arrow_LGGun"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Arrow_Jobmob/Arrow.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Ghost */

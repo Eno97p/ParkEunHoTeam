@@ -107,6 +107,10 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal"))))
         return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_Depth"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal_Depth"))))
+        return E_FAIL;
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalResult"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DecalResult"), TEXT("Target_DecalResult"))))
@@ -777,7 +781,7 @@ void CRenderer::Render_Decal()
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal_Depth"), m_pShader, "g_DepthTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
         return;

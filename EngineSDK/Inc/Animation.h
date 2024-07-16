@@ -38,13 +38,16 @@ public:
 	const _double* Get_CurrentPos() const { return &m_CurrentPosition; }
 
 	// 애니메이션 보완
-	void         Set_LerpTime(_double LerpTime) { m_LerpTime = LerpTime; }
+
+	void			Set_LerpTime(_double LerpTime) { m_LerpTime = LerpTime; }
+
 
 private:
 	_char			m_szName[MAX_PATH] = "";
 	_double			m_Duration = { 0.0 };
 	_double			m_TickPerSecond = { 0.0 };
 	_double			m_CurrentPosition = { 0.0 };
+	_double			m_PrevPosition = { 0.0 };
 	_bool			m_isFinished = { false };
 	_double			currentPositionRatio = { 0.0 };
 

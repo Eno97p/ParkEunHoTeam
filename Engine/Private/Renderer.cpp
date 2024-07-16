@@ -1304,7 +1304,7 @@ void CRenderer::Render_Final()
     _tchar               m_szFPS[MAX_PATH] = TEXT("");
     _int i = (_int)(m_fValue * 100);
     wsprintf(m_szFPS, TEXT("1. reinhard   2. ACES   3. HDR Decrease   4. HDR Increase\n5. LUT\nValue : %d"), i);
-    m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+    m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 }
 
 void CRenderer::Compute_HDR()

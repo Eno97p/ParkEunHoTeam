@@ -236,6 +236,9 @@
 #include "E:\3D_ShatteredNew\Engine\private\VIBuffer_Instance_Rect.cpp"
 
 
+#include "E:\3D_ShatteredNew\Engine\Private\VIBuffer_Lightning.cpp"
+
+
 #include "E:\3D_ShatteredNew\Engine\Private\VIBuffer_PhysXBuffer.cpp"
 
 

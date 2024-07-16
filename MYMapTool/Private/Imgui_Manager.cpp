@@ -420,7 +420,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
     case LAYER_MONSTER:
     {
-        const char* items_Monster[] = { "Fiona", "Lantern", "Octopus", "Crab", "EliteMst", "Boss" };
+        const char* items_Monster[] = { "test", "MANTARI", "Legionnaire_Gun", "Ghost", "Homonculus", "Boss Juggulus" };
         ImGui::ListBox("###Obj", &item_current, items_Monster, IM_ARRAYSIZE(items_Monster)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -482,7 +482,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     case LAYER_TRIGGER:
     {
         const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER",  "Jugglas_Room2_Spawn",  "Jugglas_Room3_Spawn", "Viewchange 3 to Side", "Viewchange Side to 3",
-            "Acticate Elevate",
+            "Ascend Elevator", "Descend Elevator",
             "STAGE1_LightsOn" };
         ImGui::ListBox("###Obj", &item_current, items_Trigger, IM_ARRAYSIZE(items_Trigger)); // item_current 변수에 선택 값 저장
         break;
@@ -835,7 +835,7 @@ void CImgui_Manager::Load_Lights()
         m_LightsDataPath = L"../Bin/MapData/LightsData/Stage_Lights.dat";
         break;
     case STAGE_ONE:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Stage1_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
         break;
     case STAGE_TWO:
         m_LightsDataPath = L"../Bin/MapData/LightsData/Stage2_Lights.dat";

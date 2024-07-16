@@ -3,7 +3,18 @@
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_DiffuseTexture;
+texture2D g_NormalTexture;
+texture2D g_SpecularTexture;
+texture2D g_OpacityTexture;
+texture2D g_EmissiveTexture;
+texture2D g_RoughnessTexture;
+texture2D g_MetalicTexture;
+texture2D g_DisolveTexture;
+texture2D g_BlurTexture;
 
+float g_DisolveValue = 1.f;
+float g_TexcoordY = 1.f;
+float4 g_fColor = { 1.f, 1.f, 1.f, 1.f };
 
 bool g_bDiffuse = false;
 bool g_bNormal = false;
@@ -28,11 +39,13 @@ struct VS_IN
 
 struct VS_OUT
 {
-    float4      vPosition : SV_POSITION;
-    float4		vNormal : NORMAL;
-    float2      vTexcoord : TEXCOORD0;
-    float4		vTangent : TANGENT;
-
+    float4 vPosition : SV_POSITION;
+    float4 vNormal : NORMAL;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+    float4 vLocalPos : TEXCOORD2;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -51,7 +64,10 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vPosition = mul(vPosition, matWVP);
     Out.vNormal = normalize(mul(vector(In.vNormal.xyz, 0.f), TransformMatrix));
     Out.vTexcoord = In.vTexcoord;
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vProjPos = Out.vPosition;
+    Out.vLocalPos = float4(In.vPosition, 1.f);
+    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), TransformMatrix));
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
 
     return Out;
 }
@@ -59,28 +75,54 @@ VS_OUT VS_MAIN(VS_IN In)
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-    float4		vNormal : NORMAL;
+    float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
-    float4		vTangent : TANGENT;
+    float4 vProjPos : TEXCOORD1;
+    float4 vLocalPos : TEXCOORD2;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 struct PS_OUT
 {
     vector vDiffuse : SV_TARGET0;
+    vector vNormal : SV_TARGET1;
+    vector vDepth : SV_TARGET2;
+    vector vSpecular : SV_TARGET3;
+    vector vEmissive : SV_TARGET4;
+    vector vRoughness : SV_TARGET5;
+    vector vMetalic : SV_TARGET6;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
-    Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-
-    if (Out.vDiffuse.a < 0.1f)
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (vDiffuse.a < 0.1f)
         discard;
 
-    //float fRatio = In.vLifeTime.y / In.vLifeTime.x;
-    //Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
-  //  Out.vDiffuse = float4(In.vTexcoord, 0, 1);
+    vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+
+    vNormal = mul(vNormal, WorldMatrix);
+
+    if (g_bDiffuse) Out.vDiffuse = vDiffuse;
+
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    if (g_bSpecular) Out.vSpecular = vSpecular;
+
+    vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+    if (g_bEmissive) Out.vEmissive = vEmissive;
+    if (g_bRoughness) Out.vRoughness = vRoughness;
+    if (g_bMetalic) Out.vMetalic = vMetalic;
 
     return Out;
 }

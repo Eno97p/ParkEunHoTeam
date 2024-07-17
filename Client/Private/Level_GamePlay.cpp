@@ -265,8 +265,8 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	LandObjDesc.mWorldMatrix._43 = 98.f;
 	LandObjDesc.mWorldMatrix._44 = 1.f;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_Elevator"), &LandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_Elevator"), &LandObjDesc)))
+	//	return E_FAIL;
 	return S_OK;
 }
 
@@ -319,11 +319,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
-
-
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
 			return E_FAIL;
-
 	//}
 
 	return S_OK;

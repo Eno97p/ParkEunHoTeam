@@ -97,6 +97,13 @@ HRESULT CGameObject::Render()
 	return S_OK;
 }
 
+_float CGameObject::Get_LengthFromCamera()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCamPos = m_pGameInstance->Get_CamPosition();
+	return XMVectorGetX(XMVector3Length(vPos - vCamPos));
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring & strComponentTag, CComponent** ppOut, void* pArg)
 {
 	if (m_Components.end() != m_Components.find(strComponentTag))

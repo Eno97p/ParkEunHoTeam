@@ -57,6 +57,9 @@
 #include "C:\3D_TeamProj\Client\Private\Decal.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Deco_Element.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Distortion.cpp"
 
 
@@ -64,6 +67,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\EffectManager.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Elevator.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\EventTrigger.cpp"

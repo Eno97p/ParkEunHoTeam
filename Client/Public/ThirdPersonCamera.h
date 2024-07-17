@@ -90,8 +90,6 @@ public:
 	_vector ProjectPointLine(_vector point, _vector lineStart, _vector lineEnd);
 
 private:
-	_float4 m_vLockedTargetPos = { 0.f, 10.f, 0.f, 1.f };
-	_bool m_bIsTargetLocked = false;
 	_float m_fLerpFactor = 8.0f;  // 보간 속도 조절 팩터
 	float m_fFollowSpeed = 10.0f; // 새로운 팔로우 속도 변수 (기본값 10.0f)
 
@@ -104,17 +102,20 @@ private:
 	_float		m_fSensor = { 0.0f };
 	CTransform* m_pPlayerTrans = { nullptr };
 
-	CTransform* m_pTargetTrans = { nullptr };
 private:
 	const _vector m_HeightOffset = { 0.f, 10.f, 0.f, 0.f };
 	_bool		m_bActivatePick = false;
 	_vector		m_vLerpPos = { 0.f, };
 	class CGameObject* m_pTarget = nullptr;			//타깃
-
+	CTransform* m_pTargetTrans;
 
 	_float4 m_vCameraPosition;
 	_float4 m_vLookAtPosition;
 
+public:
+	static _bool m_bIsTargetLocked;
+	static 	_float4 m_vLockedTargetPos;
+	
 
 private:
 	float m_fYaw = 0.0f;  // 카메라의 수평 회전 각도

@@ -36,6 +36,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	void Chase_Player(_float fTimeDelta);
 
 public:
 	HRESULT Add_Components();

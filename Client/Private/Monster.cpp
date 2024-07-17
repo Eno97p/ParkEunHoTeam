@@ -28,7 +28,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	MST_DESC* pDesc = static_cast<MST_DESC*>(pArg);
 
 	pDesc->fSpeedPerSec = 10.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
 
 	m_eLevel = pDesc->eLevel;
 

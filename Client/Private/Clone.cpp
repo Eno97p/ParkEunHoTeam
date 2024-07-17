@@ -61,6 +61,26 @@ HRESULT CClone::Initialize(void* pArg)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 59;
 	}
+	else if (*m_pState == CPlayer::STATE_DASH_FRONT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_BACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 6;
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_LEFT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 8;
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_RIGHT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 166;
+	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 

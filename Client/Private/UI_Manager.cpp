@@ -117,7 +117,7 @@ HRESULT CUI_Manager::Initialize()
 
 HRESULT CUI_Manager::Create_UI()
 {
-	CUIGroup::UIGROUP_DESC pDesc{};
+	CUIGroup::UIGROUP_DESC pDesc;
 
 	pDesc.eLevel = LEVEL_STATIC;
 

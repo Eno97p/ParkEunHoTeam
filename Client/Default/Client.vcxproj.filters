@@ -475,6 +475,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator">
       <UniqueIdentifier>{fefc47bf-3d3a-4277-9bb8-1fe3af7fedb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Trap">
+      <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -968,6 +971,12 @@
     <ClInclude Include="..\Public\Elevator.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Trap.h">
+      <Filter>02.GameObjects\02.LandObject\04. Trap</Filter>
+    </ClInclude>
+    <ClInclude Include="Import_Class.h">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1440,6 +1449,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Elevator.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trap.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Trap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -225,7 +225,7 @@ void CObject_Manager::Late_Tick(_float fTimeDelta)
 		{
 			Pair.second->Late_Tick(fTimeDelta);
 		}
-		Garbage_Collection(&m_pLayers[i]);
+		//Garbage_Collection(&m_pLayers[i]);
 	}
 	
 
@@ -235,11 +235,17 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 {
 	if (iLevelIndex >= m_iNumLevels)
 		return;
-
-	for (auto& Pair : m_pLayers[iLevelIndex])
+	/*Current Layer For.Debug*/
+	auto& Layer = m_pLayers[iLevelIndex];
+	for (auto& Pair : Layer)
 	{
 		Safe_Release(Pair.second);
 	}
+
+	/*for (auto& Pair : m_pLayers[iLevelIndex])
+	{
+		Safe_Release(Pair.second);
+	}*/
 	m_pLayers[iLevelIndex].clear();
 }
 

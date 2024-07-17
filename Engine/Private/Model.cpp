@@ -297,6 +297,9 @@ void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc)
 		{
 			m_AnimDesc = AnimDesc;
 		}
+
+		//if()
+
 		return;
 	}
 	m_pNextAnimation = m_Animations[AnimDesc.iAnimIndex];

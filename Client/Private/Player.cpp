@@ -58,7 +58,7 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 {
 	if (!m_pCameraTransform)
 	{
-		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Camera"));
+		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));
 		auto iter = ++CameraList.begin();
 		m_pCameraTransform = dynamic_cast<CTransform*>((*iter)->Get_Component(TEXT("Com_Transform")));
 		Safe_AddRef(m_pCameraTransform);
@@ -109,19 +109,6 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_bJumping = true;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
-	{
-		CLandObject::LANDOBJ_DESC		LandObjDesc{};
-
-		LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-		LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Distortion"), &LandObjDesc);
-	}
-
-	if (m_pGameInstance->Key_Down(DIKEYBOARD_9))		//레이어 삭제 테스트
-	{
-		m_pGameInstance->Clear_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"));
-	}
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
@@ -135,13 +122,7 @@ void CPlayer::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	list<CGameObject*> ObjectLis;
-	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	if (m_pGameInstance->Key_Down(DIK_7))
-	{
-		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
-	}
 	m_fParticleAcctime -= fTimeDelta;
 	if (m_fParticleAcctime < 0.f)
 	{
@@ -180,7 +161,7 @@ HRESULT CPlayer::Add_Components()
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -210,7 +191,7 @@ HRESULT CPlayer::Add_Components()
 	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 	
 	
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
+	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
 
@@ -1020,7 +1001,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 			CloneDesc.pState = &iState;
 			CloneDesc.fAnimDelay = m_fAnimDelay;
 
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
 			m_fCloneDelay = 0.f;
 		}
 
@@ -1228,7 +1209,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			CloneDesc.pState = &iState;
 			CloneDesc.fAnimDelay = m_fAnimDelay;
 
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
 			m_fCloneDelay = 0.f;
 		}
 

@@ -6,49 +6,6 @@
 
 #include"Import_Class.h"	// <---여기에 들어가서 헤더 넣으셈
 
-#include "Legionnaire_Gun.h"
-#include "Body_LGGun.h"
-#include "Weapon_Gun_LGGun.h"
-#include "Weapon_Sword_LGGun.h"
-#include "Weapon_Arrow_LGGun.h"
-
-#include "Ghost.h"
-#include "Body_Ghost.h"
-#include "Weapon_Ghost.h"
-
-#include "Homonculus.h"
-#include "Body_Homonculus.h"
-#include "Weapon_Homonculus.h"
-
-#include "TargetLock.h"
-
-#pragma endregion Monster
-
-#pragma region ITEM
-#include "Item.h"
-#pragma endregion ITEM
-
-#pragma region NPC
-#include "NPC_Rlya.h"
-#include "Body_Rlya.h"
-#pragma endregion NPC
-
-#pragma region DECAL
-#include "Decal.h"
-#pragma endregion DECAL
-
-#include "Map_Element.h"
-#include "Passive_Element.h"
-#include "Deco_Element.h"
-#include "Active_Element.h"
-#include "TutorialMapBridge.h"
-
-#include "FakeWall.h"
-#include "Elevator.h"
-#include "RotateGate.h"
-#include "EventTrigger.h"
-
-#include"CHoverboard.h"
 
 
 

@@ -18,7 +18,7 @@ HRESULT CRotateGate::Initialize_Prototype()
 HRESULT CRotateGate::Initialize(void* pArg)
 {
 
-	CTransform::TRANSFORM_DESC td{};
+	CGameObject::GAMEOBJECT_DESC td{};
 
 	td.fSpeedPerSec = 3.f;
 	td.fRotationPerSec = XMConvertToRadians(90.0f);

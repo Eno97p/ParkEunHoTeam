@@ -484,6 +484,21 @@
     <Filter Include="02.GameObjects\02.LandObject\04. Npc\Rlya\Body">
       <UniqueIdentifier>{d20e68f6-915e-45f5-96fa-fb7d51ec5e09}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script">
+      <UniqueIdentifier>{3924d01b-da55-44a4-84ae-7a3d2b57c5a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script\BG_Npc">
+      <UniqueIdentifier>{abfaa6e3-c0a6-42d6-b279-0cf536646508}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script\DialogBox">
+      <UniqueIdentifier>{5a7d013a-f26e-45ad-84ce-49166e28b11f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script\NameBox">
+      <UniqueIdentifier>{f04ee3ed-beea-4656-b632-dbf3e3f8a913}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script\BG_Aura">
+      <UniqueIdentifier>{1a9eefa8-0360-476b-8623-90ce57616fd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -986,6 +1001,21 @@
     <ClInclude Include="..\Public\Body_Rlya.h">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Script.h">
+      <Filter>02.GameObjects\07. UI\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ScriptBG_Aura.h">
+      <Filter>02.GameObjects\07. UI\Script\BG_Aura</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ScriptBG_Npc.h">
+      <Filter>02.GameObjects\07. UI\Script\BG_Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Script_DialogBox.h">
+      <Filter>02.GameObjects\07. UI\Script\DialogBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Script_NameBox.h">
+      <Filter>02.GameObjects\07. UI\Script\NameBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1467,6 +1497,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Rlya.cpp">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Script.cpp">
+      <Filter>02.GameObjects\07. UI\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp">
+      <Filter>02.GameObjects\07. UI\Script\BG_Aura</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp">
+      <Filter>02.GameObjects\07. UI\Script\BG_Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Script_DialogBox.cpp">
+      <Filter>02.GameObjects\07. UI\Script\DialogBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Script_NameBox.cpp">
+      <Filter>02.GameObjects\07. UI\Script\NameBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

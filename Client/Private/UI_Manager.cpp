@@ -13,6 +13,7 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
+#include "UIGroup_Script.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -150,6 +151,9 @@ HRESULT CUI_Manager::Create_UI()
 
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
+
+	// Script
+	m_mapUIGroup.emplace("Script", dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc)));
 
 	return S_OK;
 }

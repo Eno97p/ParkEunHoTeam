@@ -517,6 +517,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />

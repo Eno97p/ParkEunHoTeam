@@ -124,6 +124,8 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
 
+
+
 	return S_OK;
 }
 

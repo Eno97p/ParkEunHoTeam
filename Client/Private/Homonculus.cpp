@@ -282,11 +282,22 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
+	{
+		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
+		_float3 vOffset = { 0.f,1.f,0.f };
+		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
+		_float4 vResult;
+		XMStoreFloat4(&vResult, vStartPos);
+		_int Random = RandomSign();
+		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
+		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
+		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		m_isDefaultAttack = false;
 		Add_Hp(-10);
 		return RUNNING;
 		break;
+	}
 	case CCollider::COLL_CONTINUE:
 		m_iState = STATE_HIT;
 		return RUNNING;

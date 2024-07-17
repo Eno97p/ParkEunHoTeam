@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 CWeapon_Homonculus::CWeapon_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -73,6 +74,8 @@ void CWeapon_Homonculus::Tick(_float fTimeDelta)
 
 		}
 	}
+
+	Generate_Trail(6);
 }
 
 void CWeapon_Homonculus::Late_Tick(_float fTimeDelta)

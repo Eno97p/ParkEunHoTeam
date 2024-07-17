@@ -7,6 +7,7 @@
 #include "Weapon_Arrow_LGGun.h"
 
 #include "UIGroup_MonsterHP.h"
+#include "EffectManager.h"
 
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -313,10 +314,21 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
+	{
+		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
+		_float3 vOffset = { 0.f,0.5f,0.f };
+		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
+		_float4 vResult;
+		XMStoreFloat4(&vResult, vStartPos);
+		_int Random = RandomSign();
+		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
+		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
+		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		Add_Hp(-10);
 		return RUNNING;
 		break;
+	}
 	case CCollider::COLL_CONTINUE:
 		m_iState = STATE_HIT;
 		return RUNNING;

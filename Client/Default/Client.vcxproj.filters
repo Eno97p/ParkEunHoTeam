@@ -475,6 +475,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator">
       <UniqueIdentifier>{fefc47bf-3d3a-4277-9bb8-1fe3af7fedb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate">
+      <UniqueIdentifier>{cdb9c6cb-e5cd-4522-a7f5-06685678f6df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -968,6 +971,9 @@
     <ClInclude Include="..\Public\Elevator.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RotateGate.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1440,6 +1446,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Elevator.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RotateGate.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

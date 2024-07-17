@@ -32,6 +32,8 @@ private:
 	_uint			 m_iTest = 0;
 
 	_uint			m_iInstanceCount = 0;
+
+	_uint			m_iShaderPath = 0;
 public:
 	static CPassive_Element* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -31,7 +31,6 @@ public:
 
 private:
 	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CPhysXComponent_static* m_pPhysXCom = { nullptr };

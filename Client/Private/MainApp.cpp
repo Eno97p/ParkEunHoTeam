@@ -94,6 +94,14 @@
 #include "ItemData.h"
 #pragma endregion Item
 
+#pragma region Script
+#include "UI_ScriptBG_Aura.h"
+#include "UI_ScriptBG_Npc.h"
+#include "UI_Script_DialogBox.h"
+#include "UI_Script_NameBox.h"
+#include "UIGroup_Script.h"
+#pragma endregion Script
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -446,7 +454,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 #pragma region TEXTURE
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 39))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 40))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -889,6 +897,28 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Monster
 
+#pragma region Script
+	/* Prototype_Component_Texture_Script_NameBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_NameBox"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_NameBox.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_DialogBox */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_DialogBox"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_Text_Box_Whisperer.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Aura */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Aura"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_NaiAura%d.png"), 4))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_Rlya */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Rlya"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Rlya.png"), 1))))
+		return E_FAIL;
+#pragma endregion Script
+
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
@@ -1234,6 +1264,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_DropItem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Item
+
+#pragma region Script
+	/* For.Prototype_GameObject_UI_ScriptBG_Aura*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"),
+		CUI_ScriptBG_Aura::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ScriptBG_Npc*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"),
+		CUI_ScriptBG_Npc::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Script_DialogBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Script_DialogBox"),
+		CUI_Script_DialogBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ScriptBG_NameBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"),
+		CUI_Script_NameBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Script*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Script"),
+		CUIGroup_Script::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Script
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

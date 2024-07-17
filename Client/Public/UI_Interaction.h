@@ -15,6 +15,8 @@ protected:
 public:
 	RECT*			Get_CollisionRect() { return &m_CollisionRect; }
 	_bool			IsCollisionRect(RECT* SrcRect);
+	
+	void			Set_Select(_bool isSelect) { m_isSelect = isSelect; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;

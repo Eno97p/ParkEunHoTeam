@@ -35,8 +35,8 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
@@ -52,6 +52,8 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_JUGGLAS, TEXT("Layer_Camera")).size();
 
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_TEST"), TEXT("Prototype_GameObject_RotateGate"))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -307,7 +309,7 @@ HRESULT CLevel_Jugglas::Ready_Layer_Monster(const wstring& strLayerTag, CLandObj
 HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (nullptr == hFile)
+ 	if (nullptr == hFile)
 		return E_FAIL;
 
 	char szName[MAX_PATH] = "";

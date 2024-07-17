@@ -37,12 +37,9 @@ void CAspiration::Priority_Tick(_float fTimeDelta)
 	m_fTexcoordY -= fTimeDelta * 1.15f;
 	if (m_fTexcoordY < 0.f)
 	{
-
-		CGameObject::GAMEOBJECT_DESC desc;
-		//CTransform::TRANSFORM_DESC transformDesc;		//gameObject를 상속받은 클래스들은 TRANSFORM_DESC를 바로 집어넣으면 안됨 Desc의 상속관계가 깨지는 듯
-		desc.fSpeedPerSec = 40.f;
-		//transformDesc.fSpeedPerSec = 40.f;
-		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Sphere"), &desc);
+		CGameObject::GAMEOBJECT_DESC transformDesc;
+		transformDesc.fSpeedPerSec = 40.f;
+		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Sphere"), &transformDesc);
 		m_pGameInstance->Erase(this);
 	}
 }

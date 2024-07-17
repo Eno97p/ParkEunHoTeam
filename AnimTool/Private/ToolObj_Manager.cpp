@@ -207,6 +207,8 @@ const char* CToolObj_Manager::Setting_ObjName(/*_int iLayerIdx, */_int iSelectId
         return "Prototype_GameObject_NPC_Valnir";
     case 8:
         return "Prototype_GameObject_Arrow_Jobmob";
+    case 9:
+        return "Prototype_GameObject_Ghost";
     default:
         break;
     }

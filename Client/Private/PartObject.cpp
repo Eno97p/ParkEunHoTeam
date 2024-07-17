@@ -51,6 +51,13 @@ HRESULT CPartObject::Render()
 	return S_OK;
 }
 
+_float CPartObject::Get_LengthFromCamera()
+{
+	_vector vPos = XMVectorSet(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f);
+	_vector vCamPos = m_pGameInstance->Get_CamPosition();
+	return XMVectorGetX(XMVector3Length(vPos - vCamPos));
+}
+
 
 void CPartObject::Free()
 {

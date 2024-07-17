@@ -55,9 +55,9 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
-	// Body의 m_pModelCom를 넣어야 함
+	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end")))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	return S_OK;
@@ -131,6 +131,24 @@ void CMantari::Late_Tick(_float fTimeDelta)
 HRESULT CMantari::Render()
 {
 	return S_OK;
+}
+
+void CMantari::Chase_Player(_float fTimeDelta)
+{
+	_float3 fScale = m_pTransformCom->Get_Scaled();
+
+	_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vDir.m128_f32[1] = 0.f;
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+	_vector vUp = XMVector3Cross(vDir, vRight);
+
+	vDir = XMVector3Normalize(vDir);
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+	m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
+	m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
 }
 
 HRESULT CMantari::Add_Components()
@@ -389,21 +407,7 @@ NodeStates CMantari::JumpAttack(_float fTimeDelta)
 
 		if (m_bChasing && m_fChasingDelay < 0.f)
 		{
-
-			_float3 fScale = m_pTransformCom->Get_Scaled();
-
-			_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			vDir.m128_f32[1] = 0.f;
-
-			_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
-			_vector vUp = XMVector3Cross(vDir, vRight);
-
-			vDir = XMVector3Normalize(vDir);
-			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
-			m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
-			m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
+			Chase_Player(fTimeDelta);
 		}
 
 		if (m_fLengthFromPlayer < 5.f)

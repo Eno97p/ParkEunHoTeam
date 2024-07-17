@@ -15,6 +15,8 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Script.h"
 
+#include "UI_Activate.h"
+
 IMPLEMENT_SINGLETON(CUI_Manager)
 
 CUI_Manager::CUI_Manager()
@@ -55,6 +57,8 @@ void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Tick(fTimeDelta);
+
+	m_pUI_Activate->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -63,6 +67,8 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Late_Tick(fTimeDelta);
+
+	m_pUI_Activate->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -154,6 +160,11 @@ HRESULT CUI_Manager::Create_UI()
 
 	// Script
 	m_mapUIGroup.emplace("Script", dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc)));
+
+	// Activate
+	CUI::UI_DESC pUIDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	m_pUI_Activate = dynamic_cast<CUI_Activate*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Activate"), &pUIDesc));
 
 	return S_OK;
 }
@@ -255,5 +266,6 @@ void CUI_Manager::Free()
 	}
 	m_mapUIGroup.clear();
 
+	Safe_Release(m_pUI_Activate);
 	Safe_Release(m_pGameInstance);
 }

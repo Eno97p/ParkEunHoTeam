@@ -186,6 +186,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
 
 

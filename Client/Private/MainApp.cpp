@@ -112,6 +112,7 @@
 #include "UI_InvSub_Btn.h"
 #include "UI_InvSub_BtnSelect.h"
 #include "UIGroup_InvSub.h"
+#include "UI_Activate.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -930,10 +931,14 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.png"), 1))))
 		return E_FAIL;
 
-
 	/* Prototype_Component_Texture_BG_Alpha */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BG_Alpha"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Activate */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Activate"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Activate.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -1311,6 +1316,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_ItemData*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ItemData"),
 		CItemData::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Activate*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Activate"),
+		CUI_Activate::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

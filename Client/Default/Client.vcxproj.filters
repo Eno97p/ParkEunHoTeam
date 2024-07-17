@@ -499,6 +499,9 @@
     <Filter Include="02.GameObjects\07. UI\Script\BG_Aura">
       <UniqueIdentifier>{1a9eefa8-0360-476b-8623-90ce57616fd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Activate">
+      <UniqueIdentifier>{4a335379-b095-48d2-b582-70d62d891cc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1016,6 +1019,9 @@
     <ClInclude Include="..\Public\UI_Script_NameBox.h">
       <Filter>02.GameObjects\07. UI\Script\NameBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Activate.h">
+      <Filter>02.GameObjects\07. UI\Activate</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1512,6 +1518,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp">
       <Filter>02.GameObjects\07. UI\Script\NameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Activate.cpp">
+      <Filter>02.GameObjects\07. UI\Activate</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

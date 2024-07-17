@@ -55,9 +55,9 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
-	// Body의 m_pModelCom를 넣어야 함
+	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end")))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	return S_OK;

@@ -102,10 +102,12 @@ void CMonster::Create_BossUI(CUIGroup_BossHP::BOSSUI_NAME eBossName)
 		return;
 }
 
-HRESULT CMonster::Create_TargetLock(CModel* pBodyModel, string strBoneName)
+HRESULT CMonster::Create_TargetLock(CModel* pBodyModel, string strBoneName, _vector vOffsetPos, _float fScale)
 {
 	CTargetLock::TARGETLOCK_DESC pDesc{};
 
+	pDesc.fScale = fScale;
+	pDesc.vOffsetPos = vOffsetPos;
 	pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	pDesc.pCombinedTransformationMatrix = pBodyModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 

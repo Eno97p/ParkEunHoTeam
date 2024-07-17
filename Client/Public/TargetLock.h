@@ -16,8 +16,11 @@ class CTargetLock final : public CGameObject
 public:
 	typedef struct TargetLock_Desc : public GAMEOBJECT_DESC
 	{
-		const _float4x4* pParentMatrix;
-		const _float4x4* pCombinedTransformationMatrix;
+		
+		_float				fScale;
+		_vector				vOffsetPos;
+		const _float4x4*	pParentMatrix;
+		const _float4x4*	pCombinedTransformationMatrix;
 	}TARGETLOCK_DESC;
 
 private:

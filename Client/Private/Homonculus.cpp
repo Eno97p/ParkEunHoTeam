@@ -8,6 +8,7 @@
 
 #include "UIGroup_MonsterHP.h"
 #include "EffectManager.h"
+#include "TargetLock.h"
 
 CHomonculus::CHomonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -48,6 +49,11 @@ HRESULT CHomonculus::Initialize(void* pArg)
 		return E_FAIL;
 
 	Create_UI();
+
+	// Target Lock
+	vector<CGameObject*>::iterator body = m_PartObjects.begin();
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "B_Stone_Head_Add", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -94,6 +100,8 @@ void CHomonculus::Tick(_float fTimeDelta)
 
 	Update_UI(1.5f);
 	m_pUI_HP->Tick(fTimeDelta);
+
+	m_pTargetLock->Tick(fTimeDelta);
 }
 
 void CHomonculus::Late_Tick(_float fTimeDelta)
@@ -103,6 +111,8 @@ void CHomonculus::Late_Tick(_float fTimeDelta)
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
+
+	m_pTargetLock->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

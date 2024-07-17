@@ -7,6 +7,7 @@
 #include "Weapon_Ghost.h"
 
 #include "UIGroup_MonsterHP.h"
+#include "TargetLock.h"
 
 CGhost::CGhost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -47,6 +48,11 @@ HRESULT CGhost::Initialize(void* pArg)
 		return E_FAIL;
 
 	Create_UI();
+
+	// Target Lock
+	vector<CGameObject*>::iterator body = m_PartObjects.begin();
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "B_Body", XMVectorSet(0.f, 0.f, 0.f, 1.f), 10.f)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -93,6 +99,8 @@ void CGhost::Tick(_float fTimeDelta)
 
 	Update_UI(0.3);
 	m_pUI_HP->Tick(fTimeDelta);
+
+	m_pTargetLock->Tick(fTimeDelta);
 }
 
 void CGhost::Late_Tick(_float fTimeDelta)
@@ -102,6 +110,8 @@ void CGhost::Late_Tick(_float fTimeDelta)
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
+
+	m_pTargetLock->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

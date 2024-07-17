@@ -7,6 +7,7 @@
 #include "Weapon_Arrow_LGGun.h"
 
 #include "UIGroup_MonsterHP.h"
+#include "TargetLock.h"
 
 CLegionnaire_Gun::CLegionnaire_Gun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -48,6 +49,11 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 		return E_FAIL;
 
 	Create_UI();
+
+	// Target Lock
+	vector<CGameObject*>::iterator body = m_PartObjects.begin();
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Legio-Cloth_Front_M", XMVectorSet(-0.3f, 0.f, 0.f, 1.f), 10.f)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -124,6 +130,8 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 	Update_UI(-0.3f);
 	m_pUI_HP->Tick(fTimeDelta);
+
+	m_pTargetLock->Tick(fTimeDelta);
 }
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
@@ -133,6 +141,8 @@ void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
+
+	m_pTargetLock->Late_Tick(fTimeDelta);
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

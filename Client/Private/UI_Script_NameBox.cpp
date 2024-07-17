@@ -19,14 +19,18 @@ HRESULT CUI_Script_NameBox::Initialize_Prototype()
 
 HRESULT CUI_Script_NameBox::Initialize(void* pArg)
 {
+	UI_SCRIPT_NAMEBOX_DESC* pDesc = static_cast<UI_SCRIPT_NAMEBOX_DESC*>(pArg);
+
+	m_eNpcType = pDesc->eNpcType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
+	m_fX = 260.f;
+	m_fY = (g_iWinSizeY >> 1) + 150.f;
 	m_fSizeX = 256;
 	m_fSizeY = 256;
 
@@ -58,6 +62,9 @@ HRESULT CUI_Script_NameBox::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), Setting_Text(), _float2(m_fX - 43.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -102,6 +109,17 @@ HRESULT CUI_Script_NameBox::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_tchar* CUI_Script_NameBox::Setting_Text()
+{
+	switch (m_eNpcType)
+	{
+	case Client::CUI_Script_NameBox::NPC_RLYA:
+		return TEXT("RLYA");
+	default:
+		return TEXT("");
+	}
 }
 
 CUI_Script_NameBox* CUI_Script_NameBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

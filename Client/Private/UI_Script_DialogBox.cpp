@@ -1,6 +1,7 @@
 #include "UI_Script_DialogBox.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CUI_Script_DialogBox::CUI_Script_DialogBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -19,19 +20,23 @@ HRESULT CUI_Script_DialogBox::Initialize_Prototype()
 
 HRESULT CUI_Script_DialogBox::Initialize(void* pArg)
 {
+	UI_SCRIPT_DIALOGBOX_DESC* pDesc = static_cast<UI_SCRIPT_DIALOGBOX_DESC*>(pArg);
+
+	m_eNpcType = pDesc->eNpcType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	// 값 바꿔주어야 할듯 (위치)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
 
 	Setting_Position();
+	Setting_Data();
 
 	return S_OK;
 }
@@ -44,10 +49,21 @@ void CUI_Script_DialogBox::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	Setting_Text();
 }
 
 void CUI_Script_DialogBox::Late_Tick(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		m_iDialogCnt--;
+		if (m_iDialogCnt == 0)
+		{
+			CUI_Manager::GetInstance()->Set_MenuPage(false, "Script");
+		}
+	}
+
 	CGameInstance::GetInstance()->Add_UI(this, SIXTH);
 }
 
@@ -59,6 +75,9 @@ HRESULT CUI_Script_DialogBox::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_wstrDialogText, _float2(270.f, (g_iWinSizeY >> 1) + 200.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -103,6 +122,52 @@ HRESULT CUI_Script_DialogBox::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_Script_DialogBox::Setting_Text()
+{
+	switch (m_iDialogCnt)
+	{
+	case 0:
+	{
+		break;
+	}
+	case 1:
+	{
+		if (NPC_RLYA == m_eNpcType)
+			m_wstrDialogText = TEXT("마지막 텍스트");
+		break;
+	}
+	case 2:
+	{
+		if (NPC_RLYA == m_eNpcType)
+			m_wstrDialogText = TEXT("두번째 텍스트");
+		break;
+	}
+	case 3:
+	{
+		if (NPC_RLYA == m_eNpcType)
+			m_wstrDialogText = TEXT("첫번째 텍스트");
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+void CUI_Script_DialogBox::Setting_Data()
+{
+	switch (m_eNpcType)
+	{
+	case Client::CUI_Script_DialogBox::NPC_RLYA:
+	{
+		m_iDialogCnt = 3;
+
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 CUI_Script_DialogBox* CUI_Script_DialogBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

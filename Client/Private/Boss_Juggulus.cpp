@@ -115,6 +115,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
 		{
+
 			CGameObject::GAMEOBJECT_DESC transformDesc;
 			transformDesc.fSpeedPerSec = 3.f;
 			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);

@@ -13,6 +13,7 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
+#include "UIGroup_Script.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -117,7 +118,7 @@ HRESULT CUI_Manager::Initialize()
 
 HRESULT CUI_Manager::Create_UI()
 {
-	CUIGroup::UIGROUP_DESC pDesc{};
+	CUIGroup::UIGROUP_DESC pDesc;
 
 	pDesc.eLevel = LEVEL_STATIC;
 
@@ -151,6 +152,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
 
+	// Script
+	m_mapUIGroup.emplace("Script", dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc)));
+
 	return S_OK;
 }
 
@@ -163,6 +167,7 @@ void CUI_Manager::Key_Input()
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
+	map<string, CUIGroup*>::iterator script = m_mapUIGroup.find("Script");
 	_bool isLogoOpen = (*logo).second->Get_Rend();
 	_bool isLoadingOpen = (*loading).second->Get_Rend();
 	_bool isMenuOpen = (*menu).second->Get_Rend();
@@ -234,6 +239,11 @@ void CUI_Manager::Key_Input()
 				(*quick).second->Set_RenderOnAnim(true);
 			}
 		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_U))
+	{
+		(*script).second->Set_Rend(true);
 	}
 }
 

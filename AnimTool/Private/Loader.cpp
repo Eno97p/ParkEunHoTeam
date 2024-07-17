@@ -166,6 +166,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Arrow_Jobmob/Arrow_Jobmob.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	// Ghost
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Ghost"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Ghost/Ghost.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	// Bone Sphere
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Bone_Sphere"),

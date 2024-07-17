@@ -55,9 +55,9 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
-	// Body의 m_pModelCom를 넣어야 함
+	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end")))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	return S_OK;
@@ -183,6 +183,7 @@ HRESULT CMantari::Add_Components()
 	PhysXDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;	//오를 수 없는 지형에 대한 처리
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
+	PhysXDesc.pName= "Mantari";
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;

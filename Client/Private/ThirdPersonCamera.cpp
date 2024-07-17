@@ -63,7 +63,7 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
             // 카메라 레이의 끝점 (예: 카메라 앞 100 유닛)
             _vector vRayEnd = XMVectorAdd(vCamPos, XMVectorScale(vCamLookNormalized, 100.0f));
 
-            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Monster")));
+            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
 
             float closestDistance = FLT_MAX;
             CTransform* closestMonsterTransform = nullptr;

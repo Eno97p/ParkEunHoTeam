@@ -162,6 +162,7 @@
     <ClInclude Include="..\Public\Distortion_Effect.h" />
     <ClInclude Include="..\Public\Effect_Define.h" />
     <ClInclude Include="..\public\Electronic.h" />
+    <ClInclude Include="..\public\FireEffect.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />
+    <ClCompile Include="..\private\FireEffect.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

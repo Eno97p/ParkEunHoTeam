@@ -58,9 +58,13 @@ void CComponent_Manager::Clear(_uint iLevelIndex)
 {
 	if (iLevelIndex >= m_iNumLevels)
 		return;
+	auto& pComponent = m_pPrototypes[iLevelIndex];
 
-	for (auto& Pair : m_pPrototypes[iLevelIndex])
+	for(auto& Pair : pComponent)
 		Safe_Release(Pair.second);
+
+	//for (auto& Pair : m_pPrototypes[iLevelIndex])
+	//	Safe_Release(Pair.second);
 
 	m_pPrototypes[iLevelIndex].clear();
 }

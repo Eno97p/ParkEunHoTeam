@@ -10,7 +10,8 @@ public:
 	typedef struct GAMEOBJECT_DESC : public CTransform::TRANSFORM_DESC
 	{
 		_int iData;
-
+		const char* pModelName = nullptr;
+		
 
 	}GAMEOBJECT_DESC;
 
@@ -54,7 +55,7 @@ protected:
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
 	_bool						m_bisVisible = false;
-
+	wstring						m_wstrMoDelName = L"";
 
 
 protected:

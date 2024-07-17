@@ -80,6 +80,9 @@
     <Filter Include="Objects\02. Effects\07. Line">
       <UniqueIdentifier>{857372ea-31f6-4878-bfa7-7fc1a2979bc3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\08. Fire">
+      <UniqueIdentifier>{6a12edb2-2520-4131-aacd-a049ca3c75d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -196,6 +199,9 @@
     <ClInclude Include="..\public\LineTest.h">
       <Filter>Objects\02. Effects\07. Line</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FireEffect.h">
+      <Filter>Objects\02. Effects\08. Fire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -296,6 +302,9 @@
     </ClCompile>
     <ClCompile Include="..\private\LineTest.cpp">
       <Filter>Objects\02. Effects\07. Line</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FireEffect.cpp">
+      <Filter>Objects\02. Effects\08. Fire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

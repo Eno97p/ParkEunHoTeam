@@ -24,13 +24,13 @@ HRESULT CLandObject::Initialize(void * pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	LANDOBJ_DESC*		pLandObjDesc = (LANDOBJ_DESC*)pArg;
+	//LANDOBJ_DESC*		pLandObjDesc = (LANDOBJ_DESC*)pArg;
 
-	m_pTerrainTransform = pLandObjDesc->pTerrainTransform;
-	m_pTerrainVIBuffer = pLandObjDesc->pTerrainVIBuffer;
+	//m_pTerrainTransform = pLandObjDesc->pTerrainTransform;
+	//m_pTerrainVIBuffer = pLandObjDesc->pTerrainVIBuffer;
 
-	Safe_AddRef(m_pTerrainTransform);
-	Safe_AddRef(m_pTerrainVIBuffer);
+	//Safe_AddRef(m_pTerrainTransform);
+	//Safe_AddRef(m_pTerrainVIBuffer);
 
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -59,14 +59,14 @@ HRESULT CLandObject::Render()
 
 HRESULT CLandObject::SetUp_OnTerrain(CTransform * pTransform)
 {
-	_vector			vWorldPos = pTransform->Get_State(CTransform::STATE_POSITION);
-	_float3			vLocalPos;
+	//_vector			vWorldPos = pTransform->Get_State(CTransform::STATE_POSITION);
+	//_float3			vLocalPos;
 
-	XMStoreFloat3(&vLocalPos, XMVector3TransformCoord(vWorldPos, m_pTerrainTransform->Get_WorldMatrix_Inverse()));
-	
-	vLocalPos.y = m_pTerrainVIBuffer->Compute_Height(vLocalPos);	
+	//XMStoreFloat3(&vLocalPos, XMVector3TransformCoord(vWorldPos, m_pTerrainTransform->Get_WorldMatrix_Inverse()));
+	//
+	//vLocalPos.y = m_pTerrainVIBuffer->Compute_Height(vLocalPos);	
 
-	pTransform->Set_State(CTransform::STATE_POSITION, XMVector3TransformCoord(XMLoadFloat3(&vLocalPos), m_pTerrainTransform->Get_WorldMatrix()));
+	//pTransform->Set_State(CTransform::STATE_POSITION, XMVector3TransformCoord(XMLoadFloat3(&vLocalPos), m_pTerrainTransform->Get_WorldMatrix()));
 
 	return S_OK;
 }
@@ -75,7 +75,7 @@ void CLandObject::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pTerrainTransform);
-	Safe_Release(m_pTerrainVIBuffer);
+	//Safe_Release(m_pTerrainTransform);
+	//Safe_Release(m_pTerrainVIBuffer);
 	Safe_Release(m_pColliderCom);
 }

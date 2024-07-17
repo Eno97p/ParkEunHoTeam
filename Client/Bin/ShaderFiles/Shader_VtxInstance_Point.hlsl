@@ -123,7 +123,7 @@ PS_OUT PS_DEFAULT(PS_IN In)
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a < 0.1f)
 		discard;
 
 	if (g_Alpha)
@@ -159,7 +159,7 @@ PS_OUT PS_BLOOM(PS_IN In)
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 
-	if (Out.vColor.a == 0.f)
+	if (Out.vColor.a < 0.1f)
 		discard;
 
 	if (g_Alpha)
@@ -192,7 +192,7 @@ technique11 DefaultTechnique
 	pass DefaultPass
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DS_Particle, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();

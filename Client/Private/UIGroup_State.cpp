@@ -65,7 +65,7 @@ HRESULT CUIGroup_State::Render()
 HRESULT CUIGroup_State::Create_UI()
 {
     // State BG
-    CUI::UI_DESC pDesc{};
+    CUI::UI_DESC pDesc;
 
     pDesc.eLevel = LEVEL_STATIC;
     m_vecUI.emplace_back(dynamic_cast<CUI_StateBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateBG"), &pDesc)));

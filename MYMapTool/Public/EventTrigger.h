@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "MYMapTool_Defines.h"
 #include "ToolObj.h"
 
 BEGIN(Engine)

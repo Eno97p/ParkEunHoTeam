@@ -13,7 +13,8 @@ BEGIN(Client)
 class CMap_Element : public CGameObject
 {
 public:
-	typedef struct MAP_ELEMENT_DESC : public CTransform::TRANSFORM_DESC
+	
+	typedef struct MAP_ELEMENT_DESC : public CGameObject::GAMEOBJECT_DESC
 	{
 		_int iInstanceCount = 0;
 		vector<_float4x4*> WorldMats;

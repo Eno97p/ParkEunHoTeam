@@ -14,10 +14,10 @@ public:
 	typedef	struct ControllerDesc :public PxCapsuleControllerDesc
 	{
 		_float3 fMatterial;
-		CTransform* pTransform = nullptr;
 		_float fJumpSpeed = 0.f;
-		const char* pName = nullptr;
 		PxFilterData filterData = {};
+		const char* pName = nullptr;
+		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
 public:

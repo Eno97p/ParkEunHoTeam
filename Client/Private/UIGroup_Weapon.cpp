@@ -173,7 +173,7 @@ HRESULT CUIGroup_Weapon::Create_UI()
 	// Top
 	CUI_MenuPageTop::UI_TOP_DESC pTopDesc{};
 	pTopDesc.eLevel = LEVEL_STATIC;
-	pTopDesc.eTopType = CUI_MenuPageTop::TOP_INV;
+	pTopDesc.eTopType = CUI_MenuPageTop::TOP_WEAPON;
 	m_vecUI.emplace_back(dynamic_cast<CUI_MenuPageTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuPageTop"), &pTopDesc)));
 
 	// InvBG

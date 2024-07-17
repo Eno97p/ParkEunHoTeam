@@ -126,11 +126,14 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 			break;
 			case TRIG_ASCEND_ELEVATOR:
 			{
+
 				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
+
 			}
 			break;
 			case TRIG_DESCEND_ELEVATOR:
 			{
+
 				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Descend(XMVectorSet(-310.f, 5.6f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
 			}
 			break;

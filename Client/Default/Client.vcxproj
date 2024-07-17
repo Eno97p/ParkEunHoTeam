@@ -186,6 +186,7 @@
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
     <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
+    <ClInclude Include="..\Public\Body_Rlya.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
     <ClInclude Include="..\Public\Body_Mantari.h" />
@@ -234,6 +235,8 @@
     <ClInclude Include="..\Public\Level_Jugglas.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
+    <ClInclude Include="..\Public\Npc.h" />
+    <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
@@ -241,11 +244,16 @@
     <ClInclude Include="..\Public\TargetLock.h" />
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
+    <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
+    <ClInclude Include="..\Public\UI_ScriptBG_Aura.h" />
+    <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
+    <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
+    <ClInclude Include="..\Public\UI_Script_NameBox.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -353,6 +361,7 @@
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
+    <ClCompile Include="..\Private\Body_Rlya.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
@@ -397,6 +406,8 @@
     <ClCompile Include="..\Private\Level_Jugglas.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
+    <ClCompile Include="..\Private\Npc.cpp" />
+    <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
@@ -404,11 +415,16 @@
     <ClCompile Include="..\Private\TargetLock.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp" />
+    <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
+    <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
+    <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />

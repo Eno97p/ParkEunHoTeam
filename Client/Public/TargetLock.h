@@ -16,8 +16,11 @@ class CTargetLock final : public CGameObject
 public:
 	typedef struct TargetLock_Desc : public GAMEOBJECT_DESC
 	{
-		const _float4x4* pParentMatrix;
-		const _float4x4* pCombinedTransformationMatrix;
+		
+		_float				fScale;
+		_vector				vOffsetPos;
+		const _float4x4*	pParentMatrix;
+		const _float4x4*	pCombinedTransformationMatrix;
 	}TARGETLOCK_DESC;
 
 private:
@@ -32,6 +35,7 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Bloom() override;
 
 private:
 	CShader*		m_pShaderCom = { nullptr };

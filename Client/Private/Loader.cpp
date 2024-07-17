@@ -28,6 +28,11 @@
 #include "Item.h"
 #pragma endregion ITEM
 
+#pragma region NPC
+#include "NPC_Rlya.h"
+#include "Body_Rlya.h"
+#pragma endregion NPC
+
 #pragma region DECAL
 #include "Decal.h"
 #pragma endregion DECAL
@@ -2190,6 +2195,7 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Elevator"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RotateGate"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahGate/RasSamrahGate.fbx", PreTransformMatrix))))

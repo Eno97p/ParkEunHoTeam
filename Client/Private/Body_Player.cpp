@@ -185,9 +185,12 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
+		if(m_iPastAnimIndex == 34 || m_iPastAnimIndex == 35)
+			fAnimSpeed = 1.5f;
+		else
+			fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_iPastAnimIndex > 34)
+		if (m_iPastAnimIndex > 33) // 34
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -196,7 +199,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_BACKATTACK)
+	else if (*m_pState == CPlayer::STATE_BACKATTACK) // X
 	{
 		if (m_iPastAnimIndex < 70 || m_iPastAnimIndex > 74)
 		{
@@ -223,7 +226,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 150)
+			fAnimSpeed = 2.f; // 2
+		else
+			fAnimSpeed = 1.5f;
+
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 150)
 		{
@@ -242,7 +249,12 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 134)
+			fAnimSpeed = 2.5f;
+		else if(m_iPastAnimIndex == 131)
+			fAnimSpeed = 4.f;
+		else
+			fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 133)
 		{
@@ -267,7 +279,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 149) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 144)
+			fAnimSpeed = 2.5f;
+		else
+			fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
@@ -342,7 +357,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
+		if(m_iPastAnimIndex == 76)
+			fAnimSpeed = 1.7f;
+		else
+			fAnimSpeed = 2.f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
@@ -353,16 +371,17 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_RUNLATTACK1) // ²÷±è êó
+	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
 	{
-		if (m_iPastAnimIndex < 137 || m_iPastAnimIndex > 142)
+		if (m_iPastAnimIndex < 139 || m_iPastAnimIndex > 142)
 		{
-			m_iPastAnimIndex = 139;
+			m_iPastAnimIndex = 139; // 137
 		}
 		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138)
 		{

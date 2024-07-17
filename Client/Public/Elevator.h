@@ -2,9 +2,9 @@
 #include "Active_Element.h"
 
 BEGIN(Engine)
-//class CShader;
+class CShader;
 class CTexture;
-//class CModel;
+class CModel;
 class CPhysXComponent;
 END
 

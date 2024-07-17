@@ -47,7 +47,7 @@ void CUI_LoadingBG::Tick(_float fTimeDelta)
 
 void CUI_LoadingBG::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_UI(this, SIXTEENTH);
 }
 
 HRESULT CUI_LoadingBG::Render()

@@ -6,6 +6,45 @@
 
 #include"Import_Class.h"	// <---여기에 들어가서 헤더 넣으셈
 
+#include "Legionnaire_Gun.h"
+#include "Body_LGGun.h"
+#include "Weapon_Gun_LGGun.h"
+#include "Weapon_Sword_LGGun.h"
+#include "Weapon_Arrow_LGGun.h"
+
+#include "Ghost.h"
+#include "Body_Ghost.h"
+#include "Weapon_Ghost.h"
+
+#include "Homonculus.h"
+#include "Body_Homonculus.h"
+#include "Weapon_Homonculus.h"
+
+#include "TargetLock.h"
+
+#pragma endregion Monster
+
+#pragma region ITEM
+#include "Item.h"
+#pragma endregion ITEM
+
+#pragma region DECAL
+#include "Decal.h"
+#pragma endregion DECAL
+
+#include "Map_Element.h"
+#include "Passive_Element.h"
+#include "Deco_Element.h"
+#include "Active_Element.h"
+#include "TutorialMapBridge.h"
+
+#include "FakeWall.h"
+#include "Elevator.h"
+#include "RotateGate.h"
+#include "EventTrigger.h"
+
+#include"CHoverboard.h"
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -977,6 +1016,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CElevator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// Prototype_GameObject_RotateGate
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotateGate"),
+		CRotateGate::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//Prototype_GameObject_EventTrigger
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EventTrigger"),
 		CEventTrigger::Create(m_pDevice, m_pContext))))
@@ -1719,6 +1763,12 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Legionnaire/Legionnaire.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Mst_TargetLock */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Mst_TargetLock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 #pragma region ITEM
@@ -2134,6 +2184,18 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 
 #pragma endregion   DECO ELEMENTS
 
+#pragma region  Active Element Model Load
+	lstrcpy(m_szLoadingText, TEXT("Active Element 모델 로딩 중"));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Elevator"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RotateGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahGate/RasSamrahGate.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion   Active Element Model Load
 
 
 
@@ -2332,6 +2394,12 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Legionnaire"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Legionnaire/Legionnaire.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Mst_TargetLock */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Mst_TargetLock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion Monster

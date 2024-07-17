@@ -145,6 +145,41 @@ PS_OUT_COLOR PS_COLOR(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_TILING(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    float2 vTilingTexcoord = In.vTexcoord * 20.f;
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, vTilingTexcoord);
+    if (vDiffuse.a < 0.1f)
+        discard;
+
+    vector vSpecular = g_SpecularTexture.Sample(LinearSampler, vTilingTexcoord);
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, vTilingTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+
+    vNormal = mul(vNormal, WorldMatrix);
+
+    if (g_bDiffuse) Out.vDiffuse = vDiffuse;
+
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    if (g_bSpecular) Out.vSpecular = vSpecular;
+
+    vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, vTilingTexcoord);
+    vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, vTilingTexcoord);
+    vector vMetalic = g_MetalicTexture.Sample(LinearSampler, vTilingTexcoord);
+    if (g_bEmissive) Out.vEmissive = vEmissive;
+    if (g_bRoughness) Out.vRoughness = vRoughness;
+    if (g_bMetalic) Out.vMetalic = vMetalic;
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
 
@@ -175,5 +210,33 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_COLOR();
+    }
+
+      pass Tmp_2 // 안씀
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR();
+    }
+
+      pass Tiling_3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_TILING();
     }
 }

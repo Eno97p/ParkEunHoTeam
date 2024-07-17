@@ -2,6 +2,7 @@
 #include "Map_Element.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Elevator.h"
 
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
@@ -89,10 +90,12 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 			break;
 			case TRIG_JUGGLAS_SPAWNSECONDROOM:
 			{
-				m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
+				m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 0));
 				CMap_Element::MAP_ELEMENT_DESC pDesc = {};
-				_matrix vMat = XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f);
-				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				_float4x4 vMat;
+				XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
+				pDesc.iInstanceCount = 1;
+				pDesc.WorldMats.emplace_back(&vMat);
 				pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle2");
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
 			}
@@ -101,9 +104,13 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 			{
 				//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));
 				CMap_Element::MAP_ELEMENT_DESC pDesc = {};
-				_matrix vMat = XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f);
-				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+				_float4x4 vMat;
+				XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
+				pDesc.iInstanceCount = 1;
+				
+				pDesc.WorldMats.emplace_back(&vMat);
 				pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle3");
+				pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle4");
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
 			}
 			break;
@@ -115,6 +122,16 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 			case TRIG_VIEWCHANGE_STOT:
 			{
 				m_pGameInstance->Set_MainCamera(1);
+			}
+			break;
+			case TRIG_ASCEND_ELEVATOR:
+			{
+				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
+			}
+			break;
+			case TRIG_DESCEND_ELEVATOR:
+			{
+				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Descend(XMVectorSet(-310.f, 5.6f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
 			}
 			break;
 			default:

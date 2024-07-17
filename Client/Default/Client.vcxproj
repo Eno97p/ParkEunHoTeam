@@ -235,6 +235,7 @@
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
+    <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
@@ -397,6 +398,7 @@
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
+    <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />

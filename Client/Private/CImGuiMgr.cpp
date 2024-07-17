@@ -210,7 +210,7 @@ void CImGuiMgr::Render_MainMenu()
 		//	MSG_BOX("IMGUI::Failed to Open Level");
 		//	return;
 		//}
-		//int temp = 0;
+		int temp = 0;
 
 		return;
 	}
@@ -295,24 +295,26 @@ void CImGuiMgr::Render_Object(list<CGameObject*>& listGameObject)
 	//CGameObject* pGameObject = nullptr;
 	ImGui::Combo("Objects", &m_iCurrentObject, ObjectNames.data(), ObjectNames.size());
 
-	iter = listGameObject.begin();
-
-	if (m_iCurrentObject >= listGameObject.size())
+	if (listGameObject.size()!=0)
 	{
-		m_iCurrentObject = 0;
-	}
+		iter = listGameObject.begin();
+
+		if (m_iCurrentObject >= listGameObject.size())
+		{
+			m_iCurrentObject = 0;
+		}
 
 
-	std::advance(iter, m_iCurrentObject);
-	m_pSelectedObject = *iter;
+		std::advance(iter, m_iCurrentObject);
+		m_pSelectedObject = *iter;
 
 
 
 
 		//if()
 
-	Render_Component(m_pSelectedObject);
-
+		Render_Component(m_pSelectedObject);
+	}
 
 
 

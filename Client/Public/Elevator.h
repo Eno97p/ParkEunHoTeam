@@ -2,10 +2,10 @@
 #include "Active_Element.h"
 
 BEGIN(Engine)
-class CShader;
+//class CShader;
 class CTexture;
-class CModel;
-class CPhysXComponent_static;
+//class CModel;
+class CPhysXComponent;
 END
 
 BEGIN(Client)

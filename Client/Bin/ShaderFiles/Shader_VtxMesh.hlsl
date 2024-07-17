@@ -282,6 +282,7 @@ PS_OUT_DECAL PS_DECAL(PS_IN In)
     if (vDiffuse.a < 0.1f)
         discard;
 
+    Out.vDiffuse = vDiffuse;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
 
     return Out;

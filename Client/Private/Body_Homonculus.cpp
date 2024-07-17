@@ -56,7 +56,6 @@ void CBody_Homonculus::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
 	if (m_isAnimFinished)
 	{
 		m_fDamageTiming = 0.f;
@@ -147,7 +146,6 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 9, true };
 	_float fAnimSpeed = 1.f;
 
-	m_pWeapon->Set_Active(false);
 	if (*m_pState == CHomonculus::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
@@ -266,6 +264,12 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		isLerp = false;
 	}
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
+
+	m_isAnimFinished = m_pModelCom->Get_AnimFinished();
+	if (m_isAnimFinished)
+	{
+		m_pWeapon->Set_Active(false);
+	}
 }
 
 CBody_Homonculus* CBody_Homonculus::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

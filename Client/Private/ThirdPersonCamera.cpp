@@ -3,6 +3,9 @@
 #include "Player.h"
 #include "Monster.h"
 
+_bool CThirdPersonCamera::m_bIsTargetLocked = false;
+_float4 CThirdPersonCamera::m_vLockedTargetPos = { 0.f, 10.f, 0.f, 1.f };
+
 CThirdPersonCamera::CThirdPersonCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {

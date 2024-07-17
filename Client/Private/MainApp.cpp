@@ -95,6 +95,10 @@
 #pragma endregion Item
 
 #pragma region Script
+#include "UI_ScriptBG_Aura.h"
+#include "UI_ScriptBG_Npc.h"
+#include "UI_Script_DialogBox.h"
+#include "UI_Script_NameBox.h"
 #include "UIGroup_Script.h"
 #pragma endregion Script
 
@@ -1262,6 +1266,26 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion Item
 
 #pragma region Script
+	/* For.Prototype_GameObject_UI_ScriptBG_Aura*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"),
+		CUI_ScriptBG_Aura::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ScriptBG_Npc*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"),
+		CUI_ScriptBG_Npc::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Script_DialogBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Script_DialogBox"),
+		CUI_Script_DialogBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ScriptBG_NameBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"),
+		CUI_Script_NameBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_Script*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Script"),
 		CUIGroup_Script::Create(m_pDevice, m_pContext))))

@@ -2,7 +2,10 @@
 
 #include "GameInstance.h"
 
-#include "UI.h"
+#include "UI_ScriptBG_Aura.h"
+#include "UI_ScriptBG_Npc.h"
+#include "UI_Script_DialogBox.h"
+#include "UI_Script_NameBox.h"
 
 CUIGroup_Script::CUIGroup_Script(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -75,6 +78,21 @@ HRESULT CUIGroup_Script::Render()
 
 HRESULT CUIGroup_Script::Create_UI()
 {
+	CUI::UI_DESC pDesc{};
+
+	// BG Aura
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pDesc)));
+	
+	// BG Npc
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pDesc)));
+
+	// DialogBox
+	m_vecUI.emplace_back(dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc)));
+
+	// NameBox
+	m_vecUI.emplace_back(dynamic_cast<CUI_Script_NameBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"), &pDesc)));
+
+
 	return S_OK;
 }
 

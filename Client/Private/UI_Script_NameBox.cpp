@@ -27,8 +27,8 @@ HRESULT CUI_Script_NameBox::Initialize(void* pArg)
 
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
+	m_fSizeX = 256;
+	m_fSizeY = 256;
 
 	Setting_Position();
 

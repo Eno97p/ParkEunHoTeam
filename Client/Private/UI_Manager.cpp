@@ -252,8 +252,10 @@ void CUI_Manager::Key_Input()
 		}
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_U))
+	if (m_pGameInstance->Key_Down(DIK_U) && m_pUI_Activate->Get_isRend())
 	{
+		// Sciprt 말고도 처리해야함 (우물 등)
+		// 해줄 때마다 값들 Reset 필요함
 		(*script).second->Set_Rend(true);
 	}
 }

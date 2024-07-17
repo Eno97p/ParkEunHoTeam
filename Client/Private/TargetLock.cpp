@@ -30,7 +30,8 @@ HRESULT CTargetLock::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_Scale(5.f, 5.f, 5.f); // 확인 위해 임의로 크게
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-0.13f, -0.4f, 0.f, 1.f));
+	m_pTransformCom->Set_Scale(6.f, 6.f, 6.f); // 확인 위해 임의로 크게
 
 	return S_OK;
 }
@@ -47,15 +48,39 @@ void CTargetLock::Tick(_float fTimeDelta)
 	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
+	
+
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
 }
 
 void CTargetLock::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this); // Render Group 무엇으로?
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this); // Render Group 무엇으로?
 }
 
 HRESULT CTargetLock::Render()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(6);
+
+		m_pModelCom->Render(i);
+	}
+	return S_OK;
+}
+
+HRESULT CTargetLock::Render_Bloom()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;

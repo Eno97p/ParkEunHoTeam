@@ -339,7 +339,7 @@ HRESULT CLevel_GamePlay::Save_Data()
 
 HRESULT CLevel_GamePlay::Save_Data_PhysX()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Tutorial_PhysX.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Ackbar_PhysX.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -350,17 +350,14 @@ HRESULT CLevel_GamePlay::Save_Data_PhysX()
     // 먼저 모든 고유한 모델을 처리하여 map의 크기를 결정
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
     {
-        string modelName;
-        if (nullptr != iter->Get_ModelName())
+        if (nullptr != iter->Get_ModelName() && strcmp(iter->Get_Layer(), "Layer_Monster") != 0)
         {
-            modelName = iter->Get_ModelName();
+            string modelName = iter->Get_ModelName();
             if (processedModels.find(modelName) == processedModels.end())
             {
                 processedModels[modelName] = true;
             }
         }
-
-      
     }
 
     // map의 크기(고유한 모델의 수)를 파일에 쓰기
@@ -373,26 +370,21 @@ HRESULT CLevel_GamePlay::Save_Data_PhysX()
     // 생성된 Tool Obj들 저장
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
     {
-        if (nullptr != iter->Get_ModelName())
+        if (nullptr != iter->Get_ModelName() && strcmp(iter->Get_Layer(), "Layer_Monster") != 0)
         {
             string modelName = iter->Get_ModelName();
             string modelPath = iter->Get_ModelPath();
-
-            // 모델이 아직 처리되지 않았다면
             if (processedModels.find(modelName) == processedModels.end())
             {
                 processedModels[modelName] = true;
-
-                // "Model_"을 "PhysX_"로 대체
+                // "Model_"을 "PhysX_"로 대체하는 부분은 그대로 유지
                 size_t pos = modelName.find("Model_");
                 if (pos != string::npos)
                 {
                     modelName.replace(pos, 6, "PhysX_");
                 }
-
                 char szModelName[MAX_PATH] = "";
                 strcpy_s(szModelName, modelName.c_str());
-
                 WriteFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
                 WriteFile(hFile, modelPath.c_str(), sizeof(char) * MAX_PATH, &dwByte, nullptr);
             }

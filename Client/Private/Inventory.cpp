@@ -50,6 +50,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI Ãâ·Â
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 
+	vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
+	Add_EquipWeapon((*weapon), 0);
+
 	return S_OK;
 }
 

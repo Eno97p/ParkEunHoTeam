@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 CWeapon_Homonculus::CWeapon_Homonculus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -31,7 +32,7 @@ HRESULT CWeapon_Homonculus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
@@ -73,6 +74,8 @@ void CWeapon_Homonculus::Tick(_float fTimeDelta)
 
 		}
 	}
+
+	Generate_Trail(6);
 }
 
 void CWeapon_Homonculus::Late_Tick(_float fTimeDelta)

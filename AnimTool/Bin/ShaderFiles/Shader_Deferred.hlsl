@@ -16,7 +16,7 @@ vector      g_vLightAmbient;
 vector      g_vLightSpecular;
 
 //이민영 추가 240621 1638
-float      g_fShadowThreshold;
+float      g_fShadowThreshold = 0.8f;
 
 vector      g_vMtrlAmbient = vector(1.f, 1.f, 1.f, 1.f);
 vector      g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
@@ -659,60 +659,87 @@ PS_OUT PS_BLOOM(PS_IN In)
 
 PS_OUT PS_DECAL(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT)0;
+   PS_OUT Out = (PS_OUT)0;
 
-    // 깊이 정보 샘플링
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    // Screen space coordinates
+    float2 screenUV = In.vTexcoord;
 
-    // 월드 공간 위치 계산
-    vector vWorldPos;
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; // 0 ~ 1
-    vWorldPos.w = 1.f;
+    // Sample depth
+    float depth = g_DepthTexture.Sample(LinearSampler, screenUV).r;
 
-    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+    // Reconstruct position in clip space
+    float4 positionCS = float4(In.vTexcoord * 2 - 1, depth, 1);
 
-    // 뷰 공간 위치 계산
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    // Transform from clip space to view space
+    float4 positionVS = mul(g_ProjMatrixInv, positionCS);
+    positionVS /= positionVS.w;
 
-    // 월드 공간 위치 계산
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+    // Transform from view space to world space
+    float4 positionWS = mul(g_ViewMatrixInv, positionVS);
 
-    // 데칼 공간으로 변환
-    float3 decalPos = mul(vWorldPos, g_WorldMatrixInv).xyz;
+    // Transform world space position to decal space
+    float4 decalSpacePos = mul(g_WorldMatrixInv, positionWS);
 
-    // 데칼 범위 체크 ([-1, 1] 큐브 내부)
-    if (all(abs(decalPos) <= 1.0f))
-    {
-        // 데칼 UV 계산 ([-1, 1] 범위를 [0, 1] 범위로 변환)
-        float2 decalUV = decalPos.xy * 0.5f + 0.5f;
+    // Check if within decal bounds (assuming decal space is [-0.5, 0.5] in each dimension)
+    if (abs(decalSpacePos.x) > 0.5 || abs(decalSpacePos.y) > 0.5 || abs(decalSpacePos.z) > 0.5)
+        discard;
 
-        // 데칼 텍스처 샘플링
-        float4 vDecal = g_EffectTexture.Sample(LinearSampler, decalUV);
+    // Calculate decal UV
+    float2 decalUV = decalSpacePos.xy + 0.5;
 
-        // 기존 디퓨즈 색상 샘플링
-        float4 vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    // Sample decal texture
+    float4 decalColor = g_EffectTexture.Sample(LinearSampler, decalUV);
 
-        // 엣지 페이딩
-        float fade = 1.0f - max(abs(decalPos.x), max(abs(decalPos.y), abs(decalPos.z)));
-        fade = saturate(fade * 3.0f); // 페이딩 강도 조절
+    // Sample G-Buffer
+    float4 albedo = g_DiffuseTexture.Sample(LinearSampler, screenUV);
 
-        // Z 축 기반 추가 페이딩 (옵션)
-        float zFade = 1.0f - abs(decalPos.z);
-        zFade = saturate(zFade * 5.0f);
-        fade *= zFade;
-
-        // 데칼 블렌딩
-        Out.vColor = lerp(vDiffuse, vDecal, vDecal.a * fade);
-    }
-    else
-    {
-        // 데칼 범위 밖일 경우 원래 색상 유지
-        Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    }
-
+    // Apply decal
+    float3 finalColor = lerp(albedo.rgb, decalColor.rgb, decalColor.a);
+    Out.vColor = float4(finalColor, 1.f);
     return Out;
+
+    //PS_OUT Out = (PS_OUT)0;
+
+    //// G-buffer에서 디퓨즈와 깊이 정보 샘플링
+    //vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    //vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    //// 월드 좌표 계산
+    //vector vWorldPos;
+    //vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    //vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    //vWorldPos.z = vDepthDesc.x; // 0 ~ 1
+    //vWorldPos.w = 1.f;
+    //vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+    //vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    //vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    //// 데칼 공간으로 변환
+    //float3 vDecalPos = mul(vWorldPos, g_WorldMatrixInv).xyz;
+
+    //// 데칼 범위 체크 ([-0.5, 0.5] 큐브 내부)
+    //if (all(abs(vDecalPos) <= 0.5f))
+    //{
+    //    // 데칼 UV 계산
+    //    float2 vDecalUV = vDecalPos.xy + 0.5f;
+
+    //    // 데칼 텍스처 샘플링
+    //    float4 vDecalColor = g_EffectTexture.Sample(LinearSampler, vDecalUV);
+
+    //    // 엣지 페이딩
+    //    float fFade = 1.0f - max(abs(vDecalPos.x), max(abs(vDecalPos.y), abs(vDecalPos.z))) * 2.0f;
+    //    fFade = saturate(fFade);
+
+    //    // 데칼 블렌딩
+    //    Out.vColor = lerp(vDiffuse, vDecalColor, vDecalColor.a * fFade);
+    //}
+    //else
+    //{
+    //    // 데칼 범위 밖일 경우 원래 색상 유지
+    //    Out.vColor = vDiffuse;
+    //}
+
+    //return Out;
 }
 
 PS_OUT PS_REFLECTION(PS_IN In)

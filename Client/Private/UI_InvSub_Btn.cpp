@@ -176,18 +176,15 @@ void CUI_InvSub_Btn::Mouse_Input()
 		switch (m_eBtnType)
 		{
 		case Client::CUI_InvSub_Btn::BTN_SET:
-			// Quick Access에 빈 자리부터 순서대로 추가되어야 함. 추가되고 나서 화면 꺼져야 함
 			CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
 			break;
 		case Client::CUI_InvSub_Btn::BTN_USE:
 			break;
-		case Client::CUI_InvSub_Btn::BTN_CANCEL:
-			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
-			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
-			break;
 		default:
 			break;
 		}
+		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
 	}
 }
 

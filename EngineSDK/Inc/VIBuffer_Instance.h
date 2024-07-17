@@ -67,6 +67,7 @@ public:
 	void Extinction(_float fTimeDelta);
 	void GrowOutY(_float fTimeDelta);
 	void GrowOut_Speed_Down(_float fTimeDelta);
+	void GrowOut_Speed_Down_Texture(_float fTimeDelta);
 
 
 	

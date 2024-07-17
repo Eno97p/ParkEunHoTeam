@@ -63,7 +63,7 @@ public:
 
 	HRESULT Render_LightDepth();
 
-private:
+protected:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 protected:

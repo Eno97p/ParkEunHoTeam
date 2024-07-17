@@ -79,7 +79,7 @@ HRESULT CUIGroup_Menu::Render()
 
 HRESULT CUIGroup_Menu::Create_UI()
 {
-	CUI::UI_DESC pDesc{};
+	CUI::UI_DESC pDesc;
 
 	// Menu BG
 	pDesc.eLevel = LEVEL_STATIC;

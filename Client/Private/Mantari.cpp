@@ -55,9 +55,9 @@ HRESULT CMantari::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_MANTARI);
 
-	// Body의 m_pModelCom를 넣어야 함
+	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end")))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	return S_OK;
@@ -133,6 +133,24 @@ HRESULT CMantari::Render()
 	return S_OK;
 }
 
+void CMantari::Chase_Player(_float fTimeDelta)
+{
+	_float3 fScale = m_pTransformCom->Get_Scaled();
+
+	_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	vDir.m128_f32[1] = 0.f;
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+	_vector vUp = XMVector3Cross(vDir, vRight);
+
+	vDir = XMVector3Normalize(vDir);
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+	m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
+	m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
+}
+
 HRESULT CMantari::Add_Components()
 {
 	/* For.Com_Collider */
@@ -165,6 +183,7 @@ HRESULT CMantari::Add_Components()
 	PhysXDesc.nonWalkableMode = PxControllerNonWalkableMode::ePREVENT_CLIMBING_AND_FORCE_SLIDING;	//오를 수 없는 지형에 대한 처리
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
+	PhysXDesc.pName= "Mantari";
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
@@ -388,21 +407,7 @@ NodeStates CMantari::JumpAttack(_float fTimeDelta)
 
 		if (m_bChasing && m_fChasingDelay < 0.f)
 		{
-
-			_float3 fScale = m_pTransformCom->Get_Scaled();
-
-			_vector vDir = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			vDir.m128_f32[1] = 0.f;
-
-			_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
-			_vector vUp = XMVector3Cross(vDir, vRight);
-
-			vDir = XMVector3Normalize(vDir);
-			m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-			m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-			m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
-			m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
-			m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
+			Chase_Player(fTimeDelta);
 		}
 
 		if (m_fLengthFromPlayer < 5.f)

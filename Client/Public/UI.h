@@ -16,6 +16,7 @@ class CUI abstract : public CGameObject
 public:
 	typedef struct UI_Desc : public GAMEOBJECT_DESC
 	{
+		UI_Desc() : fX(0.f), fY(0.f), fSizeX(0.f), fSizeY(0.f), eLevel(LEVEL_END) {}
 		_float	fX;
 		_float	fY;
 		_float	fSizeX;

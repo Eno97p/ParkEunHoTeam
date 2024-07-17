@@ -88,6 +88,11 @@ void CUIGroup_InvSub::Tick(_float fTimeDelta)
 			pBtn->Tick(fTimeDelta);
 		}
 	}
+	else
+	{
+		for (auto& pBtn : m_vecBtn)
+			pBtn->Set_Select(false);
+	}
 }
 
 void CUIGroup_InvSub::Late_Tick(_float fTimeDelta)

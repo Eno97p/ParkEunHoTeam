@@ -467,7 +467,7 @@ void CImgui_Manager::Delete_Obj()
 void CImgui_Manager::Select_List_File()
 {
     const char* ModelFile[] = { "Wander", "Homomculus", "Job_Mob", "Juggulus", "Malkhel",
-                                "Mantari", "Npc_Choron", "Npc_Valnir", "Arrow_Jobmob" };
+                                "Mantari", "Npc_Choron", "Npc_Valnir", "Arrow_Jobmob", "Ghost"};
     static _int iSelectIdex = 0;
     ImGui::ListBox("###ModelFile", &iSelectIdex, ModelFile, IM_ARRAYSIZE(ModelFile));
 

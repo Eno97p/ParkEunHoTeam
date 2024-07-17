@@ -14,10 +14,10 @@ public:
 	typedef	struct ControllerDesc :public PxCapsuleControllerDesc
 	{
 		_float3 fMatterial;
-		CTransform* pTransform = nullptr;
 		_float fJumpSpeed = 0.f;
-		const char* pName = nullptr;
 		PxFilterData filterData = {};
+		const char* pName = nullptr;
+		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
 public:
@@ -56,6 +56,8 @@ public:
 
 	HRESULT Go_Straight(_float fTimeDelta);
 	HRESULT Go_BackWard(_float fTimeDelta);
+	HRESULT Go_Left(_float fTimeDelta);
+	HRESULT Go_Right(_float fTimeDelta);
 	HRESULT Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_OrbitCCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_Jump(_float fTimeDelta, _float fJumpSpeed = 0.f);

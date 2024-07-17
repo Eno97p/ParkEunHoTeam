@@ -33,7 +33,7 @@ HRESULT CElevator::Initialize(void* pArg)
 
 		CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
 		strcpy_s(m_szName, "Prototype_GameObject_Elevator");
-		strcpy_s(m_szLayer, "Layer_Acitve_Element");
+		strcpy_s(m_szLayer, "Layer_Active_Element");
 		strcpy_s(m_szModelName, "Prototype_Component_Model_Elevator");
 		m_eModelType = CModel::TYPE_NONANIM;
 		m_iTriggerType = pDesc->TriggerType;
@@ -229,7 +229,7 @@ HRESULT CElevator::Add_Components(void* pArg)
 
 	/* For.Com_VIBuffer */
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, wstr.c_str(),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
@@ -305,6 +305,6 @@ void CElevator::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
+	//Safe_Release(m_pModelCom);
+	//Safe_Release(m_pShaderCom);
 }

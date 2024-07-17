@@ -282,6 +282,7 @@ PS_OUT_DECAL PS_DECAL(PS_IN In)
     if (vDiffuse.a < 0.1f)
         discard;
 
+    Out.vDiffuse = vDiffuse;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
 
     return Out;
@@ -376,7 +377,7 @@ technique11 DefaultTechnique
     pass TargetLockPass_6
     {
        SetRasterizerState(RS_Default);
-       SetDepthStencilState(DSS_Default, 0);
+       SetDepthStencilState(DSS_None_Test_None_Write, 0);
        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */

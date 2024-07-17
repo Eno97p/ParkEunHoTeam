@@ -90,7 +90,7 @@ void CParticle_Point::Tick(_float fTimeDelta)
 		m_pVIBufferCom->GrowOutY(fTimeDelta);
 		break;
 	case GROWOUT_SPEEDDOWN:
-		m_pVIBufferCom->GrowOut_Speed_Down(fTimeDelta);
+		m_pVIBufferCom->GrowOut_Speed_Down_Texture(fTimeDelta);
 		break;
 	}
 

@@ -33,7 +33,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
 
 	pDesc->fSpeedPerSec = 3.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
 	m_InitialPosition = { pDesc->mWorldMatrix._41, pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43 }; //초기 위치 설정
 
 	if (FAILED(__super::Initialize(pDesc)))
@@ -56,6 +56,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_pCameraTransform)
+	{
+		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));
+		auto iter = ++CameraList.begin();
+		m_pCameraTransform = dynamic_cast<CTransform*>((*iter)->Get_Component(TEXT("Com_Transform")));
+		Safe_AddRef(m_pCameraTransform);
+	}
+
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
 	m_bAnimFinished = dynamic_cast<CBody_Player*>(m_PartObjects.front())->Get_AnimFinished();
@@ -101,19 +109,6 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_bJumping = true;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_T) & 0x80)
-	{
-		CLandObject::LANDOBJ_DESC		LandObjDesc{};
-
-		LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-		LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Distortion"), &LandObjDesc);
-	}
-
-	if (m_pGameInstance->Key_Down(DIKEYBOARD_9))		//레이어 삭제 테스트
-	{
-		m_pGameInstance->Clear_Layer(LEVEL_GAMEPLAY, TEXT("Layer_Effect"));
-	}
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
@@ -127,13 +122,7 @@ void CPlayer::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	list<CGameObject*> ObjectLis;
-	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
 
-	if (m_pGameInstance->Key_Down(DIK_7))
-	{
-		CTransform* transform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")));
-	}
 	m_fParticleAcctime -= fTimeDelta;
 	if (m_fParticleAcctime < 0.f)
 	{
@@ -172,7 +161,7 @@ HRESULT CPlayer::Add_Components()
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -202,7 +191,7 @@ HRESULT CPlayer::Add_Components()
 	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 	
 	
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
+	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
 
@@ -255,7 +244,8 @@ CGameObject* CPlayer::Get_Weapon()
 
 void CPlayer::PlayerHit(_float fValue)
 {
-	if (m_bParrying || m_iState == STATE_ROLL || m_bParry) return;
+	if (m_bParrying || m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_bParry) return;
 	m_iState = STATE_HIT;
 	m_bLAttacking = false;
 	m_bRAttacking = false;
@@ -487,9 +477,10 @@ void CPlayer::Move_Counter()
 
 NodeStates CPlayer::Parry(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT
 		|| m_bLAttacking || m_bRAttacking || m_fLChargeAttack != 0.f || m_fRChargeAttack != 0.f
-		|| m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+		|| m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease) )
 	{
 		return COOLING;
 	}
@@ -607,7 +598,8 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RollAttack(_float fTimeDelta)
 {
-	if (m_bJumping || m_iState == STATE_DASH || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+	if (m_bJumping || m_iState == STATE_DASH || (m_fCurStamina < 10.f && m_bStaminaCanDecrease) || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT)
 	{
 		return COOLING;
 	}
@@ -662,7 +654,8 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 
 NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT
 		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM || 
 		(m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
@@ -741,7 +734,8 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT
 		|| m_bLAttacking || m_fLChargeAttack > 0.f || m_iState == STATE_USEITEM
 		|| (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
@@ -797,6 +791,26 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 				// 스테미나 조절할 것
 				Add_Stamina(-10.f);
 			}
+			// 락온 상태일 때
+			if (CThirdPersonCamera::m_bIsTargetLocked)
+			{
+				_float3 fScale = m_pTransformCom->Get_Scaled();
+
+				_vector vDir = XMLoadFloat4(&CThirdPersonCamera::m_vLockedTargetPos) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				vDir.m128_f32[1] = 0.f;
+
+				_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+				_vector vUp = XMVector3Cross(vDir, vRight);
+
+				_float fLength = XMVectorGetX(XMVector3Length(vDir));
+
+				vDir = XMVector3Normalize(vDir);
+				m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+				m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+				m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+				m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
+				m_pPhysXCom->Go_Straight(fTimeDelta * fLength);
+			}
 		}
 		m_iState = STATE_RCHARGEATTACK;
 
@@ -822,7 +836,8 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 NodeStates CPlayer::LAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT
 		|| m_bRAttacking || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
@@ -906,7 +921,8 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 
 NodeStates CPlayer::RAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -969,14 +985,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 	{
 		m_pPhysXCom->Set_Speed(ROLLSPEED);
 		m_pTransformCom->Set_Speed(1.f);
-		if (GetKeyState('S') & 0x8000)
-		{
-			m_pPhysXCom->Go_BackWard(fTimeDelta);
-		}
-		if (GetKeyState('W') & 0x8000)
-		{
-			m_pPhysXCom->Go_Straight(fTimeDelta);
-		}
+		m_pPhysXCom->Go_Straight(fTimeDelta);
 
 		m_fAnimDelay += fTimeDelta;
 		m_fCloneDelay += fTimeDelta;
@@ -992,7 +1001,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 			CloneDesc.pState = &iState;
 			CloneDesc.fAnimDelay = m_fAnimDelay;
 
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
 			m_fCloneDelay = 0.f;
 		}
 
@@ -1028,7 +1037,8 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
-	if (m_iState == STATE_ROLL || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+	if (m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
@@ -1061,19 +1071,23 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 
 		if (GetKeyState('A') & 0x8000)
 		{
-			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
 		else if (GetKeyState('D') & 0x8000)
 		{
-			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
-		if (GetKeyState('W') & 0x8000)
+		else if (GetKeyState('W') & 0x8000)
 		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
 		else if (GetKeyState('S') & 0x8000)
 		{
-			m_pPhysXCom->Go_BackWard(fTimeDelta);
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
 
 		if (m_bAnimFinished)
@@ -1115,7 +1129,8 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_iState != STATE_ROLL)
+	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_iState != STATE_ROLL && m_iState != STATE_DASH_FRONT && m_iState != STATE_DASH_BACK &&
+		m_iState != STATE_DASH_LEFT && m_iState != STATE_DASH_RIGHT)
 	{
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
@@ -1125,15 +1140,56 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
-		m_iState = STATE_ROLL;
+
+		if (CThirdPersonCamera::m_bIsTargetLocked)
+		{
+			if (GetKeyState('S') & 0x8000)
+			{
+				m_iState = STATE_DASH_BACK;
+			}
+			else if (GetKeyState('A') & 0x8000)
+			{
+				m_iState = STATE_DASH_LEFT;
+			}
+			else if (GetKeyState('D') & 0x8000)
+			{
+				m_iState = STATE_DASH_RIGHT;
+			}
+			else
+			{
+				m_iState = STATE_DASH_FRONT;
+			}
+		}
+		else
+		{
+			m_iState = STATE_ROLL;
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+		
 	}
 
-	if (m_iState == STATE_ROLL)
+	if (m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT)
 	{
 		m_pPhysXCom->Set_Speed(ROLLSPEED);
-		if (GetKeyState('S') & 0x8000)
+		if (CThirdPersonCamera::m_bIsTargetLocked)
 		{
-			m_pPhysXCom->Go_BackWard(fTimeDelta);
+			if (m_iState == STATE_DASH_BACK)
+			{
+				m_pPhysXCom->Go_BackWard(fTimeDelta);
+			}
+			else if (m_iState == STATE_DASH_LEFT)
+			{
+				m_pPhysXCom->Go_Left(fTimeDelta);
+			}
+			else if (m_iState == STATE_DASH_RIGHT)
+			{
+				m_pPhysXCom->Go_Right(fTimeDelta);
+			}
+			else if(m_iState == STATE_DASH_FRONT)
+			{
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+			}
 		}
 		else
 		{
@@ -1147,18 +1203,19 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		if (m_fCloneDelay > CLONEDELAY)
 		{
 			CClone::CLONE_DESC		CloneDesc{};
-			_uint iState = STATE_ROLL;
+			_uint iState = m_iState;
 			_float4x4 vPos = *m_pTransformCom->Get_WorldFloat4x4();
 			CloneDesc.pParentMatrix = &vPos;
 			CloneDesc.pState = &iState;
 			CloneDesc.fAnimDelay = m_fAnimDelay;
 
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Clone"), &CloneDesc);
 			m_fCloneDelay = 0.f;
 		}
 
 		if (m_bAnimFinished)
 		{
+			m_pTransformCom->LookAt_For_LandObject(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
 			m_bStaminaCanDecrease = true;
 			m_iState = STATE_IDLE;
 			m_fCloneDelay = 0.f;
@@ -1257,15 +1314,6 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 
 NodeStates CPlayer::Move(_float fTimeDelta)
 {
-	if (GetKeyState('A') & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-	else if (GetKeyState('D') & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-
 	if ((GetKeyState(VK_LSHIFT) & 0x8000) && m_fButtonCooltime == 0.f)
 	{
 		m_bRunning = !m_bRunning;
@@ -1280,16 +1328,17 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		m_fButtonCooltime = 0.001f;
 	}
 
-	if (GetKeyState('W') & 0x8000)
+	if (GetKeyState('A') & 0x8000)
 	{
 		if (m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
 			m_bDisolved_Yaak = false;
 		}
-		m_pPhysXCom->Go_Straight(fTimeDelta);
 		if (m_bRunning)
 		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
 			m_iState = STATE_RUN;
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
@@ -1297,7 +1346,89 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		}
 		else
 		{
-			m_iState = STATE_WALK;
+
+			if (CThirdPersonCamera::m_bIsTargetLocked)
+			{
+				// 왼쪽으로 가기
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_Left(fTimeDelta);
+				m_iState = STATE_LOCKON_LEFT;
+			}
+			else
+			{
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+				m_iState = STATE_WALK;
+			}
+		}
+		return SUCCESS;
+	}
+	else if (GetKeyState('D') & 0x8000)
+	{
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
+		if (m_bRunning)
+		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+			m_iState = STATE_RUN;
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-fTimeDelta * 5.f);
+		}
+		else
+		{
+
+			if (CThirdPersonCamera::m_bIsTargetLocked)
+			{
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_Right(fTimeDelta);
+				m_iState = STATE_LOCKON_RIGHT;
+			}
+			else
+			{
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_RIGHT));
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+				m_iState = STATE_WALK;
+			}
+		}
+		return SUCCESS;
+	}
+	else if (GetKeyState('W') & 0x8000)
+	{
+		if (m_bDisolved_Yaak)
+		{
+			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
+			m_bDisolved_Yaak = false;
+		}
+		if (m_bRunning)
+		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+			m_iState = STATE_RUN;
+			m_bStaminaCanDecrease = true;
+			// 스테미나 조절할 것
+			Add_Stamina(-fTimeDelta * 5.f);
+		}
+		else
+		{
+
+			if (CThirdPersonCamera::m_bIsTargetLocked)
+			{
+				// 앞으로 가기
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+				m_iState = STATE_LOCKON_STRAIGHT;
+			}
+			else
+			{
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+				m_iState = STATE_WALK;
+			}
 		}
 		return SUCCESS;
 	}
@@ -1308,9 +1439,10 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_INCREASE);
 			m_bDisolved_Yaak = false;
 		}
-		m_pPhysXCom->Go_BackWard(fTimeDelta);
 		if (m_bRunning)
 		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
 			m_iState = STATE_RUN;
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
@@ -1318,7 +1450,20 @@ NodeStates CPlayer::Move(_float fTimeDelta)
 		}
 		else
 		{
-			m_iState = STATE_WALK;
+
+			if (CThirdPersonCamera::m_bIsTargetLocked)
+			{
+				// 뒤로 가기
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_BackWard(fTimeDelta);
+				m_iState = STATE_LOCKON_BACKWARD;
+			}
+			else
+			{
+				m_pTransformCom->TurnToTarget(fTimeDelta, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+				m_iState = STATE_WALK;
+			}
 		}
 		return SUCCESS;
 	}
@@ -1451,6 +1596,7 @@ void CPlayer::Free()
 
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
+	Safe_Release(m_pCameraTransform);
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);

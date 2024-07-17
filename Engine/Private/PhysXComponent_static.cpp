@@ -79,7 +79,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 		triGeom.triangleMesh = TriangleMesh;
 		triGeom.scale = TriangleScale;
 		//(TriangleMesh, PxMeshScale(PxVec3(fScale.x, fScale.y, fScale.z)));
-		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial);
+		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial,true);
 		m_pActor->attachShape(*shape);
 		shape->release();
 

@@ -119,7 +119,14 @@ HRESULT CPassive_Element::Render()
             if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;
             
+            if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+                return E_FAIL;
+            
+            //if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+            //    return E_FAIL;
 
+            //if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+            //    return E_FAIL;
 			   /* if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 					return E_FAIL;*/
 
@@ -164,7 +171,7 @@ HRESULT CPassive_Element::Render()
         //if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
         //    return E_FAIL;
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(m_iShaderPath);
 
      /*   if (FAILED(m_pModelCom->Render(i)))
             return E_FAIL;   */
@@ -213,6 +220,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     if (desc->wstrModelName == TEXT("Prototype_Component_Model_BasicCube") || desc->wstrModelName == TEXT("Prototype_Component_Model_BasicGround"))
     {
         m_bNoCullElement = true;
+        m_iShaderPath = 3;
     }
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),

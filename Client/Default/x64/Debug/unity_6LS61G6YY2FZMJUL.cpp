@@ -171,6 +171,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\TargetLock.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Trap.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UIGroup_DropItem.cpp"
 
 

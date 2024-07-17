@@ -29,6 +29,9 @@
 #include "C:\NewRepo\EffectTool\private\Electronic.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\FireEffect.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"
 
 

@@ -96,7 +96,7 @@ HRESULT CUIGroup_Logo::Create_Selector()
 		CUI_LogoSelector::SELECTOR_CONTINUE, CUI_LogoSelector::SELECTOR_NEWGAME, CUI_LogoSelector::SELECTOR_SETTINGS, CUI_LogoSelector::SELECTOR_CREDITS, CUI_LogoSelector::SELECTOR_LEAVE
 	};
 
-	CUI_LogoSelector::UI_SELECTOR_DESC pDesc{};
+	CUI_LogoSelector::UI_SELECTOR_DESC pDesc;
 
 	for (size_t i = 0; i < 5; ++i)
 	{

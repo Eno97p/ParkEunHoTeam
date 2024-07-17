@@ -132,7 +132,6 @@ HRESULT CShader::Begin(_uint iPassIndex, ID3D11DeviceContext* pDeferredContext)
 
 HRESULT CShader::Bind_RawValue(const _char * pConstantName, const void * pValue, _uint iLength)
 {
-	
 	ID3DX11EffectVariable*		pVariable = m_pEffect->GetVariableByName(pConstantName);
 	if (nullptr == pVariable)
 		return E_FAIL;

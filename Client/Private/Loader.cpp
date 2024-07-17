@@ -1,53 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\Loader.h"
 
-#include "ComputeShader_Buffer.h"
-#include "Particle_Rect.h"
-#include "Particle_Point.h"
-#include "GameInstance.h"
-#include "Body_Player.h"
-#include "Clone.h"
-#include "FreeCamera.h"
-#include "ThirdPersonCamera.h"
-#include "SideViewCamera.h"
-#include "ForkLift.h"
-#include "Terrain.h"
-//#include "Monster.h"
-#include "WhisperSword.h"
-#include "WhisperSword_Anim.h"
-#include "Cendres.h"
-#include "CorruptedSword.h"
-#include "Catharsis.h"
-#include "DurgaSword.h"
-#include "IceBlade.h"
-#include "NaruehSword.h"
-#include "PretorianSword.h"
-#include "RadamantheSword.h"
-#include "SitraSword.h"
-#include "ValnirSword.h"
-#include "VeilleurSword.h"
-#include "Player.h"
-#include "Distortion.h"
-#include "Sky.h"
 
-#pragma region Monster
-#include "Boss_Juggulus.h"
-#include "Body_Juggulus.h"
-#include "Juggulus_Hammer.h"
-#include "Juggulus_HandOne.h"
-#include "Juggulus_HandTwo.h"
-#include "Juggulus_HandThree.h"
-#include "Aspiration.h"
-#include "CircleSphere.h"
-#include "Sphere.h"
 
-#include "Mantari.h"
-#include "Body_Mantari.h"
-#include "Weapon_Mantari.h"
 
-#include "Legionnaire.h"
-#include "Body_Legionnaire.h"
-#include "Weapon_Legionnaire.h"
+#include"Import_Class.h"	// <---여기에 들어가서 헤더 넣으셈
 
 #include "Legionnaire_Gun.h"
 #include "Body_LGGun.h"
@@ -87,6 +44,7 @@
 #include "EventTrigger.h"
 
 #include"CHoverboard.h"
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -859,6 +817,19 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion DECAL
 
+	//Trap
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hachoir"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/Hachoir/Hachoir.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SmashingPillar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/SmashingPillar/SmashingPillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -1211,11 +1182,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 #pragma endregion DECAL
 
+
+
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
 		CHoverboard::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/*For.Prototype_GameObject_Trap */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Trap"),
+		CTrap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 

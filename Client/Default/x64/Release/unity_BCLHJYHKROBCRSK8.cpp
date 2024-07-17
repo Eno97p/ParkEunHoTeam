@@ -57,6 +57,9 @@
 #include "C:\NewRepo\Client\Private\Decal.cpp"
 
 
+#include "C:\NewRepo\Client\Private\Deco_Element.cpp"
+
+
 #include "C:\NewRepo\Client\Private\Distortion.cpp"
 
 
@@ -64,6 +67,9 @@
 
 
 #include "C:\NewRepo\Client\Private\EffectManager.cpp"
+
+
+#include "C:\NewRepo\Client\Private\Elevator.cpp"
 
 
 #include "C:\NewRepo\Client\Private\EventTrigger.cpp"

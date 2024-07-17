@@ -57,6 +57,7 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	m_WorldMatrix = pDesc->fWorldMatrix;
 	m_fBoxProperty= pDesc->fBoxProperty;
 	m_fCapsuleProperty = pDesc->fCapsuleProperty;
+	m_Mass = pDesc->fMass;
 	PxFilterData filterData = pDesc->filterData;
 
 	
@@ -75,7 +76,7 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 		m_pActor->setName(pDesc->pName);
 #ifdef _DEBUG
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
-
+	
 #endif
 	m_pGameInstance->AddActor(m_pActor);
 
@@ -491,7 +492,7 @@ tuple<vector<_float3>, vector<_uint>> CPhysXComponent::CreateBoxVertices(const P
 	
 }
 
-HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans, const PxTransform pxOffsetTrans)
+HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform& pxTrans, const PxTransform& pxOffsetTrans)
 {
 
 	switch (eGeometryType)
@@ -504,8 +505,7 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 	{
 		
 		PxCapsuleGeometry temp = PxCapsuleGeometry(m_fCapsuleProperty.x, m_fCapsuleProperty.y);
-		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f, pxOffsetTrans);
-		
+		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, m_Mass == 0.0f ? 1.0f : m_Mass, pxOffsetTrans);
 		
 		if(nullptr==m_pActor)
 			return E_FAIL;
@@ -515,8 +515,7 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 	{
 
 		PxBoxGeometry temp = PxBoxGeometry(m_fBoxProperty.x, m_fBoxProperty.y, m_fBoxProperty.z);
-		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, 1.f, pxOffsetTrans);
-
+		m_pActor = PxCreateDynamic(*m_pGameInstance->GetPhysics(), PxTransform(pxTrans), temp, *m_pMaterial, m_Mass==0.0f ? 1.0f: m_Mass, pxOffsetTrans);
 		if (nullptr == m_pActor)
 			return E_FAIL;
 		break;

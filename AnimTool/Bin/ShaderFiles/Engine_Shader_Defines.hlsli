@@ -14,6 +14,25 @@ sampler LinearSampler = sampler_state
 	AddressV = WRAP;
 };
 
+//아래, 파티클 사용.
+sampler LinearWrap = sampler_state
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Wrap;
+    AddressV = Wrap;
+    AddressW = Wrap;
+};
+
+sampler LinearClamp = sampler_state
+{
+    Filter = MIN_MAG_MIP_LINEAR;
+    AddressU = Clamp;
+    AddressV = Clamp;
+    AddressW = Clamp;
+};
+
+
+
 
 RasterizerState		RS_Default
 {
@@ -79,12 +98,20 @@ BlendState		BS_AlphaBlend
 BlendState BS_ParticleBlend
 {
     BlendEnable[0] = true;
-    BlendEnable[1] = true;
+    SrcBlend[0] = Src_Alpha;
+    DestBlend[0] = ONE;
+    BlendOp[0] = Add;
+    SrcBlendAlpha[0] = ONE;
+    DestBlendAlpha[0] = ZERO;
+    BlendOpAlpha[0] = Add;
+    RenderTargetWriteMask[0] = 0x0F;
+};
 
-    SrcBlend = Src_Alpha;
-    DestBlend = Inv_Src_Alpha;
-    BlendOp = Add;
-    BlendOpAlpha = Add;
+DepthStencilState DS_Particle
+{
+    DepthEnable = true;
+    DepthWriteMask = ZERO;
+    DepthFunc = LESS;
 };
 
 BlendState		BS_Blend

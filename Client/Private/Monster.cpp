@@ -35,7 +35,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayer);
@@ -109,7 +109,7 @@ HRESULT CMonster::Create_TargetLock(CModel* pBodyModel, string strBoneName, _vec
 	pDesc.fScale = fScale;
 	pDesc.vOffsetPos = vOffsetPos;
 	pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	pDesc.pCombinedTransformationMatrix = pBodyModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+ 	pDesc.pCombinedTransformationMatrix = pBodyModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 
 	m_pTargetLock = dynamic_cast<CTargetLock*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TargetLock"), &pDesc));
 	if (nullptr == m_pTargetLock)

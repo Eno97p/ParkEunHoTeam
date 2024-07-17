@@ -35,8 +35,8 @@ public:
 private:
 	_char				m_szName[MAX_PATH] = "";
 	_int				m_iParentBoneIndex = { 0 };
-	_float4x4			m_TransformationMatrix;
-	_float4x4			m_CombinedTransformationMatrix;
+	_float4x4			m_TransformationMatrix = {};
+	_float4x4			m_CombinedTransformationMatrix= {};
 
 
 

@@ -97,6 +97,11 @@ private:	//for Distortion
 	HRESULT Load_Distortion();
 
 private:
+	void FireTool();
+
+
+
+private:
 	void Electron_Tool();
 
 private:
@@ -104,6 +109,7 @@ private:
 
 private:
 	HRESULT ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath);
+	HRESULT ConvertToDDSWithMipmap_PathHere(const string& inputFilePath);
 
 private:
 	class CGameInstance* m_pGameInstance = nullptr;

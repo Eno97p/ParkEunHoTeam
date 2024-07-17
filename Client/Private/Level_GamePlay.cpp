@@ -240,6 +240,18 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
+
+	CGameObject::GAMEOBJECT_DESC desc;
+	desc.pModelName = "Prototype_Component_Model_Hachoir";
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
+		return E_FAIL;
+	
+	//desc.pModelName = "Prototype_Component_Model_SmashingPillar";
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
+	//	return E_FAIL;
+
+
+
 	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
 		return E_FAIL;
@@ -300,16 +312,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	//	return E_FAIL;
 	
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
+		return E_FAIL;
 
 
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
+
 	//}
 
 	return S_OK;

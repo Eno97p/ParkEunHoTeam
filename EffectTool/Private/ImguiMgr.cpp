@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Particle_STrail.h"
 #include "Electronic.h"
+#include "FireEffect.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -92,7 +93,7 @@ void CImguiMgr::Visible_Data()
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
 
-	static _bool bShow[7] = { false,false,false,false,false,false,false };
+	static _bool bShow[8] = { false,false,false,false,false,false,false,false };
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -132,6 +133,9 @@ void CImguiMgr::Visible_Data()
 	if (bShow[6] == true)
 		Electron_Tool();
 
+	ImGui::Checkbox("Fire Tool", &bShow[7]);
+	if (bShow[7] == true)
+		FireTool();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -237,8 +241,8 @@ void CImguiMgr::EffectTool_Rework()
 		{
 			if (parentsDesc.DesolveNum < 0)
 				parentsDesc.DesolveNum = 0;
-			if (parentsDesc.DesolveNum > 17)
-				parentsDesc.DesolveNum = 17;
+			if (parentsDesc.DesolveNum > 39)
+				parentsDesc.DesolveNum = 39;
 		}
 		ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&parentsDesc.vDesolveColor));
 		ImGui::InputFloat("DesolveLength", &parentsDesc.fDesolveLength);
@@ -769,6 +773,10 @@ void CImguiMgr::Load_Texture()
 	}
 
 
+
+	//()
+
+
 	if (ImGui::BeginListBox("##file_list", ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing()))) {
 		for (const auto& file : files) {
 			std::string fileFullPath = currentPath + "/" + file;
@@ -803,7 +811,14 @@ void CImguiMgr::Load_Texture()
 
 	}
 
-	
+	if (ImGui::Button("Convert_To_DDS_Here", ImVec2(200.f, 30.f)))
+	{
+		vector<string> imageFiles = GetFilesTexture(currentPath);
+		for (const auto& file : imageFiles) {
+			ConvertToDDSWithMipmap_PathHere(file);
+		}
+		MSG_BOX("DDS 추출 완료");
+	}
 	ImGui::End();
 }
 
@@ -1641,6 +1656,38 @@ HRESULT CImguiMgr::Load_Distortion()
 	return S_OK;
 }
 
+void CImguiMgr::FireTool()
+{
+	ImGui::Begin("Fire_Editor");
+	ImVec2 ButtonSize = { 100.f,30.f };
+
+	static CFireEffect::FIREEFFECTDESC FireDesc{};
+	ImGui::InputFloat3("ScrollSpeeds", reinterpret_cast<float*>(&FireDesc.ScrollSpeeds));
+	ImGui::InputFloat3("FireScales", reinterpret_cast<float*>(&FireDesc.Scales));
+	ImGui::InputFloat2("Distortion1", reinterpret_cast<float*>(&FireDesc.distortion1));
+	ImGui::InputFloat2("Distortion2", reinterpret_cast<float*>(&FireDesc.distortion2));
+	ImGui::InputFloat2("Distortion3", reinterpret_cast<float*>(&FireDesc.distortion3));
+	ImGui::InputFloat("DistortionScale", &FireDesc.distortionScale);
+	ImGui::InputFloat("DistortionBias", &FireDesc.distortionBias);
+
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&FireDesc.vStartPos));
+	ImGui::InputFloat2("StartScale", reinterpret_cast<float*>(&FireDesc.vStartScale));
+
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Fire"), TEXT("Prototype_GameObject_Fire_Effect"), &FireDesc);
+	}
+
+	if (ImGui::Button("Clear", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Fire"));
+	}
+
+	ImGui::End();
+}
+
 void CImguiMgr::Electron_Tool()
 {
 	ImGui::Begin("Electric_Editor");
@@ -1667,6 +1714,7 @@ void CImguiMgr::Electron_Tool()
 		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
 			TEXT("Layer_Electronic"), TEXT("Prototype_GameObject_Electronic_Effect"), &Desc);
 	}
+
 
 
 	ImGui::End();
@@ -1768,6 +1816,40 @@ HRESULT CImguiMgr::ConvertToDDSWithMipmap(const string& inputFilePath, const str
 		return hr;
 	}
 
+	return S_OK;
+}
+
+HRESULT CImguiMgr::ConvertToDDSWithMipmap_PathHere(const string& inputFilePath)
+{
+	DirectX::ScratchImage image;
+	DirectX::TexMetadata metadata;
+	HRESULT hr;
+
+	// 이미지 로드
+	hr = DirectX::LoadFromWICFile(utf8_to_wstring(inputFilePath).c_str(), DirectX::WIC_FLAGS_NONE, &metadata, image);
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to load image");
+		return hr;
+	}
+
+	// mipmap 생성
+	DirectX::ScratchImage mipChain;
+	hr = DirectX::GenerateMipMaps(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::TEX_FILTER_DEFAULT, 0, mipChain);
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to generate mipmaps, Proceeding with original image.");
+		mipChain = std::move(image);
+	}
+
+	// 출력 경로 설정
+	std::filesystem::path inputPath(inputFilePath);
+	std::filesystem::path outputPath = inputPath.parent_path() / (inputPath.stem().string() + ".dds");
+
+	// DDS 파일로 저장
+	hr = DirectX::SaveToDDSFile(mipChain.GetImages(), mipChain.GetImageCount(), mipChain.GetMetadata(), DirectX::DDS_FLAGS_NONE, outputPath.c_str());
+	if (FAILED(hr)) {
+		MSG_BOX("Failed to save DDS file: ");
+		return hr;
+	}
 	return S_OK;
 }
 

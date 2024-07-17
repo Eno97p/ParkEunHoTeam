@@ -129,7 +129,7 @@ private:
 	CTransform* m_pParriedMonsterTransform = { nullptr };
 
 #pragma region 플레이어 스탯
-	_float m_fMaxHp = 100.f;
+	_float m_fMaxHp = 10000.f;
 	_float m_fCurHp = m_fMaxHp;
 
 	_float m_fMaxStamina = 100.f;

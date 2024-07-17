@@ -32,7 +32,7 @@ HRESULT CSphere::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(159.f, 538.f, 85.f, 1.f)); // Test
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));

@@ -11,18 +11,20 @@ class CGameObject;
 class ENGINE_DLL CPhysXComponent : public CComponent
 {
 public:
-	typedef struct PHYSX_DESC
+	typedef struct  PHYSX_DESC
 	{
 
-		_float3 fMatterial;
 		_float4x4 fWorldMatrix = {};
 		_float4x4 fOffsetMatrix = {};
-		CComponent* pComponent = nullptr;
-		PxGeometryType::Enum eGeometryType = PxGeometryType::eINVALID;
-		const char* pName = nullptr;
-		_float2 fCapsuleProperty = { 0.f, 0.f };
+		_float3 fMatterial = { 0.f, 0.f, 0.f };
 		_float3 fBoxProperty = { 0.f, 0.f, 0.f };
+		_float2 fCapsuleProperty = { 0.f, 0.f };
+		_float fMass = 0.0f;
 		PxFilterData filterData = {};
+		PxGeometryType::Enum eGeometryType = PxGeometryType::eINVALID;
+		CComponent* pComponent = nullptr;
+		const char* pName = nullptr;
+
 	}PHYSX_DESC;
 
 	typedef struct  PhysX_Editable_Desc : CComponent::ComponentDesc
@@ -61,7 +63,7 @@ protected:
 public:
 	vector<_float3> CreateCapsuleVertices(float radius, float halfHeight, int segments = 32, int rings = 32);
 	tuple<vector<_float3>, vector<_uint>> CreateBoxVertices(const PxVec3& halfExtents);
-	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform pxTrans, const PxTransform pxOffsetTrans = PxTransform());
+	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform& pxTrans, const PxTransform& pxOffsetTrans = PxTransform());
 	PxActor* Get_Actor() { return m_pActor; }
 
 private:
@@ -89,6 +91,7 @@ protected:
 private:
 	class CModel* m_pModelCom = { nullptr };
 	vector<_float3> m_vecVertices;
+	_float m_Mass = 0.0f;
 
 	_float3 m_fBoxProperty = { 0.f, 0.f, 0.f };
 	_float2 m_fCapsuleProperty = { 0.f, 0.f };

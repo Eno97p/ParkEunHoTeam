@@ -238,9 +238,11 @@
     <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
+    <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
+    <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
@@ -344,6 +346,7 @@
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="CMouse.h" />
+    <ClInclude Include="Import_Class.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -406,9 +409,11 @@
     <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
+    <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
+    <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
@@ -530,6 +535,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />

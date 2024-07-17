@@ -307,7 +307,7 @@ HRESULT CLevel_Jugglas::Ready_Layer_Monster(const wstring& strLayerTag, CLandObj
 HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (nullptr == hFile)
+ 	if (nullptr == hFile)
 		return E_FAIL;
 
 	char szName[MAX_PATH] = "";

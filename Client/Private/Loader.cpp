@@ -2195,6 +2195,14 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 
 #pragma endregion   DECO ELEMENTS
 
+#pragma region  Active Element Model Load
+	lstrcpy(m_szLoadingText, TEXT("Active Element ¸ðµ¨ ·Îµù Áß"));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Elevator"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion   Active Element Model Load
 
 
 

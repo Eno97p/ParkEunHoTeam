@@ -1,5 +1,4 @@
 #include "Elevator.h"
-#include "Player.h"
 
 CElevator::CElevator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CActive_Element(pDevice, pContext)

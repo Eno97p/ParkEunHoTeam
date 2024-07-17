@@ -5,7 +5,7 @@ BEGIN(Engine)
 class CShader;
 class CTexture;
 class CModel;
-class CPhysXComponent_static;
+class CPhysXComponent;
 END
 
 BEGIN(Client)

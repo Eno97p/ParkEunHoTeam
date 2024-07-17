@@ -532,7 +532,7 @@ HRESULT CRenderer::Initialize()
         m_dwThreadCount = (DWORD)PxThread::getNbPhysicalCores();
         
         if(FAILED(InitRenderThreadPool(m_dwThreadCount)))
-			return E_FAIL;
+		return E_FAIL;
 
 
 

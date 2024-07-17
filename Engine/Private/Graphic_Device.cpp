@@ -33,11 +33,11 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 	}
 	D3D11_FEATURE_DATA_THREADING ThreadingCaps;
 	m_pDevice->CheckFeatureSupport(D3D11_FEATURE_THREADING, &ThreadingCaps, sizeof(ThreadingCaps));
-	if (ThreadingCaps.DriverCommandLists == FALSE)
-	{
-		MSG_BOX("Failed to Create CommandList");
-		return E_FAIL;
-	}
+	//if (ThreadingCaps.DriverCommandLists == FALSE)
+	//{
+	//	MSG_BOX("Failed to Create CommandList");
+	//	return E_FAIL;
+	//}
 
 
 

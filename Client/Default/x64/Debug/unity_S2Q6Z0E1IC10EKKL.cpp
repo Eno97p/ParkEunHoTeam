@@ -27,6 +27,9 @@
 #include "C:\Real3DProject\Client\Private\Body_Player.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Rlya.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Boss_Juggulus.cpp"
 
 
@@ -157,6 +160,12 @@
 
 
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Npc.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\NPC_Rlya.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"

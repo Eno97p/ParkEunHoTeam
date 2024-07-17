@@ -475,6 +475,15 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator">
       <UniqueIdentifier>{fefc47bf-3d3a-4277-9bb8-1fe3af7fedb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc">
+      <UniqueIdentifier>{7a30e980-4fba-4bf9-89c3-75a78d6d9675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Rlya">
+      <UniqueIdentifier>{c96bcd34-d6ee-4e0f-a249-a7ca1e2a1605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Rlya\Body">
+      <UniqueIdentifier>{d20e68f6-915e-45f5-96fa-fb7d51ec5e09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -968,6 +977,15 @@
     <ClInclude Include="..\Public\Elevator.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Npc.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Rlya.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Rlya.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1440,6 +1458,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Elevator.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\03. Elevator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Rlya.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Rlya.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Rlya\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

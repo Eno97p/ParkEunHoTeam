@@ -71,6 +71,11 @@
 #include "Item.h"
 #pragma endregion ITEM
 
+#pragma region NPC
+#include "NPC_Rlya.h"
+#include "Body_Rlya.h"
+#pragma endregion NPC
+
 #pragma region DECAL
 #include "Decal.h"
 #pragma endregion DECAL

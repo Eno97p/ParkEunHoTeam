@@ -171,6 +171,9 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\RotateGate.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\SideViewCamera.cpp"
 
 
@@ -178,6 +181,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\TargetLock.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Trap.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"

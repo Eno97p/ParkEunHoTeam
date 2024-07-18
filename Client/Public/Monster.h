@@ -39,6 +39,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void Add_Hp(_int iValue) PURE;
+	void Set_Lock(_bool bLock) { m_bIsLocked = bLock; }
 
 public:
 	//FOR LOCKON
@@ -58,6 +59,7 @@ protected:
 	_bool m_bDead = false;
 	_float m_fDeadDelay = 2.f;
 	_float	m_fLengthFromPlayer = 0.f;
+	_bool m_bIsLocked = false;
 
 	_uint							m_iState = { 0 };
 

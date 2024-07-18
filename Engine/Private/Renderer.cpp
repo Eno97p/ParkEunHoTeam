@@ -1197,7 +1197,9 @@ void CRenderer::Render_Bloom()
 	// ¾÷»ùÇÃ¸µ
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
 
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
+    
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
+	//m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
 
     m_pShader->Begin(11);

@@ -30,6 +30,7 @@ public:
 	virtual HRESULT Render() override;
 	void Set_Idle();
 	void Set_Weapon();
+	void Add_Hp(_int iValue);
 
 private:
 	_uint m_eMode = MODE_IDLE;
@@ -42,9 +43,6 @@ private:
 	// 0 : body, 1 : Gun, 2 : sword, 3 : arrow
 	vector<class CGameObject*>		m_PartObjects;
 	_float m_fBackStepTime = 1.1f;
-
-	class CWeapon_Arrow_LGGun* m_pArrow = { nullptr };
-	_float m_fArrowLifeTime = 3.f;
 
 private:
 	HRESULT				Add_Components();
@@ -65,7 +63,6 @@ private:
 	NodeStates			Detect(_float fTimeDelta);
 	NodeStates			Move(_float fTimeDelta);
 	NodeStates			Idle(_float fTimeDelta);
-	void Add_Hp(_int iValue);
 
 public:
 	static CLegionnaire_Gun*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

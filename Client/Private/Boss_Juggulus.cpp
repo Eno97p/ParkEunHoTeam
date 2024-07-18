@@ -42,8 +42,8 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(160.f, 510.f, 98.f, 1.f));
+	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_vInitialPos.x, m_vInitialPos.y, m_vInitialPos.z, 1.f));
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -56,6 +56,12 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
 	m_pUI_HP->Set_Rend(true); // 일단 출력 X
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+	Safe_AddRef(m_pPlayerTransform);
 
 	return S_OK;
 }
@@ -78,6 +84,8 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 
 void CBoss_Juggulus::Tick(_float fTimeDelta)
 {
+	m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
 	Check_AnimFinished();
 
 	m_pBehaviorCom->Update(fTimeDelta);
@@ -220,6 +228,10 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 	PartDesc.eLevel = m_eLevel;
 	PartDesc.pCurHp = &m_fCurHp;
 	PartDesc.pMaxHp = &m_fMaxHp;
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	PartDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+	PartDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
+	PartDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Juggulus"), &PartDesc);
 	if (nullptr == pBody)
@@ -572,6 +584,8 @@ void CBoss_Juggulus::Free()
 	__super::Free();
 
 	Safe_Release(m_pBehaviorCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pPlayerTransform);
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject.second);

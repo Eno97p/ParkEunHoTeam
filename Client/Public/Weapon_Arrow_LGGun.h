@@ -12,6 +12,7 @@ public:
 	{
 		_vector vDir;
 		_vector vPos;
+		class CLegionnaire_Gun* pParent = { nullptr };
 	}ARROW_DESC;
 
 private:
@@ -38,6 +39,7 @@ private:
 	_bool m_bIsParried = false;
 	_float fAccParticle = 0.f;
 	_float fMaxLifeTime = 3.f;
+	class CLegionnaire_Gun* m_pParent = { nullptr };
 
 public:
 	static CWeapon_Arrow_LGGun* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

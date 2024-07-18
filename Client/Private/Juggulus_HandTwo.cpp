@@ -36,7 +36,7 @@ HRESULT CJuggulus_HandTwo::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
-	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
+	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
 
@@ -84,11 +84,8 @@ void CJuggulus_HandTwo::Tick(_float fTimeDelta)
 
 void CJuggulus_HandTwo::Late_Tick(_float fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	}
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CJuggulus_HandTwo::Render()
@@ -174,7 +171,7 @@ NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 	if (m_eDisolveType == TYPE_INCREASE && m_bScoop)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos += XMVectorSet(-5.f, -20.f, -5.f, 0.f);
+		vPos += XMVectorSet(-7.5f, -30.f, -7.5f, 0.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_iState = STATE_SCOOP;
 		m_bScoop = false;
@@ -209,6 +206,7 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 
 	if (m_iState == STATE_SPAWN)
 	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		if (m_isAnimFinished)
 		{
 			if (m_eDisolveType == TYPE_IDLE)
@@ -216,6 +214,10 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 				CLandObject::LANDOBJ_DESC		LandObjDesc{}; 
 				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+				LandObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+				LandObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 40.f;
+				LandObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Homonculus"), &LandObjDesc);
 				m_eDisolveType = TYPE_DECREASE;
 				return RUNNING;

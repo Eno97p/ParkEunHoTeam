@@ -204,6 +204,9 @@
 #include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_ScreenBlood.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_ScriptBG_Aura.cpp"
 
 

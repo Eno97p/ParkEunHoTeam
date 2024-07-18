@@ -124,7 +124,6 @@ _bool CNPC_Rlya::Check_Distance()
 
 void CNPC_Rlya::Key_Input()
 {
-	// 엔터를 칠 때마다 Cnt가 하나씩 감소하고 0이 되면 종료되는 것으로?
 	if (m_pGameInstance->Key_Down(DIK_RETURN))
 	{
 		switch (m_iDialogCnt)
@@ -148,8 +147,7 @@ void CNPC_Rlya::Key_Input()
 			m_pScriptUI->Set_Rend(false);
 			--m_iDialogCnt;
 
-			//Player에게 FireFly를 넘겨주어야 함
-			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_FIREFLY);
+			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_FIREFLY); // Inventory에 Firefly 추가
 
 			break;
 		}

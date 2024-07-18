@@ -249,6 +249,7 @@
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
+    <ClInclude Include="..\Public\UI_ScreenBlood.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Aura.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
@@ -418,6 +419,7 @@
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />

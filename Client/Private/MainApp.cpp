@@ -113,6 +113,7 @@
 #include "UI_InvSub_BtnSelect.h"
 #include "UIGroup_InvSub.h"
 #include "UI_Activate.h"
+#include "UI_ScreenBlood.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -945,6 +946,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Activate"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Activate.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_ScreenBlood */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ScreenBlood"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_ScreenBlood.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -1326,6 +1332,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_Activate*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Activate"),
 		CUI_Activate::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ScreenBlood*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScreenBlood"),
+		CUI_ScreenBlood::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

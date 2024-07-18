@@ -3,6 +3,7 @@
 #include "..\Public\Player.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "PartObject.h"
 #include "Weapon.h"
 #include "Clone.h"
@@ -269,6 +270,8 @@ void CPlayer::PlayerHit(_float fValue)
 		m_pTransformCom->Set_Speed(WALKSPEED);
 	}
 	Add_Hp(-fValue);
+
+	CUI_Manager::GetInstance()->Set_ScreenBloodRend(true);
 }
 
 void CPlayer::Parry_Succeed()

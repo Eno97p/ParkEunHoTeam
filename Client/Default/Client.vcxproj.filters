@@ -502,6 +502,9 @@
     <Filter Include="02.GameObjects\07. UI\Activate">
       <UniqueIdentifier>{4a335379-b095-48d2-b582-70d62d891cc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\ScreenBlood">
+      <UniqueIdentifier>{4f88ec85-50f1-4c31-b5fc-488ee688f4c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1022,6 +1025,9 @@
     <ClInclude Include="..\Public\UI_Activate.h">
       <Filter>02.GameObjects\07. UI\Activate</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_ScreenBlood.h">
+      <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1521,6 +1527,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Activate.cpp">
       <Filter>02.GameObjects\07. UI\Activate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ScreenBlood.cpp">
+      <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -78,7 +78,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(2.4);
+		m_pModelCom->Set_LerpTime(1.3);
 	}
 	else if (*m_pState == CPlayer::STATE_FIGHTIDLE)
 	{
@@ -502,7 +502,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)

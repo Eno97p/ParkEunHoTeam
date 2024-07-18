@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Weapon_Arrow_LGGun.h"
+#include "Legionnaire_Gun.h"
 
 CWeapon_Gun_LGGun::CWeapon_Gun_LGGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -21,9 +22,10 @@ HRESULT CWeapon_Gun_LGGun::Initialize_Prototype()
 
 HRESULT CWeapon_Gun_LGGun::Initialize(void* pArg)
 {
-	WEAPON_DESC* pDesc = (WEAPON_DESC*)pArg;
+	GUN_DESC* pDesc = (GUN_DESC*)pArg;
 
 	m_pSocketMatrix = pDesc->pCombinedTransformationMatrix;
+	m_pParent = pDesc->pParent;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -62,15 +64,6 @@ void CWeapon_Gun_LGGun::Tick(_float fTimeDelta)
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
-}
-
-void CWeapon_Gun_LGGun::Late_Tick(_float fTimeDelta)
-{
-	if (m_bRenderAvailable)
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
-	}
 
 	//화살 발사
 	if (m_bIsActive)
@@ -83,7 +76,17 @@ void CWeapon_Gun_LGGun::Late_Tick(_float fTimeDelta)
 		arrowDesc.vDir.m128_f32[2] *= -1.f;
 		arrowDesc.vPos = XMVectorSet(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f);
 		arrowDesc.fSpeedPerSec = 30.f;
+		arrowDesc.pParent = m_pParent;
 		m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Arrow"), TEXT("Prototype_GameObject_Weapon_Arrow_LGGun"), &arrowDesc);
+	}
+}
+
+void CWeapon_Gun_LGGun::Late_Tick(_float fTimeDelta)
+{
+	if (m_bRenderAvailable)
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 }
 

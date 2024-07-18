@@ -74,6 +74,16 @@ void CWeapon_Homonculus::Tick(_float fTimeDelta)
 
 		}
 	}
+	//_float3 vCollision = m_pColliderCom->Get_Center();
+	//PxRaycastBuffer hit;
+	//PxQueryFilterData filterData;
+	//filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC;
+	//bool isHit = m_pGameInstance->GetScene()->raycast(PxVec3(vCollision.x, vCollision.y, vCollision.z), PxVec3(0.f,-1.f,0.f), 2.f, hit, PxHitFlag::eDEFAULT, filterData);
+	//if (isHit)
+	//{
+	//	// 충돌 지점 가져오기
+	//	PxVec3 hitPoint = hit.block.position;
+	//}
 
 	Generate_Trail(6);
 }

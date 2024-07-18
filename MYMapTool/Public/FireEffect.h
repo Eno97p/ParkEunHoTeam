@@ -1,5 +1,5 @@
 #pragma once
-#include "BlendObject.h"
+#include "ToolObj.h"
 
 
 BEGIN(Engine)
@@ -8,13 +8,13 @@ class CVIBuffer_Rect;
 END
 
 BEGIN(MYMapTool)
-class CFireEffect final : public CBlendObject
+class CFireEffect final : public CToolObj
 {
 private:
 	enum TEXTURETYPE { FIRE_DIFFUSE, FIRE_NOISE, FIRE_ALPHA,FIRE_END};
 
 public:
-	typedef struct FIREEFFECTDESC
+	typedef struct FIREEFFECTDESC : public CToolObj::TOOLOBJ_DESC
 	{
 		_float3		ScrollSpeeds = { 1.3f, 2.1f, 2.3f };
 		_float3		Scales = { 1.0f, 2.0f, 3.0f };

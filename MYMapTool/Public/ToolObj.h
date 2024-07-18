@@ -15,7 +15,7 @@ END
 
 BEGIN(MYMapTool)
 
-class CToolObj : public CGameObject//CBlendObject
+class CToolObj : public CBlendObject//CBlendObject
 {
 public:
 	// Client에 객체 생성 시 들고 가야 할 정보를 담을 구조체

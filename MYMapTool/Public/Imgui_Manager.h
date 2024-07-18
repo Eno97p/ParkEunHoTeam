@@ -11,7 +11,7 @@ class CImgui_Manager final : public CBase
 	DECLARE_SINGLETON(CImgui_Manager)
 
 private:
-	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_END };
+	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_ENVEFFECTS, LAYER_END };
 
 private:
 	CImgui_Manager();
@@ -34,6 +34,12 @@ public:
 
 	_bool	Get_IsLoad() { return m_IsLoad; }
 	void	Set_DontLoad() { m_IsLoad = false; }
+
+	_bool	Get_IsEffectsSave() { return m_IsEffectsSave; }
+	void	Set_DontEffectsSave() { m_IsEffectsSave = false; }
+
+	_bool	Get_IsEffectsLoad() { return m_IsEffectsLoad; }
+	void	Set_DontEffectsLoad() { m_IsEffectsLoad = false; }
 
 	_bool	Get_IsReLoad() { return m_IsTerrainReLoad; }
 	void	Set_DontReLoad() { m_IsTerrainReLoad = false; }
@@ -104,6 +110,8 @@ private:
 	_bool	m_IsPhysXSave = { false };
 	_bool	m_IsPhysXLoad = { false };
 	_bool	m_IsLoad = { false };
+	_bool	m_IsEffectsSave = { false };
+	_bool	m_IsEffectsLoad = { false };
 	_bool	m_IsTerrainReLoad = { false };
 
 	_bool	m_IsNaviMode = { false };

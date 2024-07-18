@@ -4,6 +4,8 @@
 
 #include "Monster.h"
 #include "ToolObj.h"
+#include "FireEffect.h"
+
 #include "Imgui_Manager.h"
 
 IMPLEMENT_SINGLETON(CToolObj_Manager)
@@ -86,7 +88,21 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
         if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
             return E_FAIL;
     }
+    else if (iLayerIdx == 4)
+    {
 
+
+        CFireEffect::FIREEFFECTDESC FireDesc{};
+        FireDesc.vStartPos = { pDesc.mWorldMatrix._41, pDesc.mWorldMatrix._42, pDesc.mWorldMatrix._43, 1.f };
+        FireDesc.vStartScale = { 1.f, 1.f };
+
+        strcpy_s(FireDesc.szLayer, "Layer_Fire");
+        strcpy_s(FireDesc.szObjName, "Prototype_GameObject_Fire_Effect");
+
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_EnvEffects"), TEXT("Prototype_GameObject_Fire_Effect"), &FireDesc)))
+            return E_FAIL;
+
+    }
 
     return S_OK;
 }
@@ -274,6 +290,13 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
             pDesc.eModelType = CModel::TYPE_NONANIM;
         }
         strcpy_s(pDesc.szModelName, "Prototype_Component_Model_BasicCube");
+
+        break;
+    }
+    case 4: // Layer_Fire
+    {
+        strcpy_s(pDesc.szLayer, "Layer_Fire");
+        strcpy_s(pDesc.szObjName, "Prototype_GameObject_Fire_Effect");
 
         break;
     }

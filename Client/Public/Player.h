@@ -24,7 +24,7 @@ class CPlayer final : public CLandObject
 #define ROLLSPEED 10.f
 #define ATTACKPOSTDELAY 1.5f
 #define STAMINARECOVERDELAY 1.5f
-#define PARRYSTART 0.1f
+#define PARRYSTART 0.01f
 #define PARRYEND 0.3f
 #define JUMPSPEED 13.f
 
@@ -132,7 +132,7 @@ private:
 	CTransform* m_pCameraTransform = { nullptr };
 
 #pragma region 플레이어 스탯
-	_float m_fMaxHp = 10000.f;
+	_float m_fMaxHp = 100.f;
 	_float m_fCurHp = m_fMaxHp;
 
 	_float m_fMaxStamina = 100.f;

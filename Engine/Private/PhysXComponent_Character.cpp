@@ -44,7 +44,6 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	Safe_AddRef(m_pTransform);
 
 
-	//m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(pObjectdesc->fMatterial.x, pObjectdesc->fMatterial.y, pObjectdesc->fMatterial.z);
 	m_fJumpSpeed = pObjectdesc->fJumpSpeed;
 
 	PxCapsuleControllerDesc desc;
@@ -60,8 +59,10 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	desc.slopeLimit = pObjectdesc->slopeLimit;
 	desc.contactOffset = pObjectdesc->contactOffset;
 	desc.nonWalkableMode = pObjectdesc->nonWalkableMode;
-	desc.volumeGrowth = 1.0f;
+	desc.volumeGrowth = 1.5f;
 	desc.reportCallback = CHitReport::GetInstance();
+
+	
 
 
 	PxFilterData filterData = pObjectdesc->filterData;
@@ -92,8 +93,8 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 					//shpae->setQueryFilterData(filterData);
 	
 				}
-	
 			}
+			//actor->setMaxDepenetrationVelocity(4.0f);
 		}
 	}
 
@@ -361,6 +362,7 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+	//filters.mCCTFilterCallback.
 	
 #ifdef _DEBUG
 	m_OutDesc.fPosition = { static_cast<_float>(m_pController->getFootPosition().x), static_cast<_float>(m_pController->getFootPosition().y), static_cast<_float>(m_pController->getFootPosition().z) };

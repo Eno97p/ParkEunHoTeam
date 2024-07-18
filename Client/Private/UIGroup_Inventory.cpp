@@ -108,6 +108,15 @@ void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
 	(*slot)->Create_ItemIcon_Inv();
 }
 
+void CUIGroup_Inventory::Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iCurSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Set_isEquip(isEquip);
+}
+
 HRESULT CUIGroup_Inventory::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

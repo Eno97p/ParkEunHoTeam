@@ -15,6 +15,7 @@
 #include "UIGroup_InvSub.h"
 
 #include "UI_ScreenBlood.h"
+#include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -211,11 +212,16 @@ void CUI_Manager::Key_Input()
 				}
 				else if (isWeaponOpen)
 				{
-					(*weapon).second->Set_RenderOnAnim(false);
+					// weapon의 sub도 활성화 되어있지 않을 때 예외 처리 필요
+					if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Get_EquipMode())
+						(*weapon).second->Set_RenderOnAnim(false);
+					else
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
 				}
 				else
 				{
 					(*menu).second->Set_RenderOnAnim(false);
+					m_pGameInstance->Get_MainCamera()->Activate();
 				}
 				dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 			}
@@ -230,6 +236,8 @@ void CUI_Manager::Key_Input()
 			{
 				(*menu).second->Set_Rend(true);
 				(*menu).second->Set_RenderOnAnim(true);
+
+				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
 	}
@@ -242,11 +250,15 @@ void CUI_Manager::Key_Input()
 			if (isQuickOpen) // 퀵슬롯이 켜져 있을 때 > 꺼지게
 			{
 				(*quick).second->Set_RenderOnAnim(false);
+
+				m_pGameInstance->Get_MainCamera()->Activate();
 			}
 			else // 꺼져있을 때 > 켜지게
 			{
 				(*quick).second->Set_Rend(true);
 				(*quick).second->Set_RenderOnAnim(true);
+
+				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
 	}

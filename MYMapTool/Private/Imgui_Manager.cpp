@@ -135,6 +135,14 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Spacing();
         ImGui::Separator();
 
+        if (ImGui::Button("Save Effects"))
+            m_IsEffectsSave = true;
+
+        if (ImGui::Button("Load Effects"))
+            m_IsEffectsLoad = true;
+
+        ImGui::Spacing();
+        ImGui::Separator();
         ImGui::TextColored({ 1.f, 0.f, 0.f, 1.f }, "Add Objects");
 
         ImGui::Checkbox("ADD OBJECT", &m_bAddToolObj); // Navigation 모드 활성화 여부
@@ -169,7 +177,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("ANIM MODEL", &m_bIsAnimModel);
         ImGui::Checkbox("DECO OBJECT", &m_bIsDecoObject);
 
-        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger"};
+        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger", "EnvEffects"};
         static int Layer_current = 0;
         ImGui::Combo("Layer", &Layer_current, Layers, IM_ARRAYSIZE(Layers));
         m_iLayerIdx = Layer_current;
@@ -491,6 +499,13 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
         break;
     }
         break;
+    case LAYER_ENVEFFECTS:
+    {
+        const char* items_EnvEffects[] = { "Fire", "Dust" };
+        ImGui::ListBox("###Obj", &item_current, items_EnvEffects, IM_ARRAYSIZE(items_EnvEffects)); // item_current 변수에 선택 값 저장
+        break;
+    }
+    break;
     default:
         break;
     }

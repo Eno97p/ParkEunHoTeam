@@ -238,6 +238,7 @@
     <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
+    <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -411,6 +413,7 @@
     <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
@@ -429,6 +432,7 @@
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
+    <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />

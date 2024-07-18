@@ -16,7 +16,7 @@ CTransform::CTransform(const CTransform & rhs)
 
 
 
-void CTransform::Set_State(STATE eState, _fvector vState)
+void CTransform::Set_State(STATE eState,  _fvector vState)
 {
 	_matrix		WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 
@@ -294,6 +294,115 @@ void CTransform::BillBoard()
 	Set_WorldMatrix(XMLoadFloat4x4(&matView));
 
 	Set_Scale(vScale.x, vScale.y, vScale.z);
+}
+
+void CTransform::BillBoard_X()
+{
+
+	XMVECTOR vPosition = Get_State(STATE_POSITION);
+	XMFLOAT3 vScale = Get_Scaled();
+
+	XMVECTOR vCameraPos = m_pGameInstance->Get_CamPosition();
+
+	// 객체에서 카메라로의 방향 벡터 계산
+	XMVECTOR vLook = XMVectorSubtract(vCameraPos, vPosition);
+	vLook = XMVectorSetX(vLook, 0.0f); // X 성분을 0으로 설정하여 YZ 평면상의 회전만 고려
+	vLook = XMVector3Normalize(vLook);
+
+	// 오른쪽 벡터 계산 (X축은 고정)
+	XMVECTOR vRight = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+
+	// 위 벡터 계산
+	XMVECTOR vUp = XMVector3Cross(vLook, vRight);
+	vUp = XMVector3Normalize(vUp);
+
+	// Look 벡터 재계산 (정확한 직교를 위해)
+	vLook = XMVector3Cross(vRight, vUp);
+	vLook = XMVector3Normalize(vLook);
+
+	// 스케일 적용
+	vRight = XMVectorScale(vRight, vScale.x);
+	vUp = XMVectorScale(vUp, vScale.y);
+	vLook = XMVectorScale(vLook, vScale.z);
+
+	// 상태 벡터 업데이트
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+	Set_State(STATE_LOOK, vLook);
+	// 위치는 변경되지 않으므로 업데이트할 필요 없음
+
+
+}
+
+void CTransform::BillBoard_Y()
+{
+	XMVECTOR vPosition = Get_State(STATE_POSITION);
+	XMFLOAT3 vScale = Get_Scaled();
+
+
+	XMVECTOR vCameraPos = m_pGameInstance->Get_CamPosition();
+
+	// 객체에서 카메라로의 방향 벡터 계산
+	XMVECTOR vLook = XMVectorSubtract(vCameraPos, vPosition);
+	vLook = XMVectorSetY(vLook, 0.0f); // Y 성분을 0으로 설정하여 수평 방향만 고려
+	vLook = XMVector3Normalize(vLook);
+
+	// 오른쪽 벡터 계산
+	XMVECTOR vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR vRight = XMVector3Cross(vUp, vLook);
+	vRight = XMVector3Normalize(vRight);
+
+	// 새로운 전방 벡터 계산 (실제 Look 방향)
+	XMVECTOR vNewLook = XMVector3Cross(vRight, vUp);
+	vNewLook = XMVector3Normalize(vNewLook);
+
+	vRight= XMVectorScale(vRight, vScale.x);
+	vUp = XMVectorScale(vUp, vScale.y);
+	vNewLook = XMVectorScale(vNewLook, vScale.z);
+
+
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+	Set_State(STATE_LOOK, vNewLook);
+
+
+
+
+}
+
+void CTransform::BillBoard_Z()
+{
+	XMVECTOR vPosition = Get_State(STATE_POSITION);
+	XMFLOAT3 vScale = Get_Scaled();
+
+	XMVECTOR vCameraPos = m_pGameInstance->Get_CamPosition();
+
+	// 객체에서 카메라로의 방향 벡터 계산
+	XMVECTOR vLook = XMVectorSubtract(vCameraPos, vPosition);
+	vLook = XMVectorSetZ(vLook, 0.0f); // Z 성분을 0으로 설정하여 XY 평면상의 회전만 고려
+	vLook = XMVector3Normalize(vLook);
+
+	// Z축 벡터 (고정)
+	XMVECTOR vForward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+	// 오른쪽 벡터 계산
+	XMVECTOR vRight = XMVector3Cross(vForward, vLook);
+	vRight = XMVector3Normalize(vRight);
+
+	// Look 벡터 재계산 (정확한 직교를 위해)
+	vLook = XMVector3Cross(vRight, vForward);
+	vLook = XMVector3Normalize(vLook);
+
+	// 스케일 적용
+	vRight = XMVectorScale(vRight, vScale.x);
+	vLook = XMVectorScale(vLook, vScale.y);
+	vForward = XMVectorScale(vForward, vScale.z);
+
+	// 상태 벡터 업데이트
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vLook);     // 주의: 여기서 'Up'은 실제로 'Look' 방향
+	Set_State(STATE_LOOK, vForward); // 'Look'은 Z축 방향으로 고정
+	// 위치는 변경되지 않으므로 업데이트할 필요 없음
 }
 
 void CTransform::Set_LookingAt(_fvector vLook)

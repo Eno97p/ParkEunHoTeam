@@ -32,7 +32,9 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool					m_isSelectEnd = { false };
 	_uint					m_iSlotIdx = { 0 };
+	_float					m_fSelectedTimer = { 0.f };
 
 	BTN_TYPE				m_eBtnType = { BTN_END };
 

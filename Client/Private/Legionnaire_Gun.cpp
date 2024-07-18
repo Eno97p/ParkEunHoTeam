@@ -4,7 +4,6 @@
 #include "Body_LGGun.h"
 #include "Weapon_Gun_LGGun.h"
 #include "Weapon_Sword_LGGun.h"
-#include "Weapon_Arrow_LGGun.h"
 
 #include "UIGroup_MonsterHP.h"
 
@@ -74,17 +73,6 @@ void CLegionnaire_Gun::Priority_Tick(_float fTimeDelta)
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
-
-	if (m_pArrow && m_fArrowLifeTime > 0.f)
-	{
-		m_fArrowLifeTime -= fTimeDelta;
-		if (m_fArrowLifeTime < 0.f)
-		{
-			m_pGameInstance->Erase(m_pArrow);
-			m_pArrow = nullptr;
-			m_fArrowLifeTime = 3.f;
-		}
-	}
 }
 
 void CLegionnaire_Gun::Tick(_float fTimeDelta)
@@ -104,32 +92,15 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	// 플레이어 무기와 몬스터의 충돌 여부
-	if (!m_pArrow || (m_pArrow && m_eColltype == CCollider::COLL_NOCOLL))
+	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+	if (!pPlayerWeapon->Get_Active())
 	{
-		CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-		
-		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
-		if (!pPlayerWeapon->Get_Active())
-		{
-			m_pColliderCom->Reset();
-			m_eColltype = CCollider::COLL_NOCOLL;
-		}
+		m_pColliderCom->Reset();
+		m_eColltype = CCollider::COLL_NOCOLL;
 	}
-
-	if (m_pArrow)
+	else
 	{
-		CWeapon_Arrow_LGGun* pReversedArrow = m_pArrow;
-		if (m_pArrow->Get_IsParried())
-		{
-			m_eColltype = m_pColliderCom->Intersect(m_pArrow->Get_Collider());
-			if (m_eColltype == CCollider::COLL_START)
-			{
-				m_pGameInstance->Erase(m_pArrow);
-				m_pArrow = nullptr;
-				m_fArrowLifeTime = 3.f;
-			}
-		}
+		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
 
 	m_pPhysXCom->Tick(fTimeDelta);
@@ -251,17 +222,25 @@ HRESULT CLegionnaire_Gun::Add_PartObjects()
 	m_PartObjects.emplace_back(pBody);
 
 	// Weapon
-	CWeapon::WEAPON_DESC WeaponDesc{};
-	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	WeaponDesc.pState = &m_iState;
-	WeaponDesc.eLevel = m_eLevel;
-	WeaponDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_Gun");
+	CWeapon_Gun_LGGun::GUN_DESC GunDesc{};
+	GunDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	GunDesc.pState = &m_iState;
+	GunDesc.eLevel = m_eLevel;
+	GunDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_Gun");
+	GunDesc.pParent = this;
 
-	CGameObject* pGun = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Gun_LGGun"), &WeaponDesc);
+	CGameObject* pGun = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Gun_LGGun"), &GunDesc);
 	if (nullptr == pGun)
 		return E_FAIL;
 	m_PartObjects.emplace_back(pGun);
 	dynamic_cast<CBody_LGGun*>(pBody)->Set_Gun(dynamic_cast<CWeapon*>(pGun));
+
+
+	CWeapon::WEAPON_DESC WeaponDesc{};
+	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	WeaponDesc.pState = &m_iState;
+	WeaponDesc.eLevel = m_eLevel;
+	WeaponDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_SmallSword");
 
 	CGameObject* pSword = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Sword_LGGun"), &WeaponDesc);
 	if (nullptr == pSword)
@@ -342,7 +321,6 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
-		m_iState = STATE_HIT;
 		Add_Hp(-10);
 		return RUNNING;
 		break;
@@ -379,19 +357,9 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 
 NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 {
-	if (static_cast<CWeapon*>(m_PartObjects[1])->Get_Active() && !m_pArrow)
-	{
-		list<CGameObject*> ArrowList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Arrow"));
-		//m_pArrow = dynamic_cast<CWeapon_Arrow_LGGun*>(ArrowList.back());
-		//Safe_AddRef(m_pArrow);
-	}
-
 	if (dynamic_cast<CWeapon_Sword_LGGun*>(m_PartObjects[2])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
-		if (!m_pArrow)
-		{
-			m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
-		}
+		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 
@@ -581,6 +549,10 @@ NodeStates CLegionnaire_Gun::Idle(_float fTimeDelta)
 void CLegionnaire_Gun::Add_Hp(_int iValue)
 {
 	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (iValue < 0)
+	{
+		m_iState = STATE_HIT;
+	}
 	if (m_fCurHp == 0.f)
 	{
 		m_iState = STATE_DEAD;
@@ -618,7 +590,6 @@ void CLegionnaire_Gun::Free()
 	__super::Free();
 
 	Safe_Release(m_pBehaviorCom);
-	//Safe_Release(m_pArrow);
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);

@@ -81,6 +81,8 @@ void CWeapon_Sword_LGGun::Tick(_float fTimeDelta)
 
 		}
 	}	
+
+	Generate_Trail(7);
 }
 
 void CWeapon_Sword_LGGun::Late_Tick(_float fTimeDelta)

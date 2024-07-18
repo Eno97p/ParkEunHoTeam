@@ -7,6 +7,7 @@
 
 #include "UI_Slot_Frame.h"
 #include "UI_ItemIcon.h"
+#include "UI_Slot_EquipSign.h"
 
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Weapon.h"
@@ -51,6 +52,7 @@ HRESULT CUI_Slot::Initialize(void* pArg)
 		return E_FAIL;
 
 	Create_Frame();
+	Create_EquipSign();
 
 	Setting_Position();
 
@@ -81,6 +83,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Tick(fTimeDelta);
+
+	if (nullptr != m_pEquipSign)
+		m_pEquipSign->Tick(fTimeDelta);
 }
 
 void CUI_Slot::Late_Tick(_float fTimeDelta)
@@ -92,6 +97,10 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Late_Tick(fTimeDelta);
+
+	// 장착을 한 경우에만 Late true 해주기
+	if (nullptr != m_pEquipSign && m_isEquip)
+		m_pEquipSign->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -170,6 +179,30 @@ HRESULT CUI_Slot::Create_Frame()
 
 	m_pSelectFrame = dynamic_cast<CUI_Slot_Frame*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot_Frame"), &pDesc));
 	if (nullptr == m_pSelectFrame)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Create_EquipSign()
+{
+	CUI_Slot_EquipSign::UI_EQUIPSIGN_DESC pDesc{};
+	
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+
+	if (SLOT_QUICK == m_eSlotType)
+		pDesc.eUISort = ELEVENTH;
+	else if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
+		pDesc.eUISort = TENTH;
+	else if (SLOT_INVSUB == m_eSlotType)
+		pDesc.eUISort = FOURTEENTH;
+
+	m_pEquipSign = dynamic_cast<CUI_Slot_EquipSign*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot_EquipSign"), &pDesc));
+	if (nullptr == m_pEquipSign)
 		return E_FAIL;
 
 	return S_OK;
@@ -325,6 +358,7 @@ void CUI_Slot::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pEquipSign);
 	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectFrame);
 }

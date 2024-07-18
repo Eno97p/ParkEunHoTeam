@@ -6,6 +6,7 @@
 BEGIN(Client)
 class CUI_Slot_Frame;
 class CUI_ItemIcon;
+class CUI_Slot_EquipSign;
 class CItemData;
 
 class CUI_Slot final : public CUI_Interaction
@@ -26,6 +27,9 @@ private:
 	virtual ~CUI_Slot() = default;
 
 public:
+	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -41,6 +45,8 @@ public:
 	void			Change_TabType(CUIGroup_Weapon::TAB_TYPE eTabType);
 
 private:
+	_bool						m_isEquip = { false };
+
 	_uint						m_iSlotIdx = { 0 };
 	wstring						m_wszItemName = TEXT("");
 	wstring						m_wszItemExplain = TEXT("");
@@ -50,6 +56,7 @@ private:
 
 	CUI_Slot_Frame*				m_pSelectFrame = { nullptr };
 	CUI_ItemIcon*				m_pItemIcon = { nullptr };
+	CUI_Slot_EquipSign*			m_pEquipSign = { nullptr };
 
 	CUIGroup_Weapon::TAB_TYPE	m_eTabType = { CUIGroup_Weapon::TAB_END };
 
@@ -58,6 +65,7 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Frame();
+	HRESULT	Create_EquipSign();
 
 	void	Open_SubPage();
 	void	Render_Font();

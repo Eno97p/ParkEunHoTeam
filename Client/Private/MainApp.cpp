@@ -43,6 +43,7 @@
 #pragma region WeaponSlot
 #include "UI_WeaponSlotBG.h"
 #include "UI_WeaponSlot.h"
+#include "UI_Slot_EquipSign.h"
 #include "UIGroup_WeaponSlot.h"
 #pragma endregion WeaponSlot
 
@@ -451,6 +452,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_DistortionRect.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
+
 #pragma endregion SHADER
 
 #pragma region TEXTURE
@@ -470,6 +472,25 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve39"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 39))))
 		return E_FAIL;
+
+	//บา
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireDiffuse"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Fire/fire01.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireNoise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Fire/noise01.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireAlpha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Fire/alpha01.dds"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Fire"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Fire.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
 #pragma endregion TEXTURE
 
 
@@ -844,6 +865,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Slot_SelectFrame"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot_SelectFrame.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_EquipSign */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EquipSign"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Inventory_InQANotif.png"), 1))))
+		return E_FAIL;
 #pragma endregion Slot
 
 #pragma region MenuPage
@@ -1180,6 +1206,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Slot_Frame*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Slot_Frame"),
 		CUI_Slot_Frame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Slot_EquipSign*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Slot_EquipSign"),
+		CUI_Slot_EquipSign::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Slot
 

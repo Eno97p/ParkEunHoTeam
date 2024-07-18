@@ -102,11 +102,11 @@ void CSideViewCamera::Get_SideViewCamPos(const _float4& vPlayerPosition, _float4
         *pOutLookAtPosition = m_vFixedLookAtPosition;
 
         // 플레이어에서 LookAt 위치로 향하는 벡터 계산
-        _vector vLookAtToPlayer = XMLoadFloat4(&vPlayerPosition) - XMLoadFloat4(pOutLookAtPosition);
-        vLookAtToPlayer = XMVector3Normalize(vLookAtToPlayer);
+        _vector vPlayerToLookAt = XMLoadFloat4(pOutLookAtPosition) - XMLoadFloat4(&vPlayerPosition);
+        vPlayerToLookAt = XMVector3Normalize(vPlayerToLookAt);
 
-        // 카메라 위치 계산
-        _vector vCameraPos = XMLoadFloat4(pOutLookAtPosition) + vLookAtToPlayer * fCurrentZPosition;
+        // 카메라 위치 계산: 플레이어 위치에서 LookAt 방향으로 m_fBossZPosition만큼 이동
+        _vector vCameraPos = XMLoadFloat4(&vPlayerPosition) - vPlayerToLookAt * fCurrentZPosition;
         XMStoreFloat4(pOutCameraPosition, vCameraPos);
 
         // 높이 조정
@@ -122,7 +122,6 @@ void CSideViewCamera::Get_SideViewCamPos(const _float4& vPlayerPosition, _float4
     }
 
     pOutCameraPosition->w = 1.f;
-    pOutLookAtPosition->w = 1.f;
 }
 
 void CSideViewCamera::Update_SideViewCam(_float fTimeDelta)

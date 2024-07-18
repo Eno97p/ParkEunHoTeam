@@ -4,6 +4,7 @@
 #include "Particle_Rect.h"
 #include "ParticleMesh.h"
 #include "Particle_Point.h"
+#include "FireEffect.h"
 
 IMPLEMENT_SINGLETON(CEffectManager)
 
@@ -365,6 +366,9 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CDistortionEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Fire_Effect"),
+		CFireEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	return S_OK;
 }
 

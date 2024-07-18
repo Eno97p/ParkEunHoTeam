@@ -129,19 +129,8 @@ PS_OUT PS_MAIN_FLOW_HORIZONTAL(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
-	if (g_bIsFadeIn)
-	{
-		Out.vColor.a = 1.f - g_fAlphaTimer;
-	}
-	else
-	{
-		float fResultAlpha = g_fAlphaTimer;
-
-		if (0.2 < fResultAlpha)
-			fResultAlpha = 0.2;
-
-		Out.vColor.a = fResultAlpha;
-	}
+	if (0.2 < Out.vColor.a)
+		Out.vColor.a = 0.2;
 
 	return Out;
 }

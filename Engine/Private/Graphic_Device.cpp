@@ -118,7 +118,7 @@ HRESULT CGraphic_Device::Present()
 	
 	/* 전면 버퍼와 후면 버퍼를 교체하여 후면 버퍼를 전면으로 보여주는 역할을 한다. */
 	/* 후면 버퍼를 직접 화면에 보여줄게. */	
-	return m_pSwapChain->Present(0, 0);	
+	return m_pSwapChain->Present(0, 0);
 }
 
 
@@ -144,15 +144,16 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, _bool isWindowed, _uint iWin
 	SwapChain.BufferDesc.Height = iWinCY;
 
 	
-	SwapChain.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	SwapChain.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;	/*DXGI_FORMAT_R8G8B8A8_UNORM;*/
 	SwapChain.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	SwapChain.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	SwapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	SwapChain.BufferCount = 1;
+	SwapChain.BufferCount = /*2;*/ 1;
 
 	/*스왑하는 형태*/
 	SwapChain.BufferDesc.RefreshRate.Numerator = 60;
 	SwapChain.BufferDesc.RefreshRate.Denominator = 1;
+
 	SwapChain.SampleDesc.Quality = 0;
 	SwapChain.SampleDesc.Count = 1;	
 
@@ -238,7 +239,7 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	return S_OK;
 }
 
-CGraphic_Device * CGraphic_Device::Create(const ENGINE_DESC& EngineDesc, ID3D11Device ** ppDevice, ID3D11DeviceContext ** ppDeviceContextOut)
+CGraphic_Device * CGraphic_Device::Create(const ENGINE_DESC& EngineDesc, _Out_ ID3D11Device ** ppDevice, _Out_ ID3D11DeviceContext ** ppDeviceContextOut)
 {
 	CGraphic_Device*		pInstance = new CGraphic_Device();
 

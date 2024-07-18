@@ -35,8 +35,8 @@ HRESULT CRotateGate::Initialize(void* pArg)
 		CActive_Element::MAP_ELEMENT_DESC* pDesc = (CActive_Element::MAP_ELEMENT_DESC*)pArg;
 		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 		m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
-		//m_pTransformCom->Scaling(-1.8f, 1.7f, 1.f);
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-319.5f, 15.57f, -0.82f, 1.f));
+		//m_pTransformCom->Scaling(-1.8f, 1.7f, 1.f);`
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-258.8f, 10.692f, -2.148f, 1.f));
 
 		m_pTransformCom->Rotation({ 0.f, 1.f, 0.f, 1.f }, XMConvertToRadians(90.f));
 		//m_pTransformCom->Rotation({ 1.f, 0.f, 0.f, 1.f }, XMConvertToRadians(180.f));
@@ -70,7 +70,8 @@ void CRotateGate::Tick(_float fTimeDelta)
 			m_pTransformCom->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), fRotationAngle);
 		}
 	}*/
-	m_pTransformCom->Turn(XMVectorSet(1.f, 0.f, 0.f, 1.f), fTimeDelta);
+
+	//m_pTransformCom->Turn(XMVectorSet(1.f, 0.f, 0.f, 1.f), fTimeDelta);
 
 	//_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) + 0.3f);

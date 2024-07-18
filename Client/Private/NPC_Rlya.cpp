@@ -52,12 +52,15 @@ void CNPC_Rlya::Tick(_float fTimeDelta)
 {
 	m_pBody->Tick(fTimeDelta);
 
-	Check_Distance();
+	m_pActivateUI->Tick(fTimeDelta);
 }
 
 void CNPC_Rlya::Late_Tick(_float fTimeDelta)
 {
 	m_pBody->Late_Tick(fTimeDelta);
+
+	if (Check_Distance())
+		m_pActivateUI->Late_Tick(fTimeDelta);
 }
 
 HRESULT CNPC_Rlya::Render()
@@ -85,15 +88,25 @@ HRESULT CNPC_Rlya::Add_PartObjects()
 	return S_OK;
 }
 
-void CNPC_Rlya::Check_Distance()
+_bool CNPC_Rlya::Check_Distance()
 {
 	_vector vBetween = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
 
-	if (ACTIVATE_DISTANCE >= fDistance)
+	return ACTIVATE_DISTANCE >= fDistance;
+	/*if (ACTIVATE_DISTANCE >= fDistance)
+	{
 		CUI_Manager::GetInstance()->Get_Activate()->Set_isRend(true);
+		CUI_Manager::GetInstance()->Get_Activate()->Set_Activate_Type(CUI_Activate::ACTIVATE_NPC_RLYA);
+	}
 	else
-		CUI_Manager::GetInstance()->Get_Activate()->Set_isRend(false);
+		CUI_Manager::GetInstance()->Get_Activate()->Set_isRend(false);*/
+}
+
+HRESULT CNPC_Rlya::Create_Script()
+{
+	// 자신만의 Script와 Activate 생성
+	return S_OK;
 }
 
 CNPC_Rlya* CNPC_Rlya::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -3,6 +3,9 @@
 #include "GameInstance.h"
 #include "Player.h"
 
+#include "UIGroup_Script.h"
+#include "UI_Activate.h"
+
 CNpc::CNpc(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -34,6 +37,8 @@ HRESULT CNpc::Initialize(void* pArg)
 	m_pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
 
+	Create_Activate();
+
 	return S_OK;
 }
 
@@ -54,10 +59,23 @@ HRESULT CNpc::Render()
 	return S_OK;
 }
 
+HRESULT CNpc::Create_Activate()
+{
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	m_pActivateUI = dynamic_cast<CUI_Activate*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Activate"), &pDesc));
+	if (nullptr == m_pActivateUI)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CNpc::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pActivateUI);
+	Safe_Release(m_pScriptUI);
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

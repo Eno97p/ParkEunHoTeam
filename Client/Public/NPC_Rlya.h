@@ -27,7 +27,9 @@ private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();
 
-	void				Check_Distance();
+	virtual HRESULT		Create_Script() override;
+
+	_bool				Check_Distance();
 
 public:
 	static CNPC_Rlya*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

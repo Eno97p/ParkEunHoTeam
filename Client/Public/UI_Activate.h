@@ -6,14 +6,13 @@ BEGIN(Client)
 
 class CUI_Activate final : public CUI
 {
+public:
+	enum ACTIVATE_TYPE{ ACTIVATE_NPC_RLYA, ACTIVATE_END };
+
 private:
 	CUI_Activate(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_Activate(const CUI_Activate& rhs);
 	virtual ~CUI_Activate() = default;
-
-public:
-	_bool			Get_isRend() { return m_isRend; }
-	void			Set_isRend(_bool isRend) { m_isRend = isRend; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -22,9 +21,6 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
-
-private:
-	_bool		m_isRend = { false };
 
 private:
 	HRESULT	Add_Components();

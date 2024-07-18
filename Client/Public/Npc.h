@@ -41,6 +41,12 @@ protected:
 	LEVEL								m_eLevel = { LEVEL_END };
 
 	class CTransform*					m_pPlayerTransform = { nullptr };
+	class CUIGroup_Script*				m_pScriptUI = { nullptr };
+	class CUI_Activate*					m_pActivateUI = { nullptr };
+
+protected:
+	HRESULT				Create_Activate();
+	virtual HRESULT		Create_Script() = 0;
 
 public:
 	virtual CGameObject*	Clone(void* pArg) = 0;

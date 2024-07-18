@@ -41,17 +41,13 @@ void CUI_Activate::Priority_Tick(_float fTimeDelta)
 
 void CUI_Activate::Tick(_float fTimeDelta)
 {
-	if (m_isRend)
-	{
-		if (!m_isRenderAnimFinished)
-			Render_Animation(fTimeDelta);
-	}
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
 }
 
 void CUI_Activate::Late_Tick(_float fTimeDelta)
 {
-	if(m_isRend)
-		CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
 
 HRESULT CUI_Activate::Render()
@@ -59,7 +55,7 @@ HRESULT CUI_Activate::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(8); // 다른 pass 파기
+	m_pShaderCom->Begin(8);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 

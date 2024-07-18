@@ -27,7 +27,7 @@ public:
 
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 
-	CUI_Activate*		Get_Activate() { return m_pUI_Activate; }
+	//CUI_Activate*		Get_Activate() { return m_pUI_Activate; }
 
 public:
 	HRESULT				Initialize();
@@ -47,7 +47,7 @@ private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 
 	map<string, CUIGroup*>	m_mapUIGroup;
-	CUI_Activate*			m_pUI_Activate = { nullptr };
+	//CUI_Activate*			m_pUI_Activate = { nullptr };
 
 private:
 	HRESULT		Create_UI();

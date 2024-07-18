@@ -1,96 +1,12 @@
 #include "stdafx.h"
 #include "..\Public\Loader.h"
 
-#include "ComputeShader_Buffer.h"
-#include "Particle_Rect.h"
-#include "Particle_Point.h"
-#include "GameInstance.h"
-#include "Body_Player.h"
-#include "Clone.h"
-#include "FreeCamera.h"
-#include "ThirdPersonCamera.h"
-#include "SideViewCamera.h"
-#include "ForkLift.h"
-#include "Terrain.h"
-//#include "Monster.h"
-#include "WhisperSword.h"
-#include "WhisperSword_Anim.h"
-#include "Cendres.h"
-#include "CorruptedSword.h"
-#include "Catharsis.h"
-#include "DurgaSword.h"
-#include "IceBlade.h"
-#include "NaruehSword.h"
-#include "PretorianSword.h"
-#include "RadamantheSword.h"
-#include "SitraSword.h"
-#include "ValnirSword.h"
-#include "VeilleurSword.h"
-#include "Player.h"
-#include "Distortion.h"
-#include "Sky.h"
 
-#pragma region Monster
-#include "Boss_Juggulus.h"
-#include "Body_Juggulus.h"
-#include "Juggulus_Hammer.h"
-#include "Juggulus_HandOne.h"
-#include "Juggulus_HandTwo.h"
-#include "Juggulus_HandThree.h"
-#include "Aspiration.h"
-#include "CircleSphere.h"
-#include "Sphere.h"
 
-#include "Mantari.h"
-#include "Body_Mantari.h"
-#include "Weapon_Mantari.h"
 
-#include "Legionnaire.h"
-#include "Body_Legionnaire.h"
-#include "Weapon_Legionnaire.h"
+#include"Import_Class.h"	// <---여기에 들어가서 헤더 넣으셈
 
-#include "Legionnaire_Gun.h"
-#include "Body_LGGun.h"
-#include "Weapon_Gun_LGGun.h"
-#include "Weapon_Sword_LGGun.h"
-#include "Weapon_Arrow_LGGun.h"
 
-#include "Ghost.h"
-#include "Body_Ghost.h"
-#include "Weapon_Ghost.h"
-
-#include "Homonculus.h"
-#include "Body_Homonculus.h"
-#include "Weapon_Homonculus.h"
-
-#include "TargetLock.h"
-
-#pragma endregion Monster
-
-#pragma region ITEM
-#include "Item.h"
-#pragma endregion ITEM
-
-#pragma region NPC
-#include "NPC_Rlya.h"
-#include "Body_Rlya.h"
-#pragma endregion NPC
-
-#pragma region DECAL
-#include "Decal.h"
-#pragma endregion DECAL
-
-#include "Map_Element.h"
-#include "Passive_Element.h"
-#include "Deco_Element.h"
-#include "Active_Element.h"
-#include "TutorialMapBridge.h"
-
-#include "FakeWall.h"
-#include "Elevator.h"
-#include "EventTrigger.h"
-
-#include"CHoverboard.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -863,6 +779,19 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion DECAL
 
+	//Trap
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hachoir"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/Hachoir/Hachoir.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SmashingPillar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/SmashingPillar/SmashingPillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+
 #pragma region Npc
 	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Rlya"),
@@ -1056,6 +985,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CElevator::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// Prototype_GameObject_RotateGate
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotateGate"),
+		CRotateGate::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//Prototype_GameObject_EventTrigger
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EventTrigger"),
 		CEventTrigger::Create(m_pDevice, m_pContext))))
@@ -1234,6 +1168,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CHoverboard::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/*For.Prototype_GameObject_Trap */
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Trap"),
+		CTrap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 
@@ -1804,6 +1742,12 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Legionnaire/Legionnaire.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Mst_TargetLock */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Mst_TargetLock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion Monster
 
 #pragma region ITEM
@@ -2226,6 +2170,11 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Elevator/Elevator.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RotateGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahGate/RasSamrahGate.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion   Active Element Model Load
 
 
@@ -2425,6 +2374,12 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Legionnaire"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Legionnaire/Legionnaire.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Mst_TargetLock */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Mst_TargetLock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion Monster

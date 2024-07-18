@@ -55,7 +55,7 @@ void CUI_LoadingCircle::Tick(_float fTimeDelta)
 
 void CUI_LoadingCircle::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, SECOND);
+	CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH);
 }
 
 HRESULT CUI_LoadingCircle::Render()

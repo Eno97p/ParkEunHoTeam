@@ -174,12 +174,6 @@ HRESULT CVIBuffer_Trail::Render()
 
 void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 {
-	//생성 시점을 나눠서 잡아줘야함
-
-	//XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
-	//XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
-	//
-	//XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_pDesc->vOffsetPos), ParentMat);
 	_matrix ParentMat;
 	if(m_TrailDescription.ParentMat != nullptr)
 		ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);

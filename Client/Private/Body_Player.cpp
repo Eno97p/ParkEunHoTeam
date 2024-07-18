@@ -85,6 +85,34 @@ void CBody_Player::Tick(_float fTimeDelta)
 		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
+	else if (*m_pState == CPlayer::STATE_LOCKON_STRAIGHT)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 45;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_LOCKON_BACKWARD)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 45;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_LOCKON_LEFT)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 46;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_LOCKON_RIGHT)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 47;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
 	else if (*m_pState == CPlayer::STATE_USEITEM)
 	{
 		AnimDesc.isLoop = false;
@@ -185,9 +213,12 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
+		if(m_iPastAnimIndex == 34 || m_iPastAnimIndex == 35)
+			fAnimSpeed = 1.5f;
+		else
+			fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_iPastAnimIndex > 34)
+		if (m_iPastAnimIndex > 33) // 34
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -196,7 +227,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_BACKATTACK)
+	else if (*m_pState == CPlayer::STATE_BACKATTACK) // X
 	{
 		if (m_iPastAnimIndex < 70 || m_iPastAnimIndex > 74)
 		{
@@ -223,7 +254,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 150)
+			fAnimSpeed = 2.f; // 2
+		else
+			fAnimSpeed = 1.5f;
+
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 150)
 		{
@@ -242,7 +277,12 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 134)
+			fAnimSpeed = 2.5f;
+		else if(m_iPastAnimIndex == 131)
+			fAnimSpeed = 4.f;
+		else
+			fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 133)
 		{
@@ -267,7 +307,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 149) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.5f;
+		if(m_iPastAnimIndex == 144)
+			fAnimSpeed = 2.5f;
+		else
+			fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
@@ -342,7 +385,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.f;
+		if(m_iPastAnimIndex == 76)
+			fAnimSpeed = 1.7f;
+		else
+			fAnimSpeed = 2.f;
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
@@ -353,16 +399,17 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_RUNLATTACK1) // ²÷±è êó
+	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
 	{
-		if (m_iPastAnimIndex < 137 || m_iPastAnimIndex > 142)
+		if (m_iPastAnimIndex < 139 || m_iPastAnimIndex > 142)
 		{
-			m_iPastAnimIndex = 139;
+			m_iPastAnimIndex = 139; // 137
 		}
 		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 1.5f;
+
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138)
 		{
@@ -464,6 +511,78 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
+		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_FRONT)
+	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
+		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_BACK)
+	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 6;
+		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_LEFT)
+	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 8;
+		fAnimSpeed = 2.f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_DASH_RIGHT)
+	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
+			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Up = XMVector4Normalize(ThisMat.r[1]);
+			_vector vPos = ThisMat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			vStartPos.y += 1.f;
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 166;
 		fAnimSpeed = 2.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
@@ -569,7 +688,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 
-	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 }
 
 void CBody_Player::Late_Tick(_float fTimeDelta)
@@ -593,12 +711,6 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
-
-#ifdef _DEBUG
-	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
-
 }
 
 HRESULT CBody_Player::Render()
@@ -805,18 +917,6 @@ HRESULT CBody_Player::Render_LightDepth()
 
 HRESULT CBody_Player::Add_Components()
 {
-	/* For.Com_Collider */
-	CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::TYPE_SPHERE;
-	ColliderDesc.fRadius = 0.5f;
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.fRadius, 0.f);
-
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -871,7 +971,6 @@ void CBody_Player::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);

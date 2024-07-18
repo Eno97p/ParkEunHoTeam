@@ -105,6 +105,8 @@ void CToolObj_Manager::Initialize()
         TEXT("Prototype_Component_Model_RasSamrahCastle"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle3"),
+                        TEXT("Prototype_Component_Model_RasSamrahCastle4"),
+                        TEXT("Prototype_Component_Model_RasSamrahCastle5")
         //TUTORIAL
         TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
 
@@ -162,7 +164,8 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_AckbarHouseRoofL"), TEXT("Prototype_Component_Model_AckbarHouseRoofM"),
                         TEXT("Prototype_Component_Model_AckbarHouseRoofS"),
                         TEXT("Prototype_Component_Model_AqueducTowerRoof"),
-                        TEXT("Prototype_Component_Model_UnderRoofFilling")
+                        TEXT("Prototype_Component_Model_UnderRoofFilling"),
+                        TEXT("Prototype_Component_Model_RotateGate")
     };
 
     m_ActiveElements = { TEXT("Prototype_Component_Model_Grass"),
@@ -337,7 +340,7 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 7:
             return "Prototype_GameObject_Elevator";
         case 8:
-            return "Prototype_GameObject_Active_Element";
+            return "Prototype_GameObject_RotateGate";
         default:
             break;
         }

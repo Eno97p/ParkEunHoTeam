@@ -57,6 +57,10 @@ HRESULT CGameObject::Initialize(void * pArg)
 
 	if (nullptr != pArg)
 	{
+		if(((GAMEOBJECT_DESC*)pArg)->pModelName)
+			m_wstrMoDelName= const_char_to_wstring(((GAMEOBJECT_DESC*)pArg)->pModelName);
+		//m_wstrMoDelName = static_cast<GAMEOBJECT_DESC*>(pArg)->pModelName;
+
 		// m_iData = ((GAMEOBJECT_DESC*)pArg)->iData;
 		//GAMEOBJECT_DESC* desc = ((GAMEOBJECT_DESC*)pArg);
 			
@@ -91,6 +95,13 @@ void CGameObject::Late_Tick(_float fTimeDelta)
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+_float CGameObject::Get_LengthFromCamera()
+{
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCamPos = m_pGameInstance->Get_CamPosition();
+	return XMVectorGetX(XMVector3Length(vPos - vCamPos));
 }
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring & strComponentTag, CComponent** ppOut, void* pArg)

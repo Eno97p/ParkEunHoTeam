@@ -3,6 +3,9 @@
 #include "Player.h"
 #include "Monster.h"
 
+_bool CThirdPersonCamera::m_bIsTargetLocked = false;
+_float4 CThirdPersonCamera::m_vLockedTargetPos = { 0.f, 10.f, 0.f, 1.f };
+
 CThirdPersonCamera::CThirdPersonCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {
@@ -60,7 +63,7 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
             // 카메라 레이의 끝점 (예: 카메라 앞 100 유닛)
             _vector vRayEnd = XMVectorAdd(vCamPos, XMVectorScale(vCamLookNormalized, 100.0f));
 
-            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Monster")));
+            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
 
             float closestDistance = FLT_MAX;
             CTransform* closestMonsterTransform = nullptr;

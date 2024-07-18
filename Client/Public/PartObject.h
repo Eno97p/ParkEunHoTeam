@@ -42,6 +42,7 @@ public:
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 	CCollider* Get_Collider() { return m_pColliderCom; }
 	const _float4x4* Get_Part_Mat() { return &m_WorldMatrix; }
+	virtual _float Get_LengthFromCamera() override;
 
 protected:
 	CCollider* m_pColliderCom = { nullptr };

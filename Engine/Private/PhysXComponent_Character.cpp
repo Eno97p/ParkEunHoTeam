@@ -243,6 +243,34 @@ HRESULT CPhysXComponent_Character::Go_BackWard(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CPhysXComponent_Character::Go_Left(_float fTimeDelta)
+{
+	_vector vTransformLeft = -m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 fLeft;
+	XMStoreFloat3(&fLeft, vTransformLeft);
+
+	PxVec3 moveVector = PxVec3(fLeft.x, 0, fLeft.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+	return S_OK;
+}
+
+HRESULT CPhysXComponent_Character::Go_Right(_float fTimeDelta)
+{
+	_vector vTransformRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 fRight;
+	XMStoreFloat3(&fRight, vTransformRight);
+
+	PxVec3 moveVector = PxVec3(fRight.x, 0, fRight.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+	return S_OK;
+}
+
 HRESULT CPhysXComponent_Character::Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform)
 {
 	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);

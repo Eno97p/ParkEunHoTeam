@@ -1,6 +1,4 @@
-
 #include "..\Public\Particle_Point.h"
-
 #include "GameInstance.h"
 
 CParticle_Point::CParticle_Point(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -91,7 +89,7 @@ void CParticle_Point::Tick(_float fTimeDelta)
 		m_pVIBufferCom->GrowOutY(fTimeDelta);
 		break;
 	case GROWOUT_SPEEDDOWN:
-		m_pVIBufferCom->GrowOut_Speed_Down(fTimeDelta);
+		m_pVIBufferCom->GrowOut_Speed_Down_Texture(fTimeDelta);
 		break;
 	}
 

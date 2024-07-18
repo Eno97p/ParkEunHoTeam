@@ -54,7 +54,7 @@ void CElevator::Tick(_float fTimeDelta)
 	case ELEVATOR_ASCEND:
 	{
 		_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) + 0.05f);
+		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) + 0.3f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, newPos);
 
 		if (XMVectorGetY(newPos) >= XMVectorGetY(m_vTargetPos))
@@ -69,7 +69,7 @@ void CElevator::Tick(_float fTimeDelta)
 	case ELEVATOR_DESCEND:
 	{
 		_vector currentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) - 0.05f);
+		_vector newPos = XMVectorSetY(currentPos, XMVectorGetY(currentPos) - 0.3f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, newPos);
 
 		if (XMVectorGetY(newPos) <= XMVectorGetY(m_vTargetPos))
@@ -220,7 +220,7 @@ HRESULT CElevator::Add_Components(void* pArg)
 
 	CPhysXComponent::PHYSX_DESC		PhysXDesc{};
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
-	PhysXDesc.fBoxProperty = _float3(10.f, 1.f, 10.f);				//박스 크기
+	PhysXDesc.fBoxProperty = _float3(10.f, 0.3f, 10.f);				//박스 크기
 	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix, XMMatrixRotationX(XMConvertToRadians(0.0f)) * XMMatrixTranslation(0.f, 0.f, 0.f));  //오프셋 위치
 
@@ -232,6 +232,9 @@ HRESULT CElevator::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
+
+	m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+
 	return S_OK;
 }
 

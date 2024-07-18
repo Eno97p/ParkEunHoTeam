@@ -430,6 +430,8 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "RasSamrahCastle",
             "RasSamrahCastle2",
             "RasSamrahCastle3",
+            "RasSamrahCastle4",
+            "RasSamrahCastle5",
             
             //TUTORIAL
             "TutorialMap", "TutorialDecoStructure", "TutorialDecoCube", "TutorialDecoMaze",
@@ -464,7 +466,8 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "AckbarHouseRoofLarge",
             "AckbarHouseRoofMid", "AckbarHouseRoofSmall",
             "AqueducTowerRoof",
-            "UnderRoofFilling"
+            "UnderRoofFilling", 
+            "RotateGate"
 
 
         };
@@ -475,7 +478,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Cannon" };
+                                        "Elevator", "s" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }

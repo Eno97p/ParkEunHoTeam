@@ -10,7 +10,8 @@ public:
 	typedef struct GAMEOBJECT_DESC : public CTransform::TRANSFORM_DESC
 	{
 		_int iData;
-
+		const char* pModelName = nullptr;
+		
 
 	}GAMEOBJECT_DESC;
 
@@ -46,13 +47,15 @@ public:
 	virtual HRESULT Render_Distortion() { return S_OK; }
 	void Set_Dead() { IsDead = true; }
 	_bool Get_Dead() { return IsDead; }
+	// 오브젝트마다 다르게 작성해야할 수도 있음
+	virtual _float Get_LengthFromCamera();
 
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
 	_bool						m_bisVisible = false;
-
+	wstring						m_wstrMoDelName = L"";
 
 
 protected:

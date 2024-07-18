@@ -212,7 +212,11 @@ void CUI_Manager::Key_Input()
 				}
 				else if (isWeaponOpen)
 				{
-					(*weapon).second->Set_RenderOnAnim(false);
+					// weapon의 sub도 활성화 되어있지 않을 때 예외 처리 필요
+					if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Get_EquipMode())
+						(*weapon).second->Set_RenderOnAnim(false);
+					else
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
 				}
 				else
 				{

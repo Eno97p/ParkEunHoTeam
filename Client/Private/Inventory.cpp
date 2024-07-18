@@ -6,6 +6,7 @@
 #include "ItemData.h"
 #include "UIGroup_DropItem.h"
 #include "UIGroup_WeaponSlot.h"
+#include "UIGroup_Weapon.h"
 
 IMPLEMENT_SINGLETON(CInventory)
 
@@ -50,8 +51,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI 출력
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 
+	// Equip Sign 활성화
 	vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
 	Add_EquipWeapon((*weapon), 0);
+	(*weapon)->Set_isEquip(true);
+	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
 	return S_OK;
 }

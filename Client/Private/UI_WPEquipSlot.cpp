@@ -224,16 +224,18 @@ void CUI_WPEquipSlot::Click_Event()
 {
 	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();
 	
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
+		++weapon;
+
 	if (isAlphaBG_On) // 장착
 	{
-		// 이미 착용한 weapon에 대한 예외 처리 필요
-		// Inventory와 weapon에서 장착 중인 아이템에 UI 표시를 하고 그에 따라 중복 처리?
-
-		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
-			++weapon;
-
-		CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
+		if (!(*weapon)->Get_isEquip())
+		{
+			CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
+			(*weapon)->Set_isEquip(true);
+			dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+		}
 
 		// AlphaBG 비활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
@@ -242,8 +244,11 @@ void CUI_WPEquipSlot::Click_Event()
 	{
 		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
 		CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+
+		// Equip Slot 비활성화
+		(*weapon)->Set_isEquip(false);
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false);
 	}
-	
 }
 
 CUI_WPEquipSlot* CUI_WPEquipSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -256,6 +256,7 @@
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
+    <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -429,6 +430,7 @@
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
+    <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />

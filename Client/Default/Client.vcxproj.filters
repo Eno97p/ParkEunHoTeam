@@ -514,6 +514,9 @@
     <Filter Include="02.GameObjects\02.LandObject\01.Item\FireFly">
       <UniqueIdentifier>{26e2c42c-deab-47f8-9319-d80ada91fc6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Slot\EquipSign">
+      <UniqueIdentifier>{a9a7e6a4-767e-4b96-ba1a-0593e10b2e48}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1046,6 +1049,9 @@
     <ClInclude Include="..\Public\UI_ScreenBlood.h">
       <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Slot_EquipSign.h">
+      <Filter>02.GameObjects\07. UI\Slot\EquipSign</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1554,6 +1560,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp">
       <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp">
+      <Filter>02.GameObjects\07. UI\Slot\EquipSign</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

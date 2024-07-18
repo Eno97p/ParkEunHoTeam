@@ -33,6 +33,9 @@ private:
 	HRESULT Save_Data_PhysX();
 	HRESULT Load_Data_PhysX();
 
+	HRESULT	Save_Data_Effects();
+	HRESULT	Load_Data_Effects();
+
 	const wchar_t* Setting_FileName();
 
 public:

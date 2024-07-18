@@ -31,6 +31,7 @@ private:
 	HRESULT Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
 
 	HRESULT Load_LevelData(const _tchar* pFilePath);
+	HRESULT Load_Data_Effects();
 
 	void Load_Lights();
 

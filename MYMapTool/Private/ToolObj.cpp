@@ -8,13 +8,13 @@
 #include <locale>
 
 CToolObj::CToolObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CBlendObject{ pDevice, pContext }
 	// CBlendObject{ pDevice, pContext }
 {
 }
 
 CToolObj::CToolObj(const CToolObj& rhs)
-	: CGameObject{ rhs }
+	: CBlendObject{ rhs }
 {
 }
 

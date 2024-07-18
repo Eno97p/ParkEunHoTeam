@@ -2,11 +2,13 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 
 #include "Body_Rlya.h"
 #include "Player.h"
 #include "UI_Activate.h"
 #include "UIGroup_Script.h"
+#include "ItemData.h"
 
 CNPC_Rlya::CNPC_Rlya(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNpc{ pDevice, pContext }
@@ -78,7 +80,7 @@ void CNPC_Rlya::Late_Tick(_float fTimeDelta)
 		{
 			m_pScriptUI->Set_Rend(true);
 			if(m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("첫번째 텍스트"));
+				m_pScriptUI->Set_DialogText(TEXT("오랜 세월 동안 이 어둠 속을 밝혀주는 것은 희미한 빛 뿐이었지."));
 			m_isScriptOn = true;
 		}
 	}
@@ -129,22 +131,26 @@ void CNPC_Rlya::Key_Input()
 		{
 		case 3:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("두번째 텍스트"));
+			m_pScriptUI->Set_DialogText(TEXT("기억해라, 방황하는 자여.\n빛이 어둠을 물리치듯 너 또한 네 앞에 놓인 모든 어둠을 헤쳐나갈 수 있을 거다."));
 			--m_iDialogCnt;
 			break;
 		}
 		case 2:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("세번째 텍스트"));
+			m_pScriptUI->Set_DialogText(TEXT("자, 받아라. 그리고 이 빛을 따라 나아가라."));
 			--m_iDialogCnt;
 			break;
 		}
 		case 1:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("이미 종료된 이벤트"));
+			m_pScriptUI->Set_DialogText(TEXT("FireFly를 사용하면 길을 밝힐 수 있어."));
 			m_isScriptOn = false;
 			m_pScriptUI->Set_Rend(false);
 			--m_iDialogCnt;
+
+			//Player에게 FireFly를 넘겨주어야 함
+			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_FIREFLY);
+
 			break;
 		}
 		case 0:

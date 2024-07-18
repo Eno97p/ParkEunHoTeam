@@ -142,7 +142,7 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
@@ -382,7 +382,7 @@ NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 	if (static_cast<CWeapon*>(m_PartObjects[1])->Get_Active() && !m_pArrow)
 	{
 		list<CGameObject*> ArrowList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Arrow"));
-		m_pArrow = dynamic_cast<CWeapon_Arrow_LGGun*>(ArrowList.back());
+		//m_pArrow = dynamic_cast<CWeapon_Arrow_LGGun*>(ArrowList.back());
 		//Safe_AddRef(m_pArrow);
 	}
 

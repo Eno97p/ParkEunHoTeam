@@ -153,6 +153,9 @@
     <ClCompile Include="..\Private\FireEffect.cpp">
       <Filter>02. GameObjects\05. Active_Elements\Fire</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TransitionCamera.cpp">
+      <Filter>02. GameObjects\99. Camera\04. Transition</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -302,6 +305,9 @@
     <ClInclude Include="..\Public\FireEffect.h">
       <Filter>02. GameObjects\05. Active_Elements\Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TransitionCamera.h">
+      <Filter>02. GameObjects\99. Camera\04. Transition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -392,6 +398,9 @@
     </Filter>
     <Filter Include="02. GameObjects\05. Active_Elements\Fire">
       <UniqueIdentifier>{ba3ff74f-5b5e-43ac-b7cc-c9d6c437fbcd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\99. Camera\04. Transition">
+      <UniqueIdentifier>{32818743-d767-4700-97cc-5f382f3d220b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

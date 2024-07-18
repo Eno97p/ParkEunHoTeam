@@ -61,6 +61,14 @@ private:
     _float4 m_vShakeStart = { 0.f, 0.f, 0.f, 1.f };
     _float4 m_vShakeTarget = { 0.f, 0.f, 0.f, 1.f };
 
+private:
+    bool m_bBossScene = false;
+    _float m_fNormalHeightOffset = 3.5f;
+    _float m_fNormalZPosition = -7.5f;
+    _float m_fBossHeightOffset = 8.5f;
+    _float m_fBossZPosition = 12.5f;
+    _float4 m_vFixedLookAtPosition = { -422.f, 73.f, -5.f, 1.f };
+
 public:
 	static CSideViewCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

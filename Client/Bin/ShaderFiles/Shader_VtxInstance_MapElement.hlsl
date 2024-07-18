@@ -150,7 +150,7 @@ PS_OUT PS_TILING(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
-    float2 vTilingTexcoord = In.vTexcoord * 20.f;
+    float2 vTilingTexcoord = In.vTexcoord * 40.f;
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, vTilingTexcoord);
     if (vDiffuse.a < 0.1f)
         discard;

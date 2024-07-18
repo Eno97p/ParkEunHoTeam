@@ -72,6 +72,10 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
     {
         m_pGameInstance->Set_MainCamera(1);
     }
+    if (m_pGameInstance->Key_Down(DIK_2))
+    {
+        m_pGameInstance->Set_MainCamera(2);
+    }
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("Level : GamePlay"));

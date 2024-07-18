@@ -51,6 +51,10 @@ HRESULT CSideViewCamera::Initialize(void* pArg)
 void CSideViewCamera::Priority_Tick(_float fTimeDelta)
 {
     // Priority_Tick 함수 내용은 그대로 유지
+    if (m_pGameInstance->Key_Down(DIK_3))
+    {
+        m_bBossScene = !m_bBossScene;
+    }
 }
 
 void CSideViewCamera::Tick(_float fTimeDelta)
@@ -89,21 +93,37 @@ HRESULT CSideViewCamera::Render()
 
 void CSideViewCamera::Get_SideViewCamPos(const _float4& vPlayerPosition, _float4* pOutCameraPosition, _float4* pOutLookAtPosition)
 {
-    // 카메라 위치 계산
-    pOutCameraPosition->x = vPlayerPosition.x;
-    pOutCameraPosition->y = vPlayerPosition.y + m_fHeightOffset;
-    pOutCameraPosition->z = vPlayerPosition.z - m_fFixedZPosition; // 플레이어보다 Z축으로 10만큼 앞에 위치
+    _float fCurrentHeightOffset = m_bBossScene ? m_fBossHeightOffset : m_fNormalHeightOffset;
+    _float fCurrentZPosition = m_bBossScene ? m_fBossZPosition : m_fNormalZPosition;
+
+    if (m_bBossScene)
+    {
+        // LookAt 위치 설정 (고정된 위치)
+        *pOutLookAtPosition = m_vFixedLookAtPosition;
+
+        // 플레이어에서 LookAt 위치로 향하는 벡터 계산
+        _vector vLookAtToPlayer = XMLoadFloat4(&vPlayerPosition) - XMLoadFloat4(pOutLookAtPosition);
+        vLookAtToPlayer = XMVector3Normalize(vLookAtToPlayer);
+
+        // 카메라 위치 계산
+        _vector vCameraPos = XMLoadFloat4(pOutLookAtPosition) + vLookAtToPlayer * fCurrentZPosition;
+        XMStoreFloat4(pOutCameraPosition, vCameraPos);
+
+        // 높이 조정
+        pOutCameraPosition->y += fCurrentHeightOffset;
+    }
+    else
+    {
+        // 기존 일반 모드 로직
+        pOutCameraPosition->x = vPlayerPosition.x;
+        pOutCameraPosition->y = vPlayerPosition.y + fCurrentHeightOffset;
+        pOutCameraPosition->z = vPlayerPosition.z - fCurrentZPosition;
+        *pOutLookAtPosition = vPlayerPosition;
+    }
+
     pOutCameraPosition->w = 1.f;
-
-    // 카메라가 바라보는 위치 계산 (플레이어 위치)
-
-    *pOutLookAtPosition = vPlayerPosition;
-    pOutLookAtPosition->y = vPlayerPosition.y + m_fHeightOffset * 0.5f;
     pOutLookAtPosition->w = 1.f;
 }
-
-
-
 
 void CSideViewCamera::Update_SideViewCam(_float fTimeDelta)
 {
@@ -125,6 +145,10 @@ void CSideViewCamera::Update_SideViewCam(_float fTimeDelta)
         XMLoadFloat4(&vTargetLookAtPosition),
         1.0f - exp(-m_fFollowSpeed * fTimeDelta)
     ));
+
+    // 카메라 Transform 컴포넌트 업데이트
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
+    m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
 }
 
 void CSideViewCamera::Update_TransitionCam(_float fTimeDelta)

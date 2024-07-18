@@ -41,6 +41,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	Safe_AddRef(m_pPlayer);
 	Safe_AddRef(m_pPlayerTransform);
 
+	m_vInitialPos = { pDesc->mWorldMatrix._41 , pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43, 1.f};
 	//Create_UI(); >> 자식 객체에서 직접 호출해주기 (Boss와 구분 위해)
 
 	return S_OK;

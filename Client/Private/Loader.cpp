@@ -244,7 +244,7 @@ HRESULT CLoader::Loading_Map()
 	{
 
 		//PHYSX JUGGLAS MAP
-		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Jugglas_PhysX.bin";
+		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Juggulas_PhysX.bin";
 		HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (INVALID_HANDLE_VALUE == hFile)
 			return E_FAIL;
@@ -1984,6 +1984,16 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle3"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle3.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle5"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle5.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 #pragma endregion  JUGGLAS PASSIVE ELEMENTS
 

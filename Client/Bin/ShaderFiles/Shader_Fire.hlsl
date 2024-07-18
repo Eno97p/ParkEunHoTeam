@@ -14,9 +14,6 @@ float2 distortion3;
 float distortionScale;
 float distortionBias;
 
-float g_BloomPower;
-float3 g_BloomColor;
-
 
 struct VS_IN
 {
@@ -34,12 +31,6 @@ struct VS_OUT
 	float4		vProjPos : TEXCOORD4;
 };
 
-struct VS_OUT_BLOOM
-{
-	float4		vPosition : SV_POSITION;
-	float2		vTexcoord : TEXCOORD0;
-};
-
 
 struct PS_IN
 {
@@ -51,11 +42,7 @@ struct PS_IN
 	float4		vProjPos : TEXCOORD4;
 };
 
-struct PS_IN_BLOOM
-{
-	float4		vPosition : SV_POSITION;
-	float2		vTexcoord : TEXCOORD0;
-};
+
 
 struct PS_OUT
 {
@@ -91,29 +78,6 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
-VS_OUT_BLOOM VS_BLOOM(VS_IN In)
-{
-	VS_OUT_BLOOM	Out = (VS_OUT_BLOOM)0;
-	matrix		matWV, matWVP;
-	matWV = mul(g_BloomMatrix, g_ViewMatrix);
-	matWVP = mul(matWV, g_ProjMatrix);
-
-	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
-	Out.vTexcoord = In.vTexcoord;
-	return Out;
-}
-
-PS_OUT PS_BLOOM(PS_IN_BLOOM In)
-{
-	PS_OUT		Out = (PS_OUT)0;
-	Out.vColor = g_BloomTexture.Sample(LinearSampler, In.vTexcoord);
-	if (Out.vColor.a < 0.1f)
-		discard;
-
-	Out.vColor.rgb = g_BloomColor;
-	Out.vColor.a = g_BloomPower;
-	return Out;
-}
 
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -180,16 +144,5 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass BloomPass
-	{
-		SetRasterizerState(RS_Default);
-		SetDepthStencilState(DSS_Default, 0);
-		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-		VertexShader = compile vs_5_0 VS_BLOOM();
-		GeometryShader = NULL;
-		HullShader = NULL;
-		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_BLOOM();
-	}
 }
 

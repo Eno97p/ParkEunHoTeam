@@ -72,7 +72,7 @@ public:
 	void Set_WorldMatrix(const _matrix matWorld) { XMStoreFloat4x4(&m_WorldMatrix, matWorld); }
 
 public:
-	void Set_State(STATE eState, _fvector vState);
+	void Set_State(STATE eState,_fvector vState);
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -98,6 +98,7 @@ public:
 	void Speed_Scaling(_float fRatio) { m_fSpeedPerSec *= fRatio; }
 	void Set_Speed(_float fSpeed) { m_fSpeedPerSec = fSpeed; }
 	void BillBoard();			//빌보드 함수 추가 - 박은호
+	void BillBoard_Y();		
 	void Set_LookingAt(_fvector vLook);
 private:
 	//void Update_WorldMatrix();

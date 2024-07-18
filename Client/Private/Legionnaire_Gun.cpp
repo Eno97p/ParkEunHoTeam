@@ -235,6 +235,7 @@ HRESULT CLegionnaire_Gun::Add_PartObjects()
 	m_PartObjects.emplace_back(pGun);
 	dynamic_cast<CBody_LGGun*>(pBody)->Set_Gun(dynamic_cast<CWeapon*>(pGun));
 
+
 	CWeapon::WEAPON_DESC WeaponDesc{};
 	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	WeaponDesc.pState = &m_iState;

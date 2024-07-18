@@ -172,19 +172,6 @@ HRESULT CClone::Render_Bloom()
 
 HRESULT CClone::Add_Components()
 {
-	/* For.Com_Collider */
-	CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::TYPE_SPHERE;
-	ColliderDesc.fRadius = 0.5f;
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.fRadius, 0.f);
-
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
-
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fiona"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -242,7 +229,6 @@ void CClone::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 }

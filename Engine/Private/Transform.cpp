@@ -247,18 +247,36 @@ HRESULT CTransform::Rotation(_fvector vAxis, _float fRadian)
 
 void CTransform::TurnToTarget(_float fTimeDelta, _fvector vTargetPosition)
 {
-	_float3 vScaled = Get_Scaled();
 	_vector vPos = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
+	_vector vTargetLook = XMVector3Normalize(XMVectorSetY(XMVectorSubtract(vTargetPosition, vPos), 0.f));
 
-	_vector vTargetLook = XMVectorSetY(XMVectorSubtract(vTargetPosition, vPos), 0.f);
+	_float fDegree = XMConvertToDegrees(XMScalarACos(XMVectorGetX(XMVector3Dot(vLook, vTargetLook))));
 
-	_float fLerp = fTimeDelta * m_fRotationPerSec;
-	_vector vCurLook = XMVectorLerp(vLook, vTargetLook, fLerp);
-	_vector	vRight = XMVector3Cross(XMVectorSet(0.0f, 1.f, 0.f, 0.f), vCurLook);
+	if (abs(fDegree) > 90.f)
+	{
+		_vector vUp = XMVector3Cross(vLook, vTargetLook);
 
-	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScaled.x);
-	Set_State(STATE_LOOK, XMVector3Normalize(vCurLook) * vScaled.z);
+		if (XMVectorGetY(vUp) >= 0.f)
+		{
+			Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
+		}
+		else
+		{
+			Turn(XMVectorSet(0.f, -1.f, 0.f, 0.f), fTimeDelta);
+		}
+	}
+	else
+	{
+		_float3 vScaled = Get_Scaled();
+		_float fLerp = fTimeDelta * m_fRotationPerSec;
+
+		_vector vCurLook = XMVectorLerp(vLook, vTargetLook, fLerp);
+		_vector	vRight = XMVector3Cross(XMVectorSet(0.0f, 1.f, 0.f, 0.f), vCurLook);
+
+		Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * vScaled.x);
+		Set_State(STATE_LOOK, XMVector3Normalize(vCurLook) * vScaled.z);
+	}
 }
 
 void CTransform::BillBoard()

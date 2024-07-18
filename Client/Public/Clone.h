@@ -36,7 +36,6 @@ public:
 	virtual HRESULT Render_Bloom() override;
 
 private:
-	CCollider* m_pColliderCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	_float m_fAnimDelay = 0.f;

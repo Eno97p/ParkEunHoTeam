@@ -63,6 +63,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
+	if (*m_pState == CPlayer::STATE_RUN)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -0.3f, 0.f, 1.f));
+	}
+	else
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	}
+
 	*m_pCanCombo = false;
 	if (*m_pState == CPlayer::STATE_IDLE)
 	{
@@ -511,7 +520,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 3.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH_FRONT)
@@ -529,7 +538,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 2.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH_BACK)
@@ -547,7 +556,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 6;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 2.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH_LEFT)
@@ -565,7 +574,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 8;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 2.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH_RIGHT)
@@ -583,7 +592,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 166;
-		fAnimSpeed = 2.f;
+		fAnimSpeed = 2.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DEAD)

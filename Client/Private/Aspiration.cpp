@@ -23,11 +23,13 @@ HRESULT CAspiration::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	GAMEOBJECT_DESC gameObjDesc = *(GAMEOBJECT_DESC*)pArg;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(gameObjDesc.mWorldMatrix._41, gameObjDesc.mWorldMatrix._42, gameObjDesc.mWorldMatrix._43, 1.f)); //초기 위치 설정))
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(159.f, 538.f, 85.f, 1.f)); // Test
 
 	return S_OK;
 }
@@ -37,9 +39,13 @@ void CAspiration::Priority_Tick(_float fTimeDelta)
 	m_fTexcoordY -= fTimeDelta * 1.15f;
 	if (m_fTexcoordY < 0.f)
 	{
-		CGameObject::GAMEOBJECT_DESC transformDesc;
-		transformDesc.fSpeedPerSec = 40.f;
-		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Sphere"), &transformDesc);
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		CGameObject::GAMEOBJECT_DESC gameObjDesc;
+		gameObjDesc.fSpeedPerSec = 40.f;
+		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
+		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
+		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Sphere"), &gameObjDesc);
 		m_pGameInstance->Erase(this);
 	}
 }

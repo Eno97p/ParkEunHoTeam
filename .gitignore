@@ -32,7 +32,7 @@ ipch/
 *.ilk
 *.exp
 *.recipe
-*.iobj
+
 # Ignore DLL files
 *.dll
 

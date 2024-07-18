@@ -136,7 +136,7 @@ void CUI_LoadingCircle::Turn_Animation(_float fTimeDelta)
 void CUI_LoadingCircle::Render_Font()
 {
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_wstrText,
-		_float2((g_iWinSizeX>> 1) - 340.f, (g_iWinSizeY >> 1) - 70.f), XMVectorSet(m_fFontRGB, m_fFontRGB, m_fFontRGB, 1.f))))
+		_float2((g_iWinSizeX>> 1) - 340.f, (g_iWinSizeY >> 1) - 65.f), XMVectorSet(m_fFontRGB, m_fFontRGB, m_fFontRGB, 1.f))))
 		return;
 }
 
@@ -174,23 +174,29 @@ void CUI_LoadingCircle::Setting_Data()
 	if (0 == m_iTextNum)
 	{
 		m_wstrText = TEXT("              자칭 GEODESIAN이라는 자에 대해 알려진 것은 거의 없다.\n"
-				TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
-				TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
-				TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
+			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
+			TEXT("                                   스스로를 창조자로 여길 것인가."));
 	}
 	else if (1 == m_iTextNum)
 	{
-		m_wstrText = TEXT("              1.\n"
-			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
-			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
-			TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+		m_wstrText = TEXT("                프로메테우스는 우주의 비밀을 풀어냈으며 모든 것을 깨우쳤다.\n"
+			TEXT("                               히프노스의 가장 먼 경치 너머까지도.\n")
+			TEXT("자신의 지식에 대한 사색에 잠긴 그녀는 주변 논리학자들에 대한 인식을 서서히 잃어갔다.\n"));
 	}
 	else if (2 == m_iTextNum)
 	{
-		m_wstrText = TEXT("              2.\n"
-			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
-			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
-			TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+		m_wstrText = TEXT("그대의 발걸음이 오래된 성곽의 잔해를 밟고 신비한 왕의 유산을 찾아가는 순간,\n"
+			TEXT("                                    어둠 속에서도 빛을 발견하리라.\n")
+			TEXT("               왕의 전설을 되살려 이 고대의 땅에서 새로운 시작을 선언하라.\n")
+			TEXT("           깨어진 세계의 비밀을 풀어라. 왕의 기억이 그대를 기다리고 있다.\n\n")
+			TEXT("                            어둠 속에서 진실을 밝혀낼 용기가 있는가?"));
+	}
+	else if (3 == m_iTextNum)
+	{
+		m_wstrText = TEXT("                                                역사적인 여정의 시작.\n"
+			TEXT("잊혀진 왕의 황금 시대를 되찾기 위해서는 과거의 비밀과 현재의 용기가 필요하다.\n")
+			TEXT("    전설의 미래를 위한 결정적인 순간에 그대의 선택이 모든 것을 바꿀 것이다.\n"));
 	}
 
 	m_iTextNum++;

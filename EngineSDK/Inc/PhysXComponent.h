@@ -27,14 +27,18 @@ public:
 
 	}PHYSX_DESC;
 
+#ifdef _DEBUG
 	typedef struct  PhysX_Editable_Desc : CComponent::ComponentDesc
 	{
 		//수정 가능하게 할 항목만 넣기
-		PxMaterial* pMaterial= nullptr;
+		PxMaterial* pMaterial = nullptr;
 		_bool bIsOnDebugRender = true;
 
 	}PhysX_Editable_Desc;
 
+#endif // _DEBUG
+
+	
 
 protected:
 	CPhysXComponent(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -95,7 +99,12 @@ private:
 
 	_float3 m_fBoxProperty = { 0.f, 0.f, 0.f };
 	_float2 m_fCapsuleProperty = { 0.f, 0.f };
+
+#ifdef _DEBUG
+
 	PhysX_Editable_Desc m_OutDesc;
+#endif // _DEBUG
+
 public:
 	static CPhysXComponent* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

@@ -22,12 +22,13 @@ CPhysXComponent::CPhysXComponent(const CPhysXComponent & rhs)
 	: CComponent{ rhs }
 #ifdef _DEBUG
 	, m_pShader{ rhs.m_pShader }
+	, m_OutDesc{ rhs.m_OutDesc }
 #endif
 	, m_pBuffer{ rhs.m_pBuffer }
 	, m_pMaterial{ rhs.m_pMaterial }
 	, m_pActor{ rhs.m_pActor }
 	, m_pShape{ rhs.m_pShape }
-	, m_OutDesc{ rhs.m_OutDesc }
+
 {
 #ifdef _DEBUG
 	Safe_AddRef(m_pShader);	
@@ -80,16 +81,18 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 #endif
 	m_pGameInstance->AddActor(m_pActor);
 
+	
 
 	//!!! 피직스의 모형을 그리기 위한  버퍼 생성
 	//! 
 #ifdef _DEBUG
 	if (FAILED(Init_Buffer()))
 		return E_FAIL;
+
+	m_OutDesc.pMaterial = m_pMaterial;
 #endif
 
 	
-	m_OutDesc.pMaterial = m_pMaterial;
 	return S_OK;
 }
 
@@ -270,7 +273,7 @@ void CPhysXComponent::Tick(const _float4x4 * pWorldMatrix)
 	PxTransform newTransform(PxVec3(position.m128_f32[0], position.m128_f32[1], position.m128_f32[2]), PxQuat(rotation.m128_f32[0], rotation.m128_f32[1], rotation.m128_f32[2], rotation.m128_f32[3]));
 	m_pActor->setGlobalPose(newTransform);
 	m_WorldMatrix= *pWorldMatrix;
-	
+
 
 }
 

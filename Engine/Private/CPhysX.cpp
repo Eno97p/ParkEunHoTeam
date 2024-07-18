@@ -276,12 +276,19 @@ void CPhysX::Tick(_float fTimeDelta)
 		return;
 	}
 
-	PxSimulationStatistics stats;
-	m_pScene->getSimulationStatistics(stats);
+	PxCudaContext* pCudaContext =  m_pCudaContextManager->getCudaContext();
+	if(pCudaContext->isInAbortMode())
+	{
+		MSG_BOX("Failed To Fetch Result");
+		return;
+	}
 
-	PxU32 temp = stats.nbActiveDynamicBodies;
-	PxU32 temp2 = stats.nbActiveKinematicBodies;
-	PxU32 temp3 = stats.nbStaticBodies;
+	//PxSimulationStatistics stats;
+	//m_pScene->getSimulationStatistics(stats);
+
+	//PxU32 temp = stats.nbActiveDynamicBodies;
+	//PxU32 temp2 = stats.nbActiveKinematicBodies;
+	//PxU32 temp3 = stats.nbStaticBodies;
 
 	
 	

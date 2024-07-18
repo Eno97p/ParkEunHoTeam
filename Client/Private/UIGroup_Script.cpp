@@ -59,6 +59,8 @@ void CUIGroup_Script::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		m_pDialogBox->Tick(fTimeDelta);
 	}
 }
 
@@ -68,6 +70,8 @@ void CUIGroup_Script::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		m_pDialogBox->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -76,9 +80,16 @@ HRESULT CUIGroup_Script::Render()
 	return S_OK;
 }
 
+void CUIGroup_Script::Set_DialogText(wstring wstrDialogText)
+{
+	m_pDialogBox->Setting_Text(wstrDialogText);
+}
+
 HRESULT CUIGroup_Script::Create_UI()
 {
 	CUI::UI_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
 
 	// BG Aura
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pDesc)));
@@ -87,11 +98,13 @@ HRESULT CUIGroup_Script::Create_UI()
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pDesc)));
 
 	// DialogBox
-	m_vecUI.emplace_back(dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc)));
+	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));
 
 	// NameBox
-	m_vecUI.emplace_back(dynamic_cast<CUI_Script_NameBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"), &pDesc)));
-
+	CUI_Script_NameBox::UI_SCRIPT_NAMEBOX_DESC pNameDesc{};
+	pNameDesc.eLevel = LEVEL_STATIC;
+	pNameDesc.eNpcType = CUI_Script_NameBox::NPC_RLYA; // 나중에 수정할 수 있도록 변경해야 함
+	m_vecUI.emplace_back(dynamic_cast<CUI_Script_NameBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"), &pNameDesc)));
 
 	return S_OK;
 }
@@ -128,4 +141,6 @@ void CUIGroup_Script::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	Safe_Release(m_pDialogBox);
 }

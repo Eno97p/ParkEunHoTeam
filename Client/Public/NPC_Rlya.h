@@ -1,5 +1,10 @@
 #pragma once
+
 #include "Npc.h"
+
+BEGIN(Client)
+class CBody_Rlya;
+
 class CNPC_Rlya final : public CNpc
 {
 private:
@@ -16,11 +21,19 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	// PartObject가 Body 하나뿐이니 하나만 생성해도 될듯
+	_bool				m_isScriptOn = { false };
+	_uint				m_iDialogCnt = { 0 };
+
+	CBody_Rlya*			m_pBody = { nullptr };
 
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();
+
+	virtual HRESULT		Create_Script() override;
+
+	_bool				Check_Distance();
+	void				Key_Input();
 
 public:
 	static CNPC_Rlya*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -28,3 +41,4 @@ public:
 	virtual void			Free() override;
 };
 
+END

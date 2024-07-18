@@ -14,3 +14,6 @@
 13. BigDashEffect
 14. JugglusEnergeBall0
 15. JugglusEnergeBall1
+16. Homunculus_Crash
+17. Homunculus_Crash2
+18. Homunculus_Crash3

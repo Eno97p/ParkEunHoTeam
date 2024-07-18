@@ -9,6 +9,7 @@
 #include "TextureFrame.h"
 #include "Particle_STrail.h"
 #include "Distortion_Effect.h"
+#include "FireEffect.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -98,8 +99,8 @@ private:	//for Distortion
 
 private:
 	void FireTool();
-
-
+	HRESULT StoreFires(char* Name, CFireEffect::FIREEFFECTDESC Fire);
+	void FireListBox(CFireEffect::FIREEFFECTDESC* Fire);
 
 private:
 	void Electron_Tool();
@@ -123,6 +124,7 @@ private:
 	_bool ChangedTrail = false;
 	_bool ChangedSwordTrail = false;
 	_bool ChangedDistortion = false;
+	_bool ChangedFire = false;
 	const _float4x4* TrailMat = nullptr;
 
 private:
@@ -133,11 +135,14 @@ private:
 	vector<shared_ptr<CParticle_Trail::TRAIL_DESC>> TrailEffects;
 	vector<shared_ptr<CSTrail::STRAIL_DESC>>	m_SwordTrails;
 	vector<shared_ptr<CDistortionEffect::DISTORTIONEFFECT>> m_Distortions;
+	vector<shared_ptr<CFireEffect::FIREEFFECTDESC>>			m_Fires;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
 	vector<string> SwordTrailNames;
 	vector<string> DistortionNames;
+	vector<string> FireNames;
+
 
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

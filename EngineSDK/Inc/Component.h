@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Initialize(void* pArg);	
 	virtual HRESULT Render() { return S_OK; };
 
-	
+
 	virtual ComponentDesc* GetData() { return nullptr; };
 
 protected:

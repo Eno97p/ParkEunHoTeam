@@ -25,6 +25,7 @@ public:
 	CUIGroup*			Get_UIGroup(string strKey);
 
 	void				Set_MenuPage(_bool isOpen, string PageKey);
+	void				Set_ScreenBloodRend(_bool isRend);
 
 public:
 	HRESULT				Initialize();
@@ -44,6 +45,7 @@ private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 
 	map<string, CUIGroup*>	m_mapUIGroup;
+	class CUI_ScreenBlood*	m_pScreenBlood = { nullptr };
 
 private:
 	HRESULT		Create_UI();

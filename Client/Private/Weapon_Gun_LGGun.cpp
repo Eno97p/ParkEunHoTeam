@@ -76,10 +76,14 @@ void CWeapon_Gun_LGGun::Late_Tick(_float fTimeDelta)
 	if (m_bIsActive)
 	{
 		CWeapon_Arrow_LGGun::ARROW_DESC arrowDesc;
-		arrowDesc.vDir = XMVectorSet(-m_pParentMatrix->_31, 0.f, -m_pParentMatrix->_33, 0.f);
+		arrowDesc.vDir = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION) -
+			XMVectorSet(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f);
+		arrowDesc.vDir.m128_f32[0] *= -1.f;
+		arrowDesc.vDir.m128_f32[1] += 1.5f;
+		arrowDesc.vDir.m128_f32[2] *= -1.f;
 		arrowDesc.vPos = XMVectorSet(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f);
 		arrowDesc.fSpeedPerSec = 30.f;
-		m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Arrow"), TEXT("Prototype_GameObject_Weapon_Arrow_LGGun"), &arrowDesc);
+		m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Arrow"), TEXT("Prototype_GameObject_Weapon_Arrow_LGGun"), &arrowDesc);
 	}
 }
 

@@ -1252,7 +1252,7 @@ void CRenderer::Render_Final()
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_BlurTexture");
-	m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 1);
+	m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 0);
 
 
     m_pVIBuffer->Bind_Buffers();
@@ -1424,6 +1424,8 @@ float CRenderer::Sample_HZB(_float2 uv, UINT mipLevel)
 
 UINT WINAPI RenderThread(void* pArg)
 {
+
+    
     CRenderer::RENDER_THREAD_DESC* pDesc = (CRenderer::RENDER_THREAD_DESC*)pArg;
     CRenderer* pRenderer = pDesc->pRenderer;
     DWORD dwThreadIndex = pDesc->dwThreadIndex;

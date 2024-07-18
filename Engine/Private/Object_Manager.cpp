@@ -225,7 +225,11 @@ void CObject_Manager::Late_Tick(_float fTimeDelta)
 		{
 			Pair.second->Late_Tick(fTimeDelta);
 		}
-		//Garbage_Collection(&m_pLayers[i]);
+#ifdef _DEBUG
+#else
+		Garbage_Collection(&m_pLayers[i]);
+#endif // _DEBUG
+
 	}
 	
 

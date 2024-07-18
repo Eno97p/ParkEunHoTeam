@@ -103,18 +103,18 @@ HRESULT CLevel_Jugglas::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	//Load_Lights();
+ 	Load_Lights();
 
 
-	LIGHT_DESC			LightDesc{};
+	//LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -447,7 +447,7 @@ void CLevel_Jugglas::Load_Lights()
 	//	return;
 	//}
 
-	wstring LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
+	wstring LightsDataPath = L"../Bin/MapData/LightsData/Juggulas_Lights.dat";
 
 	HANDLE hFile = CreateFile(LightsDataPath.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (nullptr == hFile)

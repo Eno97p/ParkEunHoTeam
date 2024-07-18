@@ -16,7 +16,7 @@ BEGIN(Client)
 
 class CPlayer final : public CLandObject
 {
-#define	CLONEDELAY 0.15f
+#define	CLONEDELAY 0.1f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
 #define WALKSPEED 3.f
@@ -26,6 +26,7 @@ class CPlayer final : public CLandObject
 #define STAMINARECOVERDELAY 1.5f
 #define PARRYSTART 0.1f
 #define PARRYEND 0.3f
+#define JUMPSPEED 13.f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
@@ -125,6 +126,7 @@ private:
 	_bool										m_bCanCombo = false;
 	_float										m_fSlowDelay = 0.f;
 	_float										m_fParryFrame = 0.f;
+	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
 	CTransform* m_pParriedMonsterTransform = { nullptr };
 	CTransform* m_pCameraTransform = { nullptr };

@@ -75,6 +75,8 @@ protected:
 	class CUIGroup*		m_pUI_HP = { nullptr };
 	class CTargetLock*	m_pTargetLock = { nullptr };
 
+	//맵툴 배치용
+	_float4 m_vInitialPos = {0.f, 0.f, 0.f, 1.f};
 protected:
 	virtual HRESULT		Add_Nodes();
 

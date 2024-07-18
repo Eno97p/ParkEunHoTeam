@@ -44,7 +44,7 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-	void			Render_Animation(_float fTimeDelta);
+	void			Render_Animation(_float fTimeDelta, _float fSpeed = 3.f);
 	void			Resset_Animation(_bool isOffAnim);
 	_bool			isRender_End();
 

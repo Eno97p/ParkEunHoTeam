@@ -835,13 +835,13 @@ void CImgui_Manager::Load_Lights()
     switch (iStageIdx)
     {
     case STAGE_HOME:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Stage_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/Ackbar_Lights.dat";
         break;
     case STAGE_ONE:
         m_LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
         break;
     case STAGE_TWO:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Stage2_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/Juggulas_Lights.dat";
         break;
     case STAGE_THREE:
         m_LightsDataPath = L"../Bin/MapData/LightsData/Stage3_Lights.dat";

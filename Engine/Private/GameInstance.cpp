@@ -148,7 +148,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	PROFILE_RESET();
 	
 	if (nullptr == m_pLevel_Manager)
-		return;
+		return;	
 
 	PROFILE_CALL("Input Device Update", m_pInput_Device->Update_InputDev());
 
@@ -159,6 +159,7 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		}));
 	//PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
+	
 
 
 	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
@@ -174,6 +175,13 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
 	
 
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+	//	}));
+
+	futures.push_back(m_pWorker->Add_Job([this]() {
+		PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+		}));
 
 
 	for (auto& worker : futures)
@@ -182,15 +190,12 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 	}
 	futures.clear();
 
-	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	//	}));
 
+	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	
 	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
-	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+	//PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
 
 #ifdef _DEBUG
@@ -233,6 +238,10 @@ void CGameInstance::Clear_Resources(_uint iLevelIndex)
 	m_pRenderer->Clear();
 	m_pObject_Manager->Clear(iLevelIndex);
 	m_pComponent_Manager->Clear(iLevelIndex);
+
+
+
+	
 }
 
 HRESULT CGameInstance::Clear_BackBuffer_View(_float4 vClearColor)

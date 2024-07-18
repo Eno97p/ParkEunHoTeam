@@ -3,6 +3,7 @@
 #include "..\Public\Player.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "PartObject.h"
 #include "Weapon.h"
 #include "Clone.h"
@@ -33,7 +34,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
 
 	pDesc->fSpeedPerSec = 3.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
+	pDesc->fRotationPerSec = XMConvertToRadians(720.f);
 	m_InitialPosition = { pDesc->mWorldMatrix._41, pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43 }; //초기 위치 설정
 
 	if (FAILED(__super::Initialize(pDesc)))
@@ -101,7 +102,7 @@ void CPlayer::Tick(_float fTimeDelta)
 	{
 		m_bJumping = false;
 		m_bDoubleJumping = false;
-		m_pPhysXCom->Set_JumpSpeed(10.f);
+		m_pPhysXCom->Set_JumpSpeed(JUMPSPEED);
 
 	}
 	else
@@ -171,12 +172,10 @@ HRESULT CPlayer::Add_Components()
 
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
-	PhysXDesc.fJumpSpeed = 10.f;
+	PhysXDesc.fJumpSpeed = JUMPSPEED;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
 	PhysXDesc.position = PxExtendedVec3(m_InitialPosition.x, PhysXDesc.height * 0.5f + PhysXDesc.radius + m_InitialPosition.y, m_InitialPosition.z);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
-	//PhysXDesc.position = PxExtendedVec3(140.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 528.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
-	//PhysXDesc.position = PxExtendedVec3(0.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 5.f,0.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -190,11 +189,9 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.filterData.word1 = (Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY) & ~GROUP_NONCOLLIDE;
 	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
 	
-	
 	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -259,6 +256,8 @@ void CPlayer::PlayerHit(_float fValue)
 		m_pTransformCom->Set_Speed(WALKSPEED);
 	}
 	Add_Hp(-fValue);
+
+	CUI_Manager::GetInstance()->Set_ScreenBloodRend(true);
 }
 
 void CPlayer::Parry_Succeed()
@@ -269,9 +268,8 @@ void CPlayer::Parry_Succeed()
 	_float4 PlayerPos;
 	XMStoreFloat4(&PlayerPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	PlayerPos.y += 1.f;
-	EFFECTMGR->Generate_Distortion(0, PlayerPos);
+	EFFECTMGR->Generate_Distortion(2, PlayerPos);
 	EFFECTMGR->Generate_Particle(6, vParticlePos);
-	//EFFECTMGR->Generate_Particle(7, vParticlePos);
 	m_bParry = true;
 }
 
@@ -562,15 +560,27 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		}
 		m_iState = STATE_JUMPATTACK;
 		m_bLAttacking = true;
-		m_pPhysXCom->Set_JumpSpeed(-2.f);
-		m_pPhysXCom->Go_Jump(fTimeDelta);
+		
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);
+		m_fJumpAttackdelay = 0.7f;
 	}
 
 	if (m_bLAttacking && (m_iState == STATE_JUMPATTACK || m_iState == STATE_JUMPATTACK_LAND))
 	{
+		m_fJumpAttackdelay -= fTimeDelta;
+		if (m_fJumpAttackdelay > 0.f)
+		{
+			m_pPhysXCom->Set_JumpSpeed(0.f);
+			m_pPhysXCom->Go_Jump(fTimeDelta);
+		}
+		else if (m_fJumpAttackdelay < 0.f && m_fJumpAttackdelay > -0.2f)
+		{
+			m_pPhysXCom->Set_JumpSpeed(-20.f);
+			m_pPhysXCom->Go_Jump(fTimeDelta);
+			m_fJumpAttackdelay = -0.3f;
+		}
 		if (m_bAnimFinished && m_iState == STATE_JUMPATTACK_LAND)
 		{
 			m_bStaminaCanDecrease = true;
@@ -584,7 +594,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 			/*m_pPhysXCom->Tick(fTimeDelta);*/
 			if (!m_pPhysXCom->Get_IsJump())
 			{
-				m_pPhysXCom->Set_JumpSpeed(10.f);
+				m_pPhysXCom->Set_JumpSpeed(JUMPSPEED);
 				m_iState = STATE_JUMPATTACK_LAND;
 			}
 			return RUNNING;
@@ -771,7 +781,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 			m_bCanCombo = false;
 		}
 	}
-	else if (m_fRChargeAttack > 0.f && m_fRChargeAttack < 0.4f)
+	else if (m_fRChargeAttack > 0.f && m_fRChargeAttack < 0.2f)
 	{
 		if (m_bStaminaCanDecrease)
 		{
@@ -784,7 +794,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 	if (m_fRChargeAttack != 0.f)
 	{
-		if (m_fRChargeAttack >= 1.f)
+		if (m_fRChargeAttack >= 0.3f)
 		{
 			if (m_bStaminaCanDecrease)
 			{
@@ -983,7 +993,7 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 	if (m_iState == STATE_DASH)
 	{
-		m_pPhysXCom->Set_Speed(ROLLSPEED);
+		m_pPhysXCom->Set_Speed(15.f);
 		m_pTransformCom->Set_Speed(1.f);
 		m_pPhysXCom->Go_Straight(fTimeDelta);
 
@@ -1141,7 +1151,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			m_bDisolved_Yaak = true;
 		}
 
-		if (CThirdPersonCamera::m_bIsTargetLocked)
+		if (CThirdPersonCamera::m_bIsTargetLocked && !m_bRunning)
 		{
 			if (GetKeyState('S') & 0x8000)
 			{
@@ -1172,7 +1182,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT)
 	{
 		m_pPhysXCom->Set_Speed(ROLLSPEED);
-		if (CThirdPersonCamera::m_bIsTargetLocked)
+		if (CThirdPersonCamera::m_bIsTargetLocked && !m_bRunning)
 		{
 			if (m_iState == STATE_DASH_BACK)
 			{
@@ -1186,7 +1196,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			{
 				m_pPhysXCom->Go_Right(fTimeDelta);
 			}
-			else if(m_iState == STATE_DASH_FRONT)
+			else if (m_iState == STATE_DASH_FRONT)
 			{
 				m_pPhysXCom->Go_Straight(fTimeDelta);
 			}

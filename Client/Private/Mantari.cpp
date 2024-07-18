@@ -47,8 +47,6 @@ HRESULT CMantari::Initialize(void* pArg)
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(2.f, 2.f, 2.f);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30.f, 3.f, 30.f, 1.f));
-
 	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
@@ -85,9 +83,11 @@ void CMantari::Tick(_float fTimeDelta)
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Tick(fTimeDelta);
-
+	if (!m_bDead)
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Tick(fTimeDelta);
+	}
 	
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -114,8 +114,12 @@ void CMantari::Tick(_float fTimeDelta)
 
 void CMantari::Late_Tick(_float fTimeDelta)
 {
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Late_Tick(fTimeDelta);
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Late_Tick(fTimeDelta);
+	}
+
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
@@ -174,7 +178,7 @@ HRESULT CMantari::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(160.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 525.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(m_vInitialPos.x, PhysXDesc.height * 0.5f + PhysXDesc.radius + m_vInitialPos.y, m_vInitialPos.z);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향

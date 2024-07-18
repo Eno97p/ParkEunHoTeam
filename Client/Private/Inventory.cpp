@@ -81,6 +81,33 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	return S_OK;
 }
 
+HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
+{
+	// Inventory에 ItemData추가
+	CItemData::ITEMDATA_DESC pDesc{};
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = eItemName;
+	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+	
+	// UI 출력
+	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+	pUIDesc.eLevel = LEVEL_STATIC;
+
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
+		++item;
+	pUIDesc.eItemName = (*item)->Get_ItemName();
+	pUIDesc.wszTextureName = (*item)->Get_TextureName();
+	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+
+	// UI도
+	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+	return S_OK;
+}
+
 HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 {
 	// Inventory에서 현재 선택한 아이템을 QuickAccess에 등록

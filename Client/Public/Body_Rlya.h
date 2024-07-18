@@ -7,6 +7,8 @@ class CShader;
 class CModel;
 END
 
+BEGIN(Client)
+
 class CBody_Rlya final : public CPartObject
 {
 private:
@@ -38,3 +40,4 @@ public:
 	virtual void			Free() override;
 };
 
+END

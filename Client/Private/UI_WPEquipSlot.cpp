@@ -226,6 +226,9 @@ void CUI_WPEquipSlot::Click_Event()
 	
 	if (isAlphaBG_On) // 장착
 	{
+		// 이미 착용한 weapon에 대한 예외 처리 필요
+		// Inventory와 weapon에서 장착 중인 아이템에 UI 표시를 하고 그에 따라 중복 처리?
+
 		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
 			++weapon;

@@ -17,6 +17,7 @@
 #include "VIBuffer_Instance_Point.h"
 
 #include "Grass.h"
+#include "FireEffect.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{pDevice, pContext}
 {
@@ -39,6 +40,9 @@ HRESULT CLevel_GamePlay::Initialize()
         return E_FAIL;
 
     if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+        return E_FAIL;
+
+    if (FAILED(Ready_Layer_EnvEffects(TEXT("Layer_EnvEffects"))))
         return E_FAIL;
 
 	return S_OK;
@@ -71,6 +75,10 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
     if (m_pGameInstance->Key_Down(DIK_1))
     {
         m_pGameInstance->Set_MainCamera(1);
+    }
+    if (m_pGameInstance->Key_Down(DIK_2))
+    {
+        m_pGameInstance->Set_MainCamera(2);
     }
 
 #ifdef _DEBUG
@@ -241,6 +249,18 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
     //if (FAILED(CToolObj_Manager::GetInstance()->Add_CloneObj(0, 0, XMVectorSet(5.f, 3.f, 5.f, 1.f))))
     //    return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Ready_Layer_EnvEffects(const wstring& strLayerTag)
+{
+    CFireEffect::FIREEFFECTDESC FireDesc{};
+    FireDesc.vStartPos = { 0.f,1.f,0.f,1.f };
+    
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Fire_Effect"), &FireDesc)))
+        return E_FAIL;
+
 
     return S_OK;
 }

@@ -6,6 +6,12 @@ BEGIN(Client)
 
 class CUI_Script_NameBox final : public CUI
 {
+public:
+	enum NPC_TYPE { NPC_RLYA, NPC_END };
+	typedef struct UI_Script_NameBox_Desc : public UI_DESC
+	{
+		NPC_TYPE	eNpcType;
+	}UI_SCRIPT_NAMEBOX_DESC;
 private:
 	CUI_Script_NameBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_Script_NameBox(const CUI_Script_NameBox& rhs);
@@ -20,8 +26,13 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	NPC_TYPE		m_eNpcType = { NPC_END };
+
+private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+
+	_tchar* Setting_Text();
 
 public:
 	static CUI_Script_NameBox*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

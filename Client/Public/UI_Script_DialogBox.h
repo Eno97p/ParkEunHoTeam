@@ -19,6 +19,14 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void	Setting_Text(wstring wstrDialogText);
+	void	Setting_TextXY(_float fX, _float fY);
+
+private:
+	_float			m_fTextX = { 0.f };
+	_float			m_fTextY = { 0.f };
+	wstring			m_wstrDialogText;
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

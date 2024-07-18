@@ -12,7 +12,7 @@ BEGIN(Effect)
 class CFireEffect final : public CBlendObject
 {
 private:
-	enum TEXTURETYPE { FIRE_DIFFUSE, FIRE_NOISE, FIRE_ALPHA, FIRE_END};
+	enum TEXTURETYPE { FIRE_DIFFUSE, FIRE_NOISE, FIRE_ALPHA,FIRE_END};
 
 public:
 	typedef struct FIREEFFECTDESC
@@ -25,6 +25,7 @@ public:
 		_float		distortionScale = 0.8f;
 		_float		distortionBias = 0.5f;
 		_float4		vStartPos = { 0.f,0.f,0.f,1.f };
+		_float3		vOffsetPos = { 0.f,0.f,0.f };
 		_float2		vStartScale = { 1.f,1.f };
 	};
 
@@ -45,7 +46,7 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
-	HRESULT Bind_BlurResources();
+
 
 private:		//components
 	CShader* m_pShaderCom = { nullptr };

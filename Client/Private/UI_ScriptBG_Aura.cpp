@@ -55,7 +55,7 @@ HRESULT CUI_ScriptBG_Aura::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3);
+	m_pShaderCom->Begin(8);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 

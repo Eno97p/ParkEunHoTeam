@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 
 #include "Item.h"
+#include "ItemData.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -11,7 +12,6 @@ class CGameObject;
 END
 
 BEGIN(Client)
-class CItemData;
 
 class CInventory final : public CBase
 {
@@ -37,6 +37,7 @@ public:
 
 	HRESULT	Initialize_DefaultItem();
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
+	HRESULT Add_Item(CItemData::ITEM_NAME eItemName);
 	HRESULT	Add_QuickAccess(CItemData* pItemData);
 	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
 	HRESULT	Delete_EquipWeapon(_uint iEquipSlotIdx);

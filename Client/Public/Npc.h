@@ -13,6 +13,8 @@ BEGIN(Client)
 class CNpc abstract : public CLandObject
 {
 public:
+	const _float ACTIVATE_DISTANCE = 2.f;
+
 	typedef struct Npc_Desc : public LANDOBJ_DESC
 	{
 		LEVEL		eLevel;
@@ -31,13 +33,20 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-private:
-	CShader*		m_pShaderCom = { nullptr };
-	CModel*			m_pModelCom = { nullptr };
-	class CPhysXComponent_Character* m_pPhysXCom = { nullptr };
+protected:
+	CShader*							m_pShaderCom = { nullptr };
+	CModel*								m_pModelCom = { nullptr };
+	class CPhysXComponent_Character*	m_pPhysXCom = { nullptr };
 
-	LEVEL			m_eLevel = { LEVEL_END };
+	LEVEL								m_eLevel = { LEVEL_END };
 
+	class CTransform*					m_pPlayerTransform = { nullptr };
+	class CUIGroup_Script*				m_pScriptUI = { nullptr };
+	class CUI_Activate*					m_pActivateUI = { nullptr };
+
+protected:
+	HRESULT				Create_Activate();
+	virtual HRESULT		Create_Script() = 0;
 
 public:
 	virtual CGameObject*	Clone(void* pArg) = 0;

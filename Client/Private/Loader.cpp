@@ -244,7 +244,7 @@ HRESULT CLoader::Loading_Map()
 	{
 
 		//PHYSX JUGGLAS MAP
-		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Jugglas_PhysX.bin";
+		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Juggulas_PhysX.bin";
 		HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (INVALID_HANDLE_VALUE == hFile)
 			return E_FAIL;
@@ -792,6 +792,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 
+#pragma region Npc
+	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Rlya"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Myosis/NPC_Rlya.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion Npc
+
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -1144,7 +1151,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 #pragma endregion DECAL
 
+#pragma region Npc
+	/* For.Prototype_GameObject_Npc_Rlya*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Npc_Rlya"),
+		CNPC_Rlya::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	/* For.Prototype_GameObject_Body_Rlya*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Rlya"),
+		CBody_Rlya::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Npc
 
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
@@ -1984,6 +2001,16 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle3"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle3.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RasSamrahCastle5"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle5.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 #pragma endregion  JUGGLAS PASSIVE ELEMENTS
 

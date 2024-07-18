@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "Particle_STrail.h"
 #include "Electronic.h"
-#include "FireEffect.h"
+
 
 
 CImguiMgr::CImguiMgr()
@@ -1662,6 +1662,7 @@ void CImguiMgr::FireTool()
 	ImVec2 ButtonSize = { 100.f,30.f };
 
 	static CFireEffect::FIREEFFECTDESC FireDesc{};
+
 	ImGui::InputFloat3("ScrollSpeeds", reinterpret_cast<float*>(&FireDesc.ScrollSpeeds));
 	ImGui::InputFloat3("FireScales", reinterpret_cast<float*>(&FireDesc.Scales));
 	ImGui::InputFloat2("Distortion1", reinterpret_cast<float*>(&FireDesc.distortion1));
@@ -1671,6 +1672,7 @@ void CImguiMgr::FireTool()
 	ImGui::InputFloat("DistortionBias", &FireDesc.distortionBias);
 
 	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&FireDesc.vStartPos));
+	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&FireDesc.vOffsetPos));
 	ImGui::InputFloat2("StartScale", reinterpret_cast<float*>(&FireDesc.vStartScale));
 
 
@@ -1685,6 +1687,108 @@ void CImguiMgr::FireTool()
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Fire"));
 	}
 
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f,30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			StoreFires(effectname, FireDesc);
+		}
+	}
+
+
+	FireListBox(&FireDesc);
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::StoreFires(char* Name, CFireEffect::FIREEFFECTDESC Fire)
+{
+	string sName = Name;
+	shared_ptr<CFireEffect::FIREEFFECTDESC> StockValue = make_shared<CFireEffect::FIREEFFECTDESC>(Fire);
+	m_Fires.emplace_back(StockValue);
+	FireNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::FireListBox(CFireEffect::FIREEFFECTDESC* Fire)
+{
+	if (m_Fires.size() < 1)
+		return;
+
+	if (m_Fires.size() != FireNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Fire_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+
+	if (ImGui::BeginListBox("Fire_List", list_box_size))
+	{
+		for (int i = 0; i < FireNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(FireNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (current_item >= 0 && current_item < FireNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Fire"), TEXT("Prototype_GameObject_Fire_Effect"), m_Fires[current_item].get());
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Fire = *m_Fires[current_item].get();
+			ChangedFire = true;
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Fires[current_item] = make_shared<CFireEffect::FIREEFFECTDESC>(*Fire);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Fires[current_item].reset();
+			m_Fires.erase(m_Fires.begin() + current_item);
+			FireNames.erase(FireNames.begin() + current_item);
+
+			if (current_item >= m_Fires.size())
+				current_item = m_Fires.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Fires)
+				iter.reset();
+			m_Fires.clear();
+			FireNames.clear();
+			current_item = 0;
+		}
+	}
 	ImGui::End();
 }
 

@@ -193,6 +193,7 @@
     <ClInclude Include="..\public\Elevator.h" />
     <ClInclude Include="..\public\EventTrigger.h" />
     <ClInclude Include="..\public\FakeWall.h" />
+    <ClInclude Include="..\Public\FireEffect.h" />
     <ClInclude Include="..\public\Grass.h" />
     <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\MYMapTool_Defines.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="..\private\Elevator.cpp" />
     <ClCompile Include="..\private\EventTrigger.cpp" />
     <ClCompile Include="..\private\FakeWall.cpp" />
+    <ClCompile Include="..\Private\FireEffect.cpp" />
     <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\imgui.cpp" />
     <ClCompile Include="..\Private\imgui_demo.cpp" />

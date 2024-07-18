@@ -40,7 +40,7 @@ HRESULT CJuggulus_HandThree::Initialize(void* pArg)
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
 
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
@@ -83,7 +83,11 @@ void CJuggulus_HandThree::Tick(_float fTimeDelta)
 
 void CJuggulus_HandThree::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	}
 }
 
 HRESULT CJuggulus_HandThree::Render()
@@ -109,6 +113,30 @@ HRESULT CJuggulus_HandThree::Render()
 			return E_FAIL;
 
 		m_pShaderCom->Begin(7);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CJuggulus_HandThree::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(8);
 
 		m_pModelCom->Render(i);
 	}
@@ -156,7 +184,13 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 		m_fAspirationDelay -= fTimeDelta;
 		if (m_fAspirationDelay < 0.f)
 		{
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Aspiration"));
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			CGameObject::GAMEOBJECT_DESC gameObjDesc;
+			gameObjDesc.fSpeedPerSec = 3.f;
+			gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) - 1.f;
+			gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 48.f;
+			gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) - 3.f;
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Aspiration"), &gameObjDesc);
 			m_fAspirationDelay = 100.f;
 		}
 		if (m_isAnimFinished)

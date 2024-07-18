@@ -106,7 +106,7 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_RasSamrahCastle2"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle3"),
                         TEXT("Prototype_Component_Model_RasSamrahCastle4"),
-                        TEXT("Prototype_Component_Model_RasSamrahCastle5")
+                        TEXT("Prototype_Component_Model_RasSamrahCastle5"),
         //TUTORIAL
         TEXT("Prototype_Component_Model_TutorialMap"), TEXT("Prototype_Component_Model_TutorialDecoStructure"), TEXT("Prototype_Component_Model_TutorialDecoCubes"), TEXT("Prototype_Component_Model_TutorialDecoMaze"),
 
@@ -192,7 +192,6 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
     {
         strcpy_s(pDesc.szLayer, "Layer_Monster");
         strcpy_s(pDesc.szObjName, Setting_ObjName(iLayerIdx, iSelectIdx));
-
         //Anim 모델 체크박스 확인
         if (CImgui_Manager::GetInstance()->isAnimModel())
         {
@@ -202,7 +201,6 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
         {
             pDesc.eModelType = CModel::TYPE_NONANIM;
         }
-
         //OBJ 이름 설정
         vector<wstring>::iterator iter = m_Monsters.begin();
         for (int i = 0; i < iSelectIdx; ++i)
@@ -210,6 +208,12 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
             iter++;
         }
         WideCharToMultiByte(CP_ACP, 0, (*iter).c_str(), (*iter).length(), pDesc.szModelName, MAX_PATH, nullptr, nullptr);
+
+        // Juggulus 예외 처리
+        if (strcmp(pDesc.szModelName, "Prototype_Component_Model_Juggulus") == 0)
+        {
+            strcpy_s(pDesc.szLayer, "Layer_Boss");
+        }
 
         break;
     }

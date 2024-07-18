@@ -100,8 +100,6 @@ PS_OUT PS_ITEM(PS_IN In)
 	
 	Out.vColor.rgb *= float3(1.f, 1.f, 0.7f - sqrt((In.vTexcoord.x - 0.5f) * (In.vTexcoord.x - 0.5f) + (In.vTexcoord.y - 0.5f) * (In.vTexcoord.y - 0.5f)) * 4.f);
 
-	//Out.vColor.rgb *= float3(1.f, 1.f, 0.5f);
-
 	return Out;
 }
 

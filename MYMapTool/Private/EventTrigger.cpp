@@ -117,11 +117,9 @@ void CEventTrigger::Tick(_float fTimeDelta)
 				_matrix vMat = XMMatrixIdentity();
 				XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
 				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_RasSamrahCastle3");
+				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_ToolObj"), &pDesc);
 
-
-
-
-
+				strcpy_s(pDesc.szModelName, "Prototype_Component_Model_RasSamrahCastle4");
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_ToolObj"), &pDesc);
 			}
 			break;
@@ -137,6 +135,7 @@ void CEventTrigger::Tick(_float fTimeDelta)
 			break;
 			case TRIG_ASCEND_ELEVATOR:
 			{
+
 				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-389.f, 86.f, -1.5f, 1.f)); //LEVEL_JUGGLAS·Î º¯°æ
 			}
 			break;

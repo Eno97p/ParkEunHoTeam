@@ -82,8 +82,11 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject.second->Tick(fTimeDelta);
+	if (!m_bDead)
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject.second->Tick(fTimeDelta);
+	}
 
 	if (m_pGameInstance->Key_Down(DIK_P))
 		m_fCurHp = 10.f;
@@ -113,26 +116,26 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	{
 		m_fCircleSphereSpawnTime -= fTimeDelta;
 
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		CGameObject::GAMEOBJECT_DESC gameObjDesc;
+		gameObjDesc.fSpeedPerSec = 3.f;
+		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 15.f;
+		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) - 13.f;
+
 		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
 		{
-
-			CGameObject::GAMEOBJECT_DESC transformDesc;
-			transformDesc.fSpeedPerSec = 3.f;
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
 			m_iCircleSphereCount++;
 		}
 		else if (m_fCircleSphereSpawnTime < 1.33f && m_iCircleSphereCount == 1)
 		{
-			CGameObject::GAMEOBJECT_DESC transformDesc;
-			transformDesc.fSpeedPerSec = 3.f;
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
 			m_iCircleSphereCount++;
 		}
 		else if (m_fCircleSphereSpawnTime < 0.66f && m_iCircleSphereCount == 2)
 		{
-			CGameObject::GAMEOBJECT_DESC transformDesc;
-			transformDesc.fSpeedPerSec = 3.f;
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &transformDesc);
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
 			m_iCircleSphereCount = 0;
 			m_fCircleSphereSpawnTime = CIRCLESPHERESPAWNTIME;
 		}
@@ -187,7 +190,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(160.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 510.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(m_vInitialPos.x, PhysXDesc.height * 0.5f + PhysXDesc.radius + m_vInitialPos.y, m_vInitialPos.z);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향
@@ -417,120 +420,6 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 	}
 	return RUNNING; // SUCCESS
 }
-
-//NodeStates CBoss_Juggulus::HandOne_Targeting(_float fTimeDelta)
-//{
-//	if (PHASE_TWO == m_ePhase || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState || m_isHandOne_On)
-//	{
-//		return FAILURE;
-//	}
-//
-//	if (3.f >= m_fTargettingTimer) // 다른 행동을 하고 있지 않고 타이머가 아직 채워지지 않았으면
-//	{
-//		m_fTargettingTimer += fTimeDelta;
-//		m_iState = STATE_HANDONE_TARGETING; // 플레이어 위치에 등장한 후 몇 초 동안 타게팅
-//		CJuggulus_HandOne* handOne = static_cast<CJuggulus_HandOne*>((*m_PartObjects.find("Hand_One")).second);
-//		handOne->Chase_Player();
-//		return RUNNING;
-//	}
-//	else
-//	{
-// 		m_isHandOne_On = true; // Hand One 공격 활성화
-//		m_fTargettingTimer = 0.f;
-//		return SUCCESS; // 이때부터 쿨타임 도는 것
-//	}
-//}
-
-//NodeStates CBoss_Juggulus::HandOne_Attack(_float fTimeDelta)
-//{
-//	if (PHASE_TWO == m_ePhase || STATE_HANDTWO_SCOOP == m_iState || STATE_HANDTWO_ATTACK == m_iState)
-//	{
-//		return FAILURE;
-//	}
-//
-//	if (m_isHandOne_On)
-//	{
-//		if(STATE_HANDONE_TARGETING == m_iState)
-//			m_isHandAnimFinished = false;
-//
-//		m_iState = STATE_HANDONE_ATTACK;
-//
-//		if (m_isHandAnimFinished)
-//		{
-//			m_isHandOne_On = false;
-//		}
-//
-//		return RUNNING;
-//	}
-//	else
-//	{
-//		return FAILURE;
-//	}
-//}
-
-//NodeStates CBoss_Juggulus::HandTwo_Scoop(_float fTimeDedelta)
-//{
-//	if (PHASE_TWO == m_ePhase || STATE_HANDTHREE_ATTACK == m_iState || m_isHandTwo_On)
-//	{
-//		return FAILURE;
-//	}
-//
-//	if (!m_isHandTwoAnimFinished)
-//	{
-//		m_iState = STATE_HANDTWO_SCOOP;
-//		return RUNNING;
-//	}
-//	else
-//	{
-//		m_isHandTwo_On = true;
-//		return SUCCESS;
-//	}
-//}
-
-//NodeStates CBoss_Juggulus::HandTwo_Attack(_float fTimeDelta)
-//{
-//	if (PHASE_TWO == m_ePhase || STATE_HANDTHREE_ATTACK == m_iState)
-//	{
-//		return FAILURE;
-//	}
-//
-//	if (m_isHandTwo_On)
-//	{
-//		if (STATE_HANDTWO_SCOOP == m_iState)
-//			m_isHandTwoAnimFinished = false;
-//
-//		m_iState = STATE_HANDTWO_ATTACK;
-//
-//		if (m_isHandTwoAnimFinished)
-//		{
-//			m_isHandTwo_On = false;
-//
-//		}
-//		return RUNNING;
-//	}
-//	else
-//	{
-//		return FAILURE;
-//	}
-//}
-
-//NodeStates CBoss_Juggulus::HandThree_Attack(_float fTimeDelta)
-//{
-//	if (PHASE_TWO == m_ePhase)
-//	{
-//		return FAILURE;
-//	}
-//
-//	if (!m_isHandThreeAnimFinished)
-//	{
-//		m_iState = STATE_HANDTHREE_ATTACK;
-//		return RUNNING;
-//	}
-//	else
-//	{
-//		return SUCCESS;
-//	}
-//}
 
 NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 {

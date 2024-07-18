@@ -38,6 +38,8 @@ public:
 
 public:
     void Set_CameraHeight(_float fHeight) { m_fHeightOffset = fHeight; }
+public:
+    void Set_BossScene(bool bBossScene) { m_bBossScene = bBossScene; }
 
 private:
     _float      m_fSensor = { 0.0f };
@@ -47,8 +49,8 @@ private:
     _float4 m_vLookAtPosition;
 
     _float m_fDistance = 8.5f;        // 플레이어로부터의 거리
-    _float m_fHeightOffset = 3.5f;    // 높이 오프셋
-    _float m_fFixedZPosition = -7.5f;  // 고정된 Z 위치
+    _float m_fHeightOffset = 8.5f;    // 높이 오프셋
+    _float m_fFixedZPosition = 12.5f;  // 고정된 Z 위치
     _float m_fLookAtOffset = 1.0f;    // 카메라가 바라보는 위치의 오프셋
     _float m_fFollowSpeed = 5.0f;     // 카메라 추적 속도
 
@@ -60,6 +62,14 @@ private:
     _float m_fShakeIntervalTimer = 0.0f;
     _float4 m_vShakeStart = { 0.f, 0.f, 0.f, 1.f };
     _float4 m_vShakeTarget = { 0.f, 0.f, 0.f, 1.f };
+private:
+    bool m_bBossScene = false;
+    _float m_fNormalHeightOffset = 3.5f;
+    _float m_fNormalZPosition = -7.5f;
+    _float m_fBossHeightOffset = 5.5f;
+    _float m_fBossZPosition = 12.5f;
+    _float4 m_vFixedLookAtPosition = { 0.f, 0.f, 0.f, 1.f };
+
 
 public:
 	static CSideViewCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

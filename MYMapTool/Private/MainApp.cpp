@@ -6,6 +6,7 @@
 #include "BackGround.h"
 
 #include "Shader.h"
+#include "FireEffect.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance{ CGameInstance::GetInstance()}
@@ -47,7 +48,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
-
+	if (FAILED(Ready_Environment_Effects()))	//환경 이펙트들 모음
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -172,6 +174,32 @@ HRESULT CMainApp::Ready_NavigationCell()
 	WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
 
 	CloseHandle(hFile);*/
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Environment_Effects()
+{
+	/* For.Prototype_Component_Shader_Fire */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Fire"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_Fire.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+	//불 텍스쳐
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireDiffuse"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Fire/fire01.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireNoise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Fire/noise01.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireAlpha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Fire/alpha01.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Fire_Effect"),
+		CFireEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

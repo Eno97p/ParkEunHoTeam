@@ -20,8 +20,8 @@ class CPlayer final : public CLandObject
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
 #define WALKSPEED 3.f
-#define RUNSPEED 6.f
-#define ROLLSPEED 10.f
+#define RUNSPEED 20.f
+#define ROLLSPEED 30.f
 #define ATTACKPOSTDELAY 1.5f
 
 public:

@@ -150,6 +150,9 @@
     <ClCompile Include="..\private\SideViewCamera.cpp">
       <Filter>02. GameObjects\99. Camera\03. SideView</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\FireEffect.cpp">
+      <Filter>02. GameObjects\05. Active_Elements\Fire</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\MainApp.h">
@@ -296,6 +299,9 @@
     <ClInclude Include="..\public\SideViewCamera.h">
       <Filter>02. GameObjects\99. Camera\03. SideView</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FireEffect.h">
+      <Filter>02. GameObjects\05. Active_Elements\Fire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -383,6 +389,9 @@
     </Filter>
     <Filter Include="02. GameObjects\99. Camera\03. SideView">
       <UniqueIdentifier>{bd188ce7-611d-45b7-b35a-437ea65077d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\05. Active_Elements\Fire">
+      <UniqueIdentifier>{ba3ff74f-5b5e-43ac-b7cc-c9d6c437fbcd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

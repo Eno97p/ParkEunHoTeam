@@ -250,11 +250,15 @@ void CUI_Manager::Key_Input()
 			if (isQuickOpen) // Äü½½·ÔÀÌ ÄÑÁ® ÀÖÀ» ¶§ > ²¨Áö°Ô
 			{
 				(*quick).second->Set_RenderOnAnim(false);
+
+				m_pGameInstance->Get_MainCamera()->Activate();
 			}
 			else // ²¨Á®ÀÖÀ» ¶§ > ÄÑÁö°Ô
 			{
 				(*quick).second->Set_Rend(true);
 				(*quick).second->Set_RenderOnAnim(true);
+
+				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
 	}

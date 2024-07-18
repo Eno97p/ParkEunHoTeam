@@ -33,6 +33,8 @@ HRESULT CUI_LoadingCircle::Initialize(void* pArg)
 
 	m_vFontColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
 
+	Setting_Data();
+
 	return S_OK;
 }
 
@@ -65,7 +67,8 @@ HRESULT CUI_LoadingCircle::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	Render_Font();
+	if(CIRCLE_ONE == m_eCircleType)
+		Render_Font();
 
 	return S_OK;
 }
@@ -132,11 +135,7 @@ void CUI_LoadingCircle::Turn_Animation(_float fTimeDelta)
 
 void CUI_LoadingCircle::Render_Font()
 {
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"),
-		TEXT("              자칭 GEODESIAN이라는 자에 대해 알려진 것은 거의 없다.\n"
-		TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
-		TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
-		TEXT("                                   스스로를 창조자로 여겼을 것인가.")),
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_wstrText,
 		_float2((g_iWinSizeX>> 1) - 340.f, (g_iWinSizeY >> 1) - 70.f), XMVectorSet(m_fFontRGB, m_fFontRGB, m_fFontRGB, 1.f))))
 		return;
 }
@@ -168,6 +167,33 @@ void CUI_LoadingCircle::Change_FontColor(_float fTimeDelta)
 			m_fFontTimer = 0.f;
 		}
 	}
+}
+
+void CUI_LoadingCircle::Setting_Data()
+{
+	if (0 == m_iTextNum)
+	{
+		m_wstrText = TEXT("              자칭 GEODESIAN이라는 자에 대해 알려진 것은 거의 없다.\n"
+				TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
+				TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
+				TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+	}
+	else if (1 == m_iTextNum)
+	{
+		m_wstrText = TEXT("              1.\n"
+			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
+			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
+			TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+	}
+	else if (2 == m_iTextNum)
+	{
+		m_wstrText = TEXT("              2.\n"
+			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
+			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
+			TEXT("                                   스스로를 창조자로 여겼을 것인가."));
+	}
+
+	m_iTextNum++;
 }
 
 CUI_LoadingCircle* CUI_LoadingCircle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

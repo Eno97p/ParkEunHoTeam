@@ -62,6 +62,14 @@ HRESULT CUIGroup_Loading::Render()
 	return S_OK;
 }
 
+void CUIGroup_Loading::Setting_Data()
+{
+	vector<CUI*>::iterator circle = m_vecUI.begin();
+	++circle;
+
+	dynamic_cast<CUI_LoadingCircle*>(*circle)->Setting_Data();
+}
+
 HRESULT CUIGroup_Loading::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

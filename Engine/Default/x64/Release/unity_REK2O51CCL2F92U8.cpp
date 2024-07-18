@@ -239,6 +239,9 @@
 #include "C:\Real3DProject\Engine\Private\VIBuffer_Lightning.cpp"
 
 
+#include "C:\Real3DProject\Engine\Private\VIBuffer_Line.cpp"
+
+
 #include "C:\Real3DProject\Engine\Private\VIBuffer_PhysXBuffer.cpp"
 
 

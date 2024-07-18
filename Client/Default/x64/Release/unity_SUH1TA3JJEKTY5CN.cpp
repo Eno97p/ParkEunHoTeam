@@ -3,6 +3,9 @@
 #include "C:\Real3DProject\Client\Private\Active_Element.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Aspiration.cpp"
+
+
 #include "C:\Real3DProject\Client\private\BackGround.cpp"
 
 
@@ -24,6 +27,9 @@
 #include "C:\Real3DProject\Client\Private\Body_Player.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Rlya.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Boss_Juggulus.cpp"
 
 
@@ -42,6 +48,9 @@
 #include "C:\Real3DProject\Client\Private\CImGuiMgr.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\CircleSphere.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Clone.cpp"
 
 
@@ -51,6 +60,9 @@
 #include "C:\Real3DProject\Client\Private\Decal.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Deco_Element.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Distortion.cpp"
 
 
@@ -58,6 +70,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\EffectManager.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Elevator.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\EventTrigger.cpp"
@@ -147,16 +162,31 @@
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Npc.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\NPC_Rlya.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\SideViewCamera.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Sphere.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\TargetLock.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
@@ -172,6 +202,21 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_ScreenBlood.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_ScriptBG_Aura.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_ScriptBG_Npc.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Script_DialogBox.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Script_NameBox.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Arrow_LGGun.cpp"

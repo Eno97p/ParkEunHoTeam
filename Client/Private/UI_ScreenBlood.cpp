@@ -45,15 +45,6 @@ void CUI_ScreenBlood::Tick(_float fTimeDelta)
 	{
 		if (!m_isRenderAnimFinished)
 			Render_Animation(fTimeDelta, 1.f);
-
-		// Resset_Animation(true);
-
-		/*m_fAlphaTimer += fTimeDelta;
-		if (2.f <= m_fAlphaTimer)
-		{
-			m_fAlphaTimer = 0.f;
-			Resset_Animation(true);
-		}*/
 	}
 
 	if (isRender_End())

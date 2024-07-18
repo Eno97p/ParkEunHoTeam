@@ -21,6 +21,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Setting_Data();
+
 private:
 
 	vector<CUI*>			m_vecUI;

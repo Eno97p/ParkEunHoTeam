@@ -61,9 +61,9 @@ void CUI::Setting_Position()
     XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
 }
 
-void CUI::Render_Animation(_float fTimeDelta)
+void CUI::Render_Animation(_float fTimeDelta, _float fSpeed)
 {
-    m_fRenderTimer += fTimeDelta * 3.f;
+    m_fRenderTimer += fTimeDelta * fSpeed;
 
     if (m_fRenderTimer >= 1.f) // 애니메이션 종료 시
     {

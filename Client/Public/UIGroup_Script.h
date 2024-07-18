@@ -5,6 +5,7 @@
 
 BEGIN(Client)
 class CUI;
+class CUI_Script_DialogBox;
 
 class CUIGroup_Script final : public CUIGroup
 {
@@ -21,8 +22,11 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Set_DialogText(wstring wstrDialogText);
+
 private:
 	vector<CUI*>			m_vecUI;
+	CUI_Script_DialogBox*	m_pDialogBox;
 
 private:
 	HRESULT					Create_UI();

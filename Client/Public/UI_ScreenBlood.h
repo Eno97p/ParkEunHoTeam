@@ -4,18 +4,15 @@
 
 BEGIN(Client)
 
-class CUI_Script_NameBox final : public CUI
+class CUI_ScreenBlood final : public CUI
 {
-public:
-	enum NPC_TYPE { NPC_RLYA, NPC_END };
-	typedef struct UI_Script_NameBox_Desc : public UI_DESC
-	{
-		NPC_TYPE	eNpcType;
-	}UI_SCRIPT_NAMEBOX_DESC;
 private:
-	CUI_Script_NameBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_Script_NameBox(const CUI_Script_NameBox& rhs);
-	virtual ~CUI_Script_NameBox() = default;
+	CUI_ScreenBlood(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_ScreenBlood(const CUI_ScreenBlood& rhs);
+	virtual ~CUI_ScreenBlood() = default;
+
+public:
+	void			Set_Rend(_bool isRend) { m_isRend = isRend; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -26,16 +23,15 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	NPC_TYPE		m_eNpcType = { NPC_END };
+	_bool			m_isRend = { false };
+	_float			m_fAlphaTimer = { 0.f };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
-	_tchar* Setting_Text();
-
 public:
-	static CUI_Script_NameBox*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_ScreenBlood*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(void* pArg) override;
 	virtual void				Free() override;
 };

@@ -325,6 +325,10 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	//}
 
+	// Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

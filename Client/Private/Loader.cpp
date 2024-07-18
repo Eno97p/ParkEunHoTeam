@@ -792,6 +792,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 
+#pragma region Npc
+	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Rlya"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Myosis/NPC_Rlya.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion Npc
+
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -1144,7 +1151,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 #pragma endregion DECAL
 
+#pragma region Npc
+	/* For.Prototype_GameObject_Npc_Rlya*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Npc_Rlya"),
+		CNPC_Rlya::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	/* For.Prototype_GameObject_Body_Rlya*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Rlya"),
+		CBody_Rlya::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Npc
 
 	/* For.Prototype_GameObject_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),

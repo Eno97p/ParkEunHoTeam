@@ -37,6 +37,8 @@ void CBody_Rlya::Priority_Tick(_float fTimeDelta)
 
 void CBody_Rlya::Tick(_float fTimeDelta)
 {
+	m_pModelCom->Play_Animation(fTimeDelta, true);
+
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 }
 
@@ -64,11 +66,11 @@ HRESULT CBody_Rlya::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
+		//	return E_FAIL;
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+		//	return E_FAIL;
 
 		m_pShaderCom->Begin(7);
 
@@ -91,7 +93,7 @@ HRESULT CBody_Rlya::Render_LightDepth()
 HRESULT CBody_Rlya::Add_Components()
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Homonculus"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Rlya"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

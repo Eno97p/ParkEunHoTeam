@@ -26,13 +26,20 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Setting_Data();
+
 private:
 	_bool			m_isFontOn = { false };
+	_uint			m_iTextNum = { 0 };
 	_float			m_fFontTimer = { 0.f };
 	_float			m_fRotationAngle = { 0.f };
 	_float			m_fFontRGB = { 0.f };
+	_float			m_fTextX = { 0.f };
+	_float			m_fTextY = { 0.f };
 	_vector			m_vFontColor;
 	_matrix			m_RotationMatrix;
+
+	wstring			m_wstrText;
 
 	CIRCLE_TYPE		m_eCircleType = { CIRCLE_END };
 

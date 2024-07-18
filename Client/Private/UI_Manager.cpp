@@ -13,7 +13,8 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
-#include "UIGroup_Script.h"
+
+#include "UI_ScreenBlood.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -21,8 +22,6 @@ CUI_Manager::CUI_Manager()
 	: m_pGameInstance{CGameInstance::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
-
-//	Initialize();
 }
 
 void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
@@ -31,6 +30,12 @@ void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
 	map<string, CUIGroup*>::iterator iter = m_mapUIGroup.find(PageKey);
 	(*iter).second->Set_Rend(isOpen);
 	(*iter).second->Set_RenderOnAnim(true);
+}
+
+void CUI_Manager::Set_ScreenBloodRend(_bool isRend)
+{
+	m_pScreenBlood->Set_Rend(isRend);
+	m_pScreenBlood->Resset_Animation(true);
 }
 
 _bool CUI_Manager::Get_MenuPageState()
@@ -55,6 +60,8 @@ void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Tick(fTimeDelta);
+
+	m_pScreenBlood->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -63,6 +70,8 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Late_Tick(fTimeDelta);
+
+	m_pScreenBlood->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -152,8 +161,10 @@ HRESULT CUI_Manager::Create_UI()
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
 
-	// Script
-	m_mapUIGroup.emplace("Script", dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc)));
+	// ScreenBlood
+	CUI::UI_DESC pBloodDesc{};
+	pBloodDesc.eLevel = LEVEL_STATIC;
+	m_pScreenBlood = dynamic_cast<CUI_ScreenBlood*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScreenBlood"), &pBloodDesc));
 
 	return S_OK;
 }
@@ -167,7 +178,6 @@ void CUI_Manager::Key_Input()
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
-	map<string, CUIGroup*>::iterator script = m_mapUIGroup.find("Script");
 	_bool isLogoOpen = (*logo).second->Get_Rend();
 	_bool isLoadingOpen = (*loading).second->Get_Rend();
 	_bool isMenuOpen = (*menu).second->Get_Rend();
@@ -240,11 +250,6 @@ void CUI_Manager::Key_Input()
 			}
 		}
 	}
-
-	if (m_pGameInstance->Key_Down(DIK_U))
-	{
-		(*script).second->Set_Rend(true);
-	}
 }
 
 void CUI_Manager::Free()
@@ -255,5 +260,6 @@ void CUI_Manager::Free()
 	}
 	m_mapUIGroup.clear();
 
+	Safe_Release(m_pScreenBlood);
 	Safe_Release(m_pGameInstance);
 }

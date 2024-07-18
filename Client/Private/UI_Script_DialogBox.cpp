@@ -1,6 +1,7 @@
 #include "UI_Script_DialogBox.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CUI_Script_DialogBox::CUI_Script_DialogBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -25,7 +26,6 @@ HRESULT CUI_Script_DialogBox::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	// 값 바꿔주어야 할듯 (위치)
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
 	m_fSizeX = g_iWinSizeX;
@@ -59,6 +59,9 @@ HRESULT CUI_Script_DialogBox::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_wstrDialogText, _float2(270.f, (g_iWinSizeY >> 1) + 200.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -103,6 +106,18 @@ HRESULT CUI_Script_DialogBox::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CUI_Script_DialogBox::Setting_Text(wstring wstrDialogText)
+{
+	m_wstrDialogText = wstrDialogText;
+}
+
+void CUI_Script_DialogBox::Setting_TextXY(_float fX, _float fY)
+{
+	// 필요 없을 거 같음
+	m_fTextX = fX;
+	m_fTextY = fY; 
 }
 
 CUI_Script_DialogBox* CUI_Script_DialogBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

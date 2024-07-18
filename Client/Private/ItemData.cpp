@@ -187,7 +187,13 @@ void CItemData::Set_Item_Data()
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
 		break;
 	case Client::CItemData::ITEMNAME_FIREFLY:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("FIREFLY");
+		m_wszItemExplain = TEXT("모험가의 앞길을 밝혀주는\n희망의 상징\n아무리 어둥이 짙어도\n빛은 항상 길을 찾아낸다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Firefly");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_WHISPERER:
 		break;
 	default:

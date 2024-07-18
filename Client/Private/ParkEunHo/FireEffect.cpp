@@ -57,7 +57,7 @@ void CFireEffect::Late_Tick(_float fTimeDelta)
 	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_OwnDesc->vStartScale.y))
 	{
 		Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		m_pTransformCom->BillBoard();
+		m_pTransformCom->BillBoard_Y();
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	}

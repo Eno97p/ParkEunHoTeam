@@ -151,7 +151,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, _bool isWindowed, _uint iWin
 	SwapChain.BufferCount = /*2;*/ 1;
 
 	/*스왑하는 형태*/
-	SwapChain.BufferDesc.RefreshRate.Numerator = 0;
+	SwapChain.BufferDesc.RefreshRate.Numerator = 60;
 	SwapChain.BufferDesc.RefreshRate.Denominator = 1;
 
 	SwapChain.SampleDesc.Quality = 0;
@@ -215,7 +215,7 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	TextureDesc.SampleDesc.Quality = 60;
+	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
 
 	TextureDesc.Usage = D3D11_USAGE_DEFAULT;

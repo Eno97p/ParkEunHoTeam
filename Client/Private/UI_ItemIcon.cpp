@@ -52,7 +52,7 @@ void CUI_ItemIcon::Tick(_float fTimeDelta)
 
 void CUI_ItemIcon::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, m_eUISort); // SECOND
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
 }
 
 HRESULT CUI_ItemIcon::Render()
@@ -121,12 +121,6 @@ HRESULT CUI_ItemIcon::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
-	//	return E_FAIL;
 
 	return S_OK;
 }

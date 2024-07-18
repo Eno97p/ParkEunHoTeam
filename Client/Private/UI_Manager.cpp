@@ -15,6 +15,7 @@
 #include "UIGroup_InvSub.h"
 
 #include "UI_ScreenBlood.h"
+#include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -216,6 +217,7 @@ void CUI_Manager::Key_Input()
 				else
 				{
 					(*menu).second->Set_RenderOnAnim(false);
+					m_pGameInstance->Get_MainCamera()->Activate();
 				}
 				dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 			}
@@ -230,6 +232,8 @@ void CUI_Manager::Key_Input()
 			{
 				(*menu).second->Set_Rend(true);
 				(*menu).second->Set_RenderOnAnim(true);
+
+				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
 	}

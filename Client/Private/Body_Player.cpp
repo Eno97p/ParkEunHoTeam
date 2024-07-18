@@ -555,13 +555,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_pModelCom->Check_CurDuration(0.01f))
 		{
 			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
-			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Right = XMVector4Normalize(ThisMat.r[0]);
 			_vector Up = XMVector4Normalize(ThisMat.r[1]);
 			_vector vPos = ThisMat.r[3];
 			_float4 vStartPos;
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
-			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Right);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 8;
@@ -573,13 +573,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_pModelCom->Check_CurDuration(0.01f))
 		{
 			_matrix ThisMat = XMLoadFloat4x4(&m_WorldMatrix);
-			_vector Look = XMVector4Normalize(ThisMat.r[2]);
+			_vector Right = XMVector4Normalize(ThisMat.r[0]);
 			_vector Up = XMVector4Normalize(ThisMat.r[1]);
 			_vector vPos = ThisMat.r[3];
 			_float4 vStartPos;
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
-			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Right);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 166;

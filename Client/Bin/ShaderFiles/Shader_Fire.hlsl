@@ -1,8 +1,8 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_FireTexture, g_NoiseTexture, g_AlphaTexture;
+matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix , g_BloomMatrix;
+texture2D	g_FireTexture, g_NoiseTexture, g_AlphaTexture, g_DepthTexture , g_BloomTexture;
 float		g_fTime;
 float3		g_ScrollSpeeds;
 float3		g_Scales;
@@ -14,6 +14,8 @@ float2 distortion3;
 float distortionScale;
 float distortionBias;
 
+float g_BloomPower;
+float3 g_BloomColor;
 
 
 struct VS_IN
@@ -32,6 +34,13 @@ struct VS_OUT
 	float4		vProjPos : TEXCOORD4;
 };
 
+struct VS_OUT_BLOOM
+{
+	float4		vPosition : SV_POSITION;
+	float2		vTexcoord : TEXCOORD0;
+};
+
+
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
@@ -40,6 +49,12 @@ struct PS_IN
 	float2		vTexcoord2 : TEXCOORD2;
 	float2		vTexcoord3 : TEXCOORD3;
 	float4		vProjPos : TEXCOORD4;
+};
+
+struct PS_IN_BLOOM
+{
+	float4		vPosition : SV_POSITION;
+	float2		vTexcoord : TEXCOORD0;
 };
 
 struct PS_OUT
@@ -76,6 +91,30 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT_BLOOM VS_BLOOM(VS_IN In)
+{
+	VS_OUT_BLOOM	Out = (VS_OUT_BLOOM)0;
+	matrix		matWV, matWVP;
+	matWV = mul(g_BloomMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vTexcoord = In.vTexcoord;
+	return Out;
+}
+
+PS_OUT PS_BLOOM(PS_IN_BLOOM In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+	Out.vColor = g_BloomTexture.Sample(LinearSampler, In.vTexcoord);
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	Out.vColor.rgb = g_BloomColor;
+	Out.vColor.a = g_BloomPower;
+	return Out;
+}
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {
@@ -90,6 +129,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	float4 firecolor;
 	float4 alphacolor;
 
+	float2		vDepthCoord;
+	vDepthCoord.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vDepthCoord.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
+	vector			vOldDepthDesc = g_DepthTexture.Sample(PointSampler, vDepthCoord);
 
 	noise1 = g_NoiseTexture.Sample(LinearWrap, In.vTexcoord1);
 	noise2 = g_NoiseTexture.Sample(LinearWrap, In.vTexcoord2);
@@ -117,20 +160,19 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = firecolor;
 
+	Out.vColor.a = Out.vColor.a * saturate(vOldDepthDesc.y * 3000.f - In.vProjPos.w);
+
 	return Out;
 }
 
 
 technique11 DefaultTechnique
 {
-	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
 	pass DefaultPass
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
@@ -138,5 +180,16 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
+	pass BloomPass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+		VertexShader = compile vs_5_0 VS_BLOOM();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLOOM();
+	}
 }
 

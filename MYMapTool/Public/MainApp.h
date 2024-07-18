@@ -42,6 +42,8 @@ public:
 
 	HRESULT	Ready_NavigationCell(); // Navigation 복습을 위해 임의로 만든 함수
 
+	HRESULT Ready_Environment_Effects();
+
 	static CMainApp*		Create();
 	virtual void			Free() override;
 };

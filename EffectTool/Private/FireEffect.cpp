@@ -24,13 +24,20 @@ HRESULT CFireEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(nullptr)))
 		return E_FAIL;
 
+
+
+
+
 	m_OwnDesc = make_shared<FIREEFFECTDESC>(*((FIREEFFECTDESC*)pArg));
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_OwnDesc->vStartPos));
-	m_pTransformCom->Set_Scale(m_OwnDesc->vStartScale.x, m_OwnDesc->vStartScale.y, 0.f);
+	m_pTransformCom->Set_Scale(m_OwnDesc->vStartScale.x, m_OwnDesc->vStartScale.y, 0.f);  
+	_matrix Mat = m_pTransformCom->Get_WorldMatrix();
+	_vector vPos = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffsetPos), Mat);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 	return S_OK;
 }
 
@@ -149,13 +156,12 @@ HRESULT CFireEffect::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("distortionBias", &m_OwnDesc->distortionBias, sizeof(_float))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+		return E_FAIL;
+
 	return S_OK;
 }
 
-HRESULT CFireEffect::Bind_BlurResources()
-{
-	return S_OK;
-}
 
 CFireEffect* CFireEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

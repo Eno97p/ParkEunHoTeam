@@ -263,7 +263,7 @@ void CTransform::TurnToTarget(_float fTimeDelta, _fvector vTargetPosition)
 
 void CTransform::BillBoard()
 {
-	_float3 vScale = Get_Scaled();
+	XMFLOAT3 vScale = Get_Scaled();
 
 	XMVECTOR vPosition = Get_State(STATE_POSITION);
 	XMFLOAT4 pos;

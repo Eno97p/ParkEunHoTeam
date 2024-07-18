@@ -22,6 +22,7 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Update_Inventory_Add(_uint iSlotIdx);
+	void			Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip);
 
 private:
 	vector<CUI*>			m_vecUI;

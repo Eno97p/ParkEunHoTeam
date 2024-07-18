@@ -43,6 +43,9 @@ public:
 	wstring			Get_ItemNameText() { return m_wszItemName; }
 	wstring			Get_ItemExplainText() { return m_wszItemExplain; }
 
+	_bool			Get_isEquip() { return m_isEquip; }
+	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
+
 	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 
 public:
@@ -54,6 +57,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool					m_isEquip = { false };
+
 	wstring					m_wszTexture = TEXT("");
 	wstring					m_wszItemName = TEXT("");
 	wstring					m_wszItemExplain = TEXT("");

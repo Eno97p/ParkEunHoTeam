@@ -511,6 +511,12 @@
     <Filter Include="02.GameObjects\07. UI\ScreenBlood">
       <UniqueIdentifier>{4f88ec85-50f1-4c31-b5fc-488ee688f4c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\01.Item\FireFly">
+      <UniqueIdentifier>{26e2c42c-deab-47f8-9319-d80ada91fc6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Slot\EquipSign">
+      <UniqueIdentifier>{a9a7e6a4-767e-4b96-ba1a-0593e10b2e48}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\06.Effect\Fire">
       <UniqueIdentifier>{d0100aad-c10c-4eb1-9079-7b40e15eb3a9}</UniqueIdentifier>
     </Filter>
@@ -1046,6 +1052,9 @@
     <ClInclude Include="..\Public\UI_ScreenBlood.h">
       <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Slot_EquipSign.h">
+      <Filter>02.GameObjects\07. UI\Slot\EquipSign</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
     </ClInclude>
@@ -1558,6 +1567,9 @@
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp">
       <Filter>02.GameObjects\07. UI\ScreenBlood</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp">
+      <Filter>02.GameObjects\07. UI\Slot\EquipSign</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
     </ClCompile>

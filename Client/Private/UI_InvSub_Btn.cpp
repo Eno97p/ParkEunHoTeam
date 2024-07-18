@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "Inventory.h"
-#include "UIGroup.h"
+#include "UIGroup_Inventory.h"
 #include "CMouse.h"
 #include "UI_InvSub_BtnSelect.h"
 
@@ -57,6 +57,18 @@ void CUI_InvSub_Btn::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pSelectBtn)
 		m_pSelectBtn->Tick(fTimeDelta);
+
+	if (m_isSelectEnd)
+	{
+		m_fSelectedTimer += fTimeDelta;
+		if (0.1f <= m_fSelectedTimer)
+		{
+			m_isSelectEnd = false;
+			m_fSelectedTimer = 0.f;
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+		}
+	}
 }
 
 void CUI_InvSub_Btn::Late_Tick(_float fTimeDelta)
@@ -176,15 +188,35 @@ void CUI_InvSub_Btn::Mouse_Input()
 		switch (m_eBtnType)
 		{
 		case Client::CUI_InvSub_Btn::BTN_SET:
-			CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
+		{
+			// 중복의 경우 예외 처리 필요
+			CItemData* item = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+			if (item->Get_isEquip())
+			{
+
+			}
+			else
+			{
+				CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
+				m_isSelectEnd = true;
+
+				// Equip Sign 활성화
+				item->Set_isEquip(true);
+				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+			}
 			break;
+		}
 		case Client::CUI_InvSub_Btn::BTN_USE:
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+			break;
+		case Client::CUI_InvSub_Btn::BTN_CANCEL:
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
 			break;
 		default:
 			break;
 		}
-		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
-		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
 	}
 }
 

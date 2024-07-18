@@ -162,6 +162,15 @@ void CUIGroup_Weapon::Update_EquipSlot_Delete(_uint iEquipSlotIdx)
 	(*equipslot)->Delete_ItemIcon();
 }
 
+void CUIGroup_Weapon::Update_Slot_EquipSign(_bool isEquip)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Set_isEquip(isEquip);
+}
+
 HRESULT CUIGroup_Weapon::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

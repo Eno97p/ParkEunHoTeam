@@ -43,6 +43,7 @@
 #pragma region WeaponSlot
 #include "UI_WeaponSlotBG.h"
 #include "UI_WeaponSlot.h"
+#include "UI_Slot_EquipSign.h"
 #include "UIGroup_WeaponSlot.h"
 #pragma endregion WeaponSlot
 
@@ -864,6 +865,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Slot_SelectFrame"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot_SelectFrame.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_EquipSign */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EquipSign"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Inventory_InQANotif.png"), 1))))
+		return E_FAIL;
 #pragma endregion Slot
 
 #pragma region MenuPage
@@ -1200,6 +1206,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Slot_Frame*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Slot_Frame"),
 		CUI_Slot_Frame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Slot_EquipSign*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Slot_EquipSign"),
+		CUI_Slot_EquipSign::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Slot
 

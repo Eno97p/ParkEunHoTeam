@@ -6,6 +6,7 @@
 #include "Body_Rlya.h"
 #include "Player.h"
 #include "UI_Activate.h"
+#include "UIGroup_Script.h"
 
 CNPC_Rlya::CNPC_Rlya(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNpc{ pDevice, pContext }
@@ -40,6 +41,10 @@ HRESULT CNPC_Rlya::Initialize(void* pArg)
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
+	m_iDialogCnt = 3;
+
+	Create_Script();
+
 	return S_OK;
 }
 
@@ -53,6 +58,13 @@ void CNPC_Rlya::Tick(_float fTimeDelta)
 	m_pBody->Tick(fTimeDelta);
 
 	m_pActivateUI->Tick(fTimeDelta);
+
+	if (m_isScriptOn)
+	{
+		m_pScriptUI->Tick(fTimeDelta);
+
+		Key_Input();
+	}
 }
 
 void CNPC_Rlya::Late_Tick(_float fTimeDelta)
@@ -60,7 +72,19 @@ void CNPC_Rlya::Late_Tick(_float fTimeDelta)
 	m_pBody->Late_Tick(fTimeDelta);
 
 	if (Check_Distance())
+	{
 		m_pActivateUI->Late_Tick(fTimeDelta);
+		if (m_pGameInstance->Key_Down(DIK_F) && !m_isScriptOn)
+		{
+			m_pScriptUI->Set_Rend(true);
+			if(m_iDialogCnt != 0)
+				m_pScriptUI->Set_DialogText(TEXT("첫번째 텍스트"));
+			m_isScriptOn = true;
+		}
+	}
+
+	if (m_isScriptOn)
+		m_pScriptUI->Late_Tick(fTimeDelta);
 }
 
 HRESULT CNPC_Rlya::Render()
@@ -94,18 +118,55 @@ _bool CNPC_Rlya::Check_Distance()
 	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
 
 	return ACTIVATE_DISTANCE >= fDistance;
-	/*if (ACTIVATE_DISTANCE >= fDistance)
+}
+
+void CNPC_Rlya::Key_Input()
+{
+	// 엔터를 칠 때마다 Cnt가 하나씩 감소하고 0이 되면 종료되는 것으로?
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
 	{
-		CUI_Manager::GetInstance()->Get_Activate()->Set_isRend(true);
-		CUI_Manager::GetInstance()->Get_Activate()->Set_Activate_Type(CUI_Activate::ACTIVATE_NPC_RLYA);
+		switch (m_iDialogCnt)
+		{
+		case 3:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("두번째 텍스트"));
+			--m_iDialogCnt;
+			break;
+		}
+		case 2:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("세번째 텍스트"));
+			--m_iDialogCnt;
+			break;
+		}
+		case 1:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("이미 종료된 이벤트"));
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			--m_iDialogCnt;
+			break;
+		}
+		case 0:
+		{
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			break;
+		}
+		default:
+			break;
+		}
 	}
-	else
-		CUI_Manager::GetInstance()->Get_Activate()->Set_isRend(false);*/
 }
 
 HRESULT CNPC_Rlya::Create_Script()
 {
-	// 자신만의 Script와 Activate 생성
+	CUIGroup::UIGROUP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	m_pScriptUI = dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc));
+	if (nullptr == m_pScriptUI)
+		return E_FAIL;
+
 	return S_OK;
 }
 

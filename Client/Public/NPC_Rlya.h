@@ -21,6 +21,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool				m_isScriptOn = { false };
+	_uint				m_iDialogCnt = { 0 };
+
 	CBody_Rlya*			m_pBody = { nullptr };
 
 private:
@@ -30,6 +33,7 @@ private:
 	virtual HRESULT		Create_Script() override;
 
 	_bool				Check_Distance();
+	void				Key_Input();
 
 public:
 	static CNPC_Rlya*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

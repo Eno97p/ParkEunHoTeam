@@ -13,9 +13,6 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
-//#include "UIGroup_Script.h"
-
-//#include "UI_Activate.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -23,8 +20,6 @@ CUI_Manager::CUI_Manager()
 	: m_pGameInstance{CGameInstance::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
-
-//	Initialize();
 }
 
 void CUI_Manager::Set_MenuPage(_bool isOpen, string PageKey)
@@ -57,8 +52,6 @@ void CUI_Manager::Tick(_float fTimeDelta)
 {
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Tick(fTimeDelta);
-
-	//m_pUI_Activate->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -67,8 +60,6 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Late_Tick(fTimeDelta);
-
-	//m_pUI_Activate->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -158,14 +149,6 @@ HRESULT CUI_Manager::Create_UI()
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
 
-	//// Script
-	//m_mapUIGroup.emplace("Script", dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc)));
-
-	//// Activate
-	//CUI::UI_DESC pUIDesc{};
-	//pDesc.eLevel = LEVEL_STATIC;
-	//m_pUI_Activate = dynamic_cast<CUI_Activate*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Activate"), &pUIDesc));
-
 	return S_OK;
 }
 
@@ -178,7 +161,6 @@ void CUI_Manager::Key_Input()
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
-	map<string, CUIGroup*>::iterator script = m_mapUIGroup.find("Script");
 	_bool isLogoOpen = (*logo).second->Get_Rend();
 	_bool isLoadingOpen = (*loading).second->Get_Rend();
 	_bool isMenuOpen = (*menu).second->Get_Rend();
@@ -251,14 +233,6 @@ void CUI_Manager::Key_Input()
 			}
 		}
 	}
-
-	//if (m_pGameInstance->Key_Down(DIK_U) && m_pUI_Activate->Get_isRend())
-	//{
-	//	// Sciprt 말고도 처리해야함 (우물 등)
-	//	// 해줄 때마다 값들 Reset 필요함
-	//	if(CUI_Activate::ACTIVATE_NPC_RLYA == m_pUI_Activate->Get_Activate_Type())
-	//		(*script).second->Set_Rend(true);
-	//}
 }
 
 void CUI_Manager::Free()
@@ -269,6 +243,5 @@ void CUI_Manager::Free()
 	}
 	m_mapUIGroup.clear();
 
-	//Safe_Release(m_pUI_Activate);
 	Safe_Release(m_pGameInstance);
 }

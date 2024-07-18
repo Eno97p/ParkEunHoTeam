@@ -20,10 +20,6 @@ HRESULT CUI_Script_DialogBox::Initialize_Prototype()
 
 HRESULT CUI_Script_DialogBox::Initialize(void* pArg)
 {
-	UI_SCRIPT_DIALOGBOX_DESC* pDesc = static_cast<UI_SCRIPT_DIALOGBOX_DESC*>(pArg);
-
-	m_eNpcType = pDesc->eNpcType;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -36,7 +32,6 @@ HRESULT CUI_Script_DialogBox::Initialize(void* pArg)
 	m_fSizeY = g_iWinSizeY;
 
 	Setting_Position();
-	Setting_Data();
 
 	return S_OK;
 }
@@ -49,21 +44,10 @@ void CUI_Script_DialogBox::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
-
-	Setting_Text();
 }
 
 void CUI_Script_DialogBox::Late_Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_RETURN))
-	{
-		m_iDialogCnt--;
-		if (m_iDialogCnt == 0)
-		{
-			CUI_Manager::GetInstance()->Set_MenuPage(false, "Script");
-		}
-	}
-
 	CGameInstance::GetInstance()->Add_UI(this, SIXTH);
 }
 
@@ -124,50 +108,16 @@ HRESULT CUI_Script_DialogBox::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUI_Script_DialogBox::Setting_Text()
+void CUI_Script_DialogBox::Setting_Text(wstring wstrDialogText)
 {
-	switch (m_iDialogCnt)
-	{
-	case 0:
-	{
-		break;
-	}
-	case 1:
-	{
-		if (NPC_RLYA == m_eNpcType)
-			m_wstrDialogText = TEXT("마지막 텍스트");
-		break;
-	}
-	case 2:
-	{
-		if (NPC_RLYA == m_eNpcType)
-			m_wstrDialogText = TEXT("두번째 텍스트");
-		break;
-	}
-	case 3:
-	{
-		if (NPC_RLYA == m_eNpcType)
-			m_wstrDialogText = TEXT("첫번째 텍스트");
-		break;
-	}
-	default:
-		break;
-	}
+	m_wstrDialogText = wstrDialogText;
 }
 
-void CUI_Script_DialogBox::Setting_Data()
+void CUI_Script_DialogBox::Setting_TextXY(_float fX, _float fY)
 {
-	switch (m_eNpcType)
-	{
-	case Client::CUI_Script_DialogBox::NPC_RLYA:
-	{
-		m_iDialogCnt = 3;
-
-		break;
-	}
-	default:
-		break;
-	}
+	// 필요 없을 거 같음
+	m_fTextX = fX;
+	m_fTextY = fY; 
 }
 
 CUI_Script_DialogBox* CUI_Script_DialogBox::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

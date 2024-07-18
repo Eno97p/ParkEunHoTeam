@@ -130,9 +130,13 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 2.7f && m_fDamageTiming < 3.f)
+		if (m_fDamageTiming > 2.5f && m_fDamageTiming < 2.7f)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK1)
@@ -148,9 +152,13 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.3);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.1f)
+		if (m_fDamageTiming > 0.5f && m_fDamageTiming < 0.7f)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK2)
@@ -169,6 +177,10 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 3)
 		{ 
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK3)
@@ -190,6 +202,10 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CMantari::STATE_CIRCLEATTACK)
 	{
@@ -206,9 +222,13 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 1.3f && m_fDamageTiming < 1.6f)
+		if (m_fDamageTiming > 1.1f && m_fDamageTiming < 1.3f)
 		{
 			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMantari::STATE_DEAD)

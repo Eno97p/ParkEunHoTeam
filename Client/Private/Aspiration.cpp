@@ -29,7 +29,7 @@ HRESULT CAspiration::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
+	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 
 	return S_OK;
 }

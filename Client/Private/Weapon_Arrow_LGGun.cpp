@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "EffectManager.h"
+#include "Legionnaire_Gun.h"
+
 CWeapon_Arrow_LGGun::CWeapon_Arrow_LGGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
 {
@@ -27,6 +29,9 @@ HRESULT CWeapon_Arrow_LGGun::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_pParent = pDesc->pParent;
+	Safe_AddRef(m_pParent);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pDesc->vPos);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, pDesc->vDir);
@@ -66,7 +71,6 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
 		if (m_eColltype == CCollider::COLL_START)
 		{
-
 			if (m_pPlayer->Get_Parry())
 			{
 				
@@ -79,8 +83,17 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 			else
 			{
 				m_pPlayer->PlayerHit(10);
+				m_pGameInstance->Erase(this);
 			}
-
+		}
+	}
+	else
+	{
+		m_eColltype = m_pColliderCom->Intersect(m_pParent->Get_Collider());
+		if (m_eColltype == CCollider::COLL_START)
+		{
+			m_pParent->Add_Hp(-10);
+			m_pGameInstance->Erase(this);
 		}
 	}
 
@@ -209,4 +222,5 @@ void CWeapon_Arrow_LGGun::Free()
 {
 	__super::Free();
 	Safe_Release(m_pPlayer);
+	Safe_Release(m_pParent);
 }

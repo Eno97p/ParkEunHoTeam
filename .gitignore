@@ -32,6 +32,7 @@ ipch/
 *.ilk
 *.exp
 *.recipe
+*.iobj
 
 # Ignore DLL files
 *.dll
@@ -45,7 +46,5 @@ ipch/
 # Ignore Engine.lib in the Engine/Bin directory
 /Engine/Bin/Engine.lib
 
-# Ignore Debug in the Client/Default/x64
-/Client/Default/x64/
 
 

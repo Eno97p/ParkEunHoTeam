@@ -278,20 +278,20 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
-
-
-XMVECTOR CVIBuffer_Trail::CatmullRom(const XMVECTOR& P0, const XMVECTOR& P1, const XMVECTOR& P2, const XMVECTOR& P3, float t)
+XMVECTOR CVIBuffer_Trail::CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t)
 {
 	float t2 = t * t;
 	float t3 = t2 * t;
-
-	XMVECTOR result = (2.0f * P1) +
-		(-P0 + P2) * t +
-		(2.0f * P0 - 5.0f * P1 + 4.0f * P2 - P3) * t2 +
-		(-P0 + 3.0f * P1 - 3.0f * P2 + P3) * t3;
-
-	return result * 0.5f;
+	XMVECTOR a = v1;
+	XMVECTOR b = 0.5f * (-v0 + v2);
+	XMVECTOR c = 0.5f * (2.0f * v0 - 5.0f * v1 + 4.0f * v2 - v3);
+	XMVECTOR d = 0.5f * (-v0 + 3.0f * v1 - 3.0f * v2 + v3);
+	return a + b * t + c * t2 + d * t3;
 }
+
+
+
+
 
 
 

@@ -263,6 +263,8 @@ HRESULT CLegionnaire_Gun::Add_PartObjects()
 	m_PartObjects.emplace_back(pGun);
 	dynamic_cast<CBody_LGGun*>(pBody)->Set_Gun(dynamic_cast<CWeapon*>(pGun));
 
+
+	WeaponDesc.pCombinedTransformationMatrix = dynamic_cast<CModel*>(pBody->Get_Component(TEXT("Com_Model")))->Get_BoneCombinedTransformationMatrix("Root_SmallSword");
 	CGameObject* pSword = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Sword_LGGun"), &WeaponDesc);
 	if (nullptr == pSword)
 		return E_FAIL;

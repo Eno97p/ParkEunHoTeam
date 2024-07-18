@@ -6,3 +6,4 @@
 5. MatariTest0
 6. Homunculus
 7. Legionare
+8. Ghost

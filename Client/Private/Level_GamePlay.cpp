@@ -320,8 +320,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
 
 	//}
 

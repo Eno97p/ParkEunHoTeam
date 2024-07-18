@@ -36,7 +36,7 @@ HRESULT CJuggulus_HandThree::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
-	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
+	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
 
@@ -83,11 +83,8 @@ void CJuggulus_HandThree::Tick(_float fTimeDelta)
 
 void CJuggulus_HandThree::Late_Tick(_float fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	}
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CJuggulus_HandThree::Render()
@@ -164,8 +161,6 @@ HRESULT CJuggulus_HandThree::Add_Nodes()
 
 NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 {
-	m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-
 	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_ATTACK)
 	{
 		m_eDisolveType = TYPE_DECREASE;
@@ -174,13 +169,15 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 	if (m_eDisolveType == TYPE_INCREASE && m_iState != STATE_ATTACK)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos += XMVectorSet(0.f, -20.f, -10.f, 0.f);
+		vPos += XMVectorSet(0.f, -30.f, -15.f, 0.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_iState = STATE_ATTACK;
 	}
 
 	if (m_iState == STATE_ATTACK)
 	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+
 		m_fAspirationDelay -= fTimeDelta;
 		if (m_fAspirationDelay < 0.f)
 		{
@@ -188,7 +185,7 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 			CGameObject::GAMEOBJECT_DESC gameObjDesc;
 			gameObjDesc.fSpeedPerSec = 3.f;
 			gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) - 1.f;
-			gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 48.f;
+			gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 70.f;
 			gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) - 3.f;
 			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Aspiration"), &gameObjDesc);
 			m_fAspirationDelay = 100.f;

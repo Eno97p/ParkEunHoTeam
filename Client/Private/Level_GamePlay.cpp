@@ -230,6 +230,10 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	
 	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	LandObjDesc.mWorldMatrix._41 = 140.f;
+	LandObjDesc.mWorldMatrix._42 = 528.f;
+	LandObjDesc.mWorldMatrix._43 = 98.f;
+	LandObjDesc.mWorldMatrix._44 = 1.f;
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
@@ -260,10 +264,7 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 		return E_FAIL;
 
 
-	LandObjDesc.mWorldMatrix._41 = 140.f;
-	LandObjDesc.mWorldMatrix._42 = 528.f;
-	LandObjDesc.mWorldMatrix._43 = 98.f;
-	LandObjDesc.mWorldMatrix._44 = 1.f;
+
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_Elevator"), &LandObjDesc)))
 	//	return E_FAIL;
@@ -299,7 +300,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 
 	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
 
-
+	//pLandObjDesc->mWorldMatrix._41 = 160.f;
+	//pLandObjDesc->mWorldMatrix._42 = 528.f;
+	//pLandObjDesc->mWorldMatrix._43 = 98.f;
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
 	//	return E_FAIL;
 
@@ -320,8 +323,8 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+			return E_FAIL;
 
 	//}
 

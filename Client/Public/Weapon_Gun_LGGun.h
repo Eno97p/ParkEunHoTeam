@@ -7,6 +7,12 @@ BEGIN(Client)
 
 class CWeapon_Gun_LGGun final : public CWeapon
 {
+public:
+	typedef struct GUN_DESC : public CWeapon::WEAPON_DESC
+	{
+		CLegionnaire_Gun* pParent = { nullptr };
+	}GUN_DESC;
+
 private:
 	CWeapon_Gun_LGGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CWeapon_Gun_LGGun(const CWeapon_Gun_LGGun& rhs);
@@ -27,6 +33,7 @@ public:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+	CLegionnaire_Gun* m_pParent;
 
 public:
 	static CWeapon_Gun_LGGun*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

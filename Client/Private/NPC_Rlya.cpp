@@ -67,6 +67,8 @@ void CNPC_Rlya::Tick(_float fTimeDelta)
 
 		Key_Input();
 	}
+
+	m_pTransformCom->BillBoard_Y();
 }
 
 void CNPC_Rlya::Late_Tick(_float fTimeDelta)

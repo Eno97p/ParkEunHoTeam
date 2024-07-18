@@ -299,8 +299,8 @@ HRESULT CLevel_Jugglas::Ready_Layer_Monster(const wstring& strLayerTag, CLandObj
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-			return E_FAIL;
+		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+		//	return E_FAIL;
 	//}
 
 	return S_OK;

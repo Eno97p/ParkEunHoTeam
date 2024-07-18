@@ -36,9 +36,10 @@ HRESULT CJuggulus_HandOne::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(1, true));
 
-	m_pTransformCom->Scaling(2.f, 2.f, 2.f);
+	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
@@ -100,11 +101,8 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 
 void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	}
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 
 #ifdef _DEBUG
 	if (m_bIsActive)
@@ -242,7 +240,7 @@ NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 	if (m_iState == STATE_CHASE && m_eDisolveType != TYPE_DECREASE)
 	{
 		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-		vPlayerPos.m128_f32[1] -= 31.f;
+		vPlayerPos.m128_f32[1] -= 46.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
 		m_fAttackDelay -= fTimeDelta;
 		{
@@ -306,7 +304,7 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				else
 				{
 					_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-					vPlayerPos.m128_f32[1] -= 31.f;
+					vPlayerPos.m128_f32[1] -= 46.5f;
 					m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
 					m_iPastAnimIndex = 6;
 				}

@@ -3,12 +3,12 @@
 #include "ToolObj_Manager.h"
 
 CFireEffect::CFireEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBlendObject(pDevice, pContext)
+	:CToolObj(pDevice, pContext)
 {
 }
 
 CFireEffect::CFireEffect(const CFireEffect& rhs)
-	:CBlendObject(rhs)
+	:CToolObj(rhs)
 {
 }
 
@@ -22,24 +22,25 @@ HRESULT CFireEffect::Initialize(void* pArg)
 	if (pArg == nullptr)
 		return E_FAIL;
 
-	//CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
-	//strcpy_s(m_szName, "Prototype_GameObject_Fire_Effect");
-	//strcpy_s(m_szLayer, "Layer_Fire");
-	//strcpy_s(m_szModelName, "Prototype_Component_Model_BasicCube");
-	//m_eModelType = CModel::TYPE_NONANIM;
-	//m_iTriggerType = pDesc->TriggerType;
+	FIREEFFECTDESC* pDesc = (FIREEFFECTDESC*)pArg;
 
-	//CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
-
-
-	//// 생성 목록에 리스트 번호 매기기
-	//string strSize = to_string(CToolObj_Manager::GetInstance()->Get_ToolObjs().size()) + ". ";
-	//strcat_s(m_szListName, strSize.c_str());
-	//strcat_s(m_szListName, m_szName);
-	//CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
+	//if (pArg != nullptr) 
+	{
+		strcpy_s(m_szName, "Prototype_GameObject_Fire_Effect");
+		strcpy_s(m_szLayer, "Layer_EnvEffects");
+		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
 
 
-	if (FAILED(__super::Initialize(nullptr)))
+		// 생성 목록에 리스트 번호 매기기
+		string strSize = to_string(CToolObj_Manager::GetInstance()->Get_ToolObjs().size()) + ". ";
+		strcat_s(m_szListName, strSize.c_str());
+		strcat_s(m_szListName, m_szName);
+		CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
+	}
+
+
+
+	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
 
 	m_OwnDesc = make_shared<FIREEFFECTDESC>(*((FIREEFFECTDESC*)pArg));
@@ -52,6 +53,9 @@ HRESULT CFireEffect::Initialize(void* pArg)
 	_matrix Mat = m_pTransformCom->Get_WorldMatrix();
 	_vector vPos = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffsetPos), Mat);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
+
 	return S_OK;
 }
 

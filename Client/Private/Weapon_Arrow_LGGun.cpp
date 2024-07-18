@@ -42,7 +42,6 @@ HRESULT CWeapon_Arrow_LGGun::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
-	EFFECTMGR->Generate_Trail(0, m_pTransformCom->Get_WorldFloat4x4());
 	return S_OK;
 }
 
@@ -86,12 +85,15 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 	}
 
 	fAccParticle -= fTimeDelta;
-	if (fAccParticle < 0.f)
+	if (fAccParticle < 0.f && m_bIsParried)
 	{
-
+		
 		EFFECTMGR->Generate_Particle(3, fPos, nullptr,XMVectorZero(),0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		fAccParticle = RandomFloat(0.1f, 0.2f);
 	}
+	_float4 ParticlePosition;
+	XMStoreFloat4(&ParticlePosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	EFFECTMGR->Generate_Particle(19, ParticlePosition, nullptr, m_pTransformCom->Get_State(CTransform::STATE_RIGHT), 90.f);
 
 }
 

@@ -10,9 +10,9 @@ class ENGINE_DLL CShader final : public CComponent
 public:
 	typedef struct Shader_Editable_Desc : public CComponent::ComponentDesc
 	{
-		_uint* iNumPasses = nullptr;
-		_uint iCurrentPass = 0;
 		vector<wstring> PassNames;
+		_uint iCurrentPass = 0;
+		_uint* iNumPasses = nullptr;
 	}Shader_Editable_Desc;
 
 

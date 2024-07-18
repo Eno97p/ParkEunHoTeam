@@ -98,10 +98,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         _float frameThreshold = CImGuiMgr::FrameLimit ? 1.f / 60.0f : 1.0f;
         bool frameCondition = CImGuiMgr::FrameLimit ? (fTimeAcc > frameThreshold) : true;
 #else
-        bool frameCondition =/* 1.0f;*/ (fTimeAcc > 1.f / 60.0f);
+        bool frameCondition = /*1.0f;*/ (fTimeAcc > 1.f / 60.0f);
 
 #endif
-     
+        
              //frameThreshold == 1.0f ? 1.0f : fTimeAcc > frameThreshold
 		if (frameCondition)
 		{

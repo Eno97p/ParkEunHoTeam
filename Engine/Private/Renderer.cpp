@@ -1424,6 +1424,8 @@ float CRenderer::Sample_HZB(_float2 uv, UINT mipLevel)
 
 UINT WINAPI RenderThread(void* pArg)
 {
+
+    
     CRenderer::RENDER_THREAD_DESC* pDesc = (CRenderer::RENDER_THREAD_DESC*)pArg;
     CRenderer* pRenderer = pDesc->pRenderer;
     DWORD dwThreadIndex = pDesc->dwThreadIndex;

@@ -33,6 +33,7 @@ ipch/
 *.exp
 *.recipe
 *.iobj
+*.ipdb
 
 # Ignore DLL files
 *.dll

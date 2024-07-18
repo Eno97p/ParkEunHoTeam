@@ -27,6 +27,9 @@
 #include "C:\3D_TeamProj\Client\Private\Body_Player.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Body_Rlya.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Boss_Juggulus.cpp"
 
 
@@ -159,7 +162,16 @@
 #include "C:\3D_TeamProj\Client\private\Level_Logo.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Npc.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\NPC_Rlya.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\RotateGate.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\SideViewCamera.cpp"
@@ -171,7 +183,13 @@
 #include "C:\3D_TeamProj\Client\Private\TargetLock.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Trap.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UIGroup_Script.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_DropItemBG.cpp"
@@ -187,6 +205,18 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_ScriptBG_Aura.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_ScriptBG_Npc.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Script_DialogBox.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Script_NameBox.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Weapon_Arrow_LGGun.cpp"

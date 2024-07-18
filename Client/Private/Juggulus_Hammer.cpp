@@ -79,6 +79,7 @@ void CJuggulus_Hammer::Tick(_float fTimeDelta)
 void CJuggulus_Hammer::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 #ifdef _DEBUG
 	if (m_bIsActive)
@@ -112,6 +113,27 @@ HRESULT CJuggulus_Hammer::Render()
 			return E_FAIL;
 
 		m_pShaderCom->Begin(2);
+
+		m_pModelCom->Render(i);
+	}
+	return S_OK;
+}
+
+HRESULT CJuggulus_Hammer::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
 
 		m_pModelCom->Render(i);
 	}

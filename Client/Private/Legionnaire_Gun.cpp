@@ -96,8 +96,11 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Tick(fTimeDelta);
+	if (!m_bDead)
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Tick(fTimeDelta);
+	}
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -139,8 +142,11 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 {
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Late_Tick(fTimeDelta);
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 10.f))
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Late_Tick(fTimeDelta);
+	}
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);

@@ -36,7 +36,7 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	m_fPlayerY = XMVectorGetY(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
-	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Boss")).front());
+	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Boss")).front());
 	return S_OK;
 }
 

@@ -166,6 +166,7 @@ public: /* For PhysX */
 	PxPhysics* GetPhysics();
 	PxScene* GetScene();
 	PxControllerManager* GetControllerManager();
+	
 	 
 public: // Sound Mgr
 	void PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);

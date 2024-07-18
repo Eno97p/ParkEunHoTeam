@@ -18,7 +18,10 @@ CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device* pDevice, ID3D
 
 CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Character& rhs)
 	: CPhysXComponent{ rhs }
+#ifdef _DEBUG
 	, m_OutDesc{rhs.m_OutDesc }
+#endif // _DEBUG
+
 
 {
 }
@@ -96,9 +99,12 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 
 
 
+
 #ifdef _DEBUG
 	if (FAILED(Init_Buffer()))
 		return E_FAIL;
+
+	m_OutDesc.pController = m_pController;
 #endif
 
 
@@ -356,6 +362,11 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 	PxControllerFilters filters;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 	
+#ifdef _DEBUG
+	m_OutDesc.fPosition = { static_cast<_float>(m_pController->getFootPosition().x), static_cast<_float>(m_pController->getFootPosition().y), static_cast<_float>(m_pController->getFootPosition().z) };
+	
+#endif // _DEBUG
+
 	
 	if (flags & PxControllerCollisionFlag::eCOLLISION_DOWN)
 	{
@@ -375,6 +386,10 @@ void CPhysXComponent_Character::Late_Tick(_float fTimeDelta)
 	m_pTransform->Set_State(CTransform::STATE_POSITION, PhysxPosition);
 
 	m_WorldMatrix = *m_pTransform->Get_WorldFloat4x4();
+
+#ifdef _DEBUG
+	//m_pController->setFootPosition(PxExtendedVec3(m_OutDesc.fPosition.x, m_OutDesc.fPosition.y, m_OutDesc.fPosition.z));
+#endif // _DEBUG
 
 }
 
@@ -411,5 +426,9 @@ void CPhysXComponent_Character::Free()
 
 	Safe_Release(m_pTransform);
 	Safe_physX_Release(m_pController);
+	
+	
+	//m_pController->release();
+	
 	
 }

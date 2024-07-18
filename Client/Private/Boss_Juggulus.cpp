@@ -190,7 +190,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	PhysXDesc.fJumpSpeed = 10.f;
 	PhysXDesc.height = 1.0f;			//캡슐 높이
 	PhysXDesc.radius = 0.5f;		//캡슐 반지름
-	PhysXDesc.position = PxExtendedVec3(160.f, PhysXDesc.height * 0.5f + PhysXDesc.radius + 510.f, 98.f);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
+	PhysXDesc.position = PxExtendedVec3(m_vInitialPos.x, PhysXDesc.height * 0.5f + PhysXDesc.radius + m_vInitialPos.y, m_vInitialPos.z);	//제일 중요함 지형과 겹치지 않는 위치에서 생성해야함. 겹쳐있으면 땅으로 떨어짐 예시로 Y값 강제로 +5해놈
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);	//마찰력,반발력,보통의 반발력
 	PhysXDesc.stepOffset = 0.5f;		//오를 수 있는 최대 높이 //이 값보다 높은 지형이 있으면 오르지 못함.
 	PhysXDesc.upDirection = PxVec3(0.f, 1.f, 0.f);  //캡슐의 위 방향

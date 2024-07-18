@@ -30,6 +30,7 @@ HRESULT CWeapon_Arrow_LGGun::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pDesc->vPos);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, pDesc->vDir);
+
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVector3Cross(m_pTransformCom->Get_State(CTransform::STATE_LOOK), m_pTransformCom->Get_State(CTransform::STATE_RIGHT)));
 	m_pTransformCom->Set_Scale(0.5f, 0.5f, 0.5f);

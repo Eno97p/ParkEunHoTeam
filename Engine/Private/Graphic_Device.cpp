@@ -9,10 +9,10 @@ CGraphic_Device::CGraphic_Device()
 
 HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D11Device** ppDevice, _Inout_ ID3D11DeviceContext** ppContext)
 {
-	_uint		iFlag = 0;
+	_uint		iFlag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef _DEBUG
-	iFlag = D3D11_CREATE_DEVICE_DEBUG;
+	iFlag |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	D3D_FEATURE_LEVEL			FeatureLV;
 

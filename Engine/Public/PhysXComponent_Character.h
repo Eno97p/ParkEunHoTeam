@@ -20,13 +20,17 @@ public:
 		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
+#ifdef _DEBUG
 public:
 	typedef struct  PhysX_Character_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
 	{
+		_float3 fPosition = { 0.f, 0.f, 0.f };
+		PxController* pController = nullptr;
 		//수정 가능하게 할 항목만 넣기
 
 
 	}PhysX_Character_Editable_Desc;
+#endif // _DEBUG
 
 
 private:
@@ -80,8 +84,9 @@ private:
 	_float m_fCurrentY_Velocity = 0.f;
 	const _float m_fGravity = -30.f;
 	_float m_fSpeed = 3.f;
-
+#ifdef _DEBUG
 	PhysX_Character_Editable_Desc m_OutDesc;
+#endif // _DEBUG
 	
 public:
 	static CPhysXComponent_Character* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

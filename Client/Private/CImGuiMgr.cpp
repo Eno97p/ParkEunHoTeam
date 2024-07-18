@@ -205,11 +205,11 @@ void CImGuiMgr::Render_MainMenu()
 	
 	if (ImGui::Button("Reset Current Level"))
 	{
-		//if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel))))
-		//{
-		//	MSG_BOX("IMGUI::Failed to Open Level");
-		//	return;
-		//}
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel))))
+		{
+			MSG_BOX("IMGUI::Failed to Open Level");
+			return;
+		}
 		int temp = 0;
 
 		return;
@@ -415,8 +415,12 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		else if (typeid(*pComponent) == typeid(CPhysXComponent_Character))
 		{
 			CPhysXComponent_Character::PhysX_Character_Editable_Desc* tDesc = static_cast<CPhysXComponent_Character::PhysX_Character_Editable_Desc*>(tmep);
-			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
 
+			ImGui::Checkbox("Is On Debug Render", &tDesc->bIsOnDebugRender);
+			ImGui::InputFloat3("Position", reinterpret_cast<float*>(&tDesc->fPosition));
+			tDesc->pController->setFootPosition(PxExtendedVec3(tDesc->fPosition.x, tDesc->fPosition.y, tDesc->fPosition.z));
+			
+			
 		}
 		else if (typeid(*pComponent) == typeid(CShader))
 		{

@@ -265,7 +265,7 @@ void CPlayer::Parry_Succeed()
 	_float4 PlayerPos;
 	XMStoreFloat4(&PlayerPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	PlayerPos.y += 1.f;
-	EFFECTMGR->Generate_Distortion(0, PlayerPos);
+	EFFECTMGR->Generate_Distortion(2, PlayerPos);
 	EFFECTMGR->Generate_Particle(6, vParticlePos);
 	m_bParry = true;
 }

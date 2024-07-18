@@ -17,7 +17,10 @@ CPhysXComponent_static::CPhysXComponent_static(ID3D11Device * pDevice, ID3D11Dev
 CPhysXComponent_static::CPhysXComponent_static(const CPhysXComponent_static & rhs)
 	: CPhysXComponent{ rhs }
 	, m_strFilePath{ rhs.m_strFilePath }
+#ifdef _DEBUG
 	,m_OutDesc{rhs.m_OutDesc}
+#endif // _DEBUG
+
 	, m_pTriangleMesh{rhs.m_pTriangleMesh}
 {
 }
@@ -173,17 +176,19 @@ HRESULT CPhysXComponent_static::Create_PhysX_TriAngleMesh()
 		//}
 		
 		
-		PxTolerancesScale scale;
-		scale= m_pGameInstance->GetPhysics()->getTolerancesScale();
+		
+		
 		PxCookingParams cookingParams(m_pGameInstance->GetPhysics()->getTolerancesScale());
+		cookingParams.midphaseDesc.setToDefault(PxMeshMidPhase::eBVH34);
+		cookingParams.buildGPUData = true;
 		cookingParams.meshWeldTolerance = 0.001f;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
 		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES;
 
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_CLEAN_MESH;
 		//cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
 		//cookingParams.midphaseDesc.mBVH33Desc.meshCookingHint = PxMeshCookingHint::eSIM_PERFORMANCE;
-		cookingParams.midphaseDesc.mBVH34Desc.setToDefault();
 		
 		
 		

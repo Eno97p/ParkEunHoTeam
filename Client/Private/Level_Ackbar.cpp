@@ -381,14 +381,14 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 				_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
 				modelMatrices[wszModelName].push_back(pWorldMatrix);
 			}
-			else if(strcmp(szLayer, ("Layer_Monster")))
+			else if(0 == strcmp(szLayer, ("Layer_Monster")))
 			{
 				// 다른 객체들은 개별적으로 생성
 
 			
 
-				CLandObject::LANDOBJ_DESC* pDesc{};
-				pDesc->mWorldMatrix = WorldMatrix;
+				CLandObject::LANDOBJ_DESC pDesc{};
+				pDesc.mWorldMatrix = WorldMatrix;
 
 				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wszLayer, wszName, &pDesc)))
 					return E_FAIL;

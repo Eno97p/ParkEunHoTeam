@@ -31,8 +31,7 @@ CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pCont
 
 HRESULT CLevel_Ackbar::Initialize()
 {
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+
 
 
 
@@ -57,9 +56,19 @@ HRESULT CLevel_Ackbar::Initialize()
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Ackbar.bin"));
 	Load_Data_Effects();
 
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
 
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = true;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
@@ -81,9 +90,18 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	}
 
 
-	
+	if (m_pGameInstance->Key_Down(DIK_9))
+	{
+		m_pGameInstance->LightOn(0);
+	}
+	if (m_pGameInstance->Key_Down(DIK_0))
+	{
+		m_pGameInstance->LightOff(0);
+	}
 
-
+	m_pGameInstance->Update_LightPos(0,
+		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, 
+			TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_State(CTransform::STATE_POSITION));
 
 //#ifdef _DEBUG
 	//카메라 전환 ~ 키
@@ -122,6 +140,18 @@ HRESULT CLevel_Ackbar::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	LIGHT_DESC			LightDesc{};
+	
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+	
+	m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->LightOff(0);
 
 	Load_Lights();
 
@@ -199,7 +229,7 @@ HRESULT CLevel_Ackbar::Ready_Layer_Camera(const wstring & strLayerTag)
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
 
-	 CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
+	/* CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
 
 	 pSVCDesc.fSensor = 0.1f;
 
@@ -215,7 +245,7 @@ HRESULT CLevel_Ackbar::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);
 	 pSVCDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
-		 return E_FAIL;
+		 return E_FAIL;*/
 
 	return S_OK;
 }
@@ -617,8 +647,10 @@ void CLevel_Ackbar::Load_Lights()
 	}
 
 	CloseHandle(hFile);
-	MSG_BOX("Lights Data Load");
 
+#ifdef _DEBUG
+	MSG_BOX("Lights Data Load");
+#endif
 	return;
 }
 

@@ -61,6 +61,8 @@ void CEventMgr::excute(const tEvent& _eve)
 	}
 	break;
 	case eEVENT_TYPE::SCENE_CHANGE:
+	{
+	}
 		break;
 	}
 	

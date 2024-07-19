@@ -13,7 +13,9 @@
 #include "Level_Loading.h"
 
 
+#include "EventTrigger.h"
 #include"Item.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -87,14 +89,26 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		m_pGameInstance->Set_MainCamera(m_iMainCameraIdx);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_F5))
+	/*list<CGameObject*> temp = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Trigger");
+	if (!temp.empty())
 	{
-		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+		if()
+
+
+	}*/
+	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+	if (!objs.empty())
+	{
+		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
 		{
-			MSG_BOX("Failed to Open Level JUGGLAS");
-			return;
+			if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+			{
+				MSG_BOX("Failed to Open Level JUGGLAS");
+				return;
+			}
 		}
 	}
+
 	
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
@@ -547,8 +561,10 @@ void CLevel_GamePlay::Load_Lights()
 	}
 
 	CloseHandle(hFile);
-	MSG_BOX("Lights Data Load");
 
+#ifdef _DEBUG
+	MSG_BOX("Lights Data Load");
+#endif
 	return;
 }
 

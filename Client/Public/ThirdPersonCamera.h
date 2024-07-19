@@ -121,8 +121,8 @@ private:
 	float m_fYaw = 0.0f;  // 카메라의 수평 회전 각도
 	float m_fPitch = 0.0f;  // 카메라의 수직 각도
 	float m_fDistance = 4.5f;  // 카메라와 플레이어 사이의 거리
-	float m_fMinPitch = -60.f;  // 최소 수직 각도
-	float m_fMaxPitch = 60.f;  // 최대 수직 각도
+	float m_fMinPitch = -15.f;  // 최소 수직 각도
+	float m_fMaxPitch = 45.f;  // 최대 수직 각도
 	float m_fMinDistance = 3.0f;  // 최소 거리
 	float m_fMaxDistance = 6.5f;  // 최대 거리 (8.5에서 6.5로 줄임)
 	float m_fHeightOffset = 1.8f;  // 카메라 높이 오프셋

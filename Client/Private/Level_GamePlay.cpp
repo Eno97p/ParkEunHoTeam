@@ -335,6 +335,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
 
 
+
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
 	//	return E_FAIL;
 
@@ -348,6 +349,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
+
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = 160.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;

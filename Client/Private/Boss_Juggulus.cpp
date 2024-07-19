@@ -99,8 +99,6 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_P))
 		m_fCurHp = 10.f;
 
-	m_pUI_HP->Tick(fTimeDelta);
-
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부
@@ -127,9 +125,9 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		CGameObject::GAMEOBJECT_DESC gameObjDesc;
 		gameObjDesc.fSpeedPerSec = 3.f;
-		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 20.f;
 		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 15.f;
-		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) - 13.f;
+		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
 		{
@@ -156,7 +154,7 @@ void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
 {
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject.second->Late_Tick(fTimeDelta);
-	m_pPhysXCom->Late_Tick(fTimeDelta);
+	//m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
@@ -192,7 +190,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
-	m_vInitialPos = { -425.f , 56.f ,-5.f, 1.f};
+	m_vInitialPos = { -450.f , 56.f ,-5.f, 1.f};
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
 	PhysXDesc.fJumpSpeed = 10.f;
@@ -228,10 +226,10 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 	PartDesc.eLevel = m_eLevel;
 	PartDesc.pCurHp = &m_fCurHp;
 	PartDesc.pMaxHp = &m_fMaxHp;
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	PartDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
-	PartDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
-	PartDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
+	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//PartDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+	//PartDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
+	//PartDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Juggulus"), &PartDesc);
 	if (nullptr == pBody)
@@ -370,7 +368,7 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 		return COOLING;
 	}
 
-	if (80.f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
+	if (50.f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
@@ -381,6 +379,9 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 			m_PartObjects.erase("Hand_One");
 			m_PartObjects.erase("Hand_Two");
 			m_PartObjects.erase("Hand_Three");
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos.m128_f32[1] += 15.f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		}
 
 		m_iState = STATE_NEXTPHASE;
@@ -448,14 +449,20 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		m_iState = STATE_HAMMER_ATTACK;
 		break;
 	case 1:
-		m_iState = STATE_FLAME_ATTACK;
+		m_iState = STATE_SPHERE_ATTACK;
 		break;
 	case 2:
+		m_iState = STATE_HAMMER_ATTACK;
+		break;
+	case 3:
 		m_iState = STATE_SPHERE_ATTACK;
+		break;
+	/*case 2:
+		m_iState = STATE_FLAME_ATTACK;
 		break;
 	case 3:
 		m_iState = STATE_THUNDER_ATTACK;
-		break;
+		break;*/
 	}
 	return SUCCESS;
 }

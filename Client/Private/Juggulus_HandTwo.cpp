@@ -39,6 +39,7 @@ HRESULT CJuggulus_HandTwo::Initialize(void* pArg)
 	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
@@ -79,7 +80,6 @@ void CJuggulus_HandTwo::Tick(_float fTimeDelta)
 	Change_Animation(fTimeDelta);
 
 	m_pBehaviorCom->Update(fTimeDelta);
-
 }
 
 void CJuggulus_HandTwo::Late_Tick(_float fTimeDelta)
@@ -154,7 +154,7 @@ HRESULT CJuggulus_HandTwo::Add_Nodes()
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CJuggulus_HandTwo::Idle, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("ScoopCool"), 15.f);
+	m_pBehaviorCom->Add_CoolDown_Priority(TEXT("Attack_Selector"), TEXT("ScoopCool"), 20.f, 20.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("ScoopCool"), TEXT("Scoop"), bind(&CJuggulus_HandTwo::Scoop, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Spawn"), bind(&CJuggulus_HandTwo::Spawn, this, std::placeholders::_1));
 
@@ -163,6 +163,11 @@ HRESULT CJuggulus_HandTwo::Add_Nodes()
 
 NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 {
+	if (XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vParentPos)) > 50.f)
+	{
+		return FAILURE;
+	}
+
  	if (m_eDisolveType == TYPE_IDLE && m_bScoop)
 	{
 		m_eDisolveType = TYPE_DECREASE;
@@ -171,7 +176,7 @@ NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 	if (m_eDisolveType == TYPE_INCREASE && m_bScoop)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos += XMVectorSet(-7.5f, -30.f, -7.5f, 0.f);
+		vPos += XMVectorSet(15.f, -35.f, 0.f, 0.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_iState = STATE_SCOOP;
 		m_bScoop = false;
@@ -195,18 +200,26 @@ NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 
 NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 {
+	if (XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vParentPos)) > 50.f)
+	{
+		return FAILURE;
+	}
+
 	if (m_iState == STATE_SCOOP)
 	{
 		if (m_eDisolveType == TYPE_INCREASE)
 		{
 			m_iState = STATE_SPAWN;
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos += XMVectorSet(10.f, -5.f, 0.f, 0.f);
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		}
 		return RUNNING;
 	}
 
 	if (m_iState == STATE_SPAWN)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		//m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		if (m_isAnimFinished)
 		{
 			if (m_eDisolveType == TYPE_IDLE)
@@ -215,9 +228,9 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-				LandObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
-				LandObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 40.f;
-				LandObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
+				LandObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 15.f;
+				LandObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 53.f;
+				LandObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) + 10.f;
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Homonculus"), &LandObjDesc);
 				m_eDisolveType = TYPE_DECREASE;
 				return RUNNING;

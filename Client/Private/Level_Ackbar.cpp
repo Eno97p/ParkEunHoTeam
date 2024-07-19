@@ -17,6 +17,10 @@
 #include "Level_Loading.h"
 #include "FireEffect.h"
 
+#include"NPC_Rlya.h"
+#include"Item.h"
+
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -42,7 +46,10 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
-	
+
+	if (FAILED(Ready_Item()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -276,32 +283,60 @@ HRESULT CLevel_Ackbar::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 HRESULT CLevel_Ackbar::Ready_LandObjects()
 {
-	CLandObject::LANDOBJ_DESC		LandObjDesc{};
+	/*CLandObject::LANDOBJ_DESC		LandObjDesc= {};
 	
 	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));*/
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
+
+
+	 //Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Ackbar::Ready_Layer_Player(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_Ackbar::Ready_Item()
 {
-	pLandObjDesc->mWorldMatrix._41 = 101.1f;
-	pLandObjDesc->mWorldMatrix._42 = 63.5f;
-	pLandObjDesc->mWorldMatrix._43 = 4.4f;
-	pLandObjDesc->mWorldMatrix._44 = 1.f;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
+	_float3 fPosArray[] = {
+	_float3(166.3f, 14.7f, 13.0f),
+	_float3(193.0f, 21.3f, -25.3f),
+	_float3(-4.4f, 27.0f, -122.7f),
+	_float3(102.0f, 18.5f, -110.0f),
+	_float3(191.0f, 8.8f, -46.0f)
+	};
+	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		CItem::ITEM_DESC desc = {};
+		desc.vPosition = fPosArray[i];
+		
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+			return E_FAIL;
+	}
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_Ackbar::Ready_Layer_Player(const wstring & strLayerTag)
+{
+	CLandObject::LANDOBJ_DESC LandObjDesc = {};
+
+	LandObjDesc.mWorldMatrix._41 = 101.1f;
+	LandObjDesc.mWorldMatrix._42 = 63.5f;
+	LandObjDesc.mWorldMatrix._43 = 4.4f;
+	LandObjDesc.mWorldMatrix._44 = 1.f;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Player"), &LandObjDesc)))
 		return E_FAIL;
 
 
@@ -338,10 +373,15 @@ HRESULT CLevel_Ackbar::Ready_Layer_Monster(const wstring& strLayerTag, CLandObje
 
 
 
+
 	////for (size_t i = 0; i < 5; i++)
 	//{
-
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+		CLandObject::LANDOBJ_DESC LandObjDesc = {};
+		LandObjDesc.mWorldMatrix._41 = 101.1f;
+		LandObjDesc.mWorldMatrix._42 = 63.5f;
+		LandObjDesc.mWorldMatrix._43 = 4.4f;
+		LandObjDesc.mWorldMatrix._44 = 1.f;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &LandObjDesc)))
 			return E_FAIL;
 	//}
 

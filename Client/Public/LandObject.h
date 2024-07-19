@@ -14,8 +14,8 @@ class CLandObject abstract : public CGameObject
 public:
 	typedef struct LandObj_Desc : public CGameObject::GAMEOBJECT_DESC
 	{
-		CTransform*			pTerrainTransform;
-		CVIBuffer*			pTerrainVIBuffer;
+		CTransform*			pTerrainTransform = nullptr;
+		CVIBuffer*			pTerrainVIBuffer = nullptr;
 	}LANDOBJ_DESC;
 protected:
 	CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

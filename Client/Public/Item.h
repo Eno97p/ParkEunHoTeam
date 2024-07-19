@@ -18,6 +18,13 @@ class CPlayer;
 class CItem final : public CGameObject
 {
 public:
+	struct ITEM_DESC : public CGameObject::GAMEOBJECT_DESC
+	{
+		_float3 vPosition = { 0.f, 0.f, 0.f };
+	};
+
+
+public:
 	// 드랍템에 한정함
 	enum ITEM_NAME { ITEM_BUFF1 = 0, ITEM_BUFF2, ITEM_BUFF3, ITEM_BUFF4, ITEM_SOUL, ITEM_ESSENCE, ITEM_ETHER, ITEM_UPGRADE1, ITEM_UPGRADE2, ITEM_END };
 

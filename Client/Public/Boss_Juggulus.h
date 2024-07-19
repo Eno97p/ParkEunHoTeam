@@ -80,6 +80,8 @@ private:
 	NodeStates			SphereAttack(_float fTimeDelta);
 	NodeStates			ThunderAttack(_float fTimeDelta);
 
+
+
 public:
 	static CBoss_Juggulus*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;

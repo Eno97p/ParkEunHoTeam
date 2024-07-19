@@ -68,6 +68,9 @@ private:
 	_float m_fColliderActiveTime = 0.5f;
 	_int m_icount = 0;
 
+
+
+
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

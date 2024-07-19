@@ -26,6 +26,10 @@ HRESULT CItem::Initialize_Prototype()
 
 HRESULT CItem::Initialize(void* pArg)
 {
+
+	
+
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -34,22 +38,47 @@ HRESULT CItem::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(0.03f, 0.03f, 0.03f);
 
-	Set_Texture();
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 
 	m_eItemName = static_cast<ITEM_NAME>(rand() % ITEM_END); // 랜덤으로 아이템 종류 설정
 
+	if (nullptr != pArg)
+	{
+		CItem::ITEM_DESC Desc = *(static_cast<CItem::ITEM_DESC*>(pArg));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(Desc.vPosition.x, Desc.vPosition.y, Desc.vPosition.z, 1.f));
+		//m_pTextureTransformCom.set
+
+
+		//Desc.vPosition.x;
+		//Desc.vPosition.y;
+		//Desc.vPosition.z;
+
+
+	}
+	Set_Texture();
+
+
+
+
+
+
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(166.3f, 9.7f, 13.0f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(193.0f, 16.3f, -25.3f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-4.4f, 22.0f, -122.7f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(102.0f, 13.5f, -110.0f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(191.0f, 3.8f, -46.0f, 1.f));
+	
 	return S_OK;
 }
 
 void CItem::Set_Texture()
 {
 	// m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 524.f, 98.f, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 10 + 145, 524.f, 98.f, 1.f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(rand() % 10 + 145, 524.f, 98.f, 1.f));
 	m_pTextureTransformCom->Set_WorldMatrix(m_pTransformCom->Get_WorldMatrix());
-	m_pTextureTransformCom->Set_Scale(0.3f, 0.3f, 0.3f);
+	m_pTextureTransformCom->Set_Scale(0.5f, 0.5f, 0.5f);
 	m_pTextureTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(
 		XMVectorGetX(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)),
 		XMVectorGetY(m_pTextureTransformCom->Get_State(CTransform::STATE_POSITION)) + 0.1f,

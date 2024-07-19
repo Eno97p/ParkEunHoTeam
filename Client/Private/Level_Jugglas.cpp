@@ -15,6 +15,10 @@
 #include "UI_FadeInOut.h"
 #include "FireEffect.h"
 
+
+
+#include"Item.h"
+
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -248,12 +252,25 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
+
+	_float3 fPosArray[] = {
+	_float3(-73.8f, 6.7f, -7.2f),
+	_float3(-107.2f, 3.3f, -15.9f),
+	_float3(-201.5f, 3.5f, -15.4f),
+	};
+
+	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+
+	CItem::ITEM_DESC desc;
+	for (int i = 0; i < arraySize; i++)
+	{
+		desc.vPosition = fPosArray[i];
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+			return E_FAIL;
+	}
+
+
 
 	return S_OK;
 }

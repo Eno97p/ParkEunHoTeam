@@ -85,6 +85,8 @@ void CWeapon_Ghost::Tick(_float fTimeDelta)
 
 		}
 	}
+
+	//Generate_Trail(8);
 }
 
 void CWeapon_Ghost::Late_Tick(_float fTimeDelta)

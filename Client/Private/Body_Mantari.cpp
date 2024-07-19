@@ -152,7 +152,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.3);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.5f && m_fDamageTiming < 0.7f)
+		if (m_fDamageTiming > 0.6f && m_fDamageTiming < 0.8f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -185,6 +185,15 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CMantari::STATE_ATTACK3)
 	{
+		if (m_pModelCom->Check_CurDuration(0.20) && m_iPastAnimIndex == 6)
+		{
+			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
+			PartPos.y = m_WorldMatrix._42;
+			EFFECTMGR->Generate_Particle(17, PartPos);
+			EFFECTMGR->Generate_Particle(18, PartPos);
+		}
+
+
 		if (m_iPastAnimIndex < 5 || m_iPastAnimIndex > 6)
 		{
 			m_iPastAnimIndex = 5;
@@ -222,7 +231,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 1.1f && m_fDamageTiming < 1.3f)
+		if (m_fDamageTiming > 1.4f && m_fDamageTiming < 1.5f)
 		{
 			m_pWeapon->Set_Active();
 		}

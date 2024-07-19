@@ -120,6 +120,7 @@ public: /* For.Light_Manager */
 	void LightOn(_uint iIndex);
 
 	void LightOff_All();
+	void Update_LightPos(_uint iIdx, _vector vPos);
 
 	void Edit_Light(_uint iIndex, LIGHT_DESC* desc);
 	list<class CLight*> Get_Lights();

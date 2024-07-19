@@ -183,6 +183,10 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 		}));
 
+	futures.push_back(m_pWorker->Add_Job([this]() {
+		PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+		}));
+	//PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 
 	for (auto& worker : futures)
 	{
@@ -193,7 +197,6 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
 	
-	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 	
 	//PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
@@ -582,6 +585,12 @@ void CGameInstance::LightOn(_uint iIndex)
 void CGameInstance::LightOff_All()
 {
 	m_pLight_Manager->LightOff_All();
+}
+
+void CGameInstance::Update_LightPos(_uint iIdx, _vector vPos)
+{
+	m_pLight_Manager->Update_LightPos(iIdx, vPos);
+
 }
 
 void CGameInstance::Edit_Light(_uint iIndex, LIGHT_DESC* desc)

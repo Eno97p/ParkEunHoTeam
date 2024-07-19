@@ -115,7 +115,10 @@ void CGhost::Late_Tick(_float fTimeDelta)
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
-	m_pTargetLock->Late_Tick(fTimeDelta);
+	if (m_bIsLocked)
+	{
+		m_pTargetLock->Late_Tick(fTimeDelta);
+	}
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);

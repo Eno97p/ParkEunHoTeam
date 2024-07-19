@@ -57,6 +57,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_bParry && !m_bParrying)
+	{
+		fSlowValue = 1.f;
+	}
+
 	if (!m_pCameraTransform)
 	{
 		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));
@@ -127,8 +132,11 @@ void CPlayer::Tick(_float fTimeDelta)
 	m_fParticleAcctime -= fTimeDelta;
 	if (m_fParticleAcctime < 0.f)
 	{
-		EFFECTMGR->Generate_Particle(10,_float4(0.f,2.f,0.f,1.f), this);
 		m_fParticleAcctime = 0.1f;
+		_float4 vParticlePos;
+		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vParticlePos.y += 1.f;
+		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
 
 }

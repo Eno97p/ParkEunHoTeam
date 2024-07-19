@@ -5,6 +5,7 @@
 #include "CInverter.h"
 #include "CoolDownNode.h"
 #include "ConditionNode.h"
+#include "CoolDown_Priority.h"
 CBehaviorTree::CBehaviorTree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CComponent(pDevice, pContext)
 {
@@ -184,6 +185,23 @@ void CBehaviorTree::Add_CoolDown(const wstring& parents_name, const wstring& nod
 	{
 		CNode* Node = nullptr;
 		Node = CCoolDownNode::Create(_fCooltime);
+		iter->second->Add_Nodes(Node);
+		Nodes.emplace(nodename, Node);
+	}
+}
+
+void CBehaviorTree::Add_CoolDown_Priority(const wstring& parents_name, const wstring& nodename, _float _fCooltime, _float _firstCool)
+{
+	auto	iter = Nodes.find(parents_name);
+	if (iter == Nodes.end())
+	{
+		MSG_BOX("Failed find Parents");
+		return;
+	}
+	else
+	{
+		CNode* Node = nullptr;
+		Node = CCoolDownPriority::Create(_fCooltime, _firstCool);
 		iter->second->Add_Nodes(Node);
 		Nodes.emplace(nodename, Node);
 	}

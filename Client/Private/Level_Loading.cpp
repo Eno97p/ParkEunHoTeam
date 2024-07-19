@@ -15,6 +15,7 @@
 #include "Level_Jugglas.h"
 #pragma endregion
 
+#include "UI_FadeInOut.h"
 
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -53,7 +54,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 
 	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+		//if (GetKeyState(VK_RETURN) & 0x8000)
 		{
 			m_pGameInstance->Set_NextLevel(m_eNextLevel);
 			
@@ -122,6 +123,14 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 		return E_FAIL;*/
 
 	//CUI_Manager::GetInstance()->Render_Logo(true);
+
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = true;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

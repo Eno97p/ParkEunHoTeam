@@ -14,8 +14,8 @@ BEGIN(Client)
 
 class CMantari final : public CMonster
 {
-#define DETECTRANGE 30.f
-#define JUMPATTACKRANGE 20.f
+#define DETECTRANGE 20.f
+#define JUMPATTACKRANGE 15.f
 #define ATTACKRANGE 5.f
 
 public:
@@ -72,8 +72,6 @@ private:
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;
-
-
 
 
 

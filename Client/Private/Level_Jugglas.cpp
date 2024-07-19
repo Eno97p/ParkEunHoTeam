@@ -13,6 +13,11 @@
 
 #include "Light.h"
 #include "UI_FadeInOut.h"
+#include "FireEffect.h"
+
+
+
+#include"Item.h"
 
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -45,6 +50,7 @@ HRESULT CLevel_Jugglas::Initialize()
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas.bin"));
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -52,6 +58,14 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_JUGGLAS, TEXT("Layer_Camera")).size();
 
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = true;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
+	
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_TEST"), TEXT("Prototype_GameObject_RotateGate"))))
 		return E_FAIL;
 
@@ -70,10 +84,6 @@ void CLevel_Jugglas::Tick(_float fTimeDelta)
 	{
 		Add_FadeInOut(true);
 	}
-
-
-	
-
 
 //#ifdef _DEBUG
 	//카메라 전환 ~ 키
@@ -242,12 +252,25 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
+
+	_float3 fPosArray[] = {
+	_float3(-73.8f, 6.7f, -7.2f),
+	_float3(-107.2f, 3.3f, -15.9f),
+	_float3(-201.5f, 3.5f, -15.4f),
+	};
+
+	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+
+	CItem::ITEM_DESC desc;
+	for (int i = 0; i < arraySize; i++)
+	{
+		desc.vPosition = fPosArray[i];
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+			return E_FAIL;
+	}
+
+
 
 	return S_OK;
 }
@@ -417,6 +440,61 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 	return S_OK;
 }
 
+HRESULT CLevel_Jugglas::Load_Data_Effects()
+{
+	const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
+	HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (nullptr == hFile)
+		return E_FAIL;
+
+	DWORD dwByte(0);
+	_uint iEffectCount = 0;
+
+	// 이펙트 개수 읽기
+	ReadFile(hFile, &iEffectCount, sizeof(_uint), &dwByte, nullptr);
+
+	for (_uint i = 0; i < iEffectCount; ++i)
+	{
+		char szName[MAX_PATH] = "";
+		char szLayer[MAX_PATH] = "";
+		_float4x4 WorldMatrix;
+
+		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		// char 배열을 wstring으로 변환
+		wstring wsName, wsLayer;
+		int nNameLen = MultiByteToWideChar(CP_ACP, 0, szName, -1, NULL, 0);
+		int nLayerLen = MultiByteToWideChar(CP_ACP, 0, szLayer, -1, NULL, 0);
+		wsName.resize(nNameLen);
+		wsLayer.resize(nLayerLen);
+		MultiByteToWideChar(CP_ACP, 0, szName, -1, &wsName[0], nNameLen);
+		MultiByteToWideChar(CP_ACP, 0, szLayer, -1, &wsLayer[0], nLayerLen);
+
+		// 이펙트 생성 및 설정
+		if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Fire_Effect") == 0)
+		{
+			CFireEffect::FIREEFFECTDESC FireDesc{};
+			FireDesc.vStartPos = { WorldMatrix._41, WorldMatrix._42, WorldMatrix._43, 1.f };
+			FireDesc.vStartScale = { 1.f, 1.f }; // 스케일은 필요에 따라 조정
+			FireDesc.mWorldMatrix = WorldMatrix;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
+				return E_FAIL;
+		}
+
+	}
+
+	CloseHandle(hFile);
+
+#ifdef _DEBUG
+	MSG_BOX("Effects Data Load");
+#endif
+
+	return S_OK;
+}
+
 void CLevel_Jugglas::Load_Lights()
 {
 	list<CLight*> lights = m_pGameInstance->Get_Lights();
@@ -497,8 +575,9 @@ void CLevel_Jugglas::Load_Lights()
 	}
 
 	CloseHandle(hFile);
+#ifdef _DEBUG
 	MSG_BOX("Lights Data Load");
-
+#endif
 	return;
 }
 

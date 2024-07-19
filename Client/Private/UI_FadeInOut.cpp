@@ -1,7 +1,7 @@
 #include "UI_FadeInOut.h"
 
 #include "GameInstance.h"
-
+#include "Level_Loading.h"
 CUI_FadeInOut::CUI_FadeInOut(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
 {
@@ -55,11 +55,21 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 
 			if (!m_isFadeIn) // Fade Out
 			{
-				// 씬 초기화 필요
+				m_bisSceneChange = true;
 				if (FAILED(Create_FadeIn()))
 					return;
+				//// 씬 초기화 필요
+				//if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+				//{
+				//	MSG_BOX("Failed to Open Level JUGGLAS");
+				//	return;
+				//}
+
+
+				
 			}
-			m_pGameInstance->Erase(this);
+
+			//m_pGameInstance->Erase(this);
 		}
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
@@ -186,7 +196,7 @@ HRESULT CUI_FadeInOut::Create_FadeIn()
 		pDesc.eFadeType = TYPE_ALPHA;
 	}
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
 
 	return S_OK;

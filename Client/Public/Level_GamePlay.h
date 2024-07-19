@@ -44,6 +44,7 @@ private:
 	_uint m_iCamSize = 0;
 //#endif
 
+	_bool m_bFadeOutDead = false;
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

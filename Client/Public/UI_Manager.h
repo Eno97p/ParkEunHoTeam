@@ -37,9 +37,15 @@ public:
 	void				Update_Inventory_Add(_uint iSlotIdx);
 	void				Update_InvSub_Quick_Add();
 	void				Update_Quick_Add(CItemData* pItemData);
+	void				Update_Quick_InvSlot_Add(_uint iSlotIdx);
 	void				Update_Weapon_Add();
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);
 	void				Update_EquipWeapon_Delete(_uint iEquipSlotIdx);
+	void				Update_Skill_Add();
+	void				Update_EquipSkill_Add(_uint iEquipSlotIdx);
+	void				Update_EquipSkill_Delete(_uint iEquipSlotIdx);
+
+	void				Resset_Player();
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

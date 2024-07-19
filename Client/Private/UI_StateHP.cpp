@@ -43,6 +43,8 @@ void CUI_StateHP::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateHP::Tick(_float fTimeDelta)
 {
+	// 현재 : Player가 없으면 현재 레벨의 플레이어를 받아와서 할당함 > 레벨 넘어가면 참조 중인 플레이어가 있기 때문에(댕글링 포인터) 해당 값을 못 받아오는 이슈 있음
+
 	if (!m_pPlayer)
 	{
 		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
@@ -96,6 +98,12 @@ HRESULT CUI_StateHP::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+void CUI_StateHP::Resset_Player()
+{
+	Safe_Release(m_pPlayer);
+	m_pPlayer = nullptr;
 }
 
 HRESULT CUI_StateHP::Add_Components()

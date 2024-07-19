@@ -13,7 +13,9 @@
 #include "Level_Loading.h"
 
 
+#include "EventTrigger.h"
 #include"Item.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -87,7 +89,31 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 		m_pGameInstance->Set_MainCamera(m_iMainCameraIdx);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_F5))
+	/*list<CGameObject*> temp = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Trigger");
+	if (!temp.empty())
+	{
+		if()
+
+
+	}*/
+
+
+	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+	if (!objs.empty())
+	{
+		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
+		{
+			if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+			{
+				MSG_BOX("Failed to Open Level JUGGLAS");
+				return;
+			}
+		}
+
+
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F6))
 	{
 		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
 		{
@@ -257,21 +283,21 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
 	//	return E_FAIL;
 
-	_float3 fPosArray[] = {
-	_float3(85.f, 523.f, 98.f),
-	_float3(95.f, 523.f, 98.f),
+	//_float3 fPosArray[] = {
+	//_float3(85.f, 523.f, 98.f),
+	//_float3(95.f, 523.f, 98.f),
 
-	};
+	//};
 
-	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+	//_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
 
-	CItem::ITEM_DESC desc;
-	for (int i = 0; i < arraySize; i++)
-	{
-		desc.vPosition = fPosArray[i];
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
-			return E_FAIL;
-	}
+	//CItem::ITEM_DESC desc;
+	//for (int i = 0; i < arraySize; i++)
+	//{
+	//	desc.vPosition = fPosArray[i];
+	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+	//		return E_FAIL;
+	//}
 
 
 
@@ -317,12 +343,13 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//pLandObjDesc->mWorldMatrix._43 = 98.f;
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
 	//	return E_FAIL;
-	CLandObject::LANDOBJ_DESC landObjDesc;
+	
 
 
-	/*if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
-		return E_FAIL;*/
 
+
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
+	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
 	//	return E_FAIL;
@@ -330,15 +357,16 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
-
-	landObjDesc.mWorldMatrix._41 = 160.f;
-	landObjDesc.mWorldMatrix._42 = 528.f;
-	landObjDesc.mWorldMatrix._43 = 98.f;
-	landObjDesc.mWorldMatrix._44 = 1.f;
+	
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = 167.f;
+	landObjDesc.mWorldMatrix._42 = 528.f;
+	landObjDesc.mWorldMatrix._43 = 98.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 			return E_FAIL;
 
@@ -547,8 +575,10 @@ void CLevel_GamePlay::Load_Lights()
 	}
 
 	CloseHandle(hFile);
-	MSG_BOX("Lights Data Load");
 
+#ifdef _DEBUG
+	MSG_BOX("Lights Data Load");
+#endif
 	return;
 }
 

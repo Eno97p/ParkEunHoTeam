@@ -5,6 +5,8 @@
 #include "Player.h"
 
 #include "Elevator.h"
+#include "SideViewCamera.h"
+
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CToolObj(pDevice, pContext)
 {
@@ -144,6 +146,18 @@ void CEventTrigger::Tick(_float fTimeDelta)
 				dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), 0))->Descend(XMVectorSet(-389.f, 7.485f, -1.5f, 1.f)); //LEVEL_JUGGLAS·Î º¯°æ
 			}
 			break;
+			case TRIG_SCENE_CHANGE:
+			{
+
+			}
+			break;
+			case TRIG_VIEWCHANGE_TTOBS:
+			{
+				m_pGameInstance->Set_MainCamera(2);
+				dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_MainCamera())->Set_BossScene(true);
+			}
+			break;
+
 			default:
 				break;
 			}

@@ -39,6 +39,7 @@ HRESULT CJuggulus_HandThree::Initialize(void* pArg)
 	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 	m_vParentPos = XMVectorSet(pDesc->pParentMatrix->m[3][0], pDesc->pParentMatrix->m[3][1], pDesc->pParentMatrix->m[3][2], 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vParentPos);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
@@ -151,9 +152,10 @@ HRESULT CJuggulus_HandThree::Add_Nodes()
 	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CJuggulus_HandThree::Idle, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("AttackCool"), 10.f);
+	m_pBehaviorCom->Add_CoolDown_Priority(TEXT("Attack_Selector"), TEXT("AttackCool"), 15.f, 15.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("AttackCool"), TEXT("Attack"), bind(&CJuggulus_HandThree::Attack, this, std::placeholders::_1));
 
 	return S_OK;
@@ -161,6 +163,11 @@ HRESULT CJuggulus_HandThree::Add_Nodes()
 
 NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 {
+	if (XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vParentPos)) > 50.f)
+	{
+		return FAILURE;
+	}
+
 	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_ATTACK)
 	{
 		m_eDisolveType = TYPE_DECREASE;
@@ -169,15 +176,14 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 	if (m_eDisolveType == TYPE_INCREASE && m_iState != STATE_ATTACK)
 	{
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos += XMVectorSet(0.f, -30.f, -15.f, 0.f);
+		vPos += XMVectorSet(15.f, -40.f, 0.f, 0.f);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 		m_iState = STATE_ATTACK;
 	}
 
 	if (m_iState == STATE_ATTACK)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-
+		//m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		m_fAspirationDelay -= fTimeDelta;
 		if (m_fAspirationDelay < 0.f)
 		{
@@ -186,7 +192,7 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 			gameObjDesc.fSpeedPerSec = 3.f;
 			gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) - 1.f;
 			gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 70.f;
-			gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) - 3.f;
+			gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Aspiration"), &gameObjDesc);
 			m_fAspirationDelay = 100.f;
 		}
@@ -225,6 +231,7 @@ NodeStates CJuggulus_HandThree::Idle(_float fTimeDelta)
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
+
 
 void CJuggulus_HandThree::Add_Hp(_int iValue)
 {

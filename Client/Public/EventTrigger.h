@@ -17,6 +17,7 @@ class CEventTrigger final : public CMap_Element
 public:
 	enum TRIGGER_TYPE { TRIG_TUTORIAL_BOSSENCOUNTER, 
 		TRIG_JUGGLAS_SPAWNSECONDROOM, TRIG_JUGGLAS_SPAWNTHIRDROOM, TRIG_VIEWCHANGE_TTOS, TRIG_VIEWCHANGE_STOT, TRIG_ASCEND_ELEVATOR, TRIG_DESCEND_ELEVATOR,
+		TRIG_SCENE_CHANGE, TRIG_VIEWCHANGE_TTOBS,
 		TRIG_END };
 private:
 	CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -30,6 +31,8 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	_bool isSceneChange() { return m_bSceneChange; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -67,6 +70,8 @@ private:
 
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
 	_uint m_iTriggerType = 0;
+
+	_bool m_bSceneChange = false;
 
 public:
 	static CEventTrigger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

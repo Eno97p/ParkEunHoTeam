@@ -587,6 +587,12 @@ void CGameInstance::LightOff_All()
 	m_pLight_Manager->LightOff_All();
 }
 
+void CGameInstance::Update_LightPos(_uint iIdx, _vector vPos)
+{
+	m_pLight_Manager->Update_LightPos(iIdx, vPos);
+
+}
+
 void CGameInstance::Edit_Light(_uint iIndex, LIGHT_DESC* desc)
 {
 	m_pLight_Manager->Edit_Light(iIndex, desc);

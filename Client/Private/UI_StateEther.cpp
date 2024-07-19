@@ -1,6 +1,7 @@
 #include "UI_StateEther.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
 CUI_StateEther::CUI_StateEther(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
@@ -58,6 +59,12 @@ HRESULT CUI_StateEther::Render()
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+void CUI_StateEther::Resset_Player()
+{
+	//Safe_Release(m_pPlayer);
+	//m_pPlayer = nullptr;
 }
 
 HRESULT CUI_StateEther::Add_Components()
@@ -125,4 +132,6 @@ CGameObject* CUI_StateEther::Clone(void* pArg)
 void CUI_StateEther::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pPlayer);
 }

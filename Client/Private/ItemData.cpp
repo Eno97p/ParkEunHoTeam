@@ -179,7 +179,13 @@ void CItemData::Set_Item_Data()
 	case Client::CItemData::ITEMNAME_OPH:
 		break;
 	case Client::CItemData::ITEMNAME_ETHERBOLT:
+	{
+		m_eItemType = ITEMTYPE_SKILL;
+		m_wszItemName = TEXT("ETHERBOLT");
+		m_wszItemExplain = TEXT("어둠 속에서도 빛나는\n정화의 상징\n강력한 에테르의 힘으로\n멀리까지 날아간다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_AEGIS:
 		break;
 	case Client::CItemData::ITEMNAME_CATALYST:

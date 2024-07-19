@@ -24,10 +24,12 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Update_QuickSlot_Add(CItemData* pItemData);
+	void			Update_InvSlot_Add(_uint iSlotIdx);
 
 private:
 	vector<CUI*>			m_vecUI;
 	vector<CUI_Slot*>		m_vecSlot;
+	vector<CUI_Slot*>		m_vecInvSlot;
 
 private:
 	HRESULT					Create_UI();

@@ -204,6 +204,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\CInverter.cpp" />
     <ClCompile Include="..\Private\CNode.cpp" />
     <ClCompile Include="..\Private\Components_Vehicle.cpp" />
+    <ClCompile Include="..\Private\CoolDown_Priority.cpp" />
     <ClCompile Include="..\private\CProfiler.cpp" />
     <ClCompile Include="..\private\CProfileScope.cpp" />
     <ClCompile Include="..\Private\CRenderWorker.cpp" />
@@ -300,6 +301,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\ComputeShader_Texture.h" />
     <ClInclude Include="..\public\ConditionNode.h" />
     <ClInclude Include="..\public\CoolDownNode.h" />
+    <ClInclude Include="..\Public\CoolDown_Priority.h" />
     <ClInclude Include="..\public\CPhysX.h" />
     <ClInclude Include="..\public\CProfiler.h" />
     <ClInclude Include="..\public\CProfileScope.h" />

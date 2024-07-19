@@ -112,6 +112,12 @@ void CSphere::Late_Tick(_float fTimeDelta)
 	{
 		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
 		{
+			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+			_vector vPos = Mat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			EFFECTMGR->Generate_Particle(14, vStartPos);
+			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			m_pJuggulus->Add_Hp(-10);
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ı
 			m_pGameInstance->Erase(this);
@@ -119,6 +125,7 @@ void CSphere::Late_Tick(_float fTimeDelta)
 	}
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CSphere::Render()
@@ -135,10 +142,32 @@ HRESULT CSphere::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(9);
 
 		m_pModelCom->Render(i);
 	}
+	return S_OK;
+}
+
+HRESULT CSphere::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(9);
+
+		m_pModelCom->Render(i);
+	}
+
 	return S_OK;
 }
 

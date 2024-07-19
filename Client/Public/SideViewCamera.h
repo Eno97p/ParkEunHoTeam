@@ -39,6 +39,8 @@ public:
 public:
     void Set_CameraHeight(_float fHeight) { m_fHeightOffset = fHeight; }
 
+public:
+    void Set_BossScene(bool bBossScene) { m_bBossScene = bBossScene; }
 private:
     _float      m_fSensor = { 0.0f };
     CTransform* m_pPlayerTrans = { nullptr };

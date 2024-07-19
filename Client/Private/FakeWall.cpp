@@ -75,7 +75,10 @@ void CFakeWall::Tick(_float fTimeDelta)
 
 void CFakeWall::Late_Tick(_float fTimeDelta)
 {
+#ifdef _DEBUG
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
+#endif
+
 }
 
 HRESULT CFakeWall::Render()

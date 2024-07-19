@@ -41,6 +41,8 @@ public:
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);
 	void				Update_EquipWeapon_Delete(_uint iEquipSlotIdx);
 	void				Update_Skill_Add();
+	void				Update_EquipSkill_Add(_uint iEquipSlotIdx);
+	void				Update_EquipSkill_Delete(_uint iEquipSlotIdx);
 
 	void				Resset_Player();
 

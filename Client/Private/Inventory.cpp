@@ -164,6 +164,22 @@ HRESULT CInventory::Delete_EquipWeapon(_uint iEquipSlotIdx)
 	return S_OK;
 }
 
+HRESULT CInventory::Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx)
+{
+	m_arrEquipSkill[iEquipSlotIdx] = pItemData;
+
+	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
+
+	// HUD
+
+	return S_OK;
+}
+
+HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
+{
+	return S_OK;
+}
+
 void CInventory::Free()
 {
 	for (auto& pItemData : m_vecItem)

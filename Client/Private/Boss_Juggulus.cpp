@@ -99,8 +99,6 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	if (m_pGameInstance->Key_Down(DIK_P))
 		m_fCurHp = 10.f;
 
-	m_pUI_HP->Tick(fTimeDelta);
-
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	// 플레이어 무기와 몬스터의 충돌 여부

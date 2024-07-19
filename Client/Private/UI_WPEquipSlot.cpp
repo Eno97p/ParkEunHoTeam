@@ -260,13 +260,26 @@ void CUI_WPEquipSlot::Click_Event()
 	for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
 		++weapon;
 
-	if (isAlphaBG_On) // 장착
+	// skill에 대한 변수도 필요
+	
+
+	if (isAlphaBG_On) // 장착 >>> 지금 무조건 weapon으로만 활성화 되어있음 skill에도 적용해주어야 함
 	{
 		if (!(*weapon)->Get_isEquip())
 		{
-			CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
-			(*weapon)->Set_isEquip(true);
-			dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+			// Tab Type 받아와서 분기 처리   Add_EquipSkill
+			if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+			{
+				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
+				(*weapon)->Set_isEquip(true);
+				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+			}
+			else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+			{
+				CInventory::GetInstance()->Add_EquipSkill((*weapon), m_eSlotNum);
+				(*weapon)->Set_isEquip(true);
+				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+			}
 		}
 
 		// AlphaBG 비활성화

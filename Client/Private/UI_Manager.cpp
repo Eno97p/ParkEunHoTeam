@@ -124,6 +124,17 @@ void CUI_Manager::Update_Skill_Add()
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Skill_Add();
 }
 
+void CUI_Manager::Update_EquipSkill_Add(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	//dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSl
+}
+
+void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+}
+
 void CUI_Manager::Resset_Player()
 {
 	// Player를 참조 중인 녀석들의 값을 초기화

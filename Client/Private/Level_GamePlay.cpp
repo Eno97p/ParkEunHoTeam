@@ -92,6 +92,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 			MSG_BOX("Failed to Open Level JUGGLAS");
 			return;
 		}
+
+
 	}
 	
 

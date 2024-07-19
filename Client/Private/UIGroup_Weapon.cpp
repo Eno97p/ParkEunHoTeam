@@ -240,6 +240,7 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
 			pDesc.eUISort = NINETH;
+			pDesc.eSlotType = CUI_Slot::SLOT_WEAPON;
 			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
@@ -342,8 +343,13 @@ void CUIGroup_Weapon::Change_Tab()
 		}
 
 		// Equip Slot 리셋하고 채워넣기
+
+		//m_vecEquipSlot의 개수 기준으로 할 게 아니고 장착 슬롯의 배열 인덱스 기준으로 적용하는 게 맞음
+
+		// Get_EquipSkill() 으로 인덱스 접근해서 값 적용! >> Change_ItemIcon에서 그렇게 하고 있지 않나?
+
 		vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
-		for (size_t i = 0; i < 3; ++i)
+		for (size_t i = 0; i < 3; ++i) // 순서대로 하면 X
 		{
 			(*equipslot)->Delete_ItemIcon();
 			(*equipslot)->Change_ItemIcon(true, i);

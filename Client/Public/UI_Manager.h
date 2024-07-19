@@ -42,6 +42,8 @@ public:
 	void				Update_EquipWeapon_Delete(_uint iEquipSlotIdx);
 	void				Update_Skill_Add();
 
+	void				Resset_Player();
+
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };
 

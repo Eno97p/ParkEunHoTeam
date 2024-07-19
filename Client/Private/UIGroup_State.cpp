@@ -45,6 +45,9 @@ void CUIGroup_State::Tick(_float fTimeDelta)
     {
         for (auto& pUI : m_vecUI)
             pUI->Tick(fTimeDelta);
+
+        for (auto& pState : m_vecStates)
+            pState->Tick(fTimeDelta);
     }
 }
 
@@ -54,12 +57,26 @@ void CUIGroup_State::Late_Tick(_float fTimeDelta)
     {
         for (auto& pUI : m_vecUI)
             pUI->Late_Tick(fTimeDelta);
+
+        for (auto& pState : m_vecStates)
+            pState->Late_Tick(fTimeDelta);
     }
 }
 
 HRESULT CUIGroup_State::Render()
 {
     return S_OK;
+}
+
+void CUIGroup_State::Resset_Player()
+{
+    vector<CUI*>::iterator state = m_vecStates.begin();
+
+    dynamic_cast<CUI_StateHP*>(*state)->Resset_Player();
+    ++state;
+    dynamic_cast<CUI_StateEnergy*>(*state)->Resset_Player();
+    ++state;
+    dynamic_cast<CUI_StateEther*>(*state)->Resset_Player();
 }
 
 HRESULT CUIGroup_State::Create_UI()
@@ -96,17 +113,17 @@ HRESULT CUIGroup_State::Create_UI()
     // HP
     ZeroMemory(&pDesc, sizeof(pDesc));
     pDesc.eLevel = LEVEL_STATIC;
-    m_vecUI.emplace_back(dynamic_cast<CUI_StateHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateHP"), &pDesc)));
+    m_vecStates.emplace_back(dynamic_cast<CUI_StateHP*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateHP"), &pDesc)));
 
     // Energy 
     ZeroMemory(&pDesc, sizeof(pDesc));
     pDesc.eLevel = LEVEL_STATIC;
-    m_vecUI.emplace_back(dynamic_cast<CUI_StateEnergy*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateEnergy"), &pDesc)));
+    m_vecStates.emplace_back(dynamic_cast<CUI_StateEnergy*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateEnergy"), &pDesc)));
     
     // Ether 
     ZeroMemory(&pDesc, sizeof(pDesc));
     pDesc.eLevel = LEVEL_STATIC;
-    m_vecUI.emplace_back(dynamic_cast<CUI_StateEther*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateEther"), &pDesc)));
+    m_vecStates.emplace_back(dynamic_cast<CUI_StateEther*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateEther"), &pDesc)));
 
     // Soul 
     CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
@@ -149,4 +166,7 @@ void CUIGroup_State::Free()
 
     for (auto& pUI : m_vecUI)
         Safe_Release(pUI);
+
+    for (auto& pState : m_vecStates)
+        Safe_Release(pState);
 }

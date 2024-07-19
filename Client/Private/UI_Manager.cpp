@@ -124,6 +124,13 @@ void CUI_Manager::Update_Skill_Add()
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Skill_Add();
 }
 
+void CUI_Manager::Resset_Player()
+{
+	// Player를 참조 중인 녀석들의 값을 초기화
+	map<string, CUIGroup*>::iterator hud = m_mapUIGroup.find("HUD_State");
+	dynamic_cast<CUIGroup_State*>((*hud).second)->Resset_Player();
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

@@ -176,13 +176,13 @@ void CUI_LoadingCircle::Setting_Data()
 		m_wstrText = TEXT("              자칭 GEODESIAN이라는 자에 대해 알려진 것은 거의 없다.\n"
 			TEXT("                               그는 과학자라고도, 학자라고도 불린다.\n")
 			TEXT("그는 GEODESIC 게이트라는 복잡한 구조물의 창조를 인정할 수 있을 것인가?\n")
-			TEXT("                                   스스로를 창조자로 여길 것인가."));
+			TEXT("                                        스스로를 창조자로 여길 것인가."));
 	}
 	else if (1 == m_iTextNum)
 	{
 		m_wstrText = TEXT("                프로메테우스는 우주의 비밀을 풀어냈으며 모든 것을 깨우쳤다.\n"
 			TEXT("                               히프노스의 가장 먼 경치 너머까지도.\n")
-			TEXT("자신의 지식에 대한 사색에 잠긴 그녀는 주변 논리학자들에 대한 인식을 서서히 잃어갔다.\n"));
+			TEXT("자신의 지식에 대한 사색에 잠긴 그녀는 주변에 대한 인식을 서서히 잃어갔다.\n"));
 	}
 	else if (2 == m_iTextNum)
 	{

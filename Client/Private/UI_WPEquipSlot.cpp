@@ -81,6 +81,7 @@ void CUI_WPEquipSlot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pItemIcon)
 	{
+		m_pItemIcon->Update_Pos(m_fX - 3.f, m_fY - 6.f);
 		m_pItemIcon->Tick(fTimeDelta);
 	}
 }

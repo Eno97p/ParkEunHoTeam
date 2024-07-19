@@ -33,7 +33,7 @@ HRESULT CNpc::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Player"));
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
 

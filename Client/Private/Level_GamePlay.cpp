@@ -12,6 +12,8 @@
 #include "UI_FadeInOut.h"
 #include "Level_Loading.h"
 
+
+#include"Item.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -226,29 +228,21 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_LandObjects()
 {
-	CLandObject::LANDOBJ_DESC		LandObjDesc{};
-	
-	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-	LandObjDesc.mWorldMatrix._41 = 140.f;
-	LandObjDesc.mWorldMatrix._42 = 528.f;
-	LandObjDesc.mWorldMatrix._43 = 98.f;
-	LandObjDesc.mWorldMatrix._44 = 1.f;
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
+	//	return E_FAIL;
 
 
-	CGameObject::GAMEOBJECT_DESC desc;
-	desc.pModelName = "Prototype_Component_Model_Hachoir";
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
-		return E_FAIL;
+	//CGameObject::GAMEOBJECT_DESC desc;
+	//desc.pModelName = "Prototype_Component_Model_Hachoir";
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
+	//	return E_FAIL;
 	
 	//desc.pModelName = "Prototype_Component_Model_SmashingPillar";
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
@@ -256,13 +250,28 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 
 
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
+	//LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
+	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
+	//	return E_FAIL;
 
+	_float3 fPosArray[] = {
+	_float3(85.f, 523.f, 98.f),
+	_float3(95.f, 523.f, 98.f),
+
+	};
+
+	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+
+	CItem::ITEM_DESC desc;
+	for (int i = 0; i < arraySize; i++)
+	{
+		desc.vPosition = fPosArray[i];
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+			return E_FAIL;
+	}
 
 
 
@@ -271,21 +280,24 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_GamePlay::Ready_Layer_Player(const wstring & strLayerTag)
 {
-	pLandObjDesc->mWorldMatrix._41 = 140.f;
-	pLandObjDesc->mWorldMatrix._42 = 528.f;
-	pLandObjDesc->mWorldMatrix._43 = 98.f;
-	pLandObjDesc->mWorldMatrix._44 = 1.f;
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = 75.f;
+	landObjDesc.mWorldMatrix._42 = 523.f;
+	landObjDesc.mWorldMatrix._43 = 98.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
+	
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Player"), &landObjDesc)))
 		return E_FAIL;
 
 
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 {
 	//for (size_t i = 0; i < 10; i++)
 	//{
@@ -305,10 +317,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	//pLandObjDesc->mWorldMatrix._43 = 98.f;
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
 	//	return E_FAIL;
+	CLandObject::LANDOBJ_DESC landObjDesc;
 
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
+		return E_FAIL;*/
 
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
@@ -318,19 +331,22 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag, CLandOb
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
 	//	return E_FAIL;
 
-
+	landObjDesc.mWorldMatrix._41 = 160.f;
+	landObjDesc.mWorldMatrix._42 = 528.f;
+	landObjDesc.mWorldMatrix._43 = 98.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
 
 	////for (size_t i = 0; i < 5; i++)
 	//{
 
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 			return E_FAIL;
 
 	//}
 
 	// Npc
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

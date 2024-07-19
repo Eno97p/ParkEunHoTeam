@@ -101,11 +101,16 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 
 void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
-	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))		//Test PSW
+	{
+		Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
-	if(OwnDesc->SuperDesc.IsBloom)
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+		if (OwnDesc->SuperDesc.IsBloom)
+			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+	}
+
 }
 
 HRESULT CParticle_Rect::Render()

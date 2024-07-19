@@ -127,8 +127,11 @@ void CPlayer::Tick(_float fTimeDelta)
 	m_fParticleAcctime -= fTimeDelta;
 	if (m_fParticleAcctime < 0.f)
 	{
-		EFFECTMGR->Generate_Particle(10,_float4(0.f,2.f,0.f,1.f), this);
 		m_fParticleAcctime = 0.1f;
+		_float4 vParticlePos;
+		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vParticlePos.y += 1.f;
+		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
 
 }

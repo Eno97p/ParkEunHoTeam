@@ -41,6 +41,9 @@ public:
 	virtual HRESULT Render() override;
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 	CCollider* Get_Collider() { return m_pColliderCom; }
+	_float3 Get_Collider_Center() {
+		return m_pColliderCom->Get_Center();
+ }
 	const _float4x4* Get_Part_Mat() { return &m_WorldMatrix; }
 	virtual _float Get_LengthFromCamera() override;
 

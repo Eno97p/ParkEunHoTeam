@@ -50,10 +50,13 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 	if (m_pVIBufferCom->Check_Instance_Dead())
 		m_pGameInstance->Erase(this);
 
+
 	if (m_pTarget != nullptr)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTarget->Get_State(CTransform::STATE_POSITION));
 	}
+
+
 
 	switch (OwnDesc->SuperDesc.eType)
 	{

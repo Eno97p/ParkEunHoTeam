@@ -37,7 +37,12 @@ _uint CAnimation::Set_CurKeyFrame(_uint iChannelIdx)
 
 _bool CAnimation::Check_CurDuration(_double CurDuration)
 {
-	return (CurDuration > m_PrevPosition && CurDuration < m_CurrentPosition);
+	_double PrePositionRatio = m_PrevPosition / m_Duration;
+	_double	CurrentPositionRatio = m_CurrentPosition / m_Duration;
+
+	return (CurDuration > PrePositionRatio && CurDuration < CurrentPositionRatio);
+
+	//return (CurDuration > m_PrevPosition && CurDuration < m_CurrentPosition);
 }
 
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)

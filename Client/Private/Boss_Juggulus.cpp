@@ -553,6 +553,8 @@ NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 	}
 }
 
+
+
 CBoss_Juggulus* CBoss_Juggulus::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CBoss_Juggulus*		pInstance = new CBoss_Juggulus(pDevice, pContext);

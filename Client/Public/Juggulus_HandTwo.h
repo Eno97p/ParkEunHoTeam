@@ -42,6 +42,7 @@ private:
 	NodeStates Scoop(_float fTimeDelta);
 	NodeStates Spawn(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
+	NodeStates Activate(_float fTimeDelta);
 	void Add_Hp(_int iValue);
 
 private:
@@ -61,6 +62,8 @@ private:
 	_float m_fAttackDelay = 2.f;
 	_uint m_iAttackCount = 0;
 	_bool m_bScoop = true;
+
+
 
 public:
 	HRESULT Add_Components();

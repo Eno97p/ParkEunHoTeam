@@ -21,8 +21,13 @@ HRESULT CMouse::Initialize_Prototype()
 
 HRESULT CMouse::Initialize(void* pArg)
 {
-	//ShowCursor(false);
-	ShowCursor(true);
+#ifdef _DEBUG
+ShowCursor(true);
+#else
+ShowCursor(false);
+
+#endif // _DEBUG
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

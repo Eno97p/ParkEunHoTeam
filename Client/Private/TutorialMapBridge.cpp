@@ -26,9 +26,9 @@ HRESULT CTutorialMapBridge::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
-	m_World = *m_pTransformCom->Get_WorldFloat4x4();
+	/*m_World = *m_pTransformCom->Get_WorldFloat4x4();*/
 	m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(93.6f, 524.f, 97.3f, 1.f));
 	return S_OK;
 }
 
@@ -80,7 +80,7 @@ void CTutorialMapBridge::Tick(_float fTimeDelta)
 
 	}
 
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_World));
+	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_World));
 	if (!m_bPhysxOff)
 	{
 		m_pPhysXCom->Tick(m_pTransformCom->Get_WorldFloat4x4());
@@ -155,9 +155,9 @@ HRESULT CTutorialMapBridge::Add_Components(void* pArg)
 
 	CPhysXComponent::PHYSX_DESC		PhysXDesc{};
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
-	PhysXDesc.fBoxProperty = _float3(100.f, 1.f, 4.f);				//박스 크기
+	PhysXDesc.fBoxProperty = _float3(100.f, 0.5f, 4.f);				//박스 크기
 	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix,  XMMatrixRotationX(XMConvertToRadians(0.0f))* XMMatrixTranslation(40.f, 0.f, 0.f));  //오프셋 위치
+	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix,  XMMatrixRotationX(XMConvertToRadians(0.0f))* XMMatrixTranslation(40.f, -3.f, 0.f));  //오프셋 위치
 	
 
 	PhysXDesc.pComponent = m_pModelCom;

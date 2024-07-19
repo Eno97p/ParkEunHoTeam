@@ -125,6 +125,7 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
                 // 가장 가까운 몬스터가 없거나 거리가 40보다 큰 경우
                 if (m_pTarget != nullptr)
                 {
+                    //dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
                     Safe_Release(m_pTarget);
                     m_pTarget = nullptr;
                 }
@@ -136,6 +137,7 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
             // 이미 타겟이 락온된 상태에서 다시 클릭한 경우
             if (m_pTarget != nullptr)
             {
+                dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
                 Safe_Release(m_pTarget);
                 m_pTarget = nullptr;
             }

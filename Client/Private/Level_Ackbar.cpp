@@ -72,6 +72,9 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
+	_vector vEye = { 0.f, 151.6f, -10.f, 1.f };
+	_vector vFocus = { 0.f, 0.f, 0.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.95f);
 
 	return S_OK;
 }
@@ -120,15 +123,30 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("LEVEL ACKBAR"));
 //#endif
 
-	if (m_pGameInstance->Key_Down(DIK_F5))
+	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, TEXT("Layer_UI"));
+	if (!objs.empty())
+	{
+		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
+		{
+			if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
+			{
+				MSG_BOX("Failed to Open Level JUGGLAS");
+				return;
+			}
+		}
+
+
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F6))
 	{
 		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
 		{
 			MSG_BOX("Failed to Open Level JUGGLAS");
 			return;
 		}
-	}
 
+	}
 }
 
 void CLevel_Ackbar::Late_Tick(_float fTimeDelta)

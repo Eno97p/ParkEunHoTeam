@@ -19,6 +19,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	HRESULT Render_LightDepth();
 	virtual HRESULT Render_Mirror() override;
 
 public:

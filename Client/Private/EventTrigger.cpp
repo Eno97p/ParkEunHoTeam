@@ -7,6 +7,7 @@
 
 #include "SideViewCamera.h"
 #include "UI_FadeInOut.h"
+#include "LandObject.h"
 
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
@@ -90,9 +91,14 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				pDesc.isFadeIn = false;
 					pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
-				if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-					return;
-
+					list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+					if (objs.empty())
+					{
+						{
+							if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+								return;
+						}
+					}
 			}
 			else
 			{
@@ -125,17 +131,17 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 					//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));`
 					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 6));
-					//CMap_Element::MAP_ELEMENT_DESC pDesc = {};
-					//_float4x4 vMat;
-					//XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
-					//pDesc.iInstanceCount = 1;
+					CMap_Element::MAP_ELEMENT_DESC pDesc = {};
+					_float4x4 vMat;
+					XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
+					pDesc.iInstanceCount = 1;
 
-					//pDesc.WorldMats.emplace_back(&vMat);
-					//pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle3");
-					//m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+					pDesc.WorldMats.emplace_back(&vMat);
+					pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle3");
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
 
-					//pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle4");
-					//m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+					pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle4");
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
 				}
 				break;
 				case TRIG_VIEWCHANGE_TTOS:
@@ -150,8 +156,17 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_ASCEND_ELEVATOR:
 				{
-					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
+					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("wdeddeddsdddswdddddd e ee e  eeessssssssssssssaaaaaaaaaaaaaaaaaaaaaaa wwae asdw sawssssdeasda ee   w w a ssssssssssssde essssssssssssssssssssddsd eee   sd  e  eeesssdeaw ea sdw sawsddddddddddddddddddddddsddddda wawaadw e e ee  edadeaeadddaasw a"), 8));
 					dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
+				
+					CLandObject::LANDOBJ_DESC desc{};
+					desc.mWorldMatrix._41 = -8.3f;
+					desc.mWorldMatrix._42 = 3.5f;
+					desc.mWorldMatrix._43 = -2.4f;
+					desc.mWorldMatrix._44 = 1.f;
+
+					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), &desc)))
+						return;
 
 				}
 				break;
@@ -200,7 +215,7 @@ HRESULT CEventTrigger::Add_Components(void* pArg)
 	vScale.z = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
 
 	// 기본 크기에 스케일 적용
-	ColliderDesc.vExtents = _float3(1.f * vScale.x, 1.f * vScale.y, 1.f * vScale.z);
+	ColliderDesc.vExtents = _float3(3.f * vScale.x, 3.f * vScale.y, 3.f * vScale.z);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),

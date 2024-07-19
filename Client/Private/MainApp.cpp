@@ -237,7 +237,7 @@ HRESULT CMainApp::Render()
 
 	if (m_fTimeAcc >= 1.f)
 	{
-		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
+		//wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
 		//Terst
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;

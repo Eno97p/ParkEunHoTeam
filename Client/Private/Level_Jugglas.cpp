@@ -303,8 +303,6 @@ HRESULT CLevel_Jugglas::Ready_Layer_Monster(const wstring& strLayerTag, CLandObj
 	pDesc->eLevel = LEVEL_JUGGLAS;*/
 
 	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Boss_Juggulus"), pLandObjDesc)))
-	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
 	//	return E_FAIL;

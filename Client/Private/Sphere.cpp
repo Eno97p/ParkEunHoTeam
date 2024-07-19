@@ -112,6 +112,12 @@ void CSphere::Late_Tick(_float fTimeDelta)
 	{
 		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
 		{
+			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+			_vector vPos = Mat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			EFFECTMGR->Generate_Particle(14, vStartPos);
+			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			m_pJuggulus->Add_Hp(-10);
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
 			m_pGameInstance->Erase(this);

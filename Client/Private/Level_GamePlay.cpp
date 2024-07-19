@@ -96,6 +96,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 
 	}*/
+
+
 	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
 	if (!objs.empty())
 	{
@@ -111,6 +113,14 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_F6))
+	{
+		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
+		{
+			MSG_BOX("Failed to Open Level JUGGLAS");
+			return;
+		}
+	}
 	
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
@@ -273,21 +283,21 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
 	//	return E_FAIL;
 
-	_float3 fPosArray[] = {
-	_float3(85.f, 523.f, 98.f),
-	_float3(95.f, 523.f, 98.f),
+	//_float3 fPosArray[] = {
+	//_float3(85.f, 523.f, 98.f),
+	//_float3(95.f, 523.f, 98.f),
 
-	};
+	//};
 
-	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+	//_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
 
-	CItem::ITEM_DESC desc;
-	for (int i = 0; i < arraySize; i++)
-	{
-		desc.vPosition = fPosArray[i];
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
-			return E_FAIL;
-	}
+	//CItem::ITEM_DESC desc;
+	//for (int i = 0; i < arraySize; i++)
+	//{
+	//	desc.vPosition = fPosArray[i];
+	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+	//		return E_FAIL;
+	//}
 
 
 
@@ -353,7 +363,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//{
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
-	landObjDesc.mWorldMatrix._41 = 160.f;
+	landObjDesc.mWorldMatrix._41 = 167.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;

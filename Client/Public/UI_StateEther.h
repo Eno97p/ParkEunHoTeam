@@ -19,7 +19,11 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Resset_Player();
+
 private:
+	class CPlayer* m_pPlayer = { nullptr };
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

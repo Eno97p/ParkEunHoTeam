@@ -20,8 +20,11 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Resset_Player();
+
 private:
 	vector<CUI*>			m_vecUI;
+	vector<CUI*>			m_vecStates;
 
 private:
 	HRESULT					Create_UI();

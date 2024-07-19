@@ -30,8 +30,10 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-	HRESULT			Create_ItemIcon();
+	HRESULT			Create_ItemIcon(_bool isWeapon);
 	HRESULT			Delete_ItemIcon();
+
+	HRESULT			Change_ItemIcon(_bool isWeapon, _uint iSlotIdx);
 
 private:
 	SLOT_NUM			m_eSlotNum = { NUM_END };

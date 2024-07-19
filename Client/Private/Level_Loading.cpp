@@ -70,18 +70,21 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				break;
 			case LEVEL_GAMEPLAY:
 				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				m_pUI_Manager->Resset_Player();
 				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;
 				break;
 			case LEVEL_ACKBAR:
 				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				m_pUI_Manager->Resset_Player();
 				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Ackbar::Create(m_pDevice, m_pContext))))
 					return;
 				break;
 			case LEVEL_JUGGLAS:
 				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				m_pUI_Manager->Resset_Player();
 				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Jugglas::Create(m_pDevice, m_pContext))))
 					return;

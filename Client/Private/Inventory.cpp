@@ -45,7 +45,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_CATHARSIS;
-
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI 출력
@@ -56,6 +55,14 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_EquipWeapon((*weapon), 0);
 	(*weapon)->Set_isEquip(true);
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+
+
+	// Skill에 추가
+	pDesc.eItemName = CItemData::ITEMNAME_ETHERBOLT;
+	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
+	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
 	return S_OK;
 }
@@ -82,6 +89,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 
 	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
 
+	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+
 	return S_OK;
 }
 
@@ -105,9 +115,11 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	pUIDesc.wszTextureName = (*item)->Get_TextureName();
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
-
 	// UI도
 	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
 
 	return S_OK;
 }
@@ -157,6 +169,22 @@ HRESULT CInventory::Delete_EquipWeapon(_uint iEquipSlotIdx)
 	return S_OK;
 }
 
+HRESULT CInventory::Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx)
+{
+	m_arrEquipSkill[iEquipSlotIdx] = pItemData;
+
+	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
+
+	// HUD
+
+	return S_OK;
+}
+
+HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
+{
+	return S_OK;
+}
+
 void CInventory::Free()
 {
 	for (auto& pItemData : m_vecItem)
@@ -164,6 +192,9 @@ void CInventory::Free()
 
 	for (auto& pWeaponItem : m_vecWeapon)
 		Safe_Release(pWeaponItem);
+
+	for (auto& pSkillItem : m_vecSkill)
+		Safe_Release(pSkillItem);
 
 	for (auto& pArtefact : m_vecArtefact)
 		Safe_Release(pArtefact);

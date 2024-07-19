@@ -100,6 +100,12 @@ void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
 	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
 }
 
+void CUI_Manager::Update_Quick_InvSlot_Add(_uint iSlotIdx)
+{
+	map<string, CUIGroup*>::iterator quickInvSlot = m_mapUIGroup.find("Quick");
+	dynamic_cast<CUIGroup_Quick*>((*quickInvSlot).second)->Update_InvSlot_Add(iSlotIdx);
+}
+
 void CUI_Manager::Update_Weapon_Add()
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
@@ -116,6 +122,30 @@ void CUI_Manager::Update_EquipWeapon_Delete(_uint iEquipSlotIdx)
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
+}
+
+void CUI_Manager::Update_Skill_Add()
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Skill_Add();
+}
+
+void CUI_Manager::Update_EquipSkill_Add(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	//dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSl
+}
+
+void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx)
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+}
+
+void CUI_Manager::Resset_Player()
+{
+	// Player를 참조 중인 녀석들의 값을 초기화
+	map<string, CUIGroup*>::iterator hud = m_mapUIGroup.find("HUD_State");
+	dynamic_cast<CUIGroup_State*>((*hud).second)->Resset_Player();
 }
 
 HRESULT CUI_Manager::Initialize()

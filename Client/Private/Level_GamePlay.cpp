@@ -107,6 +107,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 				return;
 			}
 		}
+
+
 	}
 
 	

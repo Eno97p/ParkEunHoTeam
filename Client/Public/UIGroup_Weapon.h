@@ -36,6 +36,7 @@ public:
 	void			Update_Weapon_Add();
 	void			Update_EquipSlot_Add(_uint iEquipSlotIdx);
 	void			Update_EquipSlot_Delete(_uint iEquipSlotIdx);
+	void			Update_Skill_Add();
 	
 	void			Update_Slot_EquipSign(_bool isEquip);
 

@@ -20,6 +20,8 @@ public:
 	virtual HRESULT	Render() override;
 	void Set_Ratio(_float fRatio) { m_fCurrentRatio = fRatio; }
 
+	void			Resset_Player();
+
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	_float m_fCurrentRatio = 1.f;

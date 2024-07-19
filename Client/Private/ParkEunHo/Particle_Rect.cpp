@@ -50,10 +50,13 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 	if (m_pVIBufferCom->Check_Instance_Dead())
 		m_pGameInstance->Erase(this);
 
+
 	if (m_pTarget != nullptr)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTarget->Get_State(CTransform::STATE_POSITION));
 	}
+
+
 
 	switch (OwnDesc->SuperDesc.eType)
 	{
@@ -101,11 +104,16 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 
 void CParticle_Rect::Late_Tick(_float fTimeDelta)
 {
-	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f))		//Test PSW
+	{
+		Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
-	if(OwnDesc->SuperDesc.IsBloom)
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+		if (OwnDesc->SuperDesc.IsBloom)
+			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+	}
+
 }
 
 HRESULT CParticle_Rect::Render()

@@ -145,6 +145,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_HIT)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_float4 ParticlePos = { m_WorldMatrix._41,m_WorldMatrix._42 + 1.f,m_WorldMatrix._43,1.f };
+
+			EFFECTMGR->Generate_Particle(11, ParticlePos);
+
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 13;
 		fAnimSpeed = 0.8f;
@@ -179,6 +186,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_LAND)
 	{
+
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 17;
 		fAnimSpeed = 0.6f;
@@ -217,6 +226,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01))
+		{
+			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
+			PartPos.y = m_WorldMatrix._42;
+			EFFECTMGR->Generate_Particle(2, PartPos);
+			EFFECTMGR->Generate_Particle(16, PartPos, nullptr, XMVectorZero(), 0.f, XMVectorSet(m_WorldMatrix._31, m_WorldMatrix._32, m_WorldMatrix._33, 0.f));
+			PartPos.y += 0.2f;
+			EFFECTMGR->Generate_Particle(21, PartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 209;
 		fAnimSpeed = 0.8f;
@@ -526,6 +544,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
 			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+			EFFECTMGR->Generate_Particle(20, vStartPos);
+			
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 165;
@@ -544,6 +564,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
 			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+			EFFECTMGR->Generate_Particle(20, vStartPos);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
@@ -562,6 +583,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
 			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Look);
+			EFFECTMGR->Generate_Particle(20, vStartPos);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 6;
@@ -580,6 +602,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
 			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Right);
+			EFFECTMGR->Generate_Particle(20, vStartPos);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 8;
@@ -598,6 +621,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			XMStoreFloat4(&vStartPos, vPos);
 			vStartPos.y += 1.f;
 			EFFECTMGR->Generate_Particle(12, vStartPos, nullptr, XMVectorZero(), 0.f, Right);
+			EFFECTMGR->Generate_Particle(20, vStartPos);
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 166;
@@ -606,6 +630,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_DEAD)
 	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_float4 ParticlePos = { m_WorldMatrix._41,m_WorldMatrix._42 + 1.f,m_WorldMatrix._43,1.f };
+
+			EFFECTMGR->Generate_Particle(11, ParticlePos);
+
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 9;
 		fAnimSpeed = 1.f;

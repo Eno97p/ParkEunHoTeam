@@ -208,6 +208,11 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
+
+		_float4 ParticlePs = XM3TO4(m_pHitColliderCom->Get_Center());
+		EFFECTMGR->Generate_Particle(1, ParticlePs, nullptr);
+		EFFECTMGR->Generate_Particle(2, ParticlePs, nullptr);
+		EFFECTMGR->Generate_Particle(7, ParticlePs);
 		Add_Hp(-10);
 		break;
 	default:
@@ -270,6 +275,9 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 
 	if (m_fColliderActiveTime < 0.f)
 	{
+		_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
+		_float4 vStartPos = { vGetCenter.x,vGetCenter.y,vGetCenter.z, 1.f };
+		EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 		m_bIsActive = true;
 		m_fColliderActiveTime = 0.5f;
 	}
@@ -321,6 +329,9 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 		}
 		else if (m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0)
 		{
+			_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
+			_float4 vStartPos = { vGetCenter.x,vGetCenter.y ,vGetCenter.z, 1.f };
+			EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			m_bIsActive = true;
 		}
 
@@ -422,15 +433,7 @@ void CJuggulus_HandOne::Change_Animation(_float fTimeDelta)
 		}
 
 
-		if (m_iPastAnimIndex == 6)
-		{
-			if (m_pModelCom->Check_CurDuration(0.01f))
-			{
-				_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
-				_float4 vStartPos = { vGetCenter.x,vGetCenter.y + 2.f,vGetCenter.z, 1.f };
-				EFFECTMGR->Generate_Distortion(4, vStartPos);
-			}
-		}
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		fAnimSpeed = 2.f;

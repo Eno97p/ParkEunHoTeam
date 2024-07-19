@@ -636,6 +636,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 	return SUCCESS;
 }
 
+
+
 void CMantari::Add_Hp(_int iValue)
 {
 	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));

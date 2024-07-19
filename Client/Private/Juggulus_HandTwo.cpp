@@ -254,6 +254,8 @@ NodeStates CJuggulus_HandTwo::Idle(_float fTimeDelta)
 	return SUCCESS;
 }
 
+
+
 void CJuggulus_HandTwo::Add_Hp(_int iValue)
 {
 	*m_pCurHp = min(*m_pMaxHp, max(0, *m_pCurHp + iValue));

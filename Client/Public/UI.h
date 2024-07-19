@@ -36,6 +36,7 @@ public:
 	_bool			Get_RenderAnimFinished() { return m_isRenderAnimFinished; }
 	void			Set_RenderAnimFinised(_bool isRenderAnimFinished) { m_isRenderAnimFinished = isRenderAnimFinished; }
 
+	_bool			Get_isSceneChange() { return m_bisSceneChange; }
 public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
@@ -62,6 +63,7 @@ protected:
 
 	LEVEL				m_eLevel = { LEVEL_END };
 
+	_bool				m_bisSceneChange = false;
 protected:
 	void		Setting_Position();
 

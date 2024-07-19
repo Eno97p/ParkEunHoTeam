@@ -191,7 +191,9 @@ HRESULT CLoader::Loading_Map()
 
 		CloseHandle(hFile);
 
+#ifdef _DEBUG
 		MSG_BOX("Tutorial PhysX Data Loaded");
+#endif
 	}
 	break;
 	case LEVEL_ACKBAR: //JUGGLAS CASTLE
@@ -237,7 +239,10 @@ HRESULT CLoader::Loading_Map()
 
 		CloseHandle(hFile);
 
+
+#ifdef _DEBUG
 		MSG_BOX("Ackbar PhysX Data Loaded");
+#endif
 	}
 	break;
 	case LEVEL_JUGGLAS: //JUGGLAS CASTLE
@@ -283,7 +288,9 @@ HRESULT CLoader::Loading_Map()
 
 		CloseHandle(hFile);
 
+#ifdef _DEBUG
 		MSG_BOX("Jugglas PhysX Data Loaded");
+#endif
 	}
 	break;
 	}
@@ -1765,6 +1772,16 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 
 #pragma endregion DECAL
 
+#pragma region Npc
+	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Npc_Rlya"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Myosis/NPC_Rlya.fbx", PreTransformMatrix))))
+		return E_FAIL;
+#pragma endregion Npc
+
+
+
+
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Navigation"),
 	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/Navigation.dat")))))
@@ -1957,6 +1974,10 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		return E_FAIL;
 
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RuinsPilar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/RuinsPilar/RuinsPilar.fbx", PreTransformMatrix))))
+
+		return E_FAIL;
 	//JUGGLAS
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_TutorialMap"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", PreTransformMatrix))))

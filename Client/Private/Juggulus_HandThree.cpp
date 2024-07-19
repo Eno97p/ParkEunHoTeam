@@ -152,6 +152,7 @@ HRESULT CJuggulus_HandThree::Add_Nodes()
 	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
+
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CJuggulus_HandThree::Idle, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_CoolDown_Priority(TEXT("Attack_Selector"), TEXT("AttackCool"), 15.f, 15.f);
@@ -230,6 +231,7 @@ NodeStates CJuggulus_HandThree::Idle(_float fTimeDelta)
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
+
 
 void CJuggulus_HandThree::Add_Hp(_int iValue)
 {

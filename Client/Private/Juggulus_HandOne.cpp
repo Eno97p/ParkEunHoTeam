@@ -79,7 +79,8 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 
 	Change_Animation(fTimeDelta);
 
-	m_pBehaviorCom->Update(fTimeDelta);
+
+		m_pBehaviorCom->Update(fTimeDelta);
 
 	m_pHitColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 	m_pAttackColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -199,7 +200,7 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 		m_pHitColliderCom->Reset();
 		m_eColltype = CCollider::COLL_NOCOLL;
 	}
-	else if(m_bIsActive)
+	else if (m_bIsActive)
 	{
 		m_eColltype = m_pHitColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
@@ -207,15 +208,6 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
-		//_matrix vMat = m_pTransformCom->Get_WorldMatrix();
-		//_float3 vOffset = { 0.f,1.f,0.f };
-		//_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
-		//_float4 vResult;
-		//XMStoreFloat4(&vResult, vStartPos);
-		//_int Random = RandomSign();
-		//EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
-		//EFFECTMGR->Generate_Particle(1, vResult, nullptr);
-		//EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		Add_Hp(-10);
 		break;
 	default:
@@ -227,6 +219,11 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 
 NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 {
+	if (XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vParentPos)) > 50.f)
+	{
+		return FAILURE;
+	}
+
 	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_CHASE)
 	{
 		m_eDisolveType = TYPE_DECREASE;
@@ -236,7 +233,7 @@ NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 	{
 		m_iState = STATE_CHASE;
 	}
-	
+
 	if (m_iState == STATE_CHASE && m_eDisolveType != TYPE_DECREASE)
 	{
 		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
@@ -261,10 +258,16 @@ NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 
 NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 {
+	if (XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vParentPos)) > 50.f)
+	{
+		return FAILURE;
+	}
+
 	if (m_iAttackCount == 0 && m_fColliderActiveTime != 0.5f)
 	{
 		m_fColliderActiveTime -= fTimeDelta;
 	}
+
 	if (m_fColliderActiveTime < 0.f)
 	{
 		m_bIsActive = true;
@@ -281,8 +284,8 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				{
 					m_iAttackCount++;
 				}
-				
-				if(m_iAttackCount != 3 || m_fDamageTime < 0.f)
+
+				if (m_iAttackCount != 3 || m_fDamageTime < 0.f)
 				{
 					m_fAttackDelay = 2.f;
 					m_eDisolveType = TYPE_DECREASE;
@@ -292,7 +295,7 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 					m_fDamageTime -= fTimeDelta;
 				}
 			}
-			else if(m_eDisolveType == TYPE_INCREASE)
+			else if (m_eDisolveType == TYPE_INCREASE)
 			{
 				if (m_iAttackCount >= 3)
 				{
@@ -313,13 +316,14 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 			else if (m_eDisolveType == TYPE_DECREASE)
 			{
 				m_bIsActive = false;
+				m_fColliderActiveTime = 0.5f;
 			}
 		}
-		else if(m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0)
+		else if (m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0)
 		{
 			m_bIsActive = true;
 		}
-		
+
 		return RUNNING;
 	}
 	else return FAILURE;
@@ -331,6 +335,7 @@ NodeStates CJuggulus_HandOne::Idle(_float fTimeDelta)
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
+
 
 void CJuggulus_HandOne::Add_Hp(_int iValue)
 {

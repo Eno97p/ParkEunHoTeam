@@ -57,6 +57,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_bParry && !m_bParrying)
+	{
+		fSlowValue = 1.f;
+	}
+
 	if (!m_pCameraTransform)
 	{
 		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));

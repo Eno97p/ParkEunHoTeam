@@ -62,7 +62,6 @@ public:
 			m_fHeight = 0.f;
 			m_fZoomDistance = 0.f;
 		}
-
 	}
 	void Set_Revolution_Time(float fTime)
 	{

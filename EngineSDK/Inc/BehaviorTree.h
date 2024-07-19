@@ -25,6 +25,8 @@ public:
 	void Add_Condition(const wstring& parents_name, const wstring& nodename, _bool* bCondition = nullptr);	//Condition노드 추가
 	void Add_Inverter(const wstring& parents_name, const wstring& nodename);								//Inverter 추가
 	void Add_CoolDown(const wstring& parents_name, const wstring& nodename, _float _fCooltime = 0.f);
+	void Add_CoolDown_Priority(const wstring& parents_name, const wstring& nodename, _float _fCooltime = 0.f, _float _firstCool = 0.f);
+
 
 	void			Update(_float fTimeDelta);
 	void			Set_Activate(_bool _bool) { m_bActivate = _bool; }

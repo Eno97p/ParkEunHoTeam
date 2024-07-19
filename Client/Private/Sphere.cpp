@@ -119,6 +119,7 @@ void CSphere::Late_Tick(_float fTimeDelta)
 	}
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CSphere::Render()
@@ -135,10 +136,32 @@ HRESULT CSphere::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(9);
 
 		m_pModelCom->Render(i);
 	}
+	return S_OK;
+}
+
+HRESULT CSphere::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(9);
+
+		m_pModelCom->Render(i);
+	}
+
 	return S_OK;
 }
 

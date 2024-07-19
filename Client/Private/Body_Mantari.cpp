@@ -152,7 +152,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.3);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.5f && m_fDamageTiming < 0.7f)
+		if (m_fDamageTiming > 0.6f && m_fDamageTiming < 0.8f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -222,7 +222,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 1.1f && m_fDamageTiming < 1.3f)
+		if (m_fDamageTiming > 1.4f && m_fDamageTiming < 1.5f)
 		{
 			m_pWeapon->Set_Active();
 		}

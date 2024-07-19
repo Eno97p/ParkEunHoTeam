@@ -14,8 +14,8 @@ BEGIN(Client)
 
 class CMantari final : public CMonster
 {
-#define DETECTRANGE 30.f
-#define JUMPATTACKRANGE 20.f
+#define DETECTRANGE 20.f
+#define JUMPATTACKRANGE 15.f
 #define ATTACKRANGE 5.f
 
 public:

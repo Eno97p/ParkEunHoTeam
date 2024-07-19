@@ -205,6 +205,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 210;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 0.7f)
+		{
+			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{

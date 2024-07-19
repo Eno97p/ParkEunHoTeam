@@ -98,6 +98,12 @@ HRESULT CUI_StateEnergy::Render()
 	return S_OK;
 }
 
+void CUI_StateEnergy::Resset_Player()
+{
+	Safe_Release(m_pPlayer);
+	m_pPlayer = nullptr;
+}
+
 HRESULT CUI_StateEnergy::Add_Components()
 {
 	/* For. Com_VIBuffer */

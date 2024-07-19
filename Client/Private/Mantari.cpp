@@ -109,8 +109,9 @@ void CMantari::Tick(_float fTimeDelta)
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
 	m_pUI_HP->Tick(fTimeDelta);
 
-	m_pTargetLock->Tick(fTimeDelta);
-}
+	if(m_bIsLocked)
+		m_pTargetLock->Tick(fTimeDelta);
+}	
 
 void CMantari::Late_Tick(_float fTimeDelta)
 {
@@ -124,7 +125,11 @@ void CMantari::Late_Tick(_float fTimeDelta)
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
-	m_pTargetLock->Late_Tick(fTimeDelta);
+	if (m_bIsLocked)
+	{
+		m_pTargetLock->Late_Tick(fTimeDelta);
+	}
+
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -533,7 +538,8 @@ NodeStates CMantari::Detect(_float fTimeDelta)
 {
 	if (m_fLengthFromPlayer > DETECTRANGE)
 	{
-		return FAILURE;
+		m_iState = STATE_IDLE;
+		return SUCCESS;
 	}
 	else if (m_fLengthFromPlayer > JUMPATTACKRANGE)
 	{
@@ -631,6 +637,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
+
+
 
 void CMantari::Add_Hp(_int iValue)
 {

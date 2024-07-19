@@ -26,10 +26,13 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	GAMEOBJECT_DESC gameObjDesc = *(GAMEOBJECT_DESC*)pArg;
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(gameObjDesc.mWorldMatrix._41, gameObjDesc.mWorldMatrix._42, gameObjDesc.mWorldMatrix._43, 1.f)); //초기 위치 설정))
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
@@ -50,7 +53,7 @@ void CCircleSphere::Tick(_float fTimeDelta)
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	if (m_fShootDelay > 0.f)
 	{
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(3.f));	
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(3.f));	
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 	else
@@ -63,6 +66,12 @@ void CCircleSphere::Tick(_float fTimeDelta)
 		}
 		if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
 		{
+			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+			_vector vPos = Mat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			EFFECTMGR->Generate_Particle(14, vStartPos);
+			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			// 여기서 폭발 이펙트 재생
 			m_pGameInstance->Erase(this);
 		}
@@ -97,6 +106,12 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 			else
 			{
 				m_pPlayer->PlayerHit(10);
+				_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+				_vector vPos = Mat.r[3];
+				_float4 vStartPos;
+				XMStoreFloat4(&vStartPos, vPos);
+				EFFECTMGR->Generate_Particle(14, vStartPos);
+				EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 				// 여기서 폭발 이펙트 재생
 				m_pGameInstance->Erase(this);
 			}
@@ -108,12 +123,19 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
 		{
 			m_pJuggulus->Add_Hp(-10);
+			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+			_vector vPos = Mat.r[3];
+			_float4 vStartPos;
+			XMStoreFloat4(&vStartPos, vPos);
+			EFFECTMGR->Generate_Particle(14, vStartPos);
+			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			// 여기서 폭발 이펙트 재생
 			m_pGameInstance->Erase(this);
 		}
 	}
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CCircleSphere::Render()
@@ -130,7 +152,29 @@ HRESULT CCircleSphere::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(9);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CCircleSphere::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(9);
 
 		m_pModelCom->Render(i);
 	}

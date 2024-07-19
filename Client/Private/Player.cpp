@@ -57,6 +57,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_bParry && !m_bParrying)
+	{
+		fSlowValue = 1.f;
+	}
+
 	if (!m_pCameraTransform)
 	{
 		list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));
@@ -127,8 +132,11 @@ void CPlayer::Tick(_float fTimeDelta)
 	m_fParticleAcctime -= fTimeDelta;
 	if (m_fParticleAcctime < 0.f)
 	{
-		EFFECTMGR->Generate_Particle(10,_float4(0.f,2.f,0.f,1.f), this);
 		m_fParticleAcctime = 0.1f;
+		_float4 vParticlePos;
+		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vParticlePos.y += 1.f;
+		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
 
 }
@@ -262,7 +270,9 @@ void CPlayer::PlayerHit(_float fValue)
 
 void CPlayer::Parry_Succeed()
 {
-	dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
+	vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
+	dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomIn();
+	//dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
 	_float4x4 WeaponMat = *static_cast<CPartObject*>(m_PartObjects[1])->Get_Part_Mat();
 	_float4 vParticlePos = { WeaponMat._41,WeaponMat._42,WeaponMat._43,1.f };
 	_float4 PlayerPos;
@@ -407,7 +417,8 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		// 일정거리 이하일 때 카운터 발동
 		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION))) < 4.f)
 		{
-			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomIn();
+			vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
+			dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomIn();
 			m_bParrying = false;
 			m_bStaminaCanDecrease = true;
 			// 스테미나 조절할 것
@@ -433,8 +444,8 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
-
-			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
+			vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
+			dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomOut();
 
 			m_fSlowDelay = 0.f;
 
@@ -514,8 +525,8 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 		{
 
 			m_fParryFrame = 0.f;
-
-			dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera())->Set_ZoomOut();
+			vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
+			dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomOut();
 			m_bStaminaCanDecrease = true;
 			if (!m_bDisolved_Yaak)
 			{

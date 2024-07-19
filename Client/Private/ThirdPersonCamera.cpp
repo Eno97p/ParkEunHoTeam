@@ -66,15 +66,16 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
             list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
 
             float closestDistance = FLT_MAX;
-            CTransform* closestMonsterTransform = nullptr;
+            CGameObject* closestMonster = nullptr;
 
             for (auto& monster : monsters)
             {
-                CTransform* pMonsterTransform = dynamic_cast<CTransform*>(monster->Get_Component(TEXT("Com_Transform")));
-                if (pMonsterTransform == nullptr)
+                CMonster* pMonster = dynamic_cast<CMonster*>(monster);
+                if (pMonster == nullptr)
                     continue;
 
-                _vector vMonsterPos = pMonsterTransform->Get_State(CTransform::STATE_POSITION);
+
+                _vector vMonsterPos = pMonster->Get_MonsterPos();
 
                 // 몬스터가 화면 내에 있는지 확인
                 if (m_pGameInstance->isIn_WorldFrustum(vMonsterPos, 5.f))
@@ -94,33 +95,39 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
                     if (weightedDistance < closestDistance)
                     {
                         closestDistance = weightedDistance;
-                        closestMonsterTransform = pMonsterTransform;
+                        closestMonster = monster;
                     }
                 }
             }
 
-            // 가장 가까운 몬스터까지의 거리가 10 이하인 경우에만 타겟 설정
-            if (closestMonsterTransform != nullptr && closestDistance <= 40.0f)
+            // 가장 가까운 몬스터까지의 거리가 40 이하인 경우에만 타겟 설정
+            if (closestMonster != nullptr && closestDistance <= 40.0f)
             {
                 // 이전 타겟이 있다면 레퍼런스 카운트 감소
-                if (m_pTargetTrans != nullptr)
-                    Safe_Release(m_pTargetTrans);
+                if (m_pTarget != nullptr)
+                    Safe_Release(m_pTarget);
 
-                // 새로운 타겟의 Transform 컴포넌트 설정 및 레퍼런스 카운트 증가
-                m_pTargetTrans = closestMonsterTransform;
-                Safe_AddRef(m_pTargetTrans);
+                // 새로운 타겟 설정 및 레퍼런스 카운트 증가
+                m_pTarget = closestMonster;
+                Safe_AddRef(m_pTarget);
 
                 // 타겟 락온
-                _vector vTargetPos = m_pTargetTrans->Get_State(CTransform::STATE_POSITION);
-                TargetLock_On(vTargetPos);
+                CMonster* pMonster = dynamic_cast<CMonster*>(m_pTarget);
+                if (pMonster != nullptr)
+                {
+                    _vector vTargetPos = pMonster->Get_MonsterPos();
+                    TargetLock_On(vTargetPos);
+                    pMonster->Set_Lock(true);
+                }
             }
             else
             {
-                // 가장 가까운 몬스터가 없거나 거리가 10보다 큰 경우
-                if (m_pTargetTrans != nullptr)
+                // 가장 가까운 몬스터가 없거나 거리가 40보다 큰 경우
+                if (m_pTarget != nullptr)
                 {
-                    Safe_Release(m_pTargetTrans);
-                    m_pTargetTrans = nullptr;
+                    //dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
+                    Safe_Release(m_pTarget);
+                    m_pTarget = nullptr;
                 }
                 TargetLock_Off();
             }
@@ -128,10 +135,11 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
         else
         {
             // 이미 타겟이 락온된 상태에서 다시 클릭한 경우
-            if (m_pTargetTrans != nullptr)
+            if (m_pTarget != nullptr)
             {
-                Safe_Release(m_pTargetTrans);
-                m_pTargetTrans = nullptr;
+                dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
+                Safe_Release(m_pTarget);
+                m_pTarget = nullptr;
             }
             TargetLock_Off();
         }
@@ -153,6 +161,13 @@ void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
 
 void CThirdPersonCamera::Tick(_float fTimeDelta)
 {
+    if (!m_bCamActivated)
+    {
+        m_pTransformCom->Set_WorldMatrix(dynamic_cast<CTransform*>(m_pGameInstance->Get_MainCamera()->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix());
+        return;
+    }
+
+
     if (m_pPlayerTrans == nullptr)
         return;
     if (m_bIsFirstUpdate)
@@ -174,19 +189,24 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
     // 타겟 락온 상태 처리
     else if (m_bIsTargetLocked)
     {
-        if (m_pTargetTrans != nullptr)
+        if (m_pTarget != nullptr)
         {
-           _vector vTP = m_pTargetTrans->Get_State(CTransform::STATE_POSITION);
-           if (40.f < XMVectorGetX(XMVector4Length(XMLoadFloat4(&m_vCameraPosition) - vTP)))
-           {
-               Safe_Release(m_pTargetTrans);
-               m_pTargetTrans = nullptr;
-               TargetLock_Off();
-           }
-           else
-           {
-               XMStoreFloat4(&m_vLockedTargetPos, vTP);
-           }
+            CMonster* pMonster = dynamic_cast<CMonster*>(m_pTarget);
+            if (pMonster != nullptr)
+            {
+                _vector vTP = pMonster->Get_MonsterPos();
+                if (40.f < XMVectorGetX(XMVector4Length(XMLoadFloat4(&m_vCameraPosition) - vTP)) || (m_pTarget->Get_Dead()))
+                {
+                    dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
+                    Safe_Release(m_pTarget);
+                    m_pTarget = nullptr;
+                    TargetLock_Off();
+                }
+                else
+                {
+                    XMStoreFloat4(&m_vLockedTargetPos, vTP);
+                }
+            }
         }
         TargetLockView(fTimeDelta);
     }
@@ -251,7 +271,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
     }
 
   
-
+   
     // 카메라 위치 설정
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
     m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
@@ -277,7 +297,7 @@ void CThirdPersonCamera::Get_LockOnCamPos(const _float4& vPlayerPosition, _float
 
     // 카메라 위치 계산 (플레이어 뒤쪽)
     XMStoreFloat4(pOutCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * fAdjustedDistance);
-    pOutCameraPosition->y += m_fHeightOffset * 1.7f;
+    pOutCameraPosition->y += m_fHeightOffset * 2.5f;
 
     // LookAt 위치 계산 (플레이어와 타겟의 중간점)
     if (m_bZoomIn)
@@ -487,7 +507,10 @@ void CThirdPersonCamera::ParryingZoomOut(_float fTimeDelta)
 
 void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
 {
-    if (!m_bCamActivated) return;
+    if (!m_bCamActivated)
+    {
+        return;
+    }
 
 
    
@@ -592,7 +615,7 @@ void CThirdPersonCamera::TargetLockView(_float fTimeDelta)
     XMStoreFloat4(&vIdealCameraPos, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * fAdjustedDistance);
 
     // 카메라 높이 조정
-    vIdealCameraPos.y += m_fHeightOffset;
+    vIdealCameraPos.y += m_fHeightOffset * 1.75f;
 
     // 현재 카메라 위치에서 이상적인 위치로 부드럽게 이동
     XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
@@ -799,7 +822,8 @@ CGameObject* CThirdPersonCamera::Clone(void* pArg)
 void CThirdPersonCamera::Free()
 {
     Safe_Release(m_pPlayerTrans);
-    Safe_Release(m_pTargetTrans);
+    //Safe_Release(m_pTargetTrans);
+    Safe_Release(m_pTarget);
 
     __super::Free();
 }

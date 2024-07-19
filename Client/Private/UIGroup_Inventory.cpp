@@ -100,7 +100,6 @@ HRESULT CUIGroup_Inventory::Render()
 
 void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
 {
-	// Create_ItemIcon
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;

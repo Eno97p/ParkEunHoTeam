@@ -27,8 +27,8 @@ private:
 	HRESULT Ready_Layer_Effect(const wstring& strLayerTag);
 	HRESULT Ready_Layer_BackGround(const wstring& strLayerTag);
 	HRESULT Ready_LandObjects();
-	HRESULT Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
-	HRESULT Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
+	HRESULT Ready_Layer_Player(const wstring& strLayerTag);
+	HRESULT Ready_Layer_Monster(const wstring& strLayerTag);
 
 	HRESULT Load_LevelData(const _tchar* pFilePath);
 
@@ -44,6 +44,7 @@ private:
 	_uint m_iCamSize = 0;
 //#endif
 
+	_bool m_bFadeOutDead = false;
 public:
 	static CLevel_GamePlay* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

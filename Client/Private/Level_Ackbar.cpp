@@ -17,6 +17,10 @@
 #include "Level_Loading.h"
 #include "FireEffect.h"
 
+#include"NPC_Rlya.h"
+#include"Item.h"
+
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -27,8 +31,7 @@ CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pCont
 
 HRESULT CLevel_Ackbar::Initialize()
 {
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+
 
 
 
@@ -43,19 +46,35 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
-	
+
+	if (FAILED(Ready_Item()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Ackbar.bin"));
 	Load_Data_Effects();
 
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
 
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+	pDesc.isFadeIn = true;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+		return E_FAIL;
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
+	_vector vEye = { 0.f, 151.6f, -10.f, 1.f };
+	_vector vFocus = { 0.f, 0.f, 0.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.95f);
 
 	return S_OK;
 }
@@ -74,9 +93,18 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	}
 
 
-	
+	if (m_pGameInstance->Key_Down(DIK_9))
+	{
+		m_pGameInstance->LightOn(0);
+	}
+	if (m_pGameInstance->Key_Down(DIK_0))
+	{
+		m_pGameInstance->LightOff(0);
+	}
 
-
+	m_pGameInstance->Update_LightPos(0,
+		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, 
+			TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_State(CTransform::STATE_POSITION));
 
 //#ifdef _DEBUG
 	//카메라 전환 ~ 키
@@ -95,15 +123,30 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("LEVEL ACKBAR"));
 //#endif
 
-	if (m_pGameInstance->Key_Down(DIK_F5))
+	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, TEXT("Layer_UI"));
+	if (!objs.empty())
+	{
+		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
+		{
+			if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
+			{
+				MSG_BOX("Failed to Open Level JUGGLAS");
+				return;
+			}
+		}
+
+
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_F6))
 	{
 		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
 		{
 			MSG_BOX("Failed to Open Level JUGGLAS");
 			return;
 		}
-	}
 
+	}
 }
 
 void CLevel_Ackbar::Late_Tick(_float fTimeDelta)
@@ -115,6 +158,18 @@ HRESULT CLevel_Ackbar::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	LIGHT_DESC			LightDesc{};
+	
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+	
+	m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->LightOff(0);
 
 	Load_Lights();
 
@@ -192,7 +247,7 @@ HRESULT CLevel_Ackbar::Ready_Layer_Camera(const wstring & strLayerTag)
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
 
-	 CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
+	/* CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
 
 	 pSVCDesc.fSensor = 0.1f;
 
@@ -208,7 +263,7 @@ HRESULT CLevel_Ackbar::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);
 	 pSVCDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
-		 return E_FAIL;
+		 return E_FAIL;*/
 
 	return S_OK;
 }
@@ -246,32 +301,60 @@ HRESULT CLevel_Ackbar::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 HRESULT CLevel_Ackbar::Ready_LandObjects()
 {
-	CLandObject::LANDOBJ_DESC		LandObjDesc{};
+	/*CLandObject::LANDOBJ_DESC		LandObjDesc= {};
 	
 	LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));*/
 
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
+
+
+	 //Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Ackbar::Ready_Layer_Player(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
+HRESULT CLevel_Ackbar::Ready_Item()
 {
-	pLandObjDesc->mWorldMatrix._41 = 101.1f;
-	pLandObjDesc->mWorldMatrix._42 = 63.5f;
-	pLandObjDesc->mWorldMatrix._43 = 4.4f;
-	pLandObjDesc->mWorldMatrix._44 = 1.f;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
+	_float3 fPosArray[] = {
+	_float3(166.3f, 14.7f, 13.0f),
+	_float3(193.0f, 21.3f, -25.3f),
+	_float3(-4.4f, 27.0f, -122.7f),
+	_float3(102.0f, 18.5f, -110.0f),
+	_float3(191.0f, 8.8f, -46.0f)
+	};
+	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
+
+	for (int i = 0; i < arraySize; i++)
+	{
+		CItem::ITEM_DESC desc = {};
+		desc.vPosition = fPosArray[i];
+		
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+			return E_FAIL;
+	}
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_Ackbar::Ready_Layer_Player(const wstring & strLayerTag)
+{
+	CLandObject::LANDOBJ_DESC LandObjDesc = {};
+
+	LandObjDesc.mWorldMatrix._41 = 101.1f;
+	LandObjDesc.mWorldMatrix._42 = 63.5f;
+	LandObjDesc.mWorldMatrix._43 = 4.4f;
+	LandObjDesc.mWorldMatrix._44 = 1.f;
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Player"), &LandObjDesc)))
 		return E_FAIL;
 
 
@@ -308,10 +391,15 @@ HRESULT CLevel_Ackbar::Ready_Layer_Monster(const wstring& strLayerTag, CLandObje
 
 
 
+
 	////for (size_t i = 0; i < 5; i++)
 	//{
-
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
+		CLandObject::LANDOBJ_DESC LandObjDesc = {};
+		LandObjDesc.mWorldMatrix._41 = 101.1f;
+		LandObjDesc.mWorldMatrix._42 = 63.5f;
+		LandObjDesc.mWorldMatrix._43 = 4.4f;
+		LandObjDesc.mWorldMatrix._44 = 1.f;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &LandObjDesc)))
 			return E_FAIL;
 	//}
 
@@ -577,8 +665,10 @@ void CLevel_Ackbar::Load_Lights()
 	}
 
 	CloseHandle(hFile);
-	MSG_BOX("Lights Data Load");
 
+#ifdef _DEBUG
+	MSG_BOX("Lights Data Load");
+#endif
 	return;
 }
 

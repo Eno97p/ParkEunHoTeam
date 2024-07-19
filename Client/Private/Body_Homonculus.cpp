@@ -180,7 +180,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	}
 	else if (*m_pState == CHomonculus::STATE_EXPLOSION)
 	{
-		if (m_pModelCom->Check_CurDuration(8.51f))
+		if (m_pModelCom->Check_CurDuration(0.71))
 		{
 			_float4 vStartPos = { m_WorldMatrix._41,m_WorldMatrix._42 ,m_WorldMatrix._43 ,1.f };
 			EFFECTMGR->Generate_Distortion(4, vStartPos);
@@ -236,6 +236,15 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	}
 	else if (*m_pState == CHomonculus::STATE_DOWNATTACK)
 	{
+		if (m_pModelCom->Check_CurDuration(0.27))
+		{
+			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
+			PartPos.y = m_WorldMatrix._42;
+			EFFECTMGR->Generate_Particle(17, PartPos);
+			EFFECTMGR->Generate_Particle(18, PartPos);
+		}
+
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 0.7f;
@@ -245,9 +254,21 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+
+
 	}
 	else if (*m_pState == CHomonculus::STATE_FULLATTACK)
 	{
+
+		if (m_pModelCom->Check_CurDuration(0.40) || m_pModelCom->Check_CurDuration(0.81))
+		{
+			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
+			PartPos.y = m_WorldMatrix._42;
+			EFFECTMGR->Generate_Particle(17, PartPos);
+			EFFECTMGR->Generate_Particle(18, PartPos);
+		}
+
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 4;
 		fAnimSpeed = 1.f;

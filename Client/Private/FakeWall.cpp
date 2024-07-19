@@ -1,6 +1,9 @@
 #include "FakeWall.h"
 #include "GameInstance.h"
 
+
+#include"Mantari.h"
+
 CFakeWall::CFakeWall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -47,11 +50,35 @@ void CFakeWall::Priority_Tick(_float fTimeDelta)
 
 void CFakeWall::Tick(_float fTimeDelta)
 {
+	list<CGameObject*> ObjectLis;
+	ObjectLis= m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+	if (!ObjectLis.empty())
+	{
+		for (auto& iter : ObjectLis)
+		{
+			if (typeid(*iter) == typeid(CMantari))
+			{
+				if (iter->Get_Dead())
+					m_pGameInstance->Erase(this);
+				else
+				{
+					int temp = 0;
+				}
+
+			}
+		}
+
+	}
+
+	int temp = 0;
 }
 
 void CFakeWall::Late_Tick(_float fTimeDelta)
 {
+#ifdef _DEBUG
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
+#endif
+
 }
 
 HRESULT CFakeWall::Render()

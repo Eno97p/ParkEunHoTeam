@@ -18,7 +18,6 @@ public:
 		_uint						iSlotIdx;
 		UISORT_PRIORITY				eUISort;
 		SLOT_TYPE					eSlotType;
-		CUIGroup_Weapon::TAB_TYPE	eTabType;
 	}UI_SLOT_DESC;
 
 private:
@@ -41,8 +40,12 @@ public:
 	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
 	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
 	HRESULT			Create_ItemIcon_Weapon();
+	HRESULT			Create_ItemIcon_Skill();
 
-	void			Change_TabType(CUIGroup_Weapon::TAB_TYPE eTabType);
+	HRESULT			Change_ItemIcon_Weapon();
+	HRESULT			Change_ItemIcon_Skill();
+
+	void			Resset_Data();
 
 private:
 	_bool						m_isEquip = { false };
@@ -58,8 +61,6 @@ private:
 	CUI_ItemIcon*				m_pItemIcon = { nullptr };
 	CUI_Slot_EquipSign*			m_pEquipSign = { nullptr };
 
-	CUIGroup_Weapon::TAB_TYPE	m_eTabType = { CUIGroup_Weapon::TAB_END };
-
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
@@ -69,8 +70,6 @@ private:
 
 	void	Open_SubPage();
 	void	Render_Font();
-
-	void	Update_ItemIcon_TabChange();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

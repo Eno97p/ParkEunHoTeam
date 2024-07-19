@@ -68,6 +68,9 @@ private:
 	_float m_fColliderActiveTime = 0.5f;
 	_int m_icount = 0;
 
+
+
+
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
@@ -75,8 +78,8 @@ public:
 	void					Change_Animation(_float fTimeDelta);
 
 public:
-	static CJuggulus_HandOne*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
+	static CJuggulus_HandOne* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void				Free() override;
 };
 

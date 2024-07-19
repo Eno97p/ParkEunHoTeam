@@ -16,4 +16,5 @@
 (15) GeodesiqueGate
 (16) CastleJugulus_Plan1_05.004
 (17) CastleJugulus_Plan1_05.005
-(18) light_0
+(18) CastleJugulus_Plan1_05.006
+(19) light_0

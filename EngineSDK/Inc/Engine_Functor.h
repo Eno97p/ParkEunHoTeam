@@ -170,6 +170,12 @@ namespace Engine
     }
 
 
+    inline XMFLOAT4 XM3TO4(const XMFLOAT3& float3, float w = 1.0f)
+    {
+        return XMFLOAT4(float3.x, float3.y, float3.z, w);
+    }
+
+
     //void CreatePhysXProcess(LPCWSTR  applicationName)
     //{
     //    STARTUPINFO si = {};

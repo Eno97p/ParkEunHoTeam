@@ -20,7 +20,7 @@ class CMonster abstract : public CLandObject
 public:
 	typedef struct Mst_Desc : public LANDOBJ_DESC
 	{
-		LEVEL		eLevel;
+		LEVEL		eLevel = LEVEL::LEVEL_END;
 	}MST_DESC;
 
 protected:

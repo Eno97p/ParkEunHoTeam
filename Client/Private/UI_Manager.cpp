@@ -100,6 +100,12 @@ void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
 	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
 }
 
+void CUI_Manager::Update_Quick_InvSlot_Add(_uint iSlotIdx)
+{
+	map<string, CUIGroup*>::iterator quickInvSlot = m_mapUIGroup.find("Quick");
+	dynamic_cast<CUIGroup_Quick*>((*quickInvSlot).second)->Update_InvSlot_Add(iSlotIdx);
+}
+
 void CUI_Manager::Update_Weapon_Add()
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");

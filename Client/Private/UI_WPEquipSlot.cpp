@@ -115,7 +115,7 @@ HRESULT CUI_WPEquipSlot::Render()
 	return S_OK;
 }
 
-HRESULT CUI_WPEquipSlot::Create_ItemIcon()
+HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
@@ -125,11 +125,23 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon()
 	pDesc.fSizeY = 64.f;
 	pDesc.eUISort = TWELFTH;
 
-	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-	for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
-		++weapon;
+	if (isWeapon)
+	{
+		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
+			++weapon;
 
-	pDesc.wszTexture = (*weapon)->Get_TextureName();
+		pDesc.wszTexture = (*weapon)->Get_TextureName();
+	}
+	else
+	{
+		vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
+			++skill;
+
+		pDesc.wszTexture = (*skill)->Get_TextureName();
+	}
+
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	return S_OK;
@@ -254,30 +266,35 @@ void CUI_WPEquipSlot::Setting_XY()
 
 void CUI_WPEquipSlot::Click_Event()
 {
-	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();
-	
+	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();	
+
+	_uint iCurSlotIdx = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx();
+
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-	for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
-		++weapon;
-
-	// skill에 대한 변수도 필요
-	
-
-	if (isAlphaBG_On) // 장착 >>> 지금 무조건 weapon으로만 활성화 되어있음 skill에도 적용해주어야 함
+	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+	for (size_t i = 0; i < iCurSlotIdx; ++i)
 	{
-		if (!(*weapon)->Get_isEquip())
+		++weapon;
+		++skill;
+	}
+
+	if (isAlphaBG_On) // 장착
+	{
+		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
-			// Tab Type 받아와서 분기 처리   Add_EquipSkill
-			if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+			if (!(*weapon)->Get_isEquip())
 			{
 				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 				(*weapon)->Set_isEquip(true);
 				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
-			else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		}
+		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		{
+			if (!(*skill)->Get_isEquip())
 			{
-				CInventory::GetInstance()->Add_EquipSkill((*weapon), m_eSlotNum);
-				(*weapon)->Set_isEquip(true);
+				CInventory::GetInstance()->Add_EquipSkill((*skill), m_eSlotNum);
+				(*skill)->Set_isEquip(true);
 				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
 		}
@@ -285,9 +302,9 @@ void CUI_WPEquipSlot::Click_Event()
 		// AlphaBG 비활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
 	}
-	else // 장착 해제
+	else // 장착 해제 >>> 여기 오류 있음 skill을 해제하고 나면 다시 장착 x
 	{
-		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
+		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함. 그 외에도 좀 꼬임
 		CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
 
 		// Equip Slot 비활성화

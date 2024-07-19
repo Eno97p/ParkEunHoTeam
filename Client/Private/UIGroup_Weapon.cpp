@@ -149,7 +149,14 @@ void CUIGroup_Weapon::Update_EquipSlot_Add(_uint iEquipSlotIdx)
 	for (size_t i = 0; i < iEquipSlotIdx; ++i)
 		++equipslot;
 
-	(*equipslot)->Create_ItemIcon();
+	if (TAB_L == m_eTabType)
+	{
+		(*equipslot)->Create_ItemIcon(true);
+	}
+	else if (TAB_R == m_eTabType)
+	{
+		(*equipslot)->Create_ItemIcon(false);
+	}
 }
 
 void CUIGroup_Weapon::Update_EquipSlot_Delete(_uint iEquipSlotIdx)

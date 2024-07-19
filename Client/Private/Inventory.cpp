@@ -89,6 +89,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 
 	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
 
+	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+
 	return S_OK;
 }
 
@@ -112,9 +115,11 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	pUIDesc.wszTextureName = (*item)->Get_TextureName();
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
-
 	// UI도
 	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
 
 	return S_OK;
 }

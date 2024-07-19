@@ -118,6 +118,12 @@ void CUI_Manager::Update_EquipWeapon_Delete(_uint iEquipSlotIdx)
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
 }
 
+void CUI_Manager::Update_Skill_Add()
+{
+	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_Skill_Add();
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

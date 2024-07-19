@@ -40,6 +40,7 @@ HRESULT CUI_WPEquipSlot::Initialize(void* pArg)
 	m_fSizeY = 170.6f;
 
 	Setting_Position();
+
 	Create_Frame();
 
 	return S_OK;
@@ -80,7 +81,6 @@ void CUI_WPEquipSlot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pItemIcon)
 	{
-		m_pItemIcon->Update_Pos(m_fX - 3.f, m_fY - 6.f);
 		m_pItemIcon->Tick(fTimeDelta);
 	}
 }
@@ -117,10 +117,9 @@ HRESULT CUI_WPEquipSlot::Render()
 HRESULT CUI_WPEquipSlot::Create_ItemIcon()
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
-
 	pDesc.eLevel = LEVEL_STATIC;
-	pDesc.fX = m_fX;
-	pDesc.fY = m_fY;
+	pDesc.fX = m_fX - 3.f;
+	pDesc.fY = m_fY - 6.f;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
 	pDesc.eUISort = TWELFTH;
@@ -139,6 +138,38 @@ HRESULT CUI_WPEquipSlot::Delete_ItemIcon()
 {
 	Safe_Release(m_pItemIcon);
 	m_pItemIcon = nullptr;
+
+	return S_OK;
+}
+
+HRESULT CUI_WPEquipSlot::Change_ItemIcon(_bool isWeapon, _uint iSlotIdx)
+{
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX - 3.f;
+	pDesc.fY = m_fY - 6.f;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = TWELFTH;
+
+	if (isWeapon)
+	{
+		if (nullptr != CInventory::GetInstance()->Get_EquipWeapon(iSlotIdx))
+		{
+			pDesc.wszTexture = CInventory::GetInstance()->Get_EquipWeapon(iSlotIdx)->Get_TextureName();
+
+			m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+		}
+	}
+	else
+	{
+		if (nullptr != CInventory::GetInstance()->Get_EquipSkill(iSlotIdx))
+		{
+			pDesc.wszTexture = CInventory::GetInstance()->Get_EquipSkill(iSlotIdx)->Get_TextureName();
+
+			m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+		}
+	}
 
 	return S_OK;
 }

@@ -40,6 +40,7 @@ public:
 	void				Update_Weapon_Add();
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);
 	void				Update_EquipWeapon_Delete(_uint iEquipSlotIdx);
+	void				Update_Skill_Add();
 
 private:
 	CGameInstance*			m_pGameInstance = { nullptr };

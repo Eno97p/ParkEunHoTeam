@@ -33,6 +33,8 @@ public:
 	HRESULT			Create_ItemIcon();
 	HRESULT			Delete_ItemIcon();
 
+	HRESULT			Change_ItemIcon(_bool isWeapon, _uint iSlotIdx);
+
 private:
 	SLOT_NUM			m_eSlotNum = { NUM_END };
 

@@ -45,7 +45,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_CATHARSIS;
-
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI 출력
@@ -56,6 +55,14 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_EquipWeapon((*weapon), 0);
 	(*weapon)->Set_isEquip(true);
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
+
+
+	// Skill에 추가
+	pDesc.eItemName = CItemData::ITEMNAME_ETHERBOLT;
+	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
+	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
 	return S_OK;
 }
@@ -164,6 +171,9 @@ void CInventory::Free()
 
 	for (auto& pWeaponItem : m_vecWeapon)
 		Safe_Release(pWeaponItem);
+
+	for (auto& pSkillItem : m_vecSkill)
+		Safe_Release(pSkillItem);
 
 	for (auto& pArtefact : m_vecArtefact)
 		Safe_Release(pArtefact);

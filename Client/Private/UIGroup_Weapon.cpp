@@ -162,6 +162,15 @@ void CUIGroup_Weapon::Update_EquipSlot_Delete(_uint iEquipSlotIdx)
 	(*equipslot)->Delete_ItemIcon();
 }
 
+void CUIGroup_Weapon::Update_Skill_Add()
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize() - 1; ++i)
+		++slot;
+
+	(*slot)->Create_ItemIcon_Skill();
+}
+
 void CUIGroup_Weapon::Update_Slot_EquipSign(_bool isEquip)
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
@@ -230,7 +239,6 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 			pDesc.fY = 200.f + (i * 76.f);
 			pDesc.fSizeX = 85.3f;
 			pDesc.fSizeY = 85.3f;
-			pDesc.eSlotType = CUI_Slot::SLOT_WEAPON; // Inv가 아니라 Weapon을 만들어야 예외처리 가능
 			pDesc.eUISort = NINETH;
 			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
@@ -291,14 +299,59 @@ HRESULT CUIGroup_Weapon::Create_Tab()
 void CUIGroup_Weapon::Change_Tab()
 {
 	if (TAB_L == m_eTabType)
+	{
+		// Slot들 리셋
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+		{
+			(*slot)->Resset_Data();
+			++slot;
+		}
+
+		// Skill의 값들로 Slot 채워주기 (Equip Slot에 값이 있다면 이것 또한 넣어주어야 함)
+		slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+		{
+			(*slot)->Change_ItemIcon_Skill();
+		}
+
+		// Equip Slot 리셋하고 채워넣기
+		vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+		for (size_t i = 0; i < 3; ++i)
+		{
+			(*equipslot)->Delete_ItemIcon();
+			(*equipslot)->Change_ItemIcon(false, i);
+		}
+
 		m_eTabType = TAB_R;
+	}
 	else if (TAB_R == m_eTabType)
+	{
+		// Slot들 리셋
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+		{
+			(*slot)->Resset_Data();
+			++slot;
+		}
+
+		slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+		{
+			(*slot)->Change_ItemIcon_Weapon();
+		}
+
+		// Equip Slot 리셋하고 채워넣기
+		vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+		for (size_t i = 0; i < 3; ++i)
+		{
+			(*equipslot)->Delete_ItemIcon();
+			(*equipslot)->Change_ItemIcon(true, i);
+			++equipslot;
+		}
+
 		m_eTabType = TAB_L;
-
-	for (auto& pSlot : m_vecSlot)
-		pSlot->Change_TabType(m_eTabType);
-
-	// Equip도 
+	}
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

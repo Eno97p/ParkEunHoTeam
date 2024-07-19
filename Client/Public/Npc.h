@@ -17,7 +17,7 @@ public:
 
 	typedef struct Npc_Desc : public LANDOBJ_DESC
 	{
-		LEVEL		eLevel;
+		LEVEL		eLevel = LEVEL::LEVEL_END;
 	}NPC_DESC;
 
 protected:

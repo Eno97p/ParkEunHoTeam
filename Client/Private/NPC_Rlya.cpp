@@ -27,18 +27,21 @@ HRESULT CNPC_Rlya::Initialize_Prototype()
 
 HRESULT CNPC_Rlya::Initialize(void* pArg)
 {
-	NPC_DESC* pDesc = static_cast<NPC_DESC*>(pArg);
 
-	pDesc->fSpeedPerSec = 3.f; // 수정 필요
-	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	if (FAILED(__super::Initialize(pDesc)))
+	NPC_DESC Desc;
+
+	Desc.fSpeedPerSec = 3.f; // 수정 필요
+	Desc.fRotationPerSec = XMConvertToRadians(90.0f);
+	Desc.eLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
+
+	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(160.f, 522.f, 98.f, 1.f)); // Test
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(277.f, 8.6f, -25.8f, 1.f)); // Test
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -68,7 +71,7 @@ void CNPC_Rlya::Tick(_float fTimeDelta)
 		Key_Input();
 	}
 
-	m_pTransformCom->BillBoard_Y();
+	//m_pTransformCom->BillBoard_Y();
 }
 
 void CNPC_Rlya::Late_Tick(_float fTimeDelta)

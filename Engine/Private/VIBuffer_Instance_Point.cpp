@@ -60,24 +60,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 #pragma endregion
 
-#pragma region INDEX_BUFFER 
-	m_BufferDesc.ByteWidth = m_iIndexStride * m_iNumIndices;
-	m_BufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_BufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_BufferDesc.CPUAccessFlags = 0;
-	m_BufferDesc.MiscFlags = 0;
-	m_BufferDesc.StructureByteStride = 0;
 
-	_ushort* pIndices = new _ushort[m_iNumIndices];
-	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
-
-	m_InitialData.pSysMem = pIndices;
-
-	if (FAILED(__super::Create_Buffer(&m_pIB)))
-		return E_FAIL;
-
-	Safe_Delete_Array(pIndices);
-#pragma endregion
 
 
 #pragma region INSTANCE_BUFFER

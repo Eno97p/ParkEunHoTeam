@@ -350,6 +350,7 @@ void CPhysXComponent_Character::Set_Position(_vector vPos)
 	m_pController->setFootPosition(vPosition);
 }
 
+
 _float CPhysXComponent_Character::Get_LengthFromGround()
 {
 	PxExtendedVec3 vFootPosition = m_pController->getFootPosition();
@@ -368,6 +369,7 @@ _float CPhysXComponent_Character::Get_LengthFromGround()
 	}
 	else return 100.f;
 }
+
 
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {

@@ -397,6 +397,11 @@ void CModel::Set_LerpTime(_double LerpTime)
 	m_Animations[m_AnimDesc.iAnimIndex]->Set_LerpTime(LerpTime);
 }
 
+void CModel::Setting_StartTime(_double StartPos)
+{
+	m_Animations[m_AnimDesc.iAnimIndex]->Setting_StartPos(StartPos);
+}
+
 vector<string> CModel::Get_BoneNameVec()
 {
 	vector<string> _Names;

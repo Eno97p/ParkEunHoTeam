@@ -89,6 +89,8 @@ HRESULT CToolObj::Initialize(void* pArg)
 	if (FAILED(Create_DepthStencilStates()))
 		return E_FAIL;
 
+	//m_pModelCom->Setting_StartTime(_double(rand() % 10) * 0.1);
+
 	return S_OK;
 }
 

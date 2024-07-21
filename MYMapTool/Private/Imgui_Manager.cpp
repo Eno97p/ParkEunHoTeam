@@ -177,7 +177,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("ANIM MODEL", &m_bIsAnimModel);
         ImGui::Checkbox("DECO OBJECT", &m_bIsDecoObject);
 
-        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger", "EnvEffects"};
+        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger", "EnvEffects", "Traps"};
         static int Layer_current = 0;
         ImGui::Combo("Layer", &Layer_current, Layers, IM_ARRAYSIZE(Layers));
         m_iLayerIdx = Layer_current;
@@ -468,7 +468,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "Facade5", "Facade6",
             "Facade7", "Facade8",
             "Facade9", "Facade10",
-
+            "TreeC",
             "RuinsPillar", "AckbarHouseLarge",
             "AckbarHouseSmall",  "AckbarHouseSwamp",
             "AckbarHouseRoofLarge",
@@ -486,7 +486,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "s" };
+                                        "Elevator", "Trap Hachoir" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -503,6 +503,17 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_EnvEffects[] = { "Fire", "Dust" };
         ImGui::ListBox("###Obj", &item_current, items_EnvEffects, IM_ARRAYSIZE(items_EnvEffects)); // item_current 변수에 선택 값 저장
+        break;
+    }
+    break;
+    case LAYER_TRAP:
+    {
+        const char* items_Traps[] = { "Hachoir", "SmashingPillar" };
+        ImGui::ListBox("###Obj", &item_current, items_Traps, IM_ARRAYSIZE(items_Traps)); // item_current 변수에 선택 값 저장
+
+        ImGui::SliderFloat("X##TimeOffset", &m_fTrapTimeOffset, 0.0f, 1.0f);
+
+
         break;
     }
     break;

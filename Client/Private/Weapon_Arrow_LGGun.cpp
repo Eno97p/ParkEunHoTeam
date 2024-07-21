@@ -76,8 +76,8 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 				
 				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				EFFECTMGR->Generate_Particle(5, fPos);
-				m_bIsParried = true;
 				m_pPlayer->Parry_Succeed();
+				m_bIsParried = true;
 				m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(180.f));
 			}
 			else

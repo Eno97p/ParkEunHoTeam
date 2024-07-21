@@ -42,6 +42,37 @@ void CUI_StateEther::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateEther::Tick(_float fTimeDelta)
 {
+	// 현재 : Player가 없으면 현재 레벨의 플레이어를 받아와서 할당함 > 레벨 넘어가면 참조 중인 플레이어가 있기 때문에(댕글링 포인터) 해당 값을 못 받아오는 이슈 있음
+
+	if (!m_pPlayer)
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+		Safe_AddRef(m_pPlayer);
+	}
+	else
+	{
+		m_fCurrentRatio = m_pPlayer->Get_MpRatio();
+	}
+
+	// 체력 감소
+	if (m_fCurrentRatio < m_fPastRatio)
+	{
+		m_fPastRatio -= fTimeDelta * 0.2f;
+		if (m_fCurrentRatio > m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
+	}
+	// 체력 증가
+	else if (m_fCurrentRatio > m_fPastRatio)
+	{
+		m_fPastRatio += fTimeDelta * 0.2f;
+		if (m_fCurrentRatio < m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
+	}
 }
 
 void CUI_StateEther::Late_Tick(_float fTimeDelta)
@@ -54,7 +85,14 @@ HRESULT CUI_StateEther::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(2);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -63,8 +101,8 @@ HRESULT CUI_StateEther::Render()
 
 void CUI_StateEther::Resset_Player()
 {
-	//Safe_Release(m_pPlayer);
-	//m_pPlayer = nullptr;
+	Safe_Release(m_pPlayer);
+	m_pPlayer = nullptr;
 }
 
 HRESULT CUI_StateEther::Add_Components()

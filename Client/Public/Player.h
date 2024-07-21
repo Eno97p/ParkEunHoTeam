@@ -16,7 +16,7 @@ BEGIN(Client)
 
 class CPlayer final : public CLandObject
 {
-#define	CLONEDELAY 0.1f
+#define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
 #define WALKSPEED 3.f
@@ -61,8 +61,9 @@ public:
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	_bool Get_Parry() { return m_bParrying; }
 	void Parry_Succeed();
-	void Set_ParriedMonsterTransform(CTransform* pTransform) { m_pParriedMonsterTransform = pTransform; }
-
+	void Set_ParriedMonsterFloat4x4(const _float4x4* pMatrix) { m_pParriedMonsterFloat4x4 = pMatrix; }
+	_bool Get_Cloaking() { return m_bIsCloaking; }
+	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
 
 private:
 	HRESULT Add_Nodes();
@@ -101,6 +102,7 @@ private:
 
 #pragma region 상태제어 bool변수
 	_bool										m_bJumping = false;
+	_bool										m_bFalling = false;
 	_bool										m_bDoubleJumping = false;
 	_bool										m_bLAttacking = false;
 	_bool										m_bRAttacking = false;
@@ -114,6 +116,7 @@ private:
 	_bool										m_bDisolved_Weapon = false;
 	_bool										m_bDisolved_Yaak = false;
 	_bool										m_bStaminaCanDecrease = true;
+	_bool										m_bIsCloaking = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
@@ -128,7 +131,7 @@ private:
 	_float										m_fParryFrame = 0.f;
 	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
-	CTransform* m_pParriedMonsterTransform = { nullptr };
+	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr };
 	CTransform* m_pCameraTransform = { nullptr };
 
 #pragma region 플레이어 스탯

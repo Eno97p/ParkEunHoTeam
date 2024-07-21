@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "BlendObject.h"
 
 BEGIN(Engine)
 class CShader;
@@ -15,7 +15,7 @@ END
 BEGIN(Client)
 class CPlayer;
 
-class CItem final : public CGameObject
+class CItem final : public CBlendObject
 {
 public:
 	struct ITEM_DESC : public CGameObject::GAMEOBJECT_DESC

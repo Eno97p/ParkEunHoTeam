@@ -52,6 +52,10 @@ private:
 	_float4x4							m_WorldMatrix = {};
 	_float4x4							m_ViewMatrix = {};
 	_float4x4							m_ProjMatrix = {};
+	_float4x4 m_Mat = { 1.f, 0.f, 0.f, 0.f,
+					  0.f, 1.f, 0.f, 0.f,
+					  0.f, 0.f, 1.f, 0.f,
+					  -0, -0, -0, 1.f };
 
 	ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
 	ID3D11DepthStencilView* m_pReflectionDepthStencilView = { nullptr };

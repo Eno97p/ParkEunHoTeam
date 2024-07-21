@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "BlendObject.h"
 
 BEGIN(Engine)
 class CTransform;
@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 
-class CPartObject abstract : public CGameObject
+class CPartObject abstract : public CBlendObject
 {
 public:
 	enum DISOLVETYPE { TYPE_IDLE, TYPE_INCREASE, TYPE_DECREASE, TYPE_END };

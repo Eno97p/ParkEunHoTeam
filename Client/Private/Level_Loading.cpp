@@ -89,6 +89,9 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Jugglas::Create(m_pDevice, m_pContext))))
 					return;
 				break;
+
+			default :
+				break;
 			}
 
 			//if (nullptr == pNewLevel)

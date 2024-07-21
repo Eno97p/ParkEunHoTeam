@@ -36,7 +36,7 @@ HRESULT CHoverboard::Initialize(void* pArg)
 	if (FAILED(Add_PxActor()))
 		return E_FAIL;
 
-
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
 
 	return S_OK;
 }
@@ -57,7 +57,7 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-	//m_pPhysXCom->Late_Tick(fTimeDelta);
+	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 
 

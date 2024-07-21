@@ -1061,6 +1061,9 @@
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
     </ClInclude>
+    <ClInclude Include="Import_Object_.hpp">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1654,6 +1657,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

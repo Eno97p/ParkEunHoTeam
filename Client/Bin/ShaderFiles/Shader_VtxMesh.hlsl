@@ -12,6 +12,8 @@ texture2D g_MetalicTexture;
 texture2D g_DisolveTexture;
 texture2D g_BlurTexture;
 
+float4 g_vCamPosition;
+
 float g_DisolveValue = 1.f;
 bool g_bDiffuse = false;
 bool g_bNormal = false;
@@ -322,6 +324,46 @@ PS_OUT PS_SPHERE(PS_IN In)
     return Out;
 }
 
+PS_OUT_COLOR PS_ITEM(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+    // 뷰 공간으로 변환
+    float3 positionVS = mul(float4(In.vPosition.xyz, 1.0), g_ViewMatrix).xyz;
+    float3 normalVS = normalize(mul(In.vNormal.xyz, (float3x3)g_ViewMatrix));
+
+    // 뷰 공간에서의 뷰 방향 (항상 (0, 0, -1))
+    float3 viewDirVS = float3(0, 0, -1);
+
+    // 외곽선 강도 계산
+    float NdotV = dot(normalVS, viewDirVS);
+    float edgeStrength = 1.0 - abs(NdotV);
+
+    // 깊이 기반 외곽선 강화
+    float depthEdge = 1.0 - saturate(positionVS.z * 0.1); // 0.1은 조절 가능한 값입니다.
+
+    // 최종 외곽선 강도
+    float finalEdgeStrength = max(edgeStrength, depthEdge);
+
+    // 외곽선 임계값 설정
+    float edgeThreshold = 0.6; // 이 값을 조정하여 외곽선의 두께를 변경할 수 있습니다.
+
+    // 부드러운 외곽선 전환을 위한 smoothstep 사용
+    float smoothEdge = smoothstep(edgeThreshold - 0.01, edgeThreshold + 0.01, finalEdgeStrength);
+
+    // 카메라 방향에 따른 처리
+    float facingFactor = saturate(NdotV * 0.5 + 0.5);
+    smoothEdge *= facingFactor;
+
+    // 외곽선 색상 설정 (흰색)
+    float4 edgeColor = float4(1, 1, 1, smoothEdge);
+
+    // 최종 색상 출력
+    Out.vColor = edgeStrength > edgeThreshold ? edgeColor : float4(0, 0, 0, 0);
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     /* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -462,6 +504,20 @@ technique11 DefaultTechnique
        HullShader = NULL;
        DomainShader = NULL;
        PixelShader = compile ps_5_0 PS_SPHERE();
+    }
+
+    pass Item_10
+    {
+       SetRasterizerState(RS_Default);
+       SetDepthStencilState(DSS_Default, 0);
+       SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+       VertexShader = compile vs_5_0 VS_MAIN();
+       GeometryShader = NULL;
+       HullShader = NULL;
+       DomainShader = NULL;
+       PixelShader = compile ps_5_0 PS_ITEM();
     }
 }
 

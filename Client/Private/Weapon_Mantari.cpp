@@ -72,8 +72,9 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 		{
 			if (m_pPlayer->Get_Parry())
 			{
-				m_bIsParried = true;
+				m_pPlayer->Set_ParriedMonsterFloat4x4(m_pParentMatrix);
 				m_pPlayer->Parry_Succeed();
+				m_bIsParried = true;
 			}
 			else
 			{

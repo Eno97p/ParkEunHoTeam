@@ -548,6 +548,33 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 	return S_OK;
 }
 
+_bool CPhysXComponent::RayCast(_vector vYourPos, _vector vYourDir, PxReal distance, const PxQueryFilterData& filterData, PxQueryFilterCallback* filterCall)
+{
+	//BVH를 사용하면 더 빠르게 검사 가능 //나중에 바꾸기 
+
+
+	PxVec3 origin(vYourPos.m128_f32[0], vYourPos.m128_f32[1], vYourPos.m128_f32[2]);
+	PxVec3 direction(vYourDir.m128_f32[0], vYourDir.m128_f32[1], vYourDir.m128_f32[2]);
+
+	PxRaycastBuffer  hit;
+	_bool status = m_pGameInstance->GetScene()->raycast(origin, direction, distance, hit, PxHitFlag::eDEFAULT, filterData, filterCall);
+
+	if (status)
+	{
+
+		//나중에 유저데이타로 보내기 
+		//hit.
+	}
+
+
+
+	return status;
+}
+
+
+
+
+
 void CPhysXComponent::MakeFilterData(PxFilterData& filterData)
 {
 	if (filterData.word0 != 0 || filterData.word1 != 0 || filterData.word2 != 0 || filterData.word3 != 0)

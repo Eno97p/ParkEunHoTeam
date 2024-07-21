@@ -57,6 +57,8 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Legio-Cloth_Front_M", XMVectorSet(-0.3f, 0.f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
+	m_iState = STATE_IDLE;
+
 	return S_OK;
 }
 
@@ -272,7 +274,7 @@ HRESULT CLegionnaire_Gun::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("MeleeAttack"), bind(&CLegionnaire_Gun::MeleeAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("GunAttack"), bind(&CLegionnaire_Gun::GunAttack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 3.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 1.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("DetectCool"), TEXT("Detect"), bind(&CLegionnaire_Gun::Detect, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CLegionnaire_Gun::Move, this, std::placeholders::_1));
 
@@ -362,7 +364,6 @@ NodeStates CLegionnaire_Gun::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Sword_LGGun*>(m_PartObjects[2])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
-		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 
@@ -464,6 +465,11 @@ NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimeDelta)
 
 NodeStates CLegionnaire_Gun::Detect(_float fTimeDelta)
 {
+	if (m_pPlayer->Get_Cloaking())
+	{
+		return FAILURE;
+	}
+
 	if (m_fLengthFromPlayer > DETECTRANGE)
 	{
 		m_eMode = MODE_IDLE;
@@ -492,7 +498,7 @@ NodeStates CLegionnaire_Gun::Detect(_float fTimeDelta)
 
 NodeStates CLegionnaire_Gun::Move(_float fTimeDelta)
 {
-	if (m_iState == STATE_IDLE || m_iState == STATE_IDLE_GUN || m_iState == STATE_IDLE_MELEE)
+	if (m_iState == STATE_IDLE || m_iState == STATE_IDLE_GUN || m_iState == STATE_IDLE_MELEE || m_pPlayer->Get_Cloaking())
 	{
 		return COOLING;
 	}
@@ -544,7 +550,10 @@ NodeStates CLegionnaire_Gun::Move(_float fTimeDelta)
 
 NodeStates CLegionnaire_Gun::Idle(_float fTimeDelta)
 {
-	m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	if (!m_pPlayer->Get_Cloaking())
+	{
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	}
 	Set_Idle();
 	return SUCCESS;
 }

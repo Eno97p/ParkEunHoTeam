@@ -185,6 +185,7 @@ namespace Engine
 
 
 
+
 	typedef struct ENGINE_DLL VTXINSTANCE_RECT
 	{
 		static const unsigned int		iNumElements = { 7 };

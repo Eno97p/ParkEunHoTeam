@@ -54,22 +54,22 @@ public:
 
 
 public:
-	void Spread(_float fTimeDelta);	//선생님 스프레드 코드 ( 중력, 회전 추가 )
-	void Drop(_float fTimeDelta);
-	void GrowOut(_float fTimeDelta); //스피드 값에 따라 점점 커지는 함수
-	void Spread_Size_Up(_float fTimeDelta);	//스피드에 비례해서 사이즈가 커짐
-	void Spread_Non_Rotation(_float fTimeDelta);	//회전 없는 스프레드
-	void CreateSwirlEffect(_float fTimeDelta);	//회오리 이펙트 y축 증가할수록 반경이 커짐
-	void Spread_Speed_Down(_float fTimeDelta);	//스프레드인데 스피드가 점점 느려짐 중력값에 비례
-	void SlashEffect(_float fTimeDelta);
-	void Spread_Speed_Down_SizeUp(_float fTimeDelta);
-	void Gather(_float fTimeDelta);
-	void Extinction(_float fTimeDelta);
-	void GrowOutY(_float fTimeDelta);
-	void GrowOut_Speed_Down(_float fTimeDelta);
-	void GrowOut_Speed_Down_Texture(_float fTimeDelta);
+	virtual void Spread(_float fTimeDelta);	//선생님 스프레드 코드 ( 중력, 회전 추가 )
+	virtual void Drop(_float fTimeDelta);
+	virtual void GrowOut(_float fTimeDelta); //스피드 값에 따라 점점 커지는 함수
+	virtual void Spread_Size_Up(_float fTimeDelta);	//스피드에 비례해서 사이즈가 커짐
+	virtual void Spread_Non_Rotation(_float fTimeDelta);	//회전 없는 스프레드
+	virtual void CreateSwirlEffect(_float fTimeDelta);	//회오리 이펙트 y축 증가할수록 반경이 커짐
+	virtual void Spread_Speed_Down(_float fTimeDelta);	//스프레드인데 스피드가 점점 느려짐 중력값에 비례
+	virtual void SlashEffect(_float fTimeDelta);
+	virtual void Spread_Speed_Down_SizeUp(_float fTimeDelta);
+	virtual void Gather(_float fTimeDelta);
+	virtual void Extinction(_float fTimeDelta);
+	virtual void GrowOutY(_float fTimeDelta);
+	virtual void GrowOut_Speed_Down(_float fTimeDelta);
+	virtual void GrowOut_Speed_Down_Texture(_float fTimeDelta);
 
-
+	virtual void Leaf_Fall(_float fTimeDelta);
 	
 
 	void Initial_RotateY();

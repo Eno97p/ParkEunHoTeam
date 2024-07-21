@@ -439,7 +439,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	/* For.Prototype_Component_Shader_InstancePoint */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_NewPoint.hlsl"), VTXINSTANCE_RECT::Elements, VTXINSTANCE_RECT::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Trail */

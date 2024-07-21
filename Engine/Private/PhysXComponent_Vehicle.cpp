@@ -67,39 +67,62 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 {
 	VehicleMiddleParams& middleParams = m_pVehicle->getMiddleParams();
 
-	const float maxEngineTorque = 100.0f;
+	const float maxEngineTorque = 5.0f;  // 최대 엔진 토크 (Nm)
+	const float accelerationRate = 100.0f;  // 가속도 증가율 (Nm/s)
+	const float decelerationRate = 50.0f;  // 감속도 감소율 (Nm/s)
+
 	// 예시: 키보드 입력 처리
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
 		// 전진
-		middleParams.engineTorque = maxEngineTorque;
+		middleParams.engineTorque += accelerationRate * fTimeDelta;
+		if (middleParams.engineTorque > maxEngineTorque)
+		{
+			middleParams.engineTorque = maxEngineTorque;
+		}
 	}
 	else if (GetAsyncKeyState('S') & 0x8000)
 	{
 		// 후진
-		middleParams.engineTorque = -maxEngineTorque;
+		middleParams.engineTorque -= accelerationRate * fTimeDelta;
+		if (middleParams.engineTorque < -maxEngineTorque)
+		{
+			middleParams.engineTorque = -maxEngineTorque;
+		}
 	}
 	else
 	{
-		// 엔진 토크 해제
-		middleParams.engineTorque = 0.0f;
+		// 엔진 토크 해제 (천천히 감속)
+		if (middleParams.engineTorque > 0)
+		{
+			middleParams.engineTorque -= decelerationRate * fTimeDelta;
+			if (middleParams.engineTorque < 0)
+			{
+				middleParams.engineTorque = 0.0f;
+			}
+		}
+		else if (middleParams.engineTorque < 0)
+		{
+			middleParams.engineTorque += decelerationRate * fTimeDelta;
+			if (middleParams.engineTorque > 0)
+			{
+				middleParams.engineTorque = 0.0f;
+			}
+		}
 	}
-	const float maxSteeringAngle = 0.5f;
-	const float steeringTorque = 1000.0f;  // 적절한 값으로 조정 필요
 
-
-
+	const float maxSteeringAngle = PxPi * 0.25f; // 45도
+	const float steeringSpeed = 2.0f;
 
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		// 좌회전
-		middleParams.steeringAngle = -0.5f;
-		
+		middleParams.steeringAngle = -maxSteeringAngle;
 	}
 	else if (GetAsyncKeyState('D') & 0x8000)
 	{
 		// 우회전
-		middleParams.steeringAngle = 0.5f;
+		middleParams.steeringAngle = maxSteeringAngle;
 	}
 	else
 	{
@@ -117,14 +140,6 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 		// 제동 해제
 		middleParams.brakeTorque = 0.0f;
 	}
-
-
-
-
-
-
-
-	
 	
 }
 

@@ -77,14 +77,16 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     float4 vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if (Out.vColor.a == 0.f)
+    if (Out.vColor.a < 0.1f)
         discard;
 
+    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
     if (g_Alpha)
     {
-        Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
+        Out.vColor.a *=  1- fRatio;
+        //Out.vColor.a = 0.5f;
     }
-    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+   
 
     if (g_Color)
     {
@@ -118,7 +120,7 @@ PS_OUT PS_BLOOM(PS_IN In)
 
     if (g_Alpha)
     {
-        Out.vColor.a = lerp(g_BlurPower, 0.f, fRatio);
+        Out.vColor.a = g_BlurPower * (1- fRatio);
     }
     else
     {
@@ -145,7 +147,7 @@ technique11 DefaultTechnique
 {
     pass DefaultPass
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_NoCull);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

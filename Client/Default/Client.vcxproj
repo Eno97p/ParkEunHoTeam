@@ -546,6 +546,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />

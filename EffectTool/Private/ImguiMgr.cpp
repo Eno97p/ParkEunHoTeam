@@ -224,6 +224,13 @@ void CImguiMgr::EffectTool_Rework()
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Slash", MeshDesc.eModelType == EFFECTMODELTYPE::SLASH))
 			MeshDesc.eModelType = EFFECTMODELTYPE::SLASH;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Leaf0", MeshDesc.eModelType == EFFECTMODELTYPE::LEAF0))
+			MeshDesc.eModelType = EFFECTMODELTYPE::LEAF0;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Leaf1", MeshDesc.eModelType == EFFECTMODELTYPE::LEAF1))
+			MeshDesc.eModelType = EFFECTMODELTYPE::LEAF1;
+
 	}
 
 	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
@@ -317,6 +324,11 @@ void CImguiMgr::EffectTool_Rework()
 	if (ImGui::RadioButton("GrowOutSpeedDown", parentsDesc.eType == GROWOUT_SPEEDDOWN))
 	{
 		parentsDesc.eType = GROWOUT_SPEEDDOWN;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Leaf_Fall", parentsDesc.eType == LEAF_FALL))
+	{
+		parentsDesc.eType = LEAF_FALL;
 	}
 #pragma endregion FUNCTYPE
 	

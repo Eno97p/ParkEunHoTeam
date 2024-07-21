@@ -149,53 +149,72 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 17;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_MOVE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 18;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_DEAD)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 9;
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_HIT)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
+		fAnimSpeed = 1.0f;
+		m_pModelCom->Set_LerpTime(0.8);
 	}
 	else if (*m_pState == CGhost::STATE_PARRIED)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_1)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 0;
+		fAnimSpeed = 0.8f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_2)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 1;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_3)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 2;
+		fAnimSpeed = 1.4f;
+		m_pModelCom->Set_LerpTime(1.2);
 		m_pWeapon->Set_Active();
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_4)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_DOWNATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 7;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 0.9f && m_fDamageTiming < 1.2f)
 		{
@@ -206,11 +225,15 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 19;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CGhost::STATE_RIGHT)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 20;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.2);
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

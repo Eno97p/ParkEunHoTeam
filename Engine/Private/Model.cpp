@@ -397,6 +397,11 @@ void CModel::Set_LerpTime(_double LerpTime)
 	m_Animations[m_AnimDesc.iAnimIndex]->Set_LerpTime(LerpTime);
 }
 
+void CModel::Setting_StartTime(_double StartPos)
+{
+	m_Animations[m_AnimDesc.iAnimIndex]->Setting_StartPos(StartPos);
+}
+
 vector<string> CModel::Get_BoneNameVec()
 {
 	vector<string> _Names;
@@ -591,6 +596,11 @@ void CModel::GrowOut_Speed_Down(_float fTimeDelta)
 {
 	for (auto& iter : m_InstanseMesh)
 		iter->GrowOut_Speed_Down(fTimeDelta);
+}
+void CModel::Leaf_Fall(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Leaf_Fall(fTimeDelta);
 }
 #pragma endregion Effect
 

@@ -24,6 +24,9 @@ HRESULT CBody_Player::Initialize_Prototype()
 
 HRESULT CBody_Player::Initialize(void* pArg)
 {
+	BODY_DESC* pDesc = (BODY_DESC*)pArg;
+	m_pIsCloaking = pDesc->pIsCloaking;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -140,7 +143,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 38;
-		fAnimSpeed = 1.3f;
+		fAnimSpeed = 1.5f; // 1.3
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_HIT)
@@ -179,7 +182,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_JUMP)
 	{
-		AnimDesc.isLoop = true;
+		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
@@ -291,7 +294,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		if(m_iPastAnimIndex == 150)
-			fAnimSpeed = 2.f; // 2
+			fAnimSpeed = 2.f;
 		else
 			fAnimSpeed = 1.5f;
 
@@ -529,7 +532,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 1.5f;
+		fAnimSpeed = 1.7f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)
@@ -741,17 +744,9 @@ void CBody_Player::Tick(_float fTimeDelta)
 
 void CBody_Player::Late_Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_C))
+	if (*m_pIsCloaking)
 	{
-		m_bIsClocking = true;
-	}
-	else
-	{
-		m_bIsClocking = false;
-	}
-
-	if (m_bIsClocking)
-	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 	}
 	else
@@ -768,6 +763,9 @@ HRESULT CBody_Player::Render()
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+		return E_FAIL;
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
@@ -792,18 +790,26 @@ HRESULT CBody_Player::Render()
 				return E_FAIL;
 		}
 
-		if (i == 2)
+		if (!(*m_pIsCloaking))
 		{
-			if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
-				return E_FAIL;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
-				return E_FAIL;
-			m_pShaderCom->Begin(7);
+			if (i == 2)
+			{
+				if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+					return E_FAIL;
+				m_pShaderCom->Begin(7);
+			}
+			else
+			{
+				m_pShaderCom->Begin(0);
+			}
 		}
 		else
 		{
-			m_pShaderCom->Begin(0);
+			m_pShaderCom->Begin(12);
 		}
+
 		
 
 		m_pModelCom->Render(i);

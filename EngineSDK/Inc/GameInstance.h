@@ -161,6 +161,7 @@ public:		//for Event_Manager
 	void CreateObject(_uint Level, const wchar_t* Layer, const wstring& strPrototypeTag, void* pArg = nullptr); // 동적으로 객체 생성하는 기능
 	void CreateObject_Self(_uint Level, const wchar_t* Layer, class CGameObject* pObj); //뭔가 동작을 해주고 만들어야 할 때
 	void Erase(CGameObject* _pObj); //동적으로 객체 삭제하는 기능
+	void Scene_Change(_uint LevelIdx, CLevel* nextLevel); // 씬체인지
 
 public: /* For PhysX */
 	HRESULT AddActor(PxActor* pActor);

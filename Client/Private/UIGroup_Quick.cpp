@@ -134,6 +134,7 @@ void CUIGroup_Quick::Update_InvSlot_Add(_uint iSlotIdx)
 		++slot;
 
 	(*slot)->Create_ItemIcon_Inv();
+	(*slot)->Set_isEquip(true);
 }
 
 HRESULT CUIGroup_Quick::Create_UI()

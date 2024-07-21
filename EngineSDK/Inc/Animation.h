@@ -22,6 +22,8 @@ public:
 
 	_bool	Check_CurDuration(_double CurDuration); // 현재 Duration을 체크
 
+	void Setting_StartPos(_double StartPos);
+
 public:
 	HRESULT Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);

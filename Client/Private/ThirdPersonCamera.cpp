@@ -52,98 +52,7 @@ HRESULT CThirdPersonCamera::Initialize(void* pArg)
 
 void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
 {
-    if (m_pGameInstance->Mouse_Down(DIM_MB))
-    {
-        if (!m_bIsTargetLocked)
-        {
-            _vector vCamPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-            _vector vCamLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-            _vector vCamLookNormalized = XMVector3Normalize(vCamLook);
-
-            // 카메라 레이의 끝점 (예: 카메라 앞 100 유닛)
-            _vector vRayEnd = XMVectorAdd(vCamPos, XMVectorScale(vCamLookNormalized, 100.0f));
-
-            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
-
-            float closestDistance = FLT_MAX;
-            CGameObject* closestMonster = nullptr;
-
-            for (auto& monster : monsters)
-            {
-                CMonster* pMonster = dynamic_cast<CMonster*>(monster);
-                if (pMonster == nullptr)
-                    continue;
-
-
-                _vector vMonsterPos = pMonster->Get_MonsterPos();
-
-                // 몬스터가 화면 내에 있는지 확인
-                if (m_pGameInstance->isIn_WorldFrustum(vMonsterPos, 5.f))
-                {
-                    // 카메라 레이에 대한 몬스터의 투영점 계산
-                    _vector projectedPoint = ProjectPointLine(vMonsterPos, vCamPos, vRayEnd);
-
-                    // 투영점과 몬스터 사이의 거리 계산
-                    float distToRay = XMVectorGetX(XMVector3Length(vMonsterPos - projectedPoint));
-
-                    // 카메라와 투영점 사이의 거리 계산 (깊이)
-                    float depthOnRay = XMVectorGetX(XMVector3Length(projectedPoint - vCamPos));
-
-                    // 거리에 가중치를 주어 깊이도 고려 (예: 깊이에 0.5 가중치)
-                    float weightedDistance = distToRay + depthOnRay * 0.5f;
-
-                    if (weightedDistance < closestDistance)
-                    {
-                        closestDistance = weightedDistance;
-                        closestMonster = monster;
-                    }
-                }
-            }
-
-            // 가장 가까운 몬스터까지의 거리가 40 이하인 경우에만 타겟 설정
-            if (closestMonster != nullptr && closestDistance <= 40.0f)
-            {
-                // 이전 타겟이 있다면 레퍼런스 카운트 감소
-                if (m_pTarget != nullptr)
-                    Safe_Release(m_pTarget);
-
-                // 새로운 타겟 설정 및 레퍼런스 카운트 증가
-                m_pTarget = closestMonster;
-                Safe_AddRef(m_pTarget);
-
-                // 타겟 락온
-                CMonster* pMonster = dynamic_cast<CMonster*>(m_pTarget);
-                if (pMonster != nullptr)
-                {
-                    _vector vTargetPos = pMonster->Get_MonsterPos();
-                    TargetLock_On(vTargetPos);
-                    pMonster->Set_Lock(true);
-                }
-            }
-            else
-            {
-                // 가장 가까운 몬스터가 없거나 거리가 40보다 큰 경우
-                if (m_pTarget != nullptr)
-                {
-                    //dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
-                    Safe_Release(m_pTarget);
-                    m_pTarget = nullptr;
-                }
-                TargetLock_Off();
-            }
-        }
-        else
-        {
-            // 이미 타겟이 락온된 상태에서 다시 클릭한 경우
-            if (m_pTarget != nullptr)
-            {
-                dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
-                Safe_Release(m_pTarget);
-                m_pTarget = nullptr;
-            }
-            TargetLock_Off();
-        }
-    }
+  
 
     //if (m_pGameInstance->Mouse_Down(DIM_RB))
     if (m_pGameInstance->Key_Down(DIK_M))
@@ -195,7 +104,25 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
             if (pMonster != nullptr)
             {
                 _vector vTP = pMonster->Get_MonsterPos();
-                if (40.f < XMVectorGetX(XMVector4Length(XMLoadFloat4(&m_vCameraPosition) - vTP)) || (m_pTarget->Get_Dead()))
+                _vector vCamPos = XMLoadFloat4(&m_vCameraPosition);
+
+                // 카메라와 타겟 사이의 직선 방향 벡터
+                _vector vCamToTarget = XMVector3Normalize(vTP - vCamPos);
+
+                // 카메라에서 타겟 방향으로 일정 거리(예: 10.0f) 떨어진 점
+                _vector vProjectedPoint = vCamPos + vCamToTarget * 10.0f;
+
+                // 투영점과 타겟 사이의 거리 계산
+                float distToRay = XMVectorGetX(XMVector3Length(vTP - vProjectedPoint));
+
+                // 카메라와 투영점 사이의 거리 계산 (깊이)
+                float depthOnRay = 10.0f;
+
+                // 거리에 가중치를 주어 깊이도 고려 (예: 깊이에 0.5 가중치)
+                float weightedDistance = distToRay + depthOnRay * 0.5f;
+
+                // 가중 거리를 기준으로 락온 해제 판단
+                if (40.0f < weightedDistance || (m_pTarget->Get_Dead()))
                 {
                     dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
                     Safe_Release(m_pTarget);
@@ -210,7 +137,6 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         }
         TargetLockView(fTimeDelta);
     }
-    // 일반 상태 처리
     else
     {
         Update_ThirdCam(fTimeDelta);
@@ -512,7 +438,93 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
         return;
     }
 
+    if (m_pGameInstance->Mouse_Down(DIM_MB))
+    {
+        if (!m_bIsTargetLocked)
+        {
+            _vector vCamPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+            _vector vCamLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+            _vector vCamLookNormalized = XMVector3Normalize(vCamLook);
 
+            _vector vRayEnd = XMVectorAdd(vCamPos, XMVectorScale(vCamLookNormalized, 100.0f));
+
+            list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
+
+            float closestWeightedDistance = FLT_MAX;
+            float closestActualDistance = FLT_MAX;
+            CGameObject* closestMonster = nullptr;
+
+            for (auto& monster : monsters)
+            {
+                CMonster* pMonster = dynamic_cast<CMonster*>(monster);
+                if (pMonster == nullptr)
+                    continue;
+
+                _vector vMonsterPos = pMonster->Get_MonsterPos();
+
+                if (m_pGameInstance->isIn_WorldFrustum(vMonsterPos, 5.f))
+                {
+                    _vector projectedPoint = ProjectPointLine(vMonsterPos, vCamPos, vRayEnd);
+
+                    float distToRay = XMVectorGetX(XMVector3Length(vMonsterPos - projectedPoint));
+                    float depthOnRay = XMVectorGetX(XMVector3Length(projectedPoint - vCamPos));
+                    float weightedDistance = distToRay + depthOnRay * 0.5f;
+
+                    float actualDistance = XMVectorGetX(XMVector3Length(vMonsterPos - vCamPos));
+
+                    if (weightedDistance < closestWeightedDistance)
+                    {
+                        closestWeightedDistance = weightedDistance;
+                        closestActualDistance = actualDistance;
+                        closestMonster = monster;
+                    }
+                }
+            }
+
+            // 가중치 거리가 30 이하이고 실제 거리도 30 이하인 경우에만 타겟 설정
+            if (closestMonster != nullptr && closestWeightedDistance <= 30.0f && closestActualDistance <= 30.0f)
+            {
+                // 이전 타겟이 있다면 레퍼런스 카운트 감소
+                if (m_pTarget != nullptr)
+                    Safe_Release(m_pTarget);
+
+                // 새로운 타겟 설정 및 레퍼런스 카운트 증가
+                m_pTarget = closestMonster;
+                Safe_AddRef(m_pTarget);
+
+                // 타겟 락온
+                CMonster* pMonster = dynamic_cast<CMonster*>(m_pTarget);
+                if (pMonster != nullptr)
+                {
+                    _vector vTargetPos = pMonster->Get_MonsterPos();
+                    TargetLock_On(vTargetPos);
+                    pMonster->Set_Lock(true);
+                }
+            }
+            else
+            {
+                // 가장 가까운 몬스터가 없거나 거리 조건을 만족하지 않는 경우
+                if (m_pTarget != nullptr)
+                {
+                    dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
+                    Safe_Release(m_pTarget);
+                    m_pTarget = nullptr;
+                }
+                TargetLock_Off();
+            }
+        }
+        else
+        {
+            // 이미 타겟이 락온된 상태에서 다시 클릭한 경우
+            if (m_pTarget != nullptr)
+            {
+                dynamic_cast<CMonster*>(m_pTarget)->Set_Lock(false);
+                Safe_Release(m_pTarget);
+                m_pTarget = nullptr;
+            }
+            TargetLock_Off();
+        }
+    }
    
 
     Mouse_Move(fTimeDelta);

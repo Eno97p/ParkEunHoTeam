@@ -756,6 +756,15 @@ void CGameInstance::Erase(CGameObject* _pObj)
 	m_pEvent_Manager->AddEvent(evn);
 }
 
+void CGameInstance::Scene_Change(_uint LevelIdx, CLevel* nextLevel)
+{
+	tEvent evn = {};
+	evn.eEven = eEVENT_TYPE::SCENE_CHANGE;
+	evn.lParam = (DWORD_PTR)LevelIdx;
+	evn.eParam = (DWORD_PTR)nextLevel;
+	m_pEvent_Manager->AddEvent(evn);
+}
+
 
 HRESULT CGameInstance::AddActor(PxActor* pActor)
 {

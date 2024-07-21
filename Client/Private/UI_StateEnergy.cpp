@@ -65,7 +65,7 @@ void CUI_StateEnergy::Tick(_float fTimeDelta)
 	// 스태미나 증가
 	else if (m_fCurrentRatio > m_fPastRatio)
 	{
-		m_fPastRatio += fTimeDelta * 0.2f;
+		m_fPastRatio += fTimeDelta;
 		if (m_fCurrentRatio < m_fPastRatio)
 		{
 			m_fPastRatio = m_fCurrentRatio;

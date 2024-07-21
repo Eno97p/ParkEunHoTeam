@@ -38,6 +38,12 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case SLASH:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Slash");
 		break;
+	case LEAF0:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Leaf0");
+		break;
+	case LEAF1:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Leaf1");
+		break;
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))
@@ -104,6 +110,9 @@ void CParticleMesh::Tick(_float fTimeDelta)
 		break;
 	case GROWOUT_SPEEDDOWN:
 		m_InstModelCom->GrowOut_Speed_Down(fTimeDelta);
+		break;
+	case LEAF_FALL:
+		m_InstModelCom->Leaf_Fall(fTimeDelta);
 		break;
 	}
 }

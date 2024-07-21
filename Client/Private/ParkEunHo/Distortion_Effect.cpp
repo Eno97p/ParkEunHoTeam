@@ -90,8 +90,6 @@ HRESULT CDistortionEffect::Render_Distortion()
 	return S_OK;
 }
 
-
-
 HRESULT CDistortionEffect::Add_Components()
 {
 	/* For.Com_VIBuffer */

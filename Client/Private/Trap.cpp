@@ -90,6 +90,8 @@ void CTrap::Late_Tick(_float fTimeDelta)
 //	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 //#endif
 		// 몬스터 무기와 플레이어 충돌처리
+	m_pColliderCom->Tick(m_ColliderMat);
+
 	m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
 	if (m_eColltype == CCollider::COLL_START)
 	{

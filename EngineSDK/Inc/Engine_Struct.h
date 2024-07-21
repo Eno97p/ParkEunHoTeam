@@ -185,6 +185,7 @@ namespace Engine
 
 
 
+
 	typedef struct ENGINE_DLL VTXINSTANCE_RECT
 	{
 		static const unsigned int		iNumElements = { 7 };
@@ -387,7 +388,12 @@ namespace Engine
 				: finalPose(PxTransform(PxIdentity)), finalVelocity(PxVec3(0)), finalAngularVelocity(PxVec3(0))
 			{
 			}
-			PX_FORCE_INLINE void setToDefault()	{ PxMemZero(this, sizeof(VehicleEndState)); }
+			PX_FORCE_INLINE void setToDefault()	{
+				PxMemZero(this, sizeof(VehicleEndState));
+				finalPose = PxTransform(PxIdentity);
+				finalVelocity = PxVec3(0);
+				finalAngularVelocity = PxVec3(0);
+			}
 			PX_FORCE_INLINE void setData(const VehicleEndState& other)
 			{
 				finalPose = other.finalPose;

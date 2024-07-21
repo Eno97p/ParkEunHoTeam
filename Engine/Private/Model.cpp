@@ -597,6 +597,11 @@ void CModel::GrowOut_Speed_Down(_float fTimeDelta)
 	for (auto& iter : m_InstanseMesh)
 		iter->GrowOut_Speed_Down(fTimeDelta);
 }
+void CModel::Leaf_Fall(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Leaf_Fall(fTimeDelta);
+}
 #pragma endregion Effect
 
 _uint CModel::Get_Model_Vertices()

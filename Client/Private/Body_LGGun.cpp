@@ -194,8 +194,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 46;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(1.2);
+		fAnimSpeed = 2.f; // 1
+		m_pModelCom->Set_LerpTime(1.0); // 1.2
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_PARRIED)
 	{
@@ -222,7 +222,7 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 10;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_WALK)
@@ -236,7 +236,7 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 19;
-		fAnimSpeed = 0.7f;
+		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_BACK)
@@ -277,9 +277,11 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	{
 		if (m_iPastAnimIndex < 26 || m_iPastAnimIndex > 28)
 		{
-			m_iPastAnimIndex = 26;
+			m_iPastAnimIndex = 27;
 		}
 		if(m_iPastAnimIndex == 27)
+			fAnimSpeed = 1.3f;
+		else if(m_iPastAnimIndex == 28)
 			fAnimSpeed = 1.5f;
 		else
 			fAnimSpeed = 1.f;

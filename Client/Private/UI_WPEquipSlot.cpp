@@ -286,7 +286,6 @@ void CUI_WPEquipSlot::Click_Event()
 			{
 				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 				(*weapon)->Set_isEquip(true);
-				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
 		}
 		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
@@ -295,20 +294,32 @@ void CUI_WPEquipSlot::Click_Event()
 			{
 				CInventory::GetInstance()->Add_EquipSkill((*skill), m_eSlotNum);
 				(*skill)->Set_isEquip(true);
-				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
 		}
+
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
 		// AlphaBG 비활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
 	}
-	else // 장착 해제 >>> 여기 오류 있음 skill을 해제하고 나면 다시 장착 x
+	else // 장착 해제
 	{
-		// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함. 그 외에도 좀 꼬임
-		CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		{
+			// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
+			CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
 
-		// Equip Slot 비활성화
-		(*weapon)->Set_isEquip(false);
+			// Equip Slot 비활성화
+			(*weapon)->Set_isEquip(false);
+		}
+		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		{
+			CInventory::GetInstance()->Delete_EquipSkill(m_eSlotNum);
+
+			// Equip Slot 비활성화
+			(*skill)->Set_isEquip(false);
+		}
+
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false);
 	}
 }

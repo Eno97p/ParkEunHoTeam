@@ -70,7 +70,8 @@ public:
 	void Speed_Scaling(_float fScale) { m_fSpeed *= fScale; }
 	void Set_JumpSpeed(_float fSpeed) { m_fJumpSpeed = fSpeed; }
 	_bool Get_IsJump() { return m_bIsJump; }
-
+	_float Get_CurrentJumpSpeed() { return m_fCurrentY_Velocity; }
+	_float Get_LengthFromGround();
 
 
 private:

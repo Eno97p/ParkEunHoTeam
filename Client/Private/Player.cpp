@@ -57,9 +57,18 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
-	if (!m_bParry && !m_bParrying)
+	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
-		fSlowValue = 1.f;
+		if (m_bIsCloaking)
+		{
+			m_bIsCloaking = false;
+		}
+		else if(m_fCurMp >= 30.f)
+		{
+			m_bIsCloaking = true;
+			Add_Mp(-10.f);
+		}
+		m_fButtonCooltime = 0.001f;
 	}
 
 	if (!m_pCameraTransform)
@@ -79,7 +88,18 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 	}
 	else if (m_fStaminaRecoverDelay < 0.f)
 	{
-		Add_Stamina(fTimeDelta * 20.f);
+		Add_Stamina(fTimeDelta * 100.f);
+	}
+
+	if (m_bIsCloaking)
+	{
+		Add_Mp(fTimeDelta * -1.f);
+	}
+
+	//마나는 자동회복 X
+	if (m_fCurMp <= 0.f)
+	{
+		m_bIsCloaking = false;
 	}
 }
 
@@ -108,13 +128,15 @@ void CPlayer::Tick(_float fTimeDelta)
 		m_bJumping = false;
 		m_bDoubleJumping = false;
 		m_pPhysXCom->Set_JumpSpeed(JUMPSPEED);
-
+		if (m_iState == STATE_JUMP)
+		{
+			m_iState = STATE_IDLE;
+		}
 	}
 	else
 	{
 		m_bJumping = true;
 	}
-
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
@@ -207,12 +229,13 @@ HRESULT CPlayer::Add_Components()
 HRESULT CPlayer::Add_PartObjects()
 {
 	/* 바디객체를 복제해온다. */
-	CPartObject::PARTOBJ_DESC		BodyDesc{};
+	CBody_Player::BODY_DESC		BodyDesc{};
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
 	BodyDesc.pState = &m_iState;
 	BodyDesc.pCanCombo = &m_bCanCombo;
+	BodyDesc.pIsCloaking = &m_bIsCloaking;
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Player"), &BodyDesc);
 	if (nullptr == pBody)
@@ -281,6 +304,8 @@ void CPlayer::Parry_Succeed()
 	EFFECTMGR->Generate_Distortion(2, PlayerPos);
 	EFFECTMGR->Generate_Particle(6, vParticlePos);
 	m_bParry = true;
+	m_fSlowDelay = 0.f;
+	fSlowValue = 0.2f;
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -326,6 +351,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 
 	if (m_iState == STATE_REVIVE)
 	{
+		m_bIsCloaking = false;
 		m_iState = STATE_REVIVE;
 
 		if (m_bAnimFinished)
@@ -348,6 +374,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
+		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -370,6 +397,7 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 
 	if (m_iState == STATE_HIT)
 	{
+		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
 			m_fFightIdle = 0.01f;
@@ -387,13 +415,9 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 
 NodeStates CPlayer::Counter(_float fTimeDelta)
 {
-	if (m_fCurStamina < 10.f)
-	{
-		return COOLING;
-	}
-
 	if (m_bParry && m_iState != STATE_COUNTER)
 	{
+		m_bIsCloaking = false;
 		m_iState = STATE_PARRY;
 		m_fParryFrame = 0.f;
 		fSlowValue = 0.2f;
@@ -406,23 +430,21 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 			m_fSlowDelay = 0.f;
 			fSlowValue = 1.f;
 			m_bParry = false;
-			m_pParriedMonsterTransform = nullptr;
+			m_pParriedMonsterFloat4x4 = nullptr;
 		}
 	}
 
 	// 패링 성공 && 왼클릭
-	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER && m_pParriedMonsterTransform)
+	if (m_bParry && (GetKeyState(VK_LBUTTON) & 0x8000) && m_iState != STATE_COUNTER && m_pParriedMonsterFloat4x4)
 	{
-
+		_vector vPos = XMVectorSet(m_pParriedMonsterFloat4x4->_41, m_pParriedMonsterFloat4x4->_42, m_pParriedMonsterFloat4x4->_43, 1.f);
 		// 일정거리 이하일 때 카운터 발동
-		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION))) < 4.f)
+		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPos)) < 4.f)
 		{
 			vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
 			dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomIn();
 			m_bParrying = false;
 			m_bStaminaCanDecrease = true;
-			// 스테미나 조절할 것
-			Add_Stamina(-10.f);
 			m_iState = STATE_COUNTER;
 			fSlowValue = 0.2f;
 			m_fSlowDelay = 0.f;
@@ -451,7 +473,7 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 			m_bStaminaCanDecrease = true;
 			m_bParry = false;
-			m_pParriedMonsterTransform = nullptr;
+			m_pParriedMonsterFloat4x4 = nullptr;
 			m_fFightIdle = 0.01f;
 			m_iState = STATE_FIGHTIDLE;
 			return SUCCESS;
@@ -471,8 +493,8 @@ void CPlayer::Move_Counter()
 {
 	// 플레이어 위치 보정
 	_float3 fScale = m_pTransformCom->Get_Scaled();
-	_vector vMonsterLook = XMVector3Normalize(m_pParriedMonsterTransform->Get_State(CTransform::STATE_LOOK));
-	_vector vMonsterPos = m_pParriedMonsterTransform->Get_State(CTransform::STATE_POSITION);
+	_vector vMonsterLook = XMVector3Normalize(XMVectorSet(m_pParriedMonsterFloat4x4->_31, m_pParriedMonsterFloat4x4->_32, m_pParriedMonsterFloat4x4->_33, 0.f));
+	_vector vMonsterPos =XMVectorSet(m_pParriedMonsterFloat4x4->_41, m_pParriedMonsterFloat4x4->_42, m_pParriedMonsterFloat4x4->_43, 1.f);
 
 	_vector vPlayerLook = XMVector3Normalize(-vMonsterLook) * fScale.z;
 	_vector vPlayerRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook)) * fScale.x;
@@ -496,7 +518,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_Q) && m_iState != STATE_PARRY)
 	{
-		
+		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -509,7 +531,7 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 		Add_Stamina(-10.f);
 	}
 
-	if (m_iState == STATE_PARRY)
+	if (m_iState == STATE_PARRY/* && !m_bParry*/)
 	{
 		m_fParryFrame += fTimeDelta;
 		if (m_fParryFrame > PARRYSTART && m_fParryFrame < PARRYEND)
@@ -523,7 +545,6 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 		
 		if (m_bAnimFinished)
 		{
-
 			m_fParryFrame = 0.f;
 			vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
 			dynamic_cast<CThirdPersonCamera*>(cams[1])->Set_ZoomOut();
@@ -551,6 +572,9 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 
 NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 {
+	m_fSlowDelay = 0.f;
+	fSlowValue = 1.f;
+
 	if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
 	{
 		return COOLING;
@@ -558,6 +582,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_bJumping && m_iState != STATE_DASH && !m_bLAttacking)
 	{
+		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -627,6 +652,7 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && m_iState == STATE_ROLL && !m_bLAttacking)
 	{
+		m_bIsCloaking = false;
 		if (m_bStaminaCanDecrease)
 		{
 			// 스테미나 조절할 것
@@ -685,6 +711,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_LBUTTON) & 0x8000))
 	{
+		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -701,7 +728,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 		}
 		if (m_bCanCombo)
 		{
-			if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
+			if (m_fCurStamina < 10.f)
 			{
 				return COOLING;
 			}
@@ -765,6 +792,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 	if ((GetKeyState(VK_RBUTTON) & 0x8000))
 	{
+		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
@@ -781,7 +809,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 		}
 		if (m_bCanCombo)
 		{
-			if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
+			if (m_fCurStamina < 10.f)
 			{
 				return COOLING;
 			}
@@ -1058,12 +1086,20 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
+	// 아래로 걸어갈때 발동 안하기 위해 값 적당히 조절할것
+	_float fLengthFromGround = m_pPhysXCom->Get_LengthFromGround();
+	if (fLengthFromGround > 3.f && fLengthFromGround < 0.1f)
+	{
+		m_bJumping = true;
+		m_iState = STATE_JUMP;
+	}
+
 	if (m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
 		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
 	}
-
+	
 	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping))
 	{
 		m_bStaminaCanDecrease = true;
@@ -1335,17 +1371,23 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 
 NodeStates CPlayer::Move(_float fTimeDelta)
 {
+	if (m_fCurStamina < 1.f)
+	{
+		m_bRunning = false;
+	}
+
+	if (m_bRunning)
+	{
+		m_pPhysXCom->Set_Speed(RUNSPEED);
+	}
+	else
+	{
+		m_pPhysXCom->Set_Speed(WALKSPEED);
+	}
+
 	if ((GetKeyState(VK_LSHIFT) & 0x8000) && m_fButtonCooltime == 0.f)
 	{
 		m_bRunning = !m_bRunning;
-		if (m_bRunning)
-		{
-			m_pPhysXCom->Set_Speed(RUNSPEED);
-		}
-		else
-		{
-			m_pPhysXCom->Set_Speed(WALKSPEED);
-		}
 		m_fButtonCooltime = 0.001f;
 	}
 

@@ -138,6 +138,9 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_QuickSlot(pItemData->Get_TextureName());
 
+	// Equip Sign 활성화해주기
+	//pItemData->Set_isEquip(true);
+
 	return S_OK;
 }
 
@@ -150,7 +153,7 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
 
 	// HUD
-	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName());
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName(), CUIGroup_WeaponSlot::SLOT_WEAPON);
 
 	return S_OK;
 }
@@ -164,7 +167,7 @@ HRESULT CInventory::Delete_EquipWeapon(_uint iEquipSlotIdx)
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Delete(iEquipSlotIdx);
 
 	// HUD에서도 출력 제거 
-	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture();
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_WEAPON);
 
 	return S_OK;
 }
@@ -176,6 +179,7 @@ HRESULT CInventory::Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx)
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
 
 	// HUD
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName(), CUIGroup_WeaponSlot::SLOT_SKILL);
 
 	return S_OK;
 }
@@ -187,7 +191,7 @@ HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
 	CUI_Manager::GetInstance()->Update_EquipSkill_Delete(iEquipSlotIdx);
 
 	// HUD 관련 코드도 추가해야함
-	//dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))
+	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_SKILL);
 
 	return S_OK;
 }

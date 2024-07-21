@@ -25,7 +25,9 @@ CUI_Slot::CUI_Slot(const CUI_Slot& rhs)
 void CUI_Slot::Resset_Data()
 {
 	Safe_Release(m_pItemIcon);
+	Safe_Release(m_pSymbolIcon);
 	m_pItemIcon = nullptr;
+	m_pSymbolIcon = nullptr;
 	m_isEquip = false; 
 }
 
@@ -103,6 +105,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Tick(fTimeDelta);
 
+	if (nullptr != m_pSymbolIcon)
+		m_pSymbolIcon->Tick(fTimeDelta);
+
 	if (nullptr != m_pEquipSign)
 		m_pEquipSign->Tick(fTimeDelta);
 }
@@ -117,7 +122,9 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Late_Tick(fTimeDelta);
 
-	// 장착을 한 경우에만 Late true 해주기
+	if (nullptr != m_pSymbolIcon && m_isSelect)
+		m_pSymbolIcon->Late_Tick(fTimeDelta);
+
 	if (nullptr != m_pEquipSign && m_isEquip)
 		m_pEquipSign->Late_Tick(fTimeDelta);
 }
@@ -243,6 +250,16 @@ HRESULT CUI_Slot::Create_ItemIcon_Inv()
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
+	if (SLOT_INV == m_eSlotType)
+	{
+		// 여기서 Symbol Icon도 생성해주기
+		pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+		pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+		pDesc.fSizeX = 160.f;
+		pDesc.fSizeY = 160.f;
+		m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+	}
+
 	return S_OK;
 }
 
@@ -302,6 +319,13 @@ HRESULT CUI_Slot::Create_ItemIcon_Weapon()
 	m_wszItemName = (*weapon)->Get_ItemNameText();
 	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
 
+	// 여기서 Symbol Icon도 생성해주기
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
 	return S_OK;
 }
 
@@ -323,6 +347,13 @@ HRESULT CUI_Slot::Create_ItemIcon_Skill()
 
 	m_wszItemName = (*skill)->Get_ItemNameText();
 	m_wszItemExplain = (*skill)->Get_ItemExplainText();
+
+	// 여기서 Symbol Icon도 생성해주기
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	return S_OK;
 }
@@ -348,6 +379,13 @@ HRESULT CUI_Slot::Change_ItemIcon_Weapon()
 
 	Check_Equip(true, *weapon);
 
+	// SymbolIcon
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
 	return S_OK;
 }
 
@@ -371,6 +409,13 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	m_wszItemExplain = (*skill)->Get_ItemExplainText();
 
 	Check_Equip(false, *skill);
+
+	// SymbolIcon
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	return S_OK;
 }
@@ -439,6 +484,7 @@ void CUI_Slot::Free()
 	__super::Free();
 
 	Safe_Release(m_pEquipSign);
+	Safe_Release(m_pSymbolIcon);
 	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectFrame);
 }

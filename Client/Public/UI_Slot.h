@@ -60,6 +60,7 @@ private:
 
 	CUI_Slot_Frame*				m_pSelectFrame = { nullptr };
 	CUI_ItemIcon*				m_pItemIcon = { nullptr };
+	CUI_ItemIcon*				m_pSymbolIcon = { nullptr };
 	CUI_Slot_EquipSign*			m_pEquipSign = { nullptr };
 
 private:

@@ -85,16 +85,36 @@ void CUIGroup_WeaponSlot::Update_QuickSlot(wstring wstrTextureName)
     m_pQuickSlot->Change_Texture(wstrTextureName);
 }
 
-void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName)
+void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName, SLOT_TYPE eSlotType)
 {
-    m_pWeaponSlot->Change_Texture(wstrTextureName);
+    if (SLOT_QUICK == eSlotType)
+    {
+        m_pQuickSlot->Change_Texture(wstrTextureName);
+    }
+    else if (SLOT_WEAPON == eSlotType)
+    {
+        m_pWeaponSlot->Change_Texture(wstrTextureName);
+    }
+    else if (SLOT_SKILL == eSlotType)
+    {
+        m_pSkillSlot->Change_Texture(wstrTextureName);
+    }
 }
 
-void CUIGroup_WeaponSlot::Reset_SlotTexture()
+void CUIGroup_WeaponSlot::Reset_SlotTexture(SLOT_TYPE eSlotType)
 {
-    m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
-
-    // weapon 말고 item이나 skill slot에 대한 처리들도 추가해야함
+    if (SLOT_QUICK == eSlotType)
+    {
+        m_pQuickSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
+    else if (SLOT_WEAPON == eSlotType)
+    {
+        m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
+    else if (SLOT_SKILL == eSlotType)
+    {
+        m_pSkillSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
 }
 
 HRESULT CUIGroup_WeaponSlot::Create_UI()
@@ -125,6 +145,12 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
     pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
     m_pWeaponSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
+    // Skill Slot
+    pIconDesc.fX = 140.f;
+    pIconDesc.fY = g_iWinSizeY - 140.f;
+    pIconDesc.eUISort = SECOND;
+    pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
+    m_pSkillSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
     return S_OK;
 }

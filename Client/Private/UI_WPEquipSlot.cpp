@@ -278,8 +278,6 @@ void CUI_WPEquipSlot::Click_Event()
 		++skill;
 	}
 
-	// skill 한번 장착 해제하고 나서 다시 장착 X
-
 	if (isAlphaBG_On) // 장착
 	{
 		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
@@ -288,18 +286,18 @@ void CUI_WPEquipSlot::Click_Event()
 			{
 				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 				(*weapon)->Set_isEquip(true);
-				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
 		}
 		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
-			if (!(*skill)->Get_isEquip()) // 장착 해제 후 여기 오면 if문 못 들어옴
+			if (!(*skill)->Get_isEquip())
 			{
 				CInventory::GetInstance()->Add_EquipSkill((*skill), m_eSlotNum);
 				(*skill)->Set_isEquip(true);
-				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 			}
 		}
+
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
 		// AlphaBG 비활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
@@ -323,7 +321,6 @@ void CUI_WPEquipSlot::Click_Event()
 		}
 
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false);
-
 	}
 }
 

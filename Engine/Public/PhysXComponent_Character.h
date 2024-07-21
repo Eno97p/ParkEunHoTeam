@@ -72,7 +72,6 @@ public:
 	_bool Get_IsJump() { return m_bIsJump; }
 
 
-
 private:
 	//해제할 필요 없음 컨트롤러 매니저가 한 번에 지워줌
 	PxController* m_pController = { nullptr };

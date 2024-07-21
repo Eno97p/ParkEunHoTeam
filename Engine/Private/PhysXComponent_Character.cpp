@@ -350,6 +350,8 @@ void CPhysXComponent_Character::Set_Position(_vector vPos)
 	m_pController->setFootPosition(vPosition);
 }
 
+
+
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {
 	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;

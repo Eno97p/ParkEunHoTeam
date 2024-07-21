@@ -69,7 +69,7 @@ public:
 	tuple<vector<_float3>, vector<_uint>> CreateBoxVertices(const PxVec3& halfExtents);
 	HRESULT CreateActor(PxGeometryType::Enum eGeometryType, const PxTransform& pxTrans, const PxTransform& pxOffsetTrans = PxTransform());
 	PxActor* Get_Actor() { return m_pActor; }
-
+	_bool RayCast(_vector vYourPos, _vector vYourDir, PxReal distance,const PxQueryFilterData& filterData = PxQueryFilterData(), PxQueryFilterCallback* filterCall = NULL);
 private:
 	void MakeFilterData(PxFilterData& filterData);
 

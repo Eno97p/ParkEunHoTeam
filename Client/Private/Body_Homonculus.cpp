@@ -202,8 +202,8 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 9;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(0.9); // 0.9
+		fAnimSpeed = 1.2f;
+		m_pModelCom->Set_LerpTime(0.8); // 0.9
 	}
 	else if (*m_pState == CHomonculus::STATE_PARRIED)
 	{
@@ -216,7 +216,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 17;
-		fAnimSpeed = 0.7f; // 0.7
+		fAnimSpeed = 0.7f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_2)
@@ -224,7 +224,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
 		m_pWeapon->Set_Active();
-		fAnimSpeed = 0.9f;
+		fAnimSpeed = 1.3f; // 0.9
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_3)
@@ -273,7 +273,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 4;
 		fAnimSpeed = 1.f;
 		m_fDamageTiming += fTimeDelta;
-		m_pModelCom->Set_LerpTime(1.2);
+		m_pModelCom->Set_LerpTime(1.1);
 		if (m_fDamageTiming > 1.5f)
 		{
 			m_pWeapon->Set_Active();

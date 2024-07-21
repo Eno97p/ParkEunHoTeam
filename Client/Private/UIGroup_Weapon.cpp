@@ -306,6 +306,8 @@ HRESULT CUIGroup_Weapon::Create_Tab()
 
 void CUIGroup_Weapon::Change_Tab()
 {
+	// Tab Change 할 때 Equip Sign도 다시 적용되어야 함!
+
 	if (TAB_L == m_eTabType)
 	{
 		// Slot들 리셋

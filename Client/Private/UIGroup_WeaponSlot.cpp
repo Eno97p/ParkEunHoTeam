@@ -93,6 +93,8 @@ void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName)
 void CUIGroup_WeaponSlot::Reset_SlotTexture()
 {
     m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+
+    // weapon 말고 item이나 skill slot에 대한 처리들도 추가해야함
 }
 
 HRESULT CUIGroup_WeaponSlot::Create_UI()

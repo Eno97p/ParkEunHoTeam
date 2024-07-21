@@ -26,7 +26,29 @@ void CUI_Slot::Resset_Data()
 {
 	Safe_Release(m_pItemIcon);
 	m_pItemIcon = nullptr;
-	m_isEquip = false;
+	m_isEquip = false; 
+}
+
+void CUI_Slot::Check_Equip(_bool isWeapon, CItemData* pItemData)
+{
+	for (size_t i = 0; i < 3; ++i)
+	{
+		 if (isWeapon) // weapon 일 때
+		 {
+			 if (pItemData == CInventory::GetInstance()->Get_EquipWeapon(i))
+			 {
+				 m_isEquip = true;
+			 }
+
+		 }
+		 else // skill 일 때
+		 {
+			 if (pItemData == CInventory::GetInstance()->Get_EquipSkill(i))
+			 {
+				 m_isEquip = true;
+			 }
+		 }
+	}
 }
 
 HRESULT CUI_Slot::Initialize_Prototype()
@@ -324,6 +346,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Weapon()
 	m_wszItemName = (*weapon)->Get_ItemNameText();
 	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
 
+	Check_Equip(true, *weapon);
+
 	return S_OK;
 }
 
@@ -345,6 +369,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 
 	m_wszItemName = (*skill)->Get_ItemNameText();
 	m_wszItemExplain = (*skill)->Get_ItemExplainText();
+
+	Check_Equip(false, *skill);
 
 	return S_OK;
 }

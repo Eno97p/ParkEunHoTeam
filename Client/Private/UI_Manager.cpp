@@ -139,6 +139,7 @@ void CUI_Manager::Update_EquipSkill_Add(_uint iEquipSlotIdx)
 void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx)
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
 }
 
 void CUI_Manager::Resset_Player()

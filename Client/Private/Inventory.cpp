@@ -182,6 +182,13 @@ HRESULT CInventory::Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx)
 
 HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
 {
+	m_arrEquipSkill[iEquipSlotIdx] = nullptr;
+
+	CUI_Manager::GetInstance()->Update_EquipSkill_Delete(iEquipSlotIdx);
+
+	// HUD 관련 코드도 추가해야함
+	//dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))
+
 	return S_OK;
 }
 

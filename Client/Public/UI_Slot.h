@@ -46,6 +46,7 @@ public:
 	HRESULT			Change_ItemIcon_Skill();
 
 	void			Resset_Data();
+	void			Check_Equip(_bool isWeapon, CItemData* pItemData);
 
 private:
 	_bool						m_isEquip = { false };

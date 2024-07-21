@@ -140,7 +140,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 38;
-		fAnimSpeed = 1.3f;
+		fAnimSpeed = 1.5f; // 1.3
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_HIT)
@@ -291,7 +291,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		if(m_iPastAnimIndex == 150)
-			fAnimSpeed = 2.f; // 2
+			fAnimSpeed = 2.f;
 		else
 			fAnimSpeed = 1.5f;
 
@@ -529,7 +529,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 1.5f;
+		fAnimSpeed = 1.7f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)

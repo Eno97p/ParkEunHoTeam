@@ -52,6 +52,8 @@ HRESULT CGhost::Initialize(void* pArg)
 	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "B_Body", XMVectorSet(0.f, 0.f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
+	m_iState = STATE_IDLE;
+
 	return S_OK;
 }
 
@@ -224,7 +226,7 @@ HRESULT CGhost::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("DefaultAttack"), bind(&CGhost::Default_Attack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("DownAttack"), bind(&CGhost::Down_Attack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 3.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 1.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("DetectCool"), TEXT("Detect"), bind(&CGhost::Detect, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CGhost::Move, this, std::placeholders::_1));
 
@@ -295,7 +297,6 @@ NodeStates CGhost::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Ghost*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
-		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 
@@ -394,6 +395,11 @@ NodeStates CGhost::Down_Attack(_float fTimeDelta)
 
 NodeStates CGhost::Detect(_float fTimeDelta)
 {
+	if (m_pPlayer->Get_Cloaking())
+	{
+		return FAILURE;
+	}
+
 	if (m_fLengthFromPlayer > DETECTRANGE)
 	{
 		return FAILURE;
@@ -422,7 +428,7 @@ NodeStates CGhost::Detect(_float fTimeDelta)
 
 NodeStates CGhost::Move(_float fTimeDelta)
 {
-	if (m_iState == STATE_IDLE)
+	if (m_iState == STATE_IDLE || m_pPlayer->Get_Cloaking())
 	{
 		return COOLING;
 	}
@@ -443,7 +449,10 @@ NodeStates CGhost::Move(_float fTimeDelta)
 
 NodeStates CGhost::Idle(_float fTimeDelta)
 {
-	m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	if (!m_pPlayer->Get_Cloaking())
+	{
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	}
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }

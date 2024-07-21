@@ -62,10 +62,11 @@ void CWeapon_Homonculus::Tick(_float fTimeDelta)
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
 		if (m_eColltype == CCollider::COLL_START)
 		{
-			if (m_pPlayer->Get_State() == CPlayer::STATE_PARRY)
+			if (m_pPlayer->Get_Parry())
 			{
-				m_bIsParried = true;
+				m_pPlayer->Set_ParriedMonsterFloat4x4(m_pParentMatrix);
 				m_pPlayer->Parry_Succeed();
+				m_bIsParried = true;
 			}
 			else
 			{

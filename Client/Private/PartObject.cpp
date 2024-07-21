@@ -2,12 +2,12 @@
 #include "..\Public\PartObject.h"
 
 CPartObject::CPartObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CBlendObject{ pDevice, pContext }
 {
 }
 
 CPartObject::CPartObject(const CPartObject& rhs)
-	: CGameObject{ rhs }
+	: CBlendObject{ rhs }
 {
 }
 

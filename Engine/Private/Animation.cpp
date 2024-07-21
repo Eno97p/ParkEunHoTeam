@@ -45,6 +45,11 @@ _bool CAnimation::Check_CurDuration(_double CurDuration)
 	//return (CurDuration > m_PrevPosition && CurDuration < m_CurrentPosition);
 }
 
+void CAnimation::Setting_StartPos(_double StartPos)
+{
+	m_CurrentPosition = StartPos * m_Duration;
+}
+
 HRESULT CAnimation::Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAIAnimation->mName.data);

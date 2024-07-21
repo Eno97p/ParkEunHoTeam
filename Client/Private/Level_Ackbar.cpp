@@ -123,29 +123,9 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("LEVEL ACKBAR"));
 //#endif
 
-	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, TEXT("Layer_UI"));
-	if (!objs.empty())
-	{
-		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
-		{
-			if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
-			{
-				MSG_BOX("Failed to Open Level JUGGLAS");
-				return;
-			}
-		}
-
-
-	}
-
 	if (m_pGameInstance->Key_Down(DIK_F6))
 	{
-		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
-		{
-			MSG_BOX("Failed to Open Level JUGGLAS");
-			return;
-		}
-
+		m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS));
 	}
 }
 

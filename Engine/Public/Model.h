@@ -85,6 +85,8 @@ public:														//파티클 함수들
 
 	void			Set_LerpTime(_double LerpTime);
 
+	void Setting_StartTime(_double StartPos);
+
 
 
 public:/*For.Physx*/

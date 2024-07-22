@@ -64,6 +64,10 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
+	//test
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_ESSENCE);
+
 	return S_OK;
 }
 
@@ -127,19 +131,15 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 {
 	// Inventory에서 현재 선택한 아이템을 QuickAccess에 등록
-	// 현재 m_vecItem에 들어가 있는, 선택한 그 아이템을 m_vecQuickAccess에 넣어주기
-	m_vecQuickAccess.emplace_back(pItemData);
+	m_mapQuickAccess.emplace(iInvenIdx, pItemData);
 
 	// InvSub QuickAccess Slot UI에 출력하기
-	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add();
+	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(iInvenIdx);
 
 	// QuickAccess에도 출력 필요
 	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData, iInvenIdx);
 
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_QuickSlot(pItemData->Get_TextureName());
-
-	// Equip Sign 활성화해주기
-	//pItemData->Set_isEquip(true);
 
 	return S_OK;
 }
@@ -167,12 +167,7 @@ HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx)
 
 	(*item)->Set_isEquip(false);
 
-	// Quick 에서 제거
-	vector<CItemData*>::iterator quick = m_vecQuickAccess.begin();
-	for (size_t i = 0; i < iQuickIdx; ++i)
-		++quick;
-
-	m_vecQuickAccess.erase(quick);
+	m_mapQuickAccess.erase(iInvenIdx);
 
 	return S_OK;
 }

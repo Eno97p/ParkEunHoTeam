@@ -141,10 +141,19 @@ HRESULT CUIGroup_Quick::Render()
 void CUIGroup_Quick::Update_QuickSlot_Add(CItemData* pItemData, _int iInvenIdx)
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
-	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize() - 1; ++i)
-		++slot;
+	for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if ((*slot)->Get_isItemIconNull()) // ItemIcon이 없는 녀석이 있으면 거기를 채워넣기?
+		{
+			(*slot)->Create_ItemIcon_Quick(pItemData, iInvenIdx);
+			return;
+		}
+		else
+		{
+			++slot;
+		}
 
-	(*slot)->Create_ItemIcon_Quick(pItemData, iInvenIdx);
+	}
 }
 
 void CUIGroup_Quick::Update_InvSlot_Add(_uint iSlotIdx)
@@ -212,6 +221,7 @@ HRESULT CUIGroup_Quick::Create_Slot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_QUICK;
 			pDesc.eUISort = FIFTH;
+			pDesc.iSlotIdx = i * 6 + j;
 			m_vecSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}
@@ -235,6 +245,7 @@ HRESULT CUIGroup_Quick::Create_InvSlot()
 			pDesc.fSizeY = 85.3f;
 			pDesc.eSlotType = CUI_Slot::SLOT_QUICKINV;
 			pDesc.eUISort = TENTH;
+			pDesc.iSlotIdx = i * 5 + j;
 			m_vecInvSlot.emplace_back(dynamic_cast<CUI_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Slot"), &pDesc)));
 		}
 	}

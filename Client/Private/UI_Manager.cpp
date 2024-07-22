@@ -88,10 +88,10 @@ void CUI_Manager::Update_Inventory_Add(_uint iSlotIdx)
 
 }
 
-void CUI_Manager::Update_InvSub_Quick_Add()
+void CUI_Manager::Update_InvSub_Quick_Add(_uint iSlotIdx)
 {
 	map<string, CUIGroup*>::iterator invsubQuick = m_mapUIGroup.find("InvSub");
-	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot();
+	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot(iSlotIdx);
 }
 
 void CUI_Manager::Update_Quick_Add(CItemData* pItemData, _int iInvenIdx)

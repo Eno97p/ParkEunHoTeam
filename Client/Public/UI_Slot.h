@@ -27,6 +27,14 @@ private:
 
 public:
 	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
+	
+	_bool			Get_isItemIconNull()
+	{ 
+		if (m_pItemIcon != nullptr)
+			return false;
+		else
+			return true;
+	}
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;

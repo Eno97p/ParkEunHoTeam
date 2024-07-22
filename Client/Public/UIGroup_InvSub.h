@@ -25,7 +25,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void			Update_InvSub_QuickSlot();
+	void			Update_InvSub_QuickSlot(_uint iSlotIdx);
 	void			Delete_InvSub_QuickSlot(_uint iSlotIdx);
 
 private:

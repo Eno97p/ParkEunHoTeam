@@ -479,9 +479,6 @@ void CUI_Slot::Click_BtnEvent()
 	}
 	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우
 	{
-		// 빈 슬롯 클릭했어도 그냥 QuickAccess는 순서대로 들어가는 게 좋을 것 같음
-
-		// 선택한 Item의 Idx를 받아와서 Quick에 적용시켜주는 매커니즘
 		CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
 
 		if (!pItem->Get_isEquip())

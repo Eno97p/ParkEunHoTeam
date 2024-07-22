@@ -159,9 +159,9 @@ void CUIGroup_WeaponSlot::Key_Input()
 {
     if (m_pGameInstance->Key_Down(DIK_V)) // Quick Slot Change
     {
-        if (0 < CInventory::GetInstance()->Get_QuickSize()) // 아무 것도 없을 때 예외 처리
+        if (CInventory::GetInstance()->Get_isQuickEmpty()) // 아무 것도 없을 때 예외 처리 0 < CInventory::GetInstance()->Get_QuickSize()
         {
-            if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
+            if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickMapSize() - 1)
             {
                 ++m_iQuickIdx;
             }
@@ -170,12 +170,14 @@ void CUIGroup_WeaponSlot::Key_Input()
                 m_iQuickIdx = 0;
             }
 
-            vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+            //vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+            map<_uint, CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickMap()->begin();
+
             for (size_t i = 0; i < m_iQuickIdx; ++i)
                 ++quickaccess;
 
-            m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
-
+            //m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
+            m_pQuickSlot->Change_Texture((*quickaccess).second->Get_TextureName());
         }
     }
 }

@@ -4,6 +4,7 @@
 
 #include "UI_CharacterBG.h"
 #include "UI_CharacterTop.h"
+#include "UI_StateSoul.h"
 
 CUIGroup_Character::CUIGroup_Character(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUIGroup{ pDevice, pContext }
@@ -87,6 +88,21 @@ HRESULT CUIGroup_Character::Create_UI()
     pDesc.eLevel = LEVEL_STATIC;
     m_vecUI.emplace_back(dynamic_cast<CUI_CharacterTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_CharacterTop"), &pDesc)));
 
+    // Soul 도 두 개 추가해야함
+    CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
+    pSoulDesc.eLevel = LEVEL_STATIC;
+    pSoulDesc.fX = 500.f;
+    pSoulDesc.fY = 207.f;
+    pSoulDesc.fSizeX = 24.f;
+    pSoulDesc.fSizeY = 24.f;
+    pSoulDesc.eUISort = NINETH;
+    m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
+
+    pSoulDesc.fX = 500.f;
+    pSoulDesc.fY = 227.f;
+    pSoulDesc.fSizeX = 24.f;
+    pSoulDesc.fSizeY = 24.f;
+    m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
 
     return S_OK;
 }

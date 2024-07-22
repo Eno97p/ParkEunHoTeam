@@ -167,7 +167,7 @@ HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx)
 
 	(*item)->Set_isEquip(false);
 
-	// Quick 에서 제거 필요 (Safe Release하면 안 되고 erase만!)
+	// Quick 에서 제거
 	vector<CItemData*>::iterator quick = m_vecQuickAccess.begin();
 	for (size_t i = 0; i < iQuickIdx; ++i)
 		++quick;

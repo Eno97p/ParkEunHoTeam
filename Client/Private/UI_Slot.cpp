@@ -477,6 +477,8 @@ void CUI_Slot::Click_BtnEvent()
 	}
 	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우
 	{
+		// 빈 슬롯 클릭했어도 그냥 QuickAccess는 순서대로 들어가는 게 좋을 것 같음
+		// 장착 먼저 구현하고 나서 Explain 출력이나 Character 출력 같은 것 구현?
 
 	}
 }

@@ -258,6 +258,8 @@ HRESULT CUI_Slot::Create_ItemIcon_Inv()
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
+	m_wszItemExplain_Quick = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText_Quick();
+
 	if (SLOT_INV == m_eSlotType)
 	{
 		// 여기서 Symbol Icon도 생성해주기
@@ -478,8 +480,22 @@ void CUI_Slot::Click_BtnEvent()
 	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우
 	{
 		// 빈 슬롯 클릭했어도 그냥 QuickAccess는 순서대로 들어가는 게 좋을 것 같음
-		// 장착 먼저 구현하고 나서 Explain 출력이나 Character 출력 같은 것 구현?
 
+		// 선택한 Item의 Idx를 받아와서 Quick에 적용시켜주는 매커니즘
+		CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+
+		if (!pItem->Get_isEquip())
+		{
+			CInventory::GetInstance()->Add_QuickAccess(pItem, m_iSlotIdx);
+
+			// Equip Sign 활성화
+			pItem->Set_isEquip(true);
+			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+
+			// Quick Acess의 InvSlot도 Equip Sign 활성화
+			dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
+
+		}
 	}
 }
 
@@ -494,6 +510,16 @@ void CUI_Slot::Render_Font()
 		// Explain
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain, _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return; 
+	}
+	else if (SLOT_QUICKINV == m_eSlotType)
+	{
+		// Title
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wszItemName, _float2(170.f, g_iWinSizeY - 185.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+
+		// Explain
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain_Quick, _float2(180.f, g_iWinSizeY - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
 	}
 }
 

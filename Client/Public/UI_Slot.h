@@ -57,6 +57,7 @@ private:
 	_uint						m_iSlotIdx = { 0 };
 	wstring						m_wszItemName = TEXT("");
 	wstring						m_wszItemExplain = TEXT("");
+	wstring						m_wszItemExplain_Quick = TEXT("");
 
 	UISORT_PRIORITY				m_eUISort = { SORT_END };
 	SLOT_TYPE					m_eSlotType = { SLOT_END };

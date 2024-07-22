@@ -1395,6 +1395,9 @@ HRESULT CMainApp::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight12"), TEXT("../Bin/Resources/Fonts/HeirofLight12.spritefont"))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight13"), TEXT("../Bin/Resources/Fonts/HeirofLight13.spritefont"))))
 		return E_FAIL;
 

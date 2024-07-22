@@ -523,6 +523,21 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
       <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade">
+      <UniqueIdentifier>{46812d85-c354-471a-849e-49e9f41d2d66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\BG">
+      <UniqueIdentifier>{c726aad1-8270-470a-abc6-1eac1e757bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Forge">
+      <UniqueIdentifier>{27572855-1d14-468a-b2e1-ed2167726a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Crucible">
+      <UniqueIdentifier>{26be552d-0619-48a1-91c1-84f2e44ca3e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Forge_Text">
+      <UniqueIdentifier>{980feb26-4125-4acc-9e62-2fc893b35546}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1064,6 +1079,21 @@
     <ClInclude Include="Import_Object_.hpp">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Upgrade.h">
+      <Filter>02.GameObjects\07. UI\Upgrade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeBG.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeForge.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeForge_Text.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge_Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeCrucible.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1578,6 +1608,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Upgrade.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeBG.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeForge.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeForge_Text.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge_Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

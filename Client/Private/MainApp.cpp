@@ -103,6 +103,14 @@
 #include "UIGroup_Script.h"
 #pragma endregion Script
 
+#pragma region Upgrade
+#include "UI_UpgradeBG.h"
+#include "UI_UpgradeForge.h"
+#include "UI_UpgradeForge_Text.h"
+#include "UI_UpgradeCrucible.h"
+#include "UIGroup_Upgrade.h"
+#pragma endregion Upgrade
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -957,6 +965,28 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Script
 
+#pragma region Upgrade
+	/* Prototype_Component_Texture_Upgrade_BG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_BG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_home.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Upgrade_Forge */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Forge"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Upgrade_Forge_Text */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Forge_Text"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge_Text.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Upgrade_Crucible */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Crucible"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Crucible.png"), 1))))
+		return E_FAIL;
+#pragma endregion Upgrade
+
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
@@ -1344,6 +1374,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion Script
 
+#pragma region Upgrade
+	/* For.Prototype_GameObject_UIGroup_UpgradeBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpgradeBG"),
+		CUI_UpgradeBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Upgrade_Forge*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Upgrade_Forge"),
+		CUI_UpgradeForge::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Upgrade_Forge_Text*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Upgrade_Forge_Text"),
+		CUI_UpgradeForge_Text::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Upgrade_Crucible*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Upgrade_Crucible"),
+		CUI_UpgradeCrucible::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Upgrade*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Upgrade"),
+		CUIGroup_Upgrade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Upgrade
+
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Inventory"),
@@ -1393,6 +1450,9 @@ HRESULT CMainApp::Ready_Fonts()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo27"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_27.spritefont"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight12"), TEXT("../Bin/Resources/Fonts/HeirofLight12.spritefont"))))

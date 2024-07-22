@@ -246,6 +246,7 @@
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
+    <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
@@ -258,6 +259,10 @@
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
     <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
+    <ClInclude Include="..\Public\UI_UpgradeBG.h" />
+    <ClInclude Include="..\Public\UI_UpgradeCrucible.h" />
+    <ClInclude Include="..\Public\UI_UpgradeForge.h" />
+    <ClInclude Include="..\Public\UI_UpgradeForge_Text.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -422,6 +427,7 @@
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
@@ -434,6 +440,10 @@
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
     <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeBG.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeForge.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeForge_Text.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />

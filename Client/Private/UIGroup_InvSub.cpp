@@ -125,6 +125,15 @@ void CUIGroup_InvSub::Update_InvSub_QuickSlot()
 	(*slot)->Create_ItemIcon_SubQuick(m_iSlotIdx);
 }
 
+void CUIGroup_InvSub::Delete_InvSub_QuickSlot(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Delete_ItemIcon();
+}
+
 HRESULT CUIGroup_InvSub::Create_UI()
 {
 	// BG

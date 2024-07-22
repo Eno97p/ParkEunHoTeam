@@ -124,7 +124,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	return S_OK;
 }
 
-HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
+HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 {
 	// Inventory에서 현재 선택한 아이템을 QuickAccess에 등록
 	// 현재 m_vecItem에 들어가 있는, 선택한 그 아이템을 m_vecQuickAccess에 넣어주기
@@ -134,7 +134,7 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData)
 	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add();
 
 	// QuickAccess에도 출력 필요
-	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData);
+	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData, iInvenIdx);
 
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_QuickSlot(pItemData->Get_TextureName());
 
@@ -154,6 +154,25 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 
 	// HUD
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName(), CUIGroup_WeaponSlot::SLOT_WEAPON);
+
+	return S_OK;
+}
+
+HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx)
+{
+	// ItemData의 Equp 여부 설정
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < iInvenIdx; ++i)
+		++item;
+
+	(*item)->Set_isEquip(false);
+
+	// Quick 에서 제거 필요 (Safe Release하면 안 되고 erase만!)
+	vector<CItemData*>::iterator quick = m_vecQuickAccess.begin();
+	for (size_t i = 0; i < iQuickIdx; ++i)
+		++quick;
+
+	m_vecQuickAccess.erase(quick);
 
 	return S_OK;
 }

@@ -94,10 +94,10 @@ void CUI_Manager::Update_InvSub_Quick_Add()
 	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot();
 }
 
-void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
+void CUI_Manager::Update_Quick_Add(CItemData* pItemData, _int iInvenIdx)
 {
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
-	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
+	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData, iInvenIdx);
 }
 
 void CUI_Manager::Update_Quick_InvSlot_Add(_uint iSlotIdx)

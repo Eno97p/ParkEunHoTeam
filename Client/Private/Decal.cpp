@@ -24,10 +24,9 @@ HRESULT CDecal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(155.f, 522.f, 113.f, 1.f));
+	GAMEOBJECT_DESC* gameobjDesc = (GAMEOBJECT_DESC*)pArg;
+	
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(gameobjDesc->mWorldMatrix._41, gameobjDesc->mWorldMatrix._42, gameobjDesc->mWorldMatrix._43, 1.f));
 
 	return S_OK;
 }
@@ -45,56 +44,11 @@ void CDecal::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DECAL, this);
 }
 
-HRESULT CDecal::Render()
+pair<_uint, _matrix> CDecal::Render_Decal()
 {
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
-	{
-		m_pShaderCom->Unbind_SRVs();
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		m_pShaderCom->Begin(8);
-
-		m_pModelCom->Render(i);
-	}
-
-	_vector v;
-	_matrix mat = XMMatrixInverse(&v, m_pTransformCom->Get_WorldMatrix());
-	return S_OK;
-}
-
-HRESULT CDecal::Add_Components()
-{
-	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Decal"),
-		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-		return E_FAIL;
-
-	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CDecal::Bind_ShaderResources()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
-		return E_FAIL;
-
-
-	return S_OK;
+	_matrix mat = XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix());
+	// first : 텍스쳐 번호, second : 월드 역행렬(건들지 말것)
+	return pair(43, mat);
 }
 
 CDecal* CDecal::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

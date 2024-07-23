@@ -523,6 +523,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
       <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras">
+      <UniqueIdentifier>{46d5952e-6b40-41a3-a4d7-843ef4e2d3f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1064,6 +1067,9 @@
     <ClInclude Include="Import_Object_.hpp">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1578,6 +1584,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

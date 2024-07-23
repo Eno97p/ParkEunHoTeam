@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
@@ -358,6 +359,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />

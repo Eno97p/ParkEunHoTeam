@@ -105,11 +105,7 @@ HRESULT CRenderer::Initialize()
 
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
-    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth_Decal"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
-        return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal"))))
-        return E_FAIL;
-    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Depth_Decal"))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalResult"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
@@ -189,8 +185,13 @@ HRESULT CRenderer::Initialize()
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_Distortion"))))
         return E_FAIL;
 
-    m_pDistortionTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Distortion/Distortion%d.png"), 5);
+    m_pDistortionTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Distortion/Distortion%d.png"), 7);
     if (nullptr == m_pDistortionTex)
+        return E_FAIL;
+
+    // 이 위치에 decal texture 넣고 쓸것
+    m_pDecalTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Decals_Textures/Decal%d.png"), 58);
+    if (nullptr == m_pDecalTex)
         return E_FAIL;
 
     /* Target_LUT */
@@ -727,7 +728,6 @@ void CRenderer::Render_ShadowObjects()
 
 void  CRenderer::Render_NonBlend()
 {
-
     /* Diffuse + Normal */
     if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"))))
         return;
@@ -750,40 +750,41 @@ void CRenderer::Render_Decal()
     if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decal"))))
         return;
 
-    for (auto& pGameObject : m_RenderGroup[RENDER_DECAL])
-    {
-        if (nullptr != pGameObject)
-            pGameObject->Render();
-
-        Safe_Release(pGameObject);
-    }
-    m_RenderGroup[RENDER_DECAL].clear();
-
-    if (FAILED(m_pGameInstance->End_MRT()))
-        return;
-
-    if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DecalResult"))))
-        return;
-
-    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrixInv", &m_Mat)))
-        return;
     if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
         return;
 
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
         return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth_Decal"), m_pShader, "g_DepthTexture")))
-        return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
 
-    m_pShader->Begin(17);
+    for (auto& pGameObject : m_RenderGroup[RENDER_DECAL])
+    {
+        if (nullptr != pGameObject)
+        {
+            pair<_uint, _matrix> decalPair = pGameObject->Render_Decal();
+            _matrix vMat = decalPair.second;
+            _float4x4 vFloat4x4;
+            XMStoreFloat4x4(&vFloat4x4, vMat);
 
-    m_pVIBuffer->Bind_Buffers();
+            if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrixInv", &vFloat4x4)))
+                return;
 
-    m_pVIBuffer->Render();
+            m_pDecalTex->Bind_ShaderResource(m_pShader, "g_EffectTexture", decalPair.first);
+            
+            m_pShader->Begin(17);
+
+            m_pVIBuffer->Bind_Buffers();
+
+            m_pVIBuffer->Render();
+        }
+
+        Safe_Release(pGameObject);
+    }
+
+    m_RenderGroup[RENDER_DECAL].clear();
 
     if (FAILED(m_pGameInstance->End_MRT()))
         return;
@@ -863,9 +864,9 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
     
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalResult"), m_pShader, "g_DiffuseTexture")))
-    //    return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+        return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return;
@@ -1610,6 +1611,7 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
@@ -1683,5 +1685,6 @@ void CRenderer::Free()
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);
     Safe_Release(m_pDistortionTex);
+    Safe_Release(m_pDecalTex);
     Safe_Release(m_pReflectionDepthStencilView);
 }

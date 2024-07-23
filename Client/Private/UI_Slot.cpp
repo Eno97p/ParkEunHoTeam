@@ -9,8 +9,10 @@
 #include "UI_ItemIcon.h"
 #include "UI_Slot_EquipSign.h"
 
+#include "UIGroup_Inventory.h"
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Weapon.h"
+#include "UIGroup_Quick.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -25,8 +27,32 @@ CUI_Slot::CUI_Slot(const CUI_Slot& rhs)
 void CUI_Slot::Resset_Data()
 {
 	Safe_Release(m_pItemIcon);
+	Safe_Release(m_pSymbolIcon);
 	m_pItemIcon = nullptr;
-	m_isEquip = false;
+	m_pSymbolIcon = nullptr;
+	m_isEquip = false; 
+}
+
+void CUI_Slot::Check_Equip(_bool isWeapon, CItemData* pItemData)
+{
+	for (size_t i = 0; i < 3; ++i)
+	{
+		 if (isWeapon) // weapon 일 때
+		 {
+			 if (pItemData == CInventory::GetInstance()->Get_EquipWeapon(i))
+			 {
+				 m_isEquip = true;
+			 }
+
+		 }
+		 else // skill 일 때
+		 {
+			 if (pItemData == CInventory::GetInstance()->Get_EquipSkill(i))
+			 {
+				 m_isEquip = true;
+			 }
+		 }
+	}
 }
 
 HRESULT CUI_Slot::Initialize_Prototype()
@@ -69,10 +95,12 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if (m_isSelect && nullptr != m_pItemIcon)
+	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
 	{
-		if(m_pGameInstance->Mouse_Down(DIM_LB)) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
-			Open_SubPage();		
+		if (nullptr != m_pItemIcon || SLOT_QUICK == m_eSlotType)
+		{
+			Click_BtnEvent();
+		}
 	}
 
 	if (nullptr != m_pSelectFrame)
@@ -80,6 +108,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Tick(fTimeDelta);
+
+	if (nullptr != m_pSymbolIcon)
+		m_pSymbolIcon->Tick(fTimeDelta);
 
 	if (nullptr != m_pEquipSign)
 		m_pEquipSign->Tick(fTimeDelta);
@@ -95,7 +126,9 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pItemIcon)
 		m_pItemIcon->Late_Tick(fTimeDelta);
 
-	// 장착을 한 경우에만 Late true 해주기
+	if (nullptr != m_pSymbolIcon && m_isSelect)
+		m_pSymbolIcon->Late_Tick(fTimeDelta);
+
 	if (nullptr != m_pEquipSign && m_isEquip)
 		m_pEquipSign->Late_Tick(fTimeDelta);
 }
@@ -168,6 +201,8 @@ HRESULT CUI_Slot::Create_Frame()
 	pDesc.fSizeY = 85.3f;
 	
 	if (SLOT_QUICK == m_eSlotType)
+		pDesc.eUISort = ELEVENTH; // ELEVENTH
+	else if(SLOT_QUICKINV == m_eSlotType)
 		pDesc.eUISort = ELEVENTH;
 	else if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 		pDesc.eUISort = TENTH;
@@ -192,7 +227,9 @@ HRESULT CUI_Slot::Create_EquipSign()
 	pDesc.fSizeY = 64.f;
 
 	if (SLOT_QUICK == m_eSlotType)
-		pDesc.eUISort = ELEVENTH;
+		pDesc.eUISort = THIRTEENTH;
+	else if(SLOT_QUICKINV == m_eSlotType)
+		pDesc.eUISort = THIRTEENTH;
 	else if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 		pDesc.eUISort = TENTH;
 	else if (SLOT_INVSUB == m_eSlotType)
@@ -221,6 +258,18 @@ HRESULT CUI_Slot::Create_ItemIcon_Inv()
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
+	m_wszItemExplain_Quick = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText_Quick();
+
+	if (SLOT_INV == m_eSlotType)
+	{
+		// 여기서 Symbol Icon도 생성해주기
+		pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+		pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+		pDesc.fSizeX = 160.f;
+		pDesc.fSizeY = 160.f;
+		m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+	}
+
 	return S_OK;
 }
 
@@ -243,7 +292,7 @@ HRESULT CUI_Slot::Create_ItemIcon_SubQuick(_uint iSlotIdx)
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
+HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData, _int iInvenIdx)
 {
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
@@ -251,12 +300,14 @@ HRESULT CUI_Slot::Create_ItemIcon_Quick(CItemData* pItemData)
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 64.f;
 	pDesc.fSizeY = 64.f;
-	pDesc.eUISort = SIXTEENTH;
+	pDesc.eUISort = TWELFTH; // SIXTEENTH
 	pDesc.wszTexture = pItemData->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	m_wszItemName = pItemData->Get_ItemNameText();
 	m_wszItemExplain = pItemData->Get_ItemExplainText();
+
+	m_iInventoryIdx = iInvenIdx;
 
 	return S_OK;
 }
@@ -280,6 +331,13 @@ HRESULT CUI_Slot::Create_ItemIcon_Weapon()
 	m_wszItemName = (*weapon)->Get_ItemNameText();
 	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
 
+	// 여기서 Symbol Icon도 생성해주기
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
 	return S_OK;
 }
 
@@ -301,6 +359,13 @@ HRESULT CUI_Slot::Create_ItemIcon_Skill()
 
 	m_wszItemName = (*skill)->Get_ItemNameText();
 	m_wszItemExplain = (*skill)->Get_ItemExplainText();
+
+	// 여기서 Symbol Icon도 생성해주기
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
 	return S_OK;
 }
@@ -324,6 +389,15 @@ HRESULT CUI_Slot::Change_ItemIcon_Weapon()
 	m_wszItemName = (*weapon)->Get_ItemNameText();
 	m_wszItemExplain = (*weapon)->Get_ItemExplainText();
 
+	Check_Equip(true, *weapon);
+
+	// SymbolIcon
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
 	return S_OK;
 }
 
@@ -346,10 +420,27 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	m_wszItemName = (*skill)->Get_ItemNameText();
 	m_wszItemExplain = (*skill)->Get_ItemExplainText();
 
+	Check_Equip(false, *skill);
+
+	// SymbolIcon
+	pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+	pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pDesc.fSizeX = 160.f;
+	pDesc.fSizeY = 160.f;
+	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
 	return S_OK;
 }
 
-void CUI_Slot::Open_SubPage()
+HRESULT CUI_Slot::Delete_ItemIcon()
+{
+	Safe_Release(m_pItemIcon);
+	m_pItemIcon = nullptr;
+
+	return S_OK;
+}
+
+void CUI_Slot::Click_BtnEvent()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
 	{
@@ -366,6 +457,43 @@ void CUI_Slot::Open_SubPage()
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_CurSlotIdx(m_iSlotIdx);
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(true);
 	}
+	else if (SLOT_QUICK == m_eSlotType) // Quick Acess의 슬롯을 클릭한 경우
+	{
+		if (nullptr == m_pItemIcon) // ItemIcon이 없으면 InvSlot 활성화
+		{
+			dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Set_isInvSlot_Act(true);
+		}
+		else // 있으면 장착 해제
+		{
+			Delete_ItemIcon(); // Quick Acess Slot에서 ItemIcon 해제
+			
+			// Quick Acess InvSlot에서 Equip Sign 해제
+			dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iInventoryIdx, false);
+
+			// Inventory에서 EqupiSign 해제 / Inv의 SubQuick에서도 제거
+			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iInventoryIdx, false);
+			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot(m_iInventoryIdx);
+
+			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx);
+		}
+	}
+	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우
+	{
+		CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+
+		if (!pItem->Get_isEquip())
+		{
+			CInventory::GetInstance()->Add_QuickAccess(pItem, m_iSlotIdx);
+
+			// Equip Sign 활성화
+			pItem->Set_isEquip(true);
+			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+
+			// Quick Acess의 InvSlot도 Equip Sign 활성화
+			dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
+
+		}
+	}
 }
 
 void CUI_Slot::Render_Font()
@@ -376,9 +504,19 @@ void CUI_Slot::Render_Font()
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wszItemName, _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return;
 
-		// Explain >> 한글 폰트 뽑아서 새로 적용하긴 해야 함 Font_HeirofLight13   Font_Cardo
+		// Explain
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain, _float2((g_iWinSizeX >> 1) + 50.f, (g_iWinSizeY >> 1) - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return; 
+	}
+	else if (SLOT_QUICKINV == m_eSlotType)
+	{
+		// Title
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wszItemName, _float2(170.f, g_iWinSizeY - 185.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+
+		// Explain
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain_Quick, _float2(180.f, g_iWinSizeY - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
 	}
 }
 
@@ -413,6 +551,7 @@ void CUI_Slot::Free()
 	__super::Free();
 
 	Safe_Release(m_pEquipSign);
+	Safe_Release(m_pSymbolIcon);
 	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectFrame);
 }

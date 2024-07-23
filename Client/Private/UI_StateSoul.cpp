@@ -21,7 +21,7 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 {
 	UI_SOUL_DESC* pDesc = static_cast<UI_SOUL_DESC*>(pArg);
 
-	m_isInv = pDesc->isInv;
+	m_eUISort = pDesc->eUISort;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,7 +29,6 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	Setting_Data();
 	Setting_Position();
 
 	return S_OK;
@@ -45,10 +44,7 @@ void CUI_StateSoul::Tick(_float fTimeDelta)
 
 void CUI_StateSoul::Late_Tick(_float fTimeDelta)
 {
-	if(m_isInv)
-		CGameInstance::GetInstance()->Add_UI(this, NINETH);
-	else
-		CGameInstance::GetInstance()->Add_UI(this, SECOND);
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
 }
 
 HRESULT CUI_StateSoul::Render()
@@ -102,24 +98,6 @@ HRESULT CUI_StateSoul::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CUI_StateSoul::Setting_Data()
-{
-	if (m_isInv)
-	{
-		m_fX = 250.f;
-		m_fY = 120.f;
-		m_fSizeX = 32.f;
-		m_fSizeY = 32.f;
-	}
-	else
-	{
-		m_fX = 200.f;
-		m_fY = 100.f;
-		m_fSizeX = 32.f;
-		m_fSizeY = 32.f;
-	}
 }
 
 CUI_StateSoul* CUI_StateSoul::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

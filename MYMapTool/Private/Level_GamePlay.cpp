@@ -19,7 +19,7 @@
 #include "Grass.h"
 #include "FireEffect.h"
 #include "TransitionCamera.h"
-
+#include "Trap.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{pDevice, pContext}
 {
@@ -340,6 +340,7 @@ HRESULT CLevel_GamePlay::Save_Data()
     //_uint   iVerticesZ = { 0 };
     DWORD   dwByte(0);
     _uint iTriggerType;
+    _double dStartTime = 0;
 
     // 积己等 Tool Obj甸 历厘
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
@@ -362,6 +363,21 @@ HRESULT CLevel_GamePlay::Save_Data()
             iTriggerType =iter->Get_TriggerType();
             WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
             WriteFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+        }
+        else if (strcmp(szName, "Prototype_GameObject_Trap") == 0)
+        {
+            strcpy_s(szModelName, iter->Get_ModelName());
+            eModelType = iter->Get_ModelType();
+            strcpy_s(szLayer, iter->Get_Layer());
+            iTriggerType = iter->Get_TriggerType();
+            dStartTime = dynamic_cast<CTrap*>(iter)->Get_StartTime();
+
+            WriteFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+            WriteFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+            WriteFile(hFile, &dStartTime, sizeof(_double), &dwByte, nullptr);
         }
         else
         {
@@ -611,15 +627,17 @@ HRESULT CLevel_GamePlay::Load_Data()
     DWORD   dwByte(0);
 
     _uint   iTriggerType;
+    _double dStartTime = 0;
+
     //ReadFile(hFile, &iVerticesX, sizeof(_uint), &dwByte, nullptr);
     //ReadFile(hFile, &iVerticesZ, sizeof(_uint), &dwByte, nullptr);
 
     //CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object_InLayer(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"))->back());
 
     // pDesc 持绢拎具窃
-    CTerrain::TERRAIN_DESC pDesc{};
+   /* CTerrain::TERRAIN_DESC pDesc{};
     pDesc.iVerticesX = iVerticesX;
-    pDesc.iVerticesZ = iVerticesZ;
+    pDesc.iVerticesZ = iVerticesZ;*/
 
     //pTerrain->Setting_NewTerrain(&pDesc);
     //pTerrain->Setting_LoadTerrain(&pDesc);
@@ -644,6 +662,31 @@ HRESULT CLevel_GamePlay::Load_Data()
             pDesc.TriggerType = iTriggerType;
 
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+                return E_FAIL;
+        }
+        else if (strcmp(szName, "Prototype_GameObject_Trap") == 0)
+        {
+            ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+            ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+            ReadFile(hFile, &dStartTime, sizeof(_double), &dwByte, nullptr);
+
+            if (0 == dwByte)
+                break;
+
+            CTrap::TRAP_DESC pDesc{};
+
+            strcpy_s(pDesc.szObjName, szName);
+            strcpy_s(pDesc.szLayer, szLayer);
+            strcpy_s(pDesc.szModelName, szModelName);
+            pDesc.mWorldMatrix = WorldMatrix;
+            pDesc.eModelType = eModelType;
+            pDesc.TriggerType = iTriggerType;
+            pDesc.dStartTimeOffset = dStartTime;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pDesc)))
                 return E_FAIL;
         }
         else 
@@ -696,7 +739,7 @@ const _tchar* CLevel_GamePlay::Setting_FileName()
     case STAGE_THREE:
         return L"../Bin/MapData/Stage_Jugglas.dat";
     case STAGE_BOSS:
-        return L"../Bin/MapData/test.txt";
+        return L"../Bin/MapData/test.dat";
     default:
         MSG_BOX("Setting File Name is Failed");
         return L"\0";

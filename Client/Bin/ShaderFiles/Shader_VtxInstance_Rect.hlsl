@@ -75,11 +75,12 @@ PS_OUT PS_MAIN(PS_IN In)
     if (Out.vColor.a < 0.1f)
         discard;
 
+    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
     if (g_Alpha)
     {
-        Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
+        Out.vColor.a *= 1- fRatio;
     }
-    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+    
 
     if (g_Color)
     {

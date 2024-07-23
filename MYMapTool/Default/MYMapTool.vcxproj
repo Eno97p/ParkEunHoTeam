@@ -223,7 +223,8 @@
     <ClInclude Include="..\Public\ToolObj.h" />
     <ClInclude Include="..\Public\ToolObj_Manager.h" />
     <ClInclude Include="..\Public\TransitionCamera.h" />
-    <ClInclude Include="..\public\TrapMace.h" />
+    <ClInclude Include="..\Public\Trap.h" />
+    <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\TutorialMapBridge.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -272,7 +273,8 @@
     <ClCompile Include="..\Private\ToolObj.cpp" />
     <ClCompile Include="..\Private\ToolObj_Manager.cpp" />
     <ClCompile Include="..\Private\TransitionCamera.cpp" />
-    <ClCompile Include="..\private\TrapMace.cpp" />
+    <ClCompile Include="..\Private\Trap.cpp" />
+    <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\TutorialMapBridge.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>

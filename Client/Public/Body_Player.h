@@ -14,6 +14,12 @@ BEGIN(Client)
 
 class CBody_Player final : public CPartObject
 {
+public:
+	typedef struct BODY_DESC : public CPartObject::PARTOBJ_DESC
+	{
+		const _bool* pIsCloaking;
+	}BODY_DESC;
+
 private:
 	CBody_Player(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBody_Player(const CBody_Player& rhs);
@@ -37,7 +43,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
-	_bool m_bIsClocking = false;
+	const _bool* m_pIsCloaking = false;
 
 	_bool m_bAnimFinished = false;
 	_uint m_iPastAnimIndex = 0;

@@ -12,7 +12,7 @@
 #include "UI_FadeInOut.h"
 #include "Level_Loading.h"
 
-
+#include "Trap.h"
 #include "EventTrigger.h"
 #include"Item.h"
 
@@ -37,7 +37,11 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
+	CGameObject::GAMEOBJECT_DESC gameobjDesc;
+	gameobjDesc.mWorldMatrix._41 = 155.f;
+	gameobjDesc.mWorldMatrix._42 = 522.f;
+	gameobjDesc.mWorldMatrix._43 = 113.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &gameobjDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
@@ -52,7 +56,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
 
 #ifdef _DEBUG
-	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
+	m_iCamSize = m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
 #endif
 
 	return S_OK;
@@ -98,7 +102,15 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	}*/
 
 
-	list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+
+	if (m_pGameInstance->Key_Down(DIK_F6))
+	{
+		CLevel* level = CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR);
+   		m_pGameInstance->Scene_Change(LEVEL_LOADING, level);
+	
+	}
+
+	/*list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
 	if (!objs.empty())
 	{
 		if (dynamic_cast<CUI*>(objs.back())->Get_isSceneChange())
@@ -109,19 +121,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 				return;
 			}
 		}
+	}*/
 
-
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_F6))
-	{
-		if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
-		{
-			MSG_BOX("Failed to Open Level JUGGLAS");
-			return;
-		}
-	}
-	
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
 //#endif
@@ -137,18 +138,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 	m_pGameInstance->Light_Clear();
 
 
-	//Load_Lights();
+	Load_Lights();
 
 
-	LIGHT_DESC			LightDesc{};
+	//LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	//LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
@@ -265,15 +266,16 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//	return E_FAIL;
 
 
-	CGameObject::GAMEOBJECT_DESC desc;
-	desc.pModelName = "Prototype_Component_Model_Hachoir";
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
-		return E_FAIL;
+	//CGameObject::GAMEOBJECT_DESC desc;
+	//desc.pModelName = "Prototype_Component_Model_Hachoir";
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
-	
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
+		return E_FAIL;
 	
 	//desc.pModelName = "Prototype_Component_Model_SmashingPillar";
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
@@ -400,6 +402,7 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 	_tchar wszLayer[MAX_PATH] = TEXT("");
 	_tchar wszModelName[MAX_PATH] = TEXT("");
 	_uint   iTriggerType = 0;
+	_double dStartTime = 0;
 
 	// 모델 종류별로 월드 매트릭스를 저장할 맵
 	map<wstring, vector<_float4x4*>> modelMatrices;
@@ -427,6 +430,33 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 			pDesc.TriggerType = iTriggerType;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+				return E_FAIL;
+		}
+		else if (strcmp(szName, "Prototype_GameObject_Trap") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &dStartTime, sizeof(_double), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CTrap::TRAP_DESC pTrapDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pTrapDesc.wstrLayer = wszLayer;
+			pTrapDesc.wstrModelName = wszModelName;
+			pTrapDesc.mWorldMatrix = WorldMatrix;
+			pTrapDesc.TriggerType = iTriggerType;
+			pTrapDesc.dStartTimeOffset = dStartTime;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pTrapDesc)))
 				return E_FAIL;
 		}
 		else

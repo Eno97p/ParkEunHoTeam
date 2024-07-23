@@ -170,7 +170,7 @@ HRESULT CPhysX::Initialize()
 
 
 	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.f);
-	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 30), *m_pMaterial);
 	m_pScene->addActor(*groundPlane);
 
 

@@ -437,6 +437,11 @@ CCamera* CGameInstance::Get_MainCamera()
 	return m_pObject_Manager->Get_MainCamera();
 }
 
+_uint CGameInstance::Get_MainCameraIdx()
+{
+	return m_pObject_Manager->Get_MainCameraIdx();
+}
+
 void CGameInstance::Clear_Cameras()
 {
 	m_pObject_Manager->Clear_Cameras();
@@ -753,6 +758,15 @@ void CGameInstance::Erase(CGameObject* _pObj)
 	tEvent evn = {};
 	evn.eEven = eEVENT_TYPE::DELETE_OBJECT;
 	evn.lParam = (DWORD_PTR)_pObj;
+	m_pEvent_Manager->AddEvent(evn);
+}
+
+void CGameInstance::Scene_Change(_uint LevelIdx, CLevel* nextLevel)
+{
+	tEvent evn = {};
+	evn.eEven = eEVENT_TYPE::SCENE_CHANGE;
+	evn.lParam = (DWORD_PTR)LevelIdx;
+	evn.eParam = (DWORD_PTR)nextLevel;
 	m_pEvent_Manager->AddEvent(evn);
 }
 

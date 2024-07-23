@@ -85,14 +85,36 @@ void CUIGroup_WeaponSlot::Update_QuickSlot(wstring wstrTextureName)
     m_pQuickSlot->Change_Texture(wstrTextureName);
 }
 
-void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName)
+void CUIGroup_WeaponSlot::Update_WeaponSlot(wstring wstrTextureName, SLOT_TYPE eSlotType)
 {
-    m_pWeaponSlot->Change_Texture(wstrTextureName);
+    if (SLOT_QUICK == eSlotType)
+    {
+        m_pQuickSlot->Change_Texture(wstrTextureName);
+    }
+    else if (SLOT_WEAPON == eSlotType)
+    {
+        m_pWeaponSlot->Change_Texture(wstrTextureName);
+    }
+    else if (SLOT_SKILL == eSlotType)
+    {
+        m_pSkillSlot->Change_Texture(wstrTextureName);
+    }
 }
 
-void CUIGroup_WeaponSlot::Reset_SlotTexture()
+void CUIGroup_WeaponSlot::Reset_SlotTexture(SLOT_TYPE eSlotType)
 {
-    m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    if (SLOT_QUICK == eSlotType)
+    {
+        m_pQuickSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
+    else if (SLOT_WEAPON == eSlotType)
+    {
+        m_pWeaponSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
+    else if (SLOT_SKILL == eSlotType)
+    {
+        m_pSkillSlot->Change_Texture(TEXT("Prototype_Component_Texture_ItemIcon_None"));
+    }
 }
 
 HRESULT CUIGroup_WeaponSlot::Create_UI()
@@ -123,6 +145,12 @@ HRESULT CUIGroup_WeaponSlot::Create_UI()
     pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
     m_pWeaponSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
+    // Skill Slot
+    pIconDesc.fX = 140.f;
+    pIconDesc.fY = g_iWinSizeY - 140.f;
+    pIconDesc.eUISort = SECOND;
+    pIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
+    m_pSkillSlot = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc));
 
     return S_OK;
 }
@@ -131,9 +159,9 @@ void CUIGroup_WeaponSlot::Key_Input()
 {
     if (m_pGameInstance->Key_Down(DIK_V)) // Quick Slot Change
     {
-        if (0 < CInventory::GetInstance()->Get_QuickSize()) // 아무 것도 없을 때 예외 처리
+        if (CInventory::GetInstance()->Get_isQuickEmpty()) // 아무 것도 없을 때 예외 처리 0 < CInventory::GetInstance()->Get_QuickSize()
         {
-            if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickSize() - 1)
+            if (m_iQuickIdx < CInventory::GetInstance()->Get_QuickMapSize() - 1)
             {
                 ++m_iQuickIdx;
             }
@@ -142,12 +170,14 @@ void CUIGroup_WeaponSlot::Key_Input()
                 m_iQuickIdx = 0;
             }
 
-            vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+            //vector<CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickAccess()->begin();
+            map<_uint, CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickMap()->begin();
+
             for (size_t i = 0; i < m_iQuickIdx; ++i)
                 ++quickaccess;
 
-            m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
-
+            //m_pQuickSlot->Change_Texture((*quickaccess)->Get_TextureName());
+            m_pQuickSlot->Change_Texture((*quickaccess).second->Get_TextureName());
         }
     }
 }

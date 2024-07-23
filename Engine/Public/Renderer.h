@@ -52,6 +52,10 @@ private:
 	_float4x4							m_WorldMatrix = {};
 	_float4x4							m_ViewMatrix = {};
 	_float4x4							m_ProjMatrix = {};
+	_float4x4 m_Mat = { 1.f, 0.f, 0.f, 0.f,
+					  0.f, 1.f, 0.f, 0.f,
+					  0.f, 0.f, 1.f, 0.f,
+					  -155.f, -522.f, -113.f, 1.f };
 
 	ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
 	ID3D11DepthStencilView* m_pReflectionDepthStencilView = { nullptr };
@@ -119,18 +123,13 @@ private:
 	const UINT MAX_OBJECTS_PER_COMMANDLIST = 400;
 #pragma endregion
 
-	
-
-
-
-	
-
-
 private:
 	//LUT TEXTURE
 	class CTexture* m_pLUTTex = { nullptr };
 	class CTexture* m_pDistortionTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
+	vector<_matrix> m_vDecalMatricesInv;
+	class CTexture* m_pDecalTex = { nullptr };
 
 	
 	//Shadow

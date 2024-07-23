@@ -113,6 +113,7 @@
       <AdditionalIncludeDirectories>../Public/;../../EngineSDK/Inc/PhysX;../../EngineSDK/Inc/;../Public/ImGUi/;.\;../Public/ParkEunHo/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -178,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
@@ -187,6 +189,8 @@
     <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
+    <ClInclude Include="..\Public\BossDeco.h" />
+    <ClInclude Include="..\Public\BossStatue.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
     <ClInclude Include="..\Public\Body_Mantari.h" />
@@ -243,9 +247,14 @@
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
+    <ClInclude Include="..\Public\TestPhysXCollider.h" />
+    <ClInclude Include="..\Public\TransitionCamera.h" />
     <ClInclude Include="..\Public\Trap.h" />
+    <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
+    <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
+    <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
@@ -258,6 +267,19 @@
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
     <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
+    <ClInclude Include="..\Public\UI_UpGPageBG.h" />
+    <ClInclude Include="..\Public\UI_UpGPageBtn.h" />
+    <ClInclude Include="..\Public\UI_UpGPageBtn_Select.h" />
+    <ClInclude Include="..\Public\UI_UpGPageTop.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_Circle.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_ItemSlot.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_NameBox.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_SelectSlot.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_Slot.h" />
+    <ClInclude Include="..\Public\UI_UpgradeBG.h" />
+    <ClInclude Include="..\Public\UI_UpgradeCrucible.h" />
+    <ClInclude Include="..\Public\UI_UpgradeForge.h" />
+    <ClInclude Include="..\Public\UI_UpgradeForge_Text.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -358,6 +380,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />
@@ -367,6 +390,8 @@
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
+    <ClCompile Include="..\Private\BossDeco.cpp" />
+    <ClCompile Include="..\Private\BossStatue.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
@@ -419,9 +444,14 @@
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
+    <ClCompile Include="..\Private\TestPhysXCollider.cpp" />
+    <ClCompile Include="..\Private\TransitionCamera.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
+    <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
+    <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
@@ -434,6 +464,19 @@
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
     <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPageBG.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPageBtn.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPageBtn_Select.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPageTop.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_Circle.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_ItemSlot.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_NameBox.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_SelectSlot.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_Slot.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeBG.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeForge.cpp" />
+    <ClCompile Include="..\Private\UI_UpgradeForge_Text.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
@@ -547,6 +590,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />

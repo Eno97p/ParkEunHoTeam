@@ -100,9 +100,12 @@ void CParticle_Point::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	if(OwnDesc->SuperDesc.IsBloom)
+	if (OwnDesc->SuperDesc.IsBlur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+
+	if (OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
@@ -197,7 +200,8 @@ HRESULT CParticle_Point::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DesolvePower", &OwnDesc->SuperDesc.fDesolveLength, sizeof(_float))))
 		return E_FAIL;
-	
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+		return E_FAIL;
 	return S_OK;
 }
 

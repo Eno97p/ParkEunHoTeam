@@ -39,6 +39,7 @@ public:														//파티클 함수들
 	void Extinction(_float fTimeDelta);
 	void GrowOutY(_float fTimeDelta);
 	void GrowOut_Speed_Down(_float fTimeDelta);
+	void Leaf_Fall(_float fTimeDelta);
 
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 
@@ -84,6 +85,8 @@ public:														//파티클 함수들
 	// 애니메이션 보완
 
 	void			Set_LerpTime(_double LerpTime);
+
+	void Setting_StartTime(_double StartPos);
 
 
 

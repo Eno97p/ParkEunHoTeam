@@ -6,6 +6,7 @@
 #include "UIGroup_Inventory.h"
 #include "CMouse.h"
 #include "UI_InvSub_BtnSelect.h"
+#include "UIGroup_Quick.h"
 
 CUI_InvSub_Btn::CUI_InvSub_Btn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI_Interaction{ pDevice, pContext }
@@ -197,12 +198,15 @@ void CUI_InvSub_Btn::Mouse_Input()
 			}
 			else
 			{
-				CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx));
+				CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx), m_iSlotIdx);
 				m_isSelectEnd = true;
 
 				// Equip Sign 활성화
 				item->Set_isEquip(true);
 				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+
+				// Quick Acess의 InvSlot도 Equip Sign 활성화
+				dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
 			}
 			break;
 		}

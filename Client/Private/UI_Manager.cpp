@@ -13,6 +13,8 @@
 #include "UIGroup_Inventory.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
+#include "UIGroup_Upgrade.h"
+#include "UIGroup_UpGPage.h"
 
 #include "UI_ScreenBlood.h"
 #include "Camera.h"
@@ -88,16 +90,16 @@ void CUI_Manager::Update_Inventory_Add(_uint iSlotIdx)
 
 }
 
-void CUI_Manager::Update_InvSub_Quick_Add()
+void CUI_Manager::Update_InvSub_Quick_Add(_uint iSlotIdx)
 {
 	map<string, CUIGroup*>::iterator invsubQuick = m_mapUIGroup.find("InvSub");
-	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot();
+	dynamic_cast<CUIGroup_InvSub*>((*invsubQuick).second)->Update_InvSub_QuickSlot(iSlotIdx);
 }
 
-void CUI_Manager::Update_Quick_Add(CItemData* pItemData)
+void CUI_Manager::Update_Quick_Add(CItemData* pItemData, _int iInvenIdx)
 {
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
-	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData);
+	dynamic_cast<CUIGroup_Quick*>((*quick).second)->Update_QuickSlot_Add(pItemData, iInvenIdx);
 }
 
 void CUI_Manager::Update_Quick_InvSlot_Add(_uint iSlotIdx)
@@ -139,6 +141,7 @@ void CUI_Manager::Update_EquipSkill_Add(_uint iEquipSlotIdx)
 void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx)
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);
 }
 
 void CUI_Manager::Resset_Player()
@@ -191,6 +194,12 @@ HRESULT CUI_Manager::Create_UI()
 
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
+
+	// Upgrade
+	m_mapUIGroup.emplace("Upgrade", dynamic_cast<CUIGroup_Upgrade*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Upgrade"), &pDesc)));
+
+	// UpGPage
+	m_mapUIGroup.emplace("UpGPage", dynamic_cast<CUIGroup_UpGPage*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage"), &pDesc)));
 
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
@@ -270,6 +279,15 @@ void CUI_Manager::Key_Input()
 				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
+
+
+		// test¿ë
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
+		(*upgrade).second->Set_Rend(false);
+
+		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
+		(*upgpage).second->Set_Rend(false);
+
 	}
 	else if (m_pGameInstance->Key_Down(DIK_I))
 	{
@@ -291,6 +309,11 @@ void CUI_Manager::Key_Input()
 				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
+	}
+	else if (m_pGameInstance->Key_Down(DIK_U)) // Test¿ë
+	{
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
+		(*upgrade).second->Set_Rend(true);
 	}
 }
 

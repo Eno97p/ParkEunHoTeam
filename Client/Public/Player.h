@@ -16,11 +16,11 @@ BEGIN(Client)
 
 class CPlayer final : public CLandObject
 {
-#define	CLONEDELAY 0.1f
+#define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
-#define WALKSPEED 3.f
-#define RUNSPEED 6.f
+#define WALKSPEED 3.5f // 3
+#define RUNSPEED 6.5f // 6
 #define ROLLSPEED 10.f
 #define ATTACKPOSTDELAY 1.5f
 #define STAMINARECOVERDELAY 1.5f
@@ -61,8 +61,14 @@ public:
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	_bool Get_Parry() { return m_bParrying; }
 	void Parry_Succeed();
-	void Set_ParriedMonsterTransform(CTransform* pTransform) { m_pParriedMonsterTransform = pTransform; }
+	void Set_ParriedMonsterFloat4x4(const _float4x4* pMatrix) { m_pParriedMonsterFloat4x4 = pMatrix; }
+	_bool Get_Cloaking() { return m_bIsCloaking; }
+	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
 
+	// UI에 출력하기 위한 함수
+	_float			Get_MaxHP() { return m_fMaxHp; }
+	_float			Get_MaxStamina() { return m_fMaxStamina; }
+	_float			Get_MaxMP() { return m_fMaxMp; }
 
 private:
 	HRESULT Add_Nodes();
@@ -101,6 +107,7 @@ private:
 
 #pragma region 상태제어 bool변수
 	_bool										m_bJumping = false;
+	_bool										m_bFalling = false;
 	_bool										m_bDoubleJumping = false;
 	_bool										m_bLAttacking = false;
 	_bool										m_bRAttacking = false;
@@ -114,6 +121,7 @@ private:
 	_bool										m_bDisolved_Weapon = false;
 	_bool										m_bDisolved_Yaak = false;
 	_bool										m_bStaminaCanDecrease = true;
+	_bool										m_bIsCloaking = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
@@ -128,11 +136,17 @@ private:
 	_float										m_fParryFrame = 0.f;
 	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
-	CTransform* m_pParriedMonsterTransform = { nullptr };
+	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr };
 	CTransform* m_pCameraTransform = { nullptr };
 
 #pragma region 플레이어 스탯
+
+#ifdef _DEBUG
+	_float m_fMaxHp = 1000.f;
+#else
 	_float m_fMaxHp = 100.f;
+#endif // _DEBUG
+
 	_float m_fCurHp = m_fMaxHp;
 
 	_float m_fMaxStamina = 100.f;

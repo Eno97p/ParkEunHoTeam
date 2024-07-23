@@ -5,6 +5,7 @@
 #include "Monster.h"
 #include "ToolObj.h"
 #include "FireEffect.h"
+#include "Trap.h"
 
 #include "Imgui_Manager.h"
 
@@ -103,6 +104,21 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
             return E_FAIL;
 
     }
+    else if (iLayerIdx == 5)
+    {
+        CTrap::TRAP_DESC trapDesc{};
+
+        strcpy_s(trapDesc.szObjName, "Prototype_GameObject_Trap");
+        strcpy_s(trapDesc.szLayer, "Layer_Trap");
+        XMStoreFloat4x4(&trapDesc.mWorldMatrix, WorldMatrix);
+        trapDesc.TriggerType = iSelectIdx;
+        trapDesc.dStartTimeOffset = (_double)(CImgui_Manager::GetInstance()->Get_TrapTimeOffset());
+
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &trapDesc)))
+            return E_FAIL;
+
+
+    }
 
     return S_OK;
 }
@@ -114,7 +130,12 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Legionnaire_Gun"),
                         TEXT("Prototype_Component_Model_Ghost"),
                         TEXT("Prototype_Component_Model_Homonculus"),
-                        TEXT("Prototype_Component_Model_Juggulus") };
+                        TEXT("Prototype_Component_Model_Juggulus"),
+                TEXT("Prototype_Component_Model_Chaudron"),
+        TEXT("Prototype_Component_Model_SkeletalChain"),
+        TEXT("Prototype_Component_Model_BossStatue")
+
+    };
 
     m_PassiveElements = { TEXT("Prototype_Component_Model_BasicCube"),  TEXT("Prototype_Component_Model_BasicDonut"), TEXT("Prototype_Component_Model_BasicGround"),
                         TEXT("Prototype_Component_Model_TronesT03"), TEXT("Prototype_Component_Model_AndrasTEST"), TEXT("Prototype_Component_Model_AndrasArenaRocks"), TEXT("Prototype_Component_Model_Grasses_TT"), 
@@ -174,7 +195,7 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Facade5"), TEXT("Prototype_Component_Model_Facade6"),
                         TEXT("Prototype_Component_Model_Facade7"), TEXT("Prototype_Component_Model_Facade8"),
                         TEXT("Prototype_Component_Model_Facade9"), TEXT("Prototype_Component_Model_Facade10"),
-
+                        TEXT("Prototype_Component_Model_TreeC"),
                         TEXT("Prototype_Component_Model_RuinsPilar"), TEXT("Prototype_Component_Model_AckbarHouseLarge"),
                         TEXT("Prototype_Component_Model_AckbarHouseSmall"), TEXT("Prototype_Component_Model_AckbarSwampHouse"),
                         TEXT("Prototype_Component_Model_AckbarHouseRoofL"), TEXT("Prototype_Component_Model_AckbarHouseRoofM"),
@@ -182,10 +203,11 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_AqueducTowerRoof"),
                         TEXT("Prototype_Component_Model_UnderRoofFilling"),
                         TEXT("Prototype_Component_Model_RotateGate")
+                 
     };
 
     m_ActiveElements = { TEXT("Prototype_Component_Model_Grass"),
-        
+
         TEXT("Prototype_Component_Model_TutorialMapBridge"),
         TEXT("Prototype_Component_Model_Well"),
         //FakeWall
@@ -194,9 +216,12 @@ void CToolObj_Manager::Initialize()
         //EventTrigger
         TEXT("Prototype_Component_Model_BasicCube"),
         TEXT("Prototype_Component_Model_SkySphere"),
-        
+
         TEXT("Prototype_Component_Model_Elevator"),
-        TEXT("Prototype_Component_Model_Boss_Gun"), TEXT("Prototype_Component_Model_Cannon") };
+        TEXT("Prototype_Component_Model_Model_Hachoir"),
+        TEXT("Prototype_Component_Model_TreasureChest")
+
+    };
 }
 
 void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::TOOLOBJ_DESC& pDesc)
@@ -229,6 +254,18 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
         if (strcmp(pDesc.szModelName, "Prototype_Component_Model_Juggulus") == 0)
         {
             strcpy_s(pDesc.szLayer, "Layer_Boss");
+        }
+
+        // Juggulus 예외 처리
+        if (strcmp(pDesc.szModelName, "Prototype_Component_Model_Chaudron") == 0 || 
+            strcmp(pDesc.szModelName, "Prototype_Component_Model_SkeletalChain") == 0)
+        {
+            strcpy_s(pDesc.szLayer, "Layer_Active_Element");
+        }
+
+        if (strcmp(pDesc.szModelName, "Prototype_Component_Model_BossStatue") == 0)
+        {
+            strcpy_s(pDesc.szLayer, "Layer_Statue");
         }
 
         break;
@@ -325,6 +362,12 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_Homonculus";
         case 5:
             return "Prototype_GameObject_Boss_Juggulus";
+        case 6:
+            return "Prototype_GameObject_BossDeco";
+        case 7:
+            return "Prototype_GameObject_BossDeco";
+        case 8:
+            return "Prototype_GameObject_BossStatue";
         default:
             break;
         }
@@ -367,7 +410,7 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 7:
             return "Prototype_GameObject_Elevator";
         case 8:
-            return "Prototype_GameObject_RotateGate";
+            return "Prototype_GameObject_TreasureChest";
         default:
             break;
         }

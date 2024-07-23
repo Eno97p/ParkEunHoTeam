@@ -114,9 +114,6 @@
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\TutorialMapBridge.cpp">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Body_Player.cpp">
       <Filter>02. GameObjects\06. Player</Filter>
     </ClCompile>
@@ -141,9 +138,6 @@
     <ClCompile Include="..\private\DecalBox.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TrapMace.cpp">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Elevator.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
@@ -155,6 +149,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\TransitionCamera.cpp">
       <Filter>02. GameObjects\99. Camera\04. Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trap.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TutorialMapBridge.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TreasureChest.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -266,9 +269,6 @@
     <ClInclude Include="..\public\Grass.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TutorialMapBridge.h">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Player.h">
       <Filter>02. GameObjects\06. Player</Filter>
     </ClInclude>
@@ -293,9 +293,6 @@
     <ClInclude Include="..\public\DecalBox.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\TrapMace.h">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Elevator.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
@@ -307,6 +304,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\TransitionCamera.h">
       <Filter>02. GameObjects\99. Camera\04. Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trap.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TutorialMapBridge.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TreasureChest.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

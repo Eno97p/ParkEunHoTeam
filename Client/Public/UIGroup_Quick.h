@@ -16,6 +16,10 @@ private:
 	virtual ~CUIGroup_Quick() = default;
 
 public:
+	_bool			Get_isInvSlot_Act() { return m_isInvSlot_Act; }
+	void			Set_isInvSlot_Act(_bool isInvSlot_Act) { m_isInvSlot_Act = isInvSlot_Act; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -23,12 +27,16 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	void			Update_QuickSlot_Add(CItemData* pItemData);
+	void			Update_QuickSlot_Add(CItemData* pItemData, _int iInvenIdx);
 	void			Update_InvSlot_Add(_uint iSlotIdx);
+	void			Update_InvSlot_EquipSign(_uint iSlotIdx, _bool isEquip);
 
 private:
+	_bool					m_isInvSlot_Act = { false }; // InvSlot 활성화 여부
+
 	vector<CUI*>			m_vecUI;
 	vector<CUI_Slot*>		m_vecSlot;
+	CUI*					m_pInvSlotBG = { nullptr };
 	vector<CUI_Slot*>		m_vecInvSlot;
 
 private:

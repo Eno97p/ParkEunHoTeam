@@ -128,7 +128,11 @@ HRESULT CUIGroup_State::Create_UI()
     // Soul 
     CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
     pSoulDesc.eLevel = LEVEL_STATIC;
-    pSoulDesc.isInv = false;
+    pSoulDesc.fX = 200.f;
+    pSoulDesc.fY = 100.f;
+    pSoulDesc.fSizeX = 32.f;
+    pSoulDesc.fSizeY = 32.f;
+    pSoulDesc.eUISort = SECOND;
     m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
 
     return S_OK;

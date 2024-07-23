@@ -10,6 +10,7 @@ class CUI_WPEquipSlot final : public CUI_Interaction
 {
 	const _float DEFAULT_Y = (g_iWinSizeY >> 1) + 150.f;
 	const _float SELECT_Y = DEFAULT_Y - 30.f;
+
 public:
 	enum SLOT_NUM { NUM_ONE = 0, NUM_TWO, NUM_THREE, NUM_END };
 	typedef struct UI_EquipSlot_Desc : public UI_DESC

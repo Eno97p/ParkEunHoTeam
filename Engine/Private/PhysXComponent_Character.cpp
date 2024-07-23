@@ -351,6 +351,25 @@ void CPhysXComponent_Character::Set_Position(_vector vPos)
 }
 
 
+_float CPhysXComponent_Character::Get_LengthFromGround()
+{
+	PxExtendedVec3 vFootPosition = m_pController->getFootPosition();
+
+	PxVec3 origin(static_cast<_float>(vFootPosition.x), static_cast<_float>(vFootPosition.y), static_cast<_float>(vFootPosition.z));
+	PxVec3 direction(0, -1, 0); // 레이의 방향
+	float maxDistance = 100.f; // 최대 검사 거리
+
+	PxRaycastBuffer hit;
+	bool hasHit = m_pGameInstance->GetScene()->raycast(origin, direction, maxDistance, hit);
+
+	if (hasHit) {
+		PxVec3 hitPoint = hit.block.position;
+
+		return vFootPosition.y - hitPoint.y;
+	}
+	else return 100.f;
+}
+
 
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {

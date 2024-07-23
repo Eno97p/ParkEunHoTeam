@@ -667,6 +667,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 #pragma region Monster
+	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Andras/Andras.fbx", PreTransformMatrix))))
+	//	return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	// Juggulus
@@ -788,18 +792,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 #pragma endregion DECAL
-
-	//Trap
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hachoir"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/Hachoir/Hachoir.fbx", PreTransformMatrix))))
-		return E_FAIL;
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SmashingPillar"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/SmashingPillar/SmashingPillar.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-
 
 
 #pragma region Npc
@@ -2207,9 +2199,40 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		return E_FAIL;
 
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_SkeletalChain"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/RasSamrahCastle/SkeletalChain/SkeletalChain.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Chaudron"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/RasSamrahCastle/Chaudron/Chaudron.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_RotateGate"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahGate/RasSamrahGate.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_BossStatue"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahStatue/ActiveStatue.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	//Trap
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Hachoir"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/Hachoir/Hachoir.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_SmashingPillar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/SmashingPillar/SmashingPillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_TreasureChest"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TreasureChest/TreasureChest.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 
 #pragma endregion   Active Element Model Load
 
@@ -2484,6 +2507,11 @@ HRESULT CLoader::Loading_For_JugglasLevel_For_Shader()
 	/* For.Prototype_Component_Shader_VtxAnimMesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxTreasureChest */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Shader_VtxTreasureChest"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTreasureChest.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxCube */

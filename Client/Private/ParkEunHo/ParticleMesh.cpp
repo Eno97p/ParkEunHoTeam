@@ -39,6 +39,12 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case SLASH:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Slash");
 		break;
+	case LEAF0:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Leaf0");
+		break;
+	case LEAF1:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Leaf1");
+		break;
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))
@@ -106,13 +112,19 @@ void CParticleMesh::Tick(_float fTimeDelta)
 	case GROWOUT_SPEEDDOWN:
 		m_InstModelCom->GrowOut_Speed_Down(fTimeDelta);
 		break;
+	case LEAF_FALL:
+		m_InstModelCom->Leaf_Fall(fTimeDelta);
+		break;
 	}
 }
 
 void CParticleMesh::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	if (OwnDesc->SuperDesc.IsBlur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
 	if (OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);

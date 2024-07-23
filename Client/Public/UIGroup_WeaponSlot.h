@@ -8,6 +8,9 @@ class CUI_ItemIcon;
 
 class CUIGroup_WeaponSlot final : public CUIGroup
 {
+public:
+	enum SLOT_TYPE { SLOT_QUICK, SLOT_WEAPON, SLOT_SKILL, SLOT_END };
+
 private:
 	CUIGroup_WeaponSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_WeaponSlot(const CUIGroup_WeaponSlot& rhs);
@@ -22,9 +25,9 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Update_QuickSlot(wstring wstrTextureName);
-	void			Update_WeaponSlot(wstring wstrTextureName);
+	void			Update_WeaponSlot(wstring wstrTextureName, SLOT_TYPE eSlotType);
 
-	void			Reset_SlotTexture();
+	void			Reset_SlotTexture(SLOT_TYPE eSlotType);
 
 private:
 	_uint					m_iQuickIdx = { 0 }; // Quick Access¿« Index

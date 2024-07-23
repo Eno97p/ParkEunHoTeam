@@ -12,7 +12,7 @@ class CItemData;
 class CUI_Slot final : public CUI_Interaction
 {
 public:
-	enum SLOT_TYPE { SLOT_QUICK, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
+	enum SLOT_TYPE { SLOT_QUICK, SLOT_QUICKINV, SLOT_INV, SLOT_WEAPON, SLOT_INVSUB, SLOT_END };
 	typedef struct UI_Slot_Desc : public UI_DESC
 	{
 		_uint						iSlotIdx;
@@ -27,6 +27,14 @@ private:
 
 public:
 	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
+	
+	_bool			Get_isItemIconNull()
+	{ 
+		if (m_pItemIcon != nullptr)
+			return false;
+		else
+			return true;
+	}
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -38,27 +46,33 @@ public:
 
 	HRESULT			Create_ItemIcon_Inv();
 	HRESULT			Create_ItemIcon_SubQuick(_uint iSlotIdx);
-	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData);
+	HRESULT			Create_ItemIcon_Quick(CItemData* pItemData, _int iInvenIdx);
 	HRESULT			Create_ItemIcon_Weapon();
 	HRESULT			Create_ItemIcon_Skill();
 
 	HRESULT			Change_ItemIcon_Weapon();
 	HRESULT			Change_ItemIcon_Skill();
 
+	HRESULT			Delete_ItemIcon();
+
 	void			Resset_Data();
+	void			Check_Equip(_bool isWeapon, CItemData* pItemData);
 
 private:
 	_bool						m_isEquip = { false };
 
+	_int						m_iInventoryIdx = { -1 }; // Quick Slot의 경우 Inventory의 어느 Item을 가지는지
 	_uint						m_iSlotIdx = { 0 };
 	wstring						m_wszItemName = TEXT("");
 	wstring						m_wszItemExplain = TEXT("");
+	wstring						m_wszItemExplain_Quick = TEXT("");
 
 	UISORT_PRIORITY				m_eUISort = { SORT_END };
 	SLOT_TYPE					m_eSlotType = { SLOT_END };
 
 	CUI_Slot_Frame*				m_pSelectFrame = { nullptr };
 	CUI_ItemIcon*				m_pItemIcon = { nullptr };
+	CUI_ItemIcon*				m_pSymbolIcon = { nullptr };
 	CUI_Slot_EquipSign*			m_pEquipSign = { nullptr };
 
 private:
@@ -68,7 +82,7 @@ private:
 	HRESULT	Create_Frame();
 	HRESULT	Create_EquipSign();
 
-	void	Open_SubPage();
+	void	Click_BtnEvent();
 	void	Render_Font();
 
 public:

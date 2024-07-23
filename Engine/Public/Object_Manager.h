@@ -53,6 +53,8 @@ public:
 	vector<class CCamera*> Get_Cameras();
 	void Clear_Cameras();
 
+	_uint Get_MainCameraIdx() { return m_iMainCameraIdx; };
+
 
 
 private:

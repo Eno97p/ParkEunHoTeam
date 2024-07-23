@@ -111,18 +111,18 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 		}
 	}
 
-	const float maxSteeringAngle = PxPi * 0.25f; // 45도
+	const float maxSteeringAngle = 90.0f; // 45도
 	const float steeringSpeed = 2.0f;
 
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		// 좌회전
-		middleParams.steeringAngle = -maxSteeringAngle;
+		middleParams.steeringAngle = -maxSteeringAngle * steeringSpeed;
 	}
 	else if (GetAsyncKeyState('D') & 0x8000)
 	{
 		// 우회전
-		middleParams.steeringAngle = maxSteeringAngle;
+		middleParams.steeringAngle = maxSteeringAngle * steeringSpeed;
 	}
 	else
 	{
@@ -157,38 +157,38 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 {
 	m_pVehicle = CVehicleDefault::Create(4);
 
+
 	if (nullptr == m_pVehicle)
 		return E_FAIL;
 
+	
 
-	
-	
 	//PxTransform Pose = PxTransform(PxVec3(0.0f, 5.0f, 0.0f), PxQuat(PxIdentity));
 	//if (FAILED(m_pVehicle->setUpActor(*m_pGameInstance->GetScene(), Pose, "VehicleTest")))
 	//		return E_FAIL;
 	
 	VehicleBeginParams& beginParams = m_pVehicle->getBeginParams();
 	beginParams.mass = 1500.0f;		//차량 질량 (kg)
-	beginParams.dimensions = PxVec3(2.0f, 1.5f, 4.0f);  // 차량 크기 (m)
+	beginParams.dimensions = PxVec3(4.0f, 1.5f, 2.0f);  // 차량 크기 (m)
 	beginParams.numWheels = 4;  // 바퀴 수
 
 	for(PxU32 i = 0; i < 4; i++)
 		beginParams.wheelRadius[i] = 0.4f;  // 바퀴 반지름 (m)
 
 	VehicleMiddleParams& middleParams = m_pVehicle->getMiddleParams();
-	middleParams.engineTorque = 500.0f;  // 엔진 토크 (Nm)
+	middleParams.engineTorque = 0.0f;//		500.0f;  // 엔진 토크 (Nm)
 	middleParams.brakeTorque = 1000.0f;  // 브레이크 토크 (Nm)
 	middleParams.steeringAngle = 0.0f;  // 초기 조향각도 (rad)
 
 	VehicleEndParams& endParams = m_pVehicle->getEndParams();
-	endParams.maxSpeed = 50.0f;  // 최대 속도 (km/h)
+	endParams.maxSpeed = 10.0f;  // 최대 속도 (km/h)
 
 	if (FAILED(m_pVehicle->createSequence()))
 		return E_FAIL;
 	if (FAILED(m_pVehicle->createActor(m_pGameInstance->GetPhysics(),m_pGameInstance->GetScene(),"TestName")))
 		return E_FAIL;
 
-	
+	//PhysXActorVehicle
 
 
 
@@ -197,6 +197,9 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 	m_pVehicleSimulationContext.frame.lngAxis = PxVehicleAxes::ePosZ;
 	m_pVehicleSimulationContext.frame.latAxis = PxVehicleAxes::ePosX;
 	m_pVehicleSimulationContext.frame.vrtAxis = PxVehicleAxes::ePosY;
+
+
+	
 
 	m_pVehicleSimulationContext.scale.scale = WORLD_METER;
 	m_pVehicleSimulationContext.gravity = m_pGameInstance->GetScene()->getGravity();

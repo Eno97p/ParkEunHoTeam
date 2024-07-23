@@ -34,7 +34,10 @@ private:/*For. Property*/
 	void Render_Component_Properties(CComponent* pComponent,const char* szComponentName);
 private:/*For. Profile*/
 	void Render_Profile();
-	
+
+private:/*For. Memory*/
+	void Render_Memory();
+
 	
 private:/*For.Imgui Property*/
 	char m_szFPS[MAX_PATH] = {};

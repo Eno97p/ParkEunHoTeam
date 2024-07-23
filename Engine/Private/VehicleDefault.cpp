@@ -4,9 +4,9 @@
 #include"CPhysX.h"
 
 CVehicleDefault::CVehicleDefault(PxU32 numWheels)
-	: m_numWheels(numWheels)
+	:m_numWheels(numWheels)
 {
-	
+
 }
 
 HRESULT CVehicleDefault::createSequence()
@@ -28,7 +28,10 @@ HRESULT CVehicleDefault::createActor(PxPhysics* pPhysics, PxScene* pScene, const
 	//이미 있으면 실패
 	if(mActor)
 		return E_FAIL;
-	mActor= pPhysics->createRigidDynamic(PxTransform(PxIdentity));
+
+	PxVec3 position = PxVec3(0.f, 10.f, 0.f);
+
+	mActor= pPhysics->createRigidDynamic(PxTransform(position));
 	mActor->setName(Name);
 	if(!mActor) //생성 실패 하면	실패
 		return E_FAIL;
@@ -42,19 +45,15 @@ HRESULT CVehicleDefault::createActor(PxPhysics* pPhysics, PxScene* pScene, const
 	mActor->setMassSpaceInertiaTensor(momentOfInertia);
 
 
-
-
-
-
-	//PxRigidBodyExt::updateMassAndInertia(*mActor, 10.f);
-
 	PxBoxGeometry boxGeometry(m_beginParams.dimensions.x * 0.5f, m_beginParams.dimensions.y * 0.5f, m_beginParams.dimensions.z * 0.5f);
 	PxMaterial* material = pPhysics->createMaterial(0.5f, 0.5f, 0.1f);
 	PxShape* shape = PxRigidActorExt::createExclusiveShape(*mActor, boxGeometry, *material);
 
+
 	if(!pScene->addActor(*mActor))
 		return E_FAIL;
 
+	
 	return S_OK;
 }
 
@@ -79,7 +78,7 @@ bool CVehicleDefault::update(const PxReal dt, const PxVehicleSimulationContext& 
 		}
 	}
 
-
+	
 
 	return result;
 
@@ -98,8 +97,9 @@ HRESULT CVehicleDefault::Initialize()
 		m_beginState[i].setToDefault();
 		m_middleState[i].setToDefault();
 		m_endState[i].setToDefault();
+		m_middleState[i].bodyRotation = PxQuat(PxIdentity);
 	}
-	m_middleState[0].bodyRotation = PxQuat(PxIdentity);
+//	m_middleState[0].bodyRotation = PxQuat(PxIdentity);
 
 	return S_OK;
 }

@@ -46,9 +46,9 @@ void ComponentBegin::CFunctionBegin(const VehicleBeginParams* beginParam, PxVehi
 
 
 		// 휠 위치 계산 (간단한 예시, 실제로는 더 복잡할 수 있음)
-		PxVec3 wheelPos = PxVec3((i % 2 == 0 ? -1 : 1) * dimensions.x * 0.5f,
-			-dimensions.y * 0.5f + beginParam->wheelRadius[i],
-			(i < 3 ? 1 : -1) * dimensions.z * 0.4f);
+		PxVec3 wheelPos = PxVec3(	/*X*/	(i % 2 == 0 ? -1 : 1) * dimensions.x * 0.5f,
+									/*Y*/	-dimensions.y * 0.5f + beginParam->wheelRadius[i],
+									/*Z*/	(i < 3 ? 1 : -1) * dimensions.z * 0.4f);
 		state.transform = PxTransform(wheelPos);
 		state.linearVelocity = PxVec3(0.0f);
 		state.angularVelocity = PxVec3(0.0f);
@@ -64,8 +64,10 @@ void ComponentBegin::CFunctionBegin(const VehicleBeginParams* beginParam, PxVehi
 
 bool ComponentMiddle::update(const PxReal dt, const PxVehicleSimulationContext& context)
 {
+	
 
 
+	//PxVehicleCommandState
 
 	const VehicleMiddleParams* middleParam;
 	PxVehicleArrayData<const VehicleBeginState> beginStates;
@@ -73,23 +75,24 @@ bool ComponentMiddle::update(const PxReal dt, const PxVehicleSimulationContext& 
 	getDataForComponentMiddle(middleParam, beginStates, middleStates);
 
 	CFunctionMiddle(middleParam, beginStates, middleStates, dt);
-
 	return true;
 }
 
 void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, PxVehicleArrayData<const VehicleBeginState>& beginStates, PxVehicleArrayData<VehicleMiddleState>& middleStates, PxReal dt)
 {
-	PxReal steeringAngle = middleParam->steeringAngle;
-	const PxReal maxSteeringAngle = PxPi * 0.25f; // 최대 조향 각도 (45도)
-
-	steeringAngle = PxClamp(steeringAngle, -maxSteeringAngle, maxSteeringAngle);
+	 PxReal steeringAngle = middleParam->steeringAngle;
+	 PxReal MaxSteeringAngle = middleParam->MaxSteeringAngle;
 
 
-	
+	steeringAngle = PxClamp(steeringAngle, -MaxSteeringAngle, MaxSteeringAngle);
+
+	const VehicleBeginState& initialBodyState = beginStates[0];
+	initialBodyState.transform;
+
 	// 차량의 현재 방향을 기준으로 새로운 회전을 계산합니다
 	PxQuat steeringRotation = PxQuat(steeringAngle * dt, PxVec3(0, 1, 0));
 	middleStates[0].bodyRotation = steeringRotation * middleStates[0].bodyRotation;
-
+	
 	// 정규화를 통해 회전이 올바른지 확인합니다
 	middleStates[0].bodyRotation.normalize();
 

@@ -113,6 +113,7 @@
       <AdditionalIncludeDirectories>../Public/;../../EngineSDK/Inc/PhysX;../../EngineSDK/Inc/;../Public/ImGUi/;.\;../Public/ParkEunHo/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -188,6 +189,8 @@
     <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
+    <ClInclude Include="..\Public\BossDeco.h" />
+    <ClInclude Include="..\Public\BossStatue.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
     <ClInclude Include="..\Public\Catharsis.h" />
     <ClInclude Include="..\Public\Body_Mantari.h" />
@@ -245,7 +248,9 @@
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
     <ClInclude Include="..\Public\TestPhysXCollider.h" />
+    <ClInclude Include="..\Public\TransitionCamera.h" />
     <ClInclude Include="..\Public\Trap.h" />
+    <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
@@ -385,6 +390,8 @@
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
+    <ClCompile Include="..\Private\BossDeco.cpp" />
+    <ClCompile Include="..\Private\BossStatue.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
     <ClCompile Include="..\Private\Catharsis.cpp" />
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
@@ -438,7 +445,9 @@
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
     <ClCompile Include="..\Private\TestPhysXCollider.cpp" />
+    <ClCompile Include="..\Private\TransitionCamera.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
+    <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />

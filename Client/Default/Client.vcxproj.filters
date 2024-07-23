@@ -573,7 +573,7 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\UpgradePage\Value">
       <UniqueIdentifier>{05183035-daef-4ba2-b93f-56b354ad6ccb}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco">
       <UniqueIdentifier>{62fb3047-5cc1-4921-8e92-90d35050c67d}</UniqueIdentifier>
     </Filter>
@@ -582,7 +582,7 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest">
       <UniqueIdentifier>{b9789d9c-3a7d-4069-9325-cecb231bb956}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras">
       <UniqueIdentifier>{46d5952e-6b40-41a3-a4d7-843ef4e2d3f8}</UniqueIdentifier>
     </Filter>
@@ -1174,7 +1174,13 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_UpGPage_ItemSlot.h">
       <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
-	</ClInclude>
+    </ClInclude>
+    <ClInclude Include="..\Public\Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestPhysXCollider.h">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\TransitionCamera.h">
       <Filter>02.GameObjects\99.Cameras\Transition</Filter>
     </ClInclude>
@@ -1186,12 +1192,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\TreasureChest.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
-	</ClInclude>
-    <ClInclude Include="..\Public\Andras.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\TestPhysXCollider.h">
-      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1752,7 +1752,13 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_UpGPage_ItemSlot.cpp">
       <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
-	</ClCompile>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestPhysXCollider.cpp">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\TransitionCamera.cpp">
       <Filter>02.GameObjects\99.Cameras\Transition</Filter>
     </ClCompile>
@@ -1764,12 +1770,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\TreasureChest.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
-	</ClCompile>
-    <ClCompile Include="..\Private\Andras.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
-	</ClCompile>
-    <ClCompile Include="..\Private\TestPhysXCollider.cpp">
-      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1852,9 +1852,6 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

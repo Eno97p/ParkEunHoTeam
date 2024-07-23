@@ -68,7 +68,7 @@ public:
 	virtual void GrowOutY(_float fTimeDelta);
 	virtual void GrowOut_Speed_Down(_float fTimeDelta);
 	virtual void GrowOut_Speed_Down_Texture(_float fTimeDelta);
-
+	virtual void Lenz_Flare(_float fTimeDelta);
 	virtual void Leaf_Fall(_float fTimeDelta);
 	
 

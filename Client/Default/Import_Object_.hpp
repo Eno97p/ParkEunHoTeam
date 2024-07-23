@@ -357,6 +357,12 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 
 
 
+	/*For.Prototype_GameObject_TestPhysxCollider */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestPhysxCollider"),
+		CTestPhysXCollider::Create(pDevice, pContext))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

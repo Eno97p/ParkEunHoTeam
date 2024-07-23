@@ -526,6 +526,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras">
       <UniqueIdentifier>{46d5952e-6b40-41a3-a4d7-843ef4e2d3f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\08. vehicle\TestPhysX">
+      <UniqueIdentifier>{7c17f5ee-b39d-4caf-9cae-83d139f794dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1070,6 +1073,9 @@
     <ClInclude Include="..\Public\Andras.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TestPhysXCollider.h">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1587,6 +1593,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Andras.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\TestPhysXCollider.cpp">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,3 +21,10 @@
 20. DashImpact
 21. PlayerJumpLand
 22. JugglusBallTrail
+23. Smoke_White
+24. Smoke_White_UP
+25. Smoke_Brown
+26. Smoke_Brown_UP
+27. Sakura_Sample
+28. Ginkgo_Sample
+29. RedLenzFlare

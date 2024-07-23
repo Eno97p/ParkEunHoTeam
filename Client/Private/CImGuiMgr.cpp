@@ -87,6 +87,10 @@ HRESULT CImGuiMgr::Update_ImGui()
 
 	ImGui::Begin("Profile", nullptr, ImGuiWindowFlags_HorizontalScrollbar/*| ImGuiWindowFlags_NoMove| ImGuiWindowFlags_NoResize*/);
 	Render_Profile();
+	ImGui::End();
+
+	ImGui::Begin("Memory", nullptr, ImGuiWindowFlags_HorizontalScrollbar/*| ImGuiWindowFlags_NoMove| ImGuiWindowFlags_NoResize*/);
+	Render_Memory();
 
 	ImGui::End();
 
@@ -215,7 +219,7 @@ void CImGuiMgr::Render_MainMenu()
 		return;
 	}
 
-	m_pGameInstance->Get_LayerTags_String(current_level_index, &m_LayerTags);
+	m_pGameInstance->Get_LayerTags_String(m_iCurrentLevel, &m_LayerTags);
 	
 	Render_Layer();
 
@@ -240,11 +244,15 @@ void CImGuiMgr::Render_Layer()
 
 		}
 	}
-	if(m_LayerTags.empty())
+	_uint iLayerSize = m_LayerTags.size();
+
+
+	if(m_LayerTags.empty()|| iLayerSize<= m_iCurrentLayer)
 		return;
 
-	m_wstrLayerTag = Client::const_char_to_wstring(m_LayerTags[m_iCurrentLayer]);
-	ObjectLis = m_pGameInstance->Get_GameObjects_Ref(m_iCurrentLevel, m_wstrLayerTag);
+		m_wstrLayerTag = Client::const_char_to_wstring(m_LayerTags[m_iCurrentLayer]);
+		ObjectLis = m_pGameInstance->Get_GameObjects_Ref(m_iCurrentLevel, m_wstrLayerTag);
+
 	Render_Object(ObjectLis);
 
 
@@ -463,6 +471,37 @@ void CImGuiMgr::Render_Profile()
 	for(const auto& profile : Result)
 	{
 		ImGui::Text("%s: %.4f ms", profile.first.c_str(), profile.second);
+	}
+
+
+
+
+}
+
+void CImGuiMgr::Render_Memory()
+{
+	MEMORYSTATUSEX statex;
+	statex.dwLength = sizeof(statex);
+
+	
+
+	if (GlobalMemoryStatusEx(&statex))
+	{
+		// 전체 물리적 메모리
+		ImGui::Text("Total physical memory: %.2f GB", statex.ullTotalPhys / (1024.0 * 1024.0 * 1024.0));
+
+		// 사용 가능한 물리적 메모리
+		ImGui::Text("Available physical memory: %.2f GB", statex.ullAvailPhys / (1024.0 * 1024.0 * 1024.0));
+
+		// 전체 가상 메모리 (RAM + 페이징 파일)
+		ImGui::Text("Total virtual memory: %.2f GB", statex.ullTotalPageFile / (1024.0 * 1024.0 * 1024.0));
+
+		// 사용 가능한 가상 메모리 (RAM + 페이징 파일)
+		ImGui::Text("Available virtual memory: %.2f GB", statex.ullAvailPageFile / (1024.0 * 1024.0 * 1024.0));
+
+		// 사용 중인 메모리 백분율
+		ImGui::Text("Memory in use: %lu %%", statex.dwMemoryLoad);
+
 	}
 
 

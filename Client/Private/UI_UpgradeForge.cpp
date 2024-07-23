@@ -54,7 +54,7 @@ void CUI_UpgradeForge::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // 클릭한 경우 강화 화면으로 넘어가기
 	{
-
+		CUI_Manager::GetInstance()->Set_MenuPage(true, "UpGPage");
 	}
 }
 

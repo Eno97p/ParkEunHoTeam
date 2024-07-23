@@ -21,9 +21,11 @@ public:
 
 private:
 	vector<class CUI*>			m_vecUI;
+	vector<class CUI*>			m_vecSlot;
 
 private:
 	HRESULT					Create_UI();
+	HRESULT					Create_Slot();
 
 public:
 	static CUIGroup_UpGPage*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

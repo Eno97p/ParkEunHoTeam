@@ -1,27 +1,29 @@
-#include "UI_UpGPageBtn.h"
+#include "UI_UpGPage_Slot.h"
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 #include "CMouse.h"
 
-#include "UI_UpGPageBtn_Select.h"
+#include "UI_UpGPage_SelectSlot.h"
+#include "UI_UpGPage_ItemSlot.h"
 
-CUI_UpGPageBtn::CUI_UpGPageBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_UpGPage_Slot::CUI_UpGPage_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
 {
 }
 
-CUI_UpGPageBtn::CUI_UpGPageBtn(const CUI_UpGPageBtn& rhs)
+CUI_UpGPage_Slot::CUI_UpGPage_Slot(const CUI_UpGPage_Slot& rhs)
 	: CUI_Interaction{ rhs }
 {
 }
 
-HRESULT CUI_UpGPageBtn::Initialize_Prototype()
+HRESULT CUI_UpGPage_Slot::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUI_UpGPageBtn::Initialize(void* pArg)
+HRESULT CUI_UpGPage_Slot::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,47 +31,41 @@ HRESULT CUI_UpGPageBtn::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX - 400.f;
-	m_fY = (g_iWinSizeY >> 1) + 100.f;
-	m_fSizeX = 1024.f; // 2048
-	m_fSizeY = 64.f; // 128
-
 	Setting_Position();
 
-	if (FAILED(Create_UI()))
-		return E_FAIL;
+	Create_UI();
 
 	return S_OK;
 }
 
-void CUI_UpGPageBtn::Priority_Tick(_float fTimeDelta)
+void CUI_UpGPage_Slot::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_UpGPageBtn::Tick(_float fTimeDelta)
+void CUI_UpGPage_Slot::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 
 	__super::Tick(fTimeDelta);
-
+	
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	if(nullptr != m_pSelectUI)
-		m_pSelectUI->Tick(fTimeDelta);
+	m_pSelectUI->Tick(fTimeDelta);
+	m_pItemSlot->Tick(fTimeDelta);
 }
 
-void CUI_UpGPageBtn::Late_Tick(_float fTimeDelta)
+void CUI_UpGPage_Slot::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, EIGHT);
 
-	if (m_isSelect && nullptr != m_pSelectUI)
-	{
+	if (m_isSelect)
 		m_pSelectUI->Late_Tick(fTimeDelta);
-	}
+
+	m_pItemSlot->Late_Tick(fTimeDelta);
 }
 
-HRESULT CUI_UpGPageBtn::Render()
+HRESULT CUI_UpGPage_Slot::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -78,13 +74,10 @@ HRESULT CUI_UpGPageBtn::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), TEXT("UPGRADE"), _float2(m_fX, m_fY - 13.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
-HRESULT CUI_UpGPageBtn::Add_Components()
+HRESULT CUI_UpGPage_Slot::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -97,14 +90,14 @@ HRESULT CUI_UpGPageBtn::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Btn"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Slot"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_UpGPageBtn::Bind_ShaderResources()
+HRESULT CUI_UpGPage_Slot::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -126,45 +119,58 @@ HRESULT CUI_UpGPageBtn::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CUI_UpGPageBtn::Create_UI()
+HRESULT CUI_UpGPage_Slot::Create_UI()
 {
 	CUI::UI_DESC pDesc{};
 
+	// Select UI
 	pDesc.eLevel = LEVEL_STATIC;
-	m_pSelectUI = dynamic_cast<CUI_UpGPageBtn_Select*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn_Select"), &pDesc));
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 341.3f; // 512
+	pDesc.fSizeY = 85.3f; // 128
+	m_pSelectUI = dynamic_cast<CUI_UpGPage_SelectSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_SelectSlot"), &pDesc));
+
+	// Item Slot 
+	pDesc.fX = m_fX - 130.f;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 80.f; // 128
+	pDesc.fSizeY = 80.f;
+	m_pItemSlot = dynamic_cast<CUI_UpGPage_ItemSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_ItemSlot"), &pDesc));
 
 	return S_OK;
 }
 
-CUI_UpGPageBtn* CUI_UpGPageBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_UpGPage_Slot* CUI_UpGPage_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_UpGPageBtn* pInstance = new CUI_UpGPageBtn(pDevice, pContext);
+	CUI_UpGPage_Slot* pInstance = new CUI_UpGPage_Slot(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_UpGPageBtn");
+		MSG_BOX("Failed To Created : CUI_UpGPage_Slot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_UpGPageBtn::Clone(void* pArg)
+CGameObject* CUI_UpGPage_Slot::Clone(void* pArg)
 {
-	CUI_UpGPageBtn* pInstance = new CUI_UpGPageBtn(*this);
+	CUI_UpGPage_Slot* pInstance = new CUI_UpGPage_Slot(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_UpGPageBtn");
+		MSG_BOX("Failed To Cloned : CUI_UpGPage_Slot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_UpGPageBtn::Free()
+void CUI_UpGPage_Slot::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pSelectUI);
+	Safe_Release(m_pItemSlot);
 }

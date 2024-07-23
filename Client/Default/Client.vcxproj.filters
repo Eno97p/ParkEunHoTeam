@@ -565,6 +565,15 @@
     <Filter Include="02.GameObjects\07. UI\UpgradePage\Btn\Select">
       <UniqueIdentifier>{93117aa8-880b-40cd-b12d-3e2d9888b7bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot">
+      <UniqueIdentifier>{2648eec4-dcef-42e2-81ef-07ea5f71043f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Material">
+      <UniqueIdentifier>{deaf1947-9ec0-4a68-a16e-8f9b601e2165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Value">
+      <UniqueIdentifier>{05183035-daef-4ba2-b93f-56b354ad6ccb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1142,6 +1151,15 @@
     <ClInclude Include="..\Public\UI_UpGPageBtn_Select.h">
       <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_Slot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_SelectSlot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_ItemSlot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1692,6 +1710,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_UpGPageBtn_Select.cpp">
       <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_Slot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_SelectSlot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_ItemSlot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

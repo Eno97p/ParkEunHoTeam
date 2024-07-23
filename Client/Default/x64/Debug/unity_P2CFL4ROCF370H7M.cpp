@@ -252,7 +252,16 @@
 #include "C:\Real3DProject\Client\Private\UI_UpGPage_Circle.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_UpGPage_ItemSlot.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_UpGPage_NameBox.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPage_SelectSlot.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPage_Slot.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_UpgradeBG.cpp"

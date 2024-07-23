@@ -115,6 +115,9 @@
 #include "UI_UpGPage_Circle.h"
 #include "UI_UpGPageBtn.h"
 #include "UI_UpGPageBtn_Select.h"
+#include "UI_UpGPage_Slot.h"
+#include "UI_UpGPage_SelectSlot.h"
+#include "UI_UpGPage_ItemSlot.h"
 
 #include "UIGroup_UpGPage.h"
 #pragma endregion Upgrade
@@ -1485,6 +1488,21 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UIGroup_UpGPageBtn_Select*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn_Select"),
 		CUI_UpGPageBtn_Select::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_Slot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_Slot"),
+		CUI_UpGPage_Slot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_SelectSlot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_SelectSlot"),
+		CUI_UpGPage_SelectSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_ItemSlot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_ItemSlot"),
+		CUI_UpGPage_ItemSlot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

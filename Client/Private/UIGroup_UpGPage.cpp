@@ -8,6 +8,7 @@
 #include "UI_UpGPage_NameBox.h"
 #include "UI_UpGPage_Circle.h"
 #include "UI_UpGPageBtn.h"
+#include "UI_UpGPage_Slot.h"
 
 CUIGroup_UpGPage::CUIGroup_UpGPage(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -61,6 +62,20 @@ void CUIGroup_UpGPage::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pSlot : m_vecSlot)
+		{
+			if (!m_isRenderOnAnim && !(pSlot->Get_RenderOnAnim()))
+			{
+				pSlot->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pSlot->Get_RenderOnAnim())
+			{
+				pSlot->Resset_Animation(false);
+			}
+
+			pSlot->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -70,6 +85,9 @@ void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pSlot : m_vecSlot)
+			pSlot->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -98,6 +116,28 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 
 	// Btn 
 	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPageBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn"), &pDesc)));
+
+	if (FAILED(Create_Slot()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_UpGPage::Create_Slot()
+{
+	CUI::UI_DESC pDesc{};
+	
+	for (size_t i = 0; i < 4; ++i)
+	{
+		pDesc.eLevel = LEVEL_STATIC;
+		pDesc.fX = 250.f;
+		pDesc.fY = 230.f + (i * 80.f);
+		pDesc.fSizeX = 341.3f; // 512
+		pDesc.fSizeY = 85.3f; // 128
+		m_vecSlot.emplace_back(dynamic_cast<CUI_UpGPage_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Slot"), &pDesc)));
+	}
+
+	// >> Inventory가 가지고 있는 Weapon 수에 맞춰 Render를 켜도록
 
 	return S_OK;
 }
@@ -134,4 +174,7 @@ void CUIGroup_UpGPage::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pSlot : m_vecSlot)
+		Safe_Release(pSlot);
 }

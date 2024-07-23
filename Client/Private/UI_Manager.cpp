@@ -279,6 +279,15 @@ void CUI_Manager::Key_Input()
 				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
+
+
+		// test¿ë
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
+		(*upgrade).second->Set_Rend(false);
+
+		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
+		(*upgpage).second->Set_Rend(false);
+
 	}
 	else if (m_pGameInstance->Key_Down(DIK_I))
 	{
@@ -303,7 +312,7 @@ void CUI_Manager::Key_Input()
 	}
 	else if (m_pGameInstance->Key_Down(DIK_U)) // Test¿ë
 	{
-		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("UpGPage"); // Upgrade
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 		(*upgrade).second->Set_Rend(true);
 	}
 }

@@ -65,8 +65,8 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
 	//test
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_ESSENCE);
+	/*Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_ESSENCE);*/
 
 	return S_OK;
 }

@@ -9,6 +9,8 @@
 #include "UI_UpGPage_Circle.h"
 #include "UI_UpGPageBtn.h"
 #include "UI_UpGPage_Slot.h"
+#include "UI_UpGPage_MatSlot.h"
+#include "UI_UpGPage_Value.h"
 
 CUIGroup_UpGPage::CUIGroup_UpGPage(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -116,6 +118,29 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 
 	// Btn 
 	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPageBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn"), &pDesc)));
+
+
+	// MatSlot  
+	CUI_UpGPage_MatSlot::UI_MATSLOT_DESC pMatSlotDesc{};
+
+	pMatSlotDesc.eLevel = LEVEL_STATIC;
+	pMatSlotDesc.eMatSlotType = CUI_UpGPage_MatSlot::MATSLOT_L;
+	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_MatSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_MatSlot"), &pMatSlotDesc)));
+
+	pMatSlotDesc.eMatSlotType = CUI_UpGPage_MatSlot::MATSLOT_R;
+	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_MatSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_MatSlot"), &pMatSlotDesc)));
+
+
+	// Value
+	CUI_UpGPage_Value::UI_VALUE_DESC pValueDesc{};
+
+	pValueDesc.eLevel = LEVEL_STATIC;
+	pValueDesc.eValueType = CUI_UpGPage_Value::VALUE_SOUL;
+	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
+
+	pValueDesc.eValueType = CUI_UpGPage_Value::VALUE_MATERIAL;
+	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
+
 
 	if (FAILED(Create_Slot()))
 		return E_FAIL;

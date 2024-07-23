@@ -1,56 +1,71 @@
-#include "UI_LoadingBG.h"
+#include "UI_UpGPage_MatSlot.h"
 
 #include "GameInstance.h"
 
-CUI_LoadingBG::CUI_LoadingBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI{ pDevice, pContext }
+CUI_UpGPage_MatSlot::CUI_UpGPage_MatSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_LoadingBG::CUI_LoadingBG(const CUI_LoadingBG& rhs)
-    : CUI{ rhs }
+CUI_UpGPage_MatSlot::CUI_UpGPage_MatSlot(const CUI_UpGPage_MatSlot& rhs)
+	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_LoadingBG::Initialize_Prototype()
+HRESULT CUI_UpGPage_MatSlot::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Initialize(void* pArg)
+HRESULT CUI_UpGPage_MatSlot::Initialize(void* pArg)
 {
+	UI_MATSLOT_DESC* pDesc = static_cast<UI_MATSLOT_DESC*>(pArg);
+
+	m_eMatSlotType = pDesc->eMatSlotType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
+	if (MATSLOT_L == m_eMatSlotType)
+	{
+		m_fX = (g_iWinSizeX >> 1) - 65.f;
+		m_fY = (g_iWinSizeY >> 1) + 100.f;
+	}
+	else if (MATSLOT_R == m_eMatSlotType)
+	{
+		m_fX = (g_iWinSizeX >> 1) + 30.f;
+		m_fY = (g_iWinSizeY >> 1) + 100.f;
+	}
+
+	m_fSizeX = 85.3f; // 128
+	m_fSizeY = 85.3f;
 
 	Setting_Position();
+
+	// Mat Slot Type에 따라 ItemIcon 다른 것 출력해두어야 함
 
 	return S_OK;
 }
 
-void CUI_LoadingBG::Priority_Tick(_float fTimeDelta)
+void CUI_UpGPage_MatSlot::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_LoadingBG::Tick(_float fTimeDelta)
+void CUI_UpGPage_MatSlot::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 }
 
-void CUI_LoadingBG::Late_Tick(_float fTimeDelta)
+void CUI_UpGPage_MatSlot::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIFTEENTH);
+	CGameInstance::GetInstance()->Add_UI(this, TENTH);
 }
 
-HRESULT CUI_LoadingBG::Render()
+HRESULT CUI_UpGPage_MatSlot::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -62,7 +77,7 @@ HRESULT CUI_LoadingBG::Render()
 	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Add_Components()
+HRESULT CUI_UpGPage_MatSlot::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -75,14 +90,14 @@ HRESULT CUI_LoadingBG::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingBG"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_MatSlot"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Bind_ShaderResources()
+HRESULT CUI_UpGPage_MatSlot::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -104,33 +119,33 @@ HRESULT CUI_LoadingBG::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_LoadingBG* CUI_LoadingBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_UpGPage_MatSlot* CUI_UpGPage_MatSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_LoadingBG* pInstance = new CUI_LoadingBG(pDevice, pContext);
+	CUI_UpGPage_MatSlot* pInstance = new CUI_UpGPage_MatSlot(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_LoadingBG");
+		MSG_BOX("Failed To Created : CUI_UpGPage_MatSlot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_LoadingBG::Clone(void* pArg)
+CGameObject* CUI_UpGPage_MatSlot::Clone(void* pArg)
 {
-	CUI_LoadingBG* pInstance = new CUI_LoadingBG(*this);
+	CUI_UpGPage_MatSlot* pInstance = new CUI_UpGPage_MatSlot(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_LoadingBG");
+		MSG_BOX("Failed To Cloned : CUI_UpGPage_MatSlot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_LoadingBG::Free()
+void CUI_UpGPage_MatSlot::Free()
 {
 	__super::Free();
 }

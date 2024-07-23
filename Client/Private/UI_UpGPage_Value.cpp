@@ -1,56 +1,69 @@
-#include "UI_LoadingBG.h"
+#include "UI_UpGPage_Value.h"
 
 #include "GameInstance.h"
 
-CUI_LoadingBG::CUI_LoadingBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI{ pDevice, pContext }
+CUI_UpGPage_Value::CUI_UpGPage_Value(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_LoadingBG::CUI_LoadingBG(const CUI_LoadingBG& rhs)
-    : CUI{ rhs }
+CUI_UpGPage_Value::CUI_UpGPage_Value(const CUI_UpGPage_Value& rhs)
+	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_LoadingBG::Initialize_Prototype()
+HRESULT CUI_UpGPage_Value::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Initialize(void* pArg)
+HRESULT CUI_UpGPage_Value::Initialize(void* pArg)
 {
+	UI_VALUE_DESC* pDesc = static_cast<UI_VALUE_DESC*>(pArg);
+
+	m_eValueType = pDesc->eValueType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
+	if (VALUE_SOUL == m_eValueType)
+	{
+		m_fX = (g_iWinSizeX >> 1) - 65.f;
+		m_fY = (g_iWinSizeY >> 1) + 165.f;
+	}
+	else if (VALUE_MATERIAL == m_eValueType)
+	{
+		m_fX = (g_iWinSizeX >> 1) + 30.f;
+		m_fY = (g_iWinSizeY >> 1) + 165.f;
+	}
+
+	m_fSizeX = 85.3f; // 128
+	m_fSizeY = 42.6f; // 64
 
 	Setting_Position();
 
 	return S_OK;
 }
 
-void CUI_LoadingBG::Priority_Tick(_float fTimeDelta)
+void CUI_UpGPage_Value::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_LoadingBG::Tick(_float fTimeDelta)
+void CUI_UpGPage_Value::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 }
 
-void CUI_LoadingBG::Late_Tick(_float fTimeDelta)
+void CUI_UpGPage_Value::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIFTEENTH);
+	CGameInstance::GetInstance()->Add_UI(this, TENTH);
 }
 
-HRESULT CUI_LoadingBG::Render()
+HRESULT CUI_UpGPage_Value::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -62,7 +75,7 @@ HRESULT CUI_LoadingBG::Render()
 	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Add_Components()
+HRESULT CUI_UpGPage_Value::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -75,14 +88,14 @@ HRESULT CUI_LoadingBG::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingBG"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_value"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_LoadingBG::Bind_ShaderResources()
+HRESULT CUI_UpGPage_Value::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -104,33 +117,33 @@ HRESULT CUI_LoadingBG::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_LoadingBG* CUI_LoadingBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_UpGPage_Value* CUI_UpGPage_Value::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_LoadingBG* pInstance = new CUI_LoadingBG(pDevice, pContext);
+	CUI_UpGPage_Value* pInstance = new CUI_UpGPage_Value(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_LoadingBG");
+		MSG_BOX("Failed To Created : CUI_UpGPage_Value");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_LoadingBG::Clone(void* pArg)
+CGameObject* CUI_UpGPage_Value::Clone(void* pArg)
 {
-	CUI_LoadingBG* pInstance = new CUI_LoadingBG(*this);
+	CUI_UpGPage_Value* pInstance = new CUI_UpGPage_Value(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_LoadingBG");
+		MSG_BOX("Failed To Cloned : CUI_UpGPage_Value");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_LoadingBG::Free()
+void CUI_UpGPage_Value::Free()
 {
 	__super::Free();
 }

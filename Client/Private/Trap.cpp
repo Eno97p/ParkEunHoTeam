@@ -35,6 +35,7 @@ HRESULT CTrap::Initialize(void* pArg)
 	if (FAILED(Add_Components(pDesc)))
 		return E_FAIL;
 
+	m_pModelCom->Play_Animation(0.01f);
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
@@ -43,6 +44,7 @@ HRESULT CTrap::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 	
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
+
 	//145,522,98
 	m_ColliderMat = XMLoadFloat4x4(m_pBoneMatrix);
 
@@ -297,5 +299,6 @@ void CTrap::Free()
 	__super::Free();
 
 	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pPlayer);
 	
 }

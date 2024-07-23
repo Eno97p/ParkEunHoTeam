@@ -18,11 +18,11 @@
 #include "Grass.h"
 #include "FakeWall.h"
 #include "Elevator.h"
-
 #include "TutorialMapBridge.h"
 
 #include "EventTrigger.h"
 #include "Trap.h"
+#include "TreasureChest.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -715,6 +715,21 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahGate/RasSamrahGate.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SkeletalChain"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/RasSamrahCastle/SkeletalChain/SkeletalChain.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Chaudron"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/RasSamrahCastle/Chaudron/Chaudron.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BossStatue"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahStatue/ActiveStatue.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -729,6 +744,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Traps/SmashingPillar/SmashingPillar.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.0001f, 0.0001f, 0.0001f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TreasureChest"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/TreasureChest/TreasureChest.fbx", PreTransformMatrix))))
+		return E_FAIL;
 #pragma endregion
 
 	
@@ -881,6 +900,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Trap"), CTrap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TreasureChest"), CTreasureChest::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 
 #pragma endregion Object Prototype Load

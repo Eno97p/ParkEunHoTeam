@@ -12,7 +12,7 @@ class ENGINE_DLL CVehicleDefault :
     public ComponentEnd
     //public PxVehicleRigidBodyComponent
 {
-
+    
 private:
     CVehicleDefault(PxU32 numWheels);
     virtual ~CVehicleDefault() = default;

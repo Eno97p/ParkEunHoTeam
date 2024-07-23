@@ -7,6 +7,7 @@
 #include "FreeCamera.h"
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
+#include "TransitionCamera.h"
 
 #include "Map_Element.h"
 #include "Monster.h"
@@ -39,9 +40,7 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
-	
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
-	//	return E_FAIL;
+
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
@@ -49,7 +48,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas.bin"));
+	Load_LevelData(TEXT("../Bin/MapData/test.bin"));
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas_Traps.bin")); //Traps
 
 	Load_Data_Effects();
@@ -68,7 +67,10 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_TEST"), TEXT("Prototype_GameObject_RotateGate"))))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_RotateGate"))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_TreasureChest"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -100,6 +102,28 @@ void CLevel_Jugglas::Tick(_float fTimeDelta)
 		}
 		m_pGameInstance->Set_MainCamera(m_iMainCameraIdx);
 	}
+
+	//if (m_pGameInstance->Key_Down(DIK_4))
+	//{
+	//	CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+	//	//pTCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	//	//pTCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	//	pTCDesc.fFovy = XMConvertToRadians(60.f);
+	//	pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//	pTCDesc.fNear = 0.1f;
+	//	pTCDesc.fFar = 3000.f;
+
+	//	pTCDesc.fSpeedPerSec = 40.f;
+	//	pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	//	if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+	//	{
+	//		MSG_BOX("FAILED");
+	//	}
+	//	return;
+	//}
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
 //#endif

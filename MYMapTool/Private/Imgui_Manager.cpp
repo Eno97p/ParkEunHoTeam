@@ -428,7 +428,10 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
     case LAYER_MONSTER:
     {
-        const char* items_Monster[] = { "test", "MANTARI", "Legionnaire_Gun", "Ghost", "Homonculus", "Boss Juggulus" };
+        const char* items_Monster[] = { "test", "MANTARI", "Legionnaire_Gun", "Ghost", "Homonculus", "Boss Juggulus", 
+           "Chaudron", "SkeletalChain", "Boss Statue"
+
+        };
         ImGui::ListBox("###Obj", &item_current, items_Monster, IM_ARRAYSIZE(items_Monster)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -475,7 +478,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "AckbarHouseRoofMid", "AckbarHouseRoofSmall",
             "AqueducTowerRoof",
             "UnderRoofFilling", 
-            "RotateGate"
+            "RotateGate",
 
 
         };
@@ -486,7 +489,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Trap Hachoir" };
+                                        "Elevator", "Treasure Chest" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }

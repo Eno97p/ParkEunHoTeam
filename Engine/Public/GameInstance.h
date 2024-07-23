@@ -76,6 +76,7 @@ public: /* For.Object_Manager */
 	void Set_MainCamera(_uint iCameraIndex); // 카메라 전환 시 호출, 추가 순서가 인덱스
 	vector<class CCamera*> Get_Cameras();
 	CCamera* Get_MainCamera();
+	_uint Get_MainCameraIdx();
 	void Clear_Cameras();
 
 

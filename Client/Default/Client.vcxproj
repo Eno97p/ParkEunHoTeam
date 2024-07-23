@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Active_Element.h" />
+    <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
@@ -243,6 +244,7 @@
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
+    <ClInclude Include="..\Public\TestPhysXCollider.h" />
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
@@ -373,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Active_Element.cpp" />
+    <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />
@@ -434,6 +437,7 @@
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
+    <ClCompile Include="..\Private\TestPhysXCollider.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />

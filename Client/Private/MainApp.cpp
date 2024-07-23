@@ -557,6 +557,15 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Circle"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/ParticleCircle.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	//Leaf0
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Leaf0"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/GinkgoLeaf.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//Leaf1
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Leaf1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Leaf.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 
 	if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))

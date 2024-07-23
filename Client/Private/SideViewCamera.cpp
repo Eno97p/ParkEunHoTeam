@@ -28,7 +28,7 @@ HRESULT CSideViewCamera::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    __super::Activate();
+    //__super::Activate();
 
     // 초기 카메라 위치 설정
     _float4 vPlayerPosition;
@@ -75,7 +75,8 @@ void CSideViewCamera::Tick(_float fTimeDelta)
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
     m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
 
-    __super::Tick(fTimeDelta);
+    if (!m_bCamActivated) return;
+     __super::Tick(fTimeDelta);
 }
 
 void CSideViewCamera::Late_Tick(_float fTimeDelta)

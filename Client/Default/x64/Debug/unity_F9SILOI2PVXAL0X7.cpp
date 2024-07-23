@@ -3,6 +3,9 @@
 #include "C:\Real3DProject\Client\Private\Active_Element.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Andras.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Aspiration.cpp"
 
 
@@ -28,6 +31,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\Body_Rlya.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\BossDeco.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\BossStatue.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Boss_Juggulus.cpp"
@@ -186,7 +195,16 @@
 #include "C:\Real3DProject\Client\Private\TargetLock.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\TestPhysXCollider.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\TransitionCamera.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Trap.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\TreasureChest.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"

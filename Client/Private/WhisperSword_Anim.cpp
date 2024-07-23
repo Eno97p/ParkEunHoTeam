@@ -1,6 +1,6 @@
 #include "WhisperSword_Anim.h"
 #include "GameInstance.h"
-
+#include "Player.h"
 
 CWhisperSword_Anim::CWhisperSword_Anim(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -20,7 +20,7 @@ HRESULT CWhisperSword_Anim::Initialize_Prototype()
 HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 {
 	WEAPON_DESC* pDesc = (WEAPON_DESC*)pArg;
-
+	
 	m_pSocketMatrix = pDesc->pCombinedTransformationMatrix;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -91,7 +91,15 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
+	_matrix vMatrix = m_pTransformCom->Get_WorldMatrix() * SocketMatrix;
+	// 달릴 때 칼 위치 맞추기 위해 보정
+	if (*m_pState == CPlayer::STATE_RUN)
+	{
+		vMatrix.r[3].m128_f32[0] -= 0.08f;
+		vMatrix.r[3].m128_f32[1] -= 0.32f;
+		vMatrix.r[3].m128_f32[2] += 0.07f;
+	}
+	XMStoreFloat4x4(&m_WorldMatrix, vMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 

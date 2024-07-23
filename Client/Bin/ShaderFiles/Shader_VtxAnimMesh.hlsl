@@ -497,9 +497,9 @@ PS_OUT_COLOR PS_WHISPERSWORD_REFLECTION(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_CLOAKING(PS_IN In)
+PS_OUT_COLOR PS_CLOAKING(PS_IN In)
 {
-	PS_OUT Out = (PS_OUT)0;
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
 
 	// 뷰 공간으로 변환
 	float3 positionVS = mul(float4(In.vPosition.xyz, 1.0), g_ViewMatrix).xyz;
@@ -532,7 +532,7 @@ PS_OUT PS_CLOAKING(PS_IN In)
 	float4 edgeColor = float4(1, 1, 1, smoothEdge);
 
 	// 최종 색상 출력
-	Out.vDiffuse = edgeStrength > edgeThreshold ? edgeColor : float4(0, 0, 0, 0);
+	Out.vColor = edgeStrength > edgeThreshold ? edgeColor : float4(0, 0, 0, 0);
 
 	return Out;
 }

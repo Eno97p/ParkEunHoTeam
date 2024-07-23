@@ -12,6 +12,7 @@ BEGIN(Client)
 
 class CDecal final : public CGameObject
 {
+
 private:
 	CDecal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CDecal(const CDecal& rhs);
@@ -23,16 +24,12 @@ public:
 	virtual void Priority_Tick(_float fTimeDelta) override;
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual pair<_uint, _matrix> Render_Decal() override;
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
-
-
-public:
-	HRESULT Add_Components();
-	HRESULT Bind_ShaderResources();
+	_bool m_bDecal = false;
 
 public:
 	static CDecal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

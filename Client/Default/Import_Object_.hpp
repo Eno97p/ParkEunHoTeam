@@ -152,6 +152,10 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 
 
 #pragma region Active Element
+	/* For.Prototype_GameObject_Mantari */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Andras"),
+		CAndras::Create(pDevice, pContext))))
+		return E_FAIL;
 
 	// Prototype_GameObject_TutorialMapBridge
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TutorialMapBridge"),
@@ -372,6 +376,12 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TreasureChest"),
 		CTreasureChest::Create(pDevice, pContext))))
 		return E_FAIL;
+
+	/*For.Prototype_GameObject_TestPhysxCollider */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TestPhysxCollider"),
+		CTestPhysXCollider::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

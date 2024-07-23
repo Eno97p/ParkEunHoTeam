@@ -206,11 +206,9 @@ struct PS_OUT_COLOR
 
 PS_OUT_COLOR PS_BLOOM(PS_IN In)
 {
-
 	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
 	Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 	return Out;
-
 }
 
 PS_OUT_COLOR PS_BLUR(PS_IN In)
@@ -270,26 +268,6 @@ PS_OUT_COLOR PS_ASPIRATION(PS_IN In)
     return Out;
 }
 
-struct PS_OUT_DECAL
-{
-    vector vDiffuse : SV_TARGET0;
-    vector vDepth : SV_TARGET1;
-};
-
-PS_OUT_DECAL PS_DECAL(PS_IN In)
-{
-    PS_OUT_DECAL Out = (PS_OUT_DECAL)0;
-
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (vDiffuse.a < 0.1f)
-        discard;
-
-    Out.vDiffuse = vDiffuse;
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
-
-    return Out;
-}
-
 PS_OUT PS_SPHERE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -321,6 +299,14 @@ PS_OUT PS_SPHERE(PS_IN In)
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
 
+    return Out;
+}
+
+PS_OUT_COLOR PS_DECAL(PS_IN In)
+{
+
+    PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+    Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
     return Out;
 }
 
@@ -480,7 +466,7 @@ technique11 DefaultTechnique
 
     pass Decal_8
     {
-       SetRasterizerState(RS_Default);
+       SetRasterizerState(RS_NoCull);
        SetDepthStencilState(DSS_Default, 0);
        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

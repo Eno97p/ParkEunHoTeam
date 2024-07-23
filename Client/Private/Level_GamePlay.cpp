@@ -37,7 +37,11 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
+	CGameObject::GAMEOBJECT_DESC gameobjDesc;
+	gameobjDesc.mWorldMatrix._41 = 155.f;
+	gameobjDesc.mWorldMatrix._42 = 522.f;
+	gameobjDesc.mWorldMatrix._43 = 113.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &gameobjDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
@@ -52,7 +56,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
 
 #ifdef _DEBUG
-	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
+	m_iCamSize = m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
 #endif
 
 	return S_OK;
@@ -270,7 +274,8 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
-	
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
+		return E_FAIL;
 	
 	//desc.pModelName = "Prototype_Component_Model_SmashingPillar";
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))

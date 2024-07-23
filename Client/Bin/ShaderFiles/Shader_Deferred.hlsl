@@ -222,53 +222,54 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     return Out;
 }
 
+//원본
+//PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
+//{
+//    PS_OUT_LIGHT      Out = (PS_OUT_LIGHT)0;
+//
+//    vector   vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+//    vector   vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+//    vector   vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+//    vector  vWorldPos;
+//
+//    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+//    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+//    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+//    vWorldPos.w = 1.f;
+//
+//    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+//
+//    /* 뷰스페이스 상의 위치를 구한다. */
+//    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+//
+//    /* 월드스페이스 상의 위치를 구한다. */
+//    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+//
+//
+//    vector      vLightDir = vWorldPos - g_vLightPos;
+//    float      fDistance = length(vLightDir);
+//
+//    float      fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
+//
+//    Out.vShade = g_vLightDiffuse *
+//        saturate(max(dot(normalize(vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+//
+//
+//    /* vWorldPos:화면에 그려지고 있는 픽셀들의 실제 월드 위치를 받아와야하낟.  */
+//    /* 1. 렌더타겟에 객체들을 그릴때 픽셀의 월드위치를 저장하는 방법.(범위 무제한이라는 조건때문에 저장이 힘들다) */
+//    /* 2. 현재 상황에서 픽셀의 투영위치(x, y)까지 먼저구하는 작업은 가능 -> z가 없기때문에 월드까지의 역변환이 힘들다.-> 투영 z( 0 ~ 1), ViewSpace`s Pixel`s Z를(near ~ far) 받아오자.(무제한이아니다.)  */
+//    vector   vReflect = reflect(normalize(vLightDir), normalize(vNormal));
+//    vector   vLook = vWorldPos - g_vCamPosition;
+//
+//    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * fAtt;
+//
+//    return Out;
+//}
+
 PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 {
-    PS_OUT_LIGHT      Out = (PS_OUT_LIGHT)0;
-
-    vector   vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector   vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-    vector   vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-    vector  vWorldPos;
-
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
-
-    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
-
-    /* 뷰스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-    /* 월드스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-
-    vector      vLightDir = vWorldPos - g_vLightPos;
-    float      fDistance = length(vLightDir);
-
-    float      fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
-
-    Out.vShade = g_vLightDiffuse *
-        saturate(max(dot(normalize(vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
-
-
-    /* vWorldPos:화면에 그려지고 있는 픽셀들의 실제 월드 위치를 받아와야하낟.  */
-    /* 1. 렌더타겟에 객체들을 그릴때 픽셀의 월드위치를 저장하는 방법.(범위 무제한이라는 조건때문에 저장이 힘들다) */
-    /* 2. 현재 상황에서 픽셀의 투영위치(x, y)까지 먼저구하는 작업은 가능 -> z가 없기때문에 월드까지의 역변환이 힘들다.-> 투영 z( 0 ~ 1), ViewSpace`s Pixel`s Z를(near ~ far) 받아오자.(무제한이아니다.)  */
-    vector   vReflect = reflect(normalize(vLightDir), normalize(vNormal));
-    vector   vLook = vWorldPos - g_vCamPosition;
-
-    Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * fAtt;
-
-    return Out;
-}
-
-//SPOTLIGHT 조명 연산 코드
-PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
-{
     PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
@@ -280,15 +281,137 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
     vWorldPos.w = 1.f;
 
     vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+
     /* 뷰스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
     /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
     vector vLightDir = vWorldPos - g_vLightPos;
+    float fDistance = length(vLightDir);
 
+    float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
 
+    // 노멀 벡터 정규화
+    float3 normal = normalize(vNormal.xyz);
+
+    // 조명 방향 벡터 정규화
+    float3 lightDir = normalize(vLightDir);
+
+    // 앰비언트와 디퓨즈 조명 계산
+    float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
+    float3 lightDiffuse = g_vLightDiffuse * saturate(max(dot(-lightDir, normal), 0.f));
+
+    // 스펙큘러 계산
+    vector vReflect = float4(reflect(-lightDir, normal), 1.f);
+    vector vLook = normalize(vWorldPos - g_vCamPosition);
+
+    // Roughness와 Metallic 텍스처 샘플링
+    vector vSpecularMap = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+    float roughness = vRoughness.r; // 러프니스 값
+
+    // PBR 계산
+    float NdotV = max(dot(normal, vLook), 0.f);
+    float NdotL = max(dot(normal, lightDir), 0.f);
+    float a = roughness * roughness;
+    float a2 = a * a;
+
+    float D = a2 / (3.14f * pow(NdotL * NdotL * (a2 - 1.f) + 1.f, 2.f));
+    float F = pow(1.f - max(dot(vReflect, vLook), 0.f), 5.f);
+    float G = min(1.f, min((2.f * NdotV * NdotL) / (NdotV + NdotL), (2.f * NdotL * (1.f - roughness)) / (NdotV * NdotL)));
+
+    float specular = (D * F * G) / (4.f * NdotV * NdotL + 0.001f);
+
+    float metallic = vMetalic.r;
+
+    float kS = metallic * specular + (1.f - metallic) * 0.04f;
+    float kD = (1.f - kS) * (1.f - metallic);
+
+    Out.vShade = float4((lightDiffuse * kD + lightAmbient) * fAtt, 1.f);
+    Out.vSpecular = kS * pow(max(dot(-vReflect, vLook), 0.f), 5.f) * fAtt;
+
+    return Out;
+}
+
+//SPOTLIGHT 조명 연산 코드
+//PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
+//{
+//    PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+//    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+//    vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+//    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+//    vector vWorldPos;
+//
+//    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+//    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+//    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+//    vWorldPos.w = 1.f;
+//
+//    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+//    /* 뷰스페이스 상의 위치를 구한다. */
+//    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+//    /* 월드스페이스 상의 위치를 구한다. */
+//    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+//    vector vLightDir = vWorldPos - g_vLightPos;
+//
+//
+//    float fDistance = length(vLightDir);
+//    vLightDir = normalize(vLightDir);
+//    float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
+//    float fSpotAngle = dot(vLightDir, g_vLightDir);
+//
+//    if (fSpotAngle > cos(g_fOuterAngle))
+//    {
+//        float fSpotAtt = saturate((fSpotAngle - cos(g_fOuterAngle)) / (cos(g_fInnerAngle) - cos(g_fOuterAngle)));
+//        fAtt *= fSpotAtt; // 스팟라잇 감쇠값
+//
+//        // 라이트 방향과 노말 벡터의 내적 계산
+//        float ndotl = dot(vLightDir * -1.f, normalize(vNormal));
+//        // 내적 값을 0과 1 사이로 조정
+//        ndotl = saturate(ndotl);
+//
+//        // 최종 음영 색상 계산
+//        Out.vShade = (g_vLightDiffuse * ndotl + g_vLightAmbient * g_vMtrlAmbient) * fAtt;
+//        vector vReflect = reflect(vLightDir, normalize(vNormal));
+//        vector vLook = normalize(vWorldPos - g_vCamPosition);
+//        Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(vReflect * -1.f, vLook), 0.f), 30.f) * fAtt;
+//    }
+//
+//    return Out;
+//}
+
+PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
+{
+    PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
+
+    // 노말 텍스처 샘플링
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+
+    // 깊이 텍스처 샘플링
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    vector vWorldPos;
+
+    // 화면 공간 좌표를 NDC로 변환
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; // 0 ~ 1
+    vWorldPos.w = 1.f;
+
+    // 깊이 값을 사용하여 월드 공간 위치를 계산
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv); // 뷰 스페이스 상의 위치를 구함
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // 월드 스페이스 상의 위치를 구함
+
+    // 라이트 방향 벡터 계산
+    vector vLightDir = vWorldPos - g_vLightPos;
     float fDistance = length(vLightDir);
     vLightDir = normalize(vLightDir);
+
+    // 감쇠값 계산
     float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
     float fSpotAngle = dot(vLightDir, g_vLightDir);
 
@@ -297,16 +420,47 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
         float fSpotAtt = saturate((fSpotAngle - cos(g_fOuterAngle)) / (cos(g_fInnerAngle) - cos(g_fOuterAngle)));
         fAtt *= fSpotAtt; // 스팟라잇 감쇠값
 
+        // 노말 벡터 정규화
+        float3 normal = normalize(vNormal.xyz);
+
         // 라이트 방향과 노말 벡터의 내적 계산
-        float ndotl = dot(vLightDir * -1.f, normalize(vNormal));
-        // 내적 값을 0과 1 사이로 조정
+        float ndotl = dot(-vLightDir, normal);
         ndotl = saturate(ndotl);
 
-        // 최종 음영 색상 계산
-        Out.vShade = (g_vLightDiffuse * ndotl + g_vLightAmbient * g_vMtrlAmbient) * fAtt;
-        vector vReflect = reflect(vLightDir, normalize(vNormal));
+        // 앰비언트와 디퓨즈 조명 계산
+        float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
+        float3 lightDiffuse = g_vLightDiffuse * ndotl;
+
+        // 스페큘러 계산
+        vector vReflect = reflect(-vLightDir, float4(normal, 1.f));
         vector vLook = normalize(vWorldPos - g_vCamPosition);
-        Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(vReflect * -1.f, vLook), 0.f), 30.f) * fAtt;
+
+        // Roughness와 Metallic 텍스처 샘플링
+        vector vSpecularMap = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+        float roughness = vRoughness.r; // 러프니스 값
+
+        // PBR 계산
+        float NdotV = max(dot(normal, vLook), 0.f);
+        float NdotL = max(dot(normal, -vLightDir), 0.f);
+        float a = roughness * roughness;
+        float a2 = a * a;
+
+        float D = a2 / (3.14f * pow(NdotL * NdotL * (a2 - 1.f) + 1.f, 2.f));
+        float F = pow(1.f - max(dot(vReflect, vLook), 0.f), 5.f);
+        float G = min(1.f, min((2.f * NdotV * NdotL) / (NdotV + NdotL), (2.f * NdotL * (1.f - roughness)) / (NdotV * NdotL)));
+
+        float specular = (D * F * G) / (4.f * NdotV * NdotL + 0.001f);
+
+        float metallic = vMetalic.r;
+
+        float kS = metallic * specular + (1.f - metallic) * 0.04f;
+        float kD = (1.f - kS) * (1.f - metallic);
+
+        // 최종 음영 색상 계산
+        Out.vShade = float4((lightDiffuse * kD + lightAmbient) * fAtt, 1.f);
+        Out.vSpecular = kS * pow(max(dot(-vReflect, vLook), 0.f), 5.f) * fAtt;
     }
 
     return Out;
@@ -317,6 +471,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDecal = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
     if (0.0f == vDiffuse.a)
         discard;
 
@@ -325,7 +480,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     vector vMetalicDesc = g_MetalicTexture.Sample(PointSampler, In.vTexcoord);
 
-    Out.vColor = vDiffuse * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    Out.vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
     vector vWorldPos;
@@ -517,7 +672,6 @@ PS_OUT PS_DOWNSAMPLE5X5(PS_IN In)
     return Out;
 }
 
-
 PS_OUT PS_UPSAMPLE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -662,45 +816,92 @@ PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
-    // Screen space UV
-    float2 screenUV = In.vTexcoord;
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    vector vWorldPos;
 
-    // Sample depth
-    float depth = g_DepthTexture.Sample(LinearSampler, screenUV).r;
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
 
-    // Reconstruct clip space position
-    float4 positionCS = float4(screenUV * 2 - 1, depth, 1);
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
 
-    // Transform to view space
-    float4 positionVS = mul(g_ProjMatrixInv, positionCS);
-    positionVS /= positionVS.w;
+    /* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
-    // Transform to world space
-    float4 positionWS = mul(g_ViewMatrixInv, positionVS);
+    /* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    // Transform to decal space using inverse world matrix
-    float4 decalSpacePos = mul(g_WorldMatrixInv, positionWS);
+    // 월드 공간에서 데칼 공간으로 변환합니다.
+    float4 vDecalSpacePos = mul(vWorldPos, g_WorldMatrixInv);
 
-    // Sample diffuse texture (albedo)
-    float4 albedo = g_DiffuseTexture.Sample(LinearSampler, screenUV);
-
-    // Check if the point is inside the decal box
-    if (abs(decalSpacePos.x) <= 0.5 && abs(decalSpacePos.y) <= 0.5 && abs(decalSpacePos.z) <= 0.5)
+    if (abs(vDecalSpacePos.x) <= 1.f && abs(vDecalSpacePos.y) <= 1.f && abs(vDecalSpacePos.z) <= 1.f)
     {
-        // Calculate UV for decal texture
-        float2 decalUV = decalSpacePos.xy + 0.5;
+        // 노말 벡터를 가져옵니다.
+        float3 vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord).xyz * 2.0 - 1.0;
 
-        // Sample decal texture
-        float4 decalColor = g_EffectTexture.Sample(LinearSampler, decalUV);
+        // 데칼의 로컬 축을 계산합니다.
+        float3 vDecalForward = normalize(g_WorldMatrixInv[2].xyz);
+        float3 vDecalRight = normalize(g_WorldMatrixInv[0].xyz);
+        float3 vDecalUp = normalize(g_WorldMatrixInv[1].xyz);
 
-        // Blend decal with diffuse color
-        float3 finalColor = lerp(albedo.rgb, decalColor.rgb, decalColor.a);
-        Out.vColor = float4(finalColor, 1.0);
+        // UV 좌표를 계산한다.
+        float2 vDecalTexcoord;
+        if (abs(dot(vNormal, vDecalForward)) > 0.707) // cos(45도) 0.707
+        {
+            // 정면 또는 후면
+            vDecalTexcoord.x = vDecalSpacePos.x * 0.5 + 0.5;
+            vDecalTexcoord.y = vDecalSpacePos.y * -0.5 + 0.5;
+        }
+        else if (abs(dot(vNormal, vDecalUp)) > 0.707)
+        {
+            // 상단 또는 하단
+            vDecalTexcoord.x = vDecalSpacePos.x * 0.5 + 0.5;
+            vDecalTexcoord.y = vDecalSpacePos.z * -0.5 + 0.5;
+        }
+        else
+        {
+            // 측면
+            vDecalTexcoord.x = vDecalSpacePos.y * -0.5 + 0.5;
+            vDecalTexcoord.y = vDecalSpacePos.z * -0.5 + 0.5;
+        }
+
+        float4 vDecalColor = g_EffectTexture.Sample(LinearSampler, vDecalTexcoord);
+        if (vDecalColor.a <= 0.1f)
+        {
+            discard;
+        }
+
+        if (abs(dot(vNormal, vDecalForward)) > 0.707) // cos(45도) 0.707
+        {
+            // 정면 또는 후면
+            if (abs(vDecalSpacePos.z) > 0.8f)
+            {
+                vDecalColor.a = 0.f;
+            }
+        }
+        else if (abs(dot(vNormal, vDecalUp)) > 0.707)
+        {
+            // 상단 또는 하단
+            if (abs(vDecalSpacePos.y) > 0.8f)
+            {
+                vDecalColor.a = 0.f;
+            }
+        }
+        else
+        {
+            // 측면
+            if (abs(vDecalSpacePos.x) > 0.8f)
+            {
+                vDecalColor.a = 0.f;
+            }
+        }
+
+        Out.vColor = vDecalColor;
     }
     else
     {
-        // If outside the decal box, just return the albedo color
-        Out.vColor = albedo;
+        discard;
     }
 
     return Out;
@@ -725,7 +926,6 @@ PS_OUT PS_REFLECTION(PS_IN In)
 
     return Out;
 }
-
 
 technique11 DefaultTechnique
 {
@@ -984,7 +1184,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();

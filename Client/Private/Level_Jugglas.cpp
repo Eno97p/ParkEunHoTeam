@@ -39,9 +39,7 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
-	
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"))))
-	//	return E_FAIL;
+
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;

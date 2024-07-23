@@ -53,6 +53,11 @@ namespace Engine
 		XMFLOAT4	vSpecular;
 	}LIGHT_DESC;
 
+	typedef struct DECAL_DESC
+	{
+		XMMATRIX vWorldInv;
+	}DECAL_DESC;
+
 	//0 0 1 1
 	//1 1 0 1
 

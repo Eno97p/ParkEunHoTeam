@@ -63,7 +63,7 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 		{
 			m_bIsCloaking = false;
 		}
-		else if(m_fCurMp >= 30.f)
+		else if(m_fCurMp >= 10.f)
 		{
 			m_bIsCloaking = true;
 			Add_Mp(-10.f);
@@ -121,21 +121,6 @@ void CPlayer::Tick(_float fTimeDelta)
 	if (m_fJumpCooltime > JUMPCOOLTIME)
 	{
 		m_fJumpCooltime = 0.f;
-	}
-
-	if (!m_pPhysXCom->Get_IsJump())
-	{
-		m_bJumping = false;
-		m_bDoubleJumping = false;
-		m_pPhysXCom->Set_JumpSpeed(JUMPSPEED);
-		if (m_iState == STATE_JUMP)
-		{
-			m_iState = STATE_IDLE;
-		}
-	}
-	else
-	{
-		m_bJumping = true;
 	}
 
 	m_pBehaviorCom->Update(fTimeDelta);
@@ -1086,21 +1071,39 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
-	// 아래로 걸어갈때 발동 안하기 위해 값 적당히 조절할것
-	_float fLengthFromGround = m_pPhysXCom->Get_LengthFromGround();
-	if (fLengthFromGround > 3.f && fLengthFromGround < 0.1f)
+
+
+	// 바닥에 닿으면
+	if (!m_pPhysXCom->Get_IsJump())
 	{
-		m_bJumping = true;
+		m_bJumping = false;
+		m_bFalling = false;
+		m_bDoubleJumping = false;
+		m_pPhysXCom->Set_JumpSpeed(JUMPSPEED);
+	}
+	if (!m_bFalling && m_pPhysXCom->Get_CurrentJumpSpeed() < 0.f)
+	{
+		// 아래로 걸어갈때 발동 안하기 위해 값 적당히 조절할것
+		_float fLengthFromGround = m_pPhysXCom->Get_LengthFromGround();
+		if (fLengthFromGround > 3.f)
+		{
+			m_bJumping = true;
+			m_bFalling = true;
+			m_iState = STATE_JUMP;
+		}
+	}
+	else if (m_bFalling)
+	{
 		m_iState = STATE_JUMP;
 	}
 
 	if (m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
-		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_USEITEM || (m_fCurStamina < 10.f && m_bStaminaCanDecrease))
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_USEITEM)
 	{
 		return COOLING;
 	}
 	
-	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping))
+	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping) && (m_fCurStamina >= 10.f || m_bStaminaCanDecrease))
 	{
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
@@ -1123,7 +1126,6 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 
 	if (m_bJumping)
 	{
-
 		/*m_pPhysXCom->Tick(fTimeDelta);*/
 
 		if (GetKeyState('A') & 0x8000)

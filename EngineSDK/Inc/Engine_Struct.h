@@ -314,7 +314,7 @@ namespace Engine
 		{
 		public:
 			PX_FORCE_INLINE VehicleMiddleParams()
-				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f), steeringSpeed(PxPi / 2)
+				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f), steeringSpeed(PxPi / 2) , MaxSteeringAngle(PxPi / 4)
 			{
 			}
 			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed)
@@ -329,6 +329,7 @@ namespace Engine
 			PxReal engineTorque;		//엔진 토크
 			PxReal brakeTorque;			//브레이크 토크
 			PxReal steeringAngle;		//핸들 각도
+			PxReal MaxSteeringAngle;	//최대 핸들 각도
 			PxReal steeringSpeed;		//핸들 속도
 		};
 

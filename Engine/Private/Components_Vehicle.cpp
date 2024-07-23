@@ -80,11 +80,10 @@ bool ComponentMiddle::update(const PxReal dt, const PxVehicleSimulationContext& 
 
 void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, PxVehicleArrayData<const VehicleBeginState>& beginStates, PxVehicleArrayData<VehicleMiddleState>& middleStates, PxReal dt)
 {
-	 PxReal steeringAngle = middleParam->steeringAngle;
-	 PxReal MaxSteeringAngle = middleParam->MaxSteeringAngle;
+	PxReal steeringAngle = middleParam->steeringAngle;
+	const PxReal maxSteeringAngle = PxPi * 0.25f; // 최대 조향 각도 (45도)
 
-
-	steeringAngle = PxClamp(steeringAngle, -MaxSteeringAngle, MaxSteeringAngle);
+	steeringAngle = PxClamp(steeringAngle, -maxSteeringAngle, maxSteeringAngle);
 
 	const VehicleBeginState& initialBodyState = beginStates[0];
 	initialBodyState.transform;

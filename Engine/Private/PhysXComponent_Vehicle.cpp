@@ -111,18 +111,20 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 		}
 	}
 
-	const float maxSteeringAngle = 90.0f; // 45도
-	const float steeringSpeed = 2.0f;
+	const float maxSteeringAngle = 45.0f; // 45도
+	//const float steeringSpeed = 2.0f;
 
 	if (GetAsyncKeyState('A') & 0x8000)
 	{
 		// 좌회전
-		middleParams.steeringAngle = -maxSteeringAngle * steeringSpeed;
+		middleParams.steeringAngle = -maxSteeringAngle;
+		middleParams.MaxSteeringAngle = 45.0f;
 	}
 	else if (GetAsyncKeyState('D') & 0x8000)
 	{
 		// 우회전
-		middleParams.steeringAngle = maxSteeringAngle * steeringSpeed;
+		middleParams.steeringAngle = maxSteeringAngle;
+		middleParams.MaxSteeringAngle = 45.0f;
 	}
 	else
 	{

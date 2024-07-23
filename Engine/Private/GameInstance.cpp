@@ -437,6 +437,11 @@ CCamera* CGameInstance::Get_MainCamera()
 	return m_pObject_Manager->Get_MainCamera();
 }
 
+_uint CGameInstance::Get_MainCameraIdx()
+{
+	return m_pObject_Manager->Get_MainCameraIdx();
+}
+
 void CGameInstance::Clear_Cameras()
 {
 	m_pObject_Manager->Clear_Cameras();

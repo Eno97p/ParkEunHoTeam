@@ -381,9 +381,20 @@ PS_OUT_BLOOM PS_BLOOM(PS_IN In)
 {
 	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
 
-	vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 
-	Out.vColor = vColor;
+	if (g_bDiffuse)
+	{
+		vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+		Out.vColor = vColor * 2.f;
+	}
+
+	if (g_bEmissive)
+	{
+		vector vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+		Out.vColor = vColor;
+	}
+
+	
 
 	return Out;
 }

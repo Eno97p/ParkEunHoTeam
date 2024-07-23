@@ -523,6 +523,15 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
       <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco">
+      <UniqueIdentifier>{62fb3047-5cc1-4921-8e92-90d35050c67d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue">
+      <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest">
+      <UniqueIdentifier>{b9789d9c-3a7d-4069-9325-cecb231bb956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1064,6 +1073,18 @@
     <ClInclude Include="Import_Object_.hpp">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TransitionCamera.h">
+      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDeco.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossStatue.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TreasureChest.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1579,6 +1600,18 @@
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TransitionCamera.cpp">
+      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDeco.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossStatue.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TreasureChest.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1660,6 +1693,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

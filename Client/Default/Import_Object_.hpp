@@ -27,6 +27,12 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CSideViewCamera::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_TransitionCamera*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TransitionCamera"),
+		CTransitionCamera::Create(pDevice, pContext))))
+		return E_FAIL;
+
+
 	///* For.Prototype_GameObject_Monster */
 	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
 	//	CMonster ::Create(pDevice, pContext))))
@@ -166,6 +172,17 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	// Prototype_GameObject_RotateGate
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotateGate"),
 		CRotateGate::Create(pDevice, pContext))))
+		return E_FAIL;
+
+
+	// Prototype_GameObject_BossDeco
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BossDeco"),
+		CBossDeco::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	// Prototype_GameObject_BossStatue
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BossStatue"),
+		CBossStatue::Create(pDevice, pContext))))
 		return E_FAIL;
 
 	//Prototype_GameObject_EventTrigger
@@ -351,7 +368,10 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CTrap::Create(pDevice, pContext))))
 		return E_FAIL;
 
-
+	/*For.Prototype_GameObject_TreasureChest */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TreasureChest"),
+		CTreasureChest::Create(pDevice, pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

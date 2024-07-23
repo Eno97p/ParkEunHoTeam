@@ -65,6 +65,11 @@ public:
 	_bool Get_Cloaking() { return m_bIsCloaking; }
 	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
 
+	// UI에 출력하기 위한 함수
+	_float			Get_MaxHP() { return m_fMaxHp; }
+	_float			Get_MaxStamina() { return m_fMaxStamina; }
+	_float			Get_MaxMP() { return m_fMaxMp; }
+
 private:
 	HRESULT Add_Nodes();
 

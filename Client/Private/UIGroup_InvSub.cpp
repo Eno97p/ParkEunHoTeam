@@ -115,14 +115,31 @@ HRESULT CUIGroup_InvSub::Render()
 	return S_OK;
 }
 
-void CUIGroup_InvSub::Update_InvSub_QuickSlot()
+void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx)
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
-	for (size_t i = 0; i < CInventory::GetInstance()->Get_QuickSize()-1; ++i)
+
+	for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if ((*slot)->Get_isItemIconNull())
+		{
+			(*slot)->Create_ItemIcon_SubQuick(iSlotIdx);
+			return;
+		}
+		else
+		{
+			++slot;
+		}
+	}
+}
+
+void CUIGroup_InvSub::Delete_InvSub_QuickSlot(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;
 
-	// m_iSlotIdx
-	(*slot)->Create_ItemIcon_SubQuick(m_iSlotIdx);
+	(*slot)->Delete_ItemIcon();
 }
 
 HRESULT CUIGroup_InvSub::Create_UI()

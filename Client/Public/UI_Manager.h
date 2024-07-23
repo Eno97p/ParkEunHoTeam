@@ -35,8 +35,8 @@ public:
 	void				Render_UIGroup(_bool isRender, string strKey);
 
 	void				Update_Inventory_Add(_uint iSlotIdx);
-	void				Update_InvSub_Quick_Add();
-	void				Update_Quick_Add(CItemData* pItemData);
+	void				Update_InvSub_Quick_Add(_uint iSlotIdx);
+	void				Update_Quick_Add(CItemData* pItemData, _int iInvenIdx);
 	void				Update_Quick_InvSlot_Add(_uint iSlotIdx);
 	void				Update_Weapon_Add();
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);

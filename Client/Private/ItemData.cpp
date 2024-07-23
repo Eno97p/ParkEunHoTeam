@@ -62,6 +62,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_BUFF1;
 		m_wszItemName = TEXT("SIGIL OF STRENGTH");
 		m_wszItemExplain = TEXT("버프 1");
+		m_wszItemExplain_quick = TEXT("버프 1");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
@@ -71,6 +72,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_BUFF2;
 		m_wszItemName = TEXT("SIGIL OF PROTECTION");
 		m_wszItemExplain = TEXT("버프 2");
+		m_wszItemExplain_quick = TEXT("버프 2");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
@@ -80,6 +82,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_BUFF3;
 		m_wszItemName = TEXT("SIGIL OF RECOVERY");
 		m_wszItemExplain = TEXT("버프 3");
+		m_wszItemExplain_quick = TEXT("버프 3");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
@@ -89,6 +92,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_BUFF4;
 		m_wszItemName = TEXT("SIGIL OF ETHER");
 		m_wszItemExplain = TEXT("버프 4");
+		m_wszItemExplain_quick = TEXT("버프 4");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}
@@ -108,6 +112,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Essence");
 		m_wszItemName = TEXT("GRACEFUL ESSENCE");
 		m_wszItemExplain = TEXT("안정적인 데이터 [컴파일링 완료]\n보류중인 메모리 분석");
+		m_wszItemExplain_quick = TEXT("안정적인 데이터 [컴파일링 완료]\n보류중인 메모리 분석");
 		break;
 	}
 	case Client::CItem::ITEM_ETHER:
@@ -116,6 +121,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_ETHER;
 		m_wszItemName = TEXT("RADIANT ETHER");
 		m_wszItemExplain = TEXT("섬세하게 조각된 반투명 수정 조각\n풍부한 천상 에너지를 발산");
+		m_wszItemExplain_quick = TEXT("섬세하게 조각된 반투명 수정 조각\n풍부한 천상 에너지를 발산");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
 		break;
 	}
@@ -125,6 +131,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_UPGRADE1;
 		m_wszItemName = TEXT("HADRONITE");
 		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
+		m_wszItemExplain_quick = TEXT("Astyr 신체 대부분을 구성하는 잠재적 물질\n무기 업그레이드 시 사용 가능");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0");
 		break;
 	}
@@ -134,6 +141,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemName = ITEMNAME_UPGRADE2;
 		m_wszItemName = TEXT("GRACEFUL HADRONITE");
 		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
+		m_wszItemExplain_quick = TEXT("Astyr 신체 대부분을 구성하는 잠재적 물질\n무기 업그레이드 시 사용 가능");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1");
 		break;
 	}

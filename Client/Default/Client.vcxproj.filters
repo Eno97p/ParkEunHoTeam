@@ -502,9 +502,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate">
       <UniqueIdentifier>{cdb9c6cb-e5cd-4522-a7f5-06685678f6df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\04. Trap">
-      <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Activate">
       <UniqueIdentifier>{4a335379-b095-48d2-b582-70d62d891cc9}</UniqueIdentifier>
     </Filter>
@@ -522,6 +519,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Cameras\Transition">
       <UniqueIdentifier>{f44c0e31-9f04-48e6-be62-39a81841c722}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
+      <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1044,7 +1044,7 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Trap.h">
-      <Filter>02.GameObjects\02.LandObject\04. Trap</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\03. Trap</Filter>
     </ClInclude>
     <ClInclude Include="Import_Class.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
@@ -1060,6 +1060,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
+    </ClInclude>
+    <ClInclude Include="Import_Object_.hpp">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1562,7 +1565,7 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\04. RotateGate</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Trap.cpp">
-      <Filter>02.GameObjects\02.LandObject\04. Trap</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\03. Trap</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_Activate.cpp">
       <Filter>02.GameObjects\07. UI\Activate</Filter>

@@ -91,7 +91,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 27;
-		fAnimSpeed = 1.3f;
+		fAnimSpeed = 1.3f; // 1.3
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMantari::STATE_WALKBACK)
@@ -128,17 +128,8 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 24)
 		{
 			fAnimSpeed = 1.3f;
-			if (m_pModelCom->Check_CurDuration(0.88))
-			{
-				_matrix Mat = XMLoadFloat4x4(&m_WorldMatrix);
-				_vector vLook = XMVector4Normalize(Mat.r[2]);
-				_vector vPos = Mat.r[3] + vLook * 1.2f;
-				_float4 vStartPos;
-				XMStoreFloat4(&vStartPos, vPos);
-				EFFECTMGR->Generate_Particle(23, vStartPos);
-				EFFECTMGR->Generate_Particle(23, vStartPos, nullptr, XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-			}
-		}
+		else if(m_iPastAnimIndex == 22)
+			fAnimSpeed = 2.f;
 		else
 			fAnimSpeed = 1.f;
 
@@ -147,7 +138,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 2.5f && m_fDamageTiming < 2.7f)
+		if (m_fDamageTiming > 2.f && m_fDamageTiming < 2.2f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -160,16 +151,20 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 	{
 		if (m_iPastAnimIndex < 0 || m_iPastAnimIndex > 1)
 		{
-			fAnimSpeed = 0.9f;
 			m_iPastAnimIndex = 0;
-		}else
-			fAnimSpeed = 1.2f;
+		}
+		
+		if(m_iPastAnimIndex == 0)
+			fAnimSpeed = 0.75f;
+		else
+			fAnimSpeed = 1.7f; // 1.2
+			
 		if (m_iPastAnimIndex == 1) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.3);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.6f && m_fDamageTiming < 0.8f)
+		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.0f)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -240,7 +235,9 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			m_iPastAnimIndex = 7;
 		}
 		if(m_iPastAnimIndex == 9)
-			fAnimSpeed = 1.2f;
+			fAnimSpeed = 1.3f;
+		else if(m_iPastAnimIndex == 7)
+			fAnimSpeed = 2.f;
 		else
 			fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.3);
@@ -248,7 +245,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 1.4f && m_fDamageTiming < 1.5f)
+		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.f)
 		{
 			m_pWeapon->Set_Active();
 		}

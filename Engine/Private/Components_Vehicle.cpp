@@ -79,11 +79,21 @@ bool ComponentMiddle::update(const PxReal dt, const PxVehicleSimulationContext& 
 
 void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, PxVehicleArrayData<const VehicleBeginState>& beginStates, PxVehicleArrayData<VehicleMiddleState>& middleStates, PxReal dt)
 {
-	PxReal steeringAngle= middleParam->steeringAngle;
+	PxReal steeringAngle = middleParam->steeringAngle;
+	const PxReal maxSteeringAngle = PxPi * 0.25f; // 최대 조향 각도 (45도)
+
+	steeringAngle = PxClamp(steeringAngle, -maxSteeringAngle, maxSteeringAngle);
+
 
 	
+	// 차량의 현재 방향을 기준으로 새로운 회전을 계산합니다
 	PxQuat steeringRotation = PxQuat(steeringAngle * dt, PxVec3(0, 1, 0));
 	middleStates[0].bodyRotation = steeringRotation * middleStates[0].bodyRotation;
+
+	// 정규화를 통해 회전이 올바른지 확인합니다
+	middleStates[0].bodyRotation.normalize();
+
+
 	for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 	{
 		middleStates[i].wheelSpeeds[i] += middleParam->engineTorque * dt;
@@ -94,7 +104,6 @@ void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, Px
 		// 매우 기본적인 서스펜션 시뮬레이션
 		middleStates[i].suspensionCompression[i] = 0.1f; // 상수 값 사용
 	}
-	
 }
 
 bool ComponentEnd::update(const PxReal dt, const PxVehicleSimulationContext& context)
@@ -128,16 +137,16 @@ void ComponentEnd::CFunctionEnd(const VehicleEndParams* endParam, PxVehicleArray
 
 	PxVec3 rotatedVelocity = middleStates[0].bodyRotation.rotate(totalVelocity);
 
-	bodyEndState.finalVelocity = totalVelocity;
-	bodyEndState.finalPose.p += totalVelocity * dt;
+	bodyEndState.finalVelocity = rotatedVelocity;
+	bodyEndState.finalPose.p += rotatedVelocity * dt;
 
+	// 최종 회전 적용 (누적 대신 직접 할당)
+	bodyEndState.finalPose.q = middleStates[0].bodyRotation;
 
-
-	// 최종 회전 적용
-	bodyEndState.finalPose.q = middleStates[0].bodyRotation * bodyEndState.finalPose.q;
+	// Quaternion 정규화
+	bodyEndState.finalPose.q.normalize();
 
 	// 각속도 계산 (간단한 예시)
 	bodyEndState.finalAngularVelocity = PxVec3(0, middleStates[0].bodyRotation.getAngle() / dt, 0);
-
-
 }
+

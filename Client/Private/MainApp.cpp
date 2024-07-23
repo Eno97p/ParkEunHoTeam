@@ -237,7 +237,7 @@ HRESULT CMainApp::Render()
 
 	if (m_fTimeAcc >= 1.f)
 	{
-		//wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
+		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
 		//Terst
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
@@ -456,6 +456,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 #pragma endregion SHADER
 
 #pragma region TEXTURE
+	/* Prototype_Component_Texture_Sky */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 6))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 40))))

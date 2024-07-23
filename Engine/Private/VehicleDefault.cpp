@@ -1,4 +1,5 @@
 #include"VehicleDefault.h"
+#include"GameInstance.h"
 
 #include"CPhysX.h"
 
@@ -18,6 +19,8 @@ HRESULT CVehicleDefault::createSequence()
 
 	if(!mSequence.add(static_cast<ComponentEnd*>(this)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CVehicleDefault::createActor(PxPhysics* pPhysics, PxScene* pScene, const char* Name)
@@ -68,7 +71,7 @@ bool CVehicleDefault::update(const PxReal dt, const PxVehicleSimulationContext& 
 		PxVec3 velocity = endState.finalVelocity;
 		PxVec3 angularVelocity = endState.finalAngularVelocity;
 
-		//if (pose.isValid())
+		if (pose.isValid())
 		{
 			mActor->setGlobalPose(pose);
 			mActor->setLinearVelocity(velocity);
@@ -128,7 +131,8 @@ void CVehicleDefault::getDataForComponentEnd(const VehicleEndParams*& endParam, 
 
 void CVehicleDefault::updateSequence(const PxReal dt, const PxVehicleSimulationContext& context)
 {
-	mSequence.update(dt, context);
+	PROFILE_CALL("TestVehicle", mSequence.update(dt, context));
+	
 }
 
 CVehicleDefault* CVehicleDefault::Create(PxU32 numWheels)

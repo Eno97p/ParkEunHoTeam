@@ -203,6 +203,7 @@ void CUI_InvSub_Btn::Mouse_Input()
 				// Equip Sign È°¼ºÈ­
 				item->Set_isEquip(true);
 				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+
 			}
 			break;
 		}

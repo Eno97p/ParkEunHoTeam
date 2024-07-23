@@ -11,7 +11,7 @@ class CImgui_Manager final : public CBase
 	DECLARE_SINGLETON(CImgui_Manager)
 
 private:
-	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_ENVEFFECTS, LAYER_END };
+	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_ENVEFFECTS, LAYER_TRAP , LAYER_END };
 
 private:
 	CImgui_Manager();
@@ -54,6 +54,7 @@ public:
 	_bool	Get_IsNaviDelete() { return m_isNaviDelete; }
 	void	Set_IsNaviDelete() { m_isNaviDelete = false; }
 
+	_float Get_TrapTimeOffset() { return m_fTrapTimeOffset; }
 	_bool isAnimModel() { return m_bIsAnimModel; }
 	_bool isDecoObject() { return m_bIsDecoObject; }
 
@@ -151,6 +152,8 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 
+private:
+	_float m_fTrapTimeOffset = 0.f;
 private:
 	// Imgui_Manager 클래스에 멤버 변수 추가
 	XMFLOAT4 m_DirectionalLightDirection{ 0.f, -1.f, 0.0f, 0.0f };

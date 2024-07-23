@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Object_Manager.h"
 #include "GameInstance.h"
-
+#include "Level.h"
 
 CEventMgr::CEventMgr()
 {
@@ -62,6 +62,10 @@ void CEventMgr::excute(const tEvent& _eve)
 	break;
 	case eEVENT_TYPE::SCENE_CHANGE:
 	{
+		mVecDeadObj.clear();
+		_uint	LevelIdx = (_uint)_eve.lParam;
+		CLevel*	nextLevel = (CLevel*)_eve.eParam;
+		CGameInstance::GetInstance()->Open_Level(LevelIdx, nextLevel);
 	}
 		break;
 	}

@@ -421,29 +421,29 @@ HRESULT CRenderer::Initialize()
 
 #ifdef _DEBUG
         const float startX = 100.0f;
-        const float startY = 50.0f;
-        const float targetWidth = 100.0f;
-        const float targetHeight = 100.0f;
+        const float startY = 100.0f;
+        const float targetWidth = 200.0f;
+        const float targetHeight = 200.0f;
         const float gap = 0.0f;
 
         float currentX = startX;
         float currentY = startY;
 
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
-       return E_FAIL;
-    currentX += targetWidth + gap;
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DecalResult"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Decal"), currentX, currentY, targetWidth, targetHeight)))
+        //   return E_FAIL;
+        //currentX += targetWidth + gap;
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample4x4"), currentX, currentY, targetWidth, targetHeight)))
         //   return E_FAIL;
@@ -461,19 +461,21 @@ HRESULT CRenderer::Initialize()
         //   return E_FAIL;
         //currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
-
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Distortion"), currentX, currentY, targetWidth, targetHeight)))
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
         //   return E_FAIL;
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+        //currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom3"), currentX, currentY, targetWidth, targetHeight)))
+        //   return E_FAIL;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LUT"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //currentX += targetWidth + gap;
+
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //currentX += targetWidth + gap;
 
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
@@ -763,27 +765,12 @@ void CRenderer::Render_Decal()
     if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DecalResult"))))
         return;
 
-    //if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-    //    return;
-
-    _float4x4 mat = { 1.f, 0.f, 0.f, 0.f,
-                      0.f, 1.f, 0.f, 0.f,
-                      0.f, 0.f, 1.f, 0.f,
-                      -155.f, -522.f, -113.f, 1.f };
-    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrixInv", &mat)))
+    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrixInv", &m_Mat)))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
         return;
-
-    if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
-        return;
-
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return;
@@ -1623,7 +1610,8 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);

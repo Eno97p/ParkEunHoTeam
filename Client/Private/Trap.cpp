@@ -4,13 +4,13 @@
 #include "GameInstance.h"
 
 CTrap::CTrap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject(pDevice, pContext)
+	: CMap_Element(pDevice, pContext)
 	
 {
 }
 
 CTrap::CTrap(const CTrap& rhs)
-	: CGameObject(rhs)
+	: CMap_Element(rhs)
 	
 	
 {
@@ -24,19 +24,38 @@ HRESULT CTrap::Initialize_Prototype()
 
 HRESULT CTrap::Initialize(void* pArg)
 {
-	CGameObject::GAMEOBJECT_DESC* pDesc = static_cast<CGameObject::GAMEOBJECT_DESC*>(pArg);
+	TRAP_DESC* pDesc = static_cast<TRAP_DESC*>(pArg);
 
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
+	m_dStartTime = pDesc->dStartTimeOffset;
+
+	if (FAILED(Add_Components(pDesc)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 	
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
 	//145,522,98
+	m_ColliderMat = XMLoadFloat4x4(m_pBoneMatrix);
+
+	m_ColliderMat.r[0] = XMVector3Normalize(m_ColliderMat.r[0]);
+	m_ColliderMat.r[1] = XMVector3Normalize(m_ColliderMat.r[1]);
+	m_ColliderMat.r[2] = XMVector3Normalize(m_ColliderMat.r[2]);
+
+	//_uint temp= m_pModelCom->Get_NumAnim();
+
+
+	m_ColliderMat *= m_pTransformCom->Get_WorldMatrix();
+	m_pColliderCom->Tick(m_ColliderMat);
+
 	return S_OK;
 }
 
@@ -48,21 +67,21 @@ void CTrap::Priority_Tick(_float fTimeDelta)
 void CTrap::Tick(_float fTimeDelta)
 {
 
-	_matrix BoneMatrix = XMLoadFloat4x4(m_pBoneMatrix);
+	m_ColliderMat = XMLoadFloat4x4(m_pBoneMatrix);
 
-	BoneMatrix.r[0] = XMVector3Normalize(BoneMatrix.r[0]);
-	BoneMatrix.r[1] = XMVector3Normalize(BoneMatrix.r[1]);
-	BoneMatrix.r[2] = XMVector3Normalize(BoneMatrix.r[2]);
+	m_ColliderMat.r[0] = XMVector3Normalize(m_ColliderMat.r[0]);
+	m_ColliderMat.r[1] = XMVector3Normalize(m_ColliderMat.r[1]);
+	m_ColliderMat.r[2] = XMVector3Normalize(m_ColliderMat.r[2]);
 
 	//_uint temp= m_pModelCom->Get_NumAnim();
 
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	m_ColliderMat *= m_pTransformCom->Get_WorldMatrix();
+	m_pColliderCom->Tick(m_ColliderMat);
 
 
 
-	
-	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation(fTimeDelta * m_fTimeAccel);
 }
 
 void CTrap::Late_Tick(_float fTimeDelta)
@@ -70,11 +89,21 @@ void CTrap::Late_Tick(_float fTimeDelta)
 //#ifdef _DEBUG
 //	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 //#endif
+		// 몬스터 무기와 플레이어 충돌처리
+	m_pColliderCom->Tick(m_ColliderMat);
 
+	m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+	if (m_eColltype == CCollider::COLL_START)
+	{
+		m_pPlayer->PlayerHit(10);
+	}
 
-	//DECAL
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	if (m_pGameInstance->isIn_WorldFrustum(m_ColliderMat.r[3], 5.f))
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	}
+
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -93,6 +122,8 @@ HRESULT CTrap::Render()
 	for (_uint i = 0; i < iNumMeshes; ++i) // 해당 Model의 Mesh만큼 순회
 	{
 		m_pShaderCom->Unbind_SRVs();
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
@@ -138,40 +169,23 @@ HRESULT CTrap::Render_Bloom()
 
 		m_pShaderCom->Unbind_SRVs();
 
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", 0);
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", 0, aiTextureType_EMISSIVE)))
-				return E_FAIL;
-
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", 0, aiTextureType_EMISSIVE)))
+			return E_FAIL;
 
 		m_pShaderCom->Begin(6);
 
 		m_pModelCom->Render(0);
 }
 
-HRESULT CTrap::Add_Components()
+HRESULT CTrap::Add_Components(TRAP_DESC* desc)
 {
 	
-	/* For.Com_Collider */
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.5f, 1.5f, 0.5f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
-
-
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
-
-
-
-
-	/*wstring wstr = pDesc->wstrModelName;*/
-
-	/* For.Com_VIBuffer */
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY,m_wstrMoDelName,
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	/* For.Com_Model */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
@@ -183,9 +197,42 @@ HRESULT CTrap::Add_Components()
 
 
 
-	m_pBoneMatrix= m_pModelCom->Get_BoneCombinedTransformationMatrix("b_hachoir018");
-	
+	if (desc->TriggerType == 0) //하꼬
+	{
+		m_pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("b_hachoir018");
+		m_fTimeAccel = 1.2f;
+		/* For.Com_Collider */
+		CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
+		ColliderDesc.eType = CCollider::TYPE_OBB;
+		ColliderDesc.vExtents = _float3(1.f, 1.5f, 2.f);
+		ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+			return E_FAIL;
+	}
+	else //스매싱필러
+	{
+		m_pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("B_smash_01_end");
+		m_fTimeAccel = 3.f;
+		m_dStartTime * 1.7f;
+
+		/* For.Com_Collider */
+		CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+		ColliderDesc.eType = CCollider::TYPE_AABB;
+		ColliderDesc.vExtents = _float3(1.5f, 2.f, 2.f);
+		ColliderDesc.vCenter = _float3(0.f, -ColliderDesc.vExtents.y * 2.f, 0.f);
+
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+			return E_FAIL;
+
+
+	}
+
+	m_pModelCom->Setting_StartTime(m_dStartTime);
 
 	//CPhysXComponent::PHYSX_DESC		PhysXDesc{};
 	//PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
@@ -249,8 +296,6 @@ void CTrap::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pColliderCom);
 	
 }

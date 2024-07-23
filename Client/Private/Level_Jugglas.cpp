@@ -16,8 +16,8 @@
 #include "FireEffect.h"
 
 
-
-#include"Item.h"
+#include "Trap.h"
+#include "Item.h"
 
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -50,6 +50,8 @@ HRESULT CLevel_Jugglas::Initialize()
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas.bin"));
+	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas_Traps.bin")); //Traps
+
 	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
@@ -330,7 +332,7 @@ HRESULT CLevel_Jugglas::Ready_Layer_Monster(const wstring& strLayerTag, CLandObj
 HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
- 	if (nullptr == hFile)
+	if (nullptr == hFile)
 		return E_FAIL;
 
 	char szName[MAX_PATH] = "";
@@ -343,11 +345,12 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 	_tchar wszLayer[MAX_PATH] = TEXT("");
 	_tchar wszModelName[MAX_PATH] = TEXT("");
 	_uint   iTriggerType = 0;
+	_double dStartTime = 0;
 
 	// 모델 종류별로 월드 매트릭스를 저장할 맵
 	map<wstring, vector<_float4x4*>> modelMatrices;
 
-	
+
 	// 생성된 객체 로드
 	while (true)
 	{
@@ -370,6 +373,33 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 			pDesc.TriggerType = iTriggerType;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+				return E_FAIL;
+		}
+		else if (strcmp(szName, "Prototype_GameObject_Trap") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+			ReadFile(hFile, &dStartTime, sizeof(_double), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CTrap::TRAP_DESC pTrapDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pTrapDesc.wstrLayer = wszLayer;
+			pTrapDesc.wstrModelName = wszModelName;
+			pTrapDesc.mWorldMatrix = WorldMatrix;
+			pTrapDesc.TriggerType = iTriggerType;
+			pTrapDesc.dStartTimeOffset = dStartTime;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pTrapDesc)))
 				return E_FAIL;
 		}
 		else
@@ -395,19 +425,24 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 			}
 			else
 			{
-				// 다른 객체들은 개별적으로 생성
-				CMap_Element::MAP_ELEMENT_DESC pDesc{};
+				//for (int i = 0; i < 40; i++)
+				{
+					// 다른 객체들은 개별적으로 생성
+					CMap_Element::MAP_ELEMENT_DESC pDesc{};
 
-				pDesc.mWorldMatrix = WorldMatrix;
-				pDesc.wstrModelName = wszModelName;
-				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, wszLayer, wszName, &pDesc)))
-					return E_FAIL;
+
+					pDesc.mWorldMatrix = WorldMatrix;
+					pDesc.wstrModelName = wszModelName;
+					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, wszLayer, wszName, &pDesc)))
+						return E_FAIL;
+				}
+
 
 			}
 		}
-	
 
-	
+
+
 	}
 
 	CloseHandle(hFile);

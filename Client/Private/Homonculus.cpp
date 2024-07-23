@@ -55,6 +55,8 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "B_Stone_Head_Add", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
+	m_iState = STATE_IDLE;
+
 	return S_OK;
 }
 
@@ -230,7 +232,7 @@ HRESULT CHomonculus::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("DownAttack"), bind(&CHomonculus::Down_Attack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("FullAttack"), bind(&CHomonculus::Full_Attack, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 3.f);
+	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 1.f);
 	m_pBehaviorCom->Add_Action_Node(TEXT("DetectCool"), TEXT("Detect"), bind(&CHomonculus::Detect, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CHomonculus::Move, this, std::placeholders::_1));
 
@@ -341,7 +343,6 @@ NodeStates CHomonculus::Parried(_float fTimeDelta)
 {
 	if (dynamic_cast<CWeapon_Homonculus*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
 	{
-		m_pPlayer->Set_ParriedMonsterTransform(m_pTransformCom);
 		m_iState = STATE_PARRIED;
 	}
 
@@ -465,6 +466,11 @@ NodeStates CHomonculus::Full_Attack(_float fTimeDelta)
 
 NodeStates CHomonculus::Detect(_float fTimeDelta)
 {
+	if (m_pPlayer->Get_Cloaking())
+	{
+		return FAILURE;
+	}
+
 	if (m_fLengthFromPlayer > DETECTRANGE)
 	{
 		return FAILURE;
@@ -496,7 +502,7 @@ NodeStates CHomonculus::Detect(_float fTimeDelta)
 
 NodeStates CHomonculus::Move(_float fTimeDelta)
 {
-	if (m_iState == STATE_IDLE)
+	if (m_iState == STATE_IDLE || m_pPlayer->Get_Cloaking())
 	{
 		return COOLING;
 	}
@@ -517,7 +523,10 @@ NodeStates CHomonculus::Move(_float fTimeDelta)
 
 NodeStates CHomonculus::Idle(_float fTimeDelta)
 {
-	m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	if (!m_pPlayer->Get_Cloaking())
+	{
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+	}
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }

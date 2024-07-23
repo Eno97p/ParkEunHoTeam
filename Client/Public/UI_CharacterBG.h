@@ -19,9 +19,26 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Update_Data();
+
+private:
+	// 출력 해야 하는 Text들 가지고 있기
+	wstring			m_wstrVitality;
+	wstring			m_wstrStamina;
+	wstring			m_wstrForce;
+
+	wstring			m_wstrHealth;
+	wstring			m_wstrStamina_State;
+	wstring			m_wstrEther;
+
+	wstring			m_wstrPhysicalDmg;
+	wstring			m_wstrEtheralDmg;
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+
+	void	Render_Text();
 
 public:
 	static CUI_CharacterBG*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -42,6 +42,7 @@ public:
 	wstring			Get_TextureName() { return m_wszTexture; }
 	wstring			Get_ItemNameText() { return m_wszItemName; }
 	wstring			Get_ItemExplainText() { return m_wszItemExplain; }
+	wstring			Get_ItemExplainText_Quick() { return m_wszItemExplain_quick; }
 
 	_bool			Get_isEquip() { return m_isEquip; }
 	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
@@ -62,6 +63,7 @@ private:
 	wstring					m_wszTexture = TEXT("");
 	wstring					m_wszItemName = TEXT("");
 	wstring					m_wszItemExplain = TEXT("");
+	wstring					m_wszItemExplain_quick = TEXT("");
 
 	ITEM_TYPE				m_eItemType = { ITEMTYPE_END };
 	ITEM_NAME				m_eItemName = { ITEMNAME_END };

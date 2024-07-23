@@ -523,6 +523,72 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
       <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade">
+      <UniqueIdentifier>{46812d85-c354-471a-849e-49e9f41d2d66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\BG">
+      <UniqueIdentifier>{c726aad1-8270-470a-abc6-1eac1e757bb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Forge">
+      <UniqueIdentifier>{27572855-1d14-468a-b2e1-ed2167726a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Crucible">
+      <UniqueIdentifier>{26be552d-0619-48a1-91c1-84f2e44ca3e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Upgrade\Forge_Text">
+      <UniqueIdentifier>{980feb26-4125-4acc-9e62-2fc893b35546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage">
+      <UniqueIdentifier>{d0bb7a59-4ffd-4de0-88ba-57379bd19c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\BG">
+      <UniqueIdentifier>{399239cd-fe63-4ba2-96cc-758dd465378c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot">
+      <UniqueIdentifier>{cda03890-d718-4cba-b6e1-257da1beab74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot\Select">
+      <UniqueIdentifier>{889c754e-9a89-47a6-a939-fc26705d482b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Btn">
+      <UniqueIdentifier>{6ad4144d-99a5-4a39-bf4d-6b1a661d609b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Top">
+      <UniqueIdentifier>{35cb5793-75d0-4a5a-8965-94622f8a2ba2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Circle">
+      <UniqueIdentifier>{4ada5e71-b6f9-44fb-945d-7f1bb7779bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\NameBox">
+      <UniqueIdentifier>{198546d0-2cf1-46ac-99c8-c86ae40d152a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Btn\Select">
+      <UniqueIdentifier>{93117aa8-880b-40cd-b12d-3e2d9888b7bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot">
+      <UniqueIdentifier>{2648eec4-dcef-42e2-81ef-07ea5f71043f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Material">
+      <UniqueIdentifier>{deaf1947-9ec0-4a68-a16e-8f9b601e2165}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Value">
+      <UniqueIdentifier>{05183035-daef-4ba2-b93f-56b354ad6ccb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco">
+      <UniqueIdentifier>{62fb3047-5cc1-4921-8e92-90d35050c67d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue">
+      <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest">
+      <UniqueIdentifier>{b9789d9c-3a7d-4069-9325-cecb231bb956}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras">
+      <UniqueIdentifier>{46d5952e-6b40-41a3-a4d7-843ef4e2d3f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. vehicle\TestPhysX">
+      <UniqueIdentifier>{7c17f5ee-b39d-4caf-9cae-83d139f794dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1064,6 +1130,69 @@
     <ClInclude Include="Import_Object_.hpp">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Upgrade.h">
+      <Filter>02.GameObjects\07. UI\Upgrade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeBG.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeForge.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeForge_Text.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge_Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpgradeCrucible.h">
+      <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_UpGPage.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBG.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageTop.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Top</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_NameBox.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\NameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_Circle.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBtn.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBtn_Select.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_Slot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_SelectSlot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_ItemSlot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestPhysXCollider.h">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TransitionCamera.h">
+      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossDeco.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BossStatue.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TreasureChest.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1578,6 +1707,69 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Upgrade.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeBG.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeForge.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeForge_Text.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Forge_Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp">
+      <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_UpGPage.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBG.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageTop.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Top</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_NameBox.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\NameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_Circle.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBtn.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBtn_Select.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_Slot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_SelectSlot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_ItemSlot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Slot\ItemSlot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestPhysXCollider.cpp">
+      <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TransitionCamera.cpp">
+      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossDeco.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BossStatue.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TreasureChest.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

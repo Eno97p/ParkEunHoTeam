@@ -27,6 +27,12 @@ struct VS_OUT
 
 };
 
+float FindMaxValue(float a, float b, float c)
+{
+	// 중첩된 max 함수를 사용하여 세 값 중 가장 큰 값을 찾음
+	return max(a, max(b, c));
+}
+
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT		Out = (VS_OUT)0;
@@ -46,8 +52,15 @@ VS_OUT VS_MAIN(VS_IN In)
 	matWVP = mul(matWV, g_ProjMatrix);
 
 	Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;
-	Out.vPSize.x = In.vRight.x;
-	Out.vPSize.y = In.vLook.z;
+
+	float XScale = In.vRight.x;
+	float YScale = In.vUp.y;
+	float ZScale = In.vLook.z;
+
+	Out.vPSize.x = max(XScale, YScale);
+	Out.vPSize.y = Out.vPSize.x;
+	//Out.vPSize.x = In.vRight.x;
+	//Out.vPSize.y = In.vUp.y;
 
 	Out.vLifeTime = In.vLifeTime;
 
@@ -85,7 +98,6 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 	Out[2].vLifeTime = In[0].vLifeTime;
 	Out[3].vLifeTime = In[0].vLifeTime;
 	
-
 	vector			vLook = normalize(g_vCamPosition - vector(In[0].vPosition, 1.f));
 	float3			vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * 0.5f;
 	float3			vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * 0.5f;

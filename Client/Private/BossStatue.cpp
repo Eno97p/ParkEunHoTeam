@@ -1,0 +1,221 @@
+#include "BossStatue.h"
+#include "GameInstance.h"
+
+CBossStatue::CBossStatue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CActive_Element(pDevice, pContext)
+{
+}
+
+CBossStatue::CBossStatue(const CBossStatue& rhs)
+	: CActive_Element(rhs)
+{
+}
+
+HRESULT CBossStatue::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CBossStatue::Initialize(void* pArg)
+{
+
+	if (FAILED(CGameObject::Initialize(nullptr)))
+		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		CActive_Element::MAP_ELEMENT_DESC* pDesc = (CActive_Element::MAP_ELEMENT_DESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
+	}
+
+	if (FAILED(Add_Components(pArg)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBossStatue::Priority_Tick(_float fTimeDelta)
+{
+
+}
+
+void CBossStatue::Tick(_float fTimeDelta)
+{
+
+}
+
+void CBossStatue::Late_Tick(_float fTimeDelta)
+{
+//#ifdef _DEBUG
+//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+//#endif
+
+	//DECAL
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+#ifdef _DEBUG
+
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
+}
+
+HRESULT CBossStatue::Render()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	/*if (m_pGameInstance->Key_Down(DIK_UP))
+	{
+		m_iTest++;
+	}*/
+
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i) // 해당 Model의 Mesh만큼 순회
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+
+		/*if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+			return E_FAIL;*/
+
+		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &i, sizeof(_uint))))
+		//	return E_FAIL;
+
+		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
+		//	return E_FAIL;
+
+	/*	if (i == 0)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+				return E_FAIL;
+		}*/
+		m_pShaderCom->Begin(0);
+
+		m_pModelCom->Render(i);
+	}
+}
+
+HRESULT CBossStatue::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	//if (m_pGameInstance->Key_Down(DIK_9))
+	//{
+	//	m_iTest++;
+	//}
+	//if (m_pGameInstance->Key_Down(DIK_0))
+	//{
+	//	m_iTest--;
+	//}
+
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	
+
+		m_pShaderCom->Unbind_SRVs();
+
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", 2, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+
+		m_pShaderCom->Begin(6);
+
+		m_pModelCom->Render(2);
+}
+
+HRESULT CBossStatue::Add_Components(void* pArg)
+{
+	CMap_Element::MAP_ELEMENT_DESC* pDesc = (CMap_Element::MAP_ELEMENT_DESC*)pArg;
+
+	/*wstring wstr = pDesc->wstrModelName;*/
+
+	/* For.Com_VIBuffer */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BossStatue"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	/* For.Com_Shader */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vCenter = _float3(0.f, -ColliderDesc.vExtents.y * 2.f, 0.f);
+
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+
+	return S_OK;
+}
+
+HRESULT CBossStatue::Bind_ShaderResources()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))
+		return E_FAIL;*/
+
+	return S_OK;
+}
+
+CBossStatue* CBossStatue::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CBossStatue* pInstance = new CBossStatue(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed To Created : CBossStatue");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CGameObject* CBossStatue::Clone(void* pArg)
+{
+	CBossStatue* pInstance = new CBossStatue(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CBossStatue");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CBossStatue::Free()
+{
+	__super::Free();
+
+	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pColliderCom);
+}

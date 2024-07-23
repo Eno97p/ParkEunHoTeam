@@ -6,6 +6,13 @@
 
 BEGIN(Client)
 
+class CCameraQueryFilterCallback : public physx::PxQueryFilterCallback
+{
+public:
+	virtual physx::PxQueryHitType::Enum preFilter(const physx::PxFilterData& filterData, const physx::PxShape* shape, const physx::PxRigidActor* actor, physx::PxHitFlags& queryFlags) override;
+	virtual physx::PxQueryHitType::Enum postFilter(const physx::PxFilterData& filterData, const physx::PxQueryHit& hit, const physx::PxShape* shape, const physx::PxRigidActor* actor) override;
+};
+
 class CThirdPersonCamera final : public CCamera
 {
 public:
@@ -50,6 +57,9 @@ public:
 	//연출용
 	void Shake_Camera(_bool bSlowMo = false, _float fDuration = 0.4f); //매개변수 : 슬로우모션 true false , 셰이크 지속 시간
 
+
+
+	_bool RaycastFromCameraToPlayer(const _float4& cameraPosition, const _float4& playerPosition, _float4* hitPoint, _float* hitDistance);
 
 	void Revolution360(_float fTime);
 	void TiltAdjust(_float fAngle);
@@ -120,7 +130,8 @@ private:
 	float m_fYaw = 0.0f;  // 카메라의 수평 회전 각도
 	float m_fPitch = 0.0f;  // 카메라의 수직 각도
 	float m_fDistance = 4.5f;  // 카메라와 플레이어 사이의 거리
-	float m_fMinPitch = -15.f;  // 최소 수직 각도
+	float m_fMinHeight = 2.5f;  // 카메라와 플레이어 사이의 거리
+	float m_fMinPitch = -45.f;  // 최소 수직 각도
 	float m_fMaxPitch = 45.f;  // 최대 수직 각도
 	float m_fMinDistance = 3.0f;  // 최소 거리
 	float m_fMaxDistance = 6.5f;  // 최대 거리 (8.5에서 6.5로 줄임)
@@ -137,6 +148,17 @@ private:
 	float m_fTransitionThreshold = 0.1f;  // 전환 완료 판단 임계값
 	_float4 m_vTransitionEndPos;
 	_float4 m_vTransitionEndLookAt;
+
+private:
+
+
+private:
+	//카메라 - 지형 충돌 로직
+	CCameraQueryFilterCallback m_QueryFilterCallback;
+
+	_float4 m_vDesiredCameraPosition;
+	_float4 m_vDesiredLookAtPosition;
+	float m_fDesiredDistance;
 
 private:
 	_float4 vEye;

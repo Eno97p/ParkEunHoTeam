@@ -131,9 +131,13 @@ HRESULT CUIGroup_Inventory::Create_UI()
 	m_vecUI.emplace_back(dynamic_cast<CUI_MenuPageTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuPageTop"), &pTopDesc)));
 
 	// Soul
-	CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
+	CUI_StateSoul::UI_SOUL_DESC pSoulDesc{}; 
 	pSoulDesc.eLevel = LEVEL_STATIC;
-	pSoulDesc.isInv = true;
+	pSoulDesc.fX = 250.f;
+	pSoulDesc.fY = 120.f;
+	pSoulDesc.fSizeX = 32.f;
+	pSoulDesc.fSizeY = 32.f;
+	pSoulDesc.eUISort = NINETH;
  	m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
 
 	// InvBG

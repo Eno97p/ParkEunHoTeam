@@ -67,9 +67,10 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 
 
 				
-			}
+			}else
+				m_pGameInstance->Erase(this);
 
-			//m_pGameInstance->Erase(this);
+			//	m_pGameInstance->Erase(this);
 		}
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)

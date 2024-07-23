@@ -65,6 +65,11 @@ public:
 	_bool Get_Cloaking() { return m_bIsCloaking; }
 	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
 
+	// UI에 출력하기 위한 함수
+	_float			Get_MaxHP() { return m_fMaxHp; }
+	_float			Get_MaxStamina() { return m_fMaxStamina; }
+	_float			Get_MaxMP() { return m_fMaxMp; }
+
 private:
 	HRESULT Add_Nodes();
 
@@ -135,7 +140,13 @@ private:
 	CTransform* m_pCameraTransform = { nullptr };
 
 #pragma region 플레이어 스탯
+
+#ifdef _DEBUG
+	_float m_fMaxHp = 1000.f;
+#else
 	_float m_fMaxHp = 100.f;
+#endif // _DEBUG
+
 	_float m_fCurHp = m_fMaxHp;
 
 	_float m_fMaxStamina = 100.f;

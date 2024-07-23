@@ -8,6 +8,7 @@
 #include "FreeCamera.h"
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
+#include "TransitionCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -29,6 +30,8 @@
 #include "Sky.h"
 
 #pragma region Monster
+#include "Andras.h"
+
 #include "Boss_Juggulus.h"
 #include "Body_Juggulus.h"
 #include "Juggulus_Hammer.h"
@@ -87,6 +90,9 @@
 #include "FakeWall.h"
 #include "Elevator.h"
 #include "RotateGate.h"
+#include "BossDeco.h"
+#include "BossStatue.h"
+#include "TreasureChest.h"
 #include "EventTrigger.h"
 
 
@@ -94,6 +100,8 @@
 #include"CHoverboard.h"
 
 
+
+#include"TestPhysXCollider.h"
 
 
 

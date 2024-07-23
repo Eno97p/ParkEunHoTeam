@@ -45,6 +45,7 @@ public:
 	virtual HRESULT Render_Blur() { return S_OK; }
 	virtual HRESULT Render_Bloom() { return S_OK; }
 	virtual HRESULT Render_Distortion() { return S_OK; }
+	virtual pair<_uint, _matrix> Render_Decal() { return pair(0, _matrix()); }
 	void Set_Dead() { IsDead = true; }
 	_bool Get_Dead() { return IsDead; }
 	// 오브젝트마다 다르게 작성해야할 수도 있음

@@ -9,7 +9,7 @@ class CUI_StateSoul final : public CUI
 public:
 	typedef struct UI_Sous_Desc : public UI_DESC
 	{
-		_bool		isInv = { false };
+		UISORT_PRIORITY			eUISort;
 	}UI_SOUL_DESC;
 private:
 	CUI_StateSoul(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -25,13 +25,11 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_bool			m_isInv = { false };
+	UISORT_PRIORITY				m_eUISort = { SORT_END };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
-
-	void	Setting_Data();
 
 public:
 	static CUI_StateSoul*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

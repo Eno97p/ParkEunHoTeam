@@ -14,6 +14,7 @@
 #include "UIGroup_Weapon.h"
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Upgrade.h"
+#include "UIGroup_UpGPage.h"
 
 #include "UI_ScreenBlood.h"
 #include "Camera.h"
@@ -197,6 +198,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Upgrade
 	m_mapUIGroup.emplace("Upgrade", dynamic_cast<CUIGroup_Upgrade*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Upgrade"), &pDesc)));
 
+	// UpGPage
+	m_mapUIGroup.emplace("UpGPage", dynamic_cast<CUIGroup_UpGPage*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage"), &pDesc)));
+
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
@@ -299,7 +303,7 @@ void CUI_Manager::Key_Input()
 	}
 	else if (m_pGameInstance->Key_Down(DIK_U)) // Test¿ë
 	{
-		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade");
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("UpGPage"); // Upgrade
 		(*upgrade).second->Set_Rend(true);
 	}
 }

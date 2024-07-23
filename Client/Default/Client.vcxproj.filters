@@ -538,6 +538,33 @@
     <Filter Include="02.GameObjects\07. UI\Upgrade\Forge_Text">
       <UniqueIdentifier>{980feb26-4125-4acc-9e62-2fc893b35546}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage">
+      <UniqueIdentifier>{d0bb7a59-4ffd-4de0-88ba-57379bd19c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\BG">
+      <UniqueIdentifier>{399239cd-fe63-4ba2-96cc-758dd465378c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot">
+      <UniqueIdentifier>{cda03890-d718-4cba-b6e1-257da1beab74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Slot\Select">
+      <UniqueIdentifier>{889c754e-9a89-47a6-a939-fc26705d482b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Btn">
+      <UniqueIdentifier>{6ad4144d-99a5-4a39-bf4d-6b1a661d609b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Top">
+      <UniqueIdentifier>{35cb5793-75d0-4a5a-8965-94622f8a2ba2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Circle">
+      <UniqueIdentifier>{4ada5e71-b6f9-44fb-945d-7f1bb7779bbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\NameBox">
+      <UniqueIdentifier>{198546d0-2cf1-46ac-99c8-c86ae40d152a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\UpgradePage\Btn\Select">
+      <UniqueIdentifier>{93117aa8-880b-40cd-b12d-3e2d9888b7bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1094,6 +1121,27 @@
     <ClInclude Include="..\Public\UI_UpgradeCrucible.h">
       <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_UpGPage.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBG.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageTop.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Top</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_NameBox.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\NameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_Circle.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBtn.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPageBtn_Select.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1623,6 +1671,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp">
       <Filter>02.GameObjects\07. UI\Upgrade\Crucible</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_UpGPage.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBG.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageTop.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Top</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_NameBox.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\NameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_Circle.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBtn.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPageBtn_Select.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Btn\Select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

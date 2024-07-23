@@ -4,13 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_UpgradeForge final : public CUI_Interaction
+class CUI_UpGPageBtn final : public CUI_Interaction
 {
-	const _float DEFAULT_SIZE = 682.6f;
 private:
-	CUI_UpgradeForge(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_UpgradeForge(const CUI_UpgradeForge& rhs);
-	virtual ~CUI_UpgradeForge() = default;
+	CUI_UpGPageBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_UpGPageBtn(const CUI_UpGPageBtn& rhs);
+	virtual ~CUI_UpGPageBtn() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -21,15 +20,18 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	class CUI*		m_pSelectUI = { nullptr };
+
+private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
-	void	Change_Scale();
+	HRESULT	Create_UI();
 
 public:
-	static CUI_UpgradeForge*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
-	virtual void				Free() override;
+	static CUI_UpGPageBtn*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*	Clone(void* pArg) override;
+	virtual void			Free() override;
 };
 
 END

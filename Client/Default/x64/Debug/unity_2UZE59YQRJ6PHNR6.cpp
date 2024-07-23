@@ -195,6 +195,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_UpGPage.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Upgrade.cpp"
 
 
@@ -232,6 +235,24 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Slot_EquipSign.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPageBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPageBtn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPageBtn_Select.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPageTop.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPage_Circle.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpGPage_NameBox.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_UpgradeBG.cpp"

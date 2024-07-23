@@ -1,25 +1,23 @@
-#include "UI_UpgradeForge.h"
+#include "UI_UpGPageBG.h"
 
 #include "GameInstance.h"
-#include "UI_Manager.h"
-#include "CMouse.h"
 
-CUI_UpgradeForge::CUI_UpgradeForge(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CUI_Interaction{ pDevice, pContext }
+CUI_UpGPageBG::CUI_UpGPageBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_UpgradeForge::CUI_UpgradeForge(const CUI_UpgradeForge& rhs)
-	: CUI_Interaction{ rhs }
+CUI_UpGPageBG::CUI_UpGPageBG(const CUI_UpGPageBG& rhs)
+	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_UpgradeForge::Initialize_Prototype()
+HRESULT CUI_UpGPageBG::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CUI_UpgradeForge::Initialize(void* pArg)
+HRESULT CUI_UpGPageBG::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,41 +27,30 @@ HRESULT CUI_UpgradeForge::Initialize(void* pArg)
 
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = DEFAULT_SIZE; // 1024
-	m_fSizeY = DEFAULT_SIZE;
+	m_fSizeX = g_iWinSizeX;
+	m_fSizeY = g_iWinSizeY;
 
 	Setting_Position();
 
 	return S_OK;
 }
 
-void CUI_UpgradeForge::Priority_Tick(_float fTimeDelta)
+void CUI_UpGPageBG::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_UpgradeForge::Tick(_float fTimeDelta)
+void CUI_UpGPageBG::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
-
-	__super::Tick(fTimeDelta);
-
-	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
-
-	Change_Scale();
-
-	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // 클릭한 경우 강화 화면으로 넘어가기
-	{
-
-	}
 }
 
-void CUI_UpgradeForge::Late_Tick(_float fTimeDelta)
+void CUI_UpGPageBG::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIFTH);
+	CGameInstance::GetInstance()->Add_UI(this, SEVENTH);
 }
 
-HRESULT CUI_UpgradeForge::Render()
+HRESULT CUI_UpGPageBG::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -75,7 +62,7 @@ HRESULT CUI_UpgradeForge::Render()
 	return S_OK;
 }
 
-HRESULT CUI_UpgradeForge::Add_Components()
+HRESULT CUI_UpGPageBG::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -88,14 +75,14 @@ HRESULT CUI_UpgradeForge::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Forge"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_BG"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_UpgradeForge::Bind_ShaderResources()
+HRESULT CUI_UpGPageBG::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -117,49 +104,33 @@ HRESULT CUI_UpgradeForge::Bind_ShaderResources()
 	return S_OK;
 }
 
-void CUI_UpgradeForge::Change_Scale()
+CUI_UpGPageBG* CUI_UpGPageBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	if (m_isSelect)
-	{
-		m_fSizeX = DEFAULT_SIZE + 50.f;
-		m_fSizeY = DEFAULT_SIZE + 50.f;
-	}
-	else
-	{
-		m_fSizeX = DEFAULT_SIZE;
-		m_fSizeY = DEFAULT_SIZE;
-	}
-
-	Setting_Position();
-}
-
-CUI_UpgradeForge* CUI_UpgradeForge::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	CUI_UpgradeForge* pInstance = new CUI_UpgradeForge(pDevice, pContext);
+	CUI_UpGPageBG* pInstance = new CUI_UpGPageBG(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_UpgradeForge");
+		MSG_BOX("Failed To Created : CUI_UpGPageBG");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_UpgradeForge::Clone(void* pArg)
+CGameObject* CUI_UpGPageBG::Clone(void* pArg)
 {
-	CUI_UpgradeForge* pInstance = new CUI_UpgradeForge(*this);
+	CUI_UpGPageBG* pInstance = new CUI_UpGPageBG(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_UpgradeForge");
+		MSG_BOX("Failed To Cloned : CUI_UpGPageBG");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_UpgradeForge::Free()
+void CUI_UpGPageBG::Free()
 {
 	__super::Free();
 }

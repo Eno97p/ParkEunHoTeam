@@ -109,6 +109,14 @@
 #include "UI_UpgradeForge_Text.h"
 #include "UI_UpgradeCrucible.h"
 #include "UIGroup_Upgrade.h"
+#include "UI_UpGPageBG.h"
+#include "UI_UpGPageTop.h"
+#include "UI_UpGPage_NameBox.h"
+#include "UI_UpGPage_Circle.h"
+#include "UI_UpGPageBtn.h"
+#include "UI_UpGPageBtn_Select.h"
+
+#include "UIGroup_UpGPage.h"
 #pragma endregion Upgrade
 
 #include "UI_MenuPageBG.h"
@@ -985,6 +993,54 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Crucible"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Crucible.png"), 1))))
 		return E_FAIL;
+
+#pragma region UpGPage
+	/* Prototype_Component_Texture_UpGPage_BG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_BG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge__1_.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_Circle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Circle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_Top */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Top"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Top.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_Slot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Slot"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Slot.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_SlotSelect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_SlotSelect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_SlotSelect.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_value */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_value"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_value.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_Btn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Btn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_BtnSelect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_BtnSelect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/BtnSelect.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UpGPage_MatSlot */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_MatSlot"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeMat_Slot.png"), 1))))
+		return E_FAIL;
+#pragma endregion UpGPage
+
 #pragma endregion Upgrade
 
 #pragma region ETC
@@ -1399,6 +1455,46 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Upgrade"),
 		CUIGroup_Upgrade::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+#pragma region UpGPage
+	/* For.Prototype_GameObject_UIGroup_UpGPageBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPageBG"),
+		CUI_UpGPageBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPageTop*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPageTop"),
+		CUI_UpGPageTop::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_NameBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_NameBox"),
+		CUI_UpGPage_NameBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_Circle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_Circle"),
+		CUI_UpGPage_Circle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPageBtn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn"),
+		CUI_UpGPageBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPageBtn_Select*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn_Select"),
+		CUI_UpGPageBtn_Select::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage"),
+		CUIGroup_UpGPage::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion UpGPage
+
 #pragma endregion Upgrade
 
 #pragma region ETC

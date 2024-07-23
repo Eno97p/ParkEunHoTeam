@@ -924,6 +924,68 @@ void CVIBuffer_Instance::GrowOut_Speed_Down_Texture(_float fTimeDelta)
 	}
 }
 
+void CVIBuffer_Instance::Lenz_Flare(_float fTimeDelta)
+{
+	bool allInstancesDead = true;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		m_pSize[i] += fTimeDelta * m_pSpeeds[i];
+		m_pSpeeds[i] -= fTimeDelta * 0.1f;
+
+		_vector vRight, vUp, vLook;
+		vRight = XMLoadFloat4(&pVertices[i].vRight);
+		vUp = XMLoadFloat4(&pVertices[i].vUp);
+		vLook = XMLoadFloat4(&pVertices[i].vLook);
+
+
+
+		pVertices[i].vRight.x = m_pSize[i];
+		pVertices[i].vUp.y = m_pSize[i];
+		pVertices[i].vLook.z = m_pSize[i];
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc.isLoop)
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				pVertices[i].vRight.x = m_pOriginalSize[i];
+				pVertices[i].vUp.y = m_pOriginalSize[i];
+				pVertices[i].vLook.z = m_pOriginalSize[i];
+				m_pSize[i] = m_pOriginalSize[i];
+				m_pSpeeds[i] = m_pOriginalSpeed[i];
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+
+		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	if (!m_InstanceDesc.isLoop && allInstancesDead)
+	{
+		m_bInstanceDead = true;
+	}
+	else
+	{
+		m_bInstanceDead = false;
+	}
+
+}
+
 void CVIBuffer_Instance::Leaf_Fall(_float fTimeDelta)
 {
 	bool allInstancesDead = true;

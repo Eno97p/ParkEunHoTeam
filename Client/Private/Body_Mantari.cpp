@@ -118,14 +118,31 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			}
 		}
 
+
+
+
 		if (m_iPastAnimIndex < 17 || m_iPastAnimIndex > 25)
 		{
 			m_iPastAnimIndex = 17;
 		}
 		if (m_iPastAnimIndex == 24)
+		{
 			fAnimSpeed = 1.3f;
+			if (m_pModelCom->Check_CurDuration(0.88))
+			{
+				_matrix Mat = XMLoadFloat4x4(&m_WorldMatrix);
+				_vector vLook = XMVector4Normalize(Mat.r[2]);
+				_vector vPos = Mat.r[3] + vLook * 1.2f;
+				_float4 vStartPos;
+				XMStoreFloat4(&vStartPos, vPos);
+				EFFECTMGR->Generate_Particle(23, vStartPos);
+				EFFECTMGR->Generate_Particle(23, vStartPos, nullptr, XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+			}
+		}
 		else
 			fAnimSpeed = 1.f;
+
+
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.2);

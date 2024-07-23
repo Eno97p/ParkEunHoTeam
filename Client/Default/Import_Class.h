@@ -8,6 +8,7 @@
 #include "FreeCamera.h"
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
+#include "TransitionCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"
@@ -89,6 +90,9 @@
 #include "FakeWall.h"
 #include "Elevator.h"
 #include "RotateGate.h"
+#include "BossDeco.h"
+#include "BossStatue.h"
+#include "TreasureChest.h"
 #include "EventTrigger.h"
 
 

@@ -25,7 +25,7 @@ HRESULT CMonster::Initialize(void* pArg)
 	if (FAILED(Add_Component()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 20, true));
+	//m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 20, true));
 
 	//m_vPosition.m128_f32[1] = 10.f;
 

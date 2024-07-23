@@ -51,7 +51,6 @@ HRESULT CLevel_GamePlay::Initialize()
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
-	Load_LevelData(TEXT("../Bin/MapData/test.bin"));
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");

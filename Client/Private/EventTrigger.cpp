@@ -6,6 +6,7 @@
 #include "Level_Loading.h"
 
 #include "SideViewCamera.h"
+#include "TransitionCamera.h"
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
@@ -146,17 +147,60 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_VIEWCHANGE_TTOS:
 				{
-					m_pGameInstance->Set_MainCamera(2);
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_SIDEVIEW;
+					pTCDesc.fTransitionTime = 1.f;
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+					//m_pGameInstance->Set_MainCamera(3);
 				}
 				break;
 				case TRIG_VIEWCHANGE_STOT:
 				{
-					m_pGameInstance->Set_MainCamera(1);
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					//pTCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+					//pTCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_SIDEVIEW;
+					pTCDesc.iEndCam = CAM_THIRDPERSON;
+					pTCDesc.fTransitionTime = 1.f;
+
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+					//m_pGameInstance->Set_MainCamera(1);
 				}
 				break;
 				case TRIG_ASCEND_ELEVATOR:
 				{
-					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("wdeddeddsdddswdddddd e ee e  eeessssssssssssssaaaaaaaaaaaaaaaaaaaaaaa wwae asdw sawssssdeasda ee   w w a ssssssssssssde essssssssssssssssssssddsd eee   sd  e  eeesssdeaw ea sdw sawsddddddddddddddddddddddsddddda wawaadw e e ee  edadeaeadddaasw a"), 8));
+					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
+					
+					//보스 소환
 					dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
 				
 					CLandObject::LANDOBJ_DESC desc{};
@@ -168,6 +212,31 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), &desc)))
 						return;
 
+					//보스 석상 소환
+					CMap_Element::MAP_ELEMENT_DESC StatueDesc = {};
+					_matrix vMat = { 0.f, 0.f, -1.f, 0.f,
+					0.f, 1.f, 0.f, 0.f,
+					1.f, 0.f, 0.f, 0.f,
+					-410.189f, 67.966f, -2.195f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
+					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
+					 vMat = { -0.91f, 0.f, -0.415f, 0.f,
+					0.f, 1.f, 0.f, 0.f,
+					0.415f, 0.f, -0.91f, 0.f,
+					-420.326f, 67.976f, -17.686f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
+					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
+					 vMat = { -0.905f, 0.f, -0.426f, 0.f,
+					0.f, 1.f, 0.f, 0.f,
+					0.426f, 0.f, -0.905f, 0.f,
+					-420.068f, 67.932f, 13.209f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
 				}
 				break;
 				case TRIG_DESCEND_ELEVATOR:
@@ -177,8 +246,32 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_VIEWCHANGE_TTOBS:
 				{
-					m_pGameInstance->Set_MainCamera(2);
-					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_MainCamera())->Set_BossScene(true);
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					//pTCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+					//pTCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_SIDEVIEW;
+					pTCDesc.fTransitionTime = 1.f;
+
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+					//m_pGameInstance->Set_MainCamera(2);
+					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
+
 				}
 				break;
 				default:

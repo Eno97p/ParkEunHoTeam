@@ -6,6 +6,10 @@
 #include "ToolObj.h"
 #include "FireEffect.h"
 #include "Trap.h"
+#include "Decal.h"
+
+#include "Grass.h"
+#include "Tree.h"
 
 #include "Imgui_Manager.h"
 
@@ -119,7 +123,48 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
 
 
     }
+    else if (iLayerIdx == 6)
+    {
+        CDecal::DECAL_DESC dcDesc{};
 
+       /* strcpy_s(dcDesc.szObjName, "Prototype_GameObject_Trap");
+        strcpy_s(dcDesc.szLayer, "Layer_Decal");*/
+        XMStoreFloat4x4(&dcDesc.mWorldMatrix, WorldMatrix);
+        dcDesc.iDecalIdx = iSelectIdx;
+
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &dcDesc)))
+            return E_FAIL;
+
+    }
+    else if (iLayerIdx == 7)
+    {
+        if (iSelectIdx == 0)
+        {
+            CGrass::GRASS_DESC GrassDesc{};
+            strcpy_s(GrassDesc.szLayer, "Layer_Fire");
+            strcpy_s(GrassDesc.szObjName, "Prototype_GameObject_Grass");
+            strcpy_s(GrassDesc.szModelName, "");
+            GrassDesc.vBotCol = CImgui_Manager::GetInstance()->Get_GrassBotCol();
+            GrassDesc.vTopCol = CImgui_Manager::GetInstance()->Get_GrassTopCol();
+            XMStoreFloat4x4(&GrassDesc.mWorldMatrix, WorldMatrix);
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
+                return E_FAIL;
+        }
+        else
+        {
+            // CTree::GRASS_DESC GrassDesc{};
+            // GrassDesc.vBotCol = { 0.3f, 0.3f, 0.3f };
+             //GrassDesc.vTopCol = { 0.5f, 0.8f, 0.5f };
+             //XMStoreFloat4(&GrassDesc.vStartPos, vPosition);
+            CTree::TREE_DESC desc{};
+            XMStoreFloat4x4(&desc.mWorldMatrix, WorldMatrix);
+            desc.vLeafCol = CImgui_Manager::GetInstance()->Get_LeafCol();
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Tree"), &desc)))
+                return E_FAIL;
+        }
+
+
+    }
     return S_OK;
 }
 
@@ -337,6 +382,13 @@ void CToolObj_Manager::Setting_Desc(_int iLayerIdx, _int iSelectIdx, CToolObj::T
 
         break;
     }
+    case 7: // Layer_Vegetation
+    {
+        strcpy_s(pDesc.szLayer, "Layer_Vegetation");
+        //strcpy_s(pDesc.szObjName, "Prototype_GameObject_Fire_Effect");
+
+        break;
+    }
     default:
         break;
     }
@@ -411,6 +463,20 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_Elevator";
         case 8:
             return "Prototype_GameObject_TreasureChest";
+        default:
+            break;
+        }
+    }
+    // Vegetation
+    else if (2 == iLayerIdx)
+    {
+        //추후 ActiveElement 종류별로 이름 추가
+        switch (iSelectIdx)
+        {
+        case 0:
+            return "Prototype_GameObject_Grass";
+        case 1:
+            return "Prototype_GameObject_Tree";
         default:
             break;
         }

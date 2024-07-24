@@ -22,6 +22,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\MainApp.cpp">
@@ -157,6 +160,12 @@
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TreasureChest.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Decal.cpp">
+      <Filter>02. GameObjects\05. Active_Elements\Decal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
   </ItemGroup>
@@ -314,6 +323,12 @@
     <ClInclude Include="..\Public\TreasureChest.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decal.h">
+      <Filter>02. GameObjects\05. Active_Elements\Decal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -407,6 +422,9 @@
     </Filter>
     <Filter Include="02. GameObjects\99. Camera\04. Transition">
       <UniqueIdentifier>{32818743-d767-4700-97cc-5f382f3d220b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\05. Active_Elements\Decal">
+      <UniqueIdentifier>{a3f4cf27-9475-420d-827a-634af1b70efc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

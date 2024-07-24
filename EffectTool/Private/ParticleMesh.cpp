@@ -127,6 +127,8 @@ void CParticleMesh::Late_Tick(_float fTimeDelta)
 
 	if (OwnDesc->SuperDesc.IsBloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 }
 
 HRESULT CParticleMesh::Render()
@@ -186,6 +188,25 @@ HRESULT CParticleMesh::Render_Blur()
 		m_InstModelCom->Render_Instance(i);
 	}
 
+	return S_OK;
+}
+
+HRESULT CParticleMesh::Render_Distortion()
+{
+	if (FAILED(Bind_BlurResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_InstModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(1);
+
+		m_InstModelCom->Render_Instance(i);
+	}
 	return S_OK;
 }
 

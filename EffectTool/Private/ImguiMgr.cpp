@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Particle_STrail.h"
 #include "Electronic.h"
+#include "Andras.h"
 
 
 
@@ -53,6 +54,9 @@ HRESULT CImguiMgr::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	m_pDevice = pDevice;
 	m_pContext = pContext;
 
+	ModelName.emplace_back("Wander");
+	ModelName.emplace_back("Andras");
+
 	return S_OK;
 }
 
@@ -88,12 +92,54 @@ void CImguiMgr::Tick(_float fTimiedelta)
 {
 }
 
+void CImguiMgr::Model_Change()
+{
+	ImGui::Begin("Model_List");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+	if (ImGui::BeginListBox("Models", list_box_size))
+	{
+		for (int i = 0; i < ModelName.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(ModelName[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (current_item >= 0 && current_item < ModelName.size())
+	{
+		if (ImGui::Button("Change_Model", ButtonSize))
+		{
+			m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"));
+			switch (current_item)
+			{
+			case 0:		//Wander
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_PlayerDummy"));
+				break;
+			case 1:		//Andras
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_Andras"));
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	ImGui::End();
+}
+
 void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-
-	static _bool bShow[8] = { false,false,false,false,false,false,false,false };
+	static _bool bShow[9] = { false,false,false,false,false,false,false,false,false };
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -136,6 +182,10 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("Fire Tool", &bShow[7]);
 	if (bShow[7] == true)
 		FireTool();
+
+	ImGui::Checkbox("Model_Change", &bShow[8]);
+	if (bShow[8] == true)
+		Model_Change();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{

@@ -6,6 +6,12 @@ BEGIN(Client)
 
 class CUI_UpGPage_Slot final : public CUI_Interaction
 {
+public:
+	typedef struct UI_UpGSlot_Desc : public UI_DESC
+	{
+		_uint			iSlotIdx;
+	}UI_UPGSLOT_DESC;
+
 private:
 	CUI_UpGPage_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_UpGPage_Slot(const CUI_UpGPage_Slot& rhs);
@@ -20,14 +26,19 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_uint								m_iSlotIdx = { 0 };
+
 	class CUI_UpGPage_SelectSlot*		m_pSelectUI = { nullptr };
 	class CUI_UpGPage_ItemSlot*			m_pItemSlot = { nullptr };
+	class CUI_ItemIcon*					m_pItemIcon = { nullptr };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_UI();
+
+	void	Create_ItemIcon();
 
 
 public:

@@ -51,8 +51,6 @@ void CUI_UpGPageBtn::Tick(_float fTimeDelta)
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 
-	//__super::Tick(fTimeDelta);
-
 	m_CollisionRect = { LONG(m_fX - m_fSizeX * 0.05f),
 					LONG(m_fY - m_fSizeY * 0.3f),
 					LONG(m_fX + m_fSizeX * 0.3f),

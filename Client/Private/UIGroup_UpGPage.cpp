@@ -150,7 +150,7 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 
 HRESULT CUIGroup_UpGPage::Create_Slot()
 {
-	CUI::UI_DESC pDesc{};
+	CUI_UpGPage_Slot::UI_UPGSLOT_DESC pDesc{};
 	
 	for (size_t i = 0; i < 4; ++i)
 	{
@@ -159,6 +159,7 @@ HRESULT CUIGroup_UpGPage::Create_Slot()
 		pDesc.fY = 230.f + (i * 80.f);
 		pDesc.fSizeX = 341.3f; // 512
 		pDesc.fSizeY = 85.3f; // 128
+		pDesc.iSlotIdx = i;
 		m_vecSlot.emplace_back(dynamic_cast<CUI_UpGPage_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Slot"), &pDesc)));
 	}
 

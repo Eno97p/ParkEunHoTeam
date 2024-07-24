@@ -4,6 +4,8 @@
 #include "UI_Manager.h"
 #include "Inventory.h"
 #include "CMouse.h"
+#include "ItemData.h"
+#include "UI_ItemIcon.h"
 
 #include "UI_UpGPage_SelectSlot.h"
 #include "UI_UpGPage_ItemSlot.h"
@@ -25,6 +27,10 @@ HRESULT CUI_UpGPage_Slot::Initialize_Prototype()
 
 HRESULT CUI_UpGPage_Slot::Initialize(void* pArg)
 {
+	UI_UPGSLOT_DESC* pDesc = static_cast<UI_UPGSLOT_DESC*>(pArg);
+
+	m_iSlotIdx = pDesc->iSlotIdx;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -139,6 +145,16 @@ HRESULT CUI_UpGPage_Slot::Create_UI()
 	m_pItemSlot = dynamic_cast<CUI_UpGPage_ItemSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_ItemSlot"), &pDesc));
 
 	return S_OK;
+}
+
+void CUI_UpGPage_Slot::Create_ItemIcon()
+{
+	// 처음 시작할 때는 바로 Inventory의 weapon 받아와서 생성한 채로 시작하고 그 후에 추가되는 weapon들에 대한 정보는 함수로?
+	// 그럼 함수를 Inventory weapon의 제일 마지막을 slot에 추가하는 것으로 할 것(어차피 순서 변하지 않으니까 상관 없을 듯함)
+
+	CInventory::GetInstance()->Get_Weapons();
+
+
 }
 
 CUI_UpGPage_Slot* CUI_UpGPage_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

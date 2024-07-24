@@ -55,7 +55,7 @@ void CUI_LoadingCircle::Tick(_float fTimeDelta)
 
 void CUI_LoadingCircle::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH);
+	CGameInstance::GetInstance()->Add_UI(this, SIXTEENTH);
 }
 
 HRESULT CUI_LoadingCircle::Render()
@@ -67,7 +67,7 @@ HRESULT CUI_LoadingCircle::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if(CIRCLE_ONE == m_eCircleType)
+	if(CIRCLE_TWO == m_eCircleType)
 		Render_Font();
 
 	return S_OK;

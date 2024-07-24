@@ -29,6 +29,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
 	virtual HRESULT Render_Blur() override;
+	virtual HRESULT Render_Distortion() override;
 
 private:
 	CModel*	 m_InstModelCom = { nullptr };

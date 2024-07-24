@@ -188,6 +188,7 @@ call Copy.bat</Command>
   <ItemGroup>
     <ClCompile Include="..\private\Animation.cpp" />
     <ClCompile Include="..\Private\Base.cpp" />
+    <ClCompile Include="..\Private\BaseVehicle.cpp" />
     <ClCompile Include="..\Private\BehaviorTree.cpp" />
     <ClCompile Include="..\private\BlendObject.cpp" />
     <ClCompile Include="..\private\Bone.cpp" />
@@ -278,6 +279,7 @@ call Copy.bat</Command>
   <ItemGroup>
     <ClInclude Include="..\public\Animation.h" />
     <ClInclude Include="..\Public\Base.h" />
+    <ClInclude Include="..\Public\BaseVehicle.h" />
     <ClInclude Include="..\Public\BehaviorTree.h" />
     <ClInclude Include="..\public\BlendObject.h" />
     <ClInclude Include="..\public\Bone.h" />

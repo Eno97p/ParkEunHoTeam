@@ -322,8 +322,8 @@ namespace Engine
 				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f), steeringSpeed(PxPi / 2) , MaxSteeringAngle(PxPi / 4)
 			{
 			}
-			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed)
-				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle), steeringSpeed(_steeringSpeed)
+			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed, PxReal _maxsteeringAngle)
+				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle), steeringSpeed(_steeringSpeed), MaxSteeringAngle(_maxsteeringAngle)
 			{
 			}
 
@@ -414,6 +414,68 @@ namespace Engine
 			PxVec3 finalAngularVelocity;  // 최종 각속도
 
 		};
+
+
+		struct ENGINE_DLL AxleDescription
+		{
+			PxU32 AxleCount;		//축의 갯수
+			PxU32 WheelCounts[PxVehicleLimits::eMAX_NB_AXLES];	//축당 바퀴의 갯수
+			PxU32 WheelIds[PxVehicleLimits::eMAX_NB_AXLES][PxVehicleLimits::eMAX_NB_WHEELS];	//축당 바퀴의 아이디
+		};
+
+		struct ENGINE_DLL VehicleFrame
+		{
+			PxU32 lngAxis;		//길이축
+			PxU32 latAxis;		//폭축
+			PxU32 vrtAxis;		//높이축
+		};
+		struct ENGINE_DLL VehicleScale
+		{
+			_float scale;		//스케일
+		};
+		struct ENGINE_DLL VehicleRigidBody 
+		{
+			_float mass;		//질량
+			PxVec3 moi;			//관성모멘트
+
+		};
+		struct ENGINE_DLL VehicleSuspensionStateCalculation
+		{
+			_uint JounceCalculationType;	//Jounce 계산 타입
+			_bool LimitSuspensionExpansionVelocity; //서스펜션 확장 속도 제한
+
+		};
+		struct ENGINE_DLL VehicleBrakeCommandResponse
+		{
+			PxVehicleCommandNonLinearResponseParams nonlinearResponse;
+			PxReal wheelResponseMultipliers[PxVehicleLimits::eMAX_NB_WHEELS];	//바퀴 반응 멀티플라이어
+			PxF32 maxResponse;		//최대 반응
+
+		};
+
+		struct ENGINE_DLL BaseVehicleDesc
+		{
+			AxleDescription						axleDesc;
+			VehicleFrame						frameDesc;
+			VehicleScale						scaleDesc;
+			VehicleRigidBody					rigidBodyDesc;
+			VehicleSuspensionStateCalculation	suspensionStateCalculationDesc;
+			VehicleBrakeCommandResponse			brakeCommandResponseDesc[];
+			//VehicleBrakeCommandResponse			handBrakeCommandResponseDesc;
+		};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	}

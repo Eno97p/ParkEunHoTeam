@@ -259,6 +259,9 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor\BaseVehicle">
       <UniqueIdentifier>{c34e5cec-865c-4187-9b6c-49921dae8bcd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle">
+      <UniqueIdentifier>{4a633241-1fef-458c-96ae-a1fbfb192b3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -501,9 +504,6 @@
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VehicleDefault.h">
-      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\PhysXActorVehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor</Filter>
     </ClInclude>
@@ -539,6 +539,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CoolDown_Priority.h">
       <Filter>01.Utility\03.Components\BehaviorTree\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BaseVehicle.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor\BaseVehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VehicleDefault.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -767,9 +773,6 @@
     <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VehicleDefault.cpp">
-      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\PhysXActorVehicle.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor</Filter>
     </ClCompile>
@@ -805,6 +808,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CoolDown_Priority.cpp">
       <Filter>01.Utility\03.Components\BehaviorTree\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BaseVehicle.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\Actor\BaseVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VehicleDefault.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

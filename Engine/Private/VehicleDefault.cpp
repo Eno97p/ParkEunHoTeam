@@ -98,6 +98,8 @@ HRESULT CVehicleDefault::Initialize()
 		m_middleState[i].setToDefault();
 		m_endState[i].setToDefault();
 		m_middleState[i].bodyRotation = PxQuat(PxIdentity);
+		
+
 	}
 //	m_middleState[0].bodyRotation = PxQuat(PxIdentity);
 

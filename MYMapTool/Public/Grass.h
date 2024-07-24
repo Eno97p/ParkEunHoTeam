@@ -14,7 +14,7 @@ BEGIN(MYMapTool)
 class CGrass final : public CToolObj
 {
 public:
-	typedef struct GRASS_DESC : public CGameObject::GAMEOBJECT_DESC
+	typedef struct GRASS_DESC : public CToolObj::TOOLOBJ_DESC
 	{
 		_float4			vStartPos;
 		_float3			vTopCol = { 1.f, 0.f, 0.f };

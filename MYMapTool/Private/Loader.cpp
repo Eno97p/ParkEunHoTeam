@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "Body_Player.h"
 #include "Grass.h"
+#include "Tree.h"
 #include "FakeWall.h"
 #include "Elevator.h"
 #include "TutorialMapBridge.h"
@@ -23,6 +24,7 @@
 #include "EventTrigger.h"
 #include "Trap.h"
 #include "TreasureChest.h"
+#include "Decal.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -303,6 +305,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(0.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Wander"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Wander/Wander.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_BasicTree */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(0.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BasicTree"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Trees/BasicTree/BasicTree.fbx", PreTransformMatrix))))
 		return E_FAIL;
 #pragma endregion
 
@@ -794,6 +802,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Grass.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxInstance_Grass */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+		return E_FAIL;
+
+
 
 	
 #pragma endregion Shader Load
@@ -881,6 +895,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CGrass::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// Tree
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tree"),
+		CTree::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	// Prototype_GameObject_TutorialMapBridge
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TutorialMapBridge"),
 		CTutorialMapBridge::Create(m_pDevice, m_pContext))))
@@ -905,6 +925,8 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TreasureChest"), CTreasureChest::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Decal"), CDecal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 #pragma endregion Object Prototype Load

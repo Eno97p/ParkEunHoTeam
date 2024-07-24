@@ -26,6 +26,9 @@
 #include "E:\3D_ShatteredNew\MYMapTool\Private\CutSceneCamera.cpp"
 
 
+#include "E:\3D_ShatteredNew\MYMapTool\Private\Decal.cpp"
+
+
 #include "E:\3D_ShatteredNew\MYMapTool\private\DecalBox.cpp"
 
 
@@ -126,6 +129,9 @@
 
 
 #include "E:\3D_ShatteredNew\MYMapTool\Private\TreasureChest.cpp"
+
+
+#include "E:\3D_ShatteredNew\MYMapTool\Private\Tree.cpp"
 
 
 #include "E:\3D_ShatteredNew\MYMapTool\Private\TutorialMapBridge.cpp"

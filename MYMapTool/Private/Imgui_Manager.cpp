@@ -45,6 +45,8 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
     m_iStageIdx = 0;
     m_iObjIdx = 0;
 
+    m_pDecalTexs = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Decals_Textures/Decal%d.png"), 58);
+
     return S_OK;
 }
 
@@ -126,6 +128,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         if (ImGui::Button("Save PhysX"))
             m_IsPhysXSave = true;
+        ImGui::SameLine();
 
         if (ImGui::Button("Load PhysX"))
             m_IsPhysXLoad = true;
@@ -137,9 +140,22 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         if (ImGui::Button("Save Effects"))
             m_IsEffectsSave = true;
+        ImGui::SameLine();
 
         if (ImGui::Button("Load Effects"))
             m_IsEffectsLoad = true;
+        ImGui::SameLine();
+
+        ImGui::Spacing();
+        ImGui::Separator();
+
+        if (ImGui::Button("Save Decal"))
+            m_IsDecalSave = true;
+        ImGui::SameLine();
+
+        if (ImGui::Button("Load Decal"))
+            m_IsDecalLoad = true;
+        ImGui::SameLine();
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -177,7 +193,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("ANIM MODEL", &m_bIsAnimModel);
         ImGui::Checkbox("DECO OBJECT", &m_bIsDecoObject);
 
-        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger", "EnvEffects", "Traps"};
+        const char* Layers[] = { "Monster", "Passive Element", "Active Element", "Trigger", "EnvEffects", "Traps", "Decals", "Vegetation"};
         static int Layer_current = 0;
         ImGui::Combo("Layer", &Layer_current, Layers, IM_ARRAYSIZE(Layers));
         m_iLayerIdx = Layer_current;
@@ -206,19 +222,14 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("Terrain Edit", &m_bTerrainWindow);
         ImGui::Spacing();
 
-        // ImGui::Checkbox("Demo Window", &m_bShowWindow);
+        ImGui::Separator();
+        ImGui::Checkbox("Decal Edit", &m_bShowDecalTextureWindow);
+        ImGui::Spacing();
 
 
-         // Terrain 정점 개수 조절
-   /*      ImGui::Text("Setting Terrain Scale");
-         static bool inputs_step = true;
-         const short s16_one = 1;
-         ImGui::InputScalar("Terrain X", ImGuiDataType_S16, &m_iTerrainX, inputs_step ? &s16_one : NULL, NULL, "%d");
-         ImGui::InputScalar("Terrain Z", ImGuiDataType_S16, &m_iTerrainZ, inputs_step ? &s16_one : NULL, NULL, "%d");
-
-         if (ImGui::Button("Terrain ReLoad"))
-             m_IsTerrainReLoad = true;*/
-
+        ImGui::Separator();
+        ImGui::Checkbox("Global Wind Edit", &m_bGlobalWindWindow);
+        ImGui::Spacing();
         ImGui::End();
     }
 
@@ -276,6 +287,32 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bTerrainWindow)
     {
         Terrain_Editor();
+    }
+
+    if (m_bGlobalWindWindow)
+    {
+        GlobalWind_Editor();
+    }
+
+    if (m_bShowDecalTextureWindow)
+    {
+        ImGui::Begin("Decal Texture Preview", &m_bShowDecalTextureWindow);
+
+        if (m_iLayerIdx == LAYER_DECAL && m_iObjIdx >= 0 && m_iObjIdx < 58)
+        {
+            ImGui::Text("Selected Decal: Decal %d", m_iObjIdx);
+            ImGui::Separator();
+
+            if (ImGui::ImageButton(DirectXTextureToImTextureID(m_iObjIdx), ImVec2(300.f, 300.f), ImVec2(0.f, 0.f)))
+            {
+            }
+        }
+        else
+        {
+            ImGui::Text("Please select a decal from the list.");
+        }
+
+        ImGui::End();
     }
 
     ImGui::EndFrame();
@@ -518,6 +555,48 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
 
         break;
+    }
+    break;
+    case LAYER_DECAL:
+    {
+        const char* items_Decals[58];
+        for (int i = 0; i < 58; ++i)
+        {
+            static char buffer[32][58]; // 문자열을 저장할 정적 배열
+            snprintf(buffer[i], sizeof(buffer[i]), "Decal %d", i);
+            items_Decals[i] = buffer[i];
+        }
+
+        ImGui::ListBox("###Obj", &item_current, items_Decals, IM_ARRAYSIZE(items_Decals));
+
+        // LAYER_DECAL이 선택되었을 때 텍스처 선택 창 표시
+        m_bShowDecalTextureWindow = true;
+
+        break;
+    }
+    break;
+    case LAYER_VEGETATION:
+    {
+        const char* items_Vege[] = { "Grass", "Tree" };
+        ImGui::ListBox("###Obj", &item_current, items_Vege, IM_ARRAYSIZE(items_Vege)); // item_current 변수에 선택 값 저장
+        static float TopCol[3] = { 0.0f, 1.0f, 0.0f};
+        static float BotCol[3] = { 0.0f, 0.0f, 0.0f};
+
+        static float LeafCol[3] = { 0.0f, 0.0f, 0.0f };
+
+        if (item_current == 0)
+        {
+            ImGui::ColorEdit3("Top Color", TopCol);
+            ImGui::ColorEdit3("Light Diffuse", BotCol);
+
+            m_TopCol = { TopCol[0], TopCol[1], TopCol[2] };
+            m_BotCol = { BotCol[0], BotCol[1], BotCol[2] };
+        }
+        else
+        {
+            ImGui::ColorEdit3("Leaf Color", LeafCol);
+            m_LeafCol = { LeafCol[0], LeafCol[1], LeafCol[2] };
+        }
     }
     break;
     default:
@@ -774,6 +853,12 @@ void CImgui_Manager::Light_Editor()
         m_bLightWindow = false;
 
     ImGui::End();
+}
+
+ImTextureID CImgui_Manager::DirectXTextureToImTextureID(_uint iIdx)
+{
+    vector<ID3D11ShaderResourceView*> SRV = m_pDecalTexs->Get_Textures();
+    return reinterpret_cast<ImTextureID>(SRV[iIdx]);
 }
 
 void CImgui_Manager::Save_Lights()
@@ -1392,45 +1477,50 @@ void CImgui_Manager::Terrain_Editor()
     ImGui::End();
 }
 
-//void CImgui_Manager::Table_Channel()
-//{s
-//    ImGui::Text("Current Key Frame");
-//    if (ImGui::BeginTable("Channel Keyframe", 4))
-//    {
-//        for (int row = 0; row < m_vecChannel.size() * 0.5; row++)
-//        {
-//            ImGui::TableNextRow();
-//            for (int column = 0; column < 4; column++)
-//            {
-//                ImGui::TableSetColumnIndex(column);
-//
-//                int i = 0;
-//                if (0 == column % 2)
-//                {
-//                    if (0 == column)
-//                        i = 0;
-//                    else
-//                        i = 1;
-//
-//                    ImGui::Text(m_vecChannel[row + (i * m_vecChannel.size() * 0.5)]);
-//                }
-//                else
-//                {
-//                    if (1 == column)
-//                        i = 0;
-//                    else
-//                        i = 1;
-//
-//                    _uint iCurKeyframe = CToolObj_Manager::GetInstance()->Get_CurKeyFrame(m_iAnimIdx, row + (i * m_vecChannel.size() * 0.5));
-//
-//                    ImGui::Text("\t %d", iCurKeyframe);
-//                }
-//            }
-//        }
-//        ImGui::EndTable();
-//    }
-//}
+void CImgui_Manager::GlobalWind_Editor()
+{
+    static float windStrength = 1.0f;
+    static float windFrequency = 1.0f;
+    static bool enableWind = true;
 
+    ImGui::Begin("Global Wind Editor");
+
+    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Wind Direction");
+    ImGui::SliderFloat("X", &m_GlobalWindDir.x, -1.0f, 1.0f);
+    ImGui::SliderFloat("Y", &m_GlobalWindDir.y, -1.0f, 1.0f);
+    ImGui::SliderFloat("Z", &m_GlobalWindDir.z, -1.0f, 1.0f);
+
+    if (ImGui::Button("Normalize Direction"))
+    {
+        float length = sqrt(m_GlobalWindDir.x * m_GlobalWindDir.x +
+            m_GlobalWindDir.y * m_GlobalWindDir.y +
+            m_GlobalWindDir.z * m_GlobalWindDir.z);
+        if (length > 0.0001f)
+        {
+            m_GlobalWindDir.x /= length;
+            m_GlobalWindDir.y /= length;
+            m_GlobalWindDir.z /= length;
+        }
+    }
+
+    ImGui::Separator();
+
+    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Wind Properties");
+    ImGui::SliderFloat("Wind Strength", &m_fGlobalWindStrength, 0.0f, 10.0f);
+    ImGui::SliderFloat("Wind Frequency", &m_fGlobalWindFrequency, 0.1f, 5.0f);
+    ImGui::Checkbox("Enable Wind", &enableWind);
+
+    ImGui::Separator();
+
+    if (ImGui::Button("Apply Wind Settings"))
+    {
+        // 여기에서 바람 설정을 적용하는 로직을 구현합니다.
+        // 예를 들어, 셰이더에 바람 정보를 전달하거나 관련 객체들을 업데이트합니다.
+        //ApplyWindSettings(m_GlobalWindDir, windStrength, windFrequency, enableWind);
+    }
+
+    ImGui::End();
+}
 
 void CImgui_Manager::Setting_CreateObj_ListBox()
 {
@@ -1524,6 +1614,7 @@ void CImgui_Manager::Free()
     Safe_Release(m_pContext);
     Safe_Release(m_pGameInstance);
 
+    Safe_Release(m_pDecalTexs);
     //for (_int i = 0; i < m_vecCreateObj.size(); ++i)
     //{
     //    Safe_Release(m_vecCreateObj[i]);

@@ -189,6 +189,7 @@
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\CutSceneCamera.h" />
+    <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\public\DecalBox.h" />
     <ClInclude Include="..\public\Elevator.h" />
     <ClInclude Include="..\public\EventTrigger.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\Public\TransitionCamera.h" />
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\TreasureChest.h" />
+    <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\TutorialMapBridge.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -241,6 +243,7 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
+    <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\private\DecalBox.cpp" />
     <ClCompile Include="..\Private\Default_Camera.cpp" />
     <ClCompile Include="..\private\Elevator.cpp" />
@@ -275,6 +278,7 @@
     <ClCompile Include="..\Private\TransitionCamera.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\TreasureChest.cpp" />
+    <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\TutorialMapBridge.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
@@ -290,6 +294,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

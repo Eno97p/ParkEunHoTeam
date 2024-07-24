@@ -46,9 +46,8 @@ void CDecal::Late_Tick(_float fTimeDelta)
 
 pair<_uint, _matrix> CDecal::Render_Decal()
 {
-	_matrix mat = XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix());
 	// first : 텍스쳐 번호, second : 월드 역행렬(건들지 말것)
-	return pair(43, mat);
+	return pair(43, m_pTransformCom->Get_WorldMatrix_Inverse());
 }
 
 CDecal* CDecal::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -532,7 +532,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 1.7f;
+		fAnimSpeed = 2.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_DASH)

@@ -27,11 +27,15 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	wstring			m_wstrText;
+
 	VALUE_TYPE		m_eValueType = { VALUE_END };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+
+	HRESULT	Rend_Font();
 
 public:
 	static CUI_UpGPage_Value*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

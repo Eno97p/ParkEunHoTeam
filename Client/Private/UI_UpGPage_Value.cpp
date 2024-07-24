@@ -1,6 +1,7 @@
 #include "UI_UpGPage_Value.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 CUI_UpGPage_Value::CUI_UpGPage_Value(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -31,16 +32,18 @@ HRESULT CUI_UpGPage_Value::Initialize(void* pArg)
 
 	if (VALUE_SOUL == m_eValueType)
 	{
-		m_fX = (g_iWinSizeX >> 1) - 65.f;
+		m_fX = (g_iWinSizeX >> 1) - 70.f; //65
 		m_fY = (g_iWinSizeY >> 1) + 165.f;
+		m_fSizeX = 128.f; // 128   85.3f
 	}
 	else if (VALUE_MATERIAL == m_eValueType)
 	{
-		m_fX = (g_iWinSizeX >> 1) + 30.f;
+		m_fX = (g_iWinSizeX >> 1) + 30.f; // 35
 		m_fY = (g_iWinSizeY >> 1) + 165.f;
+		m_fSizeX = 100.f; // 128   85.3f
 	}
 
-	m_fSizeX = 85.3f; // 128
+
 	m_fSizeY = 42.6f; // 64
 
 	Setting_Position();
@@ -71,6 +74,8 @@ HRESULT CUI_UpGPage_Value::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	Rend_Font();
 
 	return S_OK;
 }
@@ -113,6 +118,31 @@ HRESULT CUI_UpGPage_Value::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_UpGPage_Value::Rend_Font()
+{
+	// 선택한 현재 weapon의 종류에 따라 / 강화 정도에 따라 필요로 하는 재료 값들이 달라지도록 구현 해야 함
+
+
+	// m_eValueType에 따라 나누고(Soul / Material) Player로부터 >> Soul을 Inventory에 넣기? Player로부터 가져올 필요 없을 듯
+	if (VALUE_SOUL == m_eValueType)
+	{
+		m_wstrText = to_wstring(CInventory::GetInstance()->Get_Soul()) + TEXT(" / ") + TEXT("100");
+
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), m_wstrText, _float2(m_fX - 35.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+	else if (VALUE_MATERIAL == m_eValueType)
+	{
+		m_wstrText = TEXT("200");
+
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), m_wstrText, _float2(m_fX - 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }

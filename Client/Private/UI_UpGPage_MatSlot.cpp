@@ -1,6 +1,7 @@
 #include "UI_UpGPage_MatSlot.h"
 
 #include "GameInstance.h"
+#include "UI_ItemIcon.h"
 
 CUI_UpGPage_MatSlot::CUI_UpGPage_MatSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -46,6 +47,7 @@ HRESULT CUI_UpGPage_MatSlot::Initialize(void* pArg)
 	Setting_Position();
 
 	// Mat Slot Type에 따라 ItemIcon 다른 것 출력해두어야 함
+	Create_ItemIcon();
 
 	return S_OK;
 }
@@ -58,11 +60,17 @@ void CUI_UpGPage_MatSlot::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Tick(fTimeDelta);
 }
 
 void CUI_UpGPage_MatSlot::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, TENTH);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_UpGPage_MatSlot::Render()
@@ -119,6 +127,33 @@ HRESULT CUI_UpGPage_MatSlot::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CUI_UpGPage_MatSlot::Create_ItemIcon()
+{
+	//m_pItemIcon
+
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = ELEVENTH;
+
+	if (MATSLOT_L == m_eMatSlotType)
+	{
+		pDesc.wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
+	}
+	else if (MATSLOT_R == m_eMatSlotType)
+	{
+		pDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0"); // 심화 강화가 필요한 Weapon의 경우 Upgrade1 텍스쳐가 필요할 것임 (일단 임의로)
+	}
+
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	return S_OK;
+}
+
 CUI_UpGPage_MatSlot* CUI_UpGPage_MatSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_UpGPage_MatSlot* pInstance = new CUI_UpGPage_MatSlot(pDevice, pContext);
@@ -148,4 +183,6 @@ CGameObject* CUI_UpGPage_MatSlot::Clone(void* pArg)
 void CUI_UpGPage_MatSlot::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pItemIcon);
 }

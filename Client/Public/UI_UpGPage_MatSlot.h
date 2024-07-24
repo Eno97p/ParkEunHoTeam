@@ -26,11 +26,15 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	MATSLOT_TYPE	m_eMatSlotType = { MATSLOT_END };
+	MATSLOT_TYPE			m_eMatSlotType = { MATSLOT_END };
+
+	class CUI_ItemIcon*		m_pItemIcon = { nullptr };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+
+	HRESULT	Create_ItemIcon();
 
 public:
 	static CUI_UpGPage_MatSlot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

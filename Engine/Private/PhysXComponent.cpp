@@ -623,6 +623,7 @@ CPhysXComponent * CPhysXComponent::Create(ID3D11Device * pDevice, ID3D11DeviceCo
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed to Created : CPhysXComponent");
+		Safe_Release(pInstance);
 		return nullptr;
 	}
 
@@ -636,6 +637,7 @@ CComponent * CPhysXComponent::Clone(void * pArg)
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Cloned : CPhysXComponent");
+		Safe_Release(pInstance);
 		return nullptr;
 	}
 

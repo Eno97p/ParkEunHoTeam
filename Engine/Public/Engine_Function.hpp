@@ -77,7 +77,18 @@ namespace Engine
 
 
 	}
+	template<typename T>
+	void Safe_Vehicle_Release(T& pInstance)
+	{
 
+		if (nullptr != pInstance)
+		{
+
+			pInstance->destroy();
+			pInstance = nullptr;
+		}
+
+	}
 
 
 

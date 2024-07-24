@@ -95,7 +95,7 @@ void ComponentMiddle::CFunctionMiddle(const VehicleMiddleParams* middleParam, Px
 	// 정규화를 통해 회전이 올바른지 확인합니다
 	middleStates[0].bodyRotation.normalize();
 
-
+	
 	for (PxU32 i = 0; i < MAX_NUM_WHEELS; i++)
 	{
 		middleStates[i].wheelSpeeds[i] += middleParam->engineTorque * dt;

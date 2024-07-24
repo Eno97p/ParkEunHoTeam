@@ -5,6 +5,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\Base.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\BaseVehicle.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\BehaviorTree.cpp"
 
 

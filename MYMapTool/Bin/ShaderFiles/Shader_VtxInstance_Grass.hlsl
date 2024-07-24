@@ -22,7 +22,7 @@ float g_fElasticityFactor = 0.5f; // 탄성 제어 인자
 float g_fGlobalWindFactor = 0.3f; // 전역 바람 보정값
 float g_fBillboardFactor = 0.3f; // 빌보드 보정값
 
-static const float3 g_vWindDirection = normalize(float3(1.0f, 0.0f, 0.5f));  // 예시 방향, 필요에 따라 조정
+const float3 g_vWindDirection = normalize(float3(1.0f, 0.0f, 0.5f));  // 예시 방향, 필요에 따라 조정
 
 
 struct VS_IN
@@ -287,13 +287,22 @@ PS_OUT PS_MAIN(PS_IN In)
 		discard;
 
 	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
-	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3 vNormal;
+	/*{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	}*/
+	//else
+	{
+		vNormal = In.vNormal.xyz * 2.f - 1.f;
+	}
+
 	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
 	vNormal = mul(vNormal, WorldMatrix);
 
-	float textureY = 1.f - In.vTexcoord.y;
-	float botColorIntensity = 1.0 - saturate(textureY * 2.0);
+	float textureY = In.vTexcoord.y;
+	float botColorIntensity = smoothstep(0.0, 0.7, textureY);
 
 	// 랜덤 색상을 적용한 새로운 탑/바텀 컬러 계산
 	float3 newTopColor = g_vTopColor * In.vRandomColor;

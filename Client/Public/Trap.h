@@ -50,6 +50,7 @@ private:
 	CCollider::COLLTYPE m_eColltype = CCollider::COLL_NOCOLL;
 
 	_matrix m_ColliderMat = XMMatrixIdentity();
+	_bool	IsPillar = false;
 private:
 	HRESULT Add_Components(TRAP_DESC* desc);
 	HRESULT Bind_ShaderResources();

@@ -262,8 +262,8 @@ HRESULT CLevel_Jugglas::Ready_Layer_BackGround(const wstring & strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
+	//	return E_FAIL;
 
 	return S_OK;
 }

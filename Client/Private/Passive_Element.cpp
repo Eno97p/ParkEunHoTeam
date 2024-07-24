@@ -53,15 +53,6 @@ HRESULT CPassive_Element::Initialize(void* pArg)
 
 }
 
-void CPassive_Element::Priority_Tick(_float fTimeDelta)
-{
-}
-
-void CPassive_Element::Tick(_float fTimeDelta)
-{
-    return;
-}
-
 void CPassive_Element::Late_Tick(_float fTimeDelta)
 {
     //FOR CULLING

@@ -158,6 +158,12 @@
     <ClInclude Include="..\Imgui\imstb_rectpack.h" />
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Andras.h" />
+    <ClInclude Include="..\Public\AndrasSword1.h" />
+    <ClInclude Include="..\Public\AndrasSword2.h" />
+    <ClInclude Include="..\Public\AndrasSword3.h" />
+    <ClInclude Include="..\Public\AndrasSword4.h" />
+    <ClInclude Include="..\Public\AndrasSword5.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Distortion_Effect.h" />
     <ClInclude Include="..\Public\Effect_Define.h" />
@@ -198,6 +204,12 @@
     <ClCompile Include="..\Imgui\imgui_draw.cpp" />
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Andras.cpp" />
+    <ClCompile Include="..\Private\AndrasSword1.cpp" />
+    <ClCompile Include="..\Private\AndrasSword2.cpp" />
+    <ClCompile Include="..\Private\AndrasSword3.cpp" />
+    <ClCompile Include="..\Private\AndrasSword4.cpp" />
+    <ClCompile Include="..\Private\AndrasSword5.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />

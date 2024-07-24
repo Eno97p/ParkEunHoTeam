@@ -34,7 +34,6 @@ HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-90.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.1f, 0.f, 1.f));
 
-
 	return S_OK;
 }
 
@@ -57,7 +56,6 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
-	//m_PhysXCom->Tick(&m_WorldMatrix);
 }
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 {
@@ -107,18 +105,6 @@ HRESULT CWhisperSword_Anim::Render_LightDepth()
 
 HRESULT CWhisperSword_Anim::Add_Components()
 {
-	/* For.Com_Collider */
-	//CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-	//
-	//ColliderDesc.eType = CCollider::TYPE_OBB;
-	//ColliderDesc.vExtents = _float3(1.5f, 2.f, 2.5f);
-	//ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
-	//ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
-	//
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-	//	TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-	//	return E_FAIL;
-
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_WhisperSword_Anim"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -128,8 +114,6 @@ HRESULT CWhisperSword_Anim::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
@@ -142,7 +126,6 @@ HRESULT CWhisperSword_Anim::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-
 
 	return S_OK;
 }

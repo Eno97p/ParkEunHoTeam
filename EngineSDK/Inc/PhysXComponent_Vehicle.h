@@ -33,10 +33,12 @@ public:
 private:
 	HRESULT CreateActor();
 	
-
+	void initMaterialFrictionTable();
 private:
 	CVehicleDefault* m_pVehicle = nullptr;
 	PxVehiclePhysXSimulationContext m_pVehicleSimulationContext;
+
+	PhysXActorVehicle m_pPhysXActorVehicle;
 
 	
 

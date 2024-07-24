@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 
 #include "UI_UpGPageBG.h"
 #include "UI_UpGPageTop.h"
@@ -79,6 +80,10 @@ void CUIGroup_UpGPage::Tick(_float fTimeDelta)
 			pSlot->Tick(fTimeDelta);
 		}
 	}
+
+	//if(CInventory::GetInstance()->Get_WeaponSize())
+	Update_CurSlot();
+
 }
 
 void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
@@ -96,6 +101,16 @@ void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
 HRESULT CUIGroup_UpGPage::Render()
 {
 	return S_OK;
+}
+
+void CUIGroup_UpGPage::Add_WeaponList(_uint iWeaponIdx) // 몇 번째 weapon인지 받아와서 해당 slot에 넣어주기
+{
+	vector<CUI*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iWeaponIdx; ++i)
+		++slot;
+
+	dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Create_ItemIcon();
+	dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Setting_SelectItemName();
 }
 
 HRESULT CUIGroup_UpGPage::Create_UI()
@@ -119,7 +134,6 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 	// Btn 
 	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPageBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPageBtn"), &pDesc)));
 
-
 	// MatSlot  
 	CUI_UpGPage_MatSlot::UI_MATSLOT_DESC pMatSlotDesc{};
 
@@ -130,7 +144,6 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 	pMatSlotDesc.eMatSlotType = CUI_UpGPage_MatSlot::MATSLOT_R;
 	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_MatSlot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_MatSlot"), &pMatSlotDesc)));
 
-
 	// Value
 	CUI_UpGPage_Value::UI_VALUE_DESC pValueDesc{};
 
@@ -140,7 +153,6 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 
 	pValueDesc.eValueType = CUI_UpGPage_Value::VALUE_MATERIAL;
 	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
-
 
 	if (FAILED(Create_Slot()))
 		return E_FAIL;
@@ -163,9 +175,29 @@ HRESULT CUIGroup_UpGPage::Create_Slot()
 		m_vecSlot.emplace_back(dynamic_cast<CUI_UpGPage_Slot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Slot"), &pDesc)));
 	}
 
-	// >> Inventory가 가지고 있는 Weapon 수에 맞춰 Render를 켜도록
-
 	return S_OK;
+}
+
+void CUIGroup_UpGPage::Update_CurSlot()
+{
+	// m_iCurSlotIdx에 맞춰서 상태들을 갱신해야함
+
+	vector<CUI*>::iterator slot = m_vecSlot.begin();
+
+	for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if (i == m_iCurSlotIdx)
+		{
+			dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Set_Select(true);
+		}
+		else
+		{
+			dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Set_Select(false);
+		}
+		++slot;
+	}
+
+
 }
 
 CUIGroup_UpGPage* CUIGroup_UpGPage::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

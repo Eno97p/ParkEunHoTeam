@@ -54,6 +54,14 @@ HRESULT CUI_UpGPage_SelectSlot::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	// Item Name
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrItemName, _float2(m_fX - 80.f, m_fY - 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
+	// NameBox
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrItemName, _float2((g_iWinSizeX >> 1) + 210.f, 217.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

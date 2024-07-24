@@ -157,7 +157,7 @@ void CItemData::Set_Item_Data()
 	case Client::CItemData::ITEMNAME_CATHARSIS:
 	{
 		m_eItemType = ITEMTYPE_WEAPON;
-		m_wszItemName = TEXT("CATHARSIS");
+		m_wszItemName = TEXT("Catharsis"); // CATHARSIS
 		m_wszItemExplain = TEXT("순수한 영혼과 강력한 마력의\n결합체\n그 자체로 살아있는 존재처럼\n사용자의 의지에 반응한다.");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catharsis");
 		break;

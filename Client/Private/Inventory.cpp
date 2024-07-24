@@ -4,9 +4,11 @@
 #include "UI_Manager.h"
 #include "Player.h"
 #include "ItemData.h"
+
 #include "UIGroup_DropItem.h"
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Weapon.h"
+#include "UIGroup_UpGPage.h"
 
 IMPLEMENT_SINGLETON(CInventory)
 
@@ -63,6 +65,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
+
+	// Upgrade Page에도 weapon 추가
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
 	//test
 	/*Add_DropItem(CItem::ITEM_BUFF1);

@@ -12,12 +12,18 @@ private:
 	virtual ~CUI_UpGPage_SelectSlot() = default;
 
 public:
+	void			Set_ItemName(wstring wstrItemName) { m_wstrItemName = wstrItemName; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
+
+private:
+	wstring								m_wstrItemName;
 
 private:
 	HRESULT	Add_Components();

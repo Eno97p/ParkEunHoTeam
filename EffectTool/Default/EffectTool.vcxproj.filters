@@ -83,6 +83,15 @@
     <Filter Include="Objects\02. Effects\08. Fire">
       <UniqueIdentifier>{6a12edb2-2520-4131-aacd-a049ca3c75d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster">
+      <UniqueIdentifier>{83aa6b58-483c-4699-891e-cdfbd5872442}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\05. Monster\Andras">
+      <UniqueIdentifier>{ba113568-cf54-4e05-9dea-8debd7cb00fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\05. Monster\Andras\AndrasWeapon">
+      <UniqueIdentifier>{79871a2e-8ea1-4617-8096-523907bddfda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -202,6 +211,24 @@
     <ClInclude Include="..\public\FireEffect.h">
       <Filter>Objects\02. Effects\08. Fire</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Andras.h">
+      <Filter>Objects\05. Monster\Andras</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasSword1.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasSword2.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasSword3.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasSword4.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasSword5.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -305,6 +332,24 @@
     </ClCompile>
     <ClCompile Include="..\private\FireEffect.cpp">
       <Filter>Objects\02. Effects\08. Fire</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andras.cpp">
+      <Filter>Objects\05. Monster\Andras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSword1.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSword2.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSword3.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSword4.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSword5.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

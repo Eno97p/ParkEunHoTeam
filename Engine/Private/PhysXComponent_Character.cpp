@@ -367,7 +367,10 @@ _float CPhysXComponent_Character::Get_LengthFromGround()
 
 		return vFootPosition.y - hitPoint.y;
 	}
-	else return 100.f;
+	else
+	{
+		return 100.f;
+	}
 }
 
 

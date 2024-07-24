@@ -1041,19 +1041,27 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 		if (m_bAnimFinished)
 		{
-			m_bStaminaCanDecrease = true;
-			m_iState = STATE_IDLE;
-			m_fCloneDelay = 0.f;
-			m_fAnimDelay = 0.f;
-			if (m_bRunning)
+			if (m_bFalling)
 			{
-				m_pPhysXCom->Set_Speed(RUNSPEED);
+				m_bFalling = false;
+				return RUNNING;
 			}
 			else
 			{
-				m_pPhysXCom->Set_Speed(WALKSPEED);
+				m_bStaminaCanDecrease = true;
+				m_iState = STATE_IDLE;
+				m_fCloneDelay = 0.f;
+				m_fAnimDelay = 0.f;
+				if (m_bRunning)
+				{
+					m_pPhysXCom->Set_Speed(RUNSPEED);
+				}
+				else
+				{
+					m_pPhysXCom->Set_Speed(WALKSPEED);
+				}
+				return SUCCESS;
 			}
-			return SUCCESS;
 		}
 		else
 		{
@@ -1066,13 +1074,10 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 		m_fAnimDelay = 0.f;
 		return FAILURE;
 	}
-
 }
 
 NodeStates CPlayer::Jump(_float fTimeDelta)
 {
-
-
 	// 바닥에 닿으면
 	if (!m_pPhysXCom->Get_IsJump())
 	{

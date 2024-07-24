@@ -28,6 +28,8 @@ public:
 	void Visible_Data();
 	void Render();
 	void Tick(_float fTimiedelta);
+private:
+	void Model_Change();
 
 private:	//for FileSystem
 	void Load_Texture();
@@ -143,6 +145,8 @@ private:
 	vector<string> DistortionNames;
 	vector<string> FireNames;
 
+private:
+	vector<string> ModelName;
 
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -322,8 +322,8 @@ namespace Engine
 				: engineTorque(1000.0f), brakeTorque(1500.0f), steeringAngle(0.0f), steeringSpeed(PxPi / 2) , MaxSteeringAngle(PxPi / 4)
 			{
 			}
-			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed)
-				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle), steeringSpeed(_steeringSpeed)
+			PX_FORCE_INLINE VehicleMiddleParams(PxReal _engineTorque, PxReal _brakeTorque, PxReal _steeringAngle, PxReal _steeringSpeed, PxReal _maxsteeringAngle)
+				: engineTorque(_engineTorque), brakeTorque(_brakeTorque), steeringAngle(_steeringAngle), steeringSpeed(_steeringSpeed), MaxSteeringAngle(_maxsteeringAngle)
 			{
 			}
 

@@ -20,6 +20,8 @@
 #include "FireEffect.h"
 #include "TransitionCamera.h"
 #include "Trap.h"
+#include "Decal.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{pDevice, pContext}
 {
@@ -84,6 +86,15 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
         Load_Data_Effects();
     }
 
+    if (CImgui_Manager::GetInstance()->Get_IsDecalSave())
+    {
+        Save_Data_Decals();
+    }
+
+    if (CImgui_Manager::GetInstance()->Get_IsDecalLoad())
+    {
+        Load_Data_Decals();
+    }
 
 
     if (m_pGameInstance->Key_Down(DIK_1))
@@ -607,6 +618,103 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
     CImgui_Manager::GetInstance()->Set_DontEffectsLoad();
 
     MSG_BOX("Data Load");
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Save_Data_Decals()
+{
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
+    HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (nullptr == hFile)
+        return E_FAIL;
+
+    DWORD dwByte(0);
+    _uint iDecalCount = 0;
+
+    // 먼저 이펙트 개수를 세고 저장
+    for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
+    {
+        if (strcmp(iter->Get_Name(), "Prototype_GameObject_Decal") == 0) //이펙트 추가할 때마다 여기에 조건 추가
+        {
+            iDecalCount++;
+        }
+    }
+    WriteFile(hFile, &iDecalCount, sizeof(_uint), &dwByte, nullptr);
+
+    // 데칼 정보 저장
+    for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
+    {
+        if (strcmp(iter->Get_Name(), "Prototype_GameObject_Decal") == 0) //이펙트 추가할 때마다 여기에 조건 추가
+        {
+            char szName[MAX_PATH] = "";
+            char szLayer[MAX_PATH] = "";
+            _float4x4 WorldMatrix;
+            _uint     decalIdx = 0;
+
+            strcpy_s(szName, "Prototype_GameObject_Decal");
+            strcpy_s(szLayer, iter->Get_Layer());
+            XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
+            decalIdx = dynamic_cast<CDecal*>(iter)->Get_DecalIdx();
+
+            WriteFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &decalIdx, sizeof(_uint), &dwByte, nullptr);
+        }
+    }
+
+    CloseHandle(hFile);
+    CImgui_Manager::GetInstance()->Set_DontDecalSave();
+    MSG_BOX("Data Save");
+
+    return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_Data_Decals()
+{
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
+    HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (INVALID_HANDLE_VALUE == hFile)
+        return E_FAIL;
+
+    DWORD dwByte(0);
+    _uint iDecalCount = 0;
+    ReadFile(hFile, &iDecalCount, sizeof(_uint), &dwByte, nullptr);
+    if (0 == dwByte)
+    {
+        CloseHandle(hFile);
+        return S_OK; // 파일이 비어있는 경우
+    }
+
+    for (_uint i = 0; i < iDecalCount; ++i)
+    {
+        _char szName[MAX_PATH] = "";
+        _char szLayer[MAX_PATH] = "";
+        _float4x4 WorldMatrix;
+        _uint     decalIdx = 0;
+
+        ReadFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+        ReadFile(hFile, &decalIdx, sizeof(_uint), &dwByte, nullptr);
+
+        if (0 == dwByte)
+            break;
+
+        CDecal::DECAL_DESC pDesc{};
+
+        strcpy_s(pDesc.szObjName, szName);
+        strcpy_s(pDesc.szLayer, szLayer);
+        pDesc.mWorldMatrix = WorldMatrix;
+        pDesc.iDecalIdx = decalIdx;
+
+        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &pDesc)))
+            return E_FAIL;
+    }
+
+    CloseHandle(hFile);
+    CImgui_Manager::GetInstance()->Set_DontDecalLoad();
+    MSG_BOX("Decal Data Loaded");
     return S_OK;
 }
 

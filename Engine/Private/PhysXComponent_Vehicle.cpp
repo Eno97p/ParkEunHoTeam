@@ -167,23 +167,23 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 
 		
 	
-	
-	PxU32 axleWheelIds[PxVehicleLimits::eMAX_NB_WHEELS];
-	axleWheelIds[0] = 0;
-	axleWheelIds[1] = 1;
-	axleWheelIds[2] = 2;
-	axleWheelIds[3] = 3;
-	m_pPhysXActorVehicle.mBaseParams.axleDescription.addAxle(2, axleWheelIds);
+	//
+	//PxU32 axleWheelIds[PxVehicleLimits::eMAX_NB_WHEELS];
+	//axleWheelIds[0] = 0;
+	//axleWheelIds[1] = 1;
+	//axleWheelIds[2] = 2;
+	//axleWheelIds[3] = 3;
+	//m_pPhysXActorVehicle.mBaseParams.axleDescription.addAxle(2, axleWheelIds);
 
-	initMaterialFrictionTable();
+	//initMaterialFrictionTable();
 
-	setPhysXIntegrationParams(m_pPhysXActorVehicle.mBaseParams.axleDescription, gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction, m_pPhysXActorVehicle.getPhysXParams());
+	//setPhysXIntegrationParams(m_pPhysXActorVehicle.mBaseParams.axleDescription, gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction, m_pPhysXActorVehicle.getPhysXParams());
 
 
-	if(!m_pPhysXActorVehicle.initialize(*m_pGameInstance->GetPhysics(), PxCookingParams(PxTolerancesScale()), *gMaterial))
-		return E_FAIL;
-	PxTransform pose(PxVec3(0.0f, 10.5f, 0.0f), PxQuat(PxIdentity));
-	m_pPhysXActorVehicle.setUpActor(*m_pGameInstance->GetScene(), pose, "VehicleTest");
+	//if(!m_pPhysXActorVehicle.initialize(*m_pGameInstance->GetPhysics(), PxCookingParams(PxTolerancesScale()), *gMaterial))
+	//	return E_FAIL;
+	//PxTransform pose(PxVec3(0.0f, 10.5f, 0.0f), PxQuat(PxIdentity));
+	//m_pPhysXActorVehicle.setUpActor(*m_pGameInstance->GetScene(), pose, "VehicleTest");
 
 
 

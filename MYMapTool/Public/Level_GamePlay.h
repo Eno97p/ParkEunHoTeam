@@ -36,6 +36,9 @@ private:
 	HRESULT	Save_Data_Effects();
 	HRESULT	Load_Data_Effects();
 
+	HRESULT	Save_Data_Decals();
+	HRESULT	Load_Data_Decals();
+
 	const wchar_t* Setting_FileName();
 
 public:

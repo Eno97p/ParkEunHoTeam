@@ -188,7 +188,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         XMStoreFloat4(&vTargetCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&cameraDirection) * m_fDistance);
 
         // 카메라 높이 제한
-        vTargetCameraPosition.y = max(vTargetCameraPosition.y, vPlayerPosition.y + m_fMinHeight);
+        vTargetCameraPosition.y = max(vTargetCameraPosition.y, vPlayerPosition.y + m_fMinHeight * 0.5f);
 
         // 부드러운 카메라 이동
         float fPositionLerpSpeed = 10.0f;

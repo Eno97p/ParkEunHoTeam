@@ -19,9 +19,9 @@ class CPlayer final : public CLandObject
 #define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
-#define WALKSPEED 3.5f // 3
-#define RUNSPEED 6.5f // 6
-#define ROLLSPEED 10.f
+#define WALKSPEED 4.f
+#define RUNSPEED 8.f
+#define ROLLSPEED 12.f
 #define ATTACKPOSTDELAY 1.5f
 #define STAMINARECOVERDELAY 1.5f
 #define PARRYSTART 0.01f

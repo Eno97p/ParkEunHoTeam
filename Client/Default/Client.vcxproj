@@ -273,9 +273,11 @@
     <ClInclude Include="..\Public\UI_UpGPageTop.h" />
     <ClInclude Include="..\Public\UI_UpGPage_Circle.h" />
     <ClInclude Include="..\Public\UI_UpGPage_ItemSlot.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_MatSlot.h" />
     <ClInclude Include="..\Public\UI_UpGPage_NameBox.h" />
     <ClInclude Include="..\Public\UI_UpGPage_SelectSlot.h" />
     <ClInclude Include="..\Public\UI_UpGPage_Slot.h" />
+    <ClInclude Include="..\Public\UI_UpGPage_Value.h" />
     <ClInclude Include="..\Public\UI_UpgradeBG.h" />
     <ClInclude Include="..\Public\UI_UpgradeCrucible.h" />
     <ClInclude Include="..\Public\UI_UpgradeForge.h" />
@@ -470,9 +472,11 @@
     <ClCompile Include="..\Private\UI_UpGPageTop.cpp" />
     <ClCompile Include="..\Private\UI_UpGPage_Circle.cpp" />
     <ClCompile Include="..\Private\UI_UpGPage_ItemSlot.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_MatSlot.cpp" />
     <ClCompile Include="..\Private\UI_UpGPage_NameBox.cpp" />
     <ClCompile Include="..\Private\UI_UpGPage_SelectSlot.cpp" />
     <ClCompile Include="..\Private\UI_UpGPage_Slot.cpp" />
+    <ClCompile Include="..\Private\UI_UpGPage_Value.cpp" />
     <ClCompile Include="..\Private\UI_UpgradeBG.cpp" />
     <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp" />
     <ClCompile Include="..\Private\UI_UpgradeForge.cpp" />

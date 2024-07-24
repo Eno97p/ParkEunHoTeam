@@ -46,8 +46,8 @@ HRESULT CGrass::Initialize(void* pArg)
 
 		strcpy_s(m_szName, pDesc->szObjName);
 		strcpy_s(m_szLayer, pDesc->szLayer);
-		strcpy_s(m_szModelName, pDesc->szModelName);
-		m_eModelType = pDesc->eModelType;
+		strcpy_s(m_szModelName, "");
+		m_eModelType = CModel::TYPE_END;
 		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
 
 
@@ -64,8 +64,12 @@ HRESULT CGrass::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	m_pVIBufferCom->Initial_RotateY();
 
+	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
+	m_vTopCol = gd->vTopCol;
+	m_vBotCol = gd->vBotCol;
+
 	//랜덤으로 탑색 변경 살짞 어둡게
-	_float randFloat = rand() % 101 / 500.f;
+	_float randFloat = RandomFloat(0.f, 0.2f);
 	//m_vTopColorOffset = { randFloat , randFloat , randFloat };
 	m_vTopCol.x -= randFloat;
 	m_vTopCol.y -= randFloat;
@@ -200,8 +204,8 @@ HRESULT CGrass::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
-
 		return E_FAIL;
+
 	if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
 		return E_FAIL;
 
@@ -222,7 +226,12 @@ HRESULT CGrass::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
 		return E_FAIL;
 
+	m_fWindStrength = CImgui_Manager::GetInstance()->Get_GlobalWindStrenth();
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWindStrength", &m_fWindStrength, sizeof(_float))))
+		return E_FAIL;	
+	
+	_float3 WindDir = CImgui_Manager::GetInstance()->Get_GlobalWindDir();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vWindDirection", &WindDir, sizeof(_float3))))
 		return E_FAIL;
 
 	return S_OK;

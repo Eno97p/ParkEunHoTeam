@@ -118,6 +118,8 @@
 #include "UI_UpGPage_Slot.h"
 #include "UI_UpGPage_SelectSlot.h"
 #include "UI_UpGPage_ItemSlot.h"
+#include "UI_UpGPage_MatSlot.h"
+#include "UI_UpGPage_Value.h"
 
 #include "UIGroup_UpGPage.h"
 #pragma endregion Upgrade
@@ -1514,6 +1516,15 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_UpGPage_ItemSlot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UIGroup_UpGPage_MatSlot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_MatSlot"),
+		CUI_UpGPage_MatSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UpGPage_Value*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"),
+		CUI_UpGPage_Value::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	/* For.Prototype_GameObject_UIGroup_UpGPage*/

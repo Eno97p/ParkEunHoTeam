@@ -7,7 +7,11 @@
 
 #include"Mesh.h"
 
+PxVehiclePhysXMaterialFriction gPhysXMaterialFrictions[16];
+PxU32 gNbPhysXMaterialFrictions = 0;
+PxReal gPhysXDefaultMaterialFriction = 1.0f;
 
+PxMaterial* gMaterial = nullptr;
 
 CPhysXComponent_Vehicle::CPhysXComponent_Vehicle(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CPhysXComponent{ pDevice, pContext }
@@ -147,6 +151,9 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 
 void CPhysXComponent_Vehicle::Late_Tick(const _float fTimeDelta)
 {
+	//PxVehicleRigidBodyComponent
+
+
 	m_pVehicle->updateSequence(fTimeDelta, m_pVehicleSimulationContext);
 }
 
@@ -157,6 +164,41 @@ void CPhysXComponent_Vehicle::Late_Tick(const _float fTimeDelta)
 
 HRESULT CPhysXComponent_Vehicle::CreateActor()
 {
+
+		
+	
+	//
+	//PxU32 axleWheelIds[PxVehicleLimits::eMAX_NB_WHEELS];
+	//axleWheelIds[0] = 0;
+	//axleWheelIds[1] = 1;
+	//axleWheelIds[2] = 2;
+	//axleWheelIds[3] = 3;
+	//m_pPhysXActorVehicle.mBaseParams.axleDescription.addAxle(2, axleWheelIds);
+
+	//initMaterialFrictionTable();
+
+	//setPhysXIntegrationParams(m_pPhysXActorVehicle.mBaseParams.axleDescription, gPhysXMaterialFrictions, gNbPhysXMaterialFrictions, gPhysXDefaultMaterialFriction, m_pPhysXActorVehicle.getPhysXParams());
+
+
+	//if(!m_pPhysXActorVehicle.initialize(*m_pGameInstance->GetPhysics(), PxCookingParams(PxTolerancesScale()), *gMaterial))
+	//	return E_FAIL;
+	//PxTransform pose(PxVec3(0.0f, 10.5f, 0.0f), PxQuat(PxIdentity));
+	//m_pPhysXActorVehicle.setUpActor(*m_pGameInstance->GetScene(), pose, "VehicleTest");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	m_pVehicle = CVehicleDefault::Create(4);
 
 
@@ -221,6 +263,16 @@ HRESULT CPhysXComponent_Vehicle::CreateActor()
 	return S_OK;
 }
 
+void CPhysXComponent_Vehicle::initMaterialFrictionTable()
+{
+	gMaterial = m_pGameInstance->GetPhysics()->createMaterial(0.5f, 0.5f, 0.6f);
+
+	gPhysXMaterialFrictions[0].friction = 1.0f;
+	gPhysXMaterialFrictions[0].material = gMaterial;
+	gPhysXDefaultMaterialFriction = 1.0f;
+	gNbPhysXMaterialFrictions = 1;
+}
+
 
 
 CPhysXComponent_Vehicle * CPhysXComponent_Vehicle::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -253,6 +305,8 @@ void CPhysXComponent_Vehicle::Free()
 {
 	__super::Free();
 	Safe_Release(m_pVehicle);
+	//m_pPhysXActorVehicle.destroy();
+
 	
 
 }

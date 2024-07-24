@@ -208,11 +208,16 @@ void CObject_Manager::Tick(_float fTimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
-		for (auto& Pair : m_pLayers[i])
+		auto& Layers = m_pLayers[i];
+		
+		for (auto& Pair : Layers)
 		{
 			//CGameInstance::GetInstance()->AddWork([Pair, fTimeDelta]() {
 			//	Pair.second->Tick(fTimeDelta); });
-			Pair.second->Tick(fTimeDelta);
+			string test = wstring_to_string(Pair.first);
+			PROFILE_CALL(test, Pair.second->Tick(fTimeDelta));
+
+			//Pair.second->Tick(fTimeDelta);
 		}
 	}
 }

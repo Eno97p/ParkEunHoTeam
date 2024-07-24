@@ -2,6 +2,7 @@
 #include "Player.h"
 
 #include "GameInstance.h"
+#include "EffectManager.h"
 
 CTrap::CTrap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
@@ -81,6 +82,15 @@ void CTrap::Tick(_float fTimeDelta)
 	m_ColliderMat *= m_pTransformCom->Get_WorldMatrix();
 	m_pColliderCom->Tick(m_ColliderMat);
 
+	if (IsPillar)
+	{
+		if (m_pModelCom->Check_CurDuration(0.31))
+		{
+			_float4 vPartPos;
+			XMStoreFloat4(&vPartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(30, vPartPos);
+		}
+	}
 
 
 	m_pModelCom->Play_Animation(fTimeDelta * m_fTimeAccel);
@@ -213,6 +223,7 @@ HRESULT CTrap::Add_Components(TRAP_DESC* desc)
 		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
+		IsPillar = false;
 	}
 	else //½º¸Å½ÌÇÊ·¯
 	{
@@ -231,7 +242,7 @@ HRESULT CTrap::Add_Components(TRAP_DESC* desc)
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 
-
+		IsPillar = true;
 	}
 
 	m_pModelCom->Setting_StartTime(m_dStartTime);

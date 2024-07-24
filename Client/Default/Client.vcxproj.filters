@@ -1193,6 +1193,12 @@
     <ClInclude Include="..\Public\TreasureChest.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_MatSlot.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpGPage_Value.h">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1770,6 +1776,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\TreasureChest.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_MatSlot.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpGPage_Value.cpp">
+      <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,8 @@ class CImgui_Manager final : public CBase
 	DECLARE_SINGLETON(CImgui_Manager)
 
 private:
-	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_ENVEFFECTS, LAYER_TRAP , LAYER_END };
+	enum LIST_LAYER { LAYER_MONSTER, LAYER_PASSIVE_ELEMENT, LAYER_ACTIVE_ELEMENT, LAYER_TRIGGER, LAYER_ENVEFFECTS,
+		LAYER_TRAP , LAYER_DECAL, LAYER_VEGETATION, LAYER_END };
 
 private:
 	CImgui_Manager();
@@ -31,6 +32,12 @@ public:
 
 	_bool	Get_IsPhysXLoad() { return m_IsPhysXLoad; }
 	void	Set_DontPhysXLoad() { m_IsPhysXLoad = false; }
+
+	_bool	Get_IsDecalSave() { return m_IsDecalSave; }
+	void	Set_DontDecalSave() { m_IsDecalSave = false; }
+
+	_bool	Get_IsDecalLoad() { return m_IsDecalLoad; }
+	void	Set_DontDecalLoad() { m_IsDecalLoad = false; }
 
 	_bool	Get_IsLoad() { return m_IsLoad; }
 	void	Set_DontLoad() { m_IsLoad = false; }
@@ -59,6 +66,14 @@ public:
 	_bool isDecoObject() { return m_bIsDecoObject; }
 
 
+	_float3 Get_GlobalWindDir() { return m_GlobalWindDir; }
+	_float Get_GlobalWindStrenth() { return m_fGlobalWindStrength; }
+
+
+	_float3 Get_GrassTopCol() { return m_TopCol; }
+	_float3 Get_GrassBotCol() { return m_BotCol; }
+	_float3 Get_LeafCol() { return m_LeafCol; }
+
 	void	Add_vecCreateObj(_char* pName) { m_vecCreateObj.emplace_back(pName); }
 	void	Add_vecCreateCell(_int iIndex)
 	{
@@ -83,6 +98,7 @@ public:
 
 private:
 	void Light_Editor();
+	ImTextureID DirectXTextureToImTextureID(_uint iIdx);
 
 public:
 	void Save_Lights();
@@ -95,6 +111,7 @@ private:
 	void Camera_Editor();
 
 	void Terrain_Editor();
+	void GlobalWind_Editor();
 
 private:
 	wstring m_LightsDataPath = L""; //Lights 저장 경로
@@ -106,13 +123,22 @@ private:
 	_bool	m_bShadowWindow = false;
 	_bool	m_bCameraWindow = false;
 	_bool	m_bTerrainWindow = false;
+	_bool	m_bGlobalWindWindow = false;
+	
+	_bool	m_bShowDecalTextureWindow = false;
 
 	_bool	m_IsSave = { false };
+	_bool	m_IsLoad = { false };
+
 	_bool	m_IsPhysXSave = { false };
 	_bool	m_IsPhysXLoad = { false };
-	_bool	m_IsLoad = { false };
+
 	_bool	m_IsEffectsSave = { false };
 	_bool	m_IsEffectsLoad = { false };
+
+	_bool	m_IsDecalSave = { false };
+	_bool	m_IsDecalLoad = { false };
+
 	_bool	m_IsTerrainReLoad = { false };
 
 	_bool	m_IsNaviMode = { false };
@@ -127,7 +153,6 @@ private:
 
 	_float4 m_ClickedMousePos = { 0.f, 0.f, 0.f, 1.f };
 	_int	m_selectedOption = 0; // 선택된 옵션을 저장할 변수
-
 
 private:
 
@@ -152,6 +177,8 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 
+
+	CTexture* m_pDecalTexs = { nullptr };
 private:
 	_float m_fTrapTimeOffset = 0.f;
 private:
@@ -159,6 +186,14 @@ private:
 	XMFLOAT4 m_DirectionalLightDirection{ 0.f, -1.f, 0.0f, 0.0f };
 	XMFLOAT4 m_SpotlightDirection{ 0.f, -1.f, 0.0f, 0.0f };
 
+private:
+	_float3				m_TopCol = { 0.f, 1.f, 0.f };
+	_float3				m_BotCol = { 0.f, 0.f, 0.f };
+	_float3				m_LeafCol = { 0.f, 0.f, 0.f };
+
+	_float3 m_GlobalWindDir = _float3(1.0f, 0.0f, 0.5f);
+	_float m_fGlobalWindStrength = 1.f;
+	_float m_fGlobalWindFrequency = 1.f;
 
 private:
 	vector<CCamera::CameraKeyFrame>	m_vCameraKeyFrames;

@@ -16,27 +16,32 @@ BEGIN(Client)
 class CItemData final : public CGameObject
 {
 public:
-	enum ITEM_TYPE{ ITEMTYPE_WEAPON, ITEMTYPE_BUFF, ITEMTYPE_SKILL, ITEMTYPE_USABLE, ITEMTYPE_UPGRADE, ITEMTYPE_ETC, ITEMTYPE_END };
-	enum ITEM_NAME{ 
+	enum ITEM_TYPE { ITEMTYPE_WEAPON, ITEMTYPE_BUFF, ITEMTYPE_SKILL, ITEMTYPE_USABLE, ITEMTYPE_UPGRADE, ITEMTYPE_ETC, ITEMTYPE_END };
+	enum ITEM_NAME {
 		ITEMNAME_CATHARSIS, ITEMNAME_CENDRES, ITEMNAME_CORRUPTEDSWORD, ITEMNAME_DURGASWORD, ITEMNAME_ICEBLADE, ITEMNAME_NARUEHSWORD, ITEMNAME_PRETORIANSWORD, ITEMNAME_RADAMANTHESWORD, ITEMNAME_SITRASWORD, ITEMNAME_VALNIRSWORD, ITEMNAME_VEILLEURSWORD, ITEMNAME_WHISPERSWORD,
 		ITEMNAME_OPH, ITEMNAME_ETHERBOLT, ITEMNAME_AEGIS,
-		ITEMNAME_CATALYST, 
+		ITEMNAME_CATALYST,
 		ITEMNAME_HOVERBOARD, ITEMNAME_FIREFLY, ITEMNAME_WHISPERER,
 		ITEMNAME_BUFF1, ITEMNAME_BUFF2, ITEMNAME_BUFF3, ITEMNAME_BUFF4, ITEMNAME_SOUL, ITEMNAME_ESSENCE, ITEMNAME_ETHER, ITEMNAME_UPGRADE1, ITEMNAME_UPGRADE2,
-		ITEMNAME_END };
+		ITEMNAME_END
+	};
 
-	typedef struct ItemData_Desc : public GAMEOBJECT_DESC 
+	typedef struct ItemData_Desc : public GAMEOBJECT_DESC
 	{
 		_bool					isDropTem; // 드탑템 여부
 		CItem::ITEM_NAME		eDropItemName;
 		ITEM_NAME				eItemName;
-		
+
 	}ITEMDATA_DESC;
 
 private:
 	CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CItemData(const CItemData& rhs);
 	virtual ~CItemData() = default;
+
+public:
+	_uint			Get_Count() { return m_iCount; }
+	void			Set_Count(_int iCount) { m_iCount += iCount; }
 
 public:
 	wstring			Get_TextureName() { return m_wszTexture; }
@@ -59,6 +64,8 @@ public:
 
 private:
 	_bool					m_isEquip = { false };
+
+	_uint					m_iCount = { 0 }; // 아이템 개수
 
 	wstring					m_wszTexture = TEXT("");
 	wstring					m_wszItemName = TEXT("");

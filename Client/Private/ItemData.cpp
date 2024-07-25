@@ -32,6 +32,8 @@ HRESULT CItemData::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_iCount = 1;
+
 	return S_OK;
 }
 

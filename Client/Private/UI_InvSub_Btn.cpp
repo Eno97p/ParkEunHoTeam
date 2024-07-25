@@ -211,9 +211,20 @@ void CUI_InvSub_Btn::Mouse_Input()
 			break;
 		}
 		case Client::CUI_InvSub_Btn::BTN_USE:
-			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
-			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+		{
+			CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+			if (CItemData::ITEMNAME_ESSENCE == pItem->Get_ItemName()) // Essence의 경우에만 사용 가능
+			{
+				_uint iRand = rand() % 300 + 100;
+				CInventory::GetInstance()->Calcul_Soul(iRand);
+				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Rend_Calcul(iRand);
+
+				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+			}
+
 			break;
+		}
 		case Client::CUI_InvSub_Btn::BTN_CANCEL:
 			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);

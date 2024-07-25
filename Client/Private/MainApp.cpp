@@ -125,7 +125,11 @@
 
 #pragma region Map
 #include "UI_MapBG.h"
-
+#include "UI_MapArea.h"
+#include "UI_MapDetail.h"
+#include "UI_MapIcon.h"
+#include "UI_MapUser.h"
+#include "UI_MapPosIcon.h"
 
 #include "UIGroup_Map.h"
 #pragma endregion Map
@@ -1579,6 +1583,30 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_MapBG::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_MapArea*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapArea"),
+		CUI_MapArea::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapDetail*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapDetail"),
+		CUI_MapDetail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapIcon"),
+		CUI_MapIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapUser*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapUser"),
+		CUI_MapUser::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapPosIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapPosIcon"),
+		CUI_MapPosIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Map*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Map"),
@@ -1635,6 +1663,9 @@ HRESULT CMainApp::Ready_Fonts()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo23"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_23.spritefont"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo27"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_27.spritefont"))))

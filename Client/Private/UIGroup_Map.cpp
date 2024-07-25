@@ -3,6 +3,10 @@
 #include "GameInstance.h"
 
 #include "UI_MapBG.h"
+#include "UI_MapArea.h"
+#include "UI_MapDetail.h"
+#include "UI_MapUser.h"
+#include "UI_MapPosIcon.h"
 
 CUIGroup_Map::CUIGroup_Map(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -81,8 +85,23 @@ HRESULT CUIGroup_Map::Create_UI()
     pDesc.eLevel = LEVEL_STATIC;
     m_vecUI.emplace_back(dynamic_cast<CUI_MapBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MapBG"), &pDesc)));
 
+    // Area   
+    m_vecUI.emplace_back(dynamic_cast<CUI_MapArea*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MapArea"), &pDesc)));
 
+    // Detail
+    CUI_MapDetail::UI_MAPDETAIL_DESC pDetailDesc{};
+    pDetailDesc.eLevel = LEVEL_STATIC;
+    for (size_t i = 0; i < 5; ++i)
+    {
+        pDetailDesc.iIdx = i;
+        m_vecUI.emplace_back(dynamic_cast<CUI_MapDetail*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MapDetail"), &pDetailDesc)));
+    }
 
+    // User 
+    m_vecUI.emplace_back(dynamic_cast<CUI_MapUser*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MapUser"), &pDetailDesc)));
+
+    // MapPosIcon 
+    m_vecUI.emplace_back(dynamic_cast<CUI_MapPosIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MapPosIcon"), &pDesc)));
 
     return S_OK;
 }

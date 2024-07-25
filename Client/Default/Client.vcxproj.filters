@@ -607,6 +607,9 @@
     <Filter Include="02.GameObjects\07. UI\MenuPage\Map\User\PosIcon">
       <UniqueIdentifier>{ba3e64e3-afdb-4e04-85d5-d9560f2af937}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Detail\Icon">
+      <UniqueIdentifier>{32bf73e1-1a66-499b-aabe-cdd5945d0754}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1223,6 +1226,21 @@
     <ClInclude Include="..\Public\UI_MapBG.h">
       <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_MapArea.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Area</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapDetail.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapIcon.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail\Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapUser.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapPosIcon.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User\PosIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1812,6 +1830,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_MapBG.cpp">
       <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapArea.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Area</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapDetail.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapIcon.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail\Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapUser.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapPosIcon.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User\PosIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

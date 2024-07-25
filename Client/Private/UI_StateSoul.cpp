@@ -40,6 +40,8 @@ void CUI_StateSoul::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateSoul::Tick(_float fTimeDelta)
 {
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
 }
 
 void CUI_StateSoul::Late_Tick(_float fTimeDelta)

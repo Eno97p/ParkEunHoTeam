@@ -589,6 +589,24 @@
     <Filter Include="02.GameObjects\08. vehicle\TestPhysX">
       <UniqueIdentifier>{7c17f5ee-b39d-4caf-9cae-83d139f794dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map">
+      <UniqueIdentifier>{7b3c2953-9677-4a59-bd16-8017282433cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\BG">
+      <UniqueIdentifier>{e590a2c4-1db0-415c-9745-6f8dd47ccec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Area">
+      <UniqueIdentifier>{47454585-99bf-49e1-8e54-4594f2f4736d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Detail">
+      <UniqueIdentifier>{5ccea95a-3a8c-425b-a94b-ccaf7692fb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\User">
+      <UniqueIdentifier>{191bea9a-5938-4003-ac96-5a476cf61599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\User\PosIcon">
+      <UniqueIdentifier>{ba3e64e3-afdb-4e04-85d5-d9560f2af937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1199,6 +1217,12 @@
     <ClInclude Include="..\Public\UI_UpGPage_Value.h">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Map.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapBG.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1782,6 +1806,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_UpGPage_Value.cpp">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Map.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapBG.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

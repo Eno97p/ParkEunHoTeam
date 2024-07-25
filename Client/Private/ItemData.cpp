@@ -61,8 +61,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF1;
 		m_wszItemName = TEXT("SIGIL OF STRENGTH");
-		m_wszItemExplain = TEXT("버프 1");
-		m_wszItemExplain_quick = TEXT("버프 1");
+		m_wszItemExplain = TEXT("금속 조각에 큰 홈으로 새겨진\n기하학적 봉인구\n무기의 공격 능력을\n일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("금속 조각에 큰 홈을 새기는 기하학적 봉인구\n무기의 공격 능력을 일시적으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
@@ -71,8 +71,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF2;
 		m_wszItemName = TEXT("SIGIL OF PROTECTION");
-		m_wszItemExplain = TEXT("버프 2");
-		m_wszItemExplain_quick = TEXT("버프 2");
+		m_wszItemExplain = TEXT("유리 구슬에 장착된\n원형 봉인구\n갑옷의 방어 능력을\n일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("유리 구슬에 장착된 원형 봉인구\n갑옷의 방어 능력을 일시적으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
@@ -81,8 +81,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF3;
 		m_wszItemName = TEXT("SIGIL OF RECOVERY");
-		m_wszItemExplain = TEXT("버프 3");
-		m_wszItemExplain_quick = TEXT("버프 3");
+		m_wszItemExplain = TEXT("암석에 조각된\n정교한 봉인구\n체력 회복을 일시적으로 증가");
+		m_wszItemExplain_quick = TEXT("암석에 조각된 정교한 봉인구\n체력 회복을 일시적으로 증가");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
@@ -91,8 +91,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF4;
 		m_wszItemName = TEXT("SIGIL OF ETHER");
-		m_wszItemExplain = TEXT("버프 4");
-		m_wszItemExplain_quick = TEXT("버프 4");
+		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n저항력을 일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n저항력을 일시정으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}

@@ -213,6 +213,8 @@ void CUI_MenuBtn::Open_MenuPage()
 		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_MAP:
+		CUI_Manager::GetInstance()->Set_MenuPage(true, "Map");
+		CUI_Manager::GetInstance()->Set_MenuPageOpen();
 		break;
 	case Client::CUI_MenuBtn::MENU_WEAPON:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");

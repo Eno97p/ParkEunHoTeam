@@ -9,6 +9,7 @@
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_UpGPage.h"
+#include "UIGroup_State.h"
 
 IMPLEMENT_SINGLETON(CInventory)
 
@@ -78,28 +79,42 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 {
-	// Inventory에 ItemData 추가
-	CItemData::ITEMDATA_DESC pDesc{};
-	
-	pDesc.isDropTem = true;
-	pDesc.eDropItemName = eItemType;
-	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+	// Soul의 경우에는 분기 처리 따로 할 것
+	if (CItem::ITEM_SOUL == eItemType)
+	{
+		// Inventory에 들어가는게 아니라 Soul을 더해줄 것 + UI 출력?
+		// 랜덤한 값을 더해주기
+		_uint iRand = rand() % 300;
+		CInventory::GetInstance()->Calcul_Soul(iRand);
 
-	// UI 출력
-	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
-	pUIDesc.eLevel = LEVEL_STATIC;
+		// UI 출력 관련 함수를 호출
+		dynamic_cast<CUIGroup_State*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_State"))->Rend_Calcul(iRand);
+	}
+	else
+	{
+		// Inventory에 ItemData 추가
+		CItemData::ITEMDATA_DESC pDesc{};
 
-	vector<CItemData*>::iterator item = m_vecItem.begin();
-	for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
-		++item;
-	pUIDesc.eItemName = (*item)->Get_ItemName();
-	pUIDesc.wszTextureName = (*item)->Get_TextureName();
-	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+		pDesc.isDropTem = true;
+		pDesc.eDropItemName = eItemType;
+		m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+		// UI 출력
+		CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+		pUIDesc.eLevel = LEVEL_STATIC;
 
-	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
-	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+		vector<CItemData*>::iterator item = m_vecItem.begin();
+		for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
+			++item;
+		pUIDesc.eItemName = (*item)->Get_ItemName();
+		pUIDesc.wszTextureName = (*item)->Get_TextureName();
+		m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+		CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+		// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+		CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+	}
 
 	return S_OK;
 }

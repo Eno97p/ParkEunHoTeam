@@ -137,7 +137,7 @@ void CUI_MapPosIcon::Setting_AnimData()
 {
 	_uint iLevel = m_pGameInstance->Get_CurrentLevel();
 
-	if (LEVEL_ACKBAR == iLevel) // LEVEL_GAMEPLAY
+	if (LEVEL_GAMEPLAY == iLevel)
 	{
 		m_fX = 270.f;
 		m_fDefaultY = 200.f;
@@ -148,7 +148,7 @@ void CUI_MapPosIcon::Setting_AnimData()
 		m_fX = 470.f;
 		m_fDefaultY = (g_iWinSizeY >> 1) - 30.f;
 	}
-	else if (LEVEL_GAMEPLAY == iLevel) // LEVEL_JUGGLAS
+	else if (LEVEL_JUGGLAS == iLevel)
 	{
 		m_fX = (g_iWinSizeX >> 1) - 50.f;
 		m_fDefaultY = 40.f;
@@ -156,7 +156,6 @@ void CUI_MapPosIcon::Setting_AnimData()
 
 	if (m_fY < m_fDefaultY - ANIM_Y)
 		m_fY = m_fDefaultY - ANIM_Y;
-
 }
 
 CUI_MapPosIcon* CUI_MapPosIcon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

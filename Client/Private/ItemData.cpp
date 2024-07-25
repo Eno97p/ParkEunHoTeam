@@ -96,15 +96,6 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}
-	case Client::CItem::ITEM_SOUL:
-	{
-		m_eItemType = ITEMTYPE_ETC; // 먹자마자 소모되어야 하므로 >> 인벤에 들어가는 일 없음
-		m_eItemName = ITEMNAME_SOUL;
-		m_wszItemName = TEXT("SOUL");
-		m_wszItemExplain = TEXT("인벤토리에 출력하지 않을 예정인 아이템");
-		m_wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
-		break;
-	}
 	case Client::CItem::ITEM_ESSENCE:
 	{
 		m_eItemType = ITEMTYPE_USABLE;

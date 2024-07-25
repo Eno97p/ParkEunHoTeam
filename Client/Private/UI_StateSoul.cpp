@@ -1,6 +1,7 @@
 #include "UI_StateSoul.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 CUI_StateSoul::CUI_StateSoul(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{pDevice, pContext}
@@ -42,6 +43,16 @@ void CUI_StateSoul::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	if (m_isCalculRend)
+	{
+		m_fRenderTimer += fTimeDelta;
+		if (2.f <= m_fRenderTimer)
+		{
+			m_fRenderTimer = 0.f;
+			m_isCalculRend = false;
+		}
+	}
 }
 
 void CUI_StateSoul::Late_Tick(_float fTimeDelta)
@@ -58,12 +69,22 @@ HRESULT CUI_StateSoul::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	_tchar wszSoul[MAX_PATH] = TEXT("");
-	wsprintf(wszSoul, TEXT("%d"), 52); // 크기 키우고 올려야함(나중)
+	m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(CInventory::GetInstance()->Get_Soul()), _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 
-	//m_pGameInstance->Render_Font(TEXT("Font_Cardo"), wszSoul, _float2(m_fX - 50.f, m_fY), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	if(m_isCalculRend)
+		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrCalculText, _float2(m_fX + 20.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 
 	return S_OK;
+}
+
+void CUI_StateSoul::Rend_Calcul(_int iSoul)
+{
+	m_isCalculRend = true;
+
+	if(0 > iSoul)
+		m_wstrCalculText = TEXT("-") + to_wstring(iSoul);
+	else
+		m_wstrCalculText = TEXT("+") + to_wstring(iSoul);
 }
 
 HRESULT CUI_StateSoul::Add_Components()

@@ -20,6 +20,7 @@
 #include"NPC_Rlya.h"
 #include"Item.h"
 
+#include "Tree.h"
 
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -520,43 +521,109 @@ HRESULT CLevel_Ackbar::Load_Data_Effects()
 	// 이펙트 개수 읽기
 	ReadFile(hFile, &iEffectCount, sizeof(_uint), &dwByte, nullptr);
 
+	// 사용자 정의 비교 함수
+	auto cmp = [](const tuple<wstring, float, float, float, bool>& a, const tuple<wstring, float, float, float, bool>& b) {
+		if (get<0>(a) != get<0>(b)) return get<0>(a) < get<0>(b);
+		if (get<1>(a) != get<1>(b)) return get<1>(a) < get<1>(b);
+		if (get<2>(a) != get<2>(b)) return get<2>(a) < get<2>(b);
+		if (get<3>(a) != get<3>(b)) return get<3>(a) < get<3>(b);
+		return get<4>(a) < get<4>(b);
+		};
+
+	// Tree 객체들을 그룹화하기 위한 맵
+	// key: (모델 이름, LeafCol, isBloom)의 조합, value: 해당 그룹의 월드 매트릭스 벡터
+	map<tuple<wstring, float, float, float, bool>, vector<_float4x4*>, decltype(cmp)> treeGroups(cmp);
+
 	for (_uint i = 0; i < iEffectCount; ++i)
 	{
 		char szName[MAX_PATH] = "";
+		char szModelName[MAX_PATH] = "";
 		char szLayer[MAX_PATH] = "";
 		_float4x4 WorldMatrix;
 
 		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 
-		// char 배열을 wstring으로 변환
-		wstring wsName, wsLayer;
+		wstring wsName, wsModelName, wsLayer;
 		int nNameLen = MultiByteToWideChar(CP_ACP, 0, szName, -1, NULL, 0);
+		int nModelNameLen = MultiByteToWideChar(CP_ACP, 0, szModelName, -1, NULL, 0);
 		int nLayerLen = MultiByteToWideChar(CP_ACP, 0, szLayer, -1, NULL, 0);
 		wsName.resize(nNameLen);
+		wsModelName.resize(nModelNameLen);
 		wsLayer.resize(nLayerLen);
 		MultiByteToWideChar(CP_ACP, 0, szName, -1, &wsName[0], nNameLen);
+		MultiByteToWideChar(CP_ACP, 0, szModelName, -1, &wsModelName[0], nModelNameLen);
 		MultiByteToWideChar(CP_ACP, 0, szLayer, -1, &wsLayer[0], nLayerLen);
 
-		// 이펙트 생성 및 설정
 		if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Fire_Effect") == 0)
 		{
 			CFireEffect::FIREEFFECTDESC FireDesc{};
 			FireDesc.vStartPos = { WorldMatrix._41, WorldMatrix._42, WorldMatrix._43, 1.f };
-			FireDesc.vStartScale = { 1.f, 1.f }; // 스케일은 필요에 따라 조정
+			FireDesc.vStartScale = { 1.f, 1.f };
 			FireDesc.mWorldMatrix = WorldMatrix;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
 				return E_FAIL;
 		}
+		//else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Grass") == 0)
+		//{
+		//	CGrass::GRASS_DESC GrassDesc{};
+		//	GrassDesc.mWorldMatrix = WorldMatrix;
 
+		//	// 추가 정보 읽기
+		//	_float3 TopCol, BotCol;
+		//	ReadFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
+		//	ReadFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
+
+		//	GrassDesc.vTopCol = TopCol;
+		//	GrassDesc.vBotCol = BotCol;
+
+		//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wsLayer.c_str(), wsName.c_str(), &GrassDesc)))
+		//		return E_FAIL;
+		//}
+
+		else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Tree") == 0)
+		{
+			_float3 LeafCol;
+			bool isBloom;
+			ReadFile(hFile, &LeafCol, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &isBloom, sizeof(bool), &dwByte, nullptr);
+
+			// 트리 그룹화
+			auto key = make_tuple(wsModelName, LeafCol.x, LeafCol.y, LeafCol.z, isBloom);
+			_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+			treeGroups[key].emplace_back(pWorldMatrix);
+		}
 	}
 
 	CloseHandle(hFile);
 
+	// Tree 객체들을 인스턴싱하여 생성
+	for (const auto& group : treeGroups)
+	{
+		CTree::TREE_DESC TreeDesc{};
+		TreeDesc.wstrModelName = get<0>(group.first);
+		TreeDesc.vLeafCol = _float3(get<1>(group.first), get<2>(group.first), get<3>(group.first));
+		TreeDesc.isBloom = get<4>(group.first);
+		TreeDesc.WorldMats = group.second;
+		TreeDesc.iInstanceCount = group.second.size();
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Tree"), &TreeDesc)))
+			return E_FAIL;
+	}
+
+	for (auto& group : treeGroups)
+	{
+		for (auto& pMatrix : group.second)
+		{
+			delete pMatrix;
+		}
+	}
+
 #ifdef _DEBUG
-	MSG_BOX("Effects Data Load");
+//	MSG_BOX("Effect Data Load");
 #endif
 
 	return S_OK;
@@ -644,7 +711,7 @@ void CLevel_Ackbar::Load_Lights()
 	CloseHandle(hFile);
 
 #ifdef _DEBUG
-	MSG_BOX("Lights Data Load");
+	//MSG_BOX("Lights Data Load");
 #endif
 	return;
 }

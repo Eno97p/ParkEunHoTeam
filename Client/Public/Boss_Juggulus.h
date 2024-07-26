@@ -2,16 +2,18 @@
 
 #include "Client_Defines.h"
 #include "Monster.h"
+#include "BossStatue.h"
 
 BEGIN(Client)
 
 class CBoss_Juggulus final : public CMonster
 {
 #define CIRCLESPHERESPAWNTIME 4.5f
+#define STATUECOUNT 3
 
 public:
 	enum STATE { STATE_IDLE_FIRST = 0, STATE_IDLE_SEC, STATE_NEXTPHASE, STATE_CREATE_HAMMER,
-		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_END };
+		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_GROGGY, STATE_END };
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
 
 private:
@@ -48,6 +50,8 @@ private:
 	_bool							m_isHandAnimFinished = { false };
 	_bool							m_isHandTwoAnimFinished = { false };
 	_bool							m_isHandThreeAnimFinished = { false };
+	CBossStatue* m_pBossStatues[STATUECOUNT] = { nullptr };
+	_float m_fGroggyTime = 10.f;
 
 	_float							m_fTargettingTimer = { 0.f };
 
@@ -72,6 +76,7 @@ private:
 	NodeStates			Dead(_float fTimedelta);
 	NodeStates			NextPhase(_float fTimedelta);
 	NodeStates			CreateHammer(_float fTimedelta);
+	NodeStates			Groggy(_float fTimeDelta);
 	NodeStates			Idle(_float fTimeDelta);
 
 	NodeStates			Select_Pattern(_float fTimeDelta);

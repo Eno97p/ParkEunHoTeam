@@ -55,13 +55,21 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	m_fCurHp = m_fMaxHp;
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
-	m_pUI_HP->Set_Rend(true); // 일단 출력 X
+	m_pUI_HP->Set_Rend(true);
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	Safe_AddRef(m_pPlayerTransform);
+
+	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
+	_uint i = 0; 
+	for(auto iter : StatueList)
+	{
+		m_pBossStatues[i++] = dynamic_cast<CBossStatue*>(iter);
+	}
+	
 
 	return S_OK;
 }
@@ -100,18 +108,25 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 		m_fCurHp = 10.f;
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
-	// 플레이어 무기와 몬스터의 충돌 여부
-
-	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
-	if (!pPlayerWeapon->Get_Active())
+	
+	if (m_ePhase == PHASE_TWO)
 	{
-		m_pColliderCom->Reset();
-	}
-	else
-	{
-		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
-	}
+		// 플레이어 무기와 몬스터의 충돌 여부
+
+		CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+		if (!pPlayerWeapon->Get_Active())
+		{
+			m_pColliderCom->Reset();
+		}
+		else
+		{
+			m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+			if (m_eColltype == CCollider::COLL_START)
+			{
+				Add_Hp(-10);
+			}
+		}
+	} 
 
 	//m_pPhysXCom->Tick(fTimeDelta);
 
@@ -184,8 +199,8 @@ HRESULT CBoss_Juggulus::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(2.f, 8.f, 2.f);
-	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+	ColliderDesc.vExtents = _float3(3.f, 10.f, 3.f);
+	ColliderDesc.vCenter = _float3(10.f, ColliderDesc.vExtents.y - 15.f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
@@ -273,7 +288,7 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CBoss_Juggulus::Idle, this, std::placeholders::_1));
 
-
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Groggy"), bind(&CBoss_Juggulus::Groggy, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CBoss_Juggulus::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("NextPhase"), bind(&CBoss_Juggulus::NextPhase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("CreateHammer"), bind(&CBoss_Juggulus::CreateHammer, this, std::placeholders::_1));
@@ -414,6 +429,50 @@ NodeStates CBoss_Juggulus::CreateHammer(_float fTimeDelta)
 			m_isHammerCreate = true;
 		}
 		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
+NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
+{
+	if (m_ePhase != PHASE_TWO)
+	{
+		return FAILURE;
+	}
+
+	_uint count = 0;
+	for (_uint i = 0; i < STATUECOUNT; i++)
+	{
+		if (!m_pBossStatues[i]->Get_Active())
+		{
+			count++;
+		}
+	}
+	if (count == STATUECOUNT)
+	{
+		m_iState = STATE_GROGGY;
+	}
+
+	if (m_iState == STATE_GROGGY)
+	{
+		m_fGroggyTime -= fTimeDelta;
+		if (m_fGroggyTime < 0.f)
+		{
+			for (_uint i = 0; i < STATUECOUNT; i++)
+			{
+				m_pBossStatues[i]->Set_Active(true);
+			}
+			m_fGroggyTime = 10.f;
+			m_iState = STATE_IDLE_SEC;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
 	}
 	else
 	{

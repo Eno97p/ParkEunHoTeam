@@ -353,16 +353,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//	return E_FAIL;
 	
 
+
 	////for (size_t i = 0; i < 5; i++)
 	//{
+
+	//CLandObject::LANDOBJ_DESC landObjDesc;
+	//landObjDesc.mWorldMatrix._41 = 167.f;
+	//landObjDesc.mWorldMatrix._42 = 528.f;
+	//landObjDesc.mWorldMatrix._43 = 98.f;
+	//landObjDesc.mWorldMatrix._44 = 1.f;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
+	//	return E_FAIL;
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = 167.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
-			return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+		return E_FAIL;
 
 
 	//}
@@ -633,7 +642,7 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
 	}
 
 #ifdef _DEBUG
-	MSG_BOX("Effect Data Load");
+	//MSG_BOX("Effect Data Load");
 #endif
 
 	return S_OK;
@@ -684,7 +693,7 @@ HRESULT CLevel_GamePlay::Load_Data_Decals()
 
 
 #ifdef _DEBUG
-	MSG_BOX("Decal Data Loaded");
+	//MSG_BOX("Decal Data Loaded");
 #endif
 	return S_OK;
 }
@@ -771,7 +780,7 @@ void CLevel_GamePlay::Load_Lights()
 	CloseHandle(hFile);
 
 #ifdef _DEBUG
-	MSG_BOX("Lights Data Load");
+	//MSG_BOX("Lights Data Load");
 #endif
 	return;
 }

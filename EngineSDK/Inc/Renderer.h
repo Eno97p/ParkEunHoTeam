@@ -17,7 +17,7 @@ BEGIN(Engine)
 class CRenderer final : public CBase
 {
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONDECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -143,6 +143,7 @@ private:
 	void Render_ShadowObjects();
 	void Render_NonBlend();
 	void Render_Decal();
+	void Render_NonDecal();
 	void Render_LightAcc();
 	void Render_DeferredResult();
 	void Render_NonLight();

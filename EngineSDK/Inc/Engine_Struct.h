@@ -416,6 +416,42 @@ namespace Engine
 		};
 
 
+
+		struct ENGINE_DLL DirectDrivetrainState
+		{
+			PxReal directDriveThrottleResponseStates[PxVehicleLimits::eMAX_NB_WHEELS];
+
+			PX_FORCE_INLINE void setToDefault()
+			{
+				PxMemZero(this, sizeof(DirectDrivetrainState));
+			}
+		};
+
+		struct ENGINE_DLL  DirectDrivetrainParams
+		{
+			PxVehicleDirectDriveThrottleCommandResponseParams directDriveThrottleResponseParams;
+
+			DirectDrivetrainParams transformAndScale(const PxVehicleFrame& srcFrame,
+				const PxVehicleFrame& trgFrame,
+				const PxVehicleScale& srcScale,
+				const PxVehicleScale& trgScale) const
+			{
+				DirectDrivetrainParams r = *this;
+				r.directDriveThrottleResponseParams = directDriveThrottleResponseParams.transformAndScale(srcFrame, trgFrame, srcScale, trgScale);
+				return r;
+			};
+
+			PX_FORCE_INLINE bool isValid(const PxVehicleAxleDescription& axleDesc) const
+			{
+				if (!directDriveThrottleResponseParams.isValid(axleDesc))
+					return false;
+
+				return true;
+			}
+		};
+
+
+
 		struct ENGINE_DLL AxleDescription
 		{
 			PxU32 AxleCount;		//축의 갯수
@@ -449,18 +485,82 @@ namespace Engine
 		{
 			PxVehicleCommandNonLinearResponseParams nonlinearResponse;
 			PxReal wheelResponseMultipliers[PxVehicleLimits::eMAX_NB_WHEELS];	//바퀴 반응 멀티플라이어
+			PxU32 numWheelsMulipliers;	//바퀴 멀티플라이어 갯수
 			PxF32 maxResponse;		//최대 반응
 
 		};
+		struct ENGINE_DLL VehicleAckermann
+		{
+			PxU32 wheelIds[2];
+			PxReal wheelBase;
+			PxReal trackWidth;
+			PxReal strength;
+		};
+		struct ENGINE_DLL VehicleSuspension
+		{
+			PxU32 wheelId;
+			PxTransform suspensionAttachment;	//서스펜션 부착
+			PxVec3 suspensionTravelDir;		//서스펜션 이동 방향
+			PxReal suspensionTravelDist;		//서스펜션 이동 거리
+			PxTransform wheelAttachment; //바퀴 부착
+		};
+		struct ENGINE_DLL VehicleSuspensionCompiance
+		{
+			PxVehicleFixedSizeLookupTable<PxReal, 3> wheelToeAngle;
+			PxVehicleFixedSizeLookupTable<PxReal, 3> wheelCamberAngle;
+			PxVehicleFixedSizeLookupTable<PxVec3, 3> suspForceAppPoint;
+			PxVehicleFixedSizeLookupTable<PxVec3, 3> tireForceAppPoint;
+
+		};
+		struct ENGINE_DLL VehicleSuspensionForce
+		{
+			PxReal stiffness;	//스프링 상수
+			PxReal damping;		//감쇠 상수
+			PxReal sprungMass;	//스프링 질량
+		};
+		struct ENGINE_DLL VehicleTireForce
+		{
+			PxReal latStiffX; //측면 강성
+			PxReal latStiffY; //측면 강성
+			PxReal longStiff; //길이 강성
+			PxReal camberStiff; //캠버 강성
+			PxReal restLoad; //잔존하중
+			PxReal frictionVsSlip[3][2]; //마찰 대 슬립
+			PxReal loadFilter[2][2]; //로드 필터
+		};
+		struct ENGINE_DLL VehicleWheel
+		{
+			PxReal radius;	//반지름
+			PxReal halfWidth; //반폭
+			PxReal mass; //질량
+			PxReal moi; //관성모멘트
+			PxReal dampingRate; //감쇠율
+		};
+
 
 		struct ENGINE_DLL BaseVehicleDesc
 		{
+			PX_FORCE_INLINE void setToDefault()
+			{
+				PxMemZero(this, sizeof(BaseVehicleDesc));
+			}
+
+
 			AxleDescription						axleDesc;
 			VehicleFrame						frameDesc;
 			VehicleScale						scaleDesc;
 			VehicleRigidBody					rigidBodyDesc;
 			VehicleSuspensionStateCalculation	suspensionStateCalculationDesc;
-			VehicleBrakeCommandResponse			brakeCommandResponseDesc[];
+			VehicleBrakeCommandResponse			brakeCommandResponseDesc[2];
+			VehicleBrakeCommandResponse			steerCommandResponseDesc;
+			VehicleBrakeCommandResponse 		throttleCommandResponseDesc;
+			VehicleAckermann					ackermannDesc;
+			VehicleSuspension					suspensionDesc[PxVehicleLimits::eMAX_NB_WHEELS];
+			VehicleSuspensionCompiance			suspensionCompianceDesc[PxVehicleLimits::eMAX_NB_WHEELS];
+			VehicleSuspensionForce				suspensionForceDesc[PxVehicleLimits::eMAX_NB_WHEELS];
+			VehicleTireForce					tireForceDesc[PxVehicleLimits::eMAX_NB_WHEELS];
+			VehicleWheel						wheelDesc[PxVehicleLimits::eMAX_NB_WHEELS];
+			DirectDrivetrainParams				directDrivetrainParamsDesc;
 			//VehicleBrakeCommandResponse			handBrakeCommandResponseDesc;
 		};
 

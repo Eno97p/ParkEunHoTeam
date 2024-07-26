@@ -13,6 +13,11 @@ BEGIN(Client)
 
 class CHoverboard final : public CGameObject
 {
+public:
+	struct HoverboardInfo
+	{
+		_float3 vPosition;
+	};
 private:
 	CHoverboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CHoverboard(const CHoverboard& rhs);
@@ -38,7 +43,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CPhysXComponent_Vehicle* m_pPhysXCom = { nullptr };
 private:
-
+	_float3 m_vPosition = {};
 
 public:
 	static CHoverboard* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

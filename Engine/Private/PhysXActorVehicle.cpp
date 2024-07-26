@@ -98,8 +98,19 @@ void PhysXIntegrationState::destroy()
 
 
 #pragma region PhysXActorVehicle
-bool PhysXActorVehicle::initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial)
+bool PhysXActorVehicle::initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc)
 {
+	if(FAILED(ReadDescroption(BaseDesc)))
+		return false;
+	setPhysXIntegrationParams(mBaseParams.axleDescription,
+		physXMaterialFrictions,
+		nbPhysXMaterialFrictions,
+		physXDefaultMaterialFriction,
+		mPhysXParams);
+
+	
+	mTransmissionCommandState.setToDefault();
+
 	mCommandState.setToDefault();
 
 	if (!BaseVehicle::initialize())
@@ -110,6 +121,9 @@ bool PhysXActorVehicle::initialize(PxPhysics& physics, const PxCookingParams& pa
 
 	mPhysXState.create(mBaseParams, mPhysXParams, physics, params, defaultMaterial);
 
+
+
+	initComponentSequence(true);
 	return true;
 }
 
@@ -133,7 +147,23 @@ void PhysXActorVehicle::initComponentSequence(bool addPhysXBeginEndComponents)
 	if (addPhysXBeginEndComponents)
 		mComponentSequence.add(static_cast<PxVehiclePhysXActorBeginComponent*>(this));
 
+	mComponentSequence.add(static_cast<PxVehicleDirectDriveCommandResponseComponent*>(this));
+	mComponentSequence.add(static_cast<PxVehicleDirectDriveActuationStateComponent*>(this));
+
 	mComponentSequence.add(static_cast<PxVehiclePhysXRoadGeometrySceneQueryComponent*>(this));
+
+	mComponentSequenceSubstepGroupHandle = mComponentSequence.beginSubstepGroup(3);
+	mComponentSequence.add(static_cast<PxVehicleSuspensionComponent*>(this));
+	mComponentSequence.add(static_cast<PxVehicleTireComponent*>(this));
+	mComponentSequence.add(static_cast<PxVehiclePhysXConstraintComponent*>(this));
+	mComponentSequence.add(static_cast<PxVehicleDirectDrivetrainComponent*>(this));
+	mComponentSequence.add(static_cast<PxVehicleRigidBodyComponent*>(this));
+	mComponentSequence.endSubstepGroup();
+
+	mComponentSequence.add(static_cast<PxVehicleWheelComponent*>(this));
+
+	if (addPhysXBeginEndComponents)
+		mComponentSequence.add(static_cast<PxVehiclePhysXActorEndComponent*>(this));
 }
 
 void PhysXActorVehicle::getDataForPhysXActorBeginComponent(const PxVehicleAxleDescription*& axleDescription, const PxVehicleCommandState*& commands, const PxVehicleEngineDriveTransmissionCommandState*& transmissionCommands, const PxVehicleGearboxParams*& gearParams, const PxVehicleGearboxState*& gearState, const PxVehicleEngineParams*& engineParams, PxVehiclePhysXActor*& physxActor, PxVehiclePhysXSteerState*& physxSteerState, PxVehiclePhysXConstraints*& physxConstraints, PxVehicleRigidBodyState*& rigidBodyState, PxVehicleArrayData<PxVehicleWheelRigidBody1dState>& wheelRigidBody1dStates, PxVehicleEngineState*& engineState)
@@ -202,11 +232,45 @@ void PhysXActorVehicle::getDataForPhysXRoadGeometrySceneQueryComponent(const PxV
 	
 }
 
-PhysXActorVehicle* PhysXActorVehicle::Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial)
+void PhysXActorVehicle::getDataForDirectDriveCommandResponseComponent(const PxVehicleAxleDescription*& axleDescription, PxVehicleSizedArrayData<const PxVehicleBrakeCommandResponseParams>& brakeResponseParams, const PxVehicleDirectDriveThrottleCommandResponseParams*& throttleResponseParams, const PxVehicleSteerCommandResponseParams*& steerResponseParams, PxVehicleSizedArrayData<const PxVehicleAckermannParams>& ackermannParams, const PxVehicleCommandState*& commands, const PxVehicleDirectDriveTransmissionCommandState*& transmissionCommands, const PxVehicleRigidBodyState*& rigidBodyState, PxVehicleArrayData<PxReal>& brakeResponseStates, PxVehicleArrayData<PxReal>& throttleResponseStates, PxVehicleArrayData<PxReal>& steerResponseStates)
+{
+	axleDescription = &mBaseParams.axleDescription;
+	brakeResponseParams.setDataAndCount(mBaseParams.brakeResponseParams, sizeof(mBaseParams.brakeResponseParams) / sizeof(PxVehicleBrakeCommandResponseParams));
+	throttleResponseParams = &mDirectDriveParams.directDriveThrottleResponseParams;
+	steerResponseParams = &mBaseParams.steerResponseParams;
+	ackermannParams.setDataAndCount(mBaseParams.ackermannParams, sizeof(mBaseParams.ackermannParams) / sizeof(PxVehicleAckermannParams));
+	commands = &mCommandState;
+	transmissionCommands = &mTransmissionCommandState;
+	rigidBodyState = &mBaseState.rigidBodyState;
+	brakeResponseStates.setData(mBaseState.brakeCommandResponseStates);
+	throttleResponseStates.setData(mDirectDriveState.directDriveThrottleResponseStates);
+	steerResponseStates.setData(mBaseState.steerCommandResponseStates);
+}
+
+void PhysXActorVehicle::getDataForDirectDriveActuationStateComponent(const PxVehicleAxleDescription*& axleDescription, PxVehicleArrayData<const PxReal>& brakeResponseStates, PxVehicleArrayData<const PxReal>& throttleResponseStates, PxVehicleArrayData<PxVehicleWheelActuationState>& actuationStates)
+{
+	axleDescription = &mBaseParams.axleDescription;
+	brakeResponseStates.setData(mBaseState.brakeCommandResponseStates);
+	throttleResponseStates.setData(mDirectDriveState.directDriveThrottleResponseStates);
+	actuationStates.setData(mBaseState.actuationStates);
+}
+
+void PhysXActorVehicle::getDataForDirectDrivetrainComponent(const PxVehicleAxleDescription*& axleDescription, PxVehicleArrayData<const PxReal>& brakeResponseStates, PxVehicleArrayData<const PxReal>& throttleResponseStates, PxVehicleArrayData<const PxVehicleWheelParams>& wheelParams, PxVehicleArrayData<const PxVehicleWheelActuationState>& actuationStates, PxVehicleArrayData<const PxVehicleTireForce>& tireForces, PxVehicleArrayData<PxVehicleWheelRigidBody1dState>& wheelRigidBody1dStates)
+{
+	axleDescription = &mBaseParams.axleDescription;
+	brakeResponseStates.setData(mBaseState.brakeCommandResponseStates);
+	throttleResponseStates.setData(mDirectDriveState.directDriveThrottleResponseStates);
+	wheelParams.setData(mBaseParams.wheelParams);
+	actuationStates.setData(mBaseState.actuationStates);
+	tireForces.setData(mBaseState.tireForces);
+	wheelRigidBody1dStates.setData(mBaseState.wheelRigidBody1dStates);
+}
+
+PhysXActorVehicle* PhysXActorVehicle::Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc)
 {
 	PhysXActorVehicle* pInstance = new PhysXActorVehicle();
 
-	if (!pInstance->initialize(physics, params, defaultMaterial))
+	if (!pInstance->initialize(physics, params, defaultMaterial, physXMaterialFrictions, nbPhysXMaterialFrictions, physXDefaultMaterialFriction, BaseDesc))
 	{
 		MSG_BOX("Failed To Created : CVehicleDefault");
 		Safe_Vehicle_Release(pInstance);
@@ -218,8 +282,20 @@ PhysXActorVehicle* PhysXActorVehicle::Create(PxPhysics& physics, const PxCooking
 
 }
 
+_uint PhysXActorVehicle::Release()
+{
+
+	destroy();
+	delete this;
+
+
+	return 0;
+}
+
 HRESULT PhysXActorVehicle::ReadDescroption(const BaseVehicleDesc& BaseDesc)
 {
+	
+
 	if(FAILED(ReadAxleDesc(BaseDesc.axleDesc)))
 		return E_FAIL;
 	if (FAILED(ReadFrameDesc(BaseDesc.frameDesc)))
@@ -234,6 +310,23 @@ HRESULT PhysXActorVehicle::ReadDescroption(const BaseVehicleDesc& BaseDesc)
 		return E_FAIL;
 	if (FAILED(ReadHandBrakeResponse(BaseDesc.brakeCommandResponseDesc[1])))
 		return E_FAIL;
+	if (FAILED(ReadSteerResponse(BaseDesc.steerCommandResponseDesc)))
+		return E_FAIL;
+	if (FAILED(ReadAckermann(BaseDesc.ackermannDesc)))
+		return E_FAIL;
+	if (FAILED(ReadSuspensionDesc(BaseDesc.suspensionDesc)))
+		return E_FAIL;
+	if (FAILED(ReadSuspensionComplianceDesc(BaseDesc.suspensionCompianceDesc)))
+		return E_FAIL;
+	if (FAILED(ReadSuspensionForce(BaseDesc.suspensionForceDesc)))
+		return E_FAIL;
+	if (FAILED(ReadTireForceDesc(BaseDesc.tireForceDesc)))
+		return E_FAIL;
+	if (FAILED(ReadWheelDesc(BaseDesc.wheelDesc)))
+		return E_FAIL;
+	if (FAILED(ReadThottleResponse(BaseDesc.directDrivetrainParamsDesc)))
+		return E_FAIL;
+	
 
 
 	//FrameDesc
@@ -250,6 +343,9 @@ HRESULT PhysXActorVehicle::ReadDescroption(const BaseVehicleDesc& BaseDesc)
 
 HRESULT PhysXActorVehicle::ReadAxleDesc(const AxleDescription& AxleDesc)
 {
+	mBaseParams.axleDescription.setToDefault();
+	
+
 	//AxleDesc
 	PxU32 AxelCounts = AxleDesc.AxleCount;
 
@@ -282,6 +378,8 @@ HRESULT PhysXActorVehicle::ReadAxleDesc(const AxleDescription& AxleDesc)
 
 HRESULT PhysXActorVehicle::ReadFrameDesc(const VehicleFrame& FrameDesc)
 {
+	mBaseParams.frame.setToDefault();
+
 	const PxU32 lngAxis = FrameDesc.lngAxis;
 	const PxU32 latAxis = FrameDesc.latAxis;
 	const PxU32 vrtAxis = FrameDesc.vrtAxis;
@@ -302,6 +400,8 @@ HRESULT PhysXActorVehicle::ReadFrameDesc(const VehicleFrame& FrameDesc)
 
 HRESULT PhysXActorVehicle::ReadScaleDesc(const VehicleScale& ScaleDesc)
 {
+	mBaseParams.scale.setToDefault();
+
 	if(ScaleDesc.scale < 0.0f)
 	{
 		MSG_BOX("Failed To Read Description : CVehicleDefault");
@@ -313,6 +413,8 @@ HRESULT PhysXActorVehicle::ReadScaleDesc(const VehicleScale& ScaleDesc)
 
 HRESULT PhysXActorVehicle::ReadRigidDesc(const VehicleRigidBody& RigidDesc)
 {
+	
+
 	mBaseParams.rigidBodyParams.mass = RigidDesc.mass;
 	if(!RigidDesc.moi.isFinite())
 		return E_FAIL;
@@ -324,6 +426,8 @@ HRESULT PhysXActorVehicle::ReadRigidDesc(const VehicleRigidBody& RigidDesc)
 
 HRESULT PhysXActorVehicle::ReadSuspensionStateCalculation(const VehicleSuspensionStateCalculation& SuspensionStateCalculation)
 {
+	
+
 	mBaseParams.suspensionStateCalculationParams.suspensionJounceCalculationType = static_cast<PxVehicleSuspensionJounceCalculationType::Enum>(SuspensionStateCalculation.JounceCalculationType);
 	mBaseParams.suspensionStateCalculationParams.limitSuspensionExpansionVelocity = SuspensionStateCalculation.LimitSuspensionExpansionVelocity;
 
@@ -332,46 +436,230 @@ HRESULT PhysXActorVehicle::ReadSuspensionStateCalculation(const VehicleSuspensio
 
 HRESULT PhysXActorVehicle::ReadBrakeResponse(const VehicleBrakeCommandResponse& BrakeResponse)
 {
-	if(FAILED(ReadBrakeCommandResponse(mBaseParams.axleDescription,BrakeResponse)))
+	mBaseParams.brakeResponseParams[0].maxResponse = BrakeResponse.maxResponse;
 
-		
-	return S_OK;
-}
+	const PxU32 nbWheels = mBaseParams.axleDescription.nbWheels;
 
-HRESULT PhysXActorVehicle::ReadHandBrakeResponse(const VehicleBrakeCommandResponse& BrakeResponse)
-{
-	return S_OK;
-}
+	const PxU32 Size = BrakeResponse.numWheelsMulipliers;
 
-HRESULT PhysXActorVehicle::ReadBrakeCommandResponse(const PxVehicleAxleDescription& AxelDesc, const VehicleBrakeCommandResponse& BrakeCommandResponse)
-{
-	mBaseParams.brakeResponseParams[0].maxResponse = BrakeCommandResponse.maxResponse;
-
-	const PxU32 nbWheels = AxelDesc.nbWheels;
-
-	const PxU32 Size =sizeof( BrakeCommandResponse.wheelResponseMultipliers) / sizeof(BrakeCommandResponse.wheelResponseMultipliers[0]);
-
-	if(nbWheels< Size)
+	if (nbWheels < Size)
 		return E_FAIL;
 
-	if(Size > PxVehicleLimits::eMAX_NB_WHEELS)
+	if (Size > PxVehicleLimits::eMAX_NB_WHEELS)
 		return E_FAIL;
 
 	for (PxU32 i = 0; i < Size; i++)
 	{
-		mBaseParams.brakeResponseParams[0].wheelResponseMultipliers[i] = BrakeCommandResponse.wheelResponseMultipliers[i];
+		mBaseParams.brakeResponseParams[0].wheelResponseMultipliers[i] = BrakeResponse.wheelResponseMultipliers[i];
 	}
 
-	
+	if (BrakeResponse.nonlinearResponse.nbCommandValues > 0)
+	{
+		mBaseParams.brakeResponseParams[0].nonlinearResponse = BrakeResponse.nonlinearResponse;
 
-	
 
-	//if(AxelDesc.nbAxles > )
+	}
 
-	//mBaseParams.axleDescription
+	return S_OK;
+
+}
+
+HRESULT PhysXActorVehicle::ReadHandBrakeResponse(const VehicleBrakeCommandResponse& BrakeResponse)
+{
+
+	mBaseParams.brakeResponseParams[1].maxResponse = BrakeResponse.maxResponse;
+
+	const PxU32 nbWheels = mBaseParams.axleDescription.nbWheels;
+
+	const PxU32 Size = BrakeResponse.numWheelsMulipliers;
+
+	if (nbWheels < Size)
+		return E_FAIL;
+
+	if (Size > PxVehicleLimits::eMAX_NB_WHEELS)
+		return E_FAIL;
+
+	for (PxU32 i = 0; i < Size; i++)
+	{
+		mBaseParams.brakeResponseParams[1].wheelResponseMultipliers[i] = BrakeResponse.wheelResponseMultipliers[i];
+	}
+
+	if (BrakeResponse.nonlinearResponse.nbCommandValues > 0)
+	{
+		mBaseParams.brakeResponseParams[1].nonlinearResponse = BrakeResponse.nonlinearResponse;
+
+
+	}
+
 
 	return S_OK;
 }
+
+HRESULT PhysXActorVehicle::ReadSteerResponse(const VehicleBrakeCommandResponse& SteerResponse)
+{
+	mBaseParams.steerResponseParams.maxResponse = SteerResponse.maxResponse;
+
+	const PxU32 nbWheels = mBaseParams.axleDescription.nbWheels;
+
+	const PxU32 Size = SteerResponse.numWheelsMulipliers;
+
+	if (nbWheels < Size)
+		return E_FAIL;
+
+	if (Size > PxVehicleLimits::eMAX_NB_WHEELS)
+		return E_FAIL;
+
+	for (PxU32 i = 0; i < Size; i++)
+	{
+		mBaseParams.steerResponseParams.wheelResponseMultipliers[i] = SteerResponse.wheelResponseMultipliers[i];
+	}
+
+	if (SteerResponse.nonlinearResponse.nbCommandValues > 0)
+	{
+		mBaseParams.steerResponseParams.nonlinearResponse = SteerResponse.nonlinearResponse;
+	}
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadAckermann(const VehicleAckermann& Ackermann)
+{
+	mBaseParams.ackermannParams->wheelBase = Ackermann.wheelBase;
+	mBaseParams.ackermannParams->trackWidth = Ackermann.trackWidth;
+	mBaseParams.ackermannParams->strength = Ackermann.strength;
+
+
+	for(PxU32 i = 0; i < 2; i++)
+	{
+		mBaseParams.ackermannParams->wheelIds[i] = Ackermann.wheelIds[i];
+	}
+	
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadSuspensionDesc(const VehicleSuspension* SuspensionDesc)
+{
+	const PxU32 Wheels = mBaseParams.axleDescription.getNbWheels();
+
+	for (PxU32 i = 0; i < Wheels; i++)
+	{
+		mBaseParams.suspensionParams[i].suspensionAttachment = SuspensionDesc[i].suspensionAttachment;
+		mBaseParams.suspensionParams[i].suspensionTravelDir = SuspensionDesc[i].suspensionTravelDir;
+		mBaseParams.suspensionParams[i].suspensionTravelDist = SuspensionDesc[i].suspensionTravelDist;
+		mBaseParams.suspensionParams[i].wheelAttachment = SuspensionDesc[i].wheelAttachment;
+
+
+
+
+	}
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadSuspensionComplianceDesc(const VehicleSuspensionCompiance* SuspensionCompliance)
+{
+
+	const PxU32 Wheels = mBaseParams.axleDescription.getNbWheels();
+
+	for (PxU32 i = 0; i < Wheels; i++)
+	{
+		mBaseParams.suspensionComplianceParams[i].suspForceAppPoint = SuspensionCompliance[i].suspForceAppPoint;
+		mBaseParams.suspensionComplianceParams[i].tireForceAppPoint = SuspensionCompliance[i].tireForceAppPoint;
+		mBaseParams.suspensionComplianceParams[i].wheelCamberAngle = SuspensionCompliance[i].wheelCamberAngle;
+		mBaseParams.suspensionComplianceParams[i].wheelToeAngle = SuspensionCompliance[i].wheelToeAngle;
+
+
+
+	}
+
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadSuspensionForce(const VehicleSuspensionForce* SuspensionForce)
+{
+	const PxU32 Wheels = mBaseParams.axleDescription.getNbWheels();
+
+	for (PxU32 i = 0; i < Wheels; i++)
+	{
+		mBaseParams.suspensionForceParams[i].damping = SuspensionForce[i].damping;
+		mBaseParams.suspensionForceParams[i].sprungMass = SuspensionForce[i].sprungMass;
+		mBaseParams.suspensionForceParams[i].stiffness = SuspensionForce[i].stiffness;
+
+	}
+
+
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadTireForceDesc(const VehicleTireForce* TireDesc)
+{
+	const PxU32 Wheels = mBaseParams.axleDescription.getNbWheels();
+
+	for (PxU32 i = 0; i < Wheels; i++)
+	{
+		mBaseParams.tireForceParams[i].latStiffX = TireDesc[i].latStiffX;
+		mBaseParams.tireForceParams[i].latStiffY = TireDesc[i].latStiffY;
+		mBaseParams.tireForceParams[i].longStiff = TireDesc[i].longStiff;
+		mBaseParams.tireForceParams[i].camberStiff = TireDesc[i].camberStiff;
+		mBaseParams.tireForceParams[i].restLoad = TireDesc[i].restLoad;
+
+		for (PxU32 j = 0; j < 3; j++)
+		{
+			mBaseParams.tireForceParams[i].frictionVsSlip[j][0] = TireDesc[i].frictionVsSlip[j][0];
+			mBaseParams.tireForceParams[i].frictionVsSlip[j][1] = TireDesc[i].frictionVsSlip[j][1];
+		}
+		for (PxU32 j = 0; j < 2; j++)
+		{
+			mBaseParams.tireForceParams[i].loadFilter[j][0] = TireDesc[i].loadFilter[j][0];
+			mBaseParams.tireForceParams[i].loadFilter[j][1] = TireDesc[i].loadFilter[j][1];
+		}
+
+
+	}
+
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadWheelDesc(const VehicleWheel* WheelDesc)
+{
+	const PxU32 Wheels = mBaseParams.axleDescription.getNbWheels();
+
+	for (PxU32 i = 0; i < Wheels; i++)
+	{
+		mBaseParams.wheelParams[i].dampingRate = WheelDesc[i].dampingRate;
+		mBaseParams.wheelParams[i].halfWidth = WheelDesc[i].halfWidth;
+		mBaseParams.wheelParams[i].mass = WheelDesc[i].mass;
+		mBaseParams.wheelParams[i].moi = WheelDesc[i].moi;
+		mBaseParams.wheelParams[i].radius = WheelDesc[i].radius;
+
+
+
+	}
+
+
+
+	return S_OK;
+}
+
+HRESULT PhysXActorVehicle::ReadThottleResponse(const DirectDrivetrainParams& ThrottleResponse)
+{
+
+	mDirectDriveParams.directDriveThrottleResponseParams = ThrottleResponse.directDriveThrottleResponseParams;
+
+
+	return S_OK;
+
+}
+
 
 
 

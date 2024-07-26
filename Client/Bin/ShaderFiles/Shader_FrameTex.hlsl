@@ -130,12 +130,14 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_SOFTEFFECT In)
 	float frameSize = 1.0 / g_Division;
 	float2 adjustedTex;
 
-
 	adjustedTex.x = (In.vTexcoord.x * frameSize) + (col * frameSize);
 	adjustedTex.y = (In.vTexcoord.y * frameSize) + (row * frameSize);
 
 	Out.vColor = g_Texture.Sample(LinearSampler, adjustedTex);
 	float desolveValue = g_DesolveTexture.Sample(LinearSampler, adjustedTex).r;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
 
 	/* 화면 전체기준의 현재 픽셀이 그려져야하는 텍스쳐 좌표. */
 	float2		vTexcoord;
@@ -201,11 +203,11 @@ technique11 DefaultTechnique
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-		VertexShader = compile vs_5_0 VS_MAIN();
+		VertexShader = compile vs_5_0 VS_MAIN_SOFTEFFECT();
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_BLOOM();
+		PixelShader = compile ps_5_0 PS_MAIN_SOFTEFFECT();
 	}
 }
 

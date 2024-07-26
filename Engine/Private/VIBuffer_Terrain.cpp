@@ -5,6 +5,7 @@
 
 #include <omp.h>
 #include <immintrin.h> // SSE/AVX 명령어를 위한 헤더
+#include "CPhysX.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CVIBuffer{ pDevice, pContext }
@@ -207,21 +208,39 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 #pragma region VERTEX_BUFFER 
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
-
 	m_pVertexPositions = new _float4[m_iNumVertices];
 	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
 
-	const float terrainScale = 4.0f;
-	const float heightScale = 300.f;  // 높이 스케일 값, 필요에 따라 조정
+	const float terrainScaleX = 10.f;  // X 방향 스케일
+	const float terrainScaleZ = 10.f;  // Z 방향 스케일
+	const float heightScale = 1000.f;  // 높이 스케일 값, 필요에 따라 조정
+
+	// 지형의 중심을 (0,0,0)으로 이동하기 위한 오프셋 계산
+	float offsetX = (m_iNumVerticesX - 1) * terrainScaleX * 0.5f;
+	float offsetZ = (m_iNumVerticesZ - 1) * terrainScaleZ * 0.5f;
+
+	// 16비트 정수로 데이터 읽기
+	vector<uint16_t> rawHeightData(m_iNumVertices);
+	memcpy(rawHeightData.data(), rawData.data(), m_iNumVertices * sizeof(uint16_t));
 
 	for (size_t i = 0; i < m_iNumVerticesZ; i++)
 	{
 		for (size_t j = 0; j < m_iNumVerticesX; j++)
 		{
-			_uint		iIndex = i * m_iNumVerticesX + j;
+			_uint iIndex = i * m_iNumVerticesX + j;
 
-			float height = rawData[iIndex] / 65535.f * heightScale;
-			pVertices[iIndex].vPosition = _float3(j * terrainScale, height, i * terrainScale);
+			// Big Endian에서 Little Endian으로 변환
+			uint16_t bigEndianHeight = rawHeightData[iIndex];
+			uint16_t littleEndianHeight = (bigEndianHeight >> 8) | (bigEndianHeight << 8);
+
+			// 16비트 정수를 0-1 범위의 float로 변환 후 높이 스케일 적용
+			float height = (static_cast<float>(littleEndianHeight) / 65535.f) * heightScale;
+
+			// 정점 위치 계산 시 오프셋 적용
+			float posX = (j * terrainScaleX) - offsetX;
+			float posZ = (i * terrainScaleZ) - offsetZ;
+
+			pVertices[iIndex].vPosition = _float3(posX, height, posZ);
 			m_pVertexPositions[iIndex] = _float4(pVertices[iIndex].vPosition.x, pVertices[iIndex].vPosition.y, pVertices[iIndex].vPosition.z, 1.f);
 			pVertices[iIndex].vNormal = _float3(0.0f, 0.f, 0.f);
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
@@ -330,6 +349,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 		return E_FAIL;
 
 	m_pQuadTree->Make_Neighbors();
+
 
 	return S_OK;
 
@@ -756,6 +776,40 @@ void CVIBuffer_Terrain::Recalculate_Normals()
 	m_pContext->Unmap(m_pVB, 0);
 }
 
+PxHeightField* CreateHeightField(PxPhysics* physics, const vector<uint16_t>& rawHeightData, int numRows, int numCols)
+{
+	vector<PxHeightFieldSample> samples(numRows * numCols);
+
+	for (int i = 0; i < numRows * numCols; i++)
+	{
+		samples[i].height = static_cast<PxI16>(rawHeightData[i]);
+		samples[i].materialIndex0 = 0;
+		samples[i].materialIndex1 = 0;
+	}
+
+	PxHeightFieldDesc heightFieldDesc;
+	heightFieldDesc.nbColumns = numCols;
+	heightFieldDesc.nbRows = numRows;
+	heightFieldDesc.format = PxHeightFieldFormat::eS16_TM;
+	heightFieldDesc.samples.data = samples.data();
+	heightFieldDesc.samples.stride = sizeof(PxHeightFieldSample);
+
+	return PxCreateHeightField(heightFieldDesc, physics->getPhysicsInsertionCallback());
+}
+
+PxRigidStatic* CreateTerrainActor(PxPhysics* physics, PxScene* scene, const vector<uint16_t>& rawHeightData, int numRows, int numCols, float rowScale, float heightScale, float colScale)
+{
+	PxHeightField* heightField = CreateHeightField(physics, rawHeightData, numRows, numCols);
+
+	PxHeightFieldGeometry hfGeom(heightField, PxMeshGeometryFlags(), heightScale, rowScale, colScale);
+
+	PxRigidStatic* terrainActor = physics->createRigidStatic(PxTransform(PxVec3(0, 0, 0)));
+	PxShape* shape = PxRigidActorExt::createExclusiveShape(*terrainActor, hfGeom, *physics->createMaterial(0.5f, 0.5f, 0.1f));
+
+	scene->addActor(*terrainActor);
+
+	return terrainActor;
+}
 
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strHeightMapFilePath)
 {

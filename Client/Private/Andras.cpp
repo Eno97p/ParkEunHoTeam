@@ -57,7 +57,7 @@ HRESULT CAndras::Initialize(void* pArg)
 
 	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Andras-Head", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Andras-Spine", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	m_iState = STATE_IDLE;

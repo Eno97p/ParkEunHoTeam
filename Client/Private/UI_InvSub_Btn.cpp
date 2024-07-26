@@ -198,6 +198,20 @@ void CUI_InvSub_Btn::Mouse_Input()
 			}
 			else
 			{
+				// 여기에 넣는 거에서도 slot이 아니라 itemicon이 null인지 검사해서 그거 기준으로 넣어주어야 할 거 같음
+
+				// 지금 좀 꼬였음... 현재 Slot의 Idx를 Inventory의 Idx로 전제하고 넘겨주어서 map이 key값으로 가지고 있도록 해버렸음
+				// >> Quick에서 활용할 때 Inventory의 슬롯 인덱스가 필요하기 때문인건데... 이를 Inventory가 아니라 UI Inventory로 한정해도 된다면?
+				// 그러면 소생의 기회가 있어보임 
+
+
+				// Get_ItemData 로 아이템 찾지 말고 웬만하면 이름으로 찾자! 현재 m_iSlotIdx는 UI Inventory의 Idx인 거 같은데
+
+
+				// 아니 Quick도 그렇고 다른 로직들 생각하면 그냥 이름으로 검색해서 빈 자리 채워넣는 식보다 슬롯 땡겨서 정렬하는게 훨씬 나을 거 같음
+				// Inventory의 Index == UI Inventory의 Index가 되도록...
+
+
 				CInventory::GetInstance()->Add_QuickAccess(CInventory::GetInstance()->Get_ItemData(m_iSlotIdx), m_iSlotIdx);
 				m_isSelectEnd = true;
 
@@ -214,17 +228,9 @@ void CUI_InvSub_Btn::Mouse_Input()
 		{
 			CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
 
-			// Essence의 경우에만 사용 가능? Type을 나눠두었으니 사용 가능한 Item들은 전부 사용 가능하도록 해야 할 거 같음 아이템 종류에 따른 분기처리도 하고
-			if (CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType()) // CItemData::ITEMNAME_ESSENCE == pItem->Get_ItemName()
+			if (CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType())
 			{
-				// ItemData에 사용 시 호출되는 함수를 만들어서 해당 함수 내에서 아이템 종류에 따른 분기처리를 할 것
-				// 여기서는 해당 함수 불러주기
-				// 아래 코드도 해당 코드의 Essence 부분 분기에 넣도록
-				// 아이템 개수 줄어드는 것도 거기에서 구현하면 될 거 같음
-
-				pItem->Use_Item();
-				// Item 개수 하나 줄어들기
-
+				pItem->Use_Item(m_iSlotIdx);
 
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);

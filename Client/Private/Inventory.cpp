@@ -4,9 +4,12 @@
 #include "UI_Manager.h"
 #include "Player.h"
 #include "ItemData.h"
+
 #include "UIGroup_DropItem.h"
 #include "UIGroup_WeaponSlot.h"
 #include "UIGroup_Weapon.h"
+#include "UIGroup_UpGPage.h"
+#include "UIGroup_State.h"
 
 IMPLEMENT_SINGLETON(CInventory)
 
@@ -64,37 +67,54 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
+	// Upgrade Page에도 weapon 추가
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
+
 	//test
-	/*Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_ESSENCE);*/
+	Add_DropItem(CItem::ITEM_ESSENCE);
+	//Add_DropItem(CItem::ITEM_BUFF1);
 
 	return S_OK;
 }
 
 HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 {
-	// Inventory에 ItemData 추가
-	CItemData::ITEMDATA_DESC pDesc{};
-	
-	pDesc.isDropTem = true;
-	pDesc.eDropItemName = eItemType;
-	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+	if (CItem::ITEM_SOUL == eItemType)
+	{
+		_uint iRand = rand() % 300 + 100;
+		CInventory::GetInstance()->Calcul_Soul(iRand);
 
-	// UI 출력
-	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
-	pUIDesc.eLevel = LEVEL_STATIC;
+		// UI 출력 관련 함수를 호출
+		dynamic_cast<CUIGroup_State*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_State"))->Rend_Calcul(iRand);
+	}
+	else
+	{
+		if (!Check_Overlab(eItemType)) // 중복 체크
+		{
+			// Inventory에 ItemData 추가
+			CItemData::ITEMDATA_DESC pDesc{};
 
-	vector<CItemData*>::iterator item = m_vecItem.begin();
-	for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
-		++item;
-	pUIDesc.eItemName = (*item)->Get_ItemName();
-	pUIDesc.wszTextureName = (*item)->Get_TextureName();
-	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+			pDesc.isDropTem = true;
+			pDesc.eDropItemName = eItemType;
+			m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+			// UI 출력
+			CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+			pUIDesc.eLevel = LEVEL_STATIC;
 
-	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
-	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+			vector<CItemData*>::iterator item = m_vecItem.begin();
+			for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
+				++item;
+			pUIDesc.eItemName = (*item)->Get_ItemName();
+			pUIDesc.wszTextureName = (*item)->Get_TextureName();
+			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+			CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+			// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+			CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+		}
+	}
 
 	return S_OK;
 }
@@ -208,6 +228,58 @@ HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_SKILL);
 
 	return S_OK;
+}
+
+_bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
+{
+	CItemData::ITEM_NAME eItemName = { CItemData::ITEMNAME_END };
+	switch (eItemType)
+	{
+	case Client::CItem::ITEM_BUFF1:
+		eItemName = CItemData::ITEMNAME_BUFF1;
+		break;
+	case Client::CItem::ITEM_BUFF2:
+		eItemName = CItemData::ITEMNAME_BUFF2;
+		break;
+	case Client::CItem::ITEM_BUFF3:
+		eItemName = CItemData::ITEMNAME_BUFF3;
+		break;
+	case Client::CItem::ITEM_BUFF4:
+		eItemName = CItemData::ITEMNAME_BUFF4;
+		break;
+	case Client::CItem::ITEM_ESSENCE:
+		eItemName = CItemData::ITEMNAME_ESSENCE;
+		break;
+	case Client::CItem::ITEM_ETHER:
+		eItemName = CItemData::ITEMNAME_ETHER;
+		break;
+	case Client::CItem::ITEM_UPGRADE1:
+		eItemName = CItemData::ITEMNAME_UPGRADE1;
+		break;
+	case Client::CItem::ITEM_UPGRADE2:
+		eItemName = CItemData::ITEMNAME_UPGRADE2;
+		break;
+	default:
+		break;
+	}
+
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < m_vecItem.size(); ++i)
+	{
+		if (eItemName == (*item)->Get_ItemName()) // 이름이 일치하는 것이 있다면
+		{
+			// 여기서 해당 ItemData에 중복 처리를 해주는 것이?
+			(*item)->Set_Count(1);
+
+			return true;
+		}
+		else
+		{
+			++item;
+		}
+	}
+
+	return false;
 }
 
 void CInventory::Free()

@@ -255,6 +255,7 @@
     <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
+    <ClInclude Include="..\Public\UIGroup_Map.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
@@ -262,6 +263,12 @@
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
+    <ClInclude Include="..\Public\UI_MapArea.h" />
+    <ClInclude Include="..\Public\UI_MapBG.h" />
+    <ClInclude Include="..\Public\UI_MapDetail.h" />
+    <ClInclude Include="..\Public\UI_MapIcon.h" />
+    <ClInclude Include="..\Public\UI_MapPosIcon.h" />
+    <ClInclude Include="..\Public\UI_MapUser.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
@@ -462,6 +469,7 @@
     <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Map.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
@@ -469,6 +477,12 @@
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />
+    <ClCompile Include="..\Private\UI_MapArea.cpp" />
+    <ClCompile Include="..\Private\UI_MapBG.cpp" />
+    <ClCompile Include="..\Private\UI_MapDetail.cpp" />
+    <ClCompile Include="..\Private\UI_MapIcon.cpp" />
+    <ClCompile Include="..\Private\UI_MapPosIcon.cpp" />
+    <ClCompile Include="..\Private\UI_MapUser.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />

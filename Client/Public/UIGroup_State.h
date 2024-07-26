@@ -21,10 +21,12 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Resset_Player();
+	void			Rend_Calcul(_int iSoul);
 
 private:
 	vector<CUI*>			m_vecUI;
 	vector<CUI*>			m_vecStates;
+	class CUI_StateSoul*	m_pSoul = { nullptr };
 
 private:
 	HRESULT					Create_UI();

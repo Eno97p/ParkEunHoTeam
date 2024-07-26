@@ -24,7 +24,14 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Rend_Calcul(_int iSoul);
+
 private:
+	_bool						m_isCalculRend = { false };
+	_float						m_fCalculTimer = { 0.f };
+
+	wstring						m_wstrCalculText;
+
 	UISORT_PRIORITY				m_eUISort = { SORT_END };
 
 private:

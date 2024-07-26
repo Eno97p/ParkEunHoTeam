@@ -78,6 +78,8 @@ void CUIGroup_Inventory::Tick(_float fTimeDelta)
 
 			pSlot->Tick(fTimeDelta);
 		}
+
+		m_pSoul->Tick(fTimeDelta);
 	}
 }
 
@@ -90,6 +92,8 @@ void CUIGroup_Inventory::Late_Tick(_float fTimeDelta)
 
 		for (auto& pSlot : m_vecSlot)
 			pSlot->Late_Tick(fTimeDelta);
+
+		m_pSoul->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -116,6 +120,11 @@ void CUIGroup_Inventory::Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip)
 	(*slot)->Set_isEquip(isEquip);
 }
 
+void CUIGroup_Inventory::Rend_Calcul(_int iSoul)
+{
+	m_pSoul->Rend_Calcul(iSoul);
+}
+
 HRESULT CUIGroup_Inventory::Create_UI()
 {
 	CUI::UI_DESC pDesc{};
@@ -138,7 +147,7 @@ HRESULT CUIGroup_Inventory::Create_UI()
 	pSoulDesc.fSizeX = 32.f;
 	pSoulDesc.fSizeY = 32.f;
 	pSoulDesc.eUISort = NINETH;
- 	m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
+	m_pSoul = dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc));
 
 	// InvBG
 	CUI_QuickInvBG::UI_INVBG_DESC pInvBGDesc{};
@@ -221,4 +230,6 @@ void CUIGroup_Inventory::Free()
 	for (auto& pSlot : m_vecSlot)
 		Safe_Release(pSlot);
 	m_vecSlot.clear();
+
+	Safe_Release(m_pSoul);
 }

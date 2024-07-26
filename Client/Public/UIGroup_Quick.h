@@ -34,6 +34,8 @@ public:
 	void			Update_QuickSlot_Delete(_uint iInvenIdx);
 	void			Update_InvSlot_Delete(_uint iSlotIdx);
 
+	void			Update_Inventory(_uint iSlotIdx);
+
 private:
 	_bool					m_isInvSlot_Act = { false }; // InvSlot 활성화 여부
 

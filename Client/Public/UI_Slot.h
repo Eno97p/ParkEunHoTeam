@@ -36,7 +36,14 @@ public:
 			return true;
 	}
 
+	_uint			Get_SlotIdx() { return m_iSlotIdx; }
 	_uint			Get_InvenIdx() { return m_iInventoryIdx; }
+
+	wstring			Get_Texture() { return m_wstrTexture; }
+	wstring			Get_ItemName() { return m_wstrMoDelName; }
+	wstring			Get_ItemExplain() { return m_wszItemExplain; }
+	wstring			Get_ItemExplain_Quick() { return m_wszItemExplain_Quick; }
+
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -55,9 +62,10 @@ public:
 	HRESULT			Change_ItemIcon_Weapon();
 	HRESULT			Change_ItemIcon_Skill();
 
+	HRESULT			Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick); // 빈 Slot에 다음 슬롯의 ItemIcon을 당겨오는 함수
 	HRESULT			Delete_ItemIcon();
 
-	void			Resset_Data();
+	void			Resset_Data(); // 이거랑 Delete랑 똑같음...
 	void			Check_Equip(_bool isWeapon, CItemData* pItemData);
 
 private:
@@ -65,6 +73,7 @@ private:
 
 	_int						m_iInventoryIdx = { -1 }; // Quick Slot의 경우 Inventory의 어느 Item을 가지는지
 	_uint						m_iSlotIdx = { 0 };
+	wstring						m_wstrTexture = TEXT("");
 	wstring						m_wszItemName = TEXT("");
 	wstring						m_wszItemExplain = TEXT("");
 	wstring						m_wszItemExplain_Quick = TEXT("");

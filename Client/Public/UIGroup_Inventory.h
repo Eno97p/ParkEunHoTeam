@@ -26,6 +26,7 @@ public:
 	void			Update_Inventory_Delete(_uint iSlotIdx);
 
 	void			Rend_Calcul(_int iSoul);
+	void			Update_Inventory(_uint iSlotIdx);
 
 private:
 	vector<CUI*>			m_vecUI;

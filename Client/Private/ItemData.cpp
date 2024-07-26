@@ -5,7 +5,9 @@
 #include "UI_Manager.h"
 
 #include "UIGroup_Inventory.h"
+#include "UIGroup_InvSub.h"
 #include "UIGroup_Quick.h"
+#include "UIGroup_WeaponSlot.h"
 
 CItemData::CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{pDevice, pContext}
@@ -134,13 +136,23 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 		// UI Inventory에서도 삭제
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
 
+		// UI Inventory의 Sub QuickSlot에서도 삭제 필요함
+		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
+
 		// Quick SubInv에서도 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_Delete(iInvenIdx);
 
 		// Quick의 Slot에서도 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
 
+		// HUD에서도 삭제   
+		dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_QUICK);
+
 		CInventory::GetInstance()->Delete_Item(this);
+
+		// Slot들 땡겨오기 >> 여기에 InvenIdx를 넣어주는 게 맞을까?		
+		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory(iInvenIdx);
+		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_Inventory(iInvenIdx);
 	}
 }
 
@@ -150,7 +162,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	{
 	case Client::CItem::ITEM_BUFF1:
 	{
-		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemType = ITEMTYPE_USABLE; //  ITEMTYPE_BUFF
 		m_eItemName = ITEMNAME_BUFF1;
 		m_wszItemName = TEXT("SIGIL OF STRENGTH");
 		m_wszItemExplain = TEXT("금속 조각에 큰 홈으로 새겨진\n기하학적 봉인구\n무기의 공격 능력을\n일시적으로 강화");
@@ -160,7 +172,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	}
 	case Client::CItem::ITEM_BUFF2:
 	{
-		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_BUFF2;
 		m_wszItemName = TEXT("SIGIL OF PROTECTION");
 		m_wszItemExplain = TEXT("유리 구슬에 장착된\n원형 봉인구\n갑옷의 방어 능력을\n일시적으로 강화");
@@ -170,7 +182,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	}
 	case Client::CItem::ITEM_BUFF3:
 	{
-		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_BUFF3;
 		m_wszItemName = TEXT("SIGIL OF RECOVERY");
 		m_wszItemExplain = TEXT("암석에 조각된\n정교한 봉인구\n체력 회복을 일시적으로 증가");
@@ -180,7 +192,7 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 	}
 	case Client::CItem::ITEM_BUFF4:
 	{
-		m_eItemType = ITEMTYPE_BUFF;
+		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_BUFF4;
 		m_wszItemName = TEXT("SIGIL OF ETHER");
 		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n저항력을 일시적으로 강화");

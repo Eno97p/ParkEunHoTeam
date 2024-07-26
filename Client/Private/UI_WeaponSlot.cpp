@@ -106,8 +106,6 @@ HRESULT CUI_WeaponSlot::Add_Components()
 		break;
 	}
 
-
-
 	return S_OK;
 }
 
@@ -150,7 +148,7 @@ void CUI_WeaponSlot::Setting_XY()
 
 HRESULT CUI_WeaponSlot::Change_Texture()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 CUI_WeaponSlot* CUI_WeaponSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -23,6 +23,7 @@ public:
 
 public:
 	CItemData*							Get_ItemData(_uint iSlotIdx);
+	//CItemData*							Get_ItemData_ByName(wstring wstrItemName);
 	_uint								Get_vecItemSize() { return m_vecItem.size(); }
 	_bool								Get_isQuickEmpty() { return m_mapQuickAccess.empty(); }
 	_uint								Get_QuickMapSize() { return m_mapQuickAccess.size(); } // 추후 이름 바꿀 것
@@ -49,7 +50,7 @@ public:
 	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
 	HRESULT	Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx);
 
-	HRESULT	Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx);
+	HRESULT	Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx, wstring wstrItemName);
 	HRESULT	Delete_EquipWeapon(_uint iEquipSlotIdx);
 	HRESULT	Delete_EquipSkill(_uint iEquipSlotIdx);
 

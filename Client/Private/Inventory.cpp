@@ -28,6 +28,22 @@ CItemData* CInventory::Get_ItemData(_uint iSlotIdx)
 	return (*item);
 }
 
+//CItemData* CInventory::Get_ItemData_ByName(wstring wstrItemName)
+//{
+//	vector<CItemData*>::iterator item = m_vecItem.begin();
+//	for (size_t i = 0; i < m_vecItem.size(); ++i)
+//	{
+//		if ((*item)->Get_ItemNameText() == wstrItemName)
+//		{
+//			return (*item);
+//		}
+//		else
+//			++item;
+//	}
+//
+//	return nullptr;
+//}
+
 HRESULT CInventory::Initialize()
 {
 	if (FAILED(Initialize_DefaultItem()))
@@ -72,6 +88,8 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF2);
 	//Add_DropItem(CItem::ITEM_BUFF1);
 
 	return S_OK;
@@ -178,14 +196,29 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 	return S_OK;
 }
 
-HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx)
+HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx, wstring wstrItemName)
 {
 	// ItemData의 Equp 여부 설정
 	vector<CItemData*>::iterator item = m_vecItem.begin();
-	for (size_t i = 0; i < iInvenIdx; ++i)
-		++item;
+	//for (size_t i = 0; i < iInvenIdx; ++i)
+	//	++item;
 
-	(*item)->Set_isEquip(false);
+	// Quick 0번에 있던 템을 사용한 뒤 1번에 남은 템을 제거하려고 하니 터지는 상황
+	// 사용해서 템 하나가 사라졌기 때문에 m_vecItem에는 하나밖에 없는데 인덱스는 1이라서 +1을 해버리니까 문제 생기는 거
+	// 지금 하려는 거 : 인벤토리에서 특정 ItemData의 장착 여부를 비활성화 하려는 것 > 이름으로 접근해ㅗㄷ 될 듯함
+
+	for (size_t i = 0; i < m_vecItem.size(); ++i)
+	{
+		if (wstrItemName == (*item)->Get_ItemNameText())
+		{
+			(*item)->Set_isEquip(false); // 여기서 터진다 >>> 이름으로 검색해서 할까?
+			break;
+		}
+		else
+			++item;
+	}
+
+	//(*item)->Set_isEquip(false); // 여기서 터진다 >>> 이름으로 검색해서 할까?
 
 	m_mapQuickAccess.erase(iInvenIdx);
 

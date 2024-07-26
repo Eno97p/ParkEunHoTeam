@@ -258,6 +258,7 @@ HRESULT CUI_Slot::Create_ItemIcon_Inv()
 	pDesc.wszTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
+	m_wstrTexture = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_TextureName();
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemExplainText();
 
@@ -291,6 +292,8 @@ HRESULT CUI_Slot::Create_ItemIcon_SubQuick(_uint iSlotIdx)
 
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemExplainText();
+
+	m_iInventoryIdx = iSlotIdx;
 
 	return S_OK;
 }
@@ -435,6 +438,42 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	return S_OK;
 }
 
+HRESULT CUI_Slot::Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
+{
+	// 다음 Slot의 정보를 현재 Slot에 담는 함수
+	// wszTexture / m_wszItemName / m_wszItemExplain / m_wszItemExplain_Quick >> 이걸 그냥 인자로 넣어줘버릴까?
+
+
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = ELEVENTH;
+	pDesc.wszTexture = wstrTexture;
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+	
+	m_wstrTexture = wstrTexture;
+	m_wszItemName = wstrItemName;
+	m_wszItemExplain = wstrItemExplain;
+
+	m_wszItemExplain_Quick = wstrItemExplain_Quick;
+
+	if (SLOT_INV == m_eSlotType)
+	{
+		// 여기서 Symbol Icon도 생성해주기
+		pDesc.fX = (g_iWinSizeX >> 1) + 380.f;
+		pDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+		pDesc.fSizeX = 160.f;
+		pDesc.fSizeY = 160.f;
+		m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+	}
+
+	return S_OK;
+}
+
 HRESULT CUI_Slot::Delete_ItemIcon()
 {
 	Safe_Release(m_pItemIcon);
@@ -482,7 +521,8 @@ void CUI_Slot::Click_BtnEvent()
 			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iInventoryIdx, false);
 			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot(m_iInventoryIdx);
 
-			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx);
+			// Inventory에서 장착 여부 비활성화 해주기 >> 이름으로 접근해야 할 거 같음
+			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx, m_wszItemName);
 		}
 	}
 	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우
@@ -533,6 +573,8 @@ void CUI_Slot::Rend_Count()
 	// m_iSlotIdx를 활용 
 
 	CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+	//CItemData* pItem = CInventory::GetInstance()->Get_ItemData_ByName(m_wszItemName);
+
 	_uint iCount = pItem->Get_Count();
 	if (iCount >= 2)
 	{

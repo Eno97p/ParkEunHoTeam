@@ -195,6 +195,38 @@ void CUIGroup_Quick::Update_InvSlot_Delete(_uint iSlotIdx)
 	(*slot)->Delete_ItemIcon();
 }
 
+void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecInvSlot.begin();
+
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	while (slot != m_vecInvSlot.end()) // 마지막이 아닐 동안 while문을 돌기? >>>> 무한 루프 도는디
+	{
+		++slot; // 다음 슬롯에 접근해서 정보 가져오기
+
+		if ((*slot)->Get_isItemIconNull())
+			break;
+		wstring wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick;
+		wstrTexture = (*slot)->Get_Texture();
+		wstrItemName = (*slot)->Get_ItemName();
+		wstrItemExplain = (*slot)->Get_ItemExplain();
+		wstrItemExplain_Quick = (*slot)->Get_ItemExplain_Quick();
+
+		// 다음 슬롯 비워주기
+		(*slot)->Delete_ItemIcon();
+
+		--slot;
+		(*slot)->Pull_ItemIcon(wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
+
+		++slot;
+	}
+
+
+
+}
+
 HRESULT CUIGroup_Quick::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

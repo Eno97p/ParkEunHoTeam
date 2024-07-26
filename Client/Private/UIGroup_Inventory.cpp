@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -104,7 +105,21 @@ HRESULT CUIGroup_Inventory::Render()
 
 void CUIGroup_Inventory::Update_Inventory_Add(_uint iSlotIdx)
 {
+	// 현재는 m_vecItem.size() - 1 를 SlotIdx로 사용하고 있는데 그러지 말고 
+
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+
+	/*for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if ((*slot)->Get_isItemIconNull())
+		{
+			(*slot)->Create_ItemIcon_Inv();
+			return;
+		}
+		else
+			++slot;
+	}*/
+
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;
 
@@ -132,6 +147,39 @@ void CUIGroup_Inventory::Update_Inventory_Delete(_uint iSlotIdx)
 void CUIGroup_Inventory::Rend_Calcul(_int iSoul)
 {
 	m_pSoul->Rend_Calcul(iSoul);
+}
+
+void CUIGroup_Inventory::Update_Inventory(_uint iSlotIdx)
+{
+	// slot을 순회하면서 Inventory의 m_vecItem.size 보다 slotIdx가 작거나 같은데 ItemIcon이 nullptr이라면 그 다음 한칸씩 쭉 당겨오도록 구현
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	// slot 이 없어져버린 slot, 즉 빵꾸가 난 슬롯
+	// 다음 슬롯에 접근해서 index 하나 줄여주고 ItemData들 받아오기? 
+
+	while (slot != m_vecSlot.end()) // 마지막이 아닐 동안 while문을 돌기? >>>> 무한 루프 도는디
+	{
+		++slot; // 다음 슬롯에 접근해서 정보 가져오기
+
+		if ((*slot)->Get_isItemIconNull())
+			break;
+		wstring wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick;
+		wstrTexture = (*slot)->Get_Texture();
+		wstrItemName = (*slot)->Get_ItemName();
+		wstrItemExplain = (*slot)->Get_ItemExplain();
+		wstrItemExplain_Quick = (*slot)->Get_ItemExplain_Quick();
+
+		// 다음 슬롯 비워주기
+		(*slot)->Delete_ItemIcon();
+
+		--slot;
+		(*slot)->Pull_ItemIcon(wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
+
+		++slot;
+	}
 }
 
 HRESULT CUIGroup_Inventory::Create_UI()

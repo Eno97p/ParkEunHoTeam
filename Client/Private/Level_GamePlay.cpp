@@ -16,6 +16,11 @@
 #include "EventTrigger.h"
 #include"Item.h"
 
+#include "FireEffect.h"
+//#include "Grass.h"
+#include "Tree.h"
+#include "Decal.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -50,7 +55,13 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+#ifdef _DEBUG
+#else
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
+#endif // _DEBUG
+
+	Load_Data_Decals();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -271,7 +282,7 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_HoverBoard"))))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
@@ -374,8 +385,9 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
 			return E_FAIL;
+
 
 	//}
 
@@ -527,6 +539,177 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 		}
 	}
 
+	return S_OK;
+}
+
+HRESULT CLevel_GamePlay::Load_Data_Effects()
+{
+	const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Plain_Effects.bin";
+	HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (nullptr == hFile)
+		return E_FAIL;
+
+	DWORD dwByte(0);
+	_uint iEffectCount = 0;
+
+	// 이펙트 개수 읽기
+	ReadFile(hFile, &iEffectCount, sizeof(_uint), &dwByte, nullptr);
+
+	// 사용자 정의 비교 함수
+	auto cmp = [](const tuple<wstring, float, float, float, bool>& a, const tuple<wstring, float, float, float, bool>& b) {
+		if (get<0>(a) != get<0>(b)) return get<0>(a) < get<0>(b);
+		if (get<1>(a) != get<1>(b)) return get<1>(a) < get<1>(b);
+		if (get<2>(a) != get<2>(b)) return get<2>(a) < get<2>(b);
+		if (get<3>(a) != get<3>(b)) return get<3>(a) < get<3>(b);
+		return get<4>(a) < get<4>(b);
+		};
+
+	// Tree 객체들을 그룹화하기 위한 맵
+	// key: (모델 이름, LeafCol, isBloom)의 조합, value: 해당 그룹의 월드 매트릭스 벡터
+	map<tuple<wstring, float, float, float, bool>, vector<_float4x4*>, decltype(cmp)> treeGroups(cmp);
+
+	for (_uint i = 0; i < iEffectCount; ++i)
+	{
+		char szName[MAX_PATH] = "";
+		char szModelName[MAX_PATH] = "";
+		char szLayer[MAX_PATH] = "";
+		_float4x4 WorldMatrix;
+
+		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+
+		wstring wsName, wsModelName, wsLayer;
+		int nNameLen = MultiByteToWideChar(CP_ACP, 0, szName, -1, NULL, 0);
+		int nModelNameLen = MultiByteToWideChar(CP_ACP, 0, szModelName, -1, NULL, 0);
+		int nLayerLen = MultiByteToWideChar(CP_ACP, 0, szLayer, -1, NULL, 0);
+		wsName.resize(nNameLen);
+		wsModelName.resize(nModelNameLen);
+		wsLayer.resize(nLayerLen);
+		MultiByteToWideChar(CP_ACP, 0, szName, -1, &wsName[0], nNameLen);
+		MultiByteToWideChar(CP_ACP, 0, szModelName, -1, &wsModelName[0], nModelNameLen);
+		MultiByteToWideChar(CP_ACP, 0, szLayer, -1, &wsLayer[0], nLayerLen);
+
+		if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Fire_Effect") == 0)
+		{
+			CFireEffect::FIREEFFECTDESC FireDesc{};
+			FireDesc.vStartPos = { WorldMatrix._41, WorldMatrix._42, WorldMatrix._43, 1.f };
+			FireDesc.vStartScale = { 1.f, 1.f };
+			FireDesc.mWorldMatrix = WorldMatrix;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
+				return E_FAIL;
+		}
+		//else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Grass") == 0)
+		//{
+		//	CGrass::GRASS_DESC GrassDesc{};
+		//	GrassDesc.mWorldMatrix = WorldMatrix;
+
+		//	// 추가 정보 읽기
+		//	_float3 TopCol, BotCol;
+		//	ReadFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
+		//	ReadFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
+
+		//	GrassDesc.vTopCol = TopCol;
+		//	GrassDesc.vBotCol = BotCol;
+
+		//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wsLayer.c_str(), wsName.c_str(), &GrassDesc)))
+		//		return E_FAIL;
+		//}
+
+		else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Tree") == 0)
+		{
+			_float3 LeafCol;
+			bool isBloom;
+			ReadFile(hFile, &LeafCol, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &isBloom, sizeof(bool), &dwByte, nullptr);
+
+			// 트리 그룹화
+			auto key = make_tuple(wsModelName, LeafCol.x, LeafCol.y, LeafCol.z, isBloom);
+			_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+			treeGroups[key].emplace_back(pWorldMatrix);
+		}
+	}
+
+	CloseHandle(hFile);
+
+	// Tree 객체들을 인스턴싱하여 생성
+	for (const auto& group : treeGroups)
+	{
+		CTree::TREE_DESC TreeDesc{};
+		TreeDesc.wstrModelName = get<0>(group.first);
+		TreeDesc.vLeafCol = _float3(get<1>(group.first), get<2>(group.first), get<3>(group.first));
+		TreeDesc.isBloom = get<4>(group.first);
+		TreeDesc.WorldMats = group.second;
+		TreeDesc.iInstanceCount = group.second.size();
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Tree"), &TreeDesc)))
+			return E_FAIL;
+	}
+
+	for (auto& group : treeGroups)
+	{
+		for (auto& pMatrix : group.second)
+		{
+			delete pMatrix;
+		}
+	}
+
+#ifdef _DEBUG
+	MSG_BOX("Effect Data Load");
+#endif
+
+	return S_OK;
+}
+
+
+HRESULT CLevel_GamePlay::Load_Data_Decals()
+{
+	const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Tutorial_Decals.bin";
+	HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	DWORD dwByte(0);
+	_uint iDecalCount = 0;
+	ReadFile(hFile, &iDecalCount, sizeof(_uint), &dwByte, nullptr);
+	if (0 == dwByte)
+	{
+		CloseHandle(hFile);
+		return S_OK; // 파일이 비어있는 경우
+	}
+
+	for (_uint i = 0; i < iDecalCount; ++i)
+	{
+		_char szName[MAX_PATH] = "";
+		_char szLayer[MAX_PATH] = "";
+		_float4x4 WorldMatrix;
+		_uint     decalIdx = 0;
+
+		ReadFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &decalIdx, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		CDecal::DECAL_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.iDecalIdx = decalIdx;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &pDesc)))
+			return E_FAIL;
+	}
+
+	CloseHandle(hFile);
+
+
+#ifdef _DEBUG
+	MSG_BOX("Decal Data Loaded");
+#endif
 	return S_OK;
 }
 

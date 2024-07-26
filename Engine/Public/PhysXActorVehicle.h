@@ -95,13 +95,18 @@ class ENGINE_DLL PhysXActorVehicle
     , public PxVehiclePhysXActorEndComponent
     , public PxVehiclePhysXConstraintComponent
     , public PxVehiclePhysXRoadGeometrySceneQueryComponent
+
+	//나중에 차량의 종류??가 바껴야 한다면 PhysXActorVehicle상속을 시켜서 자식클래스에서 아래 클래스들을 상속 받기
+	, public PxVehicleDirectDriveCommandResponseComponent
+	, public PxVehicleDirectDriveActuationStateComponent
+	, public PxVehicleDirectDrivetrainComponent
 {
 public:
 	PhysXActorVehicle() {};
     virtual ~PhysXActorVehicle() = default;
 
 public:
-    bool initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial);
+    bool initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc);
 
 
     void setUpActor(PxScene& scene, const PxTransform& pose, const char* vehicleName);
@@ -159,23 +164,102 @@ public:
 		PxVehicleArrayData<PxVehiclePhysXRoadGeometryQueryState>& physxRoadGeometryStates);
 
 
+	/*        Drive            */
+
+	virtual void getDataForDirectDriveCommandResponseComponent(
+		const PxVehicleAxleDescription*& axleDescription,
+		PxVehicleSizedArrayData<const PxVehicleBrakeCommandResponseParams>& brakeResponseParams,
+		const PxVehicleDirectDriveThrottleCommandResponseParams*& throttleResponseParams,
+		const PxVehicleSteerCommandResponseParams*& steerResponseParams,
+		PxVehicleSizedArrayData<const PxVehicleAckermannParams>& ackermannParams,
+		const PxVehicleCommandState*& commands, const PxVehicleDirectDriveTransmissionCommandState*& transmissionCommands,
+		const PxVehicleRigidBodyState*& rigidBodyState,
+		PxVehicleArrayData<PxReal>& brakeResponseStates, PxVehicleArrayData<PxReal>& throttleResponseStates,
+		PxVehicleArrayData<PxReal>& steerResponseStates);
+
+
+	virtual void getDataForDirectDriveActuationStateComponent(
+		const PxVehicleAxleDescription*& axleDescription,
+		PxVehicleArrayData<const PxReal>& brakeResponseStates,
+		PxVehicleArrayData<const PxReal>& throttleResponseStates,
+		PxVehicleArrayData<PxVehicleWheelActuationState>& actuationStates);
+
+
+	virtual void getDataForDirectDrivetrainComponent(
+		const PxVehicleAxleDescription*& axleDescription,
+		PxVehicleArrayData<const PxReal>& brakeResponseStates,
+		PxVehicleArrayData<const PxReal>& throttleResponseStates,
+		PxVehicleArrayData<const PxVehicleWheelParams>& wheelParams,
+		PxVehicleArrayData<const PxVehicleWheelActuationState>& actuationStates,
+		PxVehicleArrayData<const PxVehicleTireForce>& tireForces,
+		PxVehicleArrayData<PxVehicleWheelRigidBody1dState>& wheelRigidBody1dStates);
+
+
+
+
+
+
+
+
+
+
 
 	PhysXIntegrationParams& getPhysXParams() { return mPhysXParams; }
 	PhysXIntegrationState& getPhysXState() { return mPhysXState; }
+	PxVehicleCommandState& getCommandState() { return mCommandState; }
+	PxVehicleDirectDriveTransmissionCommandState& getTransmissionCommandState() { return mTransmissionCommandState; }
 
 private:
 	HRESULT ReadDescroption(const BaseVehicleDesc& BaseDesc);
+
+
+	//////////////////////////////
+	//Read the high level params
+	//////////////////////////////
 	HRESULT ReadAxleDesc(const AxleDescription& AxleDesc);
 	HRESULT ReadFrameDesc(const VehicleFrame& FrameDesc);
 	HRESULT ReadScaleDesc(const VehicleScale& ScaleDesc);
+
+	//////////////////////////////
+	//Read the rigid body params
+	/////////////////////////////
 	HRESULT ReadRigidDesc(const VehicleRigidBody& RigidDesc);
+
+	//////////////////////////////
+	//Read the suspension state calculation params.
+	//////////////////////////////
 	HRESULT ReadSuspensionStateCalculation(const VehicleSuspensionStateCalculation& SuspensionStateCalculation);
+
+
+	///////////////////////////////
+	//Read the command responses
+	///////////////////////////////
 	HRESULT ReadBrakeResponse(const VehicleBrakeCommandResponse& BrakeResponse);
 	HRESULT ReadHandBrakeResponse(const VehicleBrakeCommandResponse& BrakeResponse);
+	HRESULT ReadSteerResponse(const VehicleBrakeCommandResponse& SteerResponse);
+	//HRESULT ReadBrakeCommandResponse(const PxVehicleAxleDescription& AxelDesc,_uint ArrayNum, const VehicleBrakeCommandResponse& BrakeCommandResponse);
 
-	HRESULT ReadBrakeCommandResponse(const PxVehicleAxleDescription& AxelDesc, const VehicleBrakeCommandResponse& BrakeCommandResponse);
+	HRESULT ReadAckermann(const VehicleAckermann& Ackermann);
 
+	///////////////////////////////////
+	//Read the suspension params
+	///////////////////////////////////
+	HRESULT ReadSuspensionDesc(const VehicleSuspension* SuspensionDesc);
+	HRESULT ReadSuspensionComplianceDesc(const VehicleSuspensionCompiance* SuspensionCompliance);
+	HRESULT ReadSuspensionForce(const VehicleSuspensionForce* SuspensionForce);
 
+	///////////////////////////////////
+	//Read the tire params
+	///////////////////////////////////
+	HRESULT ReadTireForceDesc(const VehicleTireForce* TireDesc);
+
+	//////////////////////////
+	//Read the wheel params
+	//////////////////////////
+	HRESULT ReadWheelDesc(const VehicleWheel* WheelDesc);
+
+	
+	HRESULT ReadThottleResponse(const DirectDrivetrainParams& ThrottleResponse);
 private:
 	PhysXIntegrationParams mPhysXParams;
 	PhysXIntegrationState mPhysXState;
@@ -184,9 +268,15 @@ private:
 
 
 
+	DirectDrivetrainParams mDirectDriveParams;
+	DirectDrivetrainState mDirectDriveState;
+
+	PxVehicleDirectDriveTransmissionCommandState mTransmissionCommandState;
 public:
-	static PhysXActorVehicle* Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial);
+	static PhysXActorVehicle* Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc);
 	
+	_uint Release();
+
 };
 
 END

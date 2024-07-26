@@ -43,8 +43,6 @@ void CUI_UpGPage_NameBox::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
-
-	m_wstrItemName = TEXT("Test");
 }
 
 void CUI_UpGPage_NameBox::Late_Tick(_float fTimeDelta)
@@ -60,9 +58,6 @@ HRESULT CUI_UpGPage_NameBox::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
-
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrItemName, _float2(m_fX - 27.f, m_fY - 13.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
 
 	return S_OK;
 }

@@ -278,6 +278,42 @@ HRESULT CPhysXComponent_Character::Go_Right(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CPhysXComponent_Character::Go_LeftFront(_float fTimeDelta)
+{
+	_vector vTransformLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	_float3 fLook;
+	XMStoreFloat3(&fLook, vTransformLook);
+
+	_vector vTransformLeft = -m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 fLeft;
+	XMStoreFloat3(&fLeft, vTransformLeft);
+
+	PxVec3 moveVector = PxVec3(fLook.x + fLeft.x, 0, fLook.z + fLeft.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+	return S_OK;
+}
+
+HRESULT CPhysXComponent_Character::Go_RightFront(_float fTimeDelta)
+{
+	_vector vTransformLook = m_pTransform->Get_State(CTransform::STATE_LOOK);
+	_float3 fLook;
+	XMStoreFloat3(&fLook, vTransformLook);
+
+	_vector vTransformRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);
+	_float3 fRight;
+	XMStoreFloat3(&fRight, vTransformRight);
+
+	PxVec3 moveVector = PxVec3(fLook.x + fRight.x, 0, fLook.z + fRight.z) * m_fSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+	return S_OK;
+}
+
 HRESULT CPhysXComponent_Character::Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform)
 {
 	_vector vRight = m_pTransform->Get_State(CTransform::STATE_RIGHT);

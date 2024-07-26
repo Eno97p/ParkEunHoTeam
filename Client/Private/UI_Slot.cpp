@@ -145,6 +145,9 @@ HRESULT CUI_Slot::Render()
 	if (m_isSelect && nullptr != m_pItemIcon)
 		Render_Font();
 
+	if(nullptr != m_pItemIcon && (SLOT_INV == m_eSlotType || SLOT_QUICKINV == m_eSlotType))
+		Rend_Count();
+
 	return S_OK;
 }
 
@@ -516,6 +519,19 @@ void CUI_Slot::Render_Font()
 
 		// Explain
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight13"), m_wszItemExplain_Quick, _float2(180.f, g_iWinSizeY - 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return;
+	}
+}
+
+void CUI_Slot::Rend_Count()
+{
+	// m_iSlotIdx¸¦ È°¿ë 
+
+	CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+	_uint iCount = pItem->Get_Count();
+	if (iCount >= 2)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 10.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return;
 	}
 }

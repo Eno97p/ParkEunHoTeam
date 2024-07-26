@@ -24,9 +24,12 @@ public:
 	void			Update_Inventory_Add(_uint iSlotIdx);
 	void			Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip);
 
+	void			Rend_Calcul(_int iSoul);
+
 private:
 	vector<CUI*>			m_vecUI;
 	vector<CUI_Slot*>		m_vecSlot;
+	class CUI_StateSoul*	m_pSoul = { nullptr };
 
 private:
 	HRESULT					Create_UI();

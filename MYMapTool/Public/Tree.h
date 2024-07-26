@@ -12,6 +12,7 @@ public:
 	{
 		_float4			vStartPos;
 		_float3			vLeafCol = { 0.f, 0.f, 0.f };
+		_bool			isBloom = false;
 	}TREE_DESC;
 private:
 	CTree(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -27,6 +28,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
 
+	_float3 Get_LeafCol() { return m_LeafCol; }
+	_bool Get_Bloom() { return m_bBloom; }
 private:
 	CTexture* m_pNoiseCom = { nullptr };
 	CPhysXComponent_static* m_pPhysXCom = { nullptr };
@@ -52,6 +55,14 @@ private:
 	_uint m_iTest = 0;
 	_float m_fTime = 0.f;
 	_float3 m_LeafCol = {0.f, 0.f, 0.f};
+
+
+	vector<_uint> m_LeafMeshes;
+	vector<_uint> m_BloomMeshes;
+	_bool m_bBloom = false;
+
+	_uint m_iTrunkPath = 0;
+	_uint m_iBloomPath = 8;
 public:
 	static CTree* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

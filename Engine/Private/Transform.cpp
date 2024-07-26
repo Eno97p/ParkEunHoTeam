@@ -101,6 +101,18 @@ HRESULT CTransform::Go_Backward(_float fTimeDelta)
 	return S_OK;
 }
 
+HRESULT CTransform::Go_Up(_float fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_UP);
+
+	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+
+	return S_OK;
+}
+
 HRESULT CTransform::Go_Left(_float fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);

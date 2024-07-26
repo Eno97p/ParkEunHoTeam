@@ -15,6 +15,7 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Upgrade.h"
 #include "UIGroup_UpGPage.h"
+#include "UIGroup_Map.h"
 
 #include "UI_ScreenBlood.h"
 #include "Camera.h"
@@ -192,6 +193,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Weapon 
 	m_mapUIGroup.emplace("Weapon", dynamic_cast<CUIGroup_Weapon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Weapon"), &pDesc)));
 
+	// Map
+	m_mapUIGroup.emplace("Map", dynamic_cast<CUIGroup_Map*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Map"), &pDesc)));
+
 	// Inv Sub 
 	m_mapUIGroup.emplace("InvSub", dynamic_cast<CUIGroup_InvSub*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_InvSub"), &pDesc)));
 
@@ -232,10 +236,12 @@ void CUI_Manager::Key_Input()
 		map<string, CUIGroup*>::iterator character = m_mapUIGroup.find("Menu_Ch");
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
 		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+		map<string, CUIGroup*>::iterator mapPage = m_mapUIGroup.find("Map");
 
 		_bool isChOpen = (*character).second->Get_Rend();
 		_bool isInvOpen = (*inventory).second->Get_Rend();
 		_bool isWeaponOpen = (*weapon).second->Get_Rend();
+		_bool isMapOpen = (*mapPage).second->Get_Rend();
 
 		if (isMenuOpen)
 		{
@@ -257,11 +263,16 @@ void CUI_Manager::Key_Input()
 					else
 						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
 				}
+				else if (isMapOpen)
+				{
+					(*mapPage).second->Set_RenderOnAnim(false);
+				}
 				else
 				{
 					(*menu).second->Set_RenderOnAnim(false);
 					m_pGameInstance->Get_MainCamera()->Activate();
 				}
+
 				dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
 			}
 			else
@@ -279,7 +290,6 @@ void CUI_Manager::Key_Input()
 				m_pGameInstance->Get_MainCamera()->Inactivate();
 			}
 		}
-
 
 		// test¿ë
 		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade

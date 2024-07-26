@@ -577,7 +577,12 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     break;
     case LAYER_VEGETATION:
     {
-        const char* items_Vege[] = { "Grass", "Tree" };
+        const char* items_Vege[] = { "Grass", "BasicTree", "BirchTree", "BloomTree" ,
+            "Bush"
+        
+        , "CherryTree"  , "GhostTree" , "PineTree", "WillowTree", "TreeC"
+        
+        };
         ImGui::ListBox("###Obj", &item_current, items_Vege, IM_ARRAYSIZE(items_Vege)); // item_current 변수에 선택 값 저장
         static float TopCol[3] = { 0.0f, 1.0f, 0.0f};
         static float BotCol[3] = { 0.0f, 0.0f, 0.0f};
@@ -597,6 +602,9 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             ImGui::ColorEdit3("Leaf Color", LeafCol);
             m_LeafCol = { LeafCol[0], LeafCol[1], LeafCol[2] };
         }
+
+        ImGui::Checkbox("Bloom", &m_bTreeBloom);
+
     }
     break;
     default:
@@ -1506,7 +1514,7 @@ void CImgui_Manager::GlobalWind_Editor()
     ImGui::Separator();
 
     ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Wind Properties");
-    ImGui::SliderFloat("Wind Strength", &m_fGlobalWindStrength, 0.0f, 10.0f);
+    ImGui::SliderFloat("Wind Strength", &m_fGlobalWindStrength, 0.0f, 30.0f);
     ImGui::SliderFloat("Wind Frequency", &m_fGlobalWindFrequency, 0.1f, 5.0f);
     ImGui::Checkbox("Enable Wind", &enableWind);
 

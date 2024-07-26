@@ -1,6 +1,10 @@
 #include "ItemData.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
+#include "UI_Manager.h"
+
+#include "UIGroup_Inventory.h"
 
 CItemData::CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{pDevice, pContext}
@@ -32,6 +36,8 @@ HRESULT CItemData::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_iCount = 1;
+
 	return S_OK;
 }
 
@@ -52,6 +58,52 @@ HRESULT CItemData::Render()
 	return S_OK;
 }
 
+void CItemData::Use_Item()
+{
+	// 호버보드나 Firefly 같은 특정 아이템들은 사용 시 Inventory 포함한 메뉴들이 싹 꺼져야 할 거 같음
+	// 나머지는 그냥 써지는(적용되는) 식으로
+
+
+	switch (m_eItemName)
+	{
+	case Client::CItemData::ITEMNAME_AEGIS:
+		break;
+	case Client::CItemData::ITEMNAME_CATALYST:
+		break;
+	case Client::CItemData::ITEMNAME_HOVERBOARD:
+		break;
+	case Client::CItemData::ITEMNAME_FIREFLY:
+		break;
+	case Client::CItemData::ITEMNAME_WHISPERER:
+		break;
+	case Client::CItemData::ITEMNAME_BUFF1:
+		break;
+	case Client::CItemData::ITEMNAME_BUFF2:
+		break;
+	case Client::CItemData::ITEMNAME_BUFF3:
+		break;
+	case Client::CItemData::ITEMNAME_BUFF4:
+		break;
+	case Client::CItemData::ITEMNAME_ESSENCE:
+	{
+		_uint iRand = rand() % 300 + 100;
+		CInventory::GetInstance()->Calcul_Soul(iRand);
+		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Rend_Calcul(iRand);
+		break;
+	}
+	case Client::CItemData::ITEMNAME_ETHER:
+		break;
+	case Client::CItemData::ITEMNAME_UPGRADE1:
+		break;
+	case Client::CItemData::ITEMNAME_UPGRADE2:
+		break;
+	default:
+		break;
+	}
+
+
+}
+
 void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 {
 	switch (eItemName)
@@ -61,8 +113,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF1;
 		m_wszItemName = TEXT("SIGIL OF STRENGTH");
-		m_wszItemExplain = TEXT("버프 1");
-		m_wszItemExplain_quick = TEXT("버프 1");
+		m_wszItemExplain = TEXT("금속 조각에 큰 홈으로 새겨진\n기하학적 봉인구\n무기의 공격 능력을\n일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("금속 조각에 큰 홈을 새기는 기하학적 봉인구\n무기의 공격 능력을 일시적으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff0");
 		break;
 	}
@@ -71,8 +123,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF2;
 		m_wszItemName = TEXT("SIGIL OF PROTECTION");
-		m_wszItemExplain = TEXT("버프 2");
-		m_wszItemExplain_quick = TEXT("버프 2");
+		m_wszItemExplain = TEXT("유리 구슬에 장착된\n원형 봉인구\n갑옷의 방어 능력을\n일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("유리 구슬에 장착된 원형 봉인구\n갑옷의 방어 능력을 일시적으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff1");
 		break;
 	}
@@ -81,8 +133,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF3;
 		m_wszItemName = TEXT("SIGIL OF RECOVERY");
-		m_wszItemExplain = TEXT("버프 3");
-		m_wszItemExplain_quick = TEXT("버프 3");
+		m_wszItemExplain = TEXT("암석에 조각된\n정교한 봉인구\n체력 회복을 일시적으로 증가");
+		m_wszItemExplain_quick = TEXT("암석에 조각된 정교한 봉인구\n체력 회복을 일시적으로 증가");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff2");
 		break;
 	}
@@ -91,18 +143,9 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_BUFF;
 		m_eItemName = ITEMNAME_BUFF4;
 		m_wszItemName = TEXT("SIGIL OF ETHER");
-		m_wszItemExplain = TEXT("버프 4");
-		m_wszItemExplain_quick = TEXT("버프 4");
+		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n저항력을 일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n저항력을 일시정으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
-		break;
-	}
-	case Client::CItem::ITEM_SOUL:
-	{
-		m_eItemType = ITEMTYPE_ETC; // 먹자마자 소모되어야 하므로 >> 인벤에 들어가는 일 없음
-		m_eItemName = ITEMNAME_SOUL;
-		m_wszItemName = TEXT("SOUL");
-		m_wszItemExplain = TEXT("인벤토리에 출력하지 않을 예정인 아이템");
-		m_wszTexture = TEXT("Prototype_Component_Texture_HUD_StateSoul");
 		break;
 	}
 	case Client::CItem::ITEM_ESSENCE:
@@ -157,7 +200,7 @@ void CItemData::Set_Item_Data()
 	case Client::CItemData::ITEMNAME_CATHARSIS:
 	{
 		m_eItemType = ITEMTYPE_WEAPON;
-		m_wszItemName = TEXT("CATHARSIS");
+		m_wszItemName = TEXT("Catharsis"); // CATHARSIS
 		m_wszItemExplain = TEXT("순수한 영혼과 강력한 마력의\n결합체\n그 자체로 살아있는 존재처럼\n사용자의 의지에 반응한다.");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catharsis");
 		break;

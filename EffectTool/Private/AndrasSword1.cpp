@@ -25,6 +25,8 @@ HRESULT CAndrasSword1::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
 	return S_OK;
 }
 

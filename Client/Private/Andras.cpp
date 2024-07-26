@@ -5,8 +5,9 @@
 #include "GameInstance.h"
 #include "PartObject.h"
 #include "Weapon.h"
-//#include "Body_Andras.h"
-//#include "Weapon_Andras.h"
+#include "Body_Andras.h"
+#include "Weapon_Andras.h"
+#include "RushSword.h"
 #include "EffectManager.h"
 
 #include "UIGroup_BossHP.h"
@@ -31,31 +32,32 @@ HRESULT CAndras::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
 
-	pDesc->fSpeedPerSec = 3.f;
-	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
+	pDesc->fSpeedPerSec = MOVESPEED;
+	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+	
+	m_pPhysXCom->Set_Speed(MOVESPEED);
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
-	m_pTransformCom->Set_Scale(2.f, 2.f, 2.f);
 
 	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
-	/*Create_BossUI(CUIGroup_BossHP::BOSSUI_Andras);*/
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_ANDRAS);
 
 	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Andras-Head", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	m_iState = STATE_IDLE;
@@ -76,14 +78,22 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Priority_Tick(fTimeDelta);
-	/*m_isAnimFinished = dynamic_cast<CBody_Andras*>(m_PartObjects.front())->Get_AnimFinished();*/
+	m_isAnimFinished = dynamic_cast<CBody_Andras*>(m_PartObjects.front())->Get_AnimFinished();
 }
 
 void CAndras::Tick(_float fTimeDelta)
 {
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
-	m_pBehaviorCom->Update(fTimeDelta);
+	if (m_pGameInstance->Get_DIKeyState(DIK_N))
+	{
+		m_bTrigger = true;
+	}
+
+	if (m_bTrigger)
+	{
+		m_pBehaviorCom->Update(fTimeDelta);
+	}
 
 	if (!m_bDead)
 	{
@@ -168,7 +178,7 @@ HRESULT CAndras::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(0.7f, 1.2f, 0.7f);
+	ColliderDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 
@@ -207,12 +217,13 @@ HRESULT CAndras::Add_Components()
 HRESULT CAndras::Add_PartObjects()
 {
 	/* 바디객체를 복제해온다. */
-	CPartObject::PARTOBJ_DESC		BodyDesc{};
+	CBody_Andras::BODY_ANDRAS_DESC		BodyDesc{};
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
 	BodyDesc.pState = &m_iState;
 	BodyDesc.pCanCombo = &m_bCanCombo;
+	BodyDesc.bSprint = &m_bSprint;
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Andras"), &BodyDesc);
 	if (nullptr == pBody)
@@ -228,16 +239,51 @@ HRESULT CAndras::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Root_Weapon");
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_1");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;
-
 	CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Andras"), &WeaponDesc);
 	if (nullptr == pWeapon)
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
-	//dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_2");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+	CGameObject* pWeapon2 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Andras2"), &WeaponDesc);
+	if (nullptr == pWeapon2)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pWeapon2);
+
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_3");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+	CGameObject* pWeapon3 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Andras3"), &WeaponDesc);
+	if (nullptr == pWeapon3)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pWeapon3);
+
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_4");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+	CGameObject* pWeapon4 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Andras4"), &WeaponDesc);
+	if (nullptr == pWeapon4)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pWeapon4);
+
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_5");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+	CGameObject* pWeapon5 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Andras5"), &WeaponDesc);
+	if (nullptr == pWeapon5)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pWeapon5);
+
+	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon), 0);
+	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon2), 1);
+	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon3), 2);
+	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon4), 3);
+	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon5), 4);
 
 	return S_OK;
 }
@@ -259,48 +305,21 @@ HRESULT CAndras::Add_Nodes()
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Move_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CAndras::Idle, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CAndras::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CAndras::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CAndras::Hit, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Parried"), bind(&CAndras::Parried, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("JumpAttack"), bind(&CAndras::JumpAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack"), bind(&CAndras::Attack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("CircleAttack"), bind(&CAndras::CircleAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("SprintAttack"), bind(&CAndras::SprintAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("GroundAttack"), bind(&CAndras::GroundAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("KickAttack"), bind(&CAndras::KickAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("LaserAttack"), bind(&CAndras::LaserAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("BabylonAttack"), bind(&CAndras::BabylonAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("ShootingStarAttack"), bind(&CAndras::ShootingStarAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Select_Pattern"), bind(&CAndras::Select_Pattern, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_CoolDown(TEXT("Move_Selector"), TEXT("DetectCool"), 1.f);
-	m_pBehaviorCom->Add_Action_Node(TEXT("DetectCool"), TEXT("Detect"), bind(&CAndras::Detect, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("MoveTo"), bind(&CAndras::Move, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Backstep"), bind(&CAndras::Backstep, this, std::placeholders::_1));
 
 	return S_OK;
-}
-
-NodeStates CAndras::Revive(_float fTimeDelta)
-{
-	if (m_pGameInstance->Get_DIKeyState(DIK_L))
-	{
-		m_bReviving = true;
-	}
-
-	if (m_bReviving)
-	{
-		m_iState = STATE_REVIVE;
-
-		if (m_isAnimFinished)
-		{
-			m_bReviving = false;
-			m_iState = STATE_IDLE;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
 }
 
 NodeStates CAndras::Dead(_float fTimeDelta)
@@ -329,7 +348,6 @@ NodeStates CAndras::Dead(_float fTimeDelta)
 
 NodeStates CAndras::Hit(_float fTimeDelta)
 {
-
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
@@ -343,184 +361,155 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
-		m_iState = STATE_HIT;
 		Add_Hp(-10);
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
 	}
 	case CCollider::COLL_CONTINUE:
-		m_iState = STATE_HIT;
-		return RUNNING;
 		break;
 	case CCollider::COLL_FINISH:
-		m_iState = STATE_HIT;
 		break;
 	case CCollider::COLL_NOCOLL:
 		break;
 	}
 
-	if (m_iState == STATE_HIT && m_isAnimFinished)
-	{
-		m_iState = STATE_IDLE;
-		return SUCCESS;
-	}
-
 	return FAILURE;
-}
-
-NodeStates CAndras::Parried(_float fTimeDelta)
-{
-	//if (dynamic_cast<CWeapon_Andras*>(m_PartObjects[1])->Get_IsParried() && m_iState != STATE_PARRIED)
-	{
-		m_iState = STATE_PARRIED;
-		if (m_iAttackCount == 3)
-		{
-			m_iAttackCount = 0;
-		}
-		else
-		{
-			m_iAttackCount++;
-		}
-	}
-
-	if (m_iState == STATE_PARRIED)
-	{
-		if (m_isAnimFinished)
-		{
-			//dynamic_cast<CWeapon_Andras*>(m_PartObjects[1])->Set_IsParried(false);
-			m_iState = STATE_IDLE;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
-}
-
-
-NodeStates CAndras::JumpAttack(_float fTimeDelta)
-{
-	if (m_iState == STATE_ATTACK1 || m_iState == STATE_ATTACK2 || m_iState == STATE_ATTACK3 || m_iState == STATE_CIRCLEATTACK)
-	{
-		return COOLING;
-	}
-
-	if (m_iState == STATE_JUMPATTACK)
-	{
-		m_fChasingDelay -= fTimeDelta;
-
-		if (m_bChasing && m_fChasingDelay < 0.f)
-		{
-			Chase_Player(fTimeDelta);
-		}
-
-		if (m_fLengthFromPlayer < 5.f)
-		{
-			m_bChasing = false;
-		}
-
-		if (m_isAnimFinished)
-		{
-			if (m_fLengthFromPlayer < 5.f)
-			{
-				m_iState = RandomInt(0, 3);
-			}
-			else
-			{
-				m_iState = STATE_WALKFRONT;
-			}
-			m_fChasingDelay = 0.5f;
-			m_bChasing = true;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	else
-	{
-		return FAILURE;
-	}
 }
 
 NodeStates CAndras::Attack(_float fTimeDelta)
 {
-	if (m_iState == STATE_CIRCLEATTACK)
+	if (m_iState == STATE_ATTACK1 || m_iState == STATE_ATTACK2 || m_iState == STATE_ATTACK3 || m_iState == STATE_ATTACK4)
 	{
-		return COOLING;
-	}
-
-	if (m_iState == STATE_ATTACK1 || m_iState == STATE_ATTACK2 || m_iState == STATE_ATTACK3)
-	{
-		switch (m_iAttackCount)
-		{
-		case 1:
-			m_iState = STATE_ATTACK1;
-			break;
-		case 2:
-			m_iState = STATE_ATTACK2;
-			break;
-		case 3:
-			m_iState = STATE_ATTACK3;
-			break;
-		default:
-			break;
-		}
-
 		if (m_isAnimFinished)
 		{
-			if (m_iAttackCount == 3)
+			switch (m_iState)
 			{
-				m_iAttackCount = 0;
+			case STATE_ATTACK1:
+				if (m_fLengthFromPlayer > 5.f)
+				{
+					m_iState = STATE_SPRINTATTACK;
+				}
+				else
+				{
+					m_iState = STATE_ATTACK2;
+				}
+				return RUNNING;
+				break;
+			case STATE_ATTACK2:
+				if (m_fLengthFromPlayer > 5.f)
+				{
+					m_iState = STATE_SPRINTATTACK;
+				}
+				else
+				{
+					m_iState = STATE_ATTACK3;
+				}
+				return RUNNING;
+				break;
+			case STATE_ATTACK3:
+				if (m_fLengthFromPlayer > 5.f)
+				{
+					m_iState = STATE_SPRINTATTACK;
+				}
+				else
+				{
+					m_iState = STATE_ATTACK4;
+				}
+				return RUNNING;
+				break;
+			case STATE_ATTACK4:
+				m_iState = STATE_IDLE;
+				m_bDashBack = true;
+				return SUCCESS;
+				break;
 			}
-			else
-			{
-				m_iAttackCount++;
-			}
-			if (m_fLengthFromPlayer < 6.f)
-			{
-				m_iState = RandomInt(0, 3);
-			}
-			else
-			{
-				m_iState = STATE_WALKFRONT;
-			}
-
-			return SUCCESS;
 		}
 		else
 		{
 			return RUNNING;
 		}
 	}
+
+	if (m_iState == STATE_DASHRIGHT)
+	{
+		if (m_fLengthFromPlayer < 3.f)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_iState = STATE_ATTACK1;
+			return SUCCESS;
+		}
+		else if (m_fLengthFromPlayer < 5.f)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+		else
+		{
+			m_pPhysXCom->Go_RightFront(fTimeDelta * 0.5f);
+		}
+		
+		if (m_isAnimFinished)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_iState = STATE_DASHLEFT;
+		}
+		return RUNNING;
+	}
+	else if (m_iState == STATE_DASHLEFT)
+	{
+		if (m_fLengthFromPlayer < 3.f)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_iState = STATE_ATTACK1;
+			return SUCCESS;
+		}
+		else if (m_fLengthFromPlayer < 5.f)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+		else
+		{
+			m_pPhysXCom->Go_LeftFront(fTimeDelta * 0.5f);
+		}
+
+		if (m_isAnimFinished)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_iState = STATE_DASHRIGHT;
+		}
+		return RUNNING;
+	}
 	else
 	{
 		return FAILURE;
 	}
+
+	return FAILURE;
 }
 
-NodeStates CAndras::CircleAttack(_float fTimeDelta)
+NodeStates CAndras::SprintAttack(_float fTimeDelta)
 {
-	if (m_iState == STATE_CIRCLEATTACK)
+	if (m_iState == STATE_SPRINTATTACK)
 	{
+		if (m_fLengthFromPlayer > 3.f)
+		{
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			if (m_bSprint)
+			{
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+			}
+		}
+		else if (m_fLengthFromPlayer <= 3.f)
+		{
+			m_bSprint = false;
+		}
+
 		if (m_isAnimFinished)
 		{
-			m_iAttackCount++;
-			if (m_fLengthFromPlayer < 6.f)
-			{
-				m_iState = rand() % 4;
-			}
-			else
-			{
-				m_iState = STATE_WALKFRONT;
-			}
+			m_iState = STATE_IDLE;
+			m_bDashBack = true;
 			return SUCCESS;
 		}
 		else
@@ -528,103 +517,253 @@ NodeStates CAndras::CircleAttack(_float fTimeDelta)
 			return RUNNING;
 		}
 	}
-	else
+
+	return FAILURE;
+}
+
+NodeStates CAndras::GroundAttack(_float fTimeDelta)
+{
+	if (m_iState == STATE_GROUNDATTACK)
 	{
-		return FAILURE;
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
 	}
 	return FAILURE;
 }
 
-NodeStates CAndras::Detect(_float fTimeDelta)
+NodeStates CAndras::KickAttack(_float fTimeDelta)
 {
-	if (m_fLengthFromPlayer > DETECTRANGE)
+	if (m_iState == STATE_KICKATTACK)
 	{
-		m_iState = STATE_IDLE;
-		return SUCCESS;
-	}
-	else if (m_fLengthFromPlayer > JUMPATTACKRANGE)
-	{
-		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_iState = STATE_WALKFRONT;
-		return SUCCESS;
-	}
-	else if (m_fLengthFromPlayer > ATTACKRANGE)
-	{
-		m_iState = STATE_JUMPATTACK;
-		return SUCCESS;
-	}
-	else
-	{
-		if (m_iAttackCount == 0)
+		if (m_fLengthFromPlayer > 3.f)
 		{
-			m_iState = STATE_CIRCLEATTACK;
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			if (m_bSprint)
+			{
+				m_pPhysXCom->Go_Straight(fTimeDelta);
+			}
+		}
+		else if (m_fLengthFromPlayer <= 3.f)
+		{
+			m_bSprint = false;
+		}
+
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = true;
+			return SUCCESS;
 		}
 		else
 		{
-			switch (m_iAttackCount)
-			{
-			case 1:
-				m_iState = STATE_ATTACK1;
-				break;
-			case 2:
-				m_iState = STATE_ATTACK2;
-				break;
-			case 3:
-				m_iState = STATE_ATTACK3;
-				break;
-			default:
-				break;
-			}
+			return RUNNING;
+		}
+	}
+	return FAILURE;
+}
+
+NodeStates CAndras::LaserAttack(_float fTimeDelta)
+{
+	if (m_iState == STATE_LASERATTACK)
+	{
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+	return FAILURE;
+}
+
+NodeStates CAndras::BabylonAttack(_float fTimeDelta)
+{
+	if (m_iState == STATE_BABYLONATTACK)
+	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_fSpawnCoolTime -= fTimeDelta;
+		m_fSpawnDelay -= fTimeDelta;
+		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
+		{
+			m_fSpawnCoolTime = SPAWNCOOLTIME;
+			_float fHeight = 3.f + RandomFloat(0.f, 5.f);
+			//칼 생성 위치(랜덤)
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_RIGHT)
+				* RandomFloat(-5.f, 5.f) + XMVectorSet(0.f, fHeight, 0.f, 0.f);
+			
+			_vector vAndrasPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+			vPlayerPos.m128_f32[1] = vAndrasPos.m128_f32[1];
+			vAndrasPos.m128_f32[1] += fHeight;
+
+			// 칼 Right
+			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+			// 칼 Up
+			_vector vUp = XMVector3Normalize(vPlayerPos - vAndrasPos);
+			// 칼 Look
+			_vector vLook = -XMVector3Cross(vUp, vRight); 
+			
+			CRushSword::RUSH_DESC pDesc;
+			pDesc.fHeight = vPlayerPos.m128_f32[1];
+			pDesc.meshNum = RandomInt(0, 17);
+			pDesc.mWorldMatrix._11 = vRight.m128_f32[0];
+			pDesc.mWorldMatrix._12 = vRight.m128_f32[1];
+			pDesc.mWorldMatrix._13 = vRight.m128_f32[2];
+			pDesc.mWorldMatrix._21 = vUp.m128_f32[0];
+			pDesc.mWorldMatrix._22 = vUp.m128_f32[1];
+			pDesc.mWorldMatrix._23 = vUp.m128_f32[2];
+			pDesc.mWorldMatrix._31 = vLook.m128_f32[0];
+			pDesc.mWorldMatrix._32 = vLook.m128_f32[1];
+			pDesc.mWorldMatrix._33 = vLook.m128_f32[2];
+			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
+			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
+			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
+		}
+
+		if (m_isAnimFinished)
+		{
+			m_fSpawnDelay = 2.f;
+			m_fSpawnCoolTime = SPAWNCOOLTIME;
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+
+	return FAILURE;
+}
+
+NodeStates CAndras::ShootingStarAttack(_float fTimeDelta)
+{
+	if (m_iState == STATE_SHOOTINGSTARATTACK)
+	{
+		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_fSpawnCoolTime -= fTimeDelta;
+		m_fSpawnDelay -= fTimeDelta;
+		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
+		{
+			m_fSpawnCoolTime = SPAWNCOOLTIME;
+			//칼 생성 위치(랜덤)
+			_vector vPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(RandomFloat(-2.f, 2.f), 10.f, RandomFloat(-2.f, 2.f), 0.f);
+
+			CRushSword::RUSH_DESC pDesc;
+			pDesc.fHeight = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] + 0.5f;
+			pDesc.meshNum = RandomInt(0, 17);
+			pDesc.mWorldMatrix._11 = -1.f;
+			pDesc.mWorldMatrix._12 = 0.f;
+			pDesc.mWorldMatrix._13 = 0.f;
+			pDesc.mWorldMatrix._21 = 0.f;
+			pDesc.mWorldMatrix._22 = -1.f;
+			pDesc.mWorldMatrix._23 = 0.f;
+			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
+			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
+			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
+		}
+
+		if (m_isAnimFinished)
+		{
+			m_fSpawnCoolTime = SPAWNCOOLTIME;
+			m_iState = STATE_IDLE;
+			m_fSpawnDelay = 2.f;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+
+	return FAILURE;
+}
+
+NodeStates CAndras::Select_Pattern(_float fTimeDelta)
+{
+	if ((m_iState == STATE_DASHBACK && m_isAnimFinished) || !m_bDashBack)
+	{
+		m_fTurnDelay = 0.5f;
+		_uint i;
+		if (m_iPhase == 1)
+		{
+			i = RandomInt(0, 1);
+		}
+		else if (m_iPhase == 2)
+		{
+			i = RandomInt(0, 6);
+		}
+
+		switch (i)
+		{
+		case 0:
+			//Attack
+			m_iState = STATE_DASHRIGHT;
+			break;
+		case 1:
+			//SprintAttack
+			m_iState = STATE_SPRINTATTACK;
+			break;
+		case 2:
+			//GroundAttack
+			m_iState = STATE_GROUNDATTACK;
+			break;
+		case 3:
+			//KickAttack
+			m_iState = STATE_KICKATTACK;
+			break;
+		case 4:
+			//LaserAttack
+			m_iState = STATE_LASERATTACK;
+			break;
+		case 5:
+			//BabylonAttack
+			m_iState = STATE_BABYLONATTACK;
+			break;
+		case 6:
+			//ShootingStarAttack
+			m_iState = STATE_SHOOTINGSTARATTACK;
+			break;
 		}
 		return SUCCESS;
 	}
+
+	if (m_fTurnDelay > 0.f)
+	{
+		m_fTurnDelay -= fTimeDelta;
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		return RUNNING;
+	}
+	else if(m_iState != STATE_DASHLEFT && m_iState != STATE_DASHRIGHT)
+	{
+		m_iState = STATE_DASHBACK;
+		return COOLING;
+	}
 }
 
-NodeStates CAndras::Move(_float fTimeDelta)
+NodeStates CAndras::Backstep(_float fTimeDelta)
 {
-	if (m_iState == STATE_WALKLEFT)
+	if (m_iState == STATE_DASHBACK)
 	{
-		m_pPhysXCom->Go_OrbitCW(fTimeDelta, m_pPlayerTransform);
-		m_fMoveTime -= fTimeDelta;
-		if (m_fMoveTime <= 0.f)
+		if (m_isAnimFinished)
 		{
-			m_iState = STATE_IDLE;
-			m_fMoveTime = 2.f;
+			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		}
+		else
+		{
+			m_pPhysXCom->Go_BackWard(fTimeDelta);
+		}
+		return RUNNING;
 	}
-	else if (m_iState == STATE_WALKRIGHT)
+	else
 	{
-		m_pPhysXCom->Go_OrbitCCW(fTimeDelta, m_pPlayerTransform);
-		m_fMoveTime -= fTimeDelta;
-		if (m_fMoveTime <= 0.f)
-		{
-			m_iState = STATE_IDLE;
-			m_fMoveTime = 2.f;
-		}
-	}
-	else if (m_iState == STATE_WALKBACK)
-	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_pPhysXCom->Go_BackWard(fTimeDelta);
-		m_fMoveTime -= fTimeDelta;
-		if (m_fMoveTime <= 0.f)
-		{
-			m_iState = STATE_IDLE;
-			m_fMoveTime = 2.f;
-		}
-	}
-	else if (m_iState == STATE_WALKFRONT)
-	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_pPhysXCom->Go_Straight(fTimeDelta);
-		if (m_fLengthFromPlayer < 5.f)
-		{
-			m_iState = STATE_IDLE;
-			return FAILURE;
-		}
+		return FAILURE;
 	}
 
-	return RUNNING;
 }
 
 NodeStates CAndras::Idle(_float fTimeDelta)
@@ -633,8 +772,6 @@ NodeStates CAndras::Idle(_float fTimeDelta)
 	m_iState = STATE_IDLE;
 	return SUCCESS;
 }
-
-
 
 void CAndras::Add_Hp(_int iValue)
 {

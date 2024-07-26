@@ -691,7 +691,7 @@ HRESULT PhysXActorVehicle::ReadThottleResponse(const DirectDrivetrainParams& Thr
 
 void setPhysXIntegrationParams(const PxVehicleAxleDescription& axleDescription, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, PhysXIntegrationParams& physXParams)
 {
-	const PxQueryFilterData queryFilterData(PxFilterData(0, 0, 0, 0), PxQueryFlag::eSTATIC);
+	const PxQueryFilterData queryFilterData/*(PxFilterData(0, 0, 0, 0), PxQueryFlag::eSTATIC)*/;
 	PxQueryFilterCallback* queryFilterCallback = NULL;
 	const PxTransform physxActorCMassLocalPose(PxVec3(0.0f, 0.55f, 1.594f), PxQuat(PxIdentity));
 	const PxVec3 physxActorBoxShapeHalfExtents(0.84097f, 0.65458f, 2.46971f);

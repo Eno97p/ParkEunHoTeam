@@ -26,6 +26,13 @@ HRESULT CHoverboard::Initialize_Prototype()
 
 HRESULT CHoverboard::Initialize(void* pArg)
 {
+	if (pArg != nullptr)
+	{
+		HoverboardInfo InfoDesc = *static_cast<HoverboardInfo*>(pArg);
+		m_vPosition = InfoDesc.vPosition;
+
+	}
+
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -36,7 +43,7 @@ HRESULT CHoverboard::Initialize(void* pArg)
 	if (FAILED(Add_PxActor()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
 
 	return S_OK;
 }
@@ -89,7 +96,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	
 	m_pPhysXCom->Tick(fTimeDelta);
 
-
+	
 }
 
 void CHoverboard::Late_Tick(_float fTimeDelta)
@@ -101,7 +108,9 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
 	m_pPhysXCom->GetCommand(command);
 
-	_matrix worldMat = 	CPhysXComponent::Convert_PxTrans_To_DxMat(command->transform);
+	PxVec3 ModelY_up = command->transform.p + PxVec3(0.f, 1.f, 0.f);
+	PxTransform NewTransform = PxTransform(ModelY_up, command->transform.q);
+	_matrix worldMat = 	CPhysXComponent::Convert_PxTrans_To_DxMat(NewTransform);
 	m_pTransformCom->Set_WorldMatrix(worldMat);
 
 }
@@ -152,7 +161,7 @@ HRESULT CHoverboard::Add_Components()
 	//landObjDesc.mWorldMatrix._43 = 98.f;
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND command;
-	XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(75.f, 10.f, 98.f));
+	XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z));
 	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))

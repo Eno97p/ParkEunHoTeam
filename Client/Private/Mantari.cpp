@@ -613,7 +613,7 @@ NodeStates CMantari::Move(_float fTimeDelta)
 	}
 	else if (m_iState == STATE_WALKBACK)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		m_pPhysXCom->Go_BackWard(fTimeDelta);
 		m_fMoveTime -= fTimeDelta;
 		if (m_fMoveTime <= 0.f)
@@ -624,7 +624,7 @@ NodeStates CMantari::Move(_float fTimeDelta)
 	}
 	else if (m_iState == STATE_WALKFRONT)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 		m_pPhysXCom->Go_Straight(fTimeDelta);
 		if (m_fLengthFromPlayer < 5.f)
 		{

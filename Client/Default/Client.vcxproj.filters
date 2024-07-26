@@ -577,9 +577,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco">
       <UniqueIdentifier>{62fb3047-5cc1-4921-8e92-90d35050c67d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue">
-      <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest">
       <UniqueIdentifier>{b9789d9c-3a7d-4069-9325-cecb231bb956}</UniqueIdentifier>
     </Filter>
@@ -621,6 +618,9 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
       <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue">
+      <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1221,7 +1221,7 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossStatue.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TreasureChest.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>
@@ -1850,7 +1850,7 @@
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossStatue.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\06. BossStatue</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TreasureChest.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\07. TreasureChest</Filter>

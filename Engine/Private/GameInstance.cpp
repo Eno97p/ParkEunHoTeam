@@ -857,8 +857,8 @@ void CGameInstance::Release_Engine()
 }
 
 void CGameInstance::Free()
-{	
-	
+{
+
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pTarget_Manager);

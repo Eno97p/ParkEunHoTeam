@@ -213,7 +213,13 @@
 #include "C:\3D_TeamProj\Client\Private\TreasureChest.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Tree.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UIGroup_DropItem.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UIGroup_Map.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UIGroup_Script.cpp"
@@ -235,6 +241,24 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_LogoFlow.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapArea.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapBG.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapDetail.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapIcon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapPosIcon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_MapUser.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_MenuAlphaBG.cpp"

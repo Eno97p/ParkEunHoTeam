@@ -24,11 +24,16 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
+	_bool Get_Active() { return m_bActive; }
+	void Set_Active(_bool bActive) { m_bActive = bActive; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	CCollider::COLLTYPE m_eColltype = CCollider::COLL_NOCOLL;
+	class CPlayer* m_pPlayer = { nullptr };
+	_bool m_bActive = true;
 
 private:
 	HRESULT Add_Components(void* pArg);

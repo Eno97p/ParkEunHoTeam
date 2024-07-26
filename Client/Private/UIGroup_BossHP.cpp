@@ -107,7 +107,7 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	}
 	else if (BOSSUI_ANDRAS == m_eBossUIName)
 	{
-		pBarDesc.wszBossName = TEXT("ANDRAS");
+		pBarDesc.wszBossName = TEXT("ANDRAS, THE FORSAKEN KING");
 	}
 
 	m_vecUI.emplace_back(dynamic_cast<CUI_BossHPBar*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossHPBar"), &pBarDesc)));

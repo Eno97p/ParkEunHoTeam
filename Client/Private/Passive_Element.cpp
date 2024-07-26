@@ -250,7 +250,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
 
     if (desc->wstrModelName == TEXT("Prototype_Component_Model_BasicCube") || desc->wstrModelName == TEXT("Prototype_Component_Model_BasicGround"))
     {
-        m_bNoCullElement = true;
+     m_bNoCullElement = true;
         m_iShaderPath = 3;
     }
     /* For.Com_Shader */

@@ -49,6 +49,7 @@ private:
 	_uint				m_iNumVerticesZ = { 0 };
 
 	class CQuadTree*	m_pQuadTree = { nullptr };
+	PxActor* m_pTerrainActor = { nullptr };
 
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath);

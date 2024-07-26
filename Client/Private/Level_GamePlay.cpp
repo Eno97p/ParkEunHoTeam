@@ -21,6 +21,7 @@
 #include "Tree.h"
 #include "Decal.h"
 
+#include "CHoverBoard.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -57,8 +58,8 @@ HRESULT CLevel_GamePlay::Initialize()
 
 #ifdef _DEBUG
 #else
-	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 #endif // _DEBUG
+	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
 	Load_Data_Decals();
 	Load_Data_Effects();
@@ -273,54 +274,29 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_HoverBoard"), TEXT("Prototype_GameObject_HoverBoard"))))
-	//	return E_FAIL;
 
 
-	//CGameObject::GAMEOBJECT_DESC desc;
-	//desc.pModelName = "Prototype_Component_Model_Hachoir";
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
-	//	return E_FAIL;
+	
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"))))
+
+	//landObjDesc.mWorldMatrix._41 = 75.f;
+	//landObjDesc.mWorldMatrix._42 = 523.f;
+	//landObjDesc.mWorldMatrix._43 = 98.f;
+	//landObjDesc.mWorldMatrix._44 = 1.f;
+
+	CHoverboard::HoverboardInfo hoverboardInfo;
+	hoverboardInfo.vPosition = _float3(75.f, 553.f, 98.f);
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
 		return E_FAIL;
 	
-	//desc.pModelName = "Prototype_Component_Model_SmashingPillar";
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
-	//	return E_FAIL;
 
 
 
-	//LandObjDesc.fRotationPerSec = XMConvertToRadians(30.f);
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &LandObjDesc)))
-	//	return E_FAIL;
-
-	//_float3 fPosArray[] = {
-	//_float3(85.f, 523.f, 98.f),
-	//_float3(95.f, 523.f, 98.f),
-
-	//};
-
-	//_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
-
-	//CItem::ITEM_DESC desc;
-	//for (int i = 0; i < arraySize; i++)
-	//{
-	//	desc.vPosition = fPosArray[i];
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
-	//		return E_FAIL;
-	//}
 
 
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_Elevator"), &LandObjDesc)))
-	//	return E_FAIL;
 	return S_OK;
 }
 
@@ -377,16 +353,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//	return E_FAIL;
 	
 
+
 	////for (size_t i = 0; i < 5; i++)
 	//{
+
+	//CLandObject::LANDOBJ_DESC landObjDesc;
+	//landObjDesc.mWorldMatrix._41 = 167.f;
+	//landObjDesc.mWorldMatrix._42 = 528.f;
+	//landObjDesc.mWorldMatrix._43 = 98.f;
+	//landObjDesc.mWorldMatrix._44 = 1.f;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
+	//	return E_FAIL;
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = 167.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
-			return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+		return E_FAIL;
 
 
 	//}
@@ -657,7 +642,7 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
 	}
 
 #ifdef _DEBUG
-	MSG_BOX("Effect Data Load");
+	//MSG_BOX("Effect Data Load");
 #endif
 
 	return S_OK;
@@ -708,7 +693,7 @@ HRESULT CLevel_GamePlay::Load_Data_Decals()
 
 
 #ifdef _DEBUG
-	MSG_BOX("Decal Data Loaded");
+	//MSG_BOX("Decal Data Loaded");
 #endif
 	return S_OK;
 }
@@ -795,7 +780,7 @@ void CLevel_GamePlay::Load_Lights()
 	CloseHandle(hFile);
 
 #ifdef _DEBUG
-	MSG_BOX("Lights Data Load");
+	//MSG_BOX("Lights Data Load");
 #endif
 	return;
 }

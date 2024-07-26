@@ -52,9 +52,9 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 		m_pUI_Manager->Render_UIGroup(true, "Loading");
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (true == m_pLoader->is_Finished())
+	//if (true == m_pLoader->is_Finished())
 	{
-		//if (GetKeyState(VK_RETURN) & 0x8000)
+		if (GetKeyState(VK_RETURN) & 0x8000)
 		{
 			m_pGameInstance->Set_NextLevel(m_eNextLevel);
 			

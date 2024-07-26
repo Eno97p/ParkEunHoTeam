@@ -1,5 +1,7 @@
 #include "BossStatue.h"
 #include "GameInstance.h"
+#include "Player.h"
+#include "Weapon.h"
 
 CBossStatue::CBossStatue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CActive_Element(pDevice, pContext)
@@ -28,6 +30,9 @@ HRESULT CBossStatue::Initialize(void* pArg)
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 	}
 
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
@@ -41,7 +46,25 @@ void CBossStatue::Priority_Tick(_float fTimeDelta)
 
 void CBossStatue::Tick(_float fTimeDelta)
 {
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
+	// 플레이어 무기와 몬스터의 충돌 여부
+
+	CWeapon* pPlayerWeapon = dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon());
+	if (!pPlayerWeapon->Get_Active())
+	{
+		m_pColliderCom->Reset();
+		m_eColltype = CCollider::COLL_NOCOLL;
+	}
+	else
+	{
+		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
+	}
+
+	if (m_eColltype == CCollider::COLL_START)
+	{
+		m_bActive = false;
+	}
 }
 
 void CBossStatue::Late_Tick(_float fTimeDelta)
@@ -52,7 +75,10 @@ void CBossStatue::Late_Tick(_float fTimeDelta)
 
 	//DECAL
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	if (m_bActive)
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	}
 
 #ifdef _DEBUG
 
@@ -81,6 +107,12 @@ HRESULT CBossStatue::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
 			return E_FAIL;
 
 
@@ -140,6 +172,18 @@ HRESULT CBossStatue::Render_Bloom()
 
 HRESULT CBossStatue::Add_Components(void* pArg)
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.5f, 3.f, 1.5f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	CMap_Element::MAP_ELEMENT_DESC* pDesc = (CMap_Element::MAP_ELEMENT_DESC*)pArg;
 
 	/*wstring wstr = pDesc->wstrModelName;*/
@@ -153,19 +197,6 @@ HRESULT CBossStatue::Add_Components(void* pArg)
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-
-
-	/* For.Com_Collider */
-	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(2.f, 2.f, 2.f);
-	ColliderDesc.vCenter = _float3(0.f, -ColliderDesc.vExtents.y * 2.f, 0.f);
-
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
 
 	return S_OK;
 }

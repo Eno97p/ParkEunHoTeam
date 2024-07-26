@@ -23,7 +23,6 @@ public:
 
 public:
 	CItemData*							Get_ItemData(_uint iSlotIdx);
-	//CItemData*							Get_ItemData_ByName(wstring wstrItemName);
 	_uint								Get_vecItemSize() { return m_vecItem.size(); }
 	_bool								Get_isQuickEmpty() { return m_mapQuickAccess.empty(); }
 	_uint								Get_QuickMapSize() { return m_mapQuickAccess.size(); } // 추후 이름 바꿀 것

@@ -92,6 +92,10 @@ namespace Engine
 
         return matResult;
     }
+    inline _vector ReflectVector(const _vector& incidentDir, const _vector& normalDir)
+	{
+		return incidentDir - 2.0f * XMVector3Dot(incidentDir, normalDir) * normalDir;
+	}
 
     inline string wstring_to_string(const std::wstring& wstr) {
         if (wstr.empty()) return std::string();

@@ -388,6 +388,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
 			return E_FAIL;
 
+
 	//}
 
 	// Npc

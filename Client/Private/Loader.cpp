@@ -734,10 +734,31 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 #pragma region Monster
-	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Andras/Andras.fbx", PreTransformMatrix))))
-	//	return E_FAIL;
+	// Andras
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Andras_0724/Andras.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Weapon_Andras */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Weapon_Andras2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Weapon_Andras3 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Weapon_Andras4 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	/* For.Prototype_Component_Model_Weapon_Andras5 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras5"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword5.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	// Juggulus

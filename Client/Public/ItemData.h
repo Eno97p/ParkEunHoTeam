@@ -53,6 +53,7 @@ public:
 	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
 
 	ITEM_NAME		Get_ItemName() { return m_eItemName; }
+	ITEM_TYPE		Get_ItemType() { return m_eItemType; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -61,6 +62,9 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	// 아이템 사용 시 호출할 함수 구현할 것
+	void			Use_Item();
 
 private:
 	_bool					m_isEquip = { false };

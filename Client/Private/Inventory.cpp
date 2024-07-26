@@ -71,8 +71,8 @@ HRESULT CInventory::Initialize_DefaultItem()
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
 	//test
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_ESSENCE);
+	//Add_DropItem(CItem::ITEM_BUFF1);
 
 	return S_OK;
 }
@@ -89,10 +89,6 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
-		// 동일한 템이 존재하는 경우 해당 슬롯의 개수를 늘리는 식으로 들어가야 함 !
-		// 아이템 개수 정보는 ItemData가 가지고 있는 것으로 
-
-		// Inventory를 순회하며 동일한 ItemData가 있는지 검사 -> 없으면 기존처럼 추가 -> 있으면 해당 ItemData의 개수를 늘리는 것으로
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
 			// Inventory에 ItemData 추가

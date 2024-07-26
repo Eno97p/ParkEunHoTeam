@@ -213,11 +213,18 @@ void CUI_InvSub_Btn::Mouse_Input()
 		case Client::CUI_InvSub_Btn::BTN_USE:
 		{
 			CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
-			if (CItemData::ITEMNAME_ESSENCE == pItem->Get_ItemName()) // Essence의 경우에만 사용 가능
+
+			// Essence의 경우에만 사용 가능? Type을 나눠두었으니 사용 가능한 Item들은 전부 사용 가능하도록 해야 할 거 같음 아이템 종류에 따른 분기처리도 하고
+			if (CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType()) // CItemData::ITEMNAME_ESSENCE == pItem->Get_ItemName()
 			{
-				_uint iRand = rand() % 300 + 100;
-				CInventory::GetInstance()->Calcul_Soul(iRand);
-				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Rend_Calcul(iRand);
+				// ItemData에 사용 시 호출되는 함수를 만들어서 해당 함수 내에서 아이템 종류에 따른 분기처리를 할 것
+				// 여기서는 해당 함수 불러주기
+				// 아래 코드도 해당 코드의 Essence 부분 분기에 넣도록
+				// 아이템 개수 줄어드는 것도 거기에서 구현하면 될 거 같음
+
+				pItem->Use_Item();
+				// Item 개수 하나 줄어들기
+
 
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);

@@ -238,6 +238,15 @@
     <ClInclude Include="..\Public\AndrasLazer_Cylinder.h">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AndrasScrew.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ElectricCylinder.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasRain.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -364,6 +373,15 @@
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasScrew.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricCylinder.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasRain.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClCompile>
   </ItemGroup>

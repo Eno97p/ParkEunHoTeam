@@ -11,6 +11,9 @@
 #include "Andras.h"
 #include "AndrasLazer_Base.h"
 #include "AndrasLazer_Cylinder.h"
+#include "AndrasScrew.h"
+#include "AndrasRain.h"
+#include "ElectricCylinder.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -1931,39 +1934,60 @@ void CImguiMgr::Lazer_Tool()
 
 	static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
 	static CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CDesc{};
+	static CAndrasScrew::ANDRAS_SCREW_DESC SDesc{};
+	static CElectricCylinder::ANDRAS_ELECTRIC_DESC EDesc{};
+	static CAndrasRain::ANDRAS_RAIN_DESC RDesc{};
 
 	ImGui::InputFloat3("MaxSize", reinterpret_cast<float*>(&Desc.vMaxSize));
 	ImGui::InputFloat3("CMaxSize", reinterpret_cast<float*>(&CDesc.vMaxSize));
+	ImGui::InputFloat3("SMaxSize", reinterpret_cast<float*>(&SDesc.vMaxSize));
+	ImGui::InputFloat3("EMaxSize", reinterpret_cast<float*>(&EDesc.vMaxSize));
+	ImGui::InputFloat3("RMaxSize", reinterpret_cast<float*>(&RDesc.vMaxSize));
 
 	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&Desc.vOffset));
 	ImGui::InputFloat3("COffsetPos", reinterpret_cast<float*>(&CDesc.vOffset));
+	RDesc.vOffset = CDesc.vOffset;
+	ImGui::InputFloat3("SOffsetPos", reinterpret_cast<float*>(&SDesc.vOffset));
+	ImGui::InputFloat3("EOffsetPos", reinterpret_cast<float*>(&EDesc.vOffset));
 
 	ImGui::InputFloat("RotationSpeed", &Desc.fRotationSpeed);
 	ImGui::InputFloat("CRotationSpeed", &CDesc.fRotationSpeed);
+	ImGui::InputFloat("SRotationSpeed", &SDesc.fRotationSpeed);
+	ImGui::InputFloat("ERotationSpeed", &EDesc.fRotationSpeed);
 
 	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
 	ImGui::InputFloat("CBloomPower", &CDesc.fBloomPower);
+	ImGui::InputFloat("SBloomPower", &SDesc.fBloomPower);
 
 	ImGui::InputFloat("DistortionPower", &Desc.fDistortionPower);
 	ImGui::InputFloat("CDistortionPower", &CDesc.fDistortionPower);
+	ImGui::InputFloat("SDistortionPower", &SDesc.fDistortionPower);
 
 	ImGui::InputFloat("MaxLifeTime", &Desc.fMaxLifeTime);
 	ImGui::InputFloat("CMaxLifeTime", &CDesc.fMaxLifeTime);
+	ImGui::InputFloat("SMaxLifeTime", &SDesc.fMaxLifeTime);
+	ImGui::InputFloat("EMaxLifeTime", &EDesc.fMaxLifeTime);
+	RDesc.fMaxLifeTime = CDesc.fMaxLifeTime;
 
 	ImGui::InputFloat("UVSpeed", &Desc.fUVSpeed);
 	ImGui::InputFloat("CUVSpeed", &CDesc.fUVSpeed);
-
-	ImGui::InputInt("DesolveNumber", &Desc.NumDesolve);
-	ImGui::InputInt("CDesolveNumber", &CDesc.NumDesolve);
+	ImGui::InputFloat("SUVSpeed", &SDesc.fUVSpeed);
+	ImGui::InputFloat("RUVSpeed", &RDesc.fUVSpeed);
+	ImGui::InputFloat("EFrameSpeed", &EDesc.frameSpeed);
 
 	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
 	ImGui::ColorEdit3("CColor", reinterpret_cast<float*>(&CDesc.fColor));
-
-
+	ImGui::ColorEdit3("SColor", reinterpret_cast<float*>(&SDesc.fColor));
+	ImGui::ColorEdit3("RColor", reinterpret_cast<float*>(&RDesc.fColor));
+	ImGui::ColorEdit3("EColor", reinterpret_cast<float*>(&EDesc.fColor));
 
 
 	Desc.ParentMatrix = TrailMat;
 	CDesc.ParentMatrix = TrailMat;
+	SDesc.ParentMatrix = TrailMat;
+	EDesc.ParentMatrix = TrailMat;
+	RDesc.ParentMatrix = TrailMat;
+	
 	if (ImGui::Button("Generate", ButtonSize))
 	{
 		if (Desc.ParentMatrix == nullptr)
@@ -1974,9 +1998,18 @@ void CImguiMgr::Lazer_Tool()
 				TEXT("Prototype_GameObject_Andras_LazerBase"), &Desc);
 			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
 				TEXT("Prototype_GameObject_Andras_LazerCylinder"), &CDesc);
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
+				TEXT("Prototype_GameObject_Andras_Screw"), &SDesc);
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
+				TEXT("Prototype_GameObject_ElectricCylinder"), &EDesc);
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
+				TEXT("Prototype_GameObject_AndrasRain"), &RDesc);
 		}
 	}
-
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"));
+	}
 	ImGui::End();
 }
 

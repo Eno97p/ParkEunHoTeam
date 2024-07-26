@@ -152,12 +152,43 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
         }
         else
         {
-            // CTree::GRASS_DESC GrassDesc{};
-            // GrassDesc.vBotCol = { 0.3f, 0.3f, 0.3f };
-             //GrassDesc.vTopCol = { 0.5f, 0.8f, 0.5f };
-             //XMStoreFloat4(&GrassDesc.vStartPos, vPosition);
             CTree::TREE_DESC desc{};
             XMStoreFloat4x4(&desc.mWorldMatrix, WorldMatrix);
+
+            switch (iSelectIdx)
+            {
+            case 1:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_BasicTree");
+                break;
+            case 2:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_BirchTree");
+                break;
+            case 3:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_BloomTree");
+                break;
+            case 4:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_Bush");
+                break;
+            case 5:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_CherryTree");
+                break;
+            case 6:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_GhostTree");
+                break;
+            case 7:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_PineTree");
+                break;
+            case 8:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_WillowTree");
+                break;
+            case 9:
+                strcpy_s(desc.szModelName, "Prototype_Component_Model_TreeC");
+                break;
+            default:
+                MSG_BOX("Wrong idx");
+                break;
+            }
+            desc.isBloom = CImgui_Manager::GetInstance()->Get_TreeBloom();
             desc.vLeafCol = CImgui_Manager::GetInstance()->Get_LeafCol();
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Tree"), &desc)))
                 return E_FAIL;

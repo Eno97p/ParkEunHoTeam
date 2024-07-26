@@ -17,6 +17,8 @@
 #include "VIBuffer_Instance_Point.h"
 
 #include "Grass.h"
+#include "Tree.h"
+
 #include "FireEffect.h"
 #include "TransitionCamera.h"
 #include "Trap.h"
@@ -84,6 +86,16 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
     if (CImgui_Manager::GetInstance()->Get_IsEffectsLoad())
     {
         Load_Data_Effects();
+    }
+
+    if (CImgui_Manager::GetInstance()->Get_IsDecalSave())
+    {
+        Save_Data_Decals();
+    }
+
+    if (CImgui_Manager::GetInstance()->Get_IsDecalLoad())
+    {
+        Load_Data_Decals();
     }
 
     if (CImgui_Manager::GetInstance()->Get_IsDecalSave())
@@ -525,7 +537,7 @@ HRESULT CLevel_GamePlay::Load_Data_PhysX()
 
 HRESULT CLevel_GamePlay::Save_Data_Effects()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Plain_Effects.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -536,7 +548,9 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
     // 먼저 이펙트 개수를 세고 저장
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
     {
-        if (strcmp(iter->Get_Name(), "Prototype_GameObject_Fire_Effect") == 0) //이펙트 추가할 때마다 여기에 조건 추가
+        if (strcmp(iter->Get_Name(), "Prototype_GameObject_Fire_Effect") == 0 || 
+            strcmp(iter->Get_Name(), "Prototype_GameObject_Grass") == 0 ||
+            strcmp(iter->Get_Name(), "Prototype_GameObject_Tree") == 0) //이펙트 추가할 때마다 여기에 조건 추가
         {
             iEffectCount++;
         }
@@ -549,6 +563,7 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
         if (strcmp(iter->Get_Name(), "Prototype_GameObject_Fire_Effect") == 0) //이펙트 추가할 때마다 여기에 조건 추가
         {
             char szName[MAX_PATH] = "";
+            char szModelName[MAX_PATH] = "";
             char szLayer[MAX_PATH] = "";
             _float4x4 WorldMatrix;
 
@@ -557,8 +572,54 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
             XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
 
             WriteFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+        }
+        else if (strcmp(iter->Get_Name(), "Prototype_GameObject_Grass") == 0)
+        {
+            char szName[MAX_PATH] = "";
+            char szLayer[MAX_PATH] = "";
+            _float4x4 WorldMatrix;
+            _float3 TopCol, BotCol;
+
+            strcpy_s(szName, iter->Get_Name());
+            strcpy_s(szLayer, iter->Get_Layer());
+            XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
+            TopCol = static_cast<CGrass*>(iter)->Get_TopCol();
+            BotCol = static_cast<CGrass*>(iter)->Get_BotCol();
+
+            WriteFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
+            WriteFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
+
+        }
+        else if (strcmp(iter->Get_Name(), "Prototype_GameObject_Tree") == 0)
+        {
+
+            char szName[MAX_PATH] = "";
+            char szModelName[MAX_PATH] = "";
+            char szLayer[MAX_PATH] = "";
+            _float4x4 WorldMatrix;
+            _float3 LeafCol;
+            _bool isBloom;
+
+            strcpy_s(szName, iter->Get_Name());
+            strcpy_s(szModelName, iter->Get_ModelName());
+            strcpy_s(szLayer, iter->Get_Layer());
+            XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
+            LeafCol = static_cast<CTree*>(iter)->Get_LeafCol();
+            isBloom = static_cast<CTree*>(iter)->Get_Bloom();
+
+            WriteFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &LeafCol, sizeof(_float3), &dwByte, nullptr);
+            WriteFile(hFile, &isBloom, sizeof(_bool), &dwByte, nullptr);
+
         }
     }
 
@@ -570,7 +631,7 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
 
 HRESULT CLevel_GamePlay::Load_Data_Effects()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Plain_Effects.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -584,20 +645,25 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
     for (_uint i = 0; i < iEffectCount; ++i)
     {
         char szName[MAX_PATH] = "";
+        char szModelName[MAX_PATH] = "";
         char szLayer[MAX_PATH] = "";
         _float4x4 WorldMatrix;
 
         ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+        ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
         ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
         ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 
         // char 배열을 wstring으로 변환
-        wstring wsName, wsLayer;
+        wstring wsName, wsModelName, wsLayer;
         int nNameLen = MultiByteToWideChar(CP_ACP, 0, szName, -1, NULL, 0);
+        int nModelNameLen = MultiByteToWideChar(CP_ACP, 0, szModelName, -1, NULL, 0);
         int nLayerLen = MultiByteToWideChar(CP_ACP, 0, szLayer, -1, NULL, 0);
         wsName.resize(nNameLen);
+        wsModelName.resize(nModelNameLen);
         wsLayer.resize(nLayerLen);
         MultiByteToWideChar(CP_ACP, 0, szName, -1, &wsName[0], nNameLen);
+        MultiByteToWideChar(CP_ACP, 0, szModelName, -1, &wsModelName[0], nModelNameLen);
         MultiByteToWideChar(CP_ACP, 0, szLayer, -1, &wsLayer[0], nLayerLen);
 
         // 이펙트 생성 및 설정
@@ -611,7 +677,40 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
                 return E_FAIL;
         }
+        else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Grass") == 0)
+        {
+            CGrass::GRASS_DESC GrassDesc{};
+            GrassDesc.mWorldMatrix = WorldMatrix;
 
+            // 추가 정보 읽기
+            _float3 TopCol, BotCol;
+            ReadFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
+            ReadFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
+
+            GrassDesc.vTopCol = TopCol;
+            GrassDesc.vBotCol = BotCol;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wsLayer.c_str(), wsName.c_str(), &GrassDesc)))
+                return E_FAIL;
+        }
+        else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Tree") == 0)
+        {
+            CTree::TREE_DESC TreeDesc{};
+            TreeDesc.mWorldMatrix = WorldMatrix;
+            strcpy_s(TreeDesc.szModelName, szModelName);
+
+            // 추가 정보 읽기
+            _float3 LeafCol;
+            _bool isBloom;
+            ReadFile(hFile, &LeafCol, sizeof(_float3), &dwByte, nullptr);
+            ReadFile(hFile, &isBloom, sizeof(_bool), &dwByte, nullptr);
+
+            TreeDesc.vLeafCol = LeafCol;
+            TreeDesc.isBloom = isBloom;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, wsLayer.c_str(), wsName.c_str(), &TreeDesc)))
+                return E_FAIL;
+        }
     }
 
     CloseHandle(hFile);
@@ -672,7 +771,7 @@ HRESULT CLevel_GamePlay::Save_Data_Decals()
 
 HRESULT CLevel_GamePlay::Load_Data_Decals()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Tutorial_Decals.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == hFile)
         return E_FAIL;

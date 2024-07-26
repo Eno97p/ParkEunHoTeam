@@ -49,6 +49,12 @@ float g_WindFrequency;
 float g_WindGustiness;
 
 
+//바람 시뮬레이션용
+float g_fTime;
+float3 g_vWindDirection;
+float g_fWindStrength;
+float3 g_LeafCol;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -92,6 +98,50 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
+VS_OUT VS_LEAF(VS_IN In)
+{
+	VS_OUT Out = (VS_OUT)0;
+
+	// 로컬 공간에서의 위치를 사용하여 노이즈 계산
+	float3 localPos = In.vPosition;
+
+	// 노이즈 계산
+	float positionOffset = sin(localPos.x * 0.1 + localPos.z * 0.1) * 0.5 + 0.5;
+	float noise1 = sin(g_fTime * 1.5 + localPos.x * 0.05 + localPos.z * 0.05) * 0.05 * positionOffset;
+	float noise2 = cos(g_fTime * 2.0 + localPos.z * 0.1) * 0.03;
+	float noise3 = sin(g_fTime * 2.5 + localPos.x * 0.1) * 0.02;
+	float verticalNoise = sin(g_fTime + localPos.x * 0.02 + localPos.z * 0.02) * 0.01;
+
+	float3 totalNoise = float3(
+		noise1 * g_vWindDirection.x + noise3,
+		verticalNoise + noise2 * 0.5,
+		noise1 * g_vWindDirection.z + noise2
+	) * g_fWindStrength;
+
+	// 버텍스 위치에 따른 가중치 (잎의 끝부분이 더 많이 움직이도록)
+	float tipInfluence = saturate((localPos.y - min(localPos.y, 0)) * 0.5 + 0.5);
+
+	// 노이즈를 로컬 위치에 적용
+	localPos += totalNoise * tipInfluence;
+
+	// 월드 변환 적용
+	float4 worldPos = mul(float4(localPos, 1.f), g_WorldMatrix);
+
+	// 뷰 및 투영 변환 적용
+	matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matrix matWVP = mul(matWV, g_ProjMatrix);
+	Out.vPosition = mul(float4(localPos, 1.f), matWVP);
+
+	// 나머지 출력 설정
+	Out.vNormal = float4(normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix)).xyz, 0.f);
+	Out.vTexcoord = In.vTexcoord;
+	Out.vProjPos = Out.vPosition;
+	Out.vLocalPos = float4(localPos, 1.f);
+	Out.vTangent = float4(normalize(mul(float4(In.vTangent, 0.f), g_WorldMatrix)).xyz, 0.f);
+	Out.vBinormal = float4(normalize(cross(Out.vNormal.xyz, Out.vTangent.xyz)), 0.f);
+
+	return Out;
+}
 
 struct VS_OUT_LIGHTDEPTH
 {
@@ -384,9 +434,86 @@ PS_OUT_BLOOM PS_BLOOM(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_LEAF(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f || vDiffuse.r < 0.9f)
+		discard;
+
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+	if (g_bDiffuse)
+	{
+		float3 baseColor = g_LeafCol;
+		float2 centeredUV = In.vTexcoord - 0.5;
+		float distanceFromCenter = length(centeredUV);
+		float gradient = 1.0 - smoothstep(0.0, 0.5, distanceFromCenter);
+		float3 brightColor = baseColor * 1.3;
+		float3 finalColor = lerp(baseColor, brightColor, gradient);
+		float randomness = frac(sin(dot(In.vPosition.xy, float2(12.9898, 78.233))) * 43758.5453);
+		finalColor *= (0.9 + 0.2 * randomness);
+		Out.vDiffuse = float4(finalColor, 1.f);
+	}
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	if (g_bSpecular) Out.vSpecular = vSpecular;
+
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vRoughness = g_RoughnessTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	if (g_bEmissive) Out.vEmissive = vEmissive;
+	if (g_bRoughness) Out.vRoughness = vRoughness;
+	if (g_bMetalic) Out.vMetalic = vMetalic;
+
+	return Out;
+}
+
+
+PS_OUT_BLOOM PS_LEAF_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vColor.a < 0.1f || vColor.r < 0.9f)
+		discard;
+
+	if (g_bDiffuse)
+	{
+		Out.vColor = float4(g_LeafCol * 0.5f, 1.f);
+	}
+
+	return Out;
+}
+
+PS_OUT_BLOOM PS_TRUNK_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse)
+	{
+		Out.vColor = vColor * 0.6f + 0.1f;
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
-	pass DefaultPass
+	pass DefaultPass_0
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -399,7 +526,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-	pass LightDepth
+	pass LightDepth_1
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -412,7 +539,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
 	}
 
-	pass ColoredDiffuse
+	pass ColoredDiffuse_2
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -425,7 +552,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_GRASS_ORDINARY();
 	}
 
-		pass Dissolve
+		pass Dissolve_3
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -438,7 +565,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_DISSOLVE();
 	}
 
-		pass WireFrame
+		pass WireFrame_4
 	{
 		SetRasterizerState(RS_Wireframe);
 		SetDepthStencilState(DSS_Default, 0);
@@ -451,7 +578,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_WIREFRAME();
 	}
 
-		pass AlphaBlend
+		pass AlphaBlend_5
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -465,7 +592,7 @@ technique11 DefaultTechnique
 
 	}
 
-		pass Bloom
+		pass Bloom_6
 	{
 		SetRasterizerState(RS_NoCull);
 		SetDepthStencilState(DSS_Default, 0);
@@ -478,6 +605,47 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_BLOOM();
 	}
+
+
+	 pass Tree_7
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_LEAF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LEAF();
+	}
+
+	pass LeafBloom_8
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_LEAF();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LEAF_BLOOM();
+	}
+
+	pass TrunkBloom_9
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TRUNK_BLOOM();
+	}
+
 
 }
 

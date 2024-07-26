@@ -73,6 +73,7 @@ public:
 	_float3 Get_GrassTopCol() { return m_TopCol; }
 	_float3 Get_GrassBotCol() { return m_BotCol; }
 	_float3 Get_LeafCol() { return m_LeafCol; }
+	_bool Get_TreeBloom() { return m_bTreeBloom; }
 
 	void	Add_vecCreateObj(_char* pName) { m_vecCreateObj.emplace_back(pName); }
 	void	Add_vecCreateCell(_int iIndex)
@@ -154,6 +155,7 @@ private:
 	_float4 m_ClickedMousePos = { 0.f, 0.f, 0.f, 1.f };
 	_int	m_selectedOption = 0; // 선택된 옵션을 저장할 변수
 
+	_bool m_bTreeBloom = false;
 private:
 
 	// Imguizmo

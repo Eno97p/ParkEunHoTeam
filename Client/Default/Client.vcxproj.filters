@@ -597,6 +597,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword">
       <UniqueIdentifier>{76988682-71e3-47a1-87dd-d0f96e2f95ae}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
+      <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1228,6 +1231,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\RushSword.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1833,6 +1839,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RushSword.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1915,6 +1924,11 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
+	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

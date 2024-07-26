@@ -95,6 +95,7 @@
 #include "TreasureChest.h"
 #include "EventTrigger.h"
 
+#include "Tree.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

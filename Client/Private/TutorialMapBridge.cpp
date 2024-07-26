@@ -28,7 +28,7 @@ HRESULT CTutorialMapBridge::Initialize(void* pArg)
 
 	/*m_World = *m_pTransformCom->Get_WorldFloat4x4();*/
 	m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(93.6f, 524.f, 97.3f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(85.818f, 523.3f, 96.2f, 1.f));
 	return S_OK;
 }
 

@@ -26,7 +26,6 @@ public:
 	virtual HRESULT Render_Bloom() override;
 
 private:
-	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CPhysXComponent_static* m_pPhysXCom = { nullptr };

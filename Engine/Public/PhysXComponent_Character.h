@@ -62,6 +62,8 @@ public:
 	HRESULT Go_BackWard(_float fTimeDelta);
 	HRESULT Go_Left(_float fTimeDelta);
 	HRESULT Go_Right(_float fTimeDelta);
+	HRESULT Go_LeftFront(_float fTimeDelta);
+	HRESULT Go_RightFront(_float fTimeDelta);
 	HRESULT Go_OrbitCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_OrbitCCW(_float fTimeDelta, CTransform* pTargetTransform);
 	HRESULT Go_Jump(_float fTimeDelta, _float fJumpSpeed = 0.f);

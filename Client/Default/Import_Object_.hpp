@@ -152,11 +152,6 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 
 
 #pragma region Active Element
-	/* For.Prototype_GameObject_Mantari */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Andras"),
-		CAndras::Create(pDevice, pContext))))
-		return E_FAIL;
-
 	// Prototype_GameObject_TutorialMapBridge
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TutorialMapBridge"),
 		CTutorialMapBridge::Create(pDevice, pContext))))
@@ -198,6 +193,39 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 #pragma endregion Active Element
 
 #pragma region Monster
+	/* For.Prototype_GameObject_Andras */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Andras"),
+		CAndras::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Body_Andras */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Andras"),
+		CBody_Andras::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon_Andras */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras"),
+		CWeapon_Andras::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon_Andras2 */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras2"),
+		CWeapon_Andras2::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon_Andras3 */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras3"),
+		CWeapon_Andras3::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon_Andras4 */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras4"),
+		CWeapon_Andras4::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_Weapon_Andras5 */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras5"),
+		CWeapon_Andras5::Create(pDevice, pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_RushSword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_RushSword"),
+		CRushSword::Create(pDevice, pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Boss_Juggulus */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss_Juggulus"),
 		CBoss_Juggulus::Create(pDevice, pContext))))

@@ -55,9 +55,13 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+#ifdef _DEBUG
+#else
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
-	Load_Data_Effects();
+#endif // _DEBUG
+
 	Load_Data_Decals();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -278,7 +282,7 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &desc)))
 	//	return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_HoverBoard"))))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Behicle"), TEXT("Prototype_GameObject_TestPhysxCollider"))))

@@ -108,6 +108,9 @@ private:
 	void Electron_Tool();
 
 private:
+	void Lazer_Tool();
+
+private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
 private:
@@ -147,6 +150,7 @@ private:
 
 private:
 	vector<string> ModelName;
+	_int CurModel = 0;
 
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

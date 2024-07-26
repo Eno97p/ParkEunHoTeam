@@ -27,7 +27,7 @@ HRESULT CThirdPersonCamera::Initialize(void* pArg)
 {
     THIRDPERSONCAMERA_DESC* pDesc = (THIRDPERSONCAMERA_DESC*)pArg;
     m_fSensor = pDesc->fSensor;
-    m_pPlayerTrans = pDesc->pPlayerTrans;
+    m_pPlayerTrans = pDesc->pPlayerTrans;//dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"),TEXT("Com_Transform"), 0));
     Safe_AddRef(m_pPlayerTrans);
 
     if (FAILED(__super::Initialize(pArg)))

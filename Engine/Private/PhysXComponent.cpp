@@ -693,3 +693,24 @@ PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMat
 
 	return pxTrans;
 }
+
+XMMATRIX CPhysXComponent::Convert_PxTrans_To_DxMat(const PxTransform& pTrans)
+{
+	PxVec3 position = pTrans.p;
+	PxQuat rotation = pTrans.q;
+
+	XMVECTOR dxPosition = XMVectorSet(position.x, position.y, position.z, 1.0f);
+	XMVECTOR dxRotation = XMVectorSet(rotation.x, rotation.y, rotation.z, rotation.w);
+
+	XMVECTOR dxScale = XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f);	// 스케일은 PhysX Transform에 포함되어 있지 않으므로  1로 고정 
+
+
+	XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(dxRotation);
+
+	//크기 x 회전 x 위치 순서로 곱해도 되지만  Direcx의 아핀변환함수를 이용하면 최적화 되어 있어서 이것을 사용
+
+	XMMATRIX worldMatrix = XMMatrixAffineTransformation(dxScale, XMVectorZero(), dxRotation, dxPosition);
+
+
+	return worldMatrix;
+}

@@ -37,10 +37,32 @@ HRESULT CRushSword::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
+
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(pDesc->mWorldMatrix._11, pDesc->mWorldMatrix._12, pDesc->mWorldMatrix._13, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(pDesc->mWorldMatrix._21, pDesc->mWorldMatrix._22, pDesc->mWorldMatrix._23, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(pDesc->mWorldMatrix._31, pDesc->mWorldMatrix._32, pDesc->mWorldMatrix._33, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pDesc->mWorldMatrix._41, pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43, 1.f));
+
+
+	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+	_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
+	_vector vDir = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float fDegree = XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(vPlayerLook, vDir))));
+
+	if (pDesc->eRushtype == TYPE_SHOOTINGSTAR)
+	{
+		int i = RandomInt(1, 2);
+		if (i == 1)
+		{
+			m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-10.f));
+		}
+		else
+		{
+			m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(10.f));
+		}
+	}
+
+	m_bIsActive = false;
 
 	return S_OK;
 }
@@ -66,6 +88,7 @@ void CRushSword::Tick(_float fTimeDelta)
 	m_fShootDelay -= fTimeDelta;
 	if (m_fShootDelay < 0.f && m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] > m_fHeight)
 	{
+		Set_Active();
 		m_pTransformCom->Go_Up(fTimeDelta);
 	}
 	else if (m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] <= m_fHeight)
@@ -75,11 +98,14 @@ void CRushSword::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	// 몬스터 무기와 플레이어 충돌처리
-	m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
-	if (m_eColltype == CCollider::COLL_START)
+	if (m_fDisolveValue == 1.f)
 	{
-		m_pPlayer->PlayerHit(10);
+		// 몬스터 무기와 플레이어 충돌처리
+		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+		if (m_eColltype == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
 	}
 
 	Generate_Trail(5);

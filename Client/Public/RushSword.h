@@ -8,8 +8,12 @@ BEGIN(Client)
 class CRushSword final : public CWeapon
 {
 public:
+	enum RUSHTYPE { TYPE_BABYLON, TYPE_SHOOTINGSTAR};
+
+public:
 	typedef struct RUSH_DESC : public WEAPON_DESC
 	{
+		RUSHTYPE eRushtype;
 		_uint meshNum;
 		_float fHeight;
 	}RUSH_DESC;

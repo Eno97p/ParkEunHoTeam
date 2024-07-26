@@ -217,6 +217,11 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 14;
 	}
+	else if (*m_pState == CBoss_Juggulus::STATE_GROGGY)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 17;
+	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 

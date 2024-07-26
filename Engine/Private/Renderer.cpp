@@ -610,6 +610,8 @@ void CRenderer::Draw()
 
 	PROFILE_CALL("Render Decal", Render_Decal());
 
+    PROFILE_CALL("Render NonDecal", Render_NonDecal());
+
 	PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
    
@@ -785,6 +787,25 @@ void CRenderer::Render_Decal()
     }
 
     m_RenderGroup[RENDER_DECAL].clear();
+
+    if (FAILED(m_pGameInstance->End_MRT()))
+        return;
+}
+
+void CRenderer::Render_NonDecal()
+{
+    /* Diffuse + Normal */
+    if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"), false)))
+        return;
+
+    for (auto& pGameObject : m_RenderGroup[RENDER_NONDECAL])
+    {
+        if (nullptr != pGameObject)
+            pGameObject->Render();
+
+        Safe_Release(pGameObject);
+    }
+    m_RenderGroup[RENDER_NONDECAL].clear();
 
     if (FAILED(m_pGameInstance->End_MRT()))
         return;

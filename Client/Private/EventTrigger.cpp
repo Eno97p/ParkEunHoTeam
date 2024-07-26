@@ -200,6 +200,31 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
 					
+					//보스 석상 소환
+					CMap_Element::MAP_ELEMENT_DESC StatueDesc = {};
+					_matrix vMat = { 0.f, 0.f, -1.f, 0.f,
+					0.f, 1.f, 0.f, 0.f,
+					1.f, 0.f, 0.f, 0.f,
+					-410.189f, 67.966f, -2.195f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
+					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
+					vMat = { -0.91f, 0.f, -0.415f, 0.f,
+				   0.f, 1.f, 0.f, 0.f,
+				   0.415f, 0.f, -0.91f, 0.f,
+				   -420.326f, 67.976f, -17.686f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
+					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
+					vMat = { -0.905f, 0.f, -0.426f, 0.f,
+				   0.f, 1.f, 0.f, 0.f,
+				   0.426f, 0.f, -0.905f, 0.f,
+				   -420.068f, 67.932f, 13.209f, 1.f };
+					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
+					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+
 					//보스 소환
 					dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
 				
@@ -211,32 +236,6 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), &desc)))
 						return;
-
-					//보스 석상 소환
-					CMap_Element::MAP_ELEMENT_DESC StatueDesc = {};
-					_matrix vMat = { 0.f, 0.f, -1.f, 0.f,
-					0.f, 1.f, 0.f, 0.f,
-					1.f, 0.f, 0.f, 0.f,
-					-410.189f, 67.966f, -2.195f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
-
-					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
-					 vMat = { -0.91f, 0.f, -0.415f, 0.f,
-					0.f, 1.f, 0.f, 0.f,
-					0.415f, 0.f, -0.91f, 0.f,
-					-420.326f, 67.976f, -17.686f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
-
-					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
-					 vMat = { -0.905f, 0.f, -0.426f, 0.f,
-					0.f, 1.f, 0.f, 0.f,
-					0.426f, 0.f, -0.905f, 0.f,
-					-420.068f, 67.932f, 13.209f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
-
 				}
 				break;
 				case TRIG_DESCEND_ELEVATOR:

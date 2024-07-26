@@ -53,6 +53,8 @@ public:
 	HRESULT	Delete_EquipWeapon(_uint iEquipSlotIdx);
 	HRESULT	Delete_EquipSkill(_uint iEquipSlotIdx);
 
+	HRESULT	Delete_Item(CItemData* pItemData);
+
 	void	Calcul_Soul(_int iSoul) { m_iSoul += iSoul; } // 인자로 넣어준 값을 기존 Soul에 연산해주기 (+ or -)
 	_bool	Check_Overlab(CItem::ITEM_NAME eItemType);
 

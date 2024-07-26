@@ -440,6 +440,11 @@ HRESULT CUI_Slot::Delete_ItemIcon()
 	Safe_Release(m_pItemIcon);
 	m_pItemIcon = nullptr;
 
+	Safe_Release(m_pSymbolIcon);
+	m_pSymbolIcon = nullptr;
+
+	m_isEquip = false;
+
 	return S_OK;
 }
 

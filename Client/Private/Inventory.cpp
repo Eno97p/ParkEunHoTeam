@@ -230,6 +230,26 @@ HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
 	return S_OK;
 }
 
+HRESULT CInventory::Delete_Item(CItemData* pItemData)
+{
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < m_vecItem.size(); ++i)
+	{
+		if (pItemData == (*item))
+		{
+			Safe_Release((*item));
+			m_vecItem.erase(item);
+			break;
+		}
+		else
+		{
+			++item;
+		}
+	}
+
+	return S_OK;
+}
+
 _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 {
 	CItemData::ITEM_NAME eItemName = { CItemData::ITEMNAME_END };

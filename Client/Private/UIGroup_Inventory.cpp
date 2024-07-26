@@ -120,6 +120,15 @@ void CUIGroup_Inventory::Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip)
 	(*slot)->Set_isEquip(isEquip);
 }
 
+void CUIGroup_Inventory::Update_Inventory_Delete(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Delete_ItemIcon();
+}
+
 void CUIGroup_Inventory::Rend_Calcul(_int iSoul)
 {
 	m_pSoul->Rend_Calcul(iSoul);

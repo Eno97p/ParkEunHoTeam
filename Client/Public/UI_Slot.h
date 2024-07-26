@@ -36,6 +36,8 @@ public:
 			return true;
 	}
 
+	_uint			Get_InvenIdx() { return m_iInventoryIdx; }
+
 public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;

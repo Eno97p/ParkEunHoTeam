@@ -152,7 +152,6 @@ void CUIGroup_Quick::Update_QuickSlot_Add(CItemData* pItemData, _int iInvenIdx)
 		{
 			++slot;
 		}
-
 	}
 }
 
@@ -172,6 +171,28 @@ void CUIGroup_Quick::Update_InvSlot_EquipSign(_uint iSlotIdx, _bool isEquip)
 		++slot;
 
 	(*slot)->Set_isEquip(isEquip);
+}
+
+void CUIGroup_Quick::Update_QuickSlot_Delete(_uint iInvenIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if ((*slot)->Get_InvenIdx() == iInvenIdx)
+		{
+			(*slot)->Delete_ItemIcon();
+			break;
+		}
+	}
+}
+
+void CUIGroup_Quick::Update_InvSlot_Delete(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecInvSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Delete_ItemIcon();
 }
 
 HRESULT CUIGroup_Quick::Create_UI()

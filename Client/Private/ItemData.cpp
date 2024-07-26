@@ -5,6 +5,7 @@
 #include "UI_Manager.h"
 
 #include "UIGroup_Inventory.h"
+#include "UIGroup_Quick.h"
 
 CItemData::CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{pDevice, pContext}
@@ -58,7 +59,7 @@ HRESULT CItemData::Render()
 	return S_OK;
 }
 
-void CItemData::Use_Item()
+void CItemData::Use_Item(_uint iInvenIdx)
 {
 	// 호버보드나 Firefly 같은 특정 아이템들은 사용 시 Inventory 포함한 메뉴들이 싹 꺼져야 할 거 같음
 	// 나머지는 그냥 써지는(적용되는) 식으로
@@ -66,10 +67,15 @@ void CItemData::Use_Item()
 
 	switch (m_eItemName)
 	{
-	case Client::CItemData::ITEMNAME_AEGIS:
-		break;
 	case Client::CItemData::ITEMNAME_CATALYST:
+	{
+		//Apply_UseCount(iInvenIdx);
+		// 얘는 0이 되어도 사라지지 않기
+
+
+
 		break;
+	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
 		break;
 	case Client::CItemData::ITEMNAME_FIREFLY:
@@ -77,31 +83,65 @@ void CItemData::Use_Item()
 	case Client::CItemData::ITEMNAME_WHISPERER:
 		break;
 	case Client::CItemData::ITEMNAME_BUFF1:
+	{
+		Apply_UseCount(iInvenIdx);
 		break;
+	}
 	case Client::CItemData::ITEMNAME_BUFF2:
+	{
+		Apply_UseCount(iInvenIdx);
 		break;
+	}
 	case Client::CItemData::ITEMNAME_BUFF3:
+	{
+		Apply_UseCount(iInvenIdx);
 		break;
+	}
 	case Client::CItemData::ITEMNAME_BUFF4:
+	{
+		Apply_UseCount(iInvenIdx);
 		break;
+	}
 	case Client::CItemData::ITEMNAME_ESSENCE:
 	{
 		_uint iRand = rand() % 300 + 100;
 		CInventory::GetInstance()->Calcul_Soul(iRand);
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Rend_Calcul(iRand);
+
+		Apply_UseCount(iInvenIdx);
 		break;
 	}
 	case Client::CItemData::ITEMNAME_ETHER:
+	{
+		Apply_UseCount(iInvenIdx);
 		break;
-	case Client::CItemData::ITEMNAME_UPGRADE1:
-		break;
-	case Client::CItemData::ITEMNAME_UPGRADE2:
-		break;
+	}
 	default:
 		break;
 	}
 
 
+}
+
+void CItemData::Apply_UseCount(_uint iInvenIdx)
+{
+	if (m_iCount > 1)
+	{
+		m_iCount -= 1;
+	}
+	else // 하나 남은 경우 삭제 필요
+	{
+		// UI Inventory에서도 삭제
+		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
+
+		// Quick SubInv에서도 삭제
+		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_Delete(iInvenIdx);
+
+		// Quick의 Slot에서도 삭제
+		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
+
+		CInventory::GetInstance()->Delete_Item(this);
+	}
 }
 
 void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)

@@ -63,8 +63,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	// 아이템 사용 시 호출할 함수 구현할 것
-	void			Use_Item();
+	void			Use_Item(_uint iInvenIdx);
+	void			Apply_UseCount(_uint iInvenIdx);
 
 private:
 	_bool					m_isEquip = { false };

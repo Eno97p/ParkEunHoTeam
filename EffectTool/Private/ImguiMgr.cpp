@@ -9,7 +9,8 @@
 #include "Particle_STrail.h"
 #include "Electronic.h"
 #include "Andras.h"
-
+#include "AndrasLazer_Base.h"
+#include "AndrasLazer_Cylinder.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -129,6 +130,8 @@ void CImguiMgr::Model_Change()
 			default:
 				break;
 			}
+			CurModel = current_item;
+			TrailMat = nullptr;
 		}
 	}
 
@@ -139,7 +142,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[9] = { false,false,false,false,false,false,false,false,false };
+	static _bool bShow[10] = { false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -183,19 +186,54 @@ void CImguiMgr::Visible_Data()
 	if (bShow[7] == true)
 		FireTool();
 
-	ImGui::Checkbox("Model_Change", &bShow[8]);
+	ImGui::Checkbox("Lazer_Tool", &bShow[8]);
 	if (bShow[8] == true)
+		Lazer_Tool();
+
+	ImGui::Checkbox("Model_Change", &bShow[9]);
+	if (bShow[9] == true)
 		Model_Change();
+
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
-		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
-		TrailMat = pPlayer->Get_WeaponMat();
+		switch (CurModel)
+		{
+		case 0:
+		{
+			CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = pPlayer->Get_WeaponMat();
+			break;
+		}
+		case 1:
+		{
+			break;
+		}
+		default:
+			break;
+		}
+
 	}
-	if (ImGui::Button("Bind_Player_Matrix"))
+	if (ImGui::Button("Bind_Body_Matrix"))
 	{
-		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
-		TrailMat = pPlayer->Get_WorldMat();
+		switch (CurModel)
+		{
+		case 0:
+		{
+			CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = pPlayer->Get_WorldMat();
+			break;
+		}
+		case 1:
+		{
+			CAndras* Andras = static_cast<CAndras*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = Andras->Get_WorldMat();
+			break;
+		}
+		default:
+			break;
+		}
+
 	}
 	if (ImGui::Button("Bind_Player_Head"))
 	{
@@ -1882,6 +1920,62 @@ void CImguiMgr::Electron_Tool()
 	}
 
 
+
+	ImGui::End();
+}
+
+void CImguiMgr::Lazer_Tool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Lazer_Edditor");
+
+	static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
+	static CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CDesc{};
+
+	ImGui::InputFloat3("MaxSize", reinterpret_cast<float*>(&Desc.vMaxSize));
+	ImGui::InputFloat3("CMaxSize", reinterpret_cast<float*>(&CDesc.vMaxSize));
+
+	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&Desc.vOffset));
+	ImGui::InputFloat3("COffsetPos", reinterpret_cast<float*>(&CDesc.vOffset));
+
+	ImGui::InputFloat("RotationSpeed", &Desc.fRotationSpeed);
+	ImGui::InputFloat("CRotationSpeed", &CDesc.fRotationSpeed);
+
+	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+	ImGui::InputFloat("CBloomPower", &CDesc.fBloomPower);
+
+	ImGui::InputFloat("DistortionPower", &Desc.fDistortionPower);
+	ImGui::InputFloat("CDistortionPower", &CDesc.fDistortionPower);
+
+	ImGui::InputFloat("MaxLifeTime", &Desc.fMaxLifeTime);
+	ImGui::InputFloat("CMaxLifeTime", &CDesc.fMaxLifeTime);
+
+	ImGui::InputFloat("UVSpeed", &Desc.fUVSpeed);
+	ImGui::InputFloat("CUVSpeed", &CDesc.fUVSpeed);
+
+	ImGui::InputInt("DesolveNumber", &Desc.NumDesolve);
+	ImGui::InputInt("CDesolveNumber", &CDesc.NumDesolve);
+
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+	ImGui::ColorEdit3("CColor", reinterpret_cast<float*>(&CDesc.fColor));
+
+
+
+
+	Desc.ParentMatrix = TrailMat;
+	CDesc.ParentMatrix = TrailMat;
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (Desc.ParentMatrix == nullptr)
+			MSG_BOX("행렬을 대입해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
+				TEXT("Prototype_GameObject_Andras_LazerBase"), &Desc);
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
+				TEXT("Prototype_GameObject_Andras_LazerCylinder"), &CDesc);
+		}
+	}
 
 	ImGui::End();
 }

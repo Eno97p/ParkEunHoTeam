@@ -88,6 +88,7 @@ public:
 	void Set_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
 	HRESULT Go_Straight(_float fTimeDelta, class CNavigation* pNavigation = nullptr);
 	HRESULT Go_Backward(_float fTimeDelta);
+	HRESULT Go_Up(_float fTimeDelta);
 	HRESULT Go_Left(_float fTimeDelta);
 	HRESULT Go_Right(_float fTimeDelta);
 	HRESULT LookAt(_fvector vTargetPosition);

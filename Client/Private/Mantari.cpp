@@ -132,7 +132,6 @@ void CMantari::Late_Tick(_float fTimeDelta)
 		m_pTargetLock->Late_Tick(fTimeDelta);
 	}
 
-
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);

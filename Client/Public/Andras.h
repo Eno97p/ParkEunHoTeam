@@ -14,14 +14,14 @@ BEGIN(Client)
 
 class CAndras final : public CMonster
 {
-#define DETECTRANGE 20.f
-#define JUMPATTACKRANGE 15.f
-#define ATTACKRANGE 5.f
+#define MOVESPEED 50.f
+#define SPAWNCOOLTIME 0.05f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_WALKLEFT, STATE_WALKRIGHT, STATE_WALKBACK, STATE_WALKFRONT, STATE_JUMPATTACK, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_CIRCLEATTACK, STATE_HIT, STATE_PARRIED, STATE_DEAD, STATE_REVIVE, STATE_END
+		STATE_IDLE, STATE_DASHLEFT, STATE_DASHRIGHT, STATE_DASHBACK, STATE_DASHFRONT, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_ATTACK4, STATE_SPRINTATTACK,
+		STATE_GROUNDATTACK, STATE_KICKATTACK, STATE_LASERATTACK, STATE_BABYLONATTACK, STATE_SHOOTINGSTARATTACK, STATE_DEAD, STATE_END
 	};
 
 private:
@@ -47,15 +47,17 @@ private:
 	HRESULT Add_Nodes();
 
 private:
-	NodeStates Revive(_float fTimeDelta);
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
-	NodeStates Parried(_float fTimeDelta);
-	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates Attack(_float fTimeDelta);
-	NodeStates CircleAttack(_float fTimeDelta);
-	NodeStates Detect(_float fTimeDelta);
-	NodeStates Move(_float fTimeDelta);
+	NodeStates SprintAttack(_float fTimeDelta);
+	NodeStates GroundAttack(_float fTimeDelta);
+	NodeStates KickAttack(_float fTimeDelta);
+	NodeStates LaserAttack(_float fTimeDelta);
+	NodeStates BabylonAttack(_float fTimeDelta);
+	NodeStates ShootingStarAttack(_float fTimeDelta);
+	NodeStates Select_Pattern(_float fTimeDelta);
+	NodeStates Backstep(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
 
@@ -66,12 +68,21 @@ private:
 	_bool										m_bReviving = false;
 	_bool										m_bChasing = true;
 	_bool										m_bHit = false;
+	_bool m_bSprint = false;
+	_bool	m_bTrigger = false;
+	_bool m_bDashBack = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fChasingDelay = 0.5f;
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;
+	_float										m_fTurnDelay = 0.5f;
+	_float m_fSpawnCoolTime = SPAWNCOOLTIME;
+	_float m_fSpawnDelay = 2.f;
+	_uint m_iZigzag = 0;
+
+	_uint m_iPhase = 1;
 
 
 

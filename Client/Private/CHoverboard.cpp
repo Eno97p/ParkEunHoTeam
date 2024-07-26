@@ -48,6 +48,45 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 void CHoverboard::Tick(_float fTimeDelta)
 {
 	
+	
+	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
+	m_pPhysXCom->GetCommand(command);
+	if (KEY_HOLD(DIK_W))
+	{
+		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+		command->throttle = 0.1f;
+		command->brake = 0.0f;
+	}
+	else if (KEY_HOLD(DIK_S))
+	{
+		command->gear = PxVehicleDirectDriveTransmissionCommandState::eREVERSE;
+		command->throttle = 0.1f;
+		command->brake = 0.0f;
+	}
+	else
+	{
+		command->Reset();
+	}
+
+
+	if (KEY_HOLD(DIK_A))
+	{
+		command->steer = -0.5f;
+	}
+	if (KEY_HOLD(DIK_D))
+	{
+		command->steer = 0.5f;
+	}
+	if (KEY_HOLD(DIK_SPACE))
+	{
+		command->brake = 1.0f;
+		command->throttle = 0.0f;
+	}
+	else 
+	{
+		
+	}
+	
 	m_pPhysXCom->Tick(fTimeDelta);
 
 
@@ -59,7 +98,11 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 
+	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
+	m_pPhysXCom->GetCommand(command);
 
+	_matrix worldMat = 	CPhysXComponent::Convert_PxTrans_To_DxMat(command->transform);
+	m_pTransformCom->Set_WorldMatrix(worldMat);
 
 }
 
@@ -103,9 +146,16 @@ HRESULT CHoverboard::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_Shader */
+	/* For.Com_Physx */
+	//landObjDesc.mWorldMatrix._41 = 75.f;
+	//landObjDesc.mWorldMatrix._42 = 523.f;
+	//landObjDesc.mWorldMatrix._43 = 98.f;
+	//landObjDesc.mWorldMatrix._44 = 1.f;
+	CPhysXComponent_Vehicle::VEHICLE_COMMAND command;
+	XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(75.f, 10.f, 98.f));
+	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
-		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom))))
+		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))
 		return E_FAIL;
 
 

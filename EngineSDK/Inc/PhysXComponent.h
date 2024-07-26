@@ -114,7 +114,7 @@ public:
 
 public:
 	static PxTransform Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix);
-
+	static XMMATRIX Convert_PxTrans_To_DxMat(const PxTransform& pTrans);
 
 };
 

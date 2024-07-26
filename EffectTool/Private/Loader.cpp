@@ -26,6 +26,9 @@
 #include "AndrasSword5.h"
 #include "AndrasLazer_Base.h"
 #include "AndrasLazer_Cylinder.h"
+#include "AndrasScrew.h"
+#include "ElectricCylinder.h"
+#include "AndrasRain.h"
 #pragma endregion ANDRAS
 
 
@@ -135,6 +138,15 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Noise/Perlin%d.png"), 2))))
 		return E_FAIL;
 
+	//번개
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Electron"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Lightning/LightningEX.dds"), 1))))
+		return E_FAIL;
+	//비
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_AndrasRain"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/AndrasRain.dds"), 1))))
+		return E_FAIL;
+
 #pragma endregion TEXTURE
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트를 로딩 중 입니다."));
 #pragma region COMPONENT
@@ -232,6 +244,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Lazer_Cylinder"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/New_LazerCylinder.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Screw"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/AndrasScrew.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL
@@ -384,6 +401,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CAndrasLazerCylinder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Andras_Screw"),
+		CAndrasScrew::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ElectricCylinder"),
+		CElectricCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasRain"),
+		CAndrasRain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

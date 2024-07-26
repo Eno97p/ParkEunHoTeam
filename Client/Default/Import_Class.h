@@ -31,6 +31,13 @@
 
 #pragma region Monster
 #include "Andras.h"
+#include "Body_Andras.h"
+#include "Weapon_Andras.h"
+#include "Weapon_Andras2.h"
+#include "Weapon_Andras3.h"
+#include "Weapon_Andras4.h"
+#include "Weapon_Andras5.h"
+#include "RushSword.h"
 
 #include "Boss_Juggulus.h"
 #include "Body_Juggulus.h"

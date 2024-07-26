@@ -65,6 +65,7 @@ void CAndrasLazerBase::Tick(_float fTimeDelta)
 
 	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
+
 }
 
 void CAndrasLazerBase::Late_Tick(_float fTimeDelta)

@@ -149,7 +149,11 @@ private:
 
 	_float m_fCurHp = m_fMaxHp;
 
+#ifdef _DEBUG
+	_float m_fMaxStamina = 1000.f;
+#else
 	_float m_fMaxStamina = 100.f;
+#endif // _DEBUG
 	_float m_fCurStamina = m_fMaxStamina;
 
 	_float m_fMaxMp = 100.f;

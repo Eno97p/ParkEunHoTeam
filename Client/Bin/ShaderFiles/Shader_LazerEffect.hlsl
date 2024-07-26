@@ -2,12 +2,13 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture , g_DesolveTexture;
+texture2D	g_Texture , g_DesolveTexture, g_ElectricTex;
 float		g_Ratio;
 
 //레이져
 float		g_CurTime, g_Speed;
 float3		g_Color;
+float		g_FrameRatio;
 
 
 struct VS_IN
@@ -180,6 +181,66 @@ PS_OUT PS_Distortion(PS_IN In)
 	return Out;
 }
 
+PS_OUT Ps_Electric(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	int numFrames = 16;
+	float frame = g_FrameRatio * numFrames;
+	int frameIndex = (int)frame;
+	int row = frameIndex / 4;
+	int col = frameIndex % 4;
+	float frameSize = 1.0 / 4;
+	float2 adjustedTex;
+	adjustedTex.x = (In.vTexcoord.x * frameSize) + (col * frameSize);
+	adjustedTex.y = (In.vTexcoord.y * frameSize) + (row * frameSize);
+
+	vector Color = g_ElectricTex.Sample(LinearSampler, adjustedTex);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+	if (Color.a < 0.1f) discard;
+
+	Color.rgb = g_Color;
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+	}
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_Rain(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+
+	uv.y -= g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+
+	Color.a = (Color.r + Color.g + Color.b) / 3.0f;
+
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+
+	}
+	Out.vColor = Color;
+	return Out;
+}
 
 
 
@@ -242,7 +303,32 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Distortion();
 	}
 
+	pass Electirc
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 Ps_Electric();
+	}
 	
+	pass rain
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Rain();
+	}
 }
 

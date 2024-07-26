@@ -9,6 +9,7 @@
 
 #include "UI_UpGPage_SelectSlot.h"
 #include "UI_UpGPage_ItemSlot.h"
+#include "UIGroup_UpGPage.h"
 
 CUI_UpGPage_Slot::CUI_UpGPage_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -54,11 +55,22 @@ void CUI_UpGPage_Slot::Tick(_float fTimeDelta)
 		Render_Animation(fTimeDelta);
 
 	__super::Tick(fTimeDelta);
+
+	if (IsCollisionRect(m_pMouse->Get_CollisionRect()))
+	{
+		if (m_pGameInstance->Mouse_Down(DIM_LB))
+		{
+			dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Set_CurSlotIdx(m_iSlotIdx);
+		}
+	}
 	
-	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+	//m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
 	m_pSelectUI->Tick(fTimeDelta);
 	m_pItemSlot->Tick(fTimeDelta);
+	
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Tick(fTimeDelta);
 }
 
 void CUI_UpGPage_Slot::Late_Tick(_float fTimeDelta)
@@ -69,6 +81,9 @@ void CUI_UpGPage_Slot::Late_Tick(_float fTimeDelta)
 		m_pSelectUI->Late_Tick(fTimeDelta);
 
 	m_pItemSlot->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pItemIcon)
+		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_UpGPage_Slot::Render()
@@ -79,6 +94,10 @@ HRESULT CUI_UpGPage_Slot::Render()
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	// Item Name
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrItemName, _float2(m_fX - 80.f, m_fY - 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -149,12 +168,26 @@ HRESULT CUI_UpGPage_Slot::Create_UI()
 
 void CUI_UpGPage_Slot::Create_ItemIcon()
 {
-	// 처음 시작할 때는 바로 Inventory의 weapon 받아와서 생성한 채로 시작하고 그 후에 추가되는 weapon들에 대한 정보는 함수로?
-	// 그럼 함수를 Inventory weapon의 제일 마지막을 slot에 추가하는 것으로 할 것(어차피 순서 변하지 않으니까 상관 없을 듯함)
+	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fX = m_fX - 130.f;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 64.f;
+	pDesc.fSizeY = 64.f;
+	pDesc.eUISort = TENTH;
 
-	CInventory::GetInstance()->Get_Weapons();
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+		++weapon;
+	pDesc.wszTexture = (*weapon)->Get_TextureName();
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
+	m_wstrItemName = (*weapon)->Get_ItemNameText();
+}
 
+void CUI_UpGPage_Slot::Setting_SelectItemName()
+{
+	m_pSelectUI->Set_ItemName(m_wstrItemName);
 }
 
 CUI_UpGPage_Slot* CUI_UpGPage_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -187,6 +220,7 @@ void CUI_UpGPage_Slot::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pItemIcon);
 	Safe_Release(m_pSelectUI);
 	Safe_Release(m_pItemSlot);
 }

@@ -251,6 +251,7 @@
     <ClInclude Include="..\Public\TransitionCamera.h" />
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\TreasureChest.h" />
+    <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
@@ -450,6 +451,7 @@
     <ClCompile Include="..\Private\TransitionCamera.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\TreasureChest.cpp" />
+    <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
@@ -604,6 +606,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Rect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />

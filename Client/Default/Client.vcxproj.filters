@@ -589,6 +589,9 @@
     <Filter Include="02.GameObjects\08. vehicle\TestPhysX">
       <UniqueIdentifier>{7c17f5ee-b39d-4caf-9cae-83d139f794dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
+      <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1199,6 +1202,9 @@
     <ClInclude Include="..\Public\UI_UpGPage_Value.h">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1783,6 +1789,9 @@
     <ClCompile Include="..\Private\UI_UpGPage_Value.cpp">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1864,6 +1873,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

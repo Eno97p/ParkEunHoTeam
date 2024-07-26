@@ -159,6 +159,8 @@
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\Andras.h" />
+    <ClInclude Include="..\public\AndrasLazer_Base.h" />
+    <ClInclude Include="..\Public\AndrasLazer_Cylinder.h" />
     <ClInclude Include="..\Public\AndrasSword1.h" />
     <ClInclude Include="..\Public\AndrasSword2.h" />
     <ClInclude Include="..\Public\AndrasSword3.h" />
@@ -205,6 +207,8 @@
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Andras.cpp" />
+    <ClCompile Include="..\private\AndrasLazer_Base.cpp" />
+    <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp" />
     <ClCompile Include="..\Private\AndrasSword1.cpp" />
     <ClCompile Include="..\Private\AndrasSword2.cpp" />
     <ClCompile Include="..\Private\AndrasSword3.cpp" />

@@ -25,8 +25,13 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Create_ItemIcon();
+	void			Setting_SelectItemName();
+
 private:
 	_uint								m_iSlotIdx = { 0 };
+
+	wstring								m_wstrItemName;
 
 	class CUI_UpGPage_SelectSlot*		m_pSelectUI = { nullptr };
 	class CUI_UpGPage_ItemSlot*			m_pItemSlot = { nullptr };
@@ -37,8 +42,6 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_UI();
-
-	void	Create_ItemIcon();
 
 
 public:

@@ -33,6 +33,10 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	_float3 Get_TopCol() { return m_vTopCol; }
+	_float3 Get_BotCol() { return m_vBotCol; }
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };

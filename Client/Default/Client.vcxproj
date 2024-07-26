@@ -182,6 +182,7 @@
     <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\Body_Andras.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
     <ClInclude Include="..\Public\Body_Homonculus.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
@@ -244,6 +245,7 @@
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
+    <ClInclude Include="..\Public\RushSword.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
     <ClInclude Include="..\Public\Sphere.h" />
     <ClInclude Include="..\Public\TargetLock.h" />
@@ -251,7 +253,9 @@
     <ClInclude Include="..\Public\TransitionCamera.h" />
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\TreasureChest.h" />
+    <ClInclude Include="..\Public\Tree.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
+    <ClInclude Include="..\Public\UIGroup_Map.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
@@ -259,6 +263,12 @@
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
+    <ClInclude Include="..\Public\UI_MapArea.h" />
+    <ClInclude Include="..\Public\UI_MapBG.h" />
+    <ClInclude Include="..\Public\UI_MapDetail.h" />
+    <ClInclude Include="..\Public\UI_MapIcon.h" />
+    <ClInclude Include="..\Public\UI_MapPosIcon.h" />
+    <ClInclude Include="..\Public\UI_MapUser.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
@@ -282,6 +292,11 @@
     <ClInclude Include="..\Public\UI_UpgradeCrucible.h" />
     <ClInclude Include="..\Public\UI_UpgradeForge.h" />
     <ClInclude Include="..\Public\UI_UpgradeForge_Text.h" />
+    <ClInclude Include="..\Public\Weapon_Andras.h" />
+    <ClInclude Include="..\Public\Weapon_Andras2.h" />
+    <ClInclude Include="..\Public\Weapon_Andras3.h" />
+    <ClInclude Include="..\Public\Weapon_Andras4.h" />
+    <ClInclude Include="..\Public\Weapon_Andras5.h" />
     <ClInclude Include="..\Public\Weapon_Arrow_LGGun.h" />
     <ClInclude Include="..\Public\Weapon_Gun_LGGun.h" />
     <ClInclude Include="..\public\Loader.h" />
@@ -385,6 +400,7 @@
     <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Body_Andras.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />
     <ClCompile Include="..\Private\Body_Homonculus.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
@@ -443,6 +459,7 @@
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
+    <ClCompile Include="..\Private\RushSword.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
     <ClCompile Include="..\Private\Sphere.cpp" />
     <ClCompile Include="..\Private\TargetLock.cpp" />
@@ -450,7 +467,9 @@
     <ClCompile Include="..\Private\TransitionCamera.cpp" />
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\TreasureChest.cpp" />
+    <ClCompile Include="..\Private\Tree.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Map.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
@@ -458,6 +477,12 @@
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />
+    <ClCompile Include="..\Private\UI_MapArea.cpp" />
+    <ClCompile Include="..\Private\UI_MapBG.cpp" />
+    <ClCompile Include="..\Private\UI_MapDetail.cpp" />
+    <ClCompile Include="..\Private\UI_MapIcon.cpp" />
+    <ClCompile Include="..\Private\UI_MapPosIcon.cpp" />
+    <ClCompile Include="..\Private\UI_MapUser.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />
@@ -481,6 +506,11 @@
     <ClCompile Include="..\Private\UI_UpgradeCrucible.cpp" />
     <ClCompile Include="..\Private\UI_UpgradeForge.cpp" />
     <ClCompile Include="..\Private\UI_UpgradeForge_Text.cpp" />
+    <ClCompile Include="..\Private\Weapon_Andras.cpp" />
+    <ClCompile Include="..\Private\Weapon_Andras2.cpp" />
+    <ClCompile Include="..\Private\Weapon_Andras3.cpp" />
+    <ClCompile Include="..\Private\Weapon_Andras4.cpp" />
+    <ClCompile Include="..\Private\Weapon_Andras5.cpp" />
     <ClCompile Include="..\Private\Weapon_Arrow_LGGun.cpp" />
     <ClCompile Include="..\Private\Weapon_Gun_LGGun.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
@@ -593,6 +623,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />
@@ -604,6 +635,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Rect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />

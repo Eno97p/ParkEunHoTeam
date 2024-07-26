@@ -120,9 +120,19 @@
 #include "UI_UpGPage_ItemSlot.h"
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
-
 #include "UIGroup_UpGPage.h"
 #pragma endregion Upgrade
+
+#pragma region Map
+#include "UI_MapBG.h"
+#include "UI_MapArea.h"
+#include "UI_MapDetail.h"
+#include "UI_MapIcon.h"
+#include "UI_MapUser.h"
+#include "UI_MapPosIcon.h"
+
+#include "UIGroup_Map.h"
+#pragma endregion Map
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -1057,6 +1067,38 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Upgrade
 
+#pragma region Map
+	/* Prototype_Component_Texture_MapBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MapBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/T_Plaines_Map.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Map_Icon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Icon_%d.png"), 6))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Map_Area */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Area"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Area.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Map_Detail */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Detail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Detail.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Map_PosIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_PosIcon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_PosIcon.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Map_User */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_User"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_User.png"), 1))))
+		return E_FAIL;
+#pragma endregion Map
+
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
@@ -1535,6 +1577,43 @@ HRESULT CMainApp::Ready_Prototype_UI()
 
 #pragma endregion Upgrade
 
+#pragma region Map
+	/* For.Prototype_GameObject_UI_MapBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapBG"),
+		CUI_MapBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapArea*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapArea"),
+		CUI_MapArea::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapDetail*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapDetail"),
+		CUI_MapDetail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapIcon"),
+		CUI_MapIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapUser*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapUser"),
+		CUI_MapUser::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_MapPosIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_MapPosIcon"),
+		CUI_MapPosIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Map*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Map"),
+		CUIGroup_Map::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Map
+
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Inventory"),
@@ -1584,6 +1663,9 @@ HRESULT CMainApp::Ready_Fonts()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo17"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_17.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo23"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_23.spritefont"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo27"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_27.spritefont"))))

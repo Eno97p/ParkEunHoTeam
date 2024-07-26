@@ -20,10 +20,6 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	// 나중에 아이템 이름 출력해야 함
-	wstring			m_wstrItemName;
-
-private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 

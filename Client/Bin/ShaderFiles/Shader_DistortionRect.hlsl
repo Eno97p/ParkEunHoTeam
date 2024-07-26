@@ -6,7 +6,6 @@ texture2D	g_Texture , g_DesolveTexture;
 bool		g_Desolve;
 float		g_Ratio;
 
-
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -65,6 +64,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	return Out;
 }
+
+
 
 
 technique11 DefaultTechnique

@@ -54,13 +54,14 @@ public:
 	HRESULT	Delete_EquipSkill(_uint iEquipSlotIdx);
 
 	void	Calcul_Soul(_int iSoul) { m_iSoul += iSoul; } // 인자로 넣어준 값을 기존 Soul에 연산해주기 (+ or -)
+	_bool	Check_Overlab(CItem::ITEM_NAME eItemType);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CPlayer* m_pPlayer = { nullptr };
 
 private:
-	_uint							m_iSoul = { 1000 }; // test
+	_uint							m_iSoul = { 0 }; // test
 
 	vector<class CItemData*>		m_vecItem;
 	map<_uint, CItemData*>			m_mapQuickAccess;

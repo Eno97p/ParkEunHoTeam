@@ -589,6 +589,39 @@
     <Filter Include="02.GameObjects\08. vehicle\TestPhysX">
       <UniqueIdentifier>{7c17f5ee-b39d-4caf-9cae-83d139f794dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map">
+      <UniqueIdentifier>{7b3c2953-9677-4a59-bd16-8017282433cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\BG">
+      <UniqueIdentifier>{e590a2c4-1db0-415c-9745-6f8dd47ccec6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Area">
+      <UniqueIdentifier>{47454585-99bf-49e1-8e54-4594f2f4736d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Detail">
+      <UniqueIdentifier>{5ccea95a-3a8c-425b-a94b-ccaf7692fb7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\User">
+      <UniqueIdentifier>{191bea9a-5938-4003-ac96-5a476cf61599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\User\PosIcon">
+      <UniqueIdentifier>{ba3e64e3-afdb-4e04-85d5-d9560f2af937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Map\Detail\Icon">
+      <UniqueIdentifier>{32bf73e1-1a66-499b-aabe-cdd5945d0754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body">
+      <UniqueIdentifier>{6f406b74-b7d3-48d3-931d-5c0cf80f59db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword">
+      <UniqueIdentifier>{b1bb8d0d-0a05-4be2-b53f-005da4a70b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword">
+      <UniqueIdentifier>{76988682-71e3-47a1-87dd-d0f96e2f95ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
+      <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1199,6 +1232,51 @@
     <ClInclude Include="..\Public\UI_UpGPage_Value.h">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Map.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapBG.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapArea.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Area</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapDetail.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapIcon.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail\Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapUser.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_MapPosIcon.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User\PosIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Andras2.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Andras3.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Andras4.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Andras5.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RushSword.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tree.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1783,6 +1861,51 @@
     <ClCompile Include="..\Private\UI_UpGPage_Value.cpp">
       <Filter>02.GameObjects\07. UI\UpgradePage\Value</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Map.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapBG.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapArea.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Area</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapDetail.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapIcon.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\Detail\Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapUser.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_MapPosIcon.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Map\User\PosIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Andras5.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Andras2.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Andras3.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Andras4.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RushSword.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tree.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1864,6 +1987,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

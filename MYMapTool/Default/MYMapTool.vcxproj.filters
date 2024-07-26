@@ -114,9 +114,6 @@
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02. GameObjects\99. Camera\02. DollyTrack</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Grass.cpp">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Body_Player.cpp">
       <Filter>02. GameObjects\06. Player</Filter>
     </ClCompile>
@@ -165,8 +162,11 @@
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02. GameObjects\05. Active_Elements\Decal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>02. GameObjects\07. Vegetation</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
+      <Filter>02. GameObjects\07. Vegetation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -275,9 +275,6 @@
     <ClInclude Include="..\Public\CutSceneCamera.h">
       <Filter>02. GameObjects\99. Camera\02. DollyTrack</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Grass.h">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Body_Player.h">
       <Filter>02. GameObjects\06. Player</Filter>
     </ClInclude>
@@ -326,8 +323,11 @@
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02. GameObjects\05. Active_Elements\Decal</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Grass.h">
+      <Filter>02. GameObjects\07. Vegetation</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Tree.h">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
+      <Filter>02. GameObjects\07. Vegetation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -425,6 +425,9 @@
     </Filter>
     <Filter Include="02. GameObjects\05. Active_Elements\Decal">
       <UniqueIdentifier>{a3f4cf27-9475-420d-827a-634af1b70efc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\07. Vegetation">
+      <UniqueIdentifier>{db78c6b5-b7e2-41c0-8cf8-653de0547703}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

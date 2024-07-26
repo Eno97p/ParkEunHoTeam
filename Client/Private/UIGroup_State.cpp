@@ -48,6 +48,8 @@ void CUIGroup_State::Tick(_float fTimeDelta)
 
         for (auto& pState : m_vecStates)
             pState->Tick(fTimeDelta);
+
+        m_pSoul->Tick(fTimeDelta);
     }
 }
 
@@ -60,6 +62,8 @@ void CUIGroup_State::Late_Tick(_float fTimeDelta)
 
         for (auto& pState : m_vecStates)
             pState->Late_Tick(fTimeDelta);
+
+        m_pSoul->Late_Tick(fTimeDelta);
     }
 }
 
@@ -77,6 +81,11 @@ void CUIGroup_State::Resset_Player()
     dynamic_cast<CUI_StateEnergy*>(*state)->Resset_Player();
     ++state;
     dynamic_cast<CUI_StateEther*>(*state)->Resset_Player();
+}
+
+void CUIGroup_State::Rend_Calcul(_int iSoul)
+{
+    m_pSoul->Rend_Calcul(iSoul);
 }
 
 HRESULT CUIGroup_State::Create_UI()
@@ -133,7 +142,7 @@ HRESULT CUIGroup_State::Create_UI()
     pSoulDesc.fSizeX = 32.f;
     pSoulDesc.fSizeY = 32.f;
     pSoulDesc.eUISort = SECOND;
-    m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
+    m_pSoul = dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc));
 
     return S_OK;
 }
@@ -173,4 +182,6 @@ void CUIGroup_State::Free()
 
     for (auto& pState : m_vecStates)
         Safe_Release(pState);
+
+    Safe_Release(m_pSoul);
 }

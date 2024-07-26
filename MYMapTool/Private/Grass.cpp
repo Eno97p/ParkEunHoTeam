@@ -70,7 +70,7 @@ HRESULT CGrass::Initialize(void* pArg)
 
 	//랜덤으로 탑색 변경 살짞 어둡게
 	_float randFloat = RandomFloat(0.f, 0.2f);
-	//m_vTopColorOffset = { randFloat , randFloat , randFloat };
+	m_vTopColorOffset = { randFloat , randFloat , randFloat };
 	m_vTopCol.x -= randFloat;
 	m_vTopCol.y -= randFloat;
 	m_vTopCol.z -= randFloat;

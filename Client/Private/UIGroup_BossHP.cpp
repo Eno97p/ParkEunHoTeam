@@ -105,6 +105,10 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	{
 		pBarDesc.wszBossName = TEXT("MANTARI, THE WANDERING SPECTER");
 	}
+	else if (BOSSUI_ANDRAS == m_eBossUIName)
+	{
+		pBarDesc.wszBossName = TEXT("ANDRAS");
+	}
 
 	m_vecUI.emplace_back(dynamic_cast<CUI_BossHPBar*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossHPBar"), &pBarDesc)));
 

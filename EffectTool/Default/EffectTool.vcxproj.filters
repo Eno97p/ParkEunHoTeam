@@ -92,6 +92,9 @@
     <Filter Include="Objects\05. Monster\Andras\AndrasWeapon">
       <UniqueIdentifier>{79871a2e-8ea1-4617-8096-523907bddfda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster\Andras\AndrasLazer">
+      <UniqueIdentifier>{cc77f6ff-85c1-41ba-aba2-5aa1722d27d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -229,6 +232,12 @@
     <ClInclude Include="..\Public\AndrasSword5.h">
       <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AndrasLazer_Base.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasLazer_Cylinder.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -350,6 +359,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\AndrasSword5.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AndrasLazer_Base.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

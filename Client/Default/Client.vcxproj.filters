@@ -1866,5 +1866,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

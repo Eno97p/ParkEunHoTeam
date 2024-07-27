@@ -75,7 +75,8 @@ void CMouse::Tick(_float fTimeDelta)
 
 void CMouse::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH);
+	if(CUI_Manager::GetInstance()->Get_isMouseOn())
+		CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH);
 }
 
 HRESULT CMouse::Render()

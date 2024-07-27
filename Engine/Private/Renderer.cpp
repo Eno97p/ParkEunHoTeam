@@ -70,6 +70,9 @@ HRESULT CRenderer::Initialize()
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Metalic"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
 
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Velocity"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+
     /* MRT_GameObjects */
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
         return E_FAIL;
@@ -84,6 +87,8 @@ HRESULT CRenderer::Initialize()
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Roughness"))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Metalic"))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Velocity"))))
         return E_FAIL;
 
     /* MRT_ShadowObject */
@@ -184,6 +189,8 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_Distortion"))))
         return E_FAIL;
+
+
 
     m_pDistortionTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Distortion/Distortion%d.png"), 7);
     if (nullptr == m_pDistortionTex)
@@ -1288,18 +1295,19 @@ void CRenderer::Render_Final()
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LUT"), m_pShader, "g_ResultTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Velocity"), m_pShader, "g_EffectTexture");
 
     m_pVIBuffer->Bind_Buffers();
 
     if (m_pGameInstance->Get_DIKeyState(DIK_1))
     {
         // reinhard
-        m_pShader->Begin(7);
+        m_pShader->Begin(5);
     }
     else if (m_pGameInstance->Get_DIKeyState(DIK_2))
     {
         //aces filmic
-        m_pShader->Begin(8);
+        m_pShader->Begin(5);
     }
     else
     {

@@ -57,6 +57,8 @@ protected:
 
 	_bool						m_bisVisible = false;
 	wstring						m_wstrMoDelName = L"";
+	_float4x4					m_PrevWorldMatrix;
+	_float4x4					m_PrevViewMatrix;
 
 
 protected:

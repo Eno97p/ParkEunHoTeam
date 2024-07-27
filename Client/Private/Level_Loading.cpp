@@ -9,10 +9,14 @@
 #include "UIGroup_Loading.h"
 
 #pragma region LEVEL_HEADER
+
 #include "Level_Logo.h"
 #include "Level_GamePlay.h"
 #include "Level_Ackbar.h"
 #include "Level_Jugglas.h"
+#include "Level_AndrasArena.h"
+#include "Level_GrassLand.h"
+
 #pragma endregion
 
 #include "UI_FadeInOut.h"
@@ -52,9 +56,9 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 		m_pUI_Manager->Render_UIGroup(true, "Loading");
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	//if (true == m_pLoader->is_Finished())
+	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+		//if (GetKeyState(VK_RETURN) & 0x8000)
 		{
 			m_pGameInstance->Set_NextLevel(m_eNextLevel);
 			
@@ -89,7 +93,20 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_Jugglas::Create(m_pDevice, m_pContext))))
 					return;
 				break;
-
+			case LEVEL_ANDRASARENA:
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				m_pUI_Manager->Resset_Player();
+				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_AndrasArena::Create(m_pDevice, m_pContext))))
+					return;
+				break;
+			case LEVEL_GRASSLAND:
+				m_pUI_Manager->Render_UIGroup(false, "Loading");
+				m_pUI_Manager->Resset_Player();
+				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GrassLand::Create(m_pDevice, m_pContext))))
+					return;
+				break;
 			default :
 				break;
 			}

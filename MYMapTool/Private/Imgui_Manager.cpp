@@ -230,6 +230,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Separator();
         ImGui::Checkbox("Global Wind Edit", &m_bGlobalWindWindow);
         ImGui::Spacing();
+
+        ImGui::Separator();
+        ImGui::Checkbox("Fog Edit", &m_bFogWindow);
+        ImGui::Spacing();
+
         ImGui::End();
     }
 
@@ -294,6 +299,10 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         GlobalWind_Editor();
     }
 
+    if (m_bFogWindow) 
+    {
+        Fog_Editor();
+    }
     if (m_bShowDecalTextureWindow)
     {
         ImGui::Begin("Decal Texture Preview", &m_bShowDecalTextureWindow);
@@ -963,10 +972,10 @@ void CImgui_Manager::Load_Lights()
         m_LightsDataPath = L"../Bin/MapData/LightsData/Tutorial_Lights.dat";
         break;
     case STAGE_TWO:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Juggulas_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/AndrasArena_Lights.dat";
         break;
     case STAGE_THREE:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Stage3_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/Juggulas_Lights.dat";
         break;
     case STAGE_BOSS:
         m_LightsDataPath = L"../Bin/MapData/LightsData/Stage4_Lights.dat";
@@ -1526,6 +1535,54 @@ void CImgui_Manager::GlobalWind_Editor()
         // 예를 들어, 셰이더에 바람 정보를 전달하거나 관련 객체들을 업데이트합니다.
         //ApplyWindSettings(m_GlobalWindDir, windStrength, windFrequency, enableWind);
     }
+
+    ImGui::End();
+}
+
+void CImgui_Manager::Fog_Editor()
+{
+    ImGui::Begin("Fog Settings", &m_bFogWindow);
+
+    static float fogColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+    static float fogRange = 100.0f;
+    static float heightFalloff = 0.1f;
+    static float globalDensity = 0.1f;
+
+    static bool autoUpdateFog = false;
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Color");
+    if (ImGui::ColorEdit4("##FogColor", fogColor))
+    {
+        if (autoUpdateFog)
+        {
+            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+        }
+    }
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Range");
+    if (ImGui::SliderFloat("##FogRange", &fogRange, 0.0f, 1000.0f, "%.1f"))
+    {
+        if (autoUpdateFog)
+        {
+            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+        }
+    }
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Height Falloff");
+    ImGui::SliderFloat("##HeightFalloff", &heightFalloff, 0.0f, 1.0f, "%.3f");
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Global Density");
+    ImGui::SliderFloat("##GlobalDensity", &globalDensity, 0.0f, 1.0f, "%.3f");
+
+    ImGui::Checkbox("Auto Update Fog", &autoUpdateFog);
+
+    if (ImGui::Button("Apply Fog Settings") || autoUpdateFog)
+    {
+        m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+    }
+
+    if (ImGui::Button("Close"))
+        m_bFogWindow = false;
 
     ImGui::End();
 }

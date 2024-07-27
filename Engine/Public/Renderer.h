@@ -78,6 +78,15 @@ public:
 	ID3D11Texture2D* Get_PrevDepthTex() { return m_pPrevDepthTexture; }
 	_float Sample_HZB(_float2 uv, UINT mipLevel);
 
+	//ÀÌ¹Î¿µ Ãß°¡ 240727 2106PM
+	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity)
+	{ 
+		m_vFogColor = fogCol;
+		m_fFogRange = fogRng; 
+		m_fFogHeightFalloff = fogHeightFalloff;
+		m_fFogGlobalDensity = fogDensity;
+	}
+
 	//ÀÌ¹Î¿µ Ãß°¡ 240711 2002PM
 private:
 	ID3D11Texture2D* m_pPrevDepthTexture = nullptr;
@@ -137,6 +146,13 @@ private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
 	_vector								m_vShadowFocus = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	_float								m_fShadowThreshold = 0.5f;
+	
+	//Fog
+private:
+	_float4 m_vFogColor = { 0.295f, 0.308f, 0.401f, 1.f };
+	_float m_fFogRange = 700.f;
+	_float m_fFogHeightFalloff = 0.41f;
+	_float m_fFogGlobalDensity = 0.13f;
 
 private:
 	void Render_Priority();

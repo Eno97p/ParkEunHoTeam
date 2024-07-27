@@ -224,7 +224,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
 		m_pWeapon->Set_Active();
-		fAnimSpeed = 1.3f; // 0.9
+		fAnimSpeed = 1.6f; // 1.3
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CHomonculus::STATE_DEFAULTATTACK_3)
@@ -247,10 +247,10 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 3;
-		fAnimSpeed = 0.7f;
+		fAnimSpeed = 0.9f; // 0.7
 		m_pModelCom->Set_LerpTime(1.4);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 1.f && m_fDamageTiming < 1.3f)
+		if (m_fDamageTiming > 0.8f && m_fDamageTiming < 1.1f) // m_fDamageTiming > 1.f && m_fDamageTiming < 1.3f
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -271,7 +271,7 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 4;
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.3f; // 1.
 		m_fDamageTiming += fTimeDelta;
 		m_pModelCom->Set_LerpTime(1.1);
 		if (m_fDamageTiming > 1.5f)

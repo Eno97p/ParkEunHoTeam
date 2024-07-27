@@ -127,7 +127,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		}
 		if (m_iPastAnimIndex == 24)
 		{
-			fAnimSpeed = 1.3f;
+			fAnimSpeed = 1.4f; // 1.3
 			if (m_pModelCom->Check_CurDuration(0.55))
 			{
 				_matrix Mat = XMLoadFloat4x4(&m_WorldMatrix);
@@ -140,16 +140,16 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			}
 		}
 		else if(m_iPastAnimIndex == 22)
-			fAnimSpeed = 2.f;
+			fAnimSpeed = 2.3f; // 2
 		else
-			fAnimSpeed = 1.f;
+			fAnimSpeed = 1.f; // 1
 
 
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.2);
 		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 2.f && m_fDamageTiming < 2.2f)
+		if (m_fDamageTiming > 1.8f && m_fDamageTiming < 2.2f) // m_fDamageTiming > 2.f && m_fDamageTiming < 2.2f
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -166,9 +166,9 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		}
 		
 		if(m_iPastAnimIndex == 0)
-			fAnimSpeed = 0.75f;
+			fAnimSpeed = 0.75f; // 0.75
 		else
-			fAnimSpeed = 1.7f; // 1.2
+			fAnimSpeed = 1.7f; // 1.7
 			
 		if (m_iPastAnimIndex == 1) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
@@ -192,7 +192,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			fAnimSpeed = 0.9f;
 		}
 		if(m_iPastAnimIndex == 3)
-			fAnimSpeed = 1.2f;
+			fAnimSpeed = 1.5f; // 1.2 
 		if (m_iPastAnimIndex == 4) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
@@ -224,7 +224,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 6)
 		{
 			*m_pCanCombo = true;
-			fAnimSpeed = 1.2f;
+			fAnimSpeed = 1.4f; // 1.2
 		}else
 			fAnimSpeed = 0.9f;
 		AnimDesc.isLoop = false;
@@ -246,7 +246,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			m_iPastAnimIndex = 7;
 		}
 		if(m_iPastAnimIndex == 9)
-			fAnimSpeed = 1.3f;
+			fAnimSpeed = 1.5f; // 1.3
 		else if(m_iPastAnimIndex == 7)
 			fAnimSpeed = 2.f;
 		else

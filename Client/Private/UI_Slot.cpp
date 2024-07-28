@@ -293,7 +293,7 @@ HRESULT CUI_Slot::Create_ItemIcon_SubQuick(_uint iSlotIdx)
 	m_wszItemName = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemNameText();
 	m_wszItemExplain = CInventory::GetInstance()->Get_ItemData(iSlotIdx)->Get_ItemExplainText();
 
-	m_iInventoryIdx = iSlotIdx;
+	m_iInventoryIdx = iSlotIdx; // 여기서 넣어줬는데 왜 안 넣어준 것처럼 무조건 0이라고 뜰까
 
 	return S_OK;
 }

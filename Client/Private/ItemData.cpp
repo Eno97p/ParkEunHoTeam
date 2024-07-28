@@ -132,15 +132,17 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 		m_iCount -= 1;
 	}
 	else // 하나 남은 경우 삭제 필요
+	{
 
+		// 여기서 Quick Access의 Quick Slot의 값이 사라지지 않는 오류가 발생함
+		// Quick에서 장착 해제 한 템을 Inventory에서 Use 하고 나서? 인듯 ( >> 정확히 언제 발생하는 지 모르겠음 ㅠ)
+
+
+		// UI Inventory의 Sub Quick에서 삭제
 		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
 
-	{
 		// UI Inventory에서도 삭제
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
-
-		// 위에서 삭제를 해버려가지고 아래 Quick의 Inv에서 참조할 데이터가 없어서 제대로 삭제가 안 되는디..
-		// Quick InvSub을 먼저 ItemIcon 해제만 하고 ?
 
 		// UI Inventory의 Sub QuickSlot에서도 삭제 필요함
 		//dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
@@ -156,13 +158,9 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 
 		CInventory::GetInstance()->Delete_Item(this);
 
-		// Slot들 땡겨오기 >> 여기에 InvenIdx를 넣어주는 게 맞을까?		
+		// Slot들 땡겨오기
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory(iInvenIdx);
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_Inventory(iInvenIdx);
-	
-		// Inventory의 Quick(map)에서도 제거해주어야 하는 것 아닐지!
-
-	
 	}
 }
 

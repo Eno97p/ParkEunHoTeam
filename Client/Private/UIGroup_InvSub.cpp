@@ -135,7 +135,7 @@ void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx) // 여기 제대로 안 
 
 void CUIGroup_InvSub::Delete_InvSub_QuickSlot(_uint iSlotIdx) // 얘는 함수 사용 안 하는 걸로?
 {
-	// 이 함수를 사용하고 대신 인자로 Inven Idx가 아니라 Quick SubInv의 Idx를 받아와서 해제해주어야 할 거 같우이
+	// 여기서 뭔가 오류가!
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;

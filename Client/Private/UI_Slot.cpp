@@ -516,7 +516,7 @@ void CUI_Slot::Click_BtnEvent()
 
 			// Inventory에서 EqupiSign 해제 / Inv의 SubQuick에서도 제거
 			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iInventoryIdx, false);
-			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot(m_iInventoryIdx);
+			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(m_iInventoryIdx);
 
 			// Inventory에서 장착 여부 비활성화 해주기 >> 이름으로 접근해야 할 거 같음
 			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx, m_wszItemName);

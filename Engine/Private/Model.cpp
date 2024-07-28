@@ -259,11 +259,21 @@ HRESULT CModel::Bind_Material_Instance_ForMapElements(CShader* pShaderCom, const
 
 HRESULT CModel::Bind_BoneMatrices(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex)
 {
+	for (int i = 0; i < 256; i++)
+	{
+		m_PrevMeshBoneMatrices[i] = m_MeshBoneMatrices[i];
+	}
+
 	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
 
 	m_Meshes[iMeshIndex]->Fill_Matrices(m_Bones, m_MeshBoneMatrices);
 
 	return pShaderCom->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);
+}
+
+HRESULT CModel::Bind_PrevBoneMatrices(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex)
+{
+	return pShaderCom->Bind_Matrices(pConstantName, m_PrevMeshBoneMatrices, 256);
 }
 
 void CModel::Play_Animation(_float fTimeDelta, _bool isLerp)
@@ -275,7 +285,11 @@ void CModel::Play_Animation(_float fTimeDelta, _bool isLerp)
 	{
 
 		if (!m_pNextAnimation || !isLerp)
+		{
 			m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+
+		}
+			
 		else
 		{
 			if (!m_pCurrentAnimation->Lerp_NextAnimation(0.2f, m_pNextAnimation, m_Bones))

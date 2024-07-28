@@ -1,7 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_PrevWorldMatrix, g_PrevViewMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_SpecularTexture;
@@ -45,6 +45,7 @@ struct VS_OUT
 	float4		vNormal : NORMAL;
 	float2		vTexcoord : TEXCOORD0;
 	float4		vProjPos : TEXCOORD1;
+	float2		vVelocity : TEXCOORD2;
 };
 
 /* 정점 셰이더 :  /*
@@ -62,17 +63,24 @@ VS_OUT VS_MAIN(VS_IN In)
 		g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
 
 	vector		vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
+	vector		vPrevPos = mul(float4(In.vPosition, 1.f), BoneMatrix);
 	vector		vNormal = mul(float4(In.vNormal, 0.f), BoneMatrix);
 
-	matrix		matWV, matWVP;
+	matrix		matWV, matWVP, matPrevWV, matPrevWVP;
 
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
+	matPrevWV = mul(g_PrevWorldMatrix, g_PrevViewMatrix);
+	matPrevWVP = mul(matPrevWV, g_ProjMatrix);
 
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
 	Out.vTexcoord = In.vTexcoord;
 	Out.vProjPos = Out.vPosition;
+
+	vPrevPos = mul(vPrevPos, matPrevWVP);
+	Out.vVelocity = (Out.vPosition.xy / Out.vPosition.w) - (vPrevPos.xy / vPrevPos.w);
+	Out.vVelocity *= -2.f;
 
 	return Out;
 }
@@ -121,6 +129,7 @@ struct PS_IN
 	float4		vNormal : NORMAL;
 	float2		vTexcoord : TEXCOORD0;
 	float4		vProjPos : TEXCOORD1;
+	float2		vVelocity : TEXCOORD2;
 };
 
 struct PS_OUT
@@ -132,6 +141,7 @@ struct PS_OUT
 	vector		vEmissive : SV_TARGET4;
 	vector		vRoughness : SV_TARGET5;
 	vector		vMetalic : SV_TARGET6;
+	float2		vVelocity : SV_TARGET7;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -161,6 +171,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (g_bEmissive) Out.vEmissive = vEmissive;
 	if (g_bRoughness) Out.vRoughness = vRoughness;
 	if (g_bMetalic) Out.vMetalic = vMetalic;
+	Out.vVelocity = In.vVelocity;
 	return Out;
 }
 
@@ -369,6 +380,7 @@ PS_OUT PS_DISOLVE(PS_IN In)
 
 	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	Out.vVelocity = In.vVelocity;
 	if ((g_DisolveValue - disolveValue) > 0.05f)
 	{
 		return Out;
@@ -381,6 +393,7 @@ PS_OUT PS_DISOLVE(PS_IN In)
 	{
 		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
 	}
+	
 
 	return Out;
 }

@@ -590,6 +590,17 @@ PS_OUT PS_FINAL(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, In.vTexcoord + offset);
+    }
+
+    Out.vColor /= float(NumSamples);
 
     return Out;
 }

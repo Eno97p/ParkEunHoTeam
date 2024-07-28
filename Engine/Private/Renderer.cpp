@@ -880,6 +880,22 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &m_fShadowThreshold, sizeof(_float))))
         return;
 
+    //안개 색
+    if (FAILED(m_pShader->Bind_RawValue("g_vFogColor", &m_vFogColor, sizeof(_float4))))
+        return;
+
+    //안개 범위
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogRange", &m_fFogRange, sizeof(_float))))
+        return;
+
+    //안개 높이 오프셋
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogHeightFalloff", &m_fFogHeightFalloff, sizeof(_float))))
+        return;
+
+    //안개 밀도
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogGlobalDensity", &m_fFogGlobalDensity, sizeof(_float))))
+        return;
+
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))

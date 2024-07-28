@@ -441,9 +441,6 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 HRESULT CUI_Slot::Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
 {
 	// 다음 Slot의 정보를 현재 Slot에 담는 함수
-	// wszTexture / m_wszItemName / m_wszItemExplain / m_wszItemExplain_Quick >> 이걸 그냥 인자로 넣어줘버릴까?
-
-
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
 	pDesc.eLevel = LEVEL_STATIC;

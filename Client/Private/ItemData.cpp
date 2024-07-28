@@ -132,12 +132,18 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 		m_iCount -= 1;
 	}
 	else // 하나 남은 경우 삭제 필요
+
+		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
+
 	{
 		// UI Inventory에서도 삭제
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
 
+		// 위에서 삭제를 해버려가지고 아래 Quick의 Inv에서 참조할 데이터가 없어서 제대로 삭제가 안 되는디..
+		// Quick InvSub을 먼저 ItemIcon 해제만 하고 ?
+
 		// UI Inventory의 Sub QuickSlot에서도 삭제 필요함
-		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
+		//dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
 
 		// Quick SubInv에서도 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_Delete(iInvenIdx);

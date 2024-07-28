@@ -72,7 +72,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
-	//Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF2);
+	Add_DropItem(CItem::ITEM_BUFF3);
 
 	return S_OK;
 }
@@ -178,14 +180,20 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 	return S_OK;
 }
 
-HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx)
+HRESULT CInventory::Delete_QuickAccess(_uint iInvenIdx, _uint iQuickIdx, wstring wstrItemName)
 {
 	// ItemData의 Equp 여부 설정
 	vector<CItemData*>::iterator item = m_vecItem.begin();
-	for (size_t i = 0; i < iInvenIdx; ++i)
-		++item;
-
-	(*item)->Set_isEquip(false);
+	for (size_t i = 0; i < m_vecItem.size(); ++i)
+	{
+		if (wstrItemName == (*item)->Get_ItemNameText())
+		{
+			(*item)->Set_isEquip(false);
+			break;
+		}
+		else
+			++item;
+	}
 
 	m_mapQuickAccess.erase(iInvenIdx);
 
@@ -226,6 +234,26 @@ HRESULT CInventory::Delete_EquipSkill(_uint iEquipSlotIdx)
 
 	// HUD 관련 코드도 추가해야함
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_SKILL);
+
+	return S_OK;
+}
+
+HRESULT CInventory::Delete_Item(CItemData* pItemData)
+{
+	vector<CItemData*>::iterator item = m_vecItem.begin();
+	for (size_t i = 0; i < m_vecItem.size(); ++i)
+	{
+		if (pItemData == (*item))
+		{
+			Safe_Release((*item));
+			m_vecItem.erase(item);
+			break;
+		}
+		else
+		{
+			++item;
+		}
+	}
 
 	return S_OK;
 }

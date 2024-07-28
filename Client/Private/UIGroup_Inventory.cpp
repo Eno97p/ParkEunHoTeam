@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "UI_Manager.h"
+#include "Inventory.h"
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -120,9 +121,48 @@ void CUIGroup_Inventory::Update_Slot_EquipSign(_uint iCurSlotIdx, _bool isEquip)
 	(*slot)->Set_isEquip(isEquip);
 }
 
+void CUIGroup_Inventory::Update_Inventory_Delete(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Delete_ItemIcon();
+}
+
 void CUIGroup_Inventory::Rend_Calcul(_int iSoul)
 {
 	m_pSoul->Rend_Calcul(iSoul);
+}
+
+void CUIGroup_Inventory::Update_Inventory(_uint iSlotIdx)
+{
+	// slot을 순회하면서 Inventory의 m_vecItem.size 보다 slotIdx가 작거나 같은데 ItemIcon이 nullptr이라면 그 다음 한칸씩 쭉 당겨오도록 구현
+	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	while (slot != m_vecSlot.end()) // 마지막이 아닐 동안 while문을 돌기
+	{
+		++slot; // 다음 슬롯에 접근해서 정보 가져오기
+
+		if ((*slot)->Get_isItemIconNull())
+			break;
+		wstring wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick;
+		wstrTexture = (*slot)->Get_Texture();
+		wstrItemName = (*slot)->Get_ItemName();
+		wstrItemExplain = (*slot)->Get_ItemExplain();
+		wstrItemExplain_Quick = (*slot)->Get_ItemExplain_Quick();
+
+		// 다음 슬롯 비워주기
+		(*slot)->Delete_ItemIcon();
+
+		--slot;
+		(*slot)->Pull_ItemIcon(wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
+
+		++slot;
+	}
 }
 
 HRESULT CUIGroup_Inventory::Create_UI()

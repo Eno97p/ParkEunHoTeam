@@ -27,6 +27,7 @@ public:
 
 	void			Update_InvSub_QuickSlot(_uint iSlotIdx);
 	void			Delete_InvSub_QuickSlot(_uint iSlotIdx);
+	void			Delete_InvSub_QuickSlot_ToInvIdx(_uint iInvIdx);
 
 private:
 	_uint					m_iSlotIdx = { 0 }; // 이 SubPage가 현재 Inventory의 몇 번째 Slot에 있는 Item에 대한 정보를 가지고 있는지

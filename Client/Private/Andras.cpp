@@ -57,7 +57,7 @@ HRESULT CAndras::Initialize(void* pArg)
 
 	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Andras-Head", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Andras-Spine", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	m_iState = STATE_IDLE;
@@ -592,7 +592,7 @@ NodeStates CAndras::BabylonAttack(_float fTimeDelta)
 		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
 		{
 			m_fSpawnCoolTime = SPAWNCOOLTIME;
-			_float fHeight = 3.f + RandomFloat(0.f, 5.f);
+			_float fHeight = 3.f + RandomFloat(0.f, 10.f);
 			//Ä® »ý¼º À§Ä¡(·£´ý)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_RIGHT)
 				* RandomFloat(-5.f, 5.f) + XMVectorSet(0.f, fHeight, 0.f, 0.f);
@@ -610,6 +610,7 @@ NodeStates CAndras::BabylonAttack(_float fTimeDelta)
 			_vector vLook = -XMVector3Cross(vUp, vRight); 
 			
 			CRushSword::RUSH_DESC pDesc;
+			pDesc.eRushtype = CRushSword::TYPE_BABYLON;
 			pDesc.fHeight = vPlayerPos.m128_f32[1];
 			pDesc.meshNum = RandomInt(0, 17);
 			pDesc.mWorldMatrix._11 = vRight.m128_f32[0];
@@ -655,6 +656,7 @@ NodeStates CAndras::ShootingStarAttack(_float fTimeDelta)
 			_vector vPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(RandomFloat(-2.f, 2.f), 10.f, RandomFloat(-2.f, 2.f), 0.f);
 
 			CRushSword::RUSH_DESC pDesc;
+			pDesc.eRushtype = CRushSword::TYPE_SHOOTINGSTAR;
 			pDesc.fHeight = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] + 0.5f;
 			pDesc.meshNum = RandomInt(0, 17);
 			pDesc.mWorldMatrix._11 = -1.f;
@@ -691,7 +693,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		_uint i;
 		if (m_iPhase == 1)
 		{
-			i = RandomInt(0, 1);
+			i = RandomInt(0, 6);
 		}
 		else if (m_iPhase == 2)
 		{

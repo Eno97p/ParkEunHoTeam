@@ -627,7 +627,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_DistortionRect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Fire.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FrameTex.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Lightning.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Sky.hlsl" />

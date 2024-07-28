@@ -109,6 +109,7 @@ private:
 
 private:
 	void Lazer_Tool();
+	void Tornado_Tool();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);

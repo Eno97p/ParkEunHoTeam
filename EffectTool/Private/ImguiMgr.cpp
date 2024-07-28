@@ -14,6 +14,7 @@
 #include "AndrasScrew.h"
 #include "AndrasRain.h"
 #include "ElectricCylinder.h"
+#include "TornadoEffect.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -145,7 +146,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[10] = { false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[11] = { false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -193,8 +194,12 @@ void CImguiMgr::Visible_Data()
 	if (bShow[8] == true)
 		Lazer_Tool();
 
-	ImGui::Checkbox("Model_Change", &bShow[9]);
+	ImGui::Checkbox("Tornado_Tool", &bShow[9]);
 	if (bShow[9] == true)
+		Tornado_Tool();
+
+	ImGui::Checkbox("Model_Change", &bShow[10]);
+	if (bShow[10] == true)
 		Model_Change();
 
 
@@ -2010,6 +2015,67 @@ void CImguiMgr::Lazer_Tool()
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"));
 	}
+	ImGui::End();
+}
+
+void CImguiMgr::Tornado_Tool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Tornado_Editor");
+
+	static CTornadoEffect::TORNADODESC TDesc{};
+	ImGui::InputFloat("Speed", &TDesc.fSpeed);
+	ImGui::InputFloat("Rot_Speed", &TDesc.fRotationSpeed);
+	ImGui::InputFloat("LifeTime", &TDesc.fLifeTime);
+
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&TDesc.vStartPos));
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Wind");
+
+	ImGui::InputFloat3("WindMaxSize", reinterpret_cast<float*>(&TDesc.WindDesc.vMaxSize));
+	ImGui::InputFloat3("WindOffset", reinterpret_cast<float*>(&TDesc.WindDesc.vOffset));
+	ImGui::ColorEdit3("WindColor", reinterpret_cast<float*>(&TDesc.WindDesc.fColor));
+
+
+	ImGui::InputFloat("WindRotSpeed", &TDesc.WindDesc.fRotationSpeed);
+	ImGui::InputFloat("WindUVSpeed", &TDesc.WindDesc.fUVSpeed);
+	ImGui::InputFloat("WindGrowSpeed", &TDesc.WindDesc.fGrowSpeed);
+	ImGui::InputFloat("WindBloomPower", &TDesc.WindDesc.fBloomPower);
+	ImGui::InputFloat("WindLifeTime", &TDesc.WindDesc.fMaxLifeTime);
+	ImGui::InputInt("WindNumDesolve", &TDesc.WindDesc.NumDesolve);
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Root");
+
+	ImGui::InputFloat3("RootMaxSize", reinterpret_cast<float*>(&TDesc.RootDesc.vMaxSize));
+	ImGui::InputFloat3("RootOffset", reinterpret_cast<float*>(&TDesc.RootDesc.vOffset));
+	ImGui::ColorEdit3("RootColor", reinterpret_cast<float*>(&TDesc.RootDesc.fColor));
+
+
+	ImGui::InputFloat("Interval", &TDesc.fRootInterval);
+	ImGui::InputFloat("StartYScale", &TDesc.RootDesc.StartYScale);
+	ImGui::InputFloat("RootRotSpeed", &TDesc.RootDesc.fRotationSpeed);
+	ImGui::InputFloat("RootBloompower", &TDesc.RootDesc.fBloomPower);
+	ImGui::InputFloat("RootLifeTime", &TDesc.RootDesc.fMaxLifeTime);
+	ImGui::InputFloat("RootUVSpeed", &TDesc.RootDesc.fUVSpeed);
+	ImGui::InputFloat("RootGrowSpeed", &TDesc.RootDesc.fGrowSpeed);
+	ImGui::InputInt("RootNumDesolve", &TDesc.RootDesc.NumDesolve);
+
+
+
+	TDesc.pTarget = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(),
+		TEXT("LayerDummy"));
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Tornado"), TEXT("Prototype_GameObject_Tornado"), &TDesc);
+	}
+
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Tornado"));
+	}
+
 	ImGui::End();
 }
 

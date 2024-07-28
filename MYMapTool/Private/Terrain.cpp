@@ -69,7 +69,7 @@ void CTerrain::Tick(_float fTimeDelta)
 	}
 
 
-	//m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
+	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
 
 	/*if (m_pImgui_Manager->Get_IsNaviClear())
 	{
@@ -89,7 +89,7 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 	//	m_fTest = 0.f;
 	//	m_pVIBufferCom->Update_Height(fTimeDelta);
 	//}
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CTerrain::Render()

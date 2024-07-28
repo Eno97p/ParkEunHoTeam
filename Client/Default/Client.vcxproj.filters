@@ -622,6 +622,12 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue">
       <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\05. AndrasArena">
+      <UniqueIdentifier>{c199f8ee-dcbd-4d16-8929-80b03b0a4160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\06. GrassLand">
+      <UniqueIdentifier>{7bcb7c22-4238-415b-b8b4-1d483d2cb199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1277,6 +1283,12 @@
     <ClInclude Include="..\Public\Tree.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_AndrasArena.h">
+      <Filter>01.Levels\05. AndrasArena</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GrassLand.h">
+      <Filter>01.Levels\06. GrassLand</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1906,6 +1918,12 @@
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_AndrasArena.cpp">
+      <Filter>01.Levels\05. AndrasArena</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_GrassLand.cpp">
+      <Filter>01.Levels\06. GrassLand</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1989,7 +2007,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_NewPoint.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_LazerEffect.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_MeshEffect.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">

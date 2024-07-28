@@ -95,6 +95,12 @@
     <Filter Include="Objects\05. Monster\Andras\AndrasLazer">
       <UniqueIdentifier>{cc77f6ff-85c1-41ba-aba2-5aa1722d27d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\09. Tornado">
+      <UniqueIdentifier>{a3773ea3-79bd-4258-9ba0-889027bbdd29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\09. Tornado\Effects">
+      <UniqueIdentifier>{4ef6b1a3-074b-4411-8091-ce6644a70902}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -247,6 +253,15 @@
     <ClInclude Include="..\Public\AndrasRain.h">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\TornadoEffect.h">
+      <Filter>Objects\02. Effects\09. Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TornadoWind.h">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tornado_Root.h">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -383,6 +398,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\AndrasRain.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\TornadoEffect.cpp">
+      <Filter>Objects\02. Effects\09. Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TornadoWind.cpp">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tornado_Root.cpp">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

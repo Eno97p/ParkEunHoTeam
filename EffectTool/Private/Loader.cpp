@@ -31,6 +31,11 @@
 #include "AndrasRain.h"
 #pragma endregion ANDRAS
 
+#pragma region TornadoEffects
+#include "TornadoEffect.h"
+#include "TornadoWind.h"
+#include "Tornado_Root.h"
+#pragma endregion TornadoEffects
 
 
 
@@ -144,7 +149,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 	//비
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_AndrasRain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/AndrasRain.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/MyRainTexture.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion TEXTURE
@@ -251,6 +256,20 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/AndrasScrew.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Tornado
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoWind"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoCore.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoBottom"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoRoot.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoSpring"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoSpring.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 #pragma region SHADER
@@ -264,8 +283,8 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Lazer */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_Lazer"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_LazerEffect.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_MeshEffect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_MeshEffect.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxAnimMesh */
@@ -411,6 +430,18 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasRain"),
 		CAndrasRain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	//Tornado
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tornado"),
+		CTornadoEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Wind"),
+		CTornado_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Root"),
+		CTornado_Root::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

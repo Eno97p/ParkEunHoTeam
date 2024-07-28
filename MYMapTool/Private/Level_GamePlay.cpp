@@ -428,7 +428,7 @@ HRESULT CLevel_GamePlay::Save_Data()
 
 HRESULT CLevel_GamePlay::Save_Data_PhysX()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Juggulas_PhysX.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_AndrasArena_PhysX.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;

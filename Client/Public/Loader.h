@@ -90,7 +90,11 @@ private:
 	HRESULT Loading_For_JugglasLevel();
 	HRESULT Loading_For_JugglasLevel_For_Shader();
 
+	HRESULT Loading_For_AndrasArenaLevel();
+	HRESULT Loading_For_AndrasArenaLevel_For_Shader();
 
+	HRESULT Loading_For_GrassLandLevel();
+	HRESULT Loading_For_GrassLandLevel_For_Shader();
 public:
 	static CLoader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVEL eNextLevel);
 	virtual void Free() override;

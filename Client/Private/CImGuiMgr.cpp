@@ -173,7 +173,6 @@ void CImGuiMgr::Render_MainMenu()
 					return;
 				}
 				break;
-				
 			case LEVEL_GAMEPLAY:
 				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
 				{
@@ -190,6 +189,20 @@ void CImGuiMgr::Render_MainMenu()
 				break;
 			case LEVEL_JUGGLAS:
 				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_JUGGLAS))))
+				{
+					MSG_BOX("IMGUI::Failed to Open Level");
+					return;
+				}
+				break;
+			case LEVEL_ANDRASARENA:
+				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ANDRASARENA))))
+				{
+					MSG_BOX("IMGUI::Failed to Open Level");
+					return;
+				}
+				break;
+			case LEVEL_GRASSLAND:
+				if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GRASSLAND))))
 				{
 					MSG_BOX("IMGUI::Failed to Open Level");
 					return;

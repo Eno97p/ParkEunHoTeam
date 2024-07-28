@@ -42,6 +42,19 @@ void CUI_Manager::Set_ScreenBloodRend(_bool isRend)
 	m_pScreenBlood->Resset_Animation(true);
 }
 
+_bool CUI_Manager::Get_isMouseOn()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
+	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade");
+
+	 if ((*menu).second->Get_Rend() || (*quick).second->Get_Rend() || (*upgrade).second->Get_Rend() || (*logo).second->Get_Rend())
+		return true;
+	else
+		return false;
+}
+
 _bool CUI_Manager::Get_MenuPageState()
 {
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
@@ -324,6 +337,8 @@ void CUI_Manager::Key_Input()
 	{
 		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 		(*upgrade).second->Set_Rend(true);
+
+		m_pGameInstance->Get_MainCamera()->Inactivate();
 	}
 }
 

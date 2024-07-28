@@ -20,6 +20,8 @@
 #include "Trap.h"
 #include "Item.h"
 
+
+//
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())

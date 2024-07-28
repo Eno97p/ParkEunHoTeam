@@ -5,7 +5,7 @@
 namespace Client
 {
 	//Level이 추가되면 아래 문자열 순서 맞춰서 추가해주기
-	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_ACKBAR, LEVEL_JUGGLAS, LEVEL_END };
+	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_ACKBAR, LEVEL_JUGGLAS, LEVEL_ANDRASARENA, LEVEL_GRASSLAND, LEVEL_END };
 
 	enum CAMERA_INDEX { CAM_FREE = 0, CAM_THIRDPERSON, CAM_SIDEVIEW, CAM_TRANSITION, CAM_END };
 
@@ -31,6 +31,8 @@ namespace Client
 		"GamePlay",
 		"Ackbar",
 		"Jugglas",
+		"AndrasArena",
+		"GrassLand",
 		"End"
 	};
 

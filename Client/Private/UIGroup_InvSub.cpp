@@ -115,7 +115,7 @@ HRESULT CUIGroup_InvSub::Render()
 	return S_OK;
 }
 
-void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx)
+void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx) // 여기 제대로 안 들어감!!!!!
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 
@@ -147,7 +147,7 @@ void CUIGroup_InvSub::Delete_InvSub_QuickSlot_ToInvIdx(_uint iInvIdx)
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < m_vecSlot.size(); ++i)
 	{
-		if ((*slot)->Get_InvenIdx() == iInvIdx)
+		if ((*slot)->Get_InvenIdx() == iInvIdx) // Inventory idx를 제대로 가지고 있지 않는 것 같우이
 		{
 			(*slot)->Delete_ItemIcon();
 			break;

@@ -546,7 +546,7 @@ HRESULT CLevel_Jugglas::Load_Data_Effects()
 	CloseHandle(hFile);
 
 #ifdef _DEBUG
-	MSG_BOX("Effects Data Load");
+	//MSG_BOX("Effects Data Load");
 #endif
 
 	return S_OK;
@@ -633,7 +633,7 @@ void CLevel_Jugglas::Load_Lights()
 
 	CloseHandle(hFile);
 #ifdef _DEBUG
-	MSG_BOX("Lights Data Load");
+	//MSG_BOX("Lights Data Load");
 #endif
 	return;
 }

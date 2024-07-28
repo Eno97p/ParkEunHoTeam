@@ -23,6 +23,11 @@ vector      g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 vector      g_vCamPosition;
 
+vector      g_vFogColor;
+float      g_fFogRange;
+float      g_fFogHeightFalloff;
+float      g_fFogGlobalDensity;
+
 texture2D   g_Texture;
 texture2D   g_NormalTexture;
 texture2D   g_DiffuseTexture;
@@ -480,7 +485,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     vector vMetalicDesc = g_MetalicTexture.Sample(PointSampler, In.vTexcoord);
 
-    Out.vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    vector vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
     vector vWorldPos;
@@ -510,16 +515,37 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     float fLightOldDepth = vLightDepthDesc.x * 3000.f;
 
     if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
-        Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+        vColor = vector(vColor.rgb * 0.5f, 1.f);
 
     ////¾È°³
-  //   float3 fog = float3(0.1f, 0.1f, 0.1f);
-  //   float dist = min(max((distance(vWorldPos, g_vCamPosition) - 5.f), 0.f), 100.f) / 100.f;
-  //   Out.vColor.rgb *= (1.f - dist);
-  //   Out.vColor.rgb += dist * fog;
+ /*    float3 fog = float3(0.1f, 0.1f, 0.1f);
+     float dist = min(max((distance(vWorldPos, g_vCamPosition) - 5.f), 0.f), 100.f) / 100.f;
+     Out.vColor.rgb *= (1.f - dist);
+     Out.vColor.rgb += dist * fog;*/
+
+    float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
+
+    float distanceFog = saturate(length(cameraToWorldPos) / g_fFogRange);
+
+    float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
+    float heightFogInt = length(cameraToWorldPos) * cVolFogHeightDensityAtViewer;
+
+    const float cSlopeThreshold = 0.01f;
+    if (abs(cameraToWorldPos.y) > cSlopeThreshold)
+    {
+        float t = g_fFogHeightFalloff * cameraToWorldPos.y;
+        heightFogInt *= (1.0 - exp(-t)) / t;
+    }
+    float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
+
+    float combinedFogFactor = max(distanceFog, heightFogFactor);
+
+    float4 finalColor = lerp(vColor, g_vFogColor, combinedFogFactor);
 
     vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
-    Out.vColor.rgb += vEmissiveDesc.rgb;
+    finalColor.rgb += vEmissiveDesc.rgb;
+
+    Out.vColor = finalColor;
 
     return Out;
 }
@@ -564,6 +590,17 @@ PS_OUT PS_FINAL(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, In.vTexcoord + offset);
+    }
+
+    Out.vColor /= float(NumSamples);
 
     return Out;
 }

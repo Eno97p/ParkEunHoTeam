@@ -108,6 +108,7 @@ public:
 	HRESULT Bind_Material(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_Material_Instance(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
+	HRESULT Bind_PrevBoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 
 	void Play_Animation(_float fTimeDelta, _bool isLerp = true);
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc);
@@ -124,6 +125,7 @@ private:
 	_float4x4					m_PreTransformMatrix;
 	MODELTYPE					m_eModelType = { TYPE_END };
 	_float4x4					m_MeshBoneMatrices[512];
+	_float4x4					m_PrevMeshBoneMatrices[256];
 
 private:
 	_uint						m_iNumMeshes = { 0 };

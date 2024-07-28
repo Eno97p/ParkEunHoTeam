@@ -211,8 +211,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	m_pVertexPositions = new _float4[m_iNumVertices];
 	ZeroMemory(m_pVertexPositions, sizeof(_float4) * m_iNumVertices);
 
-	const float terrainScaleX = 10.f;  // X 방향 스케일
-	const float terrainScaleZ = 10.f;  // Z 방향 스케일
+	const float terrainScaleX = 3.f;  // X 방향 스케일
+	const float terrainScaleZ = 3.f;  // Z 방향 스케일
 	const float heightScale = 1000.f;  // 높이 스케일 값, 필요에 따라 조정
 
 	// 지형의 중심을 (0,0,0)으로 이동하기 위한 오프셋 계산

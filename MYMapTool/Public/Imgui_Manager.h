@@ -113,6 +113,7 @@ private:
 
 	void Terrain_Editor();
 	void GlobalWind_Editor();
+	void Fog_Editor();
 
 private:
 	wstring m_LightsDataPath = L""; //Lights 저장 경로
@@ -125,6 +126,7 @@ private:
 	_bool	m_bCameraWindow = false;
 	_bool	m_bTerrainWindow = false;
 	_bool	m_bGlobalWindWindow = false;
+	_bool	m_bFogWindow = false;
 	
 	_bool	m_bShowDecalTextureWindow = false;
 

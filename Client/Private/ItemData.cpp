@@ -153,6 +153,10 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 		// Slot들 땡겨오기 >> 여기에 InvenIdx를 넣어주는 게 맞을까?		
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory(iInvenIdx);
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_Inventory(iInvenIdx);
+	
+		// Inventory의 Quick(map)에서도 제거해주어야 하는 것 아닐지!
+
+	
 	}
 }
 

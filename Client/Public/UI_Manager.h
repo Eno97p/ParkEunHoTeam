@@ -27,7 +27,6 @@ public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 	void				Set_ScreenBloodRend(_bool isRend);
 
-	// 마우스가 가져다 쓸 함수 추가
 	_bool				Get_isMouseOn();
 
 public:

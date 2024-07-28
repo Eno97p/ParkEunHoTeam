@@ -628,6 +628,12 @@
     <Filter Include="01.Levels\06. GrassLand">
       <UniqueIdentifier>{7bcb7c22-4238-415b-b8b4-1d483d2cb199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Valnir">
+      <UniqueIdentifier>{0b32b9e1-7d74-49c8-a2a2-afc90e0b3ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Valnir\Body">
+      <UniqueIdentifier>{d84833e0-afcb-4bf8-9551-1a11f7326ef6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1289,6 +1295,12 @@
     <ClInclude Include="..\Public\Level_GrassLand.h">
       <Filter>01.Levels\06. GrassLand</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Npc_Valnir.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Valnir.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1923,6 +1935,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_GrassLand.cpp">
       <Filter>01.Levels\06. GrassLand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Valnir.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Valnir.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,9 @@
 #include "C:\Real3DProject\Client\Private\Body_Rlya.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Valnir.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\BossDeco.cpp"
 
 
@@ -184,6 +187,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\NPC_Rlya.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Npc_Valnir.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"

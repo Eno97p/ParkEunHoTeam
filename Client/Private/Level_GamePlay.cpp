@@ -633,7 +633,7 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
 	}
 
 #ifdef _DEBUG
-	MSG_BOX("Effect Data Load");
+	//MSG_BOX("Effect Data Load");
 #endif
 
 	return S_OK;
@@ -684,7 +684,7 @@ HRESULT CLevel_GamePlay::Load_Data_Decals()
 
 
 #ifdef _DEBUG
-	MSG_BOX("Decal Data Loaded");
+	//MSG_BOX("Decal Data Loaded");
 #endif
 	return S_OK;
 }
@@ -771,7 +771,7 @@ void CLevel_GamePlay::Load_Lights()
 	CloseHandle(hFile);
 
 #ifdef _DEBUG
-	MSG_BOX("Lights Data Load");
+	//MSG_BOX("Lights Data Load");
 #endif
 	return;
 }

@@ -27,6 +27,8 @@ public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 	void				Set_ScreenBloodRend(_bool isRend);
 
+	_bool				Get_isMouseOn();
+
 public:
 	HRESULT				Initialize();
 	void				Tick(_float fTimeDelta);

@@ -175,7 +175,7 @@ void CUIGroup_WeaponSlot::Key_Input()
             for (size_t i = 0; i < m_iQuickIdx; ++i)
                 ++quickaccess;
 
-            m_pQuickSlot->Change_Texture((*quickaccess).second->Get_TextureName());
+            m_pQuickSlot->Change_Texture((*quickaccess).second->Get_TextureName()); // 여기서 터짐
         }
     }
 }

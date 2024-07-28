@@ -27,6 +27,10 @@ HRESULT CSky::Initialize(void* pArg)
 
 	m_iSkyTex = m_pGameInstance->Get_CurrentLevel() - LEVEL_GAMEPLAY;
 
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_ANDRASARENA)
+	{
+		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(60.f));
+	}
 	return S_OK;
 }
 

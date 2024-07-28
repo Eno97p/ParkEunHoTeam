@@ -156,7 +156,7 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 	m_mapQuickAccess.emplace(iInvenIdx, pItemData);
 
 	// InvSub QuickAccess Slot UI에 출력하기
-	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(iInvenIdx);
+	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(iInvenIdx); // !!!! 여기서 Inventory Idx값을 제대로 활용 못한 거 같위
 
 	// QuickAccess에도 출력 필요
 	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData, iInvenIdx);
@@ -245,6 +245,23 @@ HRESULT CInventory::Delete_Item(CItemData* pItemData)
 	{
 		if (pItemData == (*item))
 		{
+			// Quick에 장착 중이었다면 그 또한 제거해주어야 함
+			if ((*item)->Get_isEquip())
+			{
+				// i 가 현재 Inventory 슬롯 인덱스일랑가? 아니엇던 거 같음; 중간에 넣을 수 있도록 만들었던 듯.
+				map<_uint, CItemData*>::iterator quickItem = m_mapQuickAccess.begin();
+				for (size_t j = 0; j < m_mapQuickAccess.size(); ++j)
+				{
+					if ((*quickItem).second == (*item))
+					{
+						m_mapQuickAccess.erase(quickItem);
+						break;
+					}
+					else
+						++quickItem;
+				}
+			}
+
 			Safe_Release((*item));
 			m_vecItem.erase(item);
 			break;

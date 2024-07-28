@@ -46,9 +46,7 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
-#ifdef _DEBUG	
-	m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
-#endif
+
 }
 
 HRESULT CTerrain::Render()
@@ -92,10 +90,10 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_Brush"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_BRUSH]))))
 		return E_FAIL;
 
-	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-		return E_FAIL;
+	///* For.Com_Navigation */
+	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	//	TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+	//	return E_FAIL;
 
 
 

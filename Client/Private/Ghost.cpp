@@ -253,6 +253,8 @@ NodeStates CGhost::Dead(_float fTimeDelta)
 					dynamic_cast<CPartObject*>(m_PartObjects[i])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 				}
 				m_fDeadDelay -= 0.001f;
+
+				Reward_Soul();
 			}
 		}
 		return RUNNING;

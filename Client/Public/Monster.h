@@ -70,8 +70,8 @@ protected:
 
 	LEVEL							m_eLevel = { LEVEL_END };
 
-	CPlayer* m_pPlayer = { nullptr };
-	CTransform* m_pPlayerTransform = { nullptr };
+	CPlayer*						m_pPlayer = { nullptr };
+	CTransform*						m_pPlayerTransform = { nullptr };
 	
 	// UI
 	class CUIGroup*		m_pUI_HP = { nullptr };
@@ -87,6 +87,7 @@ protected:
 	HRESULT				Create_TargetLock(CModel* pBodyModel, string strBoneName, _vector vOffsetPos, _float fScale);
 
 	void				Update_UI(_float fHeight = 0.f);
+	void				Reward_Soul(_bool isBoss = false);
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

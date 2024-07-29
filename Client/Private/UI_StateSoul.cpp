@@ -22,6 +22,7 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 {
 	UI_SOUL_DESC* pDesc = static_cast<UI_SOUL_DESC*>(pArg);
 
+	m_isSoulCntRend = pDesc->isSoulCntRend;
 	m_eUISort = pDesc->eUISort;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -69,7 +70,8 @@ HRESULT CUI_StateSoul::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(CInventory::GetInstance()->Get_Soul()), _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	if(m_isSoulCntRend)
+		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(CInventory::GetInstance()->Get_Soul()), _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
 
 	if(m_isCalculRend)
 		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrCalculText, _float2(m_fX + 20.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));

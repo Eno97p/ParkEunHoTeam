@@ -6,6 +6,12 @@ BEGIN(Client)
 
 class CUI_ScriptBG_Npc final : public CUI
 {
+public:
+	typedef struct UI_Script_Desc : public UI_DESC
+	{
+		wstring			wstrTextureName;
+	}UI_SCRIPT_DESC;
+
 private:
 	CUI_ScriptBG_Npc(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_ScriptBG_Npc(const CUI_ScriptBG_Npc& rhs);
@@ -20,7 +26,7 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	HRESULT	Add_Components();
+	HRESULT	Add_Components(wstring wstrTextureName);
 	HRESULT	Bind_ShaderResources();
 
 public:

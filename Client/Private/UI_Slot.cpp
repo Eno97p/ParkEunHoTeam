@@ -441,9 +441,6 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 HRESULT CUI_Slot::Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
 {
 	// 다음 Slot의 정보를 현재 Slot에 담는 함수
-	// wszTexture / m_wszItemName / m_wszItemExplain / m_wszItemExplain_Quick >> 이걸 그냥 인자로 넣어줘버릴까?
-
-
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
 	pDesc.eLevel = LEVEL_STATIC;
@@ -519,7 +516,7 @@ void CUI_Slot::Click_BtnEvent()
 
 			// Inventory에서 EqupiSign 해제 / Inv의 SubQuick에서도 제거
 			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iInventoryIdx, false);
-			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot(m_iInventoryIdx);
+			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(m_iInventoryIdx);
 
 			// Inventory에서 장착 여부 비활성화 해주기 >> 이름으로 접근해야 할 거 같음
 			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx, m_wszItemName);
@@ -578,7 +575,8 @@ void CUI_Slot::Rend_Count()
 	_uint iCount = pItem->Get_Count();
 	if (iCount >= 2)
 	{
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 10.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		// 뚱땡이 아이템의 경우 가리는 이슈 있음 ㅡㅡ
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 17.f, m_fY + 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f)))) // m_fX + 10.f, m_fY + 10.f
 			return;
 	}
 }

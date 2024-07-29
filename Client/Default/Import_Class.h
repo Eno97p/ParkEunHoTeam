@@ -73,6 +73,8 @@
 #pragma region NPC
 #include "NPC_Rlya.h"
 #include "Body_Rlya.h"
+#include "Npc_Valnir.h"
+#include "Body_Valnir.h"
 #pragma endregion NPC
 
 #pragma region DECAL

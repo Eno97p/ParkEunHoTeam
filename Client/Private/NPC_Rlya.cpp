@@ -27,8 +27,6 @@ HRESULT CNPC_Rlya::Initialize_Prototype()
 
 HRESULT CNPC_Rlya::Initialize(void* pArg)
 {
-
-
 	NPC_DESC Desc;
 
 	Desc.fSpeedPerSec = 3.f; // 수정 필요
@@ -37,9 +35,7 @@ HRESULT CNPC_Rlya::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
-
-	if (FAILED(Add_Components()))
-		return E_FAIL;
+	 
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(277.f, 8.6f, -25.8f, 1.f)); // Test
 
@@ -96,12 +92,6 @@ void CNPC_Rlya::Late_Tick(_float fTimeDelta)
 
 HRESULT CNPC_Rlya::Render()
 {
-	return S_OK;
-}
-
-HRESULT CNPC_Rlya::Add_Components()
-{
-
 	return S_OK;
 }
 
@@ -170,8 +160,10 @@ void CNPC_Rlya::Key_Input()
 
 HRESULT CNPC_Rlya::Create_Script()
 {
-	CUIGroup::UIGROUP_DESC pDesc{};
+	CUIGroup_Script::UIGROUP_SCRIPT_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eNpcType = CUIGroup_Script::NPC_RLYA;
+
 	m_pScriptUI = dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc));
 	if (nullptr == m_pScriptUI)
 		return E_FAIL;

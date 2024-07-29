@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Body_LGGun.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
+    <ClInclude Include="..\Public\Body_Valnir.h" />
     <ClInclude Include="..\Public\BossDeco.h" />
     <ClInclude Include="..\Public\BossStatue.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
@@ -240,6 +241,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
+    <ClInclude Include="..\Public\Npc_Valnir.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
@@ -255,6 +257,7 @@
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Map.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
+    <ClInclude Include="..\Public\UIGroup_Shop.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
@@ -274,6 +277,10 @@
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
+    <ClInclude Include="..\Public\UI_ShopBG.h" />
+    <ClInclude Include="..\Public\UI_ShopSelect.h" />
+    <ClInclude Include="..\Public\UI_Shop_RemainIcon.h" />
+    <ClInclude Include="..\Public\UI_Shop_SoulBG.h" />
     <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
     <ClInclude Include="..\Public\UI_UpGPageBG.h" />
     <ClInclude Include="..\Public\UI_UpGPageBtn.h" />
@@ -401,6 +408,7 @@
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
+    <ClCompile Include="..\Private\Body_Valnir.cpp" />
     <ClCompile Include="..\Private\BossDeco.cpp" />
     <ClCompile Include="..\Private\BossStatue.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
@@ -447,6 +455,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
+    <ClCompile Include="..\Private\Npc_Valnir.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
@@ -462,6 +471,7 @@
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Map.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Shop.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
@@ -481,6 +491,10 @@
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
+    <ClCompile Include="..\Private\UI_ShopBG.cpp" />
+    <ClCompile Include="..\Private\UI_ShopSelect.cpp" />
+    <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp" />
+    <ClCompile Include="..\Private\UI_Shop_SoulBG.cpp" />
     <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBG.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBtn.cpp" />

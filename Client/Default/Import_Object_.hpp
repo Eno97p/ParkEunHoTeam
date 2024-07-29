@@ -348,6 +348,16 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Rlya"),
 		CBody_Rlya::Create(pDevice, pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Npc_Valnir*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Npc_Valnir"),
+		CNpc_Valnir::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Valnir*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Valnir"),
+		CBody_Valnir::Create(pDevice, pContext))))
+		return E_FAIL;
 #pragma endregion Npc
 
 	/* For.Prototype_GameObject_HoverBoard */

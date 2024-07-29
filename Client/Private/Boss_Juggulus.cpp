@@ -366,6 +366,8 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 
 		if (m_isAnimFinished)
 		{
+			Reward_Soul(true);
+
 			m_pGameInstance->Erase(this);
 		}
 		return RUNNING;

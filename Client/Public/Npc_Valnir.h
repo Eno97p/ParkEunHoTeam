@@ -3,14 +3,14 @@
 #include "Npc.h"
 
 BEGIN(Client)
-class CBody_Rlya;
+class CBody_Valnir;
 
-class CNPC_Rlya final : public CNpc
+class CNpc_Valnir final : public CNpc
 {
 private:
-	CNPC_Rlya(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CNPC_Rlya(const CNPC_Rlya& rhs);
-	virtual ~CNPC_Rlya() = default;
+	CNpc_Valnir(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CNpc_Valnir(const CNpc_Valnir& rhs);
+	virtual ~CNpc_Valnir() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -21,21 +21,24 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool				m_isScriptOn = { false };
-	_uint				m_iDialogCnt = { 0 };
+	_bool					m_isScriptOn = { false };
+	_uint					m_iDialogCnt = { 0 };
 
-	CBody_Rlya*			m_pBody = { nullptr };
+	CBody_Valnir*			m_pBody = { nullptr };
+
+	class CUIGroup_Shop*	m_pShopUI = { nullptr };
 
 private:
 	HRESULT				Add_PartObjects();
 
 	virtual HRESULT		Create_Script() override;
+	HRESULT				Create_Shop();
 
 	_bool				Check_Distance();
-	void				Key_Input();
+	void				Set_DialogText();
 
 public:
-	static CNPC_Rlya*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CNpc_Valnir*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

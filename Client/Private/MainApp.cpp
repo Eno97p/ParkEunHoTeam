@@ -130,9 +130,17 @@
 #include "UI_MapIcon.h"
 #include "UI_MapUser.h"
 #include "UI_MapPosIcon.h"
-
 #include "UIGroup_Map.h"
 #pragma endregion Map
+
+#pragma region Shop
+#include "UI_ShopBG.h"
+#include "UI_Shop_SoulBG.h"
+#include "UI_ShopSelect.h"
+#include "UI_Shop_RemainIcon.h"
+
+#include "UIGroup_Shop.h"
+#pragma endregion Shop
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -1002,12 +1010,17 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_Script_Aura */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Aura"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_NaiAura%d.png"), 4))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_NaiAura%d.png"), 5))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_Rlya */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Rlya"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Rlya.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_Valnir */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Valnir"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Valnir.png"), 1))))
 		return E_FAIL;
 #pragma endregion Script
 
@@ -1112,6 +1125,29 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_User.png"), 1))))
 		return E_FAIL;
 #pragma endregion Map
+
+#pragma region Shop
+	/* Prototype_Component_Texture_UI_ShopBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ShopBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopBG.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_ShopSelect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ShopSelect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopSelect.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_SoulBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_SoulBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/SoulBG.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_RemainIcon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RemainIcon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/Shop_RemainIcon.png"), 1))))
+		return E_FAIL;
+
+#pragma endregion Shop
 
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
@@ -1627,6 +1663,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Map::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Map
+
+#pragma region Shop
+	/* For.Prototype_GameObject_UI_ShopBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ShopBG"),
+		CUI_ShopBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Shop_SoulBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Shop_SoulBG"),
+		CUI_Shop_SoulBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ShopSelect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ShopSelect"),
+		CUI_ShopSelect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Shop_RemainIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Shop_RemainIcon"),
+		CUI_Shop_RemainIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Shop*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Shop"),
+		CUIGroup_Shop::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Shop
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

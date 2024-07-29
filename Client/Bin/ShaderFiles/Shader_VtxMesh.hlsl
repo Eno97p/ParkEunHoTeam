@@ -1,7 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_PrevWorldMatrix, g_PrevViewMatrix;
 texture2D   g_DiffuseTexture;
 texture2D   g_NormalTexture;
 texture2D   g_SpecularTexture;
@@ -44,6 +44,7 @@ struct VS_OUT
     float4      vLocalPos : TEXCOORD2;
     float4      vTangent : TANGENT;
     float4      vBinormal : BINORMAL;
+    float2		vVelocity : TEXCOORD3;
 };
 
 /* 정점 셰이더 :  /*
@@ -53,10 +54,12 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT      Out = (VS_OUT)0;
 
-    matrix      matWV, matWVP;
+    matrix      matWV, matWVP, matPrevWV, matPrevWVP;
 
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
+    matPrevWV = mul(g_PrevWorldMatrix, g_PrevViewMatrix);
+    matPrevWVP = mul(matPrevWV, g_ProjMatrix);
 
     Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
     Out.vNormal = normalize(mul(vector(In.vNormal.xyz, 0.f), g_WorldMatrix));
@@ -66,7 +69,9 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
     Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
 
-
+    vector vPrevPos = mul(float4(In.vPosition, 1.f), matPrevWVP);
+    Out.vVelocity = (Out.vPosition.xy / Out.vPosition.w) - (vPrevPos.xy / vPrevPos.w);
+    Out.vVelocity *= -2.f;
     return Out;
 }
 
@@ -84,6 +89,7 @@ struct PS_IN
     float4      vLocalPos : TEXCOORD2;
     float4      vTangent : TANGENT;
     float4      vBinormal : BINORMAL;
+    float2		vVelocity : TEXCOORD3;
 };
 
 struct PS_OUT
@@ -95,6 +101,7 @@ struct PS_OUT
     vector vEmissive : SV_TARGET4;
     vector vRoughness : SV_TARGET5;
     vector vMetalic : SV_TARGET6;
+    float2 vVelocity : SV_TARGET7;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -127,6 +134,8 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
 
+    Out.vVelocity = In.vVelocity;
+
     return Out;
 }
 
@@ -145,6 +154,8 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 
     Out.vDiffuse.a = (Out.vDiffuse.r + Out.vDiffuse.g + Out.vDiffuse.b) / 3.f;
     if (Out.vDiffuse.a < 0.3f) discard;
+
+    Out.vVelocity = In.vVelocity;
 
     return Out;
 }
@@ -183,6 +194,7 @@ PS_OUT PS_WEAPON(PS_IN In)
 
     vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
     float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+    Out.vVelocity = In.vVelocity;
     if ((g_DisolveValue - disolveValue) > 0.05f)
     {
         return Out;
@@ -298,6 +310,7 @@ PS_OUT PS_SPHERE(PS_IN In)
     if (g_bEmissive) Out.vEmissive = vEmissive;
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
+    Out.vVelocity = In.vVelocity;
 
     return Out;
 }

@@ -76,44 +76,17 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element">
       <UniqueIdentifier>{69ece9b8-2d30-4cff-b14e-3b2247dfafe2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword">
-      <UniqueIdentifier>{809fd46f-0ffb-49da-b590-4219978ac3dd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword_Anim">
       <UniqueIdentifier>{f922cadd-30b2-4116-a6a7-1e3087cba0d5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Cendres">
-      <UniqueIdentifier>{974273e0-16b1-4094-aa95-27fa2475a833}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\CorruptedSword">
-      <UniqueIdentifier>{4e274f96-f1e9-433b-b04f-e1122e581f84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Catharsis">
-      <UniqueIdentifier>{d3d8281e-c4c5-4945-a73d-d2cae0747e92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\DurgaSword">
       <UniqueIdentifier>{ceba17d8-821f-42f1-8f87-966d9b4c3443}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\IceBlade">
-      <UniqueIdentifier>{76eb88fc-5389-45b1-9800-3c1ebf81d55c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\NaruehSword">
-      <UniqueIdentifier>{1b55d7d3-fb8b-4ee9-b048-cd41bae1c7ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\PretorianSword">
       <UniqueIdentifier>{9d74c2ab-cbee-4d3d-af3b-2190ddc75d1c}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\RadamantheSword">
       <UniqueIdentifier>{3848d018-7672-4885-a10d-195f3ce74e9a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\SitraSword">
-      <UniqueIdentifier>{e28edbe1-6779-45ca-b45e-41b7d5a9e735}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\ValnirSword">
-      <UniqueIdentifier>{c5b276ed-531a-4612-8d1d-24efdd3edcf4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword">
-      <UniqueIdentifier>{d4bbd4f5-d3e5-46eb-ae23-7e4ae58ad251}</UniqueIdentifier>
     </Filter>
     <Filter Include="999.Client_IMGUI">
       <UniqueIdentifier>{fec259c9-9fe1-4221-8cdd-68cf62ca1ada}</UniqueIdentifier>
@@ -285,9 +258,6 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element">
       <UniqueIdentifier>{2c808c05-f24a-4a20-8596-ecc6b1eddd59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\00. Grass">
-      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge">
       <UniqueIdentifier>{f2c6ea6c-eaf0-42d7-8370-8c60459eb823}</UniqueIdentifier>
@@ -628,6 +598,30 @@
     <Filter Include="01.Levels\06. GrassLand">
       <UniqueIdentifier>{7bcb7c22-4238-415b-b8b4-1d483d2cb199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Valnir">
+      <UniqueIdentifier>{0b32b9e1-7d74-49c8-a2a2-afc90e0b3ac8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Valnir\Body">
+      <UniqueIdentifier>{d84833e0-afcb-4bf8-9551-1a11f7326ef6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop">
+      <UniqueIdentifier>{6c726358-52bf-48ee-9123-fa2a1e5c0c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\BG">
+      <UniqueIdentifier>{4c42ea5c-e836-438b-973f-47d90a341a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\SoulBG">
+      <UniqueIdentifier>{589edf63-cc1e-4d10-a5f9-0c0c9e4eba39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\Select">
+      <UniqueIdentifier>{189dd6dc-b120-4e1f-b76e-1757d4dc0829}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\RemainIcon">
+      <UniqueIdentifier>{fcc21c4f-1f42-4357-946d-5b753024ed51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
+      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -700,44 +694,17 @@
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map_Element.h" />
-    <ClInclude Include="..\Public\WhisperSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\WhisperSword_Anim.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword_Anim</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Cendres.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Cendres</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CorruptedSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\CorruptedSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Catharsis.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Catharsis</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\DurgaSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\DurgaSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\IceBlade.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\IceBlade</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\NaruehSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\NaruehSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PretorianSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\PretorianSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RadamantheSword.h">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\RadamantheSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\SitraSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\SitraSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ValnirSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\ValnirSword</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\VeilleurSword.h">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map_Element.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -1289,6 +1256,27 @@
     <ClInclude Include="..\Public\Level_GrassLand.h">
       <Filter>01.Levels\06. GrassLand</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Npc_Valnir.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Valnir.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Shop.h">
+      <Filter>02.GameObjects\07. UI\Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ShopBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_SoulBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\SoulBG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ShopSelect.h">
+      <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_RemainIcon.h">
+      <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1352,44 +1340,17 @@
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Clone</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map_Element.cpp" />
-    <ClCompile Include="..\Private\WhisperSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\WhisperSword_Anim</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Cendres.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Cendres</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\CorruptedSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\CorruptedSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Catharsis.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\Catharsis</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\DurgaSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\DurgaSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\IceBlade.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\IceBlade</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\NaruehSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\NaruehSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PretorianSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\PretorianSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RadamantheSword.cpp">
       <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\RadamantheSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\SitraSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\SitraSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ValnirSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\ValnirSword</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\VeilleurSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\03.Player\PartObject\Weapon\VeilleurSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map_Element.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
@@ -1923,6 +1884,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_GrassLand.cpp">
       <Filter>01.Levels\06. GrassLand</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Npc_Valnir.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Valnir.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Shop.cpp">
+      <Filter>02.GameObjects\07. UI\Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ShopBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_SoulBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\SoulBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ShopSelect.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

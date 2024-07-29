@@ -2,6 +2,7 @@
 #include "..\Public\Monster.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 #include "Particle_Rect.h"
 #include "UIGroup_MonsterHP.h"
@@ -125,6 +126,22 @@ void CMonster::Update_UI(_float fHeight)
 	vPos.m128_f32[1] += fHeight;
 	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Update_Pos(vPos);
 	dynamic_cast<CUIGroup_MonsterHP*>(m_pUI_HP)->Set_Ratio(m_fCurHp / m_fMaxHp);
+}
+
+void CMonster::Reward_Soul(_bool isBoss)
+{
+	_uint iRand;
+
+	if (isBoss)
+	{
+		iRand = rand() % 300 + 500;
+	}
+	else
+	{
+		iRand = rand() % 300 + 200;
+	}
+
+	CInventory::GetInstance()->Calcul_Soul(iRand);
 }
 
 void CMonster::Free()

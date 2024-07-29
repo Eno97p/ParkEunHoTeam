@@ -66,7 +66,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
-	if (*m_pState == CPlayer::STATE_RUN)
+	if (*m_pState == CPlayer::STATE_RUN || *m_pState == CPlayer::STATE_WALK)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, -0.3f, 0.f, 1.f));
 	}
@@ -142,7 +142,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	else if (*m_pState == CPlayer::STATE_RUN)
 	{
 		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 38;
+		AnimDesc.iAnimIndex = 42;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
@@ -283,6 +283,52 @@ void CBody_Player::Tick(_float fTimeDelta)
 		else
 		{
 			m_pWeapon->Set_Active(false);
+		}
+	}
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 143;
+		if (m_fDamageTiming < 1.f)
+		{
+			fAnimSpeed = 0.1f;
+		}
+		else
+		{
+			fAnimSpeed = 2.f;
+		}
+		m_pModelCom->Set_LerpTime(1.2);
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming > 1.f && m_fDamageTiming < 1.15f)
+		{
+			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
+	}
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK2)
+	{
+		AnimDesc.isLoop = false;
+		if (m_iPastAnimIndex != 143 && m_iPastAnimIndex != 86 && m_iPastAnimIndex != 58 && m_iPastAnimIndex != 65)
+		{
+			m_iPastAnimIndex = 143;
+		}
+		AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		m_pModelCom->Set_LerpTime(1.2f);
+		m_fDamageTiming += fTimeDelta;
+		if (m_fDamageTiming < 1.f)
+		{
+			fAnimSpeed = 0.1f;
+		}
+		else
+		{
+			fAnimSpeed = 2.5f;
+			if (m_iPastAnimIndex == 58 && m_pModelCom->Get_Current_Ratio() > 0.5f && m_pModelCom->Get_Current_Ratio() < 0.6f)
+			{
+				fAnimSpeed = 0.1f;
+			}
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_LCHARGEATTACK)
@@ -669,7 +715,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 
 	m_bAnimFinished = false;
 	_bool animFinished = m_pModelCom->Get_AnimFinished();
-	if (animFinished)
+	if (animFinished && *m_pState != CPlayer::STATE_SPECIALATTACK2)
 	{
 		// rollattack
 		if (AnimDesc.iAnimIndex >= 33 && AnimDesc.iAnimIndex < 37)
@@ -732,6 +778,40 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_bAnimFinished = true;
 		}
 	}
+
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK)
+	{
+		if (m_fDamageTiming > 2.1f)
+		{
+			m_bAnimFinished = true;
+		}
+		else
+		{
+			m_bAnimFinished = false;
+		}
+	}
+	else if(*m_pState == CPlayer::STATE_SPECIALATTACK2)
+	{
+		m_bAnimFinished = false;
+		if (m_iPastAnimIndex == 143 && animFinished)
+		{
+			m_iPastAnimIndex = 86;
+		}
+		else if (m_iPastAnimIndex == 86 && animFinished)
+		{
+			m_iPastAnimIndex = 65;
+		}
+		else if (m_iPastAnimIndex == 65 && animFinished)
+		{
+			m_iPastAnimIndex = 58;
+		}
+		else if (m_iPastAnimIndex == 58 && animFinished)
+		{
+			m_iPastAnimIndex = 0;
+			m_bAnimFinished = true;
+		}
+	}
+
 	if (m_bAnimFinished)
 	{
 		m_pWeapon->Set_Active(false);
@@ -751,7 +831,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	}
 	else
 	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
@@ -822,6 +902,7 @@ HRESULT CBody_Player::Render()
 
 	return S_OK;
 }
+
 HRESULT CBody_Player::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))

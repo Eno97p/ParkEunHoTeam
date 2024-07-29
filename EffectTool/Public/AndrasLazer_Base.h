@@ -13,14 +13,14 @@ class CAndrasLazerBase final : public CBlendObject
 public:
 	typedef struct ANDRAS_LASER_BASE_DESC
 	{
-		_float3 vMaxSize = { 0.f,0.f,0.f };
-		_float3 vOffset = { 0.f,0.f,0.f };
+		_float3 vMaxSize = { 3.f,3.f,3.f };
+		_float3 vOffset = { 0.f,1.f,2.f };
 		_float3 fColor = { 1.f,1.f,1.f };
-		_float fRotationSpeed = 0.f;
+		_float fRotationSpeed = 360.f;
 		_float fBloomPower = 0.f;
 		_float fDistortionPower = 0.f;
 		_float fMaxLifeTime = 0.f;
-		_float fUVSpeed = 0.f;
+		_float fUVSpeed = 3.f;
 		_int NumDesolve = 0;
 		const _float4x4* ParentMatrix = nullptr;
 	};

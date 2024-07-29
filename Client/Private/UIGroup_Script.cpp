@@ -24,6 +24,10 @@ HRESULT CUIGroup_Script::Initialize_Prototype()
 
 HRESULT CUIGroup_Script::Initialize(void* pArg)
 {
+	UIGROUP_SCRIPT_DESC* pDesc = static_cast<UIGROUP_SCRIPT_DESC*>(pArg);
+
+	m_eNpcType = pDesc->eNpcType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -87,23 +91,42 @@ void CUIGroup_Script::Set_DialogText(wstring wstrDialogText)
 
 HRESULT CUIGroup_Script::Create_UI()
 {
-	CUI::UI_DESC pDesc{};
+	CUI_ScriptBG_Aura::UI_AURA_DESC pAuraDesc{};
+	pAuraDesc.eLevel = LEVEL_STATIC;
+	
+	CUI_ScriptBG_Npc::UI_SCRIPT_DESC pScriptDesc{};
+	pScriptDesc.eLevel = LEVEL_STATIC;
 
-	pDesc.eLevel = LEVEL_STATIC;
+	CUI_Script_NameBox::UI_SCRIPT_NAMEBOX_DESC pNameDesc{};
+	pNameDesc.eLevel = LEVEL_STATIC;
+
+	if (NPC_RLYA == m_eNpcType)
+	{
+		pAuraDesc.iTextureNum = 2;
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Rlya");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_RLYA;
+	}
+	else if (NPC_VALNIR == m_eNpcType)
+	{
+		pAuraDesc.iTextureNum = 4;
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
+	}
 
 	// BG Aura
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pDesc)));
-	
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));
+
 	// BG Npc
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pDesc)));
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
+
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
 
 	// DialogBox
 	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));
 
 	// NameBox
-	CUI_Script_NameBox::UI_SCRIPT_NAMEBOX_DESC pNameDesc{};
-	pNameDesc.eLevel = LEVEL_STATIC;
-	pNameDesc.eNpcType = CUI_Script_NameBox::NPC_RLYA; // 나중에 수정할 수 있도록 변경해야 함
+
 	m_vecUI.emplace_back(dynamic_cast<CUI_Script_NameBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"), &pNameDesc)));
 
 	return S_OK;

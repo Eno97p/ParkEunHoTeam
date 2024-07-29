@@ -159,6 +159,7 @@
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\Andras.h" />
+    <ClInclude Include="..\public\AndrasLazer.h" />
     <ClInclude Include="..\public\AndrasLazer_Base.h" />
     <ClInclude Include="..\Public\AndrasLazer_Cylinder.h" />
     <ClInclude Include="..\Public\AndrasRain.h" />
@@ -197,6 +198,7 @@
     <ClInclude Include="..\public\TornadoEffect.h" />
     <ClInclude Include="..\Public\TornadoWind.h" />
     <ClInclude Include="..\Public\Tornado_Root.h" />
+    <ClInclude Include="..\Public\Tornado_Spring.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="EffectTool.h" />
@@ -213,6 +215,7 @@
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Andras.cpp" />
+    <ClCompile Include="..\private\AndrasLazer.cpp" />
     <ClCompile Include="..\private\AndrasLazer_Base.cpp" />
     <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp" />
     <ClCompile Include="..\Private\AndrasRain.cpp" />
@@ -250,6 +253,7 @@
     <ClCompile Include="..\private\TornadoEffect.cpp" />
     <ClCompile Include="..\Private\TornadoWind.cpp" />
     <ClCompile Include="..\Private\Tornado_Root.cpp" />
+    <ClCompile Include="..\Private\Tornado_Spring.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="EffectTool.cpp" />

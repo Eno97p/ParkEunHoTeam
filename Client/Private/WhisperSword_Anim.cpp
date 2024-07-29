@@ -32,23 +32,6 @@ HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
-	//CParticle_Trail::TRAIL_DESC traild{};
-	//
-	//traild.traildesc.ParentMat = &m_WorldMatrix;
-	//traild.traildesc.vPivotPos = _float3(0.f, 0.7f, 0.f);
-	//traild.traildesc.fLifeTime = 3.f;
-	//traild.traildesc.iNumInstance = 100;
-	//traild.traildesc.IsLoop = true;
-	//traild.traildesc.vSize = _float3(1.f, 1.f, 1.f);
-	//traild.traildesc.vSpeed = 30.f;
-	//traild.vStartColor = _float3(1.f, 0.f, 0.f);
-	//traild.vEndColor = _float3(1.f, 1.f, 0.f);
-	//
-	//
-	//m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trail"), TEXT("Prototype_GameObject_Trail"), &traild);
-
-
-
 	return S_OK;
 }
 
@@ -108,7 +91,7 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
@@ -155,6 +138,12 @@ HRESULT CWhisperSword_Anim::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#pragma region 모션블러
+	m_PrevWorldMatrix = m_WorldMatrix;
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
+
 	return S_OK;
 }
 
@@ -282,6 +271,12 @@ HRESULT CWhisperSword_Anim::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))

@@ -22,6 +22,12 @@
 #include "Decal.h"
 
 #include "CHoverBoard.h"
+
+// test¿ë
+#include "Npc_Valnir.h"
+
+#include "EffectManager.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -35,7 +41,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-
+	m_pGameInstance->Set_FogOption({ 0.286f, 0.238f, 0.289f, 1.f }, 500, 0.f, 0.1f, 0.f, 0.f, 0.f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -62,7 +68,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
 	Load_Data_Decals();
-	Load_Data_Effects();
+	//Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -349,18 +355,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//	return E_FAIL;
 	
 
-
-	////for (size_t i = 0; i < 5; i++)
-	//{
-
-	//CLandObject::LANDOBJ_DESC landObjDesc;
-	//landObjDesc.mWorldMatrix._41 = 167.f;
-	//landObjDesc.mWorldMatrix._42 = 528.f;
-	//landObjDesc.mWorldMatrix._43 = 98.f;
-	//landObjDesc.mWorldMatrix._44 = 1.f;
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
-	//	return E_FAIL;
-
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = 167.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
@@ -369,11 +363,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 		return E_FAIL;
 
-	//}
+	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };
+	EFFECTMGR->Generate_Particle(40, GrassPos);
 
 	// Npc
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Valnir"), &landObjDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

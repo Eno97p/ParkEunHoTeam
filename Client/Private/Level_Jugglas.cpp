@@ -35,7 +35,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-
+	m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 400.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;

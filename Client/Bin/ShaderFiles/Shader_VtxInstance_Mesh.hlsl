@@ -10,7 +10,10 @@ float		g_BlurPower, g_DesolvePower;
 struct VS_IN
 {
     float3 vPosition : POSITION;
+    float3      vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
+    float3      vTangent : TANGENT;
+
     float4 vRight : TEXCOORD1;
     float4 vUp : TEXCOORD2;
     float4 vLook : TEXCOORD3;
@@ -76,7 +79,6 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
 
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     float4 vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
-    
     if (Out.vColor.a < 0.1f)
         discard;
 
@@ -84,15 +86,12 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
     if (g_Alpha)
     {
         Out.vColor.a *=  1- fRatio;
-        //Out.vColor.a = 0.5f;
     }
    
-
     if (g_Color)
     {
         Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
     }
-
 
     if (g_Desolve)
     {
@@ -106,7 +105,6 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
             discard;
         }
     }
-
     return Out;
 }
 
@@ -143,6 +141,115 @@ PS_OUT PS_BLOOM(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_BLADE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+    float2 adjustedUV = In.vTexcoord;
+    if (fRatio <= 0.2)
+    {
+        // fRatio를 0-1 범위로 정규화
+        float normalizedRatio = fRatio / 0.2;
+
+        // U 좌표를 시간에 따라 조정
+        adjustedUV.x = lerp(-1.0, In.vTexcoord.x, normalizedRatio);
+    }
+    if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+    {
+        Out.vColor = g_Texture.Sample(LinearSampler, adjustedUV);
+    }
+    else
+    {
+        // UV가 유효 범위를 벗어나면 투명하게 처리
+        Out.vColor = float4(0, 0, 0, 0);
+    }
+
+    //Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    float4 vNoise = g_DesolveTexture.Sample(LinearSampler, adjustedUV);
+    if (Out.vColor.a < 0.1f)
+        discard;
+
+    Out.vColor.a *= (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.0f;
+
+    if (g_Alpha)
+    {
+        Out.vColor.a *= 1 - fRatio;
+    }
+
+    if (g_Color)
+    {
+        Out.vColor.rgb = lerp(g_StartColor, g_EndColor, fRatio);
+    }
+
+    if (g_Desolve)
+    {
+        if ((vNoise.r - fRatio) < g_DesolvePower * 0.01f)
+        {
+            Out.vColor.rgb = g_DesolveColor;
+        }
+
+        if (vNoise.r < fRatio)
+        {
+            discard;
+        }
+    }
+    return Out;
+}
+
+PS_OUT PS_BLADE_BLOOM(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+    float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+
+    float2 adjustedUV = In.vTexcoord;
+    if (fRatio <= 0.2)
+    {
+        float normalizedRatio = fRatio / 0.2;
+        adjustedUV.x = lerp(-1.0, In.vTexcoord.x, normalizedRatio);
+    }
+    if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+    {
+        Out.vColor = g_Texture.Sample(LinearSampler, adjustedUV);
+    }
+    else
+    {
+        // UV가 유효 범위를 벗어나면 투명하게 처리
+        Out.vColor = float4(0, 0, 0, 0);
+    }
+
+    float4 vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+    if (Out.vColor.a < 0.1f)
+        discard;
+
+    Out.vColor.a = (Out.vColor.r + Out.vColor.g + Out.vColor.b) / 3.0f;
+
+    if (g_Alpha)
+    {
+        Out.vColor.a *= g_BlurPower * (1 - fRatio);
+    }
+    else
+    {
+        Out.vColor.a *= g_BlurPower;
+    }
+
+    Out.vColor.rgb = g_BloomColor;
+
+    if (g_Desolve)
+    {
+        if ((vNoise.r - fRatio) < g_DesolvePower * 0.01f)
+        {
+            Out.vColor.rgb = g_DesolveColor;
+        }
+
+        if (vNoise.r < fRatio)
+        {
+            discard;
+        }
+    }
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass
@@ -173,6 +280,33 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_BLOOM();
     }
 
+    pass BLADE
+    {
+        SetRasterizerState(RS_NoCull);
+        SetDepthStencilState(DS_Particle, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_BLADE();
+    }
+
+    pass BLADE_BLOOM
+    {
+        SetRasterizerState(RS_NoCull);
+        SetDepthStencilState(DS_Particle, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_BLADE_BLOOM();
+    }
   
 }
 

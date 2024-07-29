@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\DurgaSword.h"
-
 #include "GameInstance.h"
+#include "Player.h"
 
 CDurgaSword::CDurgaSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -42,6 +42,26 @@ void CDurgaSword::Priority_Tick(_float fTimeDelta)
 
 void CDurgaSword::Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_INCREASE:
+		m_fDisolveValue += fTimeDelta * 5.f;
+		if (m_fDisolveValue > 1.f)
+		{
+			m_eDisolveType = TYPE_IDLE;
+			m_fDisolveValue = 1.f;
+		}
+		break;
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 5.f;
+		if (m_fDisolveValue < 0.f)
+		{
+			m_eDisolveType = TYPE_INCREASE;
+		}
+		break;
+	default:
+		break;
+	}
 
 	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
@@ -49,17 +69,33 @@ void CDurgaSword::Tick(_float fTimeDelta)
 	SocketMatrix.r[1] = XMVector3Normalize(SocketMatrix.r[1]);
 	SocketMatrix.r[2] = XMVector3Normalize(SocketMatrix.r[2]);
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
+	_matrix vMatrix = m_pTransformCom->Get_WorldMatrix() * SocketMatrix;
+	// 달릴 때 칼 위치 맞추기 위해 보정
+	if (*m_pState == CPlayer::STATE_RUN)
+	{
+		vMatrix.r[3].m128_f32[0] -= 0.08f;
+		vMatrix.r[3].m128_f32[1] -= 0.32f;
+		vMatrix.r[3].m128_f32[2] += 0.07f;
+	}
+	XMStoreFloat4x4(&m_WorldMatrix, vMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+	Generate_Trail(0);
 }
 
 void CDurgaSword::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 #ifdef _DEBUG
-	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
+
 #endif
 }
 
@@ -87,6 +123,66 @@ HRESULT CDurgaSword::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#pragma region 모션블러
+	m_PrevWorldMatrix = m_WorldMatrix;
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
+
+	return S_OK;
+}
+
+HRESULT CDurgaSword::Render_Reflection()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix;
+	const _float4x4* matCam = m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+
+	// 원래 뷰 행렬 로드
+	XMMATRIX mOriginalView = XMLoadFloat4x4(matCam);
+
+	// 카메라 위치 추출
+	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
+
+	// 바닥 평면의 높이 (예: Y = 0)
+	float floorHeight = 521.9f;
+
+	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
+	XMVECTOR vReflectedCamPos = vCamPos;
+	vReflectedCamPos = XMVectorSetY(vReflectedCamPos, 2 * floorHeight - XMVectorGetY(vCamPos));
+
+	// 카메라 방향 벡터 추출
+	XMVECTOR vCamLook = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 0, 1, 0), mOriginalView) - vCamPos);
+	XMVECTOR vCamUp = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 1, 0, 0), mOriginalView) - vCamPos);
+
+	// 반사된 카메라 방향 벡터 계산
+	XMVECTOR vReflectedCamLook = XMVectorSetY(vCamLook, -XMVectorGetY(vCamLook));
+	XMVECTOR vReflectedCamUp = XMVectorSetY(vCamUp, -XMVectorGetY(vCamUp));
+
+	// 반사된 뷰 행렬 생성
+	XMMATRIX mReflectedView = XMMatrixLookToLH(vReflectedCamPos, vReflectedCamLook, vReflectedCamUp);
+
+	// 변환된 행렬 저장
+	XMStoreFloat4x4(&ViewMatrix, mReflectedView);
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(5);
+
+		m_pModelCom->Render(i);
+	}
 	return S_OK;
 }
 
@@ -111,7 +207,6 @@ HRESULT CDurgaSword::Render_LightDepth()
 
 	//for (size_t i = 0; i < iNumMeshes; i++)
 	//{
-	//	m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 	//		return E_FAIL;
@@ -121,6 +216,27 @@ HRESULT CDurgaSword::Render_LightDepth()
 	//	m_pModelCom->Render(i);
 	//}
 
+	return S_OK;
+}
+
+HRESULT CDurgaSword::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
+
+		m_pModelCom->Render(i);
+	}
 	return S_OK;
 }
 
@@ -148,6 +264,11 @@ HRESULT CDurgaSword::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -157,9 +278,18 @@ HRESULT CDurgaSword::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }

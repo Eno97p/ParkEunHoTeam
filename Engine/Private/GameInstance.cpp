@@ -475,6 +475,16 @@ HRESULT CGameInstance::Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, CGa
 	return m_pRenderer->Add_RenderObject(eRenderGroup, pRenderObject);	
 }
 
+void CGameInstance::Set_BRIS(_float fBRIS)
+{
+	return m_pRenderer->Set_BRIS(fBRIS);
+}
+
+void CGameInstance::Set_Mirror(_float fMirror)
+{
+	return m_pRenderer->Set_Mirror(fMirror);
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent * pComponent)
 {
@@ -502,9 +512,12 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 	return m_pRenderer->Get_PrevDepthTex();
 }
 
-void CGameInstance::Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity)
+void CGameInstance::Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
+	_float fFogTimeOffset,
+	_float fNoiseIntensity,
+	_float fNoiseSize)
 {
-	m_pRenderer->Set_FogOption(fogCol, fogRng, fogHeightFalloff, fogDensity);
+	m_pRenderer->Set_FogOption(fogCol, fogRng, fogHeightFalloff, fogDensity, fFogTimeOffset, fNoiseIntensity, fNoiseSize);
 }
 
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)

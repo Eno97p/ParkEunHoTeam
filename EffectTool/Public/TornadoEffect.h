@@ -3,6 +3,7 @@
 #include "Effect_Define.h"
 #include "TornadoWind.h"
 #include "Tornado_Root.h"
+#include "Tornado_Spring.h"
 
 BEGIN(Effect)
 class CTornadoEffect : public CGameObject
@@ -18,6 +19,7 @@ public:
 		CGameObject* pTarget = nullptr;
 		CTornado_Wind::TORNADO_WIND WindDesc{};
 		CTornado_Root::TORNADO_ROOT RootDesc{};
+		CTornado_Spring::TORNADO_SPRING SpringDesc{};
 	};
 
 private:

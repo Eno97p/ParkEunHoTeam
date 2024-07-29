@@ -202,8 +202,11 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.pName = "Player";
 	PhysXDesc.filterData.word0 = Engine::CollisionGropuID::GROUP_PLAYER;
 	PhysXDesc.filterData.word1 = (Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY) & ~GROUP_NONCOLLIDE;
-	CHitReport::GetInstance()->SetShapeHitCallback([this](PxControllerShapeHit const& hit){this->OnShapeHit(hit);});
-	
+	PhysXDesc.pGameObject = this;
+	PhysXDesc.pFilterCallBack = [this](const PxController& a, const PxController& b) {return this->OnFilterCallback(a, b); };
+	CHitReport::GetInstance()->SetShapeHitCallback([this](const PxControllerShapeHit& hit){this->OnShapeHit(hit);});
+	CHitReport::GetInstance()->SetControllerHitCallback([this](const PxControllersHit& hit){this->OnControllerHit(hit);});
+	//CHitReport::GetInstance()->SetFilterCallback([this](const PxController& a, const PxController& b) {return this->OnFilterCallback(a, b); });
 	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
@@ -359,6 +362,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 
 NodeStates CPlayer::Dead(_float fTimeDelta)
 {
+	
 	if (m_iState == STATE_DEAD)
 	{
 		m_bIsCloaking = false;
@@ -1809,6 +1813,8 @@ void CPlayer::Add_Mp(_float iValue)
 
 void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 {
+	// 
+	const char* Test = hit.actor->getName();
 
 	PxFilterData hitObjectFilterData = hit.shape->getSimulationFilterData();
 	// 충돌한 객체가 무기(검)인 경우
@@ -1823,6 +1829,30 @@ void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 		// 환경과의 충돌 처리 (예: 이동 제한, 슬라이딩 등)
 		int temp = 0;
 	}
+}
+
+void CPlayer::OnControllerHit(const PxControllersHit& hit)
+{
+	// 컨트롤러끼리 충돌 했을 때 
+
+
+	void* Test = hit.controller->getUserData();
+	void* temp1 = hit.other->getUserData();
+	//static_cast<CPlayer*>(Test)
+	
+	
+}
+
+bool CPlayer::OnFilterCallback(const PxController& Caller, const PxController& Ohter)
+{
+	// CPhysXComponent_Character의 Move함수가 호출됐을 때 (사실상 계속 호출되고 있음 CPhysXComponent_Character의Tick함수 때문에 )
+
+
+	void* Test = Caller.getUserData();
+	void* temp1 = Ohter.getUserData();
+	
+	return true;
+	
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

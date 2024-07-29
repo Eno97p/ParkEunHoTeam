@@ -110,6 +110,7 @@ public:
 
 
     void setUpActor(PxScene& scene, const PxTransform& pose, const char* vehicleName);
+	PxRigidBody* getActor() { return mPhysXState.physxActor.rigidBody; }
 	virtual void destroy();
 	virtual void initComponentSequence(bool addPhysXBeginEndComponents);
 
@@ -208,7 +209,8 @@ public:
 	PhysXIntegrationState& getPhysXState() { return mPhysXState; }
 	PxVehicleCommandState& getCommandState() { return mCommandState; }
 	PxVehicleDirectDriveTransmissionCommandState& getTransmissionCommandState() { return mTransmissionCommandState; }
-
+	DirectDrivetrainParams& getDirectDriveParams() { return mDirectDriveParams; }
+	void GetSteerResponse(PxVehicleSteerCommandResponseParams*& steerResponse) { steerResponse = &mBaseParams.steerResponseParams; }
 private:
 	HRESULT ReadDescroption(const BaseVehicleDesc& BaseDesc);
 
@@ -266,7 +268,7 @@ private:
 
 	PxVehicleCommandState mCommandState;
 
-
+	
 
 	DirectDrivetrainParams mDirectDriveParams;
 	DirectDrivetrainState mDirectDriveState;

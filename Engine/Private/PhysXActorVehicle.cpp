@@ -64,13 +64,14 @@ void PhysXIntegrationState::create(const BaseVehicleParams& baseParams, const Ph
 {
 	setToDefault();
 
+
+	//피직스에서 제공하는 기본적인 설정
 	const PxVehiclePhysXRigidActorParams physxActorParams(baseParams.rigidBodyParams, NULL);
 	const PxBoxGeometry boxGeom(physxParams.physxActorBoxShapeHalfExtents);
-	const PxVehiclePhysXRigidActorShapeParams physxActorShapeParams(boxGeom, physxParams.physxActorBoxShapeLocalPose, defaultMaterial, PxShapeFlags(0), PxFilterData(), PxFilterData());
+	const PxVehiclePhysXRigidActorShapeParams physxActorShapeParams(boxGeom, physxParams.physxActorBoxShapeLocalPose, defaultMaterial, PxShapeFlags(PxShapeFlag::eSIMULATION_SHAPE ), PxFilterData(), PxFilterData());
 	const PxVehiclePhysXWheelParams physxWheelParams(baseParams.axleDescription, baseParams.wheelParams);
 	const PxVehiclePhysXWheelShapeParams physxWheelShapeParams(defaultMaterial, PxShapeFlags(0), PxFilterData(), PxFilterData());
-
-
+	
 	PxVehiclePhysXActorCreate(baseParams.frame,
 		physxActorParams,
 		physxParams.physxActorCMassLocalPose,
@@ -80,6 +81,7 @@ void PhysXIntegrationState::create(const BaseVehicleParams& baseParams, const Ph
 		physics, params,
 		physxActor);
 
+	physxActor.rigidBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 
 	//physxConstraints needs to be populated with constraints.
 	PxVehicleConstraintsCreate(baseParams.axleDescription, physics, *physxActor.rigidBody, physxConstraints);
@@ -152,13 +154,13 @@ void PhysXActorVehicle::initComponentSequence(bool addPhysXBeginEndComponents)
 
 	mComponentSequence.add(static_cast<PxVehiclePhysXRoadGeometrySceneQueryComponent*>(this));
 
-	mComponentSequenceSubstepGroupHandle = mComponentSequence.beginSubstepGroup(3);
+	//mComponentSequenceSubstepGroupHandle = mComponentSequence.beginSubstepGroup(3);
 	mComponentSequence.add(static_cast<PxVehicleSuspensionComponent*>(this));
 	mComponentSequence.add(static_cast<PxVehicleTireComponent*>(this));
 	mComponentSequence.add(static_cast<PxVehiclePhysXConstraintComponent*>(this));
 	mComponentSequence.add(static_cast<PxVehicleDirectDrivetrainComponent*>(this));
 	mComponentSequence.add(static_cast<PxVehicleRigidBodyComponent*>(this));
-	mComponentSequence.endSubstepGroup();
+	//mComponentSequence.endSubstepGroup();
 
 	mComponentSequence.add(static_cast<PxVehicleWheelComponent*>(this));
 
@@ -549,7 +551,7 @@ HRESULT PhysXActorVehicle::ReadSuspensionDesc(const VehicleSuspension* Suspensio
 		mBaseParams.suspensionParams[i].suspensionTravelDir = SuspensionDesc[i].suspensionTravelDir;
 		mBaseParams.suspensionParams[i].suspensionTravelDist = SuspensionDesc[i].suspensionTravelDist;
 		mBaseParams.suspensionParams[i].wheelAttachment = SuspensionDesc[i].wheelAttachment;
-
+		
 
 
 
@@ -691,7 +693,7 @@ HRESULT PhysXActorVehicle::ReadThottleResponse(const DirectDrivetrainParams& Thr
 
 void setPhysXIntegrationParams(const PxVehicleAxleDescription& axleDescription, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, PhysXIntegrationParams& physXParams)
 {
-	const PxQueryFilterData queryFilterData/*(PxFilterData(0, 0, 0, 0), PxQueryFlag::eSTATIC)*/;
+	const PxQueryFilterData queryFilterData(PxQueryFlag::eDYNAMIC | PxQueryFlag::eSTATIC);
 	PxQueryFilterCallback* queryFilterCallback = NULL;
 	const PxTransform physxActorCMassLocalPose(PxVec3(0.0f, 0.55f, 1.594f), PxQuat(PxIdentity));
 	const PxVec3 physxActorBoxShapeHalfExtents(0.84097f, 0.65458f, 2.46971f);

@@ -85,12 +85,19 @@ public:
 	_float Sample_HZB(_float2 uv, UINT mipLevel);
 
 	//이민영 추가 240727 2106PM
-	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity)
+	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
+		_float fFogTimeOffset,
+	_float fNoiseIntensity,
+	_float fNoiseSize) // 컬러, 레인지, 높이감쇠값, 밀도, 흐르는 시간, 노이즈 강도, 노이즈 크기
 	{ 
 		m_vFogColor = fogCol;
 		m_fFogRange = fogRng; 
 		m_fFogHeightFalloff = fogHeightFalloff;
 		m_fFogGlobalDensity = fogDensity;
+
+		m_fFogTimeOffset = fFogTimeOffset;
+		m_fNoiseIntensity = fNoiseIntensity;
+		m_fNoiseSize = fNoiseSize;
 	}
 
 	//이민영 추가 240711 2002PM
@@ -158,10 +165,13 @@ private:
 	
 	//Fog
 private:
-	_float4 m_vFogColor = { 0.295f, 0.308f, 0.401f, 1.f };
-	_float m_fFogRange = 700.f;
-	_float m_fFogHeightFalloff = 0.41f;
-	_float m_fFogGlobalDensity = 0.13f;
+	_float4 m_vFogColor = { 0.235f, 0.260f, 0.329f, 1.f };
+	_float m_fFogRange = 230.f;
+	_float m_fFogHeightFalloff = 0.87f;
+	_float m_fFogGlobalDensity = 1.f;
+	_float m_fFogTimeOffset = 10.f;
+	_float m_fNoiseIntensity = 0.2f;
+	_float m_fNoiseSize = 0.1f;
 
 private:
 	void Render_Priority();

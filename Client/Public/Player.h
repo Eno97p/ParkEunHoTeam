@@ -177,7 +177,8 @@ private:
 	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
-
+	void OnControllerHit(const PxControllersHit& hit);
+	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

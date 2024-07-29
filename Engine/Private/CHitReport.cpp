@@ -46,6 +46,8 @@ void CHitReport::onObstacleHit(const PxControllerObstacleHit& hit)
 		m_ObstacleHitCallBack(hit);
 }
 
+
+
 CHitReport* CHitReport::GetInstance()
 {
 	if (nullptr == m_pInstance)

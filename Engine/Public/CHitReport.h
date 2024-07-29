@@ -6,7 +6,10 @@
 
 //직접 물리적인 캐릭터 컨트롤러 충돌을 제어해야 할까?? 한다면 해당 클래스를 사용하면 될 듯.
 BEGIN(Engine)
-class ENGINE_DLL CHitReport :public PxUserControllerHitReport
+class ENGINE_DLL CHitReport :
+	public PxUserControllerHitReport
+
+
 {
 private:
 	static CHitReport* m_pInstance;
@@ -37,7 +40,6 @@ public:
 	virtual void onShapeHit(const PxControllerShapeHit& hit) override;
 	virtual void onControllerHit(const PxControllersHit& hit) override;
 	virtual void onObstacleHit(const PxControllerObstacleHit& hit) override;
-	
 
 public:
 	void SetShapeHitCallback(ShapeHitCallBack callback) { 
@@ -49,6 +51,7 @@ public:
 	void SetObstacleHitCallback(ObstacleHitCallBack callback) { 
 		std::lock_guard<std::mutex> lock(m_mutex); // lock_guard를 사용하여 mutex 락을 획득
 		m_ObstacleHitCallBack = callback; }
+
 
 private:
 	ShapeHitCallBack m_ShapeHitCallBack;

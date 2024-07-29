@@ -8,7 +8,6 @@
 #include"Mesh.h"
 
 #include"Transform.h"
-
 #include"CHitReport.h"
 
 CPhysXComponent_Character::CPhysXComponent_Character(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -20,6 +19,7 @@ CPhysXComponent_Character::CPhysXComponent_Character(const CPhysXComponent_Chara
 	: CPhysXComponent{ rhs }
 #ifdef _DEBUG
 	, m_OutDesc{rhs.m_OutDesc }
+	,m_pHitReport{ CHitReport::GetInstance() }
 #endif // _DEBUG
 
 
@@ -39,7 +39,7 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	ControllerDesc* pObjectdesc = static_cast<ControllerDesc*>(pArg);
 
 
-
+	m_pCCTFilerCallBack = CCCTFilterCallBack::Create(pObjectdesc->pFilterCallBack);
 	m_pTransform = pObjectdesc->pTransform;
 	Safe_AddRef(m_pTransform);
 
@@ -60,8 +60,9 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	desc.contactOffset = pObjectdesc->contactOffset;
 	desc.nonWalkableMode = pObjectdesc->nonWalkableMode;
 	desc.volumeGrowth = 1.5f;
-	desc.reportCallback = CHitReport::GetInstance();
-
+	desc.reportCallback = m_pHitReport;
+	desc.userData = pObjectdesc->pGameObject;
+	
 	
 
 
@@ -77,7 +78,7 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 	if (pObjectdesc->pName)
 		m_pController->getActor()->setName(pObjectdesc->pName);
 
-
+	
 	if (m_pController)
 	{
 		PxRigidDynamic* actor = m_pController->getActor();
@@ -90,7 +91,9 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 				if (actor->getShapes(&shpae, numShapes))
 				{
 					shpae->setSimulationFilterData(filterData);
-					//shpae->setQueryFilterData(filterData);
+					shpae->setQueryFilterData(filterData);
+					
+					
 	
 				}
 			}
@@ -229,6 +232,7 @@ HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fLook.x, 0, fLook.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 
@@ -245,6 +249,9 @@ HRESULT CPhysXComponent_Character::Go_BackWard(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fLook.x, 0, fLook.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
+	
+		//
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 	return S_OK;
@@ -259,6 +266,7 @@ HRESULT CPhysXComponent_Character::Go_Left(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fLeft.x, 0, fLeft.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 	return S_OK;
@@ -273,6 +281,7 @@ HRESULT CPhysXComponent_Character::Go_Right(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fRight.x, 0, fRight.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 	return S_OK;
@@ -291,6 +300,7 @@ HRESULT CPhysXComponent_Character::Go_LeftFront(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fLook.x + fLeft.x, 0, fLook.z + fLeft.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 	return S_OK;
@@ -309,6 +319,7 @@ HRESULT CPhysXComponent_Character::Go_RightFront(_float fTimeDelta)
 	PxVec3 moveVector = PxVec3(fLook.x + fRight.x, 0, fLook.z + fRight.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 	return S_OK;
@@ -326,6 +337,7 @@ HRESULT CPhysXComponent_Character::Go_OrbitCW(_float fTimeDelta, CTransform* pTa
 	PxVec3 moveVector = PxVec3(-fRight.x, 0.f, -fRight.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 
@@ -354,6 +366,7 @@ HRESULT CPhysXComponent_Character::Go_OrbitCCW(_float fTimeDelta, CTransform* pT
 	PxVec3 moveVector = PxVec3(fRight.x, 0.f, fRight.z) * m_fSpeed * fTimeDelta;
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 
@@ -412,6 +425,9 @@ _float CPhysXComponent_Character::Get_LengthFromGround()
 
 void CPhysXComponent_Character::Tick(_float fTimeDelta)
 {
+	//m_pGameInstance->GetControllerManager()->computeInteractions(fTimeDelta, m_pFilterCallBack);
+
+	
 	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
 	// 변위 계산: s = ut + 0.5 * a * t^2
 	float displacement = m_fCurrentY_Velocity * fTimeDelta + 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
@@ -421,8 +437,9 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 
 
 	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
+	
 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
-	//filters.mCCTFilterCallback.
 	
 #ifdef _DEBUG
 	m_OutDesc.fPosition = { static_cast<_float>(m_pController->getFootPosition().x), static_cast<_float>(m_pController->getFootPosition().y), static_cast<_float>(m_pController->getFootPosition().z) };
@@ -435,6 +452,9 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 		m_bIsJump = false;
 		m_fCurrentY_Velocity = 0.f;
 	}
+
+
+	
 }
 
 
@@ -487,6 +507,7 @@ void CPhysXComponent_Character::Free()
 	__super::Free();
 
 	Safe_Release(m_pTransform);
+	Safe_Release(m_pCCTFilerCallBack);
 	Safe_physX_Release(m_pController);
 	
 	

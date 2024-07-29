@@ -634,6 +634,18 @@
     <Filter Include="02.GameObjects\02.LandObject\04. Npc\Valnir\Body">
       <UniqueIdentifier>{d84833e0-afcb-4bf8-9551-1a11f7326ef6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop">
+      <UniqueIdentifier>{6c726358-52bf-48ee-9123-fa2a1e5c0c1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\BG">
+      <UniqueIdentifier>{4c42ea5c-e836-438b-973f-47d90a341a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\SoulBG">
+      <UniqueIdentifier>{589edf63-cc1e-4d10-a5f9-0c0c9e4eba39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\Select">
+      <UniqueIdentifier>{189dd6dc-b120-4e1f-b76e-1757d4dc0829}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1301,6 +1313,18 @@
     <ClInclude Include="..\Public\Body_Valnir.h">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Shop.h">
+      <Filter>02.GameObjects\07. UI\Shop</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ShopBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_SoulBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\SoulBG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_ShopSelect.h">
+      <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1941,6 +1965,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Valnir.cpp">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Valnir\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Shop.cpp">
+      <Filter>02.GameObjects\07. UI\Shop</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ShopBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_SoulBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\SoulBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_ShopSelect.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

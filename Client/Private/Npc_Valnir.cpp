@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "UI_Activate.h"
 #include "UIGroup_Script.h"
+#include "UIGroup_Shop.h"
 #include "ItemData.h"
 
 CNpc_Valnir::CNpc_Valnir(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -42,6 +43,7 @@ HRESULT CNpc_Valnir::Initialize(void* pArg)
 	m_iDialogCnt = 3; // 로직 생각해보아야 함
 
 	Create_Script();
+	Create_Shop();
 
 	return S_OK;
 }
@@ -60,6 +62,7 @@ void CNpc_Valnir::Tick(_float fTimeDelta)
 	if (m_isScriptOn)
 	{
 		m_pScriptUI->Tick(fTimeDelta);
+		m_pShopUI->Tick(fTimeDelta);
 
 		Key_Input();
 	}
@@ -78,11 +81,16 @@ void CNpc_Valnir::Late_Tick(_float fTimeDelta)
 			if (m_iDialogCnt != 0)
 				m_pScriptUI->Set_DialogText(TEXT("첫번째 스크립트"));
 			m_isScriptOn = true;
+
+			m_pShopUI->Set_Rend(true);
 		}
 	}
 
 	if (m_isScriptOn)
+	{
 		m_pScriptUI->Late_Tick(fTimeDelta);
+		m_pShopUI->Late_Tick(fTimeDelta);
+	}
 }
 
 HRESULT CNpc_Valnir::Render()
@@ -110,6 +118,18 @@ HRESULT CNpc_Valnir::Create_Script()
 
 	m_pScriptUI = dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc));
 	if (nullptr == m_pScriptUI)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CNpc_Valnir::Create_Shop()
+{
+	CUIGroup_Shop::UIGROUP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_pShopUI = dynamic_cast<CUIGroup_Shop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Shop"), &pDesc));
+	if (nullptr == m_pShopUI)
 		return E_FAIL;
 
 	return S_OK;
@@ -156,6 +176,7 @@ void CNpc_Valnir::Key_Input()
 		{
 			m_isScriptOn = false;
 			m_pScriptUI->Set_Rend(false);
+			m_pShopUI->Set_Rend(false);
 			break;
 		}
 		default:
@@ -194,5 +215,6 @@ void CNpc_Valnir::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pShopUI);
 	Safe_Release(m_pBody);
 }

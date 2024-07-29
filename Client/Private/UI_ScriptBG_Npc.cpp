@@ -77,7 +77,7 @@ HRESULT CUI_ScriptBG_Npc::Add_Components(wstring wstrTextureName)
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, wstrTextureName, // wstrTextureName    Prototype_Component_Texture_Script_Npc_Rlya
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, wstrTextureName,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

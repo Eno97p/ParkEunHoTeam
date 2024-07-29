@@ -17,6 +17,9 @@ private:
 	virtual ~CUI_StateSoul() = default;
 
 public:
+	void			Set_isSoulCntRend(_bool isRend) { m_isSoulCntRend = isRend; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -28,6 +31,7 @@ public:
 
 private:
 	_bool						m_isCalculRend = { false };
+	_bool						m_isSoulCntRend = { false };
 	_float						m_fCalculTimer = { 0.f };
 
 	wstring						m_wstrCalculText;

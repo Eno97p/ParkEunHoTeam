@@ -21,15 +21,18 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool				m_isScriptOn = { false };
-	_uint				m_iDialogCnt = { 0 };
+	_bool					m_isScriptOn = { false };
+	_uint					m_iDialogCnt = { 0 };
 
-	CBody_Valnir*		m_pBody = { nullptr };
+	CBody_Valnir*			m_pBody = { nullptr };
+
+	class CUIGroup_Shop*	m_pShopUI = { nullptr };
 
 private:
 	HRESULT				Add_PartObjects();
 
 	virtual HRESULT		Create_Script() override;
+	HRESULT				Create_Shop();
 
 	_bool				Check_Distance();
 	void				Key_Input();

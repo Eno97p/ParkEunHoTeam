@@ -19,6 +19,10 @@ HRESULT CUI_ScriptBG_Aura::Initialize_Prototype()
 
 HRESULT CUI_ScriptBG_Aura::Initialize(void* pArg)
 {
+	UI_AURA_DESC* pDesc = static_cast<UI_AURA_DESC*>(pArg);
+
+	m_iTextureNum = pDesc->iTextureNum;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -92,7 +96,7 @@ HRESULT CUI_ScriptBG_Aura::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 2))) // 추후 값 바꿔야함
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iTextureNum)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))

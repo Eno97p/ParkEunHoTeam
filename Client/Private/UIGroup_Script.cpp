@@ -91,38 +91,42 @@ void CUIGroup_Script::Set_DialogText(wstring wstrDialogText)
 
 HRESULT CUIGroup_Script::Create_UI()
 {
-	CUI::UI_DESC pDesc{};
-
-	pDesc.eLevel = LEVEL_STATIC;
-
-	// UI들에 enum 값을 넣어서 Npc 종류를 각자 다 알게 할 지 or Texture 등등의 wstring 값을 변수로 빼서 넣어주도록 할지? 도찐개찐이긴 함
-
-
-	// BG Aura
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pDesc)));
+	CUI_ScriptBG_Aura::UI_AURA_DESC pAuraDesc{};
+	pAuraDesc.eLevel = LEVEL_STATIC;
 	
 	CUI_ScriptBG_Npc::UI_SCRIPT_DESC pScriptDesc{};
 	pScriptDesc.eLevel = LEVEL_STATIC;
 
+	CUI_Script_NameBox::UI_SCRIPT_NAMEBOX_DESC pNameDesc{};
+	pNameDesc.eLevel = LEVEL_STATIC;
+
 	if (NPC_RLYA == m_eNpcType)
 	{
+		pAuraDesc.iTextureNum = 2;
 		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Rlya");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_RLYA;
 	}
 	else if (NPC_VALNIR == m_eNpcType)
 	{
+		pAuraDesc.iTextureNum = 4;
 		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
 	}
+
+	// BG Aura
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));
 
 	// BG Npc
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
+
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
 
 	// DialogBox
 	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));
 
 	// NameBox
-	CUI_Script_NameBox::UI_SCRIPT_NAMEBOX_DESC pNameDesc{};
-	pNameDesc.eLevel = LEVEL_STATIC;
-	pNameDesc.eNpcType = CUI_Script_NameBox::NPC_RLYA; // 나중에 수정할 수 있도록 변경해야 함
+
 	m_vecUI.emplace_back(dynamic_cast<CUI_Script_NameBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"), &pNameDesc)));
 
 	return S_OK;

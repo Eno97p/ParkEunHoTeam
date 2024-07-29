@@ -4,7 +4,6 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-class CUI;
 class CUI_Script_DialogBox;
 
 class CUIGroup_Script final : public CUIGroup

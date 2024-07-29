@@ -237,6 +237,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Shop.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_UpGPage.cpp"
 
 
@@ -292,6 +295,15 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Script_NameBox.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_ShopBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_ShopSelect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Shop_SoulBG.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Slot_EquipSign.cpp"

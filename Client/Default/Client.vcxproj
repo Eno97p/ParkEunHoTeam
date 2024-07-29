@@ -283,6 +283,7 @@
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
     <ClInclude Include="..\Public\UI_ShopBG.h" />
     <ClInclude Include="..\Public\UI_ShopSelect.h" />
+    <ClInclude Include="..\Public\UI_Shop_RemainIcon.h" />
     <ClInclude Include="..\Public\UI_Shop_SoulBG.h" />
     <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
     <ClInclude Include="..\Public\UI_UpGPageBG.h" />
@@ -505,6 +506,7 @@
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
     <ClCompile Include="..\Private\UI_ShopBG.cpp" />
     <ClCompile Include="..\Private\UI_ShopSelect.cpp" />
+    <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp" />
     <ClCompile Include="..\Private\UI_Shop_SoulBG.cpp" />
     <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBG.cpp" />

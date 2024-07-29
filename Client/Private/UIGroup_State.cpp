@@ -63,7 +63,7 @@ void CUIGroup_State::Late_Tick(_float fTimeDelta)
         for (auto& pState : m_vecStates)
             pState->Late_Tick(fTimeDelta);
 
-        //m_pSoul->Late_Tick(fTimeDelta);
+        m_pSoul->Late_Tick(fTimeDelta);
     }
 }
 

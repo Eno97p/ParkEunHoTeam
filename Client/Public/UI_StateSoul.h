@@ -9,15 +9,13 @@ class CUI_StateSoul final : public CUI
 public:
 	typedef struct UI_Sous_Desc : public UI_DESC
 	{
+		_bool					isSoulCntRend = { true };
 		UISORT_PRIORITY			eUISort;
 	}UI_SOUL_DESC;
 private:
 	CUI_StateSoul(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_StateSoul(const CUI_StateSoul& rhs);
 	virtual ~CUI_StateSoul() = default;
-
-public:
-	void			Set_isSoulCntRend(_bool isRend) { m_isSoulCntRend = isRend; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;

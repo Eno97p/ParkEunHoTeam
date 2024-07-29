@@ -137,6 +137,7 @@
 #include "UI_ShopBG.h"
 #include "UI_Shop_SoulBG.h"
 #include "UI_ShopSelect.h"
+#include "UI_Shop_RemainIcon.h"
 
 #include "UIGroup_Shop.h"
 #pragma endregion Shop
@@ -1664,7 +1665,10 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_ShopSelect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
+	/* For.Prototype_GameObject_UI_Shop_RemainIcon*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Shop_RemainIcon"),
+		CUI_Shop_RemainIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Shop*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Shop"),

@@ -1,16 +1,19 @@
 #include "UI_ShopSelect.h"
 
 #include "GameInstance.h"
+#include "CMouse.h"
 
 #include "UI_ItemIcon.h"
+#include "UI_StateSoul.h"
+#include "UI_Shop_RemainIcon.h"
 
 CUI_ShopSelect::CUI_ShopSelect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI{ pDevice, pContext }
+    : CUI_Interaction{ pDevice, pContext }
 {
 }
 
 CUI_ShopSelect::CUI_ShopSelect(const CUI_ShopSelect& rhs)
-    : CUI{ rhs }
+    : CUI_Interaction{ rhs }
 {
 }
 
@@ -48,14 +51,27 @@ void CUI_ShopSelect::Tick(_float fTimeDelta)
     if (!m_isRenderAnimFinished)
         Render_Animation(fTimeDelta);
 
-    m_pItemIcon->Tick(fTimeDelta);
+    m_CollisionRect = { LONG(m_fX - m_fSizeX * 0.3f),
+                        LONG(m_fY - m_fSizeY * 0.2f),
+                        LONG(m_fX + m_fSizeX * 0.3f),
+                        LONG(m_fY + m_fSizeY * 0.2f) };
+
+    m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+    for (auto& pUI : m_vecUI)
+    {
+        pUI->Tick(fTimeDelta);
+    }
 }
 
 void CUI_ShopSelect::Late_Tick(_float fTimeDelta)
 {
     CGameInstance::GetInstance()->Add_UI(this, SEVENTH);
 
-    m_pItemIcon->Late_Tick(fTimeDelta);
+    for (auto& pUI : m_vecUI)
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
 }
 
 HRESULT CUI_ShopSelect::Render()
@@ -65,7 +81,12 @@ HRESULT CUI_ShopSelect::Render()
 
     m_pShaderCom->Begin(3);
     m_pVIBufferCom->Bind_Buffers();
-    m_pVIBufferCom->Render();
+
+    // 이 부분만 분기처리 하는 것으로? Text들은 렌더 할 것이니까
+    if(m_isSelect)
+        m_pVIBufferCom->Render();
+
+    Rend_Font();
 
     return S_OK;
 }
@@ -123,32 +144,78 @@ HRESULT CUI_ShopSelect::Create_UI()
     pItemIconDesc.fSizeX = 60.f;
     pItemIconDesc.fSizeY = 60.f;
 
+    CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
+    pSoulDesc.eLevel = LEVEL_STATIC;
+    pSoulDesc.fX = m_fX + 120.f;
+    pSoulDesc.fY = m_fY;
+    pSoulDesc.fSizeX = 30.f;
+    pSoulDesc.fSizeY = 30.f;
+    pSoulDesc.eUISort = EIGHT;
+    pSoulDesc.isSoulCntRend = false;
+
+    CUI::UI_DESC pDesc{};
+    pDesc.eLevel = LEVEL_STATIC;
+    pDesc.fX = m_fX + 200.f;
+    pDesc.fY = m_fY;
+    pDesc.fSizeX = 32.f; // 128
+    pDesc.fSizeY = 32.f;
+
     switch (m_iSlotIdx)
     {
     case 0:
     {
         pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether"); // 마나 채워주는 템
+        m_wstrItemName = TEXT("RADIANT ETHER");
+        m_wstrPrice = TEXT("250");
+        m_wstrRemainCnt = TEXT("5");
         break;
     }
     case 1:
     {
         pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3"); // 버프 템
+        m_wstrItemName = TEXT("SIGIL OF ETHER");
+        m_wstrPrice = TEXT("400");
+        m_wstrRemainCnt = TEXT("3");
         break;
     }
     case 2:
     {
-        pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1"); // 강화
+        pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0"); // 강화
+        m_wstrItemName = TEXT("HADRONITE");
+        m_wstrPrice = TEXT("500");
+        m_wstrRemainCnt = TEXT("3");
         break;
     }
     default:
         break;
     }
 
-
     // ItemIcon
-    m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pItemIconDesc));
+    m_vecUI.emplace_back(dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pItemIconDesc)));
+
+    // Soul
+    m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
+
+    // RemainIcon
+    m_vecUI.emplace_back(dynamic_cast<CUI_Shop_RemainIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Shop_RemainIcon"), &pDesc)));
+
 
     return S_OK;
+}
+
+void CUI_ShopSelect::Rend_Font()
+{
+    // Item Name
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), m_wstrItemName, _float2(m_fX - 160.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+        return;
+
+    // Price
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrPrice, _float2(m_fX + 70.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+        return;
+
+    // Remain Count
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrRemainCnt, _float2(m_fX + 170.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+        return;
 }
 
 CUI_ShopSelect* CUI_ShopSelect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -181,5 +248,8 @@ void CUI_ShopSelect::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pItemIcon);
+    //Safe_Release(m_pItemIcon);
+
+    for (auto& pUI : m_vecUI)
+        Safe_Release(pUI);
 }

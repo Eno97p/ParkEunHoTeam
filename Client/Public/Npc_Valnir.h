@@ -35,7 +35,7 @@ private:
 	HRESULT				Create_Shop();
 
 	_bool				Check_Distance();
-	void				Key_Input();
+	void				Set_DialogText();
 
 public:
 	static CNpc_Valnir*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

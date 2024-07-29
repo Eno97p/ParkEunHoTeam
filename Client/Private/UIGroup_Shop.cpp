@@ -73,6 +73,8 @@ void CUIGroup_Shop::Tick(_float fTimeDelta)
 			pSlot->Tick(fTimeDelta);
 		}
 	}
+
+	m_iSelectIdx = Check_SelectIdx();
 }
 
 void CUIGroup_Shop::Late_Tick(_float fTimeDelta)
@@ -127,6 +129,26 @@ HRESULT CUIGroup_Shop::Create_Slot()
 	}
 
 	return S_OK;
+}
+
+_int CUIGroup_Shop::Check_SelectIdx()
+{
+	// 몇 번째 select와 충돌 중인지 (충돌중이 아니라면 -1)
+
+	vector< CUI_ShopSelect*>::iterator select = m_vecSlot.begin();
+	for (size_t i = 0; i < m_vecSlot.size(); ++i)
+	{
+		if ((*select)->Get_Select()) // 충돌했다면
+		{
+			return i;
+		}
+		else
+		{
+			++select;
+		}
+	}
+
+	return -1;
 }
 
 CUIGroup_Shop* CUIGroup_Shop::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

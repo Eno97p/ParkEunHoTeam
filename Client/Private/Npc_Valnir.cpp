@@ -40,7 +40,7 @@ HRESULT CNpc_Valnir::Initialize(void* pArg)
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
-	m_iDialogCnt = 3; // 로직 생각해보아야 함
+	m_iDialogCnt = 0; // 로직 생각해보아야 함
 
 	Create_Script();
 	Create_Shop();
@@ -64,7 +64,10 @@ void CNpc_Valnir::Tick(_float fTimeDelta)
 		m_pScriptUI->Tick(fTimeDelta);
 		m_pShopUI->Tick(fTimeDelta);
 
-		Key_Input();
+		// 마우스 위치가 Select 객체의 어디와 충돌하고 있느냐에 따라 스크립트의 대사가 바뀔 것임
+		// 그 정보를 ShopUI(Group)이 가지고 있도록 하자
+
+		Set_DialogText();
 	}
 }
 
@@ -78,8 +81,9 @@ void CNpc_Valnir::Late_Tick(_float fTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_F) && !m_isScriptOn)
 		{
 			m_pScriptUI->Set_Rend(true);
-			if (m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("첫번째 스크립트"));
+			// 여기도 다르게 처리해야함
+			/*if (m_iDialogCnt != 0)
+				m_pScriptUI->Set_DialogText(TEXT("첫번째 스크립트"));*/
 			m_isScriptOn = true;
 
 			m_pShopUI->Set_Rend(true);
@@ -143,45 +147,34 @@ _bool CNpc_Valnir::Check_Distance()
 	return ACTIVATE_DISTANCE >= fDistance;
 }
 
-void CNpc_Valnir::Key_Input()
+void CNpc_Valnir::Set_DialogText()
 {
-	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	_int iSelectIdx = m_pShopUI->Get_SelectIdx();
+
+	switch (iSelectIdx)
 	{
-		switch (m_iDialogCnt)
-		{
-		case 3:
-		{
-			m_pScriptUI->Set_DialogText(TEXT("기억해라, 방황하는 자여.\n빛이 어둠을 물리치듯 너 또한 네 앞에 놓인 모든 어둠을 헤쳐나갈 수 있을 거다."));
-			--m_iDialogCnt;
-			break;
-		}
-		case 2:
-		{
-			m_pScriptUI->Set_DialogText(TEXT("자, 받아라. 그리고 이 빛을 따라 나아가라."));
-			--m_iDialogCnt;
-			break;
-		}
-		case 1:
-		{
-			m_pScriptUI->Set_DialogText(TEXT("FireFly를 사용하면 길을 밝힐 수 있어."));
-			m_isScriptOn = false;
-			m_pScriptUI->Set_Rend(false);
-			--m_iDialogCnt;
-
-			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_FIREFLY); // Inventory에 Firefly 추가
-
-			break;
-		}
-		case 0:
-		{
-			m_isScriptOn = false;
-			m_pScriptUI->Set_Rend(false);
-			m_pShopUI->Set_Rend(false);
-			break;
-		}
-		default:
-			break;
-		}
+	case -1:
+	{
+		m_pScriptUI->Set_DialogText(TEXT("원하는 상품을 골라. 값을 치루면 너에게 주도록 하지."));
+		break;
+	}
+	case 0:
+	{
+		m_pScriptUI->Set_DialogText(TEXT("[System] 섬세하게 조각된 반투명 수정 조각\n\t풍부한 천상 에너지를 발산"));
+		break;
+	}
+	case 1:
+	{
+		m_pScriptUI->Set_DialogText(TEXT("[System] 희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n\t저항력을 일시적으로 강화"));
+		break;
+	}
+	case 2:
+	{
+		m_pScriptUI->Set_DialogText(TEXT("[System] Astyr 신체 대부분을 구성하는 잠재적 물질\n\t무기 업그레이드 시 사용 가능"));
+		break;
+	}
+	default:
+		break;
 	}
 }
 

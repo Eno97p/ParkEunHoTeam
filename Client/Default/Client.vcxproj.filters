@@ -646,6 +646,9 @@
     <Filter Include="02.GameObjects\07. UI\Shop\Select">
       <UniqueIdentifier>{189dd6dc-b120-4e1f-b76e-1757d4dc0829}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\RemainIcon">
+      <UniqueIdentifier>{fcc21c4f-1f42-4357-946d-5b753024ed51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1325,6 +1328,9 @@
     <ClInclude Include="..\Public\UI_ShopSelect.h">
       <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_RemainIcon.h">
+      <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1977,6 +1983,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_ShopSelect.cpp">
       <Filter>02.GameObjects\07. UI\Shop\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

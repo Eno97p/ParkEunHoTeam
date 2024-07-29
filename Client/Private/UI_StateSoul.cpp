@@ -22,6 +22,7 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 {
 	UI_SOUL_DESC* pDesc = static_cast<UI_SOUL_DESC*>(pArg);
 
+	m_isSoulCntRend = pDesc->isSoulCntRend;
 	m_eUISort = pDesc->eUISort;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -31,8 +32,6 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 		return E_FAIL;
 
 	Setting_Position();
-
-	m_isSoulCntRend = true;
 
 	return S_OK;
 }

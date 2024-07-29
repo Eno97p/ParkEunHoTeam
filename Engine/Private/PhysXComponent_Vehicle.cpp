@@ -247,8 +247,9 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 	m_pVehicleSimulationContext.physxScene = m_pGameInstance->GetScene();
 	m_pVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
 	
-
+#ifdef _DEBUG
 	m_OutDesc.pPhysXActorVehicle = m_pPhysXActorVehicle;
+#endif
 	
 	return S_OK;
 }

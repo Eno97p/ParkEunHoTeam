@@ -50,12 +50,13 @@ public:
 			gear = PxVehicleDirectDriveTransmissionCommandState::Enum::eNEUTRAL;
 		}
 	};
+#ifdef _DEBUG
 	typedef struct PhysX_Vehicle_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
 	{
 		PhysXActorVehicle* pPhysXActorVehicle = nullptr;
 
 	}PhysX_Vehicle_Editable_Desc;
-
+#endif // _DEBUG
 private:
 	explicit CPhysXComponent_Vehicle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	explicit CPhysXComponent_Vehicle(const CPhysXComponent_Vehicle& rhs);

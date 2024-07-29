@@ -567,52 +567,52 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
         vColor = vector(vColor.rgb * 0.5f, 1.f);
     Out.vColor = vColor;
 
-    //////안개
-    //float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
-    //float distanceToCamera = length(cameraToWorldPos);
+    ////안개
+    float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
+    float distanceToCamera = length(cameraToWorldPos);
 
-    //// 시간에 따라 변화하는 오프셋 추가
-    //float2 timeOffset = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
+    // 시간에 따라 변화하는 오프셋 추가
+    float2 timeOffset = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
 
-    //// FBM을 사용한 노이즈 계산
-    //float2 fbmCoord = vWorldPos.xz * g_fNoiseSize + timeOffset;
-    //float2 q = float2(
-    //    fbm(fbmCoord),
-    //    fbm(fbmCoord + float2(5.2, 1.3))
-    //);
-    //float2 r = float2(
-    //    fbm(fbmCoord + 2.0 * q + float2(1.7, 9.2)),
-    //    fbm(fbmCoord + 2.0 * q + float2(8.3, 2.8))
-    //);
-    //float fbmValue = fbm(fbmCoord + 2.0 * r);
+    // FBM을 사용한 노이즈 계산
+    float2 fbmCoord = vWorldPos.xz * g_fNoiseSize + timeOffset;
+    float2 q = float2(
+        fbm(fbmCoord),
+        fbm(fbmCoord + float2(5.2, 1.3))
+    );
+    float2 r = float2(
+        fbm(fbmCoord + 2.0 * q + float2(1.7, 9.2)),
+        fbm(fbmCoord + 2.0 * q + float2(8.3, 2.8))
+    );
+    float fbmValue = fbm(fbmCoord + 2.0 * r);
 
-    //// 거리 기반 안개 계산
-    //float distanceFog = saturate(distanceToCamera / g_fFogRange);
+    // 거리 기반 안개 계산
+    float distanceFog = saturate(distanceToCamera / g_fFogRange);
 
-    //// 높이 기반 안개 계산
-    //float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
-    //float heightFogInt = distanceToCamera * cVolFogHeightDensityAtViewer;
-    //const float cSlopeThreshold = 0.01f;
-    //if (abs(cameraToWorldPos.y) > cSlopeThreshold)
-    //{
-    //    float t = g_fFogHeightFalloff * cameraToWorldPos.y;
-    //    heightFogInt *= (1.0 - exp(-t)) / t;
-    //}
-    //float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
+    // 높이 기반 안개 계산
+    float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
+    float heightFogInt = distanceToCamera * cVolFogHeightDensityAtViewer;
+    const float cSlopeThreshold = 0.01f;
+    if (abs(cameraToWorldPos.y) > cSlopeThreshold)
+    {
+        float t = g_fFogHeightFalloff * cameraToWorldPos.y;
+        heightFogInt *= (1.0 - exp(-t)) / t;
+    }
+    float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
 
-    //// FBM 노이즈를 안개 강도에 적용
-    //float noiseFactor = (fbmValue - 0.5) * 0.5; // -0.25 to 0.25 range
-    //float baseFogFactor = max(distanceFog, heightFogFactor);
-    //float distanceAttenuation = saturate(1.0 - distanceToCamera / (g_fFogRange * 0.5));
-    //float noisyFogFactor = lerp(baseFogFactor, saturate(baseFogFactor + noiseFactor * distanceAttenuation), g_fNoiseIntensity);
+    // FBM 노이즈를 안개 강도에 적용
+    float noiseFactor = (fbmValue - 0.5) * 0.5; // -0.25 to 0.25 range
+    float baseFogFactor = max(distanceFog, heightFogFactor);
+    float distanceAttenuation = saturate(1.0 - distanceToCamera / (g_fFogRange * 0.5));
+    float noisyFogFactor = lerp(baseFogFactor, saturate(baseFogFactor + noiseFactor * distanceAttenuation), g_fNoiseIntensity);
 
-    //// 최종 색상 계산
-    //float4 noisyFogColor = g_vFogColor + float4(noiseFactor * 0.05, noiseFactor * 0.05, noiseFactor * 0.05, 0);
-    //float4 finalColor = lerp(vColor, noisyFogColor, noisyFogFactor);
-    //vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
-    //finalColor.rgb += vEmissiveDesc.rgb;
+    // 최종 색상 계산
+    float4 noisyFogColor = g_vFogColor + float4(noiseFactor * 0.05, noiseFactor * 0.05, noiseFactor * 0.05, 0);
+    float4 finalColor = lerp(vColor, noisyFogColor, noisyFogFactor);
+    vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
+    finalColor.rgb += vEmissiveDesc.rgb;
 
-    //Out.vColor = finalColor;
+    Out.vColor = finalColor;
     return Out;
 }
 

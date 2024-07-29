@@ -332,7 +332,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 
 void CBody_Mantari::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);

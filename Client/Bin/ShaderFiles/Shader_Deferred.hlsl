@@ -6,6 +6,8 @@ matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
+float      g_fBRIS;
+float      g_fMirror;
 float      g_fLightRange;
 
 float      g_fInnerAngle;
@@ -33,12 +35,14 @@ float      g_fNoiseSize;
 float      g_fNoiseIntensity;
 
 texture2D   g_Texture;
+texture2D   g_MaskTexture;
 texture2D   g_NormalTexture;
 texture2D   g_DiffuseTexture;
 texture2D   g_ShadeTexture;
 texture2D   g_DepthTexture;
 texture2D   g_LightDepthTexture;
 texture2D   g_SpecularTexture;
+texture2D g_DecalDepthTexture;
 
 texture2D   g_EmissiveTexture;
 texture2D   g_RoughnessTexture;
@@ -520,9 +524,19 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     vector vMetalicDesc = g_MetalicTexture.Sample(PointSampler, In.vTexcoord);
 
-    vector vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    float fDecalDepth = g_DecalDepthTexture.Sample(LinearSampler, In.vTexcoord).x;
+    vector vColor;
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    if (fDecalDepth <= vDepthDesc.x)
+    {
+        vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    }
+    else
+    {
+        vColor = vDiffuse * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    }
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
@@ -641,6 +655,35 @@ PS_OUT PS_FINAL(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
 
@@ -649,7 +692,7 @@ PS_OUT PS_FINAL(PS_IN In)
     for (int i = 0; i < NumSamples; ++i)
     {
         float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
-        Out.vColor += g_ResultTexture.Sample(LinearSampler, In.vTexcoord + offset);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
     }
 
     Out.vColor /= float(NumSamples);
@@ -660,6 +703,35 @@ PS_OUT PS_FINAL(PS_IN In)
 PS_OUT PS_FINAL2(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
+
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
 
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     Out.vColor = pow(Out.vColor, g_Value);
@@ -673,6 +745,53 @@ PS_OUT PS_FINAL2(PS_IN In)
 PS_OUT PS_FINAL3(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
+
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    
+    if (In.vTexcoord.x > 1.f)
+    {
+        In.vTexcoord.x = 2.f - In.vTexcoord.x;
+    }
+    if (In.vTexcoord.y > 1.f)
+    {
+        In.vTexcoord.y = 2.f - In.vTexcoord.y;
+    }
+    if (In.vTexcoord.x < 0.f)
+    {
+        In.vTexcoord.x *= -1.f;
+    }
+    if (In.vTexcoord.y < 0.f)
+    {
+        In.vTexcoord.y *= -1.f;
+    }
+
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     Out.vColor = pow(Out.vColor, g_Value);
 
@@ -901,11 +1020,18 @@ PS_OUT PS_BLOOM(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_DECAL(PS_IN In)
+struct PS_OUT_DECAL
 {
-    PS_OUT Out = (PS_OUT)0;
+    vector      vColor : SV_TARGET0;
+    vector      vDepth : SV_TARGET1;
+};
+
+PS_OUT_DECAL PS_DECAL(PS_IN In)
+{
+    PS_OUT_DECAL Out = (PS_OUT_DECAL)0;
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    Out.vDepth = vDepthDesc;
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;

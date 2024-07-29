@@ -78,7 +78,7 @@ void CJuggulus_Hammer::Tick(_float fTimeDelta)
 
 void CJuggulus_Hammer::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 #ifdef _DEBUG

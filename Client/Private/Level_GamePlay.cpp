@@ -351,8 +351,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//	return E_FAIL;
 	
 
-
-
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = 167.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
@@ -363,6 +361,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };
 	EFFECTMGR->Generate_Particle(40, GrassPos);
+
 	// Npc
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))
 	//	return E_FAIL;

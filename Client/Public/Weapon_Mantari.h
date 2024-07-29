@@ -21,6 +21,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Reflection() override;
 	virtual HRESULT Render_LightDepth() override;
+	virtual HRESULT Render_Bloom() override;
 	_bool Get_IsParried() { return m_bIsParried; }
 	void Set_IsParried(_bool isParried) { m_bIsParried = isParried; }
 

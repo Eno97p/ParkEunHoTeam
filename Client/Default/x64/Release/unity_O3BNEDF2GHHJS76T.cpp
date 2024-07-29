@@ -45,13 +45,7 @@
 #include "C:\3D_TeamProj\Client\Private\Boss_Juggulus.cpp"
 
 
-#include "C:\3D_TeamProj\Client\Private\Catharsis.cpp"
-
-
 #include "C:\3D_TeamProj\Client\Private\Body_Mantari.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\Cendres.cpp"
 
 
 #include "C:\3D_TeamProj\Client\private\CHoverboard.cpp"
@@ -64,9 +58,6 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\Clone.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\CorruptedSword.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Decal.cpp"
@@ -103,9 +94,6 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\Homonculus.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\IceBlade.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\ImGUi\imgui.cpp"
@@ -162,7 +150,13 @@
 #include "C:\3D_TeamProj\Client\Private\Level_Ackbar.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Level_AndrasArena.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Level_GamePlay.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Level_GrassLand.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Level_Jugglas.cpp"
@@ -453,9 +447,6 @@
 #include "C:\3D_TeamProj\Client\private\Monster.cpp"
 
 
-#include "C:\3D_TeamProj\Client\Private\NaruehSword.cpp"
-
-
 #include "C:\3D_TeamProj\Client\private\PartObject.cpp"
 
 
@@ -469,9 +460,6 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\RadamantheSword.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\SitraSword.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Sky.cpp"
@@ -597,19 +585,10 @@
 #include "C:\3D_TeamProj\Client\Private\UI_WPFontaine.cpp"
 
 
-#include "C:\3D_TeamProj\Client\Private\ValnirSword.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\VeilleurSword.cpp"
-
-
 #include "C:\3D_TeamProj\Client\Private\Weapon.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Weapon_Sword_LGGun.cpp"
-
-
-#include "C:\3D_TeamProj\Client\Private\WhisperSword.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\WhisperSword_Anim.cpp"

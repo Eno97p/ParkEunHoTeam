@@ -89,7 +89,7 @@ void CWeapon_Mantari::Tick(_float fTimeDelta)
 
 void CWeapon_Mantari::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 #ifdef _DEBUG
@@ -212,6 +212,29 @@ HRESULT CWeapon_Mantari::Render_LightDepth()
 	//	m_pModelCom->Render(i);
 	//}
 
+	return S_OK;
+}
+
+HRESULT CWeapon_Mantari::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
+
+		m_pModelCom->Render(i);
+	}
 	return S_OK;
 }
 

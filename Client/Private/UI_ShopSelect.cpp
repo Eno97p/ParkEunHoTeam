@@ -59,14 +59,22 @@ void CUI_ShopSelect::Tick(_float fTimeDelta)
 
     m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-    if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+
+    // Soul이 부족하지 않으면 구매
+    if (m_iPrice <= CInventory::GetInstance()->Get_Soul())
     {
-        // Soul이 부족하지 않으면 구매
-        if (m_iPrice <= CInventory::GetInstance()->Get_Soul())
+        if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
         {
             Sell_Item();
         }
+
+        m_vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
     }
+    else
+    {
+        m_vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
+    }
+
 
     for (auto& pUI : m_vecUI)
     {
@@ -219,7 +227,7 @@ void CUI_ShopSelect::Rend_Font()
         return;
 
     // Price
-    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(m_iPrice), _float2(m_fX + 70.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(m_iPrice), _float2(m_fX + 70.f, m_fY - 10.f), m_vColor)))
         return;
 
     // Remain Count
@@ -237,10 +245,9 @@ void CUI_ShopSelect::Sell_Item()
 
     m_iRemainCnt--;
 
-    // Inventory에 Item 추가 >>>>> 중복의 경우 개수가 늘어나는 게 안 되어있는?
+    // Inventory에 Item 추가
     if (0 == m_iSlotIdx)
     {
-        // CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_ETHER);
         CInventory::GetInstance()->Add_DropItem(CItem::ITEM_ETHER);
 
     }

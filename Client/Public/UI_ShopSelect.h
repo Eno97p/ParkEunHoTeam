@@ -32,6 +32,7 @@ private:
 	_int					m_iPrice = { 0 };
 	_uint					m_iRemainCnt = { 0 }; // 남은 개수
 	wstring					m_wstrItemName;
+	_vector					m_vColor;
 
 	vector<class CUI*>		m_vecUI;
 

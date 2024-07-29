@@ -313,33 +313,6 @@ void CItemData::Set_Item_Data()
 	}
 	case Client::CItemData::ITEMNAME_WHISPERER:
 		break;
-	case Client::CItemData::ITEMNAME_ETHER:
-		{
-			m_eItemType = ITEMTYPE_USABLE;
-			m_wszItemName = TEXT("RADIANT ETHER");
-			m_wszItemExplain = TEXT("섬세하게 조각된 반투명 수정 조각\n풍부한 천상 에너지를 발산");
-			m_wszItemExplain_quick = TEXT("섬세하게 조각된 반투명 수정 조각\n풍부한 천상 에너지를 발산");
-			m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
-			break;
-		}
-	case Client::CItemData::ITEMNAME_BUFF4:
-	{
-		m_eItemType = ITEMTYPE_USABLE;
-		m_wszItemName = TEXT("SIGIL OF ETHER");
-		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n저항력을 일시적으로 강화");
-		m_wszItemExplain_quick = TEXT("희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n저항력을 일시정으로 강화");
-		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
-		break;
-	}
-	case Client::CItemData::ITEMNAME_UPGRADE1:
-	{
-		m_eItemType = ITEMTYPE_UPGRADE;
-		m_wszItemName = TEXT("HADRONITE");
-		m_wszItemExplain = TEXT("Astyr 신체 대부분을 구성하는\n잠재적 물질\n무기 업그레이드 시 사용 가능");
-		m_wszItemExplain_quick = TEXT("Astyr 신체 대부분을 구성하는 잠재적 물질\n무기 업그레이드 시 사용 가능");
-		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0");
-		break;
-	}
 	default:
 		break;
 	}

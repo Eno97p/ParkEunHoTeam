@@ -943,7 +943,16 @@ void CVIBuffer_Instance::Lenz_Flare(_float fTimeDelta)
 		vUp = XMLoadFloat4(&pVertices[i].vUp);
 		vLook = XMLoadFloat4(&pVertices[i].vLook);
 
+		_vector    vQuternion = XMQuaternionRotationAxis(XMVector4Normalize(vLook), fTimeDelta * pVertices[i].vGravity);
+		_matrix    QuternionMatrix = XMMatrixRotationQuaternion(vQuternion);
 
+		vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+		vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+		vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+
+		XMStoreFloat4(&pVertices[i].vRight, vRight);
+		XMStoreFloat4(&pVertices[i].vUp, vUp);
+		XMStoreFloat4(&pVertices[i].vLook, vLook);
 
 		pVertices[i].vRight.x = m_pSize[i];
 		pVertices[i].vUp.y = m_pSize[i];
@@ -985,6 +994,196 @@ void CVIBuffer_Instance::Lenz_Flare(_float fTimeDelta)
 	}
 
 }
+
+void CVIBuffer_Instance::Spiral_Extinction(_float fTimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	bool allInstancesDead = true;
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		// Calculate the current angle
+		float angle = atan2(pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z,
+			pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x);
+
+		// Increase the angle over time to create a swirl effect
+		angle += m_pSpeeds[i] * fTimeDelta;
+
+		// Calculate the distance from the center
+		XMVECTOR vDist = XMVectorSet(
+			pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x,
+			pVertices[i].vTranslation.y - m_InstanceDesc.vOffsetPos.y,
+			pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z,
+			0.0f
+		);
+		float distance = XMVectorGetX(XMVector3Length(vDist));
+
+		// Gradually decrease the radius using m_pSpeeds
+		float radiusDecreaseFactor = m_pSpeeds[i] * 0.01f; // Adjust this value to control the spiral tightness
+		float currentRadius = distance * (1.0f - radiusDecreaseFactor * pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x);
+
+		// Calculate the new position
+		float x = m_InstanceDesc.vOffsetPos.x + currentRadius * cos(angle);
+		float z = m_InstanceDesc.vOffsetPos.z + currentRadius * sin(angle);
+
+		// Update the position
+		pVertices[i].vTranslation.x = x;
+		pVertices[i].vTranslation.z = z;
+
+		// Update the height based on gravity
+		pVertices[i].vTranslation.y -= pVertices[i].vGravity * fTimeDelta;
+
+		// Update direction vectors (Right, Up, Look)
+		XMVECTOR vDir = XMVectorSet(pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x,
+			pVertices[i].vTranslation.y - m_InstanceDesc.vOffsetPos.y,
+			pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z, 0.0f);
+		XMVECTOR vLook = XMVector3Normalize(vDir);
+		XMVECTOR vRight = XMVector3Normalize(XMVector3Cross(vLook, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+		XMVECTOR vUp = XMVector3Normalize(XMVector3Cross(vRight, vLook));
+
+		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i]);
+
+		// Update lifetime and size
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		m_pSize[i] -= fTimeDelta * pVertices[i].vGravity * 0.05f; // Gradually decrease size
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (m_InstanceDesc.isLoop)
+			{
+				// Reset position with some randomness
+				float randomAngle = (float)rand() / RAND_MAX * XM_2PI;
+				float randomRadius = ((float)rand() / RAND_MAX) * m_InstanceDesc.vRange.z;
+				pVertices[i].vTranslation = _float4(
+					m_InstanceDesc.vOffsetPos.x + cos(randomAngle) * randomRadius,
+					m_InstanceDesc.vOffsetPos.y + ((float)rand() / RAND_MAX - 0.5f) * m_InstanceDesc.vRange.y,
+					m_InstanceDesc.vOffsetPos.z + sin(randomAngle) * randomRadius,
+					1.f
+				);
+				pVertices[i].vLifeTime.y = 0.f;
+				pVertices[i].vGravity = m_pOriginalGravity[i];
+				m_pSize[i] = m_pOriginalSize[i];
+				m_pSpeeds[i] = m_pOriginalSpeed[i] + ((float)rand() / RAND_MAX - 0.5f) * 0.5f; // Add some randomness to speed
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+
+		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	if (!m_InstanceDesc.isLoop && allInstancesDead)
+	{
+		m_bInstanceDead = true;
+	}
+	else
+	{
+		m_bInstanceDead = false;
+	}
+}
+
+void CVIBuffer_Instance::Spiral_Expansion(_float fTimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	bool allInstancesExpanded = true;
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		// Calculate the current angle
+		float angle = atan2(pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z,
+			pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x);
+
+		// Increase the angle over time to create a swirl effect
+		angle += m_pSpeeds[i] * fTimeDelta;
+
+		// Calculate the distance from the center
+		XMVECTOR vDist = XMVectorSet(
+			pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x,
+			pVertices[i].vTranslation.y - m_InstanceDesc.vOffsetPos.y,
+			pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z,
+			0.0f
+		);
+		float distance = XMVectorGetX(XMVector3Length(vDist));
+
+		// Gradually increase the radius using m_pSpeeds
+		float radiusIncreaseFactor = m_pSpeeds[i] * 0.05f; // Adjust this value to control the expansion speed
+		float currentRadius = distance + radiusIncreaseFactor * pVertices[i].vLifeTime.y;
+
+		// Calculate the new position
+		float x = m_InstanceDesc.vOffsetPos.x + currentRadius * cos(angle);
+		float z = m_InstanceDesc.vOffsetPos.z + currentRadius * sin(angle);
+
+		// Update the position
+		pVertices[i].vTranslation.x = x;
+		pVertices[i].vTranslation.z = z;
+
+		// Update the height based on an upward force (opposite of gravity)
+		pVertices[i].vTranslation.y += pVertices[i].vGravity * fTimeDelta * 0.5f;
+
+		// Update direction vectors (Right, Up, Look)
+		XMVECTOR vDir = XMVectorSet(pVertices[i].vTranslation.x - m_InstanceDesc.vOffsetPos.x,
+			pVertices[i].vTranslation.y - m_InstanceDesc.vOffsetPos.y,
+			pVertices[i].vTranslation.z - m_InstanceDesc.vOffsetPos.z, 0.0f);
+		XMVECTOR vLook = XMVector3Normalize(vDir);
+		XMVECTOR vRight = XMVector3Normalize(XMVector3Cross(vLook, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+		XMVECTOR vUp = XMVector3Normalize(XMVector3Cross(vRight, vLook));
+
+		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i]);
+
+		// Update lifetime and size
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		m_pSize[i] += fTimeDelta * pVertices[i].vGravity * 0.02f; // Gradually increase size
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (m_InstanceDesc.isLoop)
+			{
+				// Reset position to center
+				pVertices[i].vTranslation = _float4(m_InstanceDesc.vOffsetPos.x, m_InstanceDesc.vOffsetPos.y, m_InstanceDesc.vOffsetPos.z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				pVertices[i].vGravity = m_pOriginalGravity[i];
+				m_pSize[i] = m_pOriginalSize[i] * 0.5f; // Start with smaller size
+				m_pSpeeds[i] = m_pOriginalSpeed[i] + ((float)rand() / RAND_MAX - 0.5f) * 0.5f; // Add some randomness to speed
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+
+		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
+		{
+			allInstancesExpanded = false;
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	if (!m_InstanceDesc.isLoop && allInstancesExpanded)
+	{
+		m_bInstanceDead = true;
+	}
+	else
+	{
+		m_bInstanceDead = false;
+	}
+}
+
 
 void CVIBuffer_Instance::Leaf_Fall(_float fTimeDelta)
 {
@@ -1093,6 +1292,76 @@ void CVIBuffer_Instance::Leaf_Fall(_float fTimeDelta)
 		m_bInstanceDead = false;
 	}
 
+
+}
+
+void CVIBuffer_Instance::Blow(_float fTimeDelta)
+{
+	bool allInstancesDead = true;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		pVertices[i].vLifeTime.y += fTimeDelta;
+
+		//파티클 움직임 로직
+		_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc.vOffsetPos), 0.f);
+
+		_vector vRight = XMLoadFloat4(&pVertices[i].vRight);
+		_vector vUp = XMLoadFloat4(&pVertices[i].vUp);
+		_vector vLook = XMLoadFloat4(&pVertices[i].vLook);
+		_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
+
+		_vector Quat1 = XMQuaternionRotationAxis(XMVector4Normalize(vRight), XMConvertToRadians(pVertices[i].vGravity));
+		_vector Quat2 = XMQuaternionRotationAxis(XMVector4Normalize(vUp), XMConvertToRadians(pVertices[i].vGravity));
+		_vector Axis = XMQuaternionMultiply(Quat1, Quat2);
+
+		_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+		vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+		vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+		vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+
+		vPos += vDir * m_pSpeeds[i] * fTimeDelta;
+
+		XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(vRight) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(vUp) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(vLook) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc.isLoop)
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				pVertices[i].vRight.x = m_pOriginalSize[i];
+				pVertices[i].vUp.y = m_pOriginalSize[i];
+				pVertices[i].vLook.z = m_pOriginalSize[i];
+				m_pSize[i] = m_pOriginalSize[i];
+				m_pSpeeds[i] = m_pOriginalSpeed[i];
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+		if (pVertices[i].vLifeTime.y < pVertices[i].vLifeTime.x)
+		{
+			allInstancesDead = false;
+		}
+	}
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	if (!m_InstanceDesc.isLoop && allInstancesDead)
+	{
+		m_bInstanceDead = true;
+	}
+	else
+	{
+		m_bInstanceDead = false;
+	}
 
 }
 

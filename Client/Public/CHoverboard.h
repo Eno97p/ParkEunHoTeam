@@ -38,6 +38,8 @@ private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Add_PxActor();
 
+
+	//void SideMove(float Di)
 private:
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
@@ -45,6 +47,8 @@ private:
 private:
 	_float3 m_vPosition = {};
 
+	_bool m_bIsMoving = false;
+	_float m_fMoveThreshold = 0.1f;
 public:
 	static CHoverboard* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -39,19 +39,13 @@ private:
 	_bool					m_isFinished = { false };
 	CGameInstance*			m_pGameInstance = { nullptr };
 
-	
-
 private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
 
-
 public:
 	static CLoader* Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, LEVEL eNextLevel);
 	virtual void Free() override;
-
-
-
 };
 
 END

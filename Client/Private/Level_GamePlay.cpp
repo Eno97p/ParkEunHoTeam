@@ -22,6 +22,8 @@
 #include "Decal.h"
 
 #include "CHoverBoard.h"
+
+#include "EffectManager.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -370,7 +372,12 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 		return E_FAIL;
 
 
-	//}
+	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };
+	EFFECTMGR->Generate_Particle(40, GrassPos);
+
+		
+		
+		//}					landObjDesc.mWorldMatrix._44
 
 	// Npc
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"), pLandObjDesc)))

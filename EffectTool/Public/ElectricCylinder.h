@@ -13,12 +13,12 @@ class CElectricCylinder final : public CBlendObject
 public:
 	typedef struct ANDRAS_ELECTRIC_DESC
 	{
-		_float3 vMaxSize = { 0.f,0.f,0.f };
-		_float3 vOffset = { 0.f,0.f,0.f };
+		_float3 vMaxSize = { 1.f,1.f,3.f };
+		_float3 vOffset = { 0.f,1.f,1.f };
 		_float3 fColor = { 1.f,1.f,1.f };
-		_float fRotationSpeed = 0.f;
+		_float fRotationSpeed = 1000.f;
 		_float fMaxLifeTime = 0.f;
-		_float frameSpeed = 0.f;
+		_float frameSpeed = 10.f;
 		const _float4x4* ParentMatrix = nullptr;
 	};
 

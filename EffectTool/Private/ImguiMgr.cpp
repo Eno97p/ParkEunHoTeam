@@ -15,6 +15,7 @@
 #include "AndrasRain.h"
 #include "ElectricCylinder.h"
 #include "TornadoEffect.h"
+#include "AndrasLazer.h"
 
 
 CImguiMgr::CImguiMgr()
@@ -327,6 +328,14 @@ void CImguiMgr::EffectTool_Rework()
 		if (ImGui::RadioButton("Leaf1", MeshDesc.eModelType == EFFECTMODELTYPE::LEAF1))
 			MeshDesc.eModelType = EFFECTMODELTYPE::LEAF1;
 
+		if (ImGui::RadioButton("Blade", MeshDesc.eModelType == EFFECTMODELTYPE::BLADE_SLASH))
+			MeshDesc.eModelType = EFFECTMODELTYPE::BLADE_SLASH;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Blade_Long", MeshDesc.eModelType == EFFECTMODELTYPE::BLADE_SLASH_LONG))
+			MeshDesc.eModelType = EFFECTMODELTYPE::BLADE_SLASH_LONG;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Grass", MeshDesc.eModelType == EFFECTMODELTYPE::GRASS))
+			MeshDesc.eModelType = EFFECTMODELTYPE::GRASS;
 	}
 
 	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
@@ -426,6 +435,26 @@ void CImguiMgr::EffectTool_Rework()
 	{
 		parentsDesc.eType = LEAF_FALL;
 	}
+
+	if (ImGui::RadioButton("Spiral_Gather", parentsDesc.eType == SPIRAL_EXTINCTION))
+	{
+		parentsDesc.eType = SPIRAL_EXTINCTION;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Spiral_Spread", parentsDesc.eType == SPIRAL_SPERAD))
+	{
+		parentsDesc.eType = SPIRAL_SPERAD;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("LenzFlare", parentsDesc.eType == LENZ_FLARE))
+	{
+		parentsDesc.eType = LENZ_FLARE;
+	}
+	if (ImGui::RadioButton("Blow", parentsDesc.eType == BLOW))
+	{
+		parentsDesc.eType = BLOW;
+	}
+
 #pragma endregion FUNCTYPE
 	
 #pragma endregion PARTICLEDESC
@@ -1937,7 +1966,64 @@ void CImguiMgr::Lazer_Tool()
 	ImVec2 ButtonSize = { 100.f,30.f };
 	ImGui::Begin("Lazer_Edditor");
 
-	static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
+	static CAndrasLazer::ANDRAS_LAZER_TOTALDESC TotalDesc{};
+
+	TotalDesc.ShooterMat = TrailMat;
+	ImGui::InputFloat("LifeTime", &TotalDesc.fLifeTime);
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Base_Lazer");
+
+	ImGui::InputFloat3("B_MaxSize", reinterpret_cast<float*>(&TotalDesc.BaseDesc.vMaxSize));
+	ImGui::InputFloat3("B_Offset", reinterpret_cast<float*>(&TotalDesc.BaseDesc.vOffset));
+	ImGui::InputFloat("B_RotSpeed", &TotalDesc.BaseDesc.fRotationSpeed);
+	ImGui::InputFloat("B_BloomPower", &TotalDesc.BaseDesc.fBloomPower);
+	ImGui::InputFloat("B_DistortionPower", &TotalDesc.BaseDesc.fDistortionPower);
+	ImGui::InputFloat("B_UVSpeed", &TotalDesc.BaseDesc.fUVSpeed);
+	ImGui::InputInt("B_NumDesolve", &TotalDesc.BaseDesc.NumDesolve);
+	ImGui::ColorEdit3("B_Color", reinterpret_cast<float*>(&TotalDesc.BaseDesc.fColor));
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Cylinder");
+
+	ImGui::InputFloat3("C_MaxSize", reinterpret_cast<float*>(&TotalDesc.CylinderDesc.vMaxSize));
+	ImGui::InputFloat3("C_Offset", reinterpret_cast<float*>(&TotalDesc.CylinderDesc.vOffset));
+	ImGui::InputFloat("C_RotSpeed", &TotalDesc.CylinderDesc.fRotationSpeed);
+	ImGui::InputFloat("C_BloomPower", &TotalDesc.CylinderDesc.fBloomPower);
+	ImGui::InputFloat("C_DistortionPower", &TotalDesc.CylinderDesc.fDistortionPower);
+	ImGui::InputFloat("C_UVSpeed", &TotalDesc.CylinderDesc.fUVSpeed);
+	ImGui::InputInt("C_NumDesolve", &TotalDesc.CylinderDesc.NumDesolve);
+	ImGui::ColorEdit3("C_Color", reinterpret_cast<float*>(&TotalDesc.CylinderDesc.fColor));
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Screw");
+
+	ImGui::InputFloat3("S_MaxSize", reinterpret_cast<float*>(&TotalDesc.ScrewDesc.vMaxSize));
+	ImGui::InputFloat3("S_Offset", reinterpret_cast<float*>(&TotalDesc.ScrewDesc.vOffset));
+	ImGui::InputFloat("S_RotSpeed", &TotalDesc.ScrewDesc.fRotationSpeed);
+	ImGui::InputFloat("S_BloomPower", &TotalDesc.ScrewDesc.fBloomPower);
+	ImGui::InputFloat("S_DistortionPower", &TotalDesc.ScrewDesc.fDistortionPower);
+	ImGui::InputFloat("S_UVSpeed", &TotalDesc.ScrewDesc.fUVSpeed);
+	ImGui::InputInt("S_NumDesolve", &TotalDesc.ScrewDesc.NumDesolve);
+	ImGui::ColorEdit3("S_Color", reinterpret_cast<float*>(&TotalDesc.ScrewDesc.fColor));
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Electron");
+
+	ImGui::InputFloat3("E_MaxSize", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.vMaxSize));
+	ImGui::InputFloat3("E_Offset", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.vOffset));
+	ImGui::InputFloat("E_RotSpeed", &TotalDesc.ElectricDesc.fRotationSpeed);
+	ImGui::InputFloat("E_FrameSpeed", &TotalDesc.ElectricDesc.frameSpeed);
+	ImGui::ColorEdit3("E_Color", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.fColor));
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Rain");
+
+	ImGui::InputFloat3("R_MaxSize", reinterpret_cast<float*>(&TotalDesc.RainDesc.vMaxSize));
+	ImGui::InputFloat3("R_Offset", reinterpret_cast<float*>(&TotalDesc.RainDesc.vOffset));
+	ImGui::InputFloat("R_RotSpeed", &TotalDesc.RainDesc.fRotationSpeed);
+	ImGui::InputFloat("R_BloomPower", &TotalDesc.RainDesc.fBloomPower);
+	ImGui::InputFloat("R_DistortionPower", &TotalDesc.RainDesc.fDistortionPower);
+	ImGui::InputFloat("R_UVSpeed", &TotalDesc.RainDesc.fUVSpeed);
+	ImGui::InputInt("R_NumDesolve", &TotalDesc.RainDesc.NumDesolve);
+	ImGui::ColorEdit3("R_Color", reinterpret_cast<float*>(&TotalDesc.RainDesc.fColor));
+
+	/*static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
 	static CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CDesc{};
 	static CAndrasScrew::ANDRAS_SCREW_DESC SDesc{};
 	static CElectricCylinder::ANDRAS_ELECTRIC_DESC EDesc{};
@@ -1991,29 +2077,22 @@ void CImguiMgr::Lazer_Tool()
 	CDesc.ParentMatrix = TrailMat;
 	SDesc.ParentMatrix = TrailMat;
 	EDesc.ParentMatrix = TrailMat;
-	RDesc.ParentMatrix = TrailMat;
+	RDesc.ParentMatrix = TrailMat;*/
 	
 	if (ImGui::Button("Generate", ButtonSize))
 	{
-		if (Desc.ParentMatrix == nullptr)
+		if (TotalDesc.ShooterMat == nullptr)
 			MSG_BOX("행렬을 대입해주세요");
 		else
 		{
 			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
-				TEXT("Prototype_GameObject_Andras_LazerBase"), &Desc);
-			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
-				TEXT("Prototype_GameObject_Andras_LazerCylinder"), &CDesc);
-			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
-				TEXT("Prototype_GameObject_Andras_Screw"), &SDesc);
-			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
-				TEXT("Prototype_GameObject_ElectricCylinder"), &EDesc);
-			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"),
-				TEXT("Prototype_GameObject_AndrasRain"), &RDesc);
+				TEXT("Prototype_GameObject_AndrasLazerSpawner"), &TotalDesc);
 		}
 	}
 	if (ImGui::Button("Erase", ButtonSize))
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"));
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"));
 	}
 	ImGui::End();
 }
@@ -2060,6 +2139,18 @@ void CImguiMgr::Tornado_Tool()
 	ImGui::InputFloat("RootGrowSpeed", &TDesc.RootDesc.fGrowSpeed);
 	ImGui::InputInt("RootNumDesolve", &TDesc.RootDesc.NumDesolve);
 
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Spring");
+
+	ImGui::InputFloat3("SpringMaxSize", reinterpret_cast<float*>(&TDesc.SpringDesc.vMaxSize));
+	ImGui::InputFloat3("SpringOffset", reinterpret_cast<float*>(&TDesc.SpringDesc.vOffset));
+	ImGui::ColorEdit3("SpringColor", reinterpret_cast<float*>(&TDesc.SpringDesc.fColor));
+
+	ImGui::InputFloat("SpringRotSpeed", &TDesc.SpringDesc.fRotationSpeed);
+	ImGui::InputFloat("SpringBloompower", &TDesc.SpringDesc.fBloomPower);
+	ImGui::InputFloat("SpringLifeTime", &TDesc.SpringDesc.fMaxLifeTime);
+	ImGui::InputFloat("SpringUVSpeed", &TDesc.SpringDesc.fUVSpeed);
+	ImGui::InputFloat("SpringGrowSpeed", &TDesc.SpringDesc.fGrowSpeed);
+	ImGui::InputInt("SpringNumDesolve", &TDesc.SpringDesc.NumDesolve);
 
 
 	TDesc.pTarget = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(),

@@ -90,6 +90,9 @@ HRESULT CTornadoEffect::Add_Child_Effects()
 	CGameObject* Wind = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Wind"), &m_OwnDesc->WindDesc);
 	m_EffectClasses.emplace_back(Wind);
 
+	m_OwnDesc->SpringDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	CGameObject* Spring = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Spring"), &m_OwnDesc->SpringDesc);
+	m_EffectClasses.emplace_back(Spring);
 	return S_OK;
 }
 

@@ -120,6 +120,7 @@ PS_OUT PS_DEFAULT(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
+	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -128,9 +129,9 @@ PS_OUT PS_DEFAULT(PS_IN In)
 
 	if (g_Alpha)
 	{
-		Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
+		Out.vColor.a = lerp(Out.vColor.a, 0.f, fRatio);
 	}
-	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	
 
 	if (g_Color)
 	{

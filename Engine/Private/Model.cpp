@@ -616,6 +616,26 @@ void CModel::Leaf_Fall(_float fTimeDelta)
 	for (auto& iter : m_InstanseMesh)
 		iter->Leaf_Fall(fTimeDelta);
 }
+void CModel::Spiral_Extinction(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Spiral_Extinction(fTimeDelta);
+}
+void CModel::Spiral_Expansion(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Spiral_Expansion(fTimeDelta);
+}
+void CModel::Lenz_Flare(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Lenz_Flare(fTimeDelta);
+}
+void CModel::Blow(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Blow(fTimeDelta);
+}
 #pragma endregion Effect
 
 _uint CModel::Get_Model_Vertices()

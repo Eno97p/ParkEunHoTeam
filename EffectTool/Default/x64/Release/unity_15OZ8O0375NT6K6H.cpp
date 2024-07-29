@@ -23,6 +23,9 @@
 #include "C:\NewRepo\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\AndrasLazer.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\AndrasLazer_Base.cpp"
 
 
@@ -132,6 +135,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\Tornado_Root.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Tornado_Spring.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\Weapon.cpp"

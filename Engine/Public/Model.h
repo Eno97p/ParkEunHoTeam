@@ -40,6 +40,10 @@ public:														//파티클 함수들
 	void GrowOutY(_float fTimeDelta);
 	void GrowOut_Speed_Down(_float fTimeDelta);
 	void Leaf_Fall(_float fTimeDelta);
+	void Spiral_Extinction(_float fTimeDelta);
+	void Spiral_Expansion(_float fTimeDelta);
+	void Lenz_Flare(_float fTimeDelta);
+	void Blow(_float fTimeDelta);
 
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 

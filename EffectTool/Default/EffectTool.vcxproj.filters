@@ -101,6 +101,9 @@
     <Filter Include="Objects\02. Effects\09. Tornado\Effects">
       <UniqueIdentifier>{4ef6b1a3-074b-4411-8091-ce6644a70902}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster\Andras\AndrasLazer\Effects">
+      <UniqueIdentifier>{b8f8f708-a98d-4bb5-80bd-75d460d62187}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -238,21 +241,6 @@
     <ClInclude Include="..\Public\AndrasSword5.h">
       <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AndrasLazer_Base.h">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AndrasLazer_Cylinder.h">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AndrasScrew.h">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ElectricCylinder.h">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\AndrasRain.h">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\TornadoEffect.h">
       <Filter>Objects\02. Effects\09. Tornado</Filter>
     </ClInclude>
@@ -261,6 +249,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\Tornado_Root.h">
       <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tornado_Spring.h">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AndrasLazer.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AndrasLazer_Base.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasLazer_Cylinder.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasRain.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AndrasScrew.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ElectricCylinder.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -384,21 +393,6 @@
     <ClCompile Include="..\Private\AndrasSword5.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AndrasLazer_Base.cpp">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\AndrasScrew.cpp">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ElectricCylinder.cpp">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\AndrasRain.cpp">
-      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\TornadoEffect.cpp">
       <Filter>Objects\02. Effects\09. Tornado</Filter>
     </ClCompile>
@@ -407,6 +401,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tornado_Root.cpp">
       <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tornado_Spring.cpp">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AndrasLazer.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AndrasLazer_Base.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasRain.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasScrew.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ElectricCylinder.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

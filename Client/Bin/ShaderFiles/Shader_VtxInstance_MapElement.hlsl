@@ -1,7 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_PrevViewMatrix;
 texture2D g_DiffuseTexture;
 texture2D g_NormalTexture;
 texture2D g_SpecularTexture;
@@ -46,6 +46,7 @@ struct VS_OUT
     float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
+    float2      vVelocity : TEXCOORD3;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -55,23 +56,43 @@ VS_OUT VS_MAIN(VS_IN In)
     matrix TransformMatrix = matrix(In.vRight, In.vUp, In.vLook, In.vTranslation);
 
     vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
+    vPosition = mul(vPosition, g_WorldMatrix);
 
     matrix matWV, matWVP;
-
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
+    matrix matPrevWV, matPrevWVP;
+    matPrevWV = mul(g_WorldMatrix, g_PrevViewMatrix);
+    matPrevWVP = mul(matPrevWV, g_ProjMatrix);
+
     Out.vPosition = mul(vPosition, matWVP);
+
     Out.vNormal = normalize(mul(vector(In.vNormal.xyz, 0.f), TransformMatrix));
+    Out.vNormal = normalize(mul(Out.vNormal, g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vLocalPos = float4(In.vPosition, 1.f);
     Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), TransformMatrix));
     Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
 
+    // 노말을 이용한 Velocity 계산
+    float3 worldNormal = mul(Out.vNormal.xyz, (float3x3)g_WorldMatrix);
+    float3 viewNormal = mul(worldNormal, (float3x3)g_ViewMatrix);
+    float3 projNormal = mul(viewNormal, (float3x3)g_ProjMatrix);
+
+    float3 currentViewPos = mul(vPosition, matWV).xyz;
+    float3 prevViewPos = mul(vPosition, matPrevWV).xyz;
+
+    float3 viewMotion = currentViewPos - prevViewPos;
+    float motionAlongNormal = dot(viewMotion, viewNormal);
+
+    float2 ndcMotion = projNormal.xy * motionAlongNormal;
+
+    Out.vVelocity = ndcMotion * -0.3f;  // 스케일 조정
+
     return Out;
 }
-
 
 struct VS_OUT_LIGHTDEPTH
 {
@@ -108,6 +129,7 @@ struct PS_IN
     float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
+    float2      vVelocity : TEXCOORD3;
 };
 
 struct PS_OUT
@@ -119,6 +141,7 @@ struct PS_OUT
     vector vEmissive : SV_TARGET4;
     vector vRoughness : SV_TARGET5;
     vector vMetalic : SV_TARGET6;
+    float2 vVelocity : SV_TARGET7;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -151,6 +174,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
 
+    Out.vVelocity = In.vVelocity;
     return Out;
 }
 
@@ -203,7 +227,7 @@ PS_OUT PS_TILING(PS_IN In)
     if (g_bEmissive) Out.vEmissive = vEmissive;
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
-
+    Out.vVelocity = In.vVelocity;
     return Out;
 }
 

@@ -69,7 +69,10 @@ public:
 	virtual void GrowOut_Speed_Down(_float fTimeDelta);
 	virtual void GrowOut_Speed_Down_Texture(_float fTimeDelta);
 	virtual void Lenz_Flare(_float fTimeDelta);
+	virtual void Spiral_Extinction(_float fTimeDelta);
+	virtual void Spiral_Expansion(_float fTimeDelta);
 	virtual void Leaf_Fall(_float fTimeDelta);
+	virtual void Blow(_float fTimeDelta);
 	
 
 	void Initial_RotateY();

@@ -21,13 +21,11 @@ private:
 public:
 	_bool				Get_MenuPageState();
 	void				Set_MenuPageOpen();
-
 	CUIGroup*			Get_UIGroup(string strKey);
-
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 	void				Set_ScreenBloodRend(_bool isRend);
-
 	_bool				Get_isMouseOn();
+	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
 public:
 	HRESULT				Initialize();
@@ -50,6 +48,8 @@ public:
 	void				Resset_Player();
 
 private:
+	_bool					m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
+
 	CGameInstance*			m_pGameInstance = { nullptr };
 
 	map<string, CUIGroup*>	m_mapUIGroup;

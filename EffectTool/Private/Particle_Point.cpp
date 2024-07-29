@@ -91,6 +91,21 @@ void CParticle_Point::Tick(_float fTimeDelta)
 	case GROWOUT_SPEEDDOWN:
 		m_pVIBufferCom->GrowOut_Speed_Down_Texture(fTimeDelta);
 		break;
+	case SPIRAL_EXTINCTION:
+		m_pVIBufferCom->Spiral_Extinction(fTimeDelta);
+		break;
+	case SPIRAL_SPERAD:
+		m_pVIBufferCom->Spiral_Expansion(fTimeDelta);
+		break;
+	case LENZ_FLARE:
+		m_pVIBufferCom->Lenz_Flare(fTimeDelta);
+		break;
+	case LEAF_FALL:
+		m_pVIBufferCom->Leaf_Fall(fTimeDelta);
+		break;
+	case BLOW:
+		m_pVIBufferCom->Blow(fTimeDelta);
+		break;
 	}
 
 }

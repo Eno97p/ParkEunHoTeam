@@ -45,6 +45,16 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case LEAF1:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Leaf1");
 		break;
+	case BLADE_SLASH:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Blade_Slash");
+		break;
+	case BLADE_SLASH_LONG:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Blade_Slash_Long");
+		break;
+	case GRASS:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_GrassParticle");
+		break;
+
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))
@@ -115,6 +125,18 @@ void CParticleMesh::Tick(_float fTimeDelta)
 	case LEAF_FALL:
 		m_InstModelCom->Leaf_Fall(fTimeDelta);
 		break;
+	case SPIRAL_EXTINCTION:
+		m_InstModelCom->Spiral_Extinction(fTimeDelta);
+		break;
+	case SPIRAL_SPERAD:
+		m_InstModelCom->Spiral_Expansion(fTimeDelta);
+		break;
+	case LENZ_FLARE:
+		m_InstModelCom->Lenz_Flare(fTimeDelta);
+		break;
+	case BLOW:
+		m_InstModelCom->Blow(fTimeDelta);
+		break;
 	}
 }
 
@@ -143,7 +165,10 @@ HRESULT CParticleMesh::Render()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (OwnDesc->eModelType >= BLADE_SLASH)
+			m_pShaderCom->Begin(2);
+		else
+			m_pShaderCom->Begin(0);
 
 		m_InstModelCom->Render_Instance(i);
 	}
@@ -163,7 +188,10 @@ HRESULT CParticleMesh::Render_Bloom()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(1);
+		if (OwnDesc->eModelType >= BLADE_SLASH)
+			m_pShaderCom->Begin(3);
+		else
+			m_pShaderCom->Begin(1);
 
 		m_InstModelCom->Render_Instance(i);
 	}
@@ -183,7 +211,10 @@ HRESULT CParticleMesh::Render_Blur()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (OwnDesc->eModelType >= BLADE_SLASH)
+			m_pShaderCom->Begin(2);
+		else
+			m_pShaderCom->Begin(0);
 
 		m_InstModelCom->Render_Instance(i);
 	}

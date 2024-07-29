@@ -27,7 +27,6 @@ private:
 	CBody_Rlya*			m_pBody = { nullptr };
 
 private:
-	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();
 
 	virtual HRESULT		Create_Script() override;

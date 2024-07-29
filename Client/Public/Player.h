@@ -27,14 +27,16 @@ class CPlayer final : public CLandObject
 #define PARRYSTART 0.01f
 #define PARRYEND 0.3f
 #define JUMPSPEED 13.f
+#define BRISDELAY 0.05f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
 		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_LOCKON_STRAIGHT, STATE_LOCKON_BACKWARD, STATE_LOCKON_LEFT, STATE_LOCKON_RIGHT, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND,
-		STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,
-		STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, 
-		STATE_COUNTER, STATE_ROLL, STATE_HIT, STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_END
+		STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_SPECIALATTACK, STATE_SPECIALATTACK2, STATE_SPECIALATTACK3, STATE_SPECIALATTACK4, 
+		STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,	STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, 
+		STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, 
+		STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_END
 	};
 
 private:
@@ -82,6 +84,11 @@ private:
 	NodeStates Parry(_float fTimeDelta);
 	NodeStates JumpAttack(_float fTimeDelta);
 	NodeStates RollAttack(_float fTimeDelta);
+	NodeStates SpecialAttack(_float fTimeDelta);
+	NodeStates Special1(_float fTimeDelta);
+	NodeStates Special2(_float fTimeDelta);
+	NodeStates Special3(_float fTimeDelta);
+	NodeStates Special4(_float fTimeDelta);
 	NodeStates LChargeAttack(_float fTimeDelta);
 	NodeStates RChargeAttack(_float fTimeDelta);
 	NodeStates LAttack(_float fTimeDelta);
@@ -125,6 +132,7 @@ private:
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
+	_float										m_fSpecialAttack = 0.f;
 	_float										m_fLChargeAttack = 0.f;
 	_float										m_fRChargeAttack = 0.f;
 	_bool										m_bAnimFinished = false;
@@ -136,6 +144,7 @@ private:
 	_float										m_fParryFrame = 0.f;
 	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
+	_float m_fBRIS = 0.f;
 	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr };
 	CTransform* m_pCameraTransform = { nullptr };
 
@@ -168,7 +177,8 @@ private:
 	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
-
+	void OnControllerHit(const PxControllersHit& hit);
+	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -83,7 +83,11 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
 {
-	Key_Input();
+	// 상점 이용 중일 때는 예외 처리 되어야 함. Upgrade 할 때도!
+	if (m_isKeyActivate)
+	{
+		Key_Input();
+	}
 
 	for (auto& pGroup : m_mapUIGroup)
 		pGroup.second->Late_Tick(fTimeDelta);

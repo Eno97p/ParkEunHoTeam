@@ -110,11 +110,11 @@ HRESULT CRenderer::Initialize()
 
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth_Decal"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Decal"))))
         return E_FAIL;
-    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalResult"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
-        return E_FAIL;
-    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DecalResult"), TEXT("Target_DecalResult"))))
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decal"), TEXT("Target_Depth_Decal"))))
         return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DownSample4x4"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -209,6 +209,10 @@ HRESULT CRenderer::Initialize()
 
     m_pLUTTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/LUT/T_LUT_%d.png"), 2);
     if (nullptr == m_pLUTTex)
+        return E_FAIL;
+
+    m_pMaskTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Mask/Mask%d.png"), 1);
+    if (nullptr == m_pMaskTex)
         return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Mirror"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -438,6 +442,10 @@ HRESULT CRenderer::Initialize()
         float currentY = startY;
 
 
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
+
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
     //currentX += targetWidth + gap;
@@ -477,9 +485,9 @@ HRESULT CRenderer::Initialize()
         //   return E_FAIL;
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LUT"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
@@ -903,6 +911,20 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_RawValue("g_fFogGlobalDensity", &m_fFogGlobalDensity, sizeof(_float))))
         return;
 
+    //노이즈 영향력
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseIntensity", &m_fNoiseIntensity, sizeof(_float))))
+        return;
+
+    //노이즈 사이즈
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseSize", &m_fNoiseSize, sizeof(_float))))
+        return;   
+    
+    //타임 오프셋
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset", &m_fFogTimeOffset, sizeof(_float))))
+        return;
+
+    m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
+
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
@@ -911,6 +933,8 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
+        return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth_Decal"), m_pShader, "g_DecalDepthTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return;
@@ -1281,7 +1305,6 @@ void CRenderer::Render_Distortion()
 
 void CRenderer::Render_Final()
 {
-
 	m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
@@ -1315,15 +1338,22 @@ void CRenderer::Render_Final()
 
     m_pVIBuffer->Bind_Buffers();
 
+    if (FAILED(m_pMaskTex->Bind_ShaderResource(m_pShader, "g_MaskTexture", 0)))
+        return;
+    if (FAILED(m_pShader->Bind_RawValue("g_fBRIS", &m_fBRIS, sizeof(_float))))
+        return;
+    if (FAILED(m_pShader->Bind_RawValue("g_fMirror", &m_fMirror, sizeof(_float))))
+        return;
+
     if (m_pGameInstance->Get_DIKeyState(DIK_1))
     {
         // reinhard
-        m_pShader->Begin(5);
+        m_pShader->Begin(7);
     }
     else if (m_pGameInstance->Get_DIKeyState(DIK_2))
     {
         //aces filmic
-        m_pShader->Begin(5);
+        m_pShader->Begin(8);
     }
     else
     {
@@ -1656,7 +1686,7 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
@@ -1729,6 +1759,7 @@ void CRenderer::Free()
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);
+    Safe_Release(m_pMaskTex);
     Safe_Release(m_pDistortionTex);
     Safe_Release(m_pDecalTex);
     Safe_Release(m_pReflectionDepthStencilView);

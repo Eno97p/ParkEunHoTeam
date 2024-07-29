@@ -6,6 +6,12 @@ BEGIN(Client)
 
 class CUI_ScriptBG_Aura final : public CUI
 {
+public:
+	typedef struct UI_Aura_Desc : public UI_DESC
+	{
+		_uint		iTextureNum;
+	}UI_AURA_DESC;
+
 private:
 	CUI_ScriptBG_Aura(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_ScriptBG_Aura(const CUI_ScriptBG_Aura& rhs);
@@ -18,6 +24,9 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
+
+private:
+	_uint			m_iTextureNum = { 0 };
 
 private:
 	HRESULT	Add_Components();

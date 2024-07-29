@@ -16,6 +16,7 @@ public:
 	RECT*			Get_CollisionRect() { return &m_CollisionRect; }
 	_bool			IsCollisionRect(RECT* SrcRect);
 	
+	_uint			Get_Select() { return m_isSelect; }
 	void			Set_Select(_bool isSelect) { m_isSelect = isSelect; }
 
 public:

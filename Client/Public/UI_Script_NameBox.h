@@ -7,7 +7,7 @@ BEGIN(Client)
 class CUI_Script_NameBox final : public CUI
 {
 public:
-	enum NPC_TYPE { NPC_RLYA, NPC_END };
+	enum NPC_TYPE { NPC_RLYA, NPC_VALNIR, NPC_END };
 	typedef struct UI_Script_NameBox_Desc : public UI_DESC
 	{
 		NPC_TYPE	eNpcType;

@@ -11,6 +11,8 @@
 #include "UIGroup_Shop.h"
 #include "ItemData.h"
 
+#include "Camera.h"
+
 CNpc_Valnir::CNpc_Valnir(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNpc{ pDevice, pContext }
 {
@@ -61,13 +63,25 @@ void CNpc_Valnir::Tick(_float fTimeDelta)
 
 	if (m_isScriptOn)
 	{
+		CGameInstance::GetInstance()->Get_MainCamera()->Inactivate();
+		CUI_Manager::GetInstance()->Set_KeyActivate(false);
+		
 		m_pScriptUI->Tick(fTimeDelta);
 		m_pShopUI->Tick(fTimeDelta);
 
-		// 마우스 위치가 Select 객체의 어디와 충돌하고 있느냐에 따라 스크립트의 대사가 바뀔 것임
-		// 그 정보를 ShopUI(Group)이 가지고 있도록 하자
-
 		Set_DialogText();
+
+		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+		{
+			m_isScriptOn = false;
+			// 사라질 때 스르륵 하려면 추가 처리 필요함
+
+			CGameInstance::GetInstance()->Get_MainCamera()->Activate();
+		}
+	}
+	else
+	{
+		CUI_Manager::GetInstance()->Set_KeyActivate(true);
 	}
 }
 
@@ -81,9 +95,6 @@ void CNpc_Valnir::Late_Tick(_float fTimeDelta)
 		if (m_pGameInstance->Key_Down(DIK_F) && !m_isScriptOn)
 		{
 			m_pScriptUI->Set_Rend(true);
-			// 여기도 다르게 처리해야함
-			/*if (m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("첫번째 스크립트"));*/
 			m_isScriptOn = true;
 
 			m_pShopUI->Set_Rend(true);
@@ -160,17 +171,17 @@ void CNpc_Valnir::Set_DialogText()
 	}
 	case 0:
 	{
-		m_pScriptUI->Set_DialogText(TEXT("[System] 섬세하게 조각된 반투명 수정 조각\n\t풍부한 천상 에너지를 발산"));
+		m_pScriptUI->Set_DialogText(TEXT("[System] 섬세하게 조각된 반투명 수정 조각\n                  풍부한 천상 에너지를 발산"));
 		break;
 	}
 	case 1:
-	{
-		m_pScriptUI->Set_DialogText(TEXT("[System] 희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n\t저항력을 일시적으로 강화"));
+	{ 
+		m_pScriptUI->Set_DialogText(TEXT("[System] 희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n                  저항력을 일시적으로 강화"));
 		break;
 	}
 	case 2:
 	{
-		m_pScriptUI->Set_DialogText(TEXT("[System] Astyr 신체 대부분을 구성하는 잠재적 물질\n\t무기 업그레이드 시 사용 가능"));
+		m_pScriptUI->Set_DialogText(TEXT("[System] Astyr 신체 대부분을 구성하는 잠재적 물질\n                  무기 업그레이드 시 사용 가능"));
 		break;
 	}
 	default:

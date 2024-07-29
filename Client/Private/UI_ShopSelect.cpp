@@ -1,6 +1,7 @@
 #include "UI_ShopSelect.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 #include "CMouse.h"
 
 #include "UI_ItemIcon.h"
@@ -58,6 +59,15 @@ void CUI_ShopSelect::Tick(_float fTimeDelta)
 
     m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
+    if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
+    {
+        // Soul이 부족하지 않으면 구매
+        if (m_iPrice <= CInventory::GetInstance()->Get_Soul())
+        {
+            Sell_Item();
+        }
+    }
+
     for (auto& pUI : m_vecUI)
     {
         pUI->Tick(fTimeDelta);
@@ -82,7 +92,6 @@ HRESULT CUI_ShopSelect::Render()
     m_pShaderCom->Begin(3);
     m_pVIBufferCom->Bind_Buffers();
 
-    // 이 부분만 분기처리 하는 것으로? Text들은 렌더 할 것이니까
     if(m_isSelect)
         m_pVIBufferCom->Render();
 
@@ -166,24 +175,24 @@ HRESULT CUI_ShopSelect::Create_UI()
     {
         pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether"); // 마나 채워주는 템
         m_wstrItemName = TEXT("RADIANT ETHER");
-        m_wstrPrice = TEXT("250");
-        m_wstrRemainCnt = TEXT("5");
+        m_iPrice = 250;
+        m_iRemainCnt = 5;
         break;
     }
     case 1:
     {
         pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3"); // 버프 템
         m_wstrItemName = TEXT("SIGIL OF ETHER");
-        m_wstrPrice = TEXT("400");
-        m_wstrRemainCnt = TEXT("3");
+        m_iPrice = 400;
+        m_iRemainCnt = 3;
         break;
     }
     case 2:
     {
         pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0"); // 강화
         m_wstrItemName = TEXT("HADRONITE");
-        m_wstrPrice = TEXT("500");
-        m_wstrRemainCnt = TEXT("3");
+        m_iPrice = 500;
+        m_iRemainCnt = 3;
         break;
     }
     default:
@@ -210,12 +219,39 @@ void CUI_ShopSelect::Rend_Font()
         return;
 
     // Price
-    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrPrice, _float2(m_fX + 70.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(m_iPrice), _float2(m_fX + 70.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
         return;
 
     // Remain Count
-    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrRemainCnt, _float2(m_fX + 170.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+    if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(m_iRemainCnt), _float2(m_fX + 170.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
         return;
+}
+
+void CUI_ShopSelect::Sell_Item()
+{
+    if (0 >= m_iRemainCnt)
+        return;
+
+    // Inventory에서 Soul 빼가기
+    CInventory::GetInstance()->Calcul_Soul(-m_iPrice);
+
+    m_iRemainCnt--;
+
+    // Inventory에 Item 추가 >>>>> 중복의 경우 개수가 늘어나는 게 안 되어있는?
+    if (0 == m_iSlotIdx)
+    {
+        // CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_ETHER);
+        CInventory::GetInstance()->Add_DropItem(CItem::ITEM_ETHER);
+
+    }
+    else if (1 == m_iSlotIdx)
+    {
+        CInventory::GetInstance()->Add_DropItem(CItem::ITEM_BUFF4);
+    }
+    else if (2 == m_iSlotIdx)
+    {
+        CInventory::GetInstance()->Add_DropItem(CItem::ITEM_UPGRADE1);
+    }
 }
 
 CUI_ShopSelect* CUI_ShopSelect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

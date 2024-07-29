@@ -29,11 +29,10 @@ public:
 
 private:
 	_uint					m_iSlotIdx = { 0 };
+	_int					m_iPrice = { 0 };
+	_uint					m_iRemainCnt = { 0 }; // 남은 개수
 	wstring					m_wstrItemName;
-	wstring					m_wstrPrice;
-	wstring					m_wstrRemainCnt = { 0 }; // 남은 개수
 
-	// 필요한 변수 : ItemIcon / ItemName / Price / SoulIcon / RemainCnt / RemainIcon
 	vector<class CUI*>		m_vecUI;
 
 private:
@@ -43,6 +42,8 @@ private:
 	HRESULT	Create_UI();
 
 	void	Rend_Font();
+
+	void	Sell_Item();
 
 public:
 	static CUI_ShopSelect*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

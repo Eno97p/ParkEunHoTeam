@@ -124,7 +124,7 @@ HRESULT CUIGroup_Shop::Create_Slot()
 	for (size_t i = 0; i < 3; ++i)
 	{
 		pDesc.iSlotIdx = i;
-		pDesc.fY = 150.f + (i * 75);
+		pDesc.fY = 180.f + (i * 75);
 		m_vecSlot.emplace_back(dynamic_cast<CUI_ShopSelect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ShopSelect"), &pDesc)));
 	}
 
@@ -134,7 +134,6 @@ HRESULT CUIGroup_Shop::Create_Slot()
 _int CUIGroup_Shop::Check_SelectIdx()
 {
 	// 몇 번째 select와 충돌 중인지 (충돌중이 아니라면 -1)
-
 	vector< CUI_ShopSelect*>::iterator select = m_vecSlot.begin();
 	for (size_t i = 0; i < m_vecSlot.size(); ++i)
 	{

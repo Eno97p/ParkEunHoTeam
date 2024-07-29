@@ -575,7 +575,8 @@ void CUI_Slot::Rend_Count()
 	_uint iCount = pItem->Get_Count();
 	if (iCount >= 2)
 	{
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 10.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		// ¶×¶¯ÀÌ ¾ÆÀÌÅÛÀÇ °æ¿ì °¡¸®´Â ÀÌ½´ ÀÖÀ½ ¤Ñ¤Ñ
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 17.f, m_fY + 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f)))) // m_fX + 10.f, m_fY + 10.f
 			return;
 	}
 }

@@ -63,7 +63,7 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 
 private:
-	_uint							m_iSoul = { 0 }; // test
+	_uint							m_iSoul = { 10000 }; // test
 
 	vector<class CItemData*>		m_vecItem;
 	map<_uint, CItemData*>			m_mapQuickAccess;

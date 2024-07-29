@@ -286,9 +286,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\00. Passive_Element">
       <UniqueIdentifier>{2c808c05-f24a-4a20-8596-ecc6b1eddd59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\00. Grass">
-      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\01. TutorialMapBridge">
       <UniqueIdentifier>{f2c6ea6c-eaf0-42d7-8370-8c60459eb823}</UniqueIdentifier>
     </Filter>
@@ -627,6 +624,9 @@
     </Filter>
     <Filter Include="01.Levels\06. GrassLand">
       <UniqueIdentifier>{7bcb7c22-4238-415b-b8b4-1d483d2cb199}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
+      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

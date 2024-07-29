@@ -9,6 +9,13 @@ class CUI_Script_DialogBox;
 
 class CUIGroup_Script final : public CUIGroup
 {
+public:
+	enum NPC_TYPE { NPC_RLYA, NPC_VALNIR, NPC_END };
+	typedef struct UIGroup_Script_Desc : public UIGROUP_DESC
+	{
+		NPC_TYPE eNpcType;
+	}UIGROUP_SCRIPT_DESC;
+
 private:
 	CUIGroup_Script(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_Script(const CUIGroup_Script& rhs);
@@ -27,6 +34,8 @@ public:
 private:
 	vector<CUI*>			m_vecUI;
 	CUI_Script_DialogBox*	m_pDialogBox;
+
+	NPC_TYPE				m_eNpcType;
 
 private:
 	HRESULT					Create_UI();

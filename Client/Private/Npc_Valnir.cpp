@@ -104,8 +104,10 @@ HRESULT CNpc_Valnir::Add_PartObjects()
 
 HRESULT CNpc_Valnir::Create_Script()
 {
-	CUIGroup::UIGROUP_DESC pDesc{};
+	CUIGroup_Script::UIGROUP_SCRIPT_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eNpcType = CUIGroup_Script::NPC_VALNIR;
+
 	m_pScriptUI = dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc));
 	if (nullptr == m_pScriptUI)
 		return E_FAIL;
@@ -123,6 +125,43 @@ _bool CNpc_Valnir::Check_Distance()
 
 void CNpc_Valnir::Key_Input()
 {
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		switch (m_iDialogCnt)
+		{
+		case 3:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("기억해라, 방황하는 자여.\n빛이 어둠을 물리치듯 너 또한 네 앞에 놓인 모든 어둠을 헤쳐나갈 수 있을 거다."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 2:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("자, 받아라. 그리고 이 빛을 따라 나아가라."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 1:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("FireFly를 사용하면 길을 밝힐 수 있어."));
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			--m_iDialogCnt;
+
+			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_FIREFLY); // Inventory에 Firefly 추가
+
+			break;
+		}
+		case 0:
+		{
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 CNpc_Valnir* CNpc_Valnir::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

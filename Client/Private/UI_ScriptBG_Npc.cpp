@@ -19,10 +19,12 @@ HRESULT CUI_ScriptBG_Npc::Initialize_Prototype()
 
 HRESULT CUI_ScriptBG_Npc::Initialize(void* pArg)
 {
+	UI_SCRIPT_DESC* pDesc = static_cast<UI_SCRIPT_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
+	if (FAILED(Add_Components(pDesc->wstrTextureName)))
 		return E_FAIL;
 
 	m_fX = g_iWinSizeX >> 1;
@@ -62,7 +64,7 @@ HRESULT CUI_ScriptBG_Npc::Render()
 	return S_OK;
 }
 
-HRESULT CUI_ScriptBG_Npc::Add_Components()
+HRESULT CUI_ScriptBG_Npc::Add_Components(wstring wstrTextureName)
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -75,7 +77,7 @@ HRESULT CUI_ScriptBG_Npc::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Rlya"), // 추후 값 받아와서 바꿔야함
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, wstrTextureName, // wstrTextureName    Prototype_Component_Texture_Script_Npc_Rlya
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

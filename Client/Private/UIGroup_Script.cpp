@@ -24,6 +24,10 @@ HRESULT CUIGroup_Script::Initialize_Prototype()
 
 HRESULT CUIGroup_Script::Initialize(void* pArg)
 {
+	UIGROUP_SCRIPT_DESC* pDesc = static_cast<UIGROUP_SCRIPT_DESC*>(pArg);
+
+	m_eNpcType = pDesc->eNpcType;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -91,11 +95,26 @@ HRESULT CUIGroup_Script::Create_UI()
 
 	pDesc.eLevel = LEVEL_STATIC;
 
+	// UI들에 enum 값을 넣어서 Npc 종류를 각자 다 알게 할 지 or Texture 등등의 wstring 값을 변수로 빼서 넣어주도록 할지? 도찐개찐이긴 함
+
+
 	// BG Aura
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pDesc)));
 	
+	CUI_ScriptBG_Npc::UI_SCRIPT_DESC pScriptDesc{};
+	pScriptDesc.eLevel = LEVEL_STATIC;
+
+	if (NPC_RLYA == m_eNpcType)
+	{
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Rlya");
+	}
+	else if (NPC_VALNIR == m_eNpcType)
+	{
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
+	}
+
 	// BG Npc
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pDesc)));
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
 
 	// DialogBox
 	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));

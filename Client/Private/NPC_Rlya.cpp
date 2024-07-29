@@ -160,8 +160,10 @@ void CNPC_Rlya::Key_Input()
 
 HRESULT CNPC_Rlya::Create_Script()
 {
-	CUIGroup::UIGROUP_DESC pDesc{};
+	CUIGroup_Script::UIGROUP_SCRIPT_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eNpcType = CUIGroup_Script::NPC_RLYA;
+
 	m_pScriptUI = dynamic_cast<CUIGroup_Script*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Script"), &pDesc));
 	if (nullptr == m_pScriptUI)
 		return E_FAIL;

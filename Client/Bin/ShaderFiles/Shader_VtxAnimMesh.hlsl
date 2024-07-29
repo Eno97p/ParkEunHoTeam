@@ -209,6 +209,7 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 
 	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+	Out.vVelocity = In.vVelocity;
 	if ((g_DisolveValue - disolveValue) > 0.05f)
 	{
 		return Out;
@@ -266,7 +267,6 @@ PS_OUT_BLEND PS_ALPHA(PS_IN In)
 	}
 
 	Out.vDiffuse.a = g_Alpha;
-
 	return Out;
 }
 
@@ -296,7 +296,6 @@ PS_OUT_BLEND PS_CLONE(PS_IN In)
 
 	Out.vDiffuse.rgb = rim * RimColor;
 	Out.vDiffuse.a *= rim;
-
 	return Out;
 }
 

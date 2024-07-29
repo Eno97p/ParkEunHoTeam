@@ -475,6 +475,16 @@ HRESULT CGameInstance::Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, CGa
 	return m_pRenderer->Add_RenderObject(eRenderGroup, pRenderObject);	
 }
 
+void CGameInstance::Set_BRIS(_float fBRIS)
+{
+	return m_pRenderer->Set_BRIS(fBRIS);
+}
+
+void CGameInstance::Set_Mirror(_float fMirror)
+{
+	return m_pRenderer->Set_Mirror(fMirror);
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent * pComponent)
 {

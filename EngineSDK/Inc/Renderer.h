@@ -29,7 +29,8 @@ public:
 
 	void Clear();
 	void Draw();
-
+	void Set_Mirror(_float fMirror) { m_fMirror = fMirror; }
+	void Set_BRIS(_float fBRIS) { m_fBRIS = fBRIS; }
 
 
 
@@ -138,12 +139,15 @@ private:
 #pragma endregion
 
 private:
+	class CTexture* m_pMaskTex = { nullptr };
 	//LUT TEXTURE
 	class CTexture* m_pLUTTex = { nullptr };
 	class CTexture* m_pDistortionTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
 	vector<_matrix> m_vDecalMatricesInv;
 	class CTexture* m_pDecalTex = { nullptr };
+	_float m_fBRIS = 0.f;
+	_float m_fMirror = 0.f;
 
 	
 	//Shadow

@@ -47,8 +47,7 @@ HRESULT CPhysXComponent_static::Initialize_Prototype(const _char* pModelFilePath
 	if(FAILED(Create_PhysX_TriAngleMesh()))
 		return E_FAIL;
 
-
-	
+	//samples.
 	
 	
 
@@ -83,6 +82,7 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 		triGeom.scale = TriangleScale;
 		//(TriangleMesh, PxMeshScale(PxVec3(fScale.x, fScale.y, fScale.z)));
 		PxShape* shape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial,true);
+		shape->setFlag(PxShapeFlag::eSIMULATION_SHAPE, false);
 		m_pActor->attachShape(*shape);
 		shape->release();
 
@@ -94,8 +94,12 @@ HRESULT CPhysXComponent_static::Initialize(void * pArg)
 
 	
 	m_pActor->setGlobalPose(Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix));
+	//PxHeightFieldSample* 
+	PxHeightFieldDesc hfDesc;
+	hfDesc.format = PxHeightFieldFormat::eS16_TM;
+	//hfDesc.flags
 	
-
+		
 
 	return S_OK;
 }

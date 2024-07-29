@@ -350,7 +350,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 
 	m_pQuadTree->Make_Neighbors();
 
-
+	
 	return S_OK;
 
 }

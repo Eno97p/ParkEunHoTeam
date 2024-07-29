@@ -262,6 +262,12 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle">
       <UniqueIdentifier>{4a633241-1fef-458c-96ae-a1fbfb192b3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\999.PhysX\HitCallBack">
+      <UniqueIdentifier>{34dde36e-3db2-4015-a2c5-14fca1202fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXComponent\Static\HeightField">
+      <UniqueIdentifier>{090c7ee8-6857-4353-9512-056221ad2d78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -498,9 +504,6 @@
     <ClInclude Include="..\public\OctTree.h">
       <Filter>01.Utility\08.Frustum\OctTree</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CSimulationCallBack.h">
-      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClInclude>
@@ -545,6 +548,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\VehicleDefault.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CSimulationCallBack.h">
+      <Filter>01.Utility\999.PhysX\HitCallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CCCTFilterCallBack.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PhysXComponent_HeightField.h">
+      <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -767,9 +779,6 @@
     <ClCompile Include="..\Private\ComputeShader_Buffer.cpp">
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CSimulationCallBack.cpp">
-      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
     </ClCompile>
@@ -814,6 +823,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\VehicleDefault.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CSimulationCallBack.cpp">
+      <Filter>01.Utility\999.PhysX\HitCallBack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CCCTFilterCallBack.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PhysXComponent_HeightField.cpp">
+      <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

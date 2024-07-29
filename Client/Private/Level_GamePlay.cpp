@@ -289,8 +289,8 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
+	//	return E_FAIL;
 	
 
 
@@ -368,7 +368,6 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._44 = 1.f;
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 		return E_FAIL;
-
 
 	//}
 

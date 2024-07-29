@@ -194,6 +194,8 @@ HRESULT CMantari::Add_Components()
 	//PhysXDesc.maxJumpHeight = 0.5f;	//점프 할 수 있는 최대 높이
 	//PhysXDesc.invisibleWallHeight = 2.0f;	//캐릭터가 2.0f보다 높이 점프하는 경우 보이지 않는 벽 생성
 	PhysXDesc.pName= "Mantari";
+	PhysXDesc.pGameObject = this;
+	PhysXDesc.pFilterCallBack = [this](const PxController& a, const PxController& b) {return this->OnFilterCallback(a, b); };
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
@@ -655,6 +657,16 @@ void CMantari::Add_Hp(_int iValue)
 	{
 		m_iState = STATE_DEAD;
 	}
+}
+
+bool CMantari::OnFilterCallback(const PxController& Caller, const PxController& Ohter)
+{
+	void* Test = Caller.getUserData();
+	void* temp1 = Ohter.getUserData();
+
+	return true;
+
+
 }
 
 CMantari* CMantari::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

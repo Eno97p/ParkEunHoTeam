@@ -36,7 +36,7 @@ HRESULT CTestPhysXCollider::Initialize(void* pArg)
 	if (FAILED(Add_PxActor()))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.0f, 400.0f, 0.0f, 1.0f));
 
 	return S_OK;
 }
@@ -108,7 +108,7 @@ HRESULT CTestPhysXCollider::Add_Components()
 
 	CPhysXComponent::PHYSX_DESC PhysXDesc;
 	PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
-	PhysXDesc.fBoxProperty = _float3(10.f, 0.3f, 10.f);				//박스 크기
+	PhysXDesc.fBoxProperty = _float3(10000.f, 3.0f, 10000.f);				//박스 크기
 	XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	XMStoreFloat4x4(&PhysXDesc.fOffsetMatrix, XMMatrixRotationX(XMConvertToRadians(0.0f)) * XMMatrixTranslation(0.f, 0.f, 0.f));  //오프셋 위치
 	PhysXDesc.eGeometryType = PxGeometryType::eBOX;
@@ -118,7 +118,7 @@ HRESULT CTestPhysXCollider::Add_Components()
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom),&PhysXDesc)))
 		return E_FAIL;
 
-
+	m_pPhysXCom->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 	return S_OK;
 }
 

@@ -280,6 +280,14 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     for (_int i = 0; i < m_iInstanceCount; ++i)
     {
         wstring idxStr = to_wstring(i);
+        
+
+
+        std::string nameComStr = wstring_to_string(physxName);
+        PhysXDesc.pName = nameComStr.c_str();
+
+
+        
         XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, XMLoadFloat4x4(desc->WorldMats[i]));
         if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, physxName.c_str(),
             TEXT("Com_PhysX") + idxStr, reinterpret_cast<CComponent**>(&m_pPhysXCom[i]), &PhysXDesc)))

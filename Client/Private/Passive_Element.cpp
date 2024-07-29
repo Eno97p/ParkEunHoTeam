@@ -40,14 +40,15 @@ HRESULT CPassive_Element::Initialize(void* pArg)
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);*/
 
     //m_pTransformCom->Scaling(100.f, 100.f, 100.f);
-    
-   CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
-   instanceDesc.WorldMats = desc->WorldMats;
-   instanceDesc.iNumInstance = desc->iInstanceCount;
-   m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
+
+    CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
+    instanceDesc.WorldMats = desc->WorldMats;
+    instanceDesc.iNumInstance = desc->iInstanceCount;
+    m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
     //FOR CULLING
     //m_pGameInstance->AddCullingObject(this, m_pPhysXCom->Get_Actor());
+    m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
 
     return S_OK;
 
@@ -67,11 +68,11 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //}
     //else 
     {
-       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
-       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-       m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+      //  m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
+        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+  //      m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
     }
-  
+
 
 
 #ifdef _DEBUG
@@ -105,73 +106,30 @@ HRESULT CPassive_Element::Render()
         {
             m_pShaderCom->Unbind_SRVs();
 
-         /*   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-                return E_FAIL;  */
-            
+            /*   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+                   return E_FAIL;  */
+
             if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
                 return E_FAIL;
-            
+
             if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
                 return E_FAIL;
+
             
-            //if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-            //    return E_FAIL;
-
-            //if (FAILED(m_pModelCom->Bind_Material_Instance_ForMapElements(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
-            //    return E_FAIL;
-			   /* if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-					return E_FAIL;*/
-
-		/*		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-					return E_FAIL;
-
-				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-					return E_FAIL;
-
-				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
-					return E_FAIL;*/
-		}
-		//else if (i == 1)
-		//{
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-		//		return E_FAIL;
-		//}
-
-            /*   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-                  return E_FAIL;
-
-               if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-                  return E_FAIL;
-
-               if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-                  return E_FAIL;
-
-               if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
-                  return E_FAIL;*/
-        //else if (i == 1)
-        //{
-        //   if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-        //      return E_FAIL;
-        //}
-
-
-        
-        //_uint red = i;
-        //if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &red, sizeof(_uint))))
-        //    return E_FAIL;
-
-        //if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
-        //    return E_FAIL;
-
+        }
+       
         m_pShaderCom->Begin(m_iShaderPath);
 
-     /*   if (FAILED(m_pModelCom->Render(i)))
-            return E_FAIL;   */
-        
+        /*   if (FAILED(m_pModelCom->Render(i)))
+               return E_FAIL;   */
+
         if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
             return E_FAIL;
     }
 
+#pragma region 모션블러
+    m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
 
     return S_OK;
 }
@@ -225,7 +183,7 @@ HRESULT CPassive_Element::Render_Mirror()
     for (size_t i = 0; i < iNumMeshes; i++)
     {
         if (i != 1) continue;
-        
+
         m_pShaderCom->Unbind_SRVs();
 
         if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
@@ -250,7 +208,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
 
     if (desc->wstrModelName == TEXT("Prototype_Component_Model_BasicCube") || desc->wstrModelName == TEXT("Prototype_Component_Model_BasicGround"))
     {
-     m_bNoCullElement = true;
+        m_bNoCullElement = true;
         m_iShaderPath = 3;
     }
     /* For.Com_Shader */
@@ -268,7 +226,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         physxName.replace(pos, 6, L"PhysX_");
     }
 
-    CPhysXComponent::PHYSX_DESC		PhysXDesc{};
+    CPhysXComponent::PHYSX_DESC      PhysXDesc{};
     PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
     PhysXDesc.pComponent = m_pModelCom;
     PhysXDesc.eGeometryType = PxGeometryType::eTRIANGLEMESH;
@@ -285,7 +243,7 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
             TEXT("Com_PhysX") + idxStr, reinterpret_cast<CComponent**>(&m_pPhysXCom[i]), &PhysXDesc)))
             return E_FAIL;
     }
-   
+
 
     return S_OK;
 }
@@ -298,6 +256,11 @@ HRESULT CPassive_Element::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
+
+#pragma region 모션블러
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+        return E_FAIL;
+#pragma endregion 모션블러
 
 
     return S_OK;

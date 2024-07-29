@@ -208,6 +208,13 @@ namespace Engine
 		static const unsigned int		iNumElements = { 8 };
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[8];
 	}VTXINSTANCE_MESH;
+		
+	
+	typedef struct ENGINE_DLL VTXINSTANCE_MAPELEMENT
+	{
+		static const unsigned int		iNumElements = { 12 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[12];
+	}VTXINSTANCE_MAPELEMENT;
 
 	typedef struct ENGINE_DLL SwordTrailVertex
 	{

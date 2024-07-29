@@ -438,6 +438,10 @@ HRESULT CRenderer::Initialize()
         float currentY = startY;
 
 
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
+
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
     //currentX += targetWidth + gap;
@@ -902,6 +906,20 @@ void CRenderer::Render_DeferredResult()
     //안개 밀도
     if (FAILED(m_pShader->Bind_RawValue("g_fFogGlobalDensity", &m_fFogGlobalDensity, sizeof(_float))))
         return;
+
+    //노이즈 영향력
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseIntensity", &m_fNoiseIntensity, sizeof(_float))))
+        return;
+
+    //노이즈 사이즈
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseSize", &m_fNoiseSize, sizeof(_float))))
+        return;   
+    
+    //타임 오프셋
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset", &m_fFogTimeOffset, sizeof(_float))))
+        return;
+
+    m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
         return;
@@ -1656,7 +1674,7 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 

@@ -90,7 +90,7 @@ HRESULT CPhysX::Initialize()
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	PxU32 numCores = PxThread::getNbPhysicalCores();
-	PxU32 numThreads = (numCores ==1 ) ? 0: numCores - 1;
+	PxU32 numThreads = (numCores ==1 ) ? 0: numCores;
 	vector<PxU32> affinityMasks(numThreads);
 	for (PxU32 i = 0; i < numThreads; i++)
 		affinityMasks[i] = 1 << i;
@@ -126,6 +126,7 @@ HRESULT CPhysX::Initialize()
 	sceneDesc.flags |= PxSceneFlag::eENABLE_PCM;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_STABILIZATION;
 	sceneDesc.flags |= PxSceneFlag::eENABLE_ACTIVE_ACTORS;
+	sceneDesc.flags |= PxSceneFlag::eENABLE_CCD;
 	
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 	sceneDesc.gpuMaxNumPartitions = 8;
@@ -162,6 +163,7 @@ HRESULT CPhysX::Initialize()
 	//m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.6f);
 
 	m_pControllerManager = PxCreateControllerManager(*m_pScene);
+
 	if (!m_pControllerManager)
 	{
 		MSG_BOX("Failed To Create : Physx_ControllerManager");

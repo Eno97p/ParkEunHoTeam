@@ -73,7 +73,8 @@ private:
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;
 
-
+private:
+	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
 
 public:
 	static CMantari* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -198,7 +198,7 @@ HRESULT CLoader::Loading_Map()
 		CloseHandle(hFile);
 
 #ifdef _DEBUG
-		MSG_BOX("Tutorial PhysX Data Loaded");
+		//MSG_BOX("Tutorial PhysX Data Loaded");
 #endif
 	}
 	break;
@@ -247,7 +247,7 @@ HRESULT CLoader::Loading_Map()
 
 
 #ifdef _DEBUG
-		MSG_BOX("Ackbar PhysX Data Loaded");
+		//MSG_BOX("Ackbar PhysX Data Loaded");
 #endif
 	}
 	break;
@@ -295,7 +295,7 @@ HRESULT CLoader::Loading_Map()
 		CloseHandle(hFile);
 
 #ifdef _DEBUG
-		MSG_BOX("Jugglas PhysX Data Loaded");
+		//MSG_BOX("Jugglas PhysX Data Loaded");
 #endif
 	}
 	break;
@@ -343,7 +343,7 @@ HRESULT CLoader::Loading_Map()
 		CloseHandle(hFile);
 
 #ifdef _DEBUG
-		MSG_BOX("AndrasArena PhysX Data Loaded");
+		//MSG_BOX("AndrasArena PhysX Data Loaded");
 #endif
 	}
 	break;
@@ -391,7 +391,7 @@ HRESULT CLoader::Loading_Map()
 		//CloseHandle(hFile);
 
 #ifdef _DEBUG
-		MSG_BOX("AndrasArena PhysX Data Loaded");
+		//MSG_BOX("AndrasArena PhysX Data Loaded");
 #endif
 	}
 	break;
@@ -3831,7 +3831,11 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Physx_Vehicle"),
 		CPhysXComponent_Vehicle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	//TEXT("Prototype_Component_VIBuffer_Terrain")
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Physx_HeightField"),
+		CPhysXComponent_HeightField::Create(m_pDevice, m_pContext, TEXT("Prototype_Component_VIBuffer_Terrain")/*찾을 터레인의 원형*/))))
+		return E_FAIL;
+	
 
 
 	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));

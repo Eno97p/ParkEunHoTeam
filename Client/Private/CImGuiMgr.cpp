@@ -430,6 +430,30 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 			
 
 		}
+		else if (typeid(*pComponent) == typeid(CPhysXComponent_Vehicle))
+		{
+			CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* tDesc = static_cast<CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc*>(tmep);
+			ImGui::Text("Vehicle Properties:");
+			ImGui::Text("Vehicle Scale: %f", tDesc->pPhysXActorVehicle->mBaseParams.scale.scale);
+			ImGui::InputFloat("Vehicle HorsePower", &tDesc->pPhysXActorVehicle->getDirectDriveParams().directDriveThrottleResponseParams.maxResponse);
+			_uint Wheels = tDesc->pPhysXActorVehicle->mBaseParams.axleDescription.getNbWheels();
+
+			for (_uint i = 0; i < Wheels; ++i)
+			{
+				ImGui::PushID(i);
+				ImGui::Text("Wheel %d", i);
+
+				ImGui::InputFloat("Radius", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].radius);
+				ImGui::InputFloat("Half Width", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].halfWidth);
+				ImGui::InputFloat("Mass", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].mass);
+				ImGui::InputFloat("Moment of Inertia", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].moi);
+				ImGui::InputFloat("Damping Rate", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].dampingRate);
+
+				ImGui::PopID();
+			}
+		}
+
+
 		else if (typeid(*pComponent) == typeid(CPhysXComponent_Character))
 		{
 			CPhysXComponent_Character::PhysX_Character_Editable_Desc* tDesc = static_cast<CPhysXComponent_Character::PhysX_Character_Editable_Desc*>(tmep);

@@ -199,6 +199,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\CActionNode.cpp" />
     <ClCompile Include="..\Private\Calculator.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\Private\CCCTFilterCallBack.cpp" />
     <ClCompile Include="..\private\Cell.cpp" />
     <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\private\CHitReport.cpp" />
@@ -244,6 +245,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\private\PhysXActorVehicle.cpp" />
     <ClCompile Include="..\Private\PhysXComponent.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_Character.cpp" />
+    <ClCompile Include="..\Private\PhysXComponent_HeightField.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_static.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp" />
     <ClCompile Include="..\private\Picking.cpp" />
@@ -290,6 +292,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\CActionNode.h" />
     <ClInclude Include="..\Public\Calculator.h" />
     <ClInclude Include="..\public\Camera.h" />
+    <ClInclude Include="..\Public\CCCTFilterCallBack.h" />
     <ClInclude Include="..\public\Cell.h" />
     <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\public\CHitReport.h" />
@@ -341,6 +344,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\public\PhysXActorVehicle.h" />
     <ClInclude Include="..\Public\PhysXComponent.h" />
     <ClInclude Include="..\Public\PhysXComponent_Character.h" />
+    <ClInclude Include="..\Public\PhysXComponent_HeightField.h" />
     <ClInclude Include="..\Public\PhysXComponent_static.h" />
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h" />
     <ClInclude Include="..\public\Picking.h" />

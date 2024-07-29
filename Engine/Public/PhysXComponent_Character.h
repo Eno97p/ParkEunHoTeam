@@ -1,22 +1,26 @@
 #pragma once
 
 #include "PhysXComponent.h"
-
+#include "CCCTFilterCallBack.h"
 
 
 
 BEGIN(Engine)
 class CGameObject;
 class CTransform;
+class CHitReport;
+
 class ENGINE_DLL CPhysXComponent_Character final : public CPhysXComponent
 {
 public:
 	typedef	struct ControllerDesc :public PxCapsuleControllerDesc
 	{
+		CCCTFilterCallBack::FilterCallBack pFilterCallBack = nullptr;
+		PxFilterData filterData = {};
 		_float3 fMatterial;
 		_float fJumpSpeed = 0.f;
-		PxFilterData filterData = {};
 		const char* pName = nullptr;
+		CGameObject* pGameObject = nullptr;
 		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
@@ -79,7 +83,9 @@ public:
 private:
 	//해제할 필요 없음 컨트롤러 매니저가 한 번에 지워줌
 	PxController* m_pController = { nullptr };
+	CHitReport* m_pHitReport = { nullptr };
 	CTransform* m_pTransform = { nullptr };
+	CCCTFilterCallBack* m_pCCTFilerCallBack = { nullptr };
 
 	PxVec3 m_vGravity = { 0.f, 0.0f, 0.f };
 	_bool m_bIsJump = false;

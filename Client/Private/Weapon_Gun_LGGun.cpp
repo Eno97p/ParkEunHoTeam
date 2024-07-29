@@ -85,7 +85,7 @@ void CWeapon_Gun_LGGun::Late_Tick(_float fTimeDelta)
 {
 	if (m_bRenderAvailable)
 	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 }

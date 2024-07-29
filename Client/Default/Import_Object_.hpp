@@ -64,44 +64,14 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CClone::Create(pDevice, pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_WhisperSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhisperSword"),
-		CWhisperSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_WhisperSword_Anim */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhisperSword_Anim"),
 		CWhisperSword_Anim::Create(pDevice, pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Cendres */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cendres"),
-		CCendres::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CorruptedSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CorruptedSword"),
-		CCorruptedSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Catharsis */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Catharsis"),
-		CCatharsis::Create(pDevice, pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_DurgaSword */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_DurgaSword"),
 		CDurgaSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_IceBlade */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_IceBlade"),
-		CIceBlade::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_NaruehSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_NaruehSword"),
-		CNaruehSword::Create(pDevice, pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_PretorianSword */
@@ -112,21 +82,6 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	/* For.Prototype_GameObject_RadamantheSword */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RadamantheSword"),
 		CRadamantheSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_SitraSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SitraSword"),
-		CSitraSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ValnirSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ValnirSword"),
-		CValnirSword::Create(pDevice, pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_VeilleurSword */
-	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_VeilleurSword"),
-		CVeilleurSword::Create(pDevice, pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Sky */

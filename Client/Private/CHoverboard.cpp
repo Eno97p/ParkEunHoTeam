@@ -58,10 +58,38 @@ void CHoverboard::Tick(_float fTimeDelta)
 	
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
 	m_pPhysXCom->GetCommand(command);
+	PxVec3 velocity = m_pPhysXCom->GetRigidBody()->getLinearVelocity();
+	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
+	PxVehicleSteerCommandResponseParams* steerResponse;
+	m_pPhysXCom->GetSteerRespon(steerResponse);
+
+	m_bIsMoving = KEY_HOLD(DIK_W) || KEY_HOLD(DIK_S);
+	if (m_bIsMoving)
+	{
+	
+		steerResponse->maxResponse = XMConvertToRadians(45.f); // ¿ø·¡ °ª 
+		steerResponse->wheelResponseMultipliers[0] = 1.0f;
+		steerResponse->wheelResponseMultipliers[1] = 1.0f;
+		steerResponse->wheelResponseMultipliers[2] = 0.0f;
+		steerResponse->wheelResponseMultipliers[3] = 0.0f;
+	
+
+	}
+	else
+	{
+		steerResponse->maxResponse = XMConvertToRadians(90.0f);
+		steerResponse->wheelResponseMultipliers[0] = 1.0f;
+		steerResponse->wheelResponseMultipliers[1] = 1.0f;
+		steerResponse->wheelResponseMultipliers[2] = 1.0f;
+		steerResponse->wheelResponseMultipliers[3] = 1.0f;
+
+
+	}
+
 	if (KEY_HOLD(DIK_W))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-		command->throttle = 0.1f;
+		command->throttle = 0.3f;
 		command->brake = 0.0f;
 	}
 	else if (KEY_HOLD(DIK_S))
@@ -78,21 +106,37 @@ void CHoverboard::Tick(_float fTimeDelta)
 
 	if (KEY_HOLD(DIK_A))
 	{
-		command->steer = -0.5f;
+		if(m_bIsMoving)
+			command->steer = -1.0f;
+		else
+		{
+			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+			command->throttle = 0.1f;
+			command->steer = -1.0f;
+		}
+
 	}
 	if (KEY_HOLD(DIK_D))
 	{
-		command->steer = 0.5f;
+		if (m_bIsMoving)
+			command->steer = 1.0f;
+		else
+		{
+			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+			command->throttle = 0.1f;
+			command->steer = 1.0f;
+		}
+
+
+
+		//command->steer = 1.0f;
 	}
 	if (KEY_HOLD(DIK_SPACE))
 	{
 		command->brake = 1.0f;
 		command->throttle = 0.0f;
 	}
-	else 
-	{
-		
-	}
+
 	
 	m_pPhysXCom->Tick(fTimeDelta);
 
@@ -162,9 +206,10 @@ HRESULT CHoverboard::Add_Components()
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND command;
 	XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z));
+	command.WheelCount = 4;
 	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
-		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))
+		TEXT("Com_PhysX_Vehicle"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))
 		return E_FAIL;
 
 

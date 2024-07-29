@@ -270,6 +270,34 @@ PS_OUT PS_TornadoWind(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_UVYPLUS(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+
+	uv.y += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+
+	Color.a = (Color.r + Color.g + Color.b) / 3.0f;
+
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+
+	}
+	Out.vColor = Color;
+	return Out;
+}
 
 
 technique11 DefaultTechnique
@@ -371,6 +399,20 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_TornadoWind();
+	}
+
+	pass TornadoSpring	//7pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_UVYPLUS();
 	}
 }
 

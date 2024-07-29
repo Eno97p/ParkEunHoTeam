@@ -193,6 +193,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 						return;
 					}
 
+					m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 160.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
+
 					//m_pGameInstance->Set_MainCamera(1);
 				}
 				break;

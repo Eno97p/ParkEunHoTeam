@@ -6,6 +6,8 @@ matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
+float      g_fBRIS;
+float      g_fMirror;
 float      g_fLightRange;
 
 float      g_fInnerAngle;
@@ -27,14 +29,20 @@ vector      g_vFogColor;
 float      g_fFogRange;
 float      g_fFogHeightFalloff;
 float      g_fFogGlobalDensity;
+float      g_fFogTimeOffset;
+
+float      g_fNoiseSize;
+float      g_fNoiseIntensity;
 
 texture2D   g_Texture;
+texture2D   g_MaskTexture;
 texture2D   g_NormalTexture;
 texture2D   g_DiffuseTexture;
 texture2D   g_ShadeTexture;
 texture2D   g_DepthTexture;
 texture2D   g_LightDepthTexture;
 texture2D   g_SpecularTexture;
+texture2D g_DecalDepthTexture;
 
 texture2D   g_EmissiveTexture;
 texture2D   g_RoughnessTexture;
@@ -471,6 +479,37 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
     return Out;
 }
 
+float hash(float2 p)
+{
+    return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453);
+}
+
+float noise(float2 p)
+{
+    float2 i = floor(p);
+    float2 f = frac(p);
+    float a = hash(i);
+    float b = hash(i + float2(1.0, 0.0));
+    float c = hash(i + float2(0.0, 1.0));
+    float d = hash(i + float2(1.0, 1.0));
+    float2 u = f * f * (3.0 - 2.0 * f);
+    return lerp(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+}
+
+float fbm(float2 p)
+{
+    float value = 0.0;
+    float amplitude = 0.5;
+    float frequency = 1.0;
+    for (int i = 0; i < 6; i++)
+    {
+        value += amplitude * noise(p * frequency);
+        amplitude *= 0.5;
+        frequency *= 2.0;
+    }
+    return value;
+}
+
 PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -485,9 +524,19 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     vector vMetalicDesc = g_MetalicTexture.Sample(PointSampler, In.vTexcoord);
 
-    vector vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    float fDecalDepth = g_DecalDepthTexture.Sample(LinearSampler, In.vTexcoord).x;
+    vector vColor;
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    if (fDecalDepth <= vDepthDesc.x)
+    {
+        vColor = lerp(vDiffuse, vDecal, vDecal.a) * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    }
+    else
+    {
+        vColor = vDiffuse * vShade + vSpecular * lerp(float4(1.f, 1.f, 1.f, 1.f), vDiffuse, vMetalicDesc);
+    }
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
@@ -516,37 +565,54 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
         vColor = vector(vColor.rgb * 0.5f, 1.f);
+    Out.vColor = vColor;
 
-    ////안개
- /*    float3 fog = float3(0.1f, 0.1f, 0.1f);
-     float dist = min(max((distance(vWorldPos, g_vCamPosition) - 5.f), 0.f), 100.f) / 100.f;
-     Out.vColor.rgb *= (1.f - dist);
-     Out.vColor.rgb += dist * fog;*/
+    //////안개
+    //float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
+    //float distanceToCamera = length(cameraToWorldPos);
 
-    float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
+    //// 시간에 따라 변화하는 오프셋 추가
+    //float2 timeOffset = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
 
-    float distanceFog = saturate(length(cameraToWorldPos) / g_fFogRange);
+    //// FBM을 사용한 노이즈 계산
+    //float2 fbmCoord = vWorldPos.xz * g_fNoiseSize + timeOffset;
+    //float2 q = float2(
+    //    fbm(fbmCoord),
+    //    fbm(fbmCoord + float2(5.2, 1.3))
+    //);
+    //float2 r = float2(
+    //    fbm(fbmCoord + 2.0 * q + float2(1.7, 9.2)),
+    //    fbm(fbmCoord + 2.0 * q + float2(8.3, 2.8))
+    //);
+    //float fbmValue = fbm(fbmCoord + 2.0 * r);
 
-    float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
-    float heightFogInt = length(cameraToWorldPos) * cVolFogHeightDensityAtViewer;
+    //// 거리 기반 안개 계산
+    //float distanceFog = saturate(distanceToCamera / g_fFogRange);
 
-    const float cSlopeThreshold = 0.01f;
-    if (abs(cameraToWorldPos.y) > cSlopeThreshold)
-    {
-        float t = g_fFogHeightFalloff * cameraToWorldPos.y;
-        heightFogInt *= (1.0 - exp(-t)) / t;
-    }
-    float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
+    //// 높이 기반 안개 계산
+    //float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
+    //float heightFogInt = distanceToCamera * cVolFogHeightDensityAtViewer;
+    //const float cSlopeThreshold = 0.01f;
+    //if (abs(cameraToWorldPos.y) > cSlopeThreshold)
+    //{
+    //    float t = g_fFogHeightFalloff * cameraToWorldPos.y;
+    //    heightFogInt *= (1.0 - exp(-t)) / t;
+    //}
+    //float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
 
-    float combinedFogFactor = max(distanceFog, heightFogFactor);
+    //// FBM 노이즈를 안개 강도에 적용
+    //float noiseFactor = (fbmValue - 0.5) * 0.5; // -0.25 to 0.25 range
+    //float baseFogFactor = max(distanceFog, heightFogFactor);
+    //float distanceAttenuation = saturate(1.0 - distanceToCamera / (g_fFogRange * 0.5));
+    //float noisyFogFactor = lerp(baseFogFactor, saturate(baseFogFactor + noiseFactor * distanceAttenuation), g_fNoiseIntensity);
 
-    float4 finalColor = lerp(vColor, g_vFogColor, combinedFogFactor);
+    //// 최종 색상 계산
+    //float4 noisyFogColor = g_vFogColor + float4(noiseFactor * 0.05, noiseFactor * 0.05, noiseFactor * 0.05, 0);
+    //float4 finalColor = lerp(vColor, noisyFogColor, noisyFogFactor);
+    //vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
+    //finalColor.rgb += vEmissiveDesc.rgb;
 
-    vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
-    finalColor.rgb += vEmissiveDesc.rgb;
-
-    Out.vColor = finalColor;
-
+    //Out.vColor = finalColor;
     return Out;
 }
 
@@ -589,6 +655,35 @@ PS_OUT PS_FINAL(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
 
@@ -597,7 +692,7 @@ PS_OUT PS_FINAL(PS_IN In)
     for (int i = 0; i < NumSamples; ++i)
     {
         float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
-        Out.vColor += g_ResultTexture.Sample(LinearSampler, In.vTexcoord + offset);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
     }
 
     Out.vColor /= float(NumSamples);
@@ -608,6 +703,35 @@ PS_OUT PS_FINAL(PS_IN In)
 PS_OUT PS_FINAL2(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
+
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
 
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     Out.vColor = pow(Out.vColor, g_Value);
@@ -621,6 +745,53 @@ PS_OUT PS_FINAL2(PS_IN In)
 PS_OUT PS_FINAL3(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
+
+    // 화면 갈라지는 정도
+    float value = 0.4f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x - g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y + g_fBRIS * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x + g_fBRIS * value;
+        In.vTexcoord.y = In.vTexcoord.y - g_fBRIS * value;
+    }
+
+    float4 maskColor = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    // 화면 깨지는 정도
+    value = 1.f;
+    if (In.vTexcoord.x + In.vTexcoord.y < 1.f)
+    {
+        In.vTexcoord.x = In.vTexcoord.x + (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y + (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    else
+    {
+        In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
+        In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
+    }
+    
+    if (In.vTexcoord.x > 1.f)
+    {
+        In.vTexcoord.x = 2.f - In.vTexcoord.x;
+    }
+    if (In.vTexcoord.y > 1.f)
+    {
+        In.vTexcoord.y = 2.f - In.vTexcoord.y;
+    }
+    if (In.vTexcoord.x < 0.f)
+    {
+        In.vTexcoord.x *= -1.f;
+    }
+    if (In.vTexcoord.y < 0.f)
+    {
+        In.vTexcoord.y *= -1.f;
+    }
+
     Out.vColor = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
     Out.vColor = pow(Out.vColor, g_Value);
 
@@ -849,11 +1020,18 @@ PS_OUT PS_BLOOM(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_DECAL(PS_IN In)
+struct PS_OUT_DECAL
 {
-    PS_OUT Out = (PS_OUT)0;
+    vector      vColor : SV_TARGET0;
+    vector      vDepth : SV_TARGET1;
+};
+
+PS_OUT_DECAL PS_DECAL(PS_IN In)
+{
+    PS_OUT_DECAL Out = (PS_OUT_DECAL)0;
 
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    Out.vDepth = vDepthDesc;
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;

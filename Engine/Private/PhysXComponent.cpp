@@ -580,7 +580,7 @@ void CPhysXComponent::MakeFilterData(PxFilterData& filterData)
 	if (filterData.word0 != 0 || filterData.word1 != 0 || filterData.word2 != 0 || filterData.word3 != 0)
 	{
 		PxU32 numShapes = m_pActor->getNbShapes();
-		PxShape** shapes = new PxShape * [numShapes];
+		PxShape** shapes = new PxShape* [numShapes];
 		m_pActor->getShapes(shapes, numShapes);
 
 		for (PxU32 i = 0; i < numShapes; i++)

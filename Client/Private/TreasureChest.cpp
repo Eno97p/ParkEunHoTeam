@@ -45,7 +45,7 @@ HRESULT CTreasureChest::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, false));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
 
 	m_pModelCom->Play_Animation(0.001);
 
@@ -64,7 +64,8 @@ void CTreasureChest::Tick(_float fTimeDelta)
 {
 	if (m_bChestOpened)
 	{
-		m_pModelCom->Play_Animation(fTimeDelta);
+		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, false));
+		m_pModelCom->Play_Animation(fTimeDelta, false);
 	}
 }
 

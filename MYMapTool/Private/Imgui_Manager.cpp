@@ -1548,6 +1548,10 @@ void CImgui_Manager::Fog_Editor()
     static float heightFalloff = 0.1f;
     static float globalDensity = 0.1f;
 
+    static float FogTimeOffset = 0.1f;
+    static float NoiseIntensity = 0.3f;
+    static float NoiseSize = 0.1f;
+
     static bool autoUpdateFog = false;
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Color");
@@ -1555,7 +1559,7 @@ void CImgui_Manager::Fog_Editor()
     {
         if (autoUpdateFog)
         {
-            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
         }
     }
 
@@ -1564,7 +1568,7 @@ void CImgui_Manager::Fog_Editor()
     {
         if (autoUpdateFog)
         {
-            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
         }
     }
 
@@ -1574,11 +1578,22 @@ void CImgui_Manager::Fog_Editor()
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Global Density");
     ImGui::SliderFloat("##GlobalDensity", &globalDensity, 0.0f, 1.0f, "%.3f");
 
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Time Offset");
+    ImGui::SliderFloat("##FogTimeOffset", &FogTimeOffset, 0.0f, 10.0f, "%.3f");
+
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "NoiseIntensity");
+    ImGui::SliderFloat("##NoiseIntensity", &NoiseIntensity, 0.0f, 10.0f, "%.3f"); 
+    
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "NoiseSize");
+    ImGui::SliderFloat("##NoiseSize", &NoiseSize, 0.0f, 0.5f, "%.6f");
+
+
     ImGui::Checkbox("Auto Update Fog", &autoUpdateFog);
 
     if (ImGui::Button("Apply Fog Settings") || autoUpdateFog)
     {
-        m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity);
+        m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
     }
 
     if (ImGui::Button("Close"))

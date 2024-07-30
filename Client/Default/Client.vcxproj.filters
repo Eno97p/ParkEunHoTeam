@@ -1280,6 +1280,9 @@
     <ClInclude Include="..\Public\UI_Shop_RemainIcon.h">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Lightning.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
     </ClInclude>
@@ -1911,6 +1914,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lightning.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>

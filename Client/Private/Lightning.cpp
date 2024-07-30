@@ -1,27 +1,27 @@
 #include "stdafx.h"
-#include "..\Public\CircleSphere.h"
+#include "..\Public\Lightning.h"
 
 #include "GameInstance.h"
 #include "Player.h"
 #include "EffectManager.h"
 #include "Monster.h"
 
-CCircleSphere::CCircleSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLightning::CLightning(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
 {
 }
 
-CCircleSphere::CCircleSphere(const CCircleSphere& rhs)
+CLightning::CLightning(const CLightning& rhs)
 	: CWeapon{ rhs }
 {
 }
 
-HRESULT CCircleSphere::Initialize_Prototype()
+HRESULT CLightning::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CCircleSphere::Initialize(void* pArg)
+HRESULT CLightning::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -39,106 +39,54 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	m_fPlayerY = XMVectorGetY(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
-	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Boss")).front());
 	return S_OK;
 }
 
-void CCircleSphere::Priority_Tick(_float fTimeDelta)
+void CLightning::Priority_Tick(_float fTimeDelta)
 {
-	m_fShootDelay -= fTimeDelta;
+	m_fLightningDelay -= fTimeDelta;
 }
 
-void CCircleSphere::Tick(_float fTimeDelta)
+void CLightning::Tick(_float fTimeDelta)
 {
-	m_pTransformCom->Go_Straight(fTimeDelta);
-	if (m_fShootDelay > 0.f)
+	if (m_fLightningDelay > 0.f)
 	{
-		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(3.f));	
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(XMVectorGetX(vPlayerPos), XMVectorGetY(vPos), XMVectorGetZ(vPlayerPos), 1.f));
 	}
 	else
 	{
-		if (!m_bLookatPlayer)
-		{
-			m_pTransformCom->Set_Speed(40.f);
-			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_bLookatPlayer = true;
-		}
-		if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
-		{
-			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-			_vector vPos = Mat.r[3];
-			_float4 vStartPos;
-			XMStoreFloat4(&vStartPos, vPos);
-			EFFECTMGR->Generate_Particle(14, vStartPos);
-			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
-			// 여기서 폭발 이펙트 재생
-			m_pGameInstance->Erase(this);
-		}
+		// 번개치기
 	}
 }
 
-void CCircleSphere::Late_Tick(_float fTimeDelta)
+void CLightning::Late_Tick(_float fTimeDelta)
 {
 	_float4 fPos;
 	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	if (!m_bIsParried)
+	m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
+	if (m_eColltype == CCollider::COLL_START)
 	{
-		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
-		if (m_eColltype == CCollider::COLL_START)
-		{
-
-			if (m_pPlayer->Get_Parry())
-			{
-				EFFECTMGR->Generate_Particle(4, fPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-				EFFECTMGR->Generate_Particle(5, fPos);
-				m_bIsParried = true;
-				m_pPlayer->Parry_Succeed();
-				// 보스 타겟팅
-				CTransform* bossTransform = dynamic_cast<CTransform*>(m_pJuggulus->Get_Component(TEXT("Com_Transform")));
-				_vector vBossPos = bossTransform->Get_State(CTransform::STATE_POSITION);
-				vBossPos.m128_f32[1] += 15.f;
-				m_pTransformCom->LookAt(vBossPos);
-			}
-			else
-			{
-				m_pPlayer->PlayerHit(10);
-				_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-				_vector vPos = Mat.r[3];
-				_float4 vStartPos;
-				XMStoreFloat4(&vStartPos, vPos);
-				EFFECTMGR->Generate_Particle(14, vStartPos);
-				EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
-				// 여기서 폭발 이펙트 재생
-				m_pGameInstance->Erase(this);
-			}
-
-		}
-	}
-	else
-	{
-		if (m_pColliderCom->Intersect(m_pJuggulus->Get_Collider()) == CCollider::COLL_START)
-		{
-			m_pJuggulus->Add_Hp(-10);
-			_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-			_vector vPos = Mat.r[3];
-			_float4 vStartPos;
-			XMStoreFloat4(&vStartPos, vPos);
-			EFFECTMGR->Generate_Particle(14, vStartPos);
-			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
-			// 여기서 폭발 이펙트 재생
-			m_pGameInstance->Erase(this);
-		}
+		m_pPlayer->PlayerHit(10);
+		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+		_vector vPos = Mat.r[3];
+		_float4 vStartPos;
+		XMStoreFloat4(&vStartPos, vPos);
+		EFFECTMGR->Generate_Particle(14, vStartPos);
+		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+		// 여기서 폭발 이펙트 재생
+		m_pGameInstance->Erase(this);
 	}
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
-HRESULT CCircleSphere::Render()
+HRESULT CLightning::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -163,7 +111,7 @@ HRESULT CCircleSphere::Render()
 	return S_OK;
 }
 
-HRESULT CCircleSphere::Render_Bloom()
+HRESULT CLightning::Render_Bloom()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -185,7 +133,7 @@ HRESULT CCircleSphere::Render_Bloom()
 	return S_OK;
 }
 
-HRESULT CCircleSphere::Add_Components()
+HRESULT CLightning::Add_Components()
 {
 	/* For.Com_Collider */
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
@@ -216,7 +164,7 @@ HRESULT CCircleSphere::Add_Components()
 	return S_OK;
 }
 
-HRESULT CCircleSphere::Bind_ShaderResources()
+HRESULT CLightning::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -237,33 +185,33 @@ HRESULT CCircleSphere::Bind_ShaderResources()
 	return S_OK;
 }
 
-CCircleSphere* CCircleSphere::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLightning* CLightning::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CCircleSphere* pInstance = new CCircleSphere(pDevice, pContext);
+	CLightning* pInstance = new CLightning(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CCircleSphere");
+		MSG_BOX("Failed To Created : CLightning");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CCircleSphere::Clone(void* pArg)
+CGameObject* CLightning::Clone(void* pArg)
 {
-	CCircleSphere* pInstance = new CCircleSphere(*this);
+	CLightning* pInstance = new CLightning(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CCircleSphere");
+		MSG_BOX("Failed To Cloned : CLightning");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CCircleSphere::Free()
+void CLightning::Free()
 {
 	__super::Free();
 

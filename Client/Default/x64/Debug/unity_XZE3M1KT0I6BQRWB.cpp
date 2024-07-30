@@ -36,6 +36,9 @@
 #include "C:\3D_TeamProj\Client\Private\Body_Rlya.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Body_Valnir.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\BossDeco.cpp"
 
 
@@ -168,10 +171,16 @@
 #include "C:\3D_TeamProj\Client\private\Level_Logo.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Lightning.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Npc.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\NPC_Rlya.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Npc_Valnir.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
@@ -217,6 +226,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UIGroup_Script.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UIGroup_Shop.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UIGroup_UpGPage.cpp"
@@ -274,6 +286,18 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Script_NameBox.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_ShopBG.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_ShopSelect.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Shop_RemainIcon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Shop_SoulBG.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Slot_EquipSign.cpp"

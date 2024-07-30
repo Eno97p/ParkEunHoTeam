@@ -20,10 +20,46 @@
 #include "C:\3D_TeamProj\EffectTool\Imgui\imgui_widgets.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\Andras.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\private\AndrasLazer.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\private\AndrasLazer_Base.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasLazer_Cylinder.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasRain.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasScrew.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasSword1.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasSword2.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasSword3.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasSword4.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\AndrasSword5.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\BackGround.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Distortion_Effect.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\ElectricCylinder.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\private\Electronic.cpp"
@@ -90,6 +126,18 @@
 
 
 #include "C:\3D_TeamProj\EffectTool\private\TextureFrame.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\private\TornadoEffect.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\TornadoWind.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Tornado_Root.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Tornado_Spring.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Weapon.cpp"

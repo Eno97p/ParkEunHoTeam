@@ -24,6 +24,7 @@ bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
 bool g_bMetalic = false;
+bool g_MotionBlur = false;
 
 /* 이 메시에게 영향을 주는 뼈들. */
 matrix		g_BoneMatrices[512];
@@ -80,7 +81,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	vPrevPos = mul(vPrevPos, matPrevWVP);
 	Out.vVelocity = (Out.vPosition.xy / Out.vPosition.w) - (vPrevPos.xy / vPrevPos.w);
-	Out.vVelocity *= -2.f;
+	Out.vVelocity *= -1.f;
 
 	return Out;
 }
@@ -171,7 +172,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	if (g_bEmissive) Out.vEmissive = vEmissive;
 	if (g_bRoughness) Out.vRoughness = vRoughness;
 	if (g_bMetalic) Out.vMetalic = vMetalic;
-	Out.vVelocity = In.vVelocity;
+	if (g_MotionBlur)
+	{
+		Out.vVelocity = In.vVelocity;
+	}
 	return Out;
 }
 
@@ -209,7 +213,10 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 
 	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
-	Out.vVelocity = In.vVelocity;
+	if (g_MotionBlur)
+	{
+		Out.vVelocity = In.vVelocity;
+	}
 	if ((g_DisolveValue - disolveValue) > 0.05f)
 	{
 		return Out;
@@ -379,7 +386,10 @@ PS_OUT PS_DISOLVE(PS_IN In)
 
 	vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
 	float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
-	Out.vVelocity = In.vVelocity;
+	if (g_MotionBlur)
+	{
+		Out.vVelocity = In.vVelocity;
+	}
 	if ((g_DisolveValue - disolveValue) > 0.05f)
 	{
 		return Out;

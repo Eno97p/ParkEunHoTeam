@@ -38,6 +38,9 @@
 #include "C:\3D_TeamProj\Engine\private\Camera.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\Private\CCCTFilterCallBack.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\Cell.cpp"
 
 
@@ -171,6 +174,9 @@
 
 
 #include "C:\3D_TeamProj\Engine\Private\PhysXComponent_Character.cpp"
+
+
+#include "C:\3D_TeamProj\Engine\Private\PhysXComponent_HeightField.cpp"
 
 
 #include "C:\3D_TeamProj\Engine\Private\PhysXComponent_static.cpp"

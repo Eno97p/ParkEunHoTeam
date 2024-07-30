@@ -58,10 +58,6 @@ private:
 	_float4x4							m_WorldMatrix = {};
 	_float4x4							m_ViewMatrix = {};
 	_float4x4							m_ProjMatrix = {};
-	_float4x4 m_Mat = { 1.f, 0.f, 0.f, 0.f,
-					  0.f, 1.f, 0.f, 0.f,
-					  0.f, 0.f, 1.f, 0.f,
-					  -155.f, -522.f, -113.f, 1.f };
 
 	ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
 	ID3D11DepthStencilView* m_pReflectionDepthStencilView = { nullptr };
@@ -115,8 +111,6 @@ private:
 	UINT m_HZBMipLevels = 0;
 
 #pragma endregion
-
-
 
 
 
@@ -184,6 +178,7 @@ private:
 	void Render_NonLight();
 	void Render_Blend();
 	void Render_Reflection();
+	void Render_MotionBlur();
 	void Render_Blur();
 	void Render_Bloom();
 	void Render_Distortion();

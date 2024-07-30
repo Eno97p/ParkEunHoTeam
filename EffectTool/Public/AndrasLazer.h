@@ -16,6 +16,7 @@ public:
 		const _float4x4* ShooterMat = nullptr;
 		_float fLifeTime = 0.f;
 		_float3 vOffsetPos = { 0.f,0.f,0.f };
+		_float ElectricInterval = 0.2f;
 		CAndrasLazerBase::ANDRAS_LASER_BASE_DESC BaseDesc{};
 		CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CylinderDesc{};
 		CAndrasRain::ANDRAS_RAIN_DESC RainDesc{};
@@ -36,9 +37,11 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Add_Child_Effects();
+	void Generate_Electric();
 
 private:
 	shared_ptr<ANDRAS_LAZER_TOTALDESC>	m_OwnDesc;
+	_float CurInterval = 0.2f;
 
 public:
 	static CAndrasLazer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

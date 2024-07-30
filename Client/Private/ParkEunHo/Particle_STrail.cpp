@@ -51,7 +51,9 @@ void CSTrail::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
+
+	if (m_pTrailDesc->isDestortion)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 
 	if (m_pTrailDesc->isBloom)
 	{
@@ -90,10 +92,10 @@ HRESULT CSTrail::Render_Distortion()
 
 HRESULT CSTrail::Render_Bloom()
 {
-	if (FAILED(Bind_ShaderResources()))
+	if (FAILED(Bind_BlurResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(1);
 
 	m_pVIBufferCom->Bind_Buffers();
 
@@ -143,6 +145,26 @@ HRESULT CSTrail::Bind_ShaderResources()
 	if (FAILED(m_DesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", m_pTrailDesc->iDesolveNum)))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CSTrail::Bind_BlurResources()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DiffuseColor", &m_pTrailDesc->vBloomColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BloomPower", &m_pTrailDesc->fBloomPower, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_DesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", m_pTrailDesc->iDesolveNum)))
+		return E_FAIL;
 
 	return S_OK;
 }

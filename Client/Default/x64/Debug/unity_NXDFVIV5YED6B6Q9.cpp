@@ -171,6 +171,9 @@
 #include "C:\Real3DProject\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Lightning.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Npc.cpp"
 
 
@@ -181,6 +184,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Electronic.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\FireEffect.cpp"

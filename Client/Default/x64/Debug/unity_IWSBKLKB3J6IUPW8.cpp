@@ -171,6 +171,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\Level_Logo.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Lightning.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Npc.cpp"
 
 
@@ -181,6 +184,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Electronic.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\FireEffect.cpp"
@@ -232,6 +238,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UIGroup_Upgrade.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UIGroup_UP_Completed.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Activate.cpp"

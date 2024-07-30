@@ -150,6 +150,7 @@ void CUIGroup_InvSub::Delete_InvSub_QuickSlot_ToInvIdx(_uint iInvIdx)
 	{
 		if ((*slot)->Get_InvenIdx() == iInvIdx)
 		{
+			//(*slot)->Clear_ItemIcon();
 			(*slot)->Delete_ItemIcon();
 			break;
 		}

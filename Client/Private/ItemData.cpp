@@ -134,24 +134,32 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 	else // 하나 남은 경우 삭제 필요
 	{
 
-		// 여기서 Quick Access의 Quick Slot의 값이 사라지지 않는 오류가 발생함
-		// Quick에서 장착 해제 한 템을 Inventory에서 Use 하고 나서? 인듯 ( >> 정확히 언제 발생하는 지 모르겠음 ㅠ)
+
+		// 순서 바꿔도 안 됨 일단 데이터가 날아갔기 때문에 접근 못 함...............
 
 
+		
+		
 		// UI Inventory의 Sub Quick에서 삭제
 		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
+
+		// Quick의 Slot에서 삭제
+		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
+
+
+
 
 		// UI Inventory에서도 삭제
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
 
-		// UI Inventory의 Sub QuickSlot에서도 삭제 필요함
-		//dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
-
 		// Quick SubInv에서도 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_Delete(iInvenIdx);
 
+		
+		// !!!!!!!! 거꾸로 인벤토리에다가 장착한 경우 중간에 있는 녀석을 Use하면 밑의 함수에서 제대로 못 지워줌
+		// 위에서 이미 지워버린 거라 함수 내에서 Inventory Index 정보를 못 얻어오는 거 같음 !!!!!!!!!!!!!!!!!!!
 		// Quick의 Slot에서도 삭제
-		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
+		//dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
 
 		// HUD에서도 삭제   
 		dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_QUICK);

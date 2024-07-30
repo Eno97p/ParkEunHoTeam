@@ -175,11 +175,14 @@ void CUIGroup_Quick::Update_InvSlot_EquipSign(_uint iSlotIdx, _bool isEquip)
 
 void CUIGroup_Quick::Update_QuickSlot_Delete(_uint iInvenIdx)
 {
+	// !!!!!!!!!!!!!!!!!!!!!!! 여기서 삭제가 안 되는 (거꾸로 등록해둔 경우)
+	// 제거하는 기준을 InvenIdx가 아니라 다른 걸로 바꾸든가 해야 할듯
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < m_vecSlot.size(); ++i)
 	{
 		if ((*slot)->Get_InvenIdx() == iInvenIdx)
 		{
+			//(*slot)->Clear_ItemIcon();
 			(*slot)->Delete_ItemIcon();
 			break;
 		}
@@ -208,6 +211,9 @@ void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
 
 		if ((*slot)->Get_isItemIconNull())
 			break;
+
+		_bool isEquip = (*slot)->Get_isEquip();
+
 		wstring wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick;
 		wstrTexture = (*slot)->Get_Texture();
 		wstrItemName = (*slot)->Get_ItemName();
@@ -218,13 +224,10 @@ void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
 		(*slot)->Delete_ItemIcon();
 
 		--slot;
-		(*slot)->Pull_ItemIcon(wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
+		(*slot)->Pull_ItemIcon(isEquip, wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
 
 		++slot;
 	}
-
-
-
 }
 
 HRESULT CUIGroup_Quick::Create_UI()

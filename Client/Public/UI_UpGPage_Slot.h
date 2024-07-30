@@ -27,6 +27,7 @@ public:
 
 	void			Create_ItemIcon();
 	void			Setting_SelectItemName();
+	_bool			Check_ItemIconNull();
 
 private:
 	_uint								m_iSlotIdx = { 0 };

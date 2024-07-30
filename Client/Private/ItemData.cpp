@@ -133,33 +133,17 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 	}
 	else // 하나 남은 경우 삭제 필요
 	{
-
-
-		// 순서 바꿔도 안 됨 일단 데이터가 날아갔기 때문에 접근 못 함...............
-
-
-		
-		
 		// UI Inventory의 Sub Quick에서 삭제
 		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(iInvenIdx);
 
 		// Quick의 Slot에서 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
 
-
-
-
 		// UI Inventory에서도 삭제
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory_Delete(iInvenIdx);
 
 		// Quick SubInv에서도 삭제
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_Delete(iInvenIdx);
-
-		
-		// !!!!!!!! 거꾸로 인벤토리에다가 장착한 경우 중간에 있는 녀석을 Use하면 밑의 함수에서 제대로 못 지워줌
-		// 위에서 이미 지워버린 거라 함수 내에서 Inventory Index 정보를 못 얻어오는 거 같음 !!!!!!!!!!!!!!!!!!!
-		// Quick의 Slot에서도 삭제
-		//dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_QuickSlot_Delete(iInvenIdx);
 
 		// HUD에서도 삭제   
 		dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_QUICK);
@@ -265,36 +249,38 @@ void CItemData::Set_Item_Data()
 {
 	switch (m_eItemName)
 	{
-	case Client::CItemData::ITEMNAME_CATHARSIS:
+	case Client::CItemData::ITEMNAME_DURGASWORD:
 	{
 		m_eItemType = ITEMTYPE_WEAPON;
-		m_wszItemName = TEXT("Catharsis"); // CATHARSIS
-		m_wszItemExplain = TEXT("순수한 영혼과 강력한 마력의\n결합체\n그 자체로 살아있는 존재처럼\n사용자의 의지에 반응한다.");
-		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catharsis");
+		m_wszItemName = TEXT("DURGA'S CLAYMORE");
+		m_wszItemExplain = TEXT("추기경 Durga의 검\n심화 네트워크 접속의 중요 단서\n신의 핵심 일부 복제품이 포함됨\n결합된 모든 특권을 제공한다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Durgas_Claymore");
 		break;
 	}
-	case Client::CItemData::ITEMNAME_CENDRES:
-		break;
-	case Client::CItemData::ITEMNAME_CORRUPTEDSWORD:
-		break;
-	case Client::CItemData::ITEMNAME_DURGASWORD:
-		break;
-	case Client::CItemData::ITEMNAME_ICEBLADE:
-		break;
-	case Client::CItemData::ITEMNAME_NARUEHSWORD:
-		break;
 	case Client::CItemData::ITEMNAME_PRETORIANSWORD:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("PRETORIAN SWORD");
+		m_wszItemExplain = TEXT("히프노스와 나라야나를 보호하기 위해\n전적으로 헌신하는 안티 기계들,\n프리토리아 근위대의 검\n그들이 지나간 자리에는\n침묵의 폐허만이 남는다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Pretorian");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_RADAMANTHESWORD:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("RADAMANTHE'S DAGGER");
+		m_wszItemExplain = TEXT("추기경 Radamanthe의 검\n심화 네트워크 접속의 중요 단서\n신의 핵심 일부 복제품이 포함됨\n결합된 모든 특권을 제공한다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Radamanthes");
 		break;
-	case Client::CItemData::ITEMNAME_SITRASWORD:
-		break;
-	case Client::CItemData::ITEMNAME_VALNIRSWORD:
-		break;
-	case Client::CItemData::ITEMNAME_VEILLEURSWORD:
-		break;
+	}
 	case Client::CItemData::ITEMNAME_WHISPERSWORD:
+	{
+		m_eItemType = ITEMTYPE_WEAPON;
+		m_wszItemName = TEXT("ELISH");
+		m_wszItemExplain = TEXT("손상된 데이터. 읽기 오류 발생.\n전체 격리 권장");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Elish");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_OPH:
 		break;
 	case Client::CItemData::ITEMNAME_ETHERBOLT:

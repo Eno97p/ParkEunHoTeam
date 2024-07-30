@@ -56,15 +56,15 @@ void CUI_UpGPage_Slot::Tick(_float fTimeDelta)
 
 	__super::Tick(fTimeDelta);
 
-	if (IsCollisionRect(m_pMouse->Get_CollisionRect()))
+	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+	if (m_isSelect)
 	{
 		if (m_pGameInstance->Mouse_Down(DIM_LB))
 		{
 			dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Set_CurSlotIdx(m_iSlotIdx);
 		}
 	}
-	
-	//m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
 	m_pSelectUI->Tick(fTimeDelta);
 	m_pItemSlot->Tick(fTimeDelta);
@@ -188,6 +188,16 @@ void CUI_UpGPage_Slot::Create_ItemIcon()
 void CUI_UpGPage_Slot::Setting_SelectItemName()
 {
 	m_pSelectUI->Set_ItemName(m_wstrItemName);
+}
+
+_bool CUI_UpGPage_Slot::Check_ItemIconNull()
+{
+	// ItemIcon이 있는지 없는지 반환 필요
+	// 없으면 None, 있으면 해당 텍스쳐를 활용해야 하는 상황
+	if (nullptr == m_pItemIcon)
+		return true;
+	else
+		return false;
 }
 
 CUI_UpGPage_Slot* CUI_UpGPage_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

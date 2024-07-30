@@ -115,7 +115,7 @@ HRESULT CUIGroup_InvSub::Render()
 	return S_OK;
 }
 
-void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx) // 여기 제대로 안 들어감!!!!!
+void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx)
 {
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 
@@ -127,15 +127,12 @@ void CUIGroup_InvSub::Update_InvSub_QuickSlot(_uint iSlotIdx) // 여기 제대로 안 
 			return;
 		}
 		else
-		{
 			++slot;
-		}
 	}
 }
 
 void CUIGroup_InvSub::Delete_InvSub_QuickSlot(_uint iSlotIdx) // 얘는 함수 사용 안 하는 걸로?
 {
-	// 여기서 뭔가 오류가!
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
 	for (size_t i = 0; i < iSlotIdx; ++i)
 		++slot;
@@ -150,7 +147,6 @@ void CUIGroup_InvSub::Delete_InvSub_QuickSlot_ToInvIdx(_uint iInvIdx)
 	{
 		if ((*slot)->Get_InvenIdx() == iInvIdx)
 		{
-			//(*slot)->Clear_ItemIcon();
 			(*slot)->Delete_ItemIcon();
 			break;
 		}

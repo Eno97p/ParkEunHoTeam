@@ -12,6 +12,7 @@
 #include "UI_UpGPage_Slot.h"
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
+#include "UI_ItemIcon.h"
 
 CUIGroup_UpGPage::CUIGroup_UpGPage(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -79,11 +80,12 @@ void CUIGroup_UpGPage::Tick(_float fTimeDelta)
 
 			pSlot->Tick(fTimeDelta);
 		}
+
+		m_pItemIcon->Tick(fTimeDelta);
 	}
 
-	//if(CInventory::GetInstance()->Get_WeaponSize())
 	Update_CurSlot();
-
+	Update_ItemIcon();
 }
 
 void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
@@ -95,6 +97,8 @@ void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
 
 		for (auto& pSlot : m_vecSlot)
 			pSlot->Late_Tick(fTimeDelta);
+
+		m_pItemIcon->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -157,6 +161,18 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 	if (FAILED(Create_Slot()))
 		return E_FAIL;
 
+	// ItemIcon (Center)
+	CUI_ItemIcon::UI_ITEMICON_DESC pItemIconDesc{};
+	pItemIconDesc.eLevel = LEVEL_STATIC;
+	pItemIconDesc.fX = (g_iWinSizeX >> 1);
+	pItemIconDesc.fY = (g_iWinSizeY >> 1) - 100.f;
+	pItemIconDesc.fSizeX = 300.f;
+	pItemIconDesc.fSizeY = 300.f;
+	pItemIconDesc.eUISort = TENTH;
+	pItemIconDesc.wszTexture = TEXT("Prototype_Component_Texture_ItemIcon_None"); // None
+
+	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pItemIconDesc));
+
 	return S_OK;
 }
 
@@ -180,8 +196,7 @@ HRESULT CUIGroup_UpGPage::Create_Slot()
 
 void CUIGroup_UpGPage::Update_CurSlot()
 {
-	// m_iCurSlotIdx에 맞춰서 상태들을 갱신해야함
-
+	// m_iCurSlotIdx에 맞춰서 상태들 갱신
 	vector<CUI*>::iterator slot = m_vecSlot.begin();
 
 	for (size_t i = 0; i < m_vecSlot.size(); ++i)
@@ -194,10 +209,35 @@ void CUIGroup_UpGPage::Update_CurSlot()
 		{
 			dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Set_Select(false);
 		}
+
 		++slot;
 	}
+}
 
+void CUIGroup_UpGPage::Update_ItemIcon()
+{
+	vector<CUI*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+		++slot;
 
+	_bool isItemNull = dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Check_ItemIconNull();
+	wstring wstrItemTexture;
+
+	if (isItemNull) // waepon이 없다
+	{
+		wstrItemTexture = TEXT("Prototype_Component_Texture_ItemIcon_None");
+
+	}
+	else // 아이템이 있다면
+	{
+		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+		for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+			++weapon;
+
+		wstrItemTexture = (*weapon)->Get_TextureName();
+	}
+
+	m_pItemIcon->Change_Texture(wstrItemTexture);
 }
 
 CUIGroup_UpGPage* CUIGroup_UpGPage::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -235,4 +275,6 @@ void CUIGroup_UpGPage::Free()
 
 	for (auto& pSlot : m_vecSlot)
 		Safe_Release(pSlot);
+
+	Safe_Release(m_pItemIcon);
 }

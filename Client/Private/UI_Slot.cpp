@@ -394,7 +394,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Weapon()
 	pDesc.eUISort = NINETH; // ?
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+	
+	for (size_t i = 0; i < m_iSlotIdx; ++i)
 		++weapon;
 	pDesc.wszTexture = (*weapon)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));

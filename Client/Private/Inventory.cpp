@@ -47,8 +47,36 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CItemData::ITEMDATA_DESC pDesc{};
 
 	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_CATHARSIS;
+	pDesc.eItemName = CItemData::ITEMNAME_WHISPERSWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
+
+
+	// test >> 추후 삭제
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
+
 
 	// UI 출력
 	CUI_Manager::GetInstance()->Update_Weapon_Add();

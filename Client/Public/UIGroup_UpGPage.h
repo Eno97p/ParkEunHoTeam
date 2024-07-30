@@ -29,12 +29,15 @@ private:
 	
 	vector<class CUI*>			m_vecUI;
 	vector<class CUI*>			m_vecSlot;
+	vector<class CUI*>			m_ValuesSlot;
+	class CUI_ItemIcon*			m_pItemIcon = { nullptr };
 
 private:
 	HRESULT					Create_UI();
 	HRESULT					Create_Slot();
 
 	void					Update_CurSlot();
+	void					Update_ItemIcon();
 
 public:
 	static CUIGroup_UpGPage*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

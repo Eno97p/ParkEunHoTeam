@@ -1,6 +1,7 @@
 #include "UIGroup_Shop.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 #include "UI_ShopBG.h"
 #include "UI_Shop_SoulBG.h"
@@ -41,6 +42,8 @@ void CUIGroup_Shop::Tick(_float fTimeDelta)
 	_bool isRender_End = false;
 	if (m_isRend)
 	{
+		CUI_Manager::GetInstance()->Set_isShopOn(true);
+
 		for (auto& pUI : m_vecUI)
 		{
 			if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
@@ -72,6 +75,10 @@ void CUIGroup_Shop::Tick(_float fTimeDelta)
 
 			pSlot->Tick(fTimeDelta);
 		}
+	}
+	else
+	{
+		CUI_Manager::GetInstance()->Set_isShopOn(false);
 	}
 
 	m_iSelectIdx = Check_SelectIdx();

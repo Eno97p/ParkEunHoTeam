@@ -33,6 +33,13 @@ void CUI_Slot::Resset_Data()
 	m_isEquip = false; 
 }
 
+void CUI_Slot::Clear_ItemIcon()
+{
+	m_pItemIcon = nullptr;
+	m_pSymbolIcon = nullptr;
+	m_isEquip = false;
+}
+
 void CUI_Slot::Check_Equip(_bool isWeapon, CItemData* pItemData)
 {
 	for (size_t i = 0; i < 3; ++i)
@@ -387,7 +394,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Weapon()
 	pDesc.eUISort = NINETH; // ?
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
+	
+	for (size_t i = 0; i < m_iSlotIdx; ++i)
 		++weapon;
 	pDesc.wszTexture = (*weapon)->Get_TextureName();
 	m_pItemIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
@@ -438,7 +446,7 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	return S_OK;
 }
 
-HRESULT CUI_Slot::Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
+HRESULT CUI_Slot::Pull_ItemIcon(_bool isEquip, wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
 {
 	// 다음 Slot의 정보를 현재 Slot에 담는 함수
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
@@ -467,6 +475,8 @@ HRESULT CUI_Slot::Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstri
 		pDesc.fSizeY = 160.f;
 		m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 	}
+
+	m_isEquip = isEquip;
 
 	return S_OK;
 }

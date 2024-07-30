@@ -47,8 +47,35 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CItemData::ITEMDATA_DESC pDesc{};
 
 	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_CATHARSIS;
+	pDesc.eItemName = CItemData::ITEMNAME_WHISPERSWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
+	// 지금 임의로 이렇게 추가하지만 나중에 실제로 추가할 때는 <<Upgrade의 Slot에 추가하는 로직>>도 필요
+	// test >> 추후 삭제
+	// UI 출력
+	//CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	//pDesc.isDropTem = false;
+	//pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
+	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	//// UI 출력
+	//CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	//pDesc.isDropTem = false;
+	//pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
+	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	//// UI 출력
+	//CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	//pDesc.isDropTem = false;
+	//pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
+	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
+
 
 	// UI 출력
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
@@ -73,7 +100,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF2);
+	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_BUFF3);
 
 	return S_OK;

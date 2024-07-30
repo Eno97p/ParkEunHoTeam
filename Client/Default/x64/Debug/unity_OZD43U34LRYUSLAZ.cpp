@@ -48,13 +48,7 @@
 #include "C:\Real3DProject\Client\Private\Boss_Juggulus.cpp"
 
 
-#include "C:\Real3DProject\Client\Private\Catharsis.cpp"
-
-
 #include "C:\Real3DProject\Client\Private\Body_Mantari.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\Cendres.cpp"
 
 
 #include "C:\Real3DProject\Client\private\CHoverboard.cpp"
@@ -67,9 +61,6 @@
 
 
 #include "C:\Real3DProject\Client\Private\Clone.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\CorruptedSword.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Decal.cpp"
@@ -106,9 +97,6 @@
 
 
 #include "C:\Real3DProject\Client\Private\Homonculus.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\IceBlade.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ImGUi\imgui.cpp"
@@ -244,6 +232,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UIGroup_Upgrade.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UIGroup_UP_Completed.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
@@ -480,9 +471,6 @@
 #include "C:\Real3DProject\Client\private\Monster.cpp"
 
 
-#include "C:\Real3DProject\Client\Private\NaruehSword.cpp"
-
-
 #include "C:\Real3DProject\Client\private\PartObject.cpp"
 
 
@@ -496,9 +484,6 @@
 
 
 #include "C:\Real3DProject\Client\Private\RadamantheSword.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\SitraSword.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Sky.cpp"
@@ -624,19 +609,10 @@
 #include "C:\Real3DProject\Client\Private\UI_WPFontaine.cpp"
 
 
-#include "C:\Real3DProject\Client\Private\ValnirSword.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\VeilleurSword.cpp"
-
-
 #include "C:\Real3DProject\Client\Private\Weapon.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Sword_LGGun.cpp"
-
-
-#include "C:\Real3DProject\Client\Private\WhisperSword.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\WhisperSword_Anim.cpp"

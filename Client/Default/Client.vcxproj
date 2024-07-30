@@ -262,6 +262,7 @@
     <ClInclude Include="..\Public\UIGroup_Shop.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
+    <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
@@ -478,6 +479,7 @@
     <ClCompile Include="..\Private\UIGroup_Shop.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
+    <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />

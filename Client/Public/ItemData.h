@@ -18,7 +18,7 @@ class CItemData final : public CGameObject
 public:
 	enum ITEM_TYPE { ITEMTYPE_WEAPON, ITEMTYPE_BUFF, ITEMTYPE_SKILL, ITEMTYPE_USABLE, ITEMTYPE_UPGRADE, ITEMTYPE_ETC, ITEMTYPE_END };
 	enum ITEM_NAME {
-		ITEMNAME_CATHARSIS, ITEMNAME_CENDRES, ITEMNAME_CORRUPTEDSWORD, ITEMNAME_DURGASWORD, ITEMNAME_ICEBLADE, ITEMNAME_NARUEHSWORD, ITEMNAME_PRETORIANSWORD, ITEMNAME_RADAMANTHESWORD, ITEMNAME_SITRASWORD, ITEMNAME_VALNIRSWORD, ITEMNAME_VEILLEURSWORD, ITEMNAME_WHISPERSWORD,
+		ITEMNAME_DURGASWORD, ITEMNAME_PRETORIANSWORD, ITEMNAME_RADAMANTHESWORD, ITEMNAME_WHISPERSWORD,
 		ITEMNAME_OPH, ITEMNAME_ETHERBOLT, ITEMNAME_AEGIS,
 		ITEMNAME_CATALYST,
 		ITEMNAME_HOVERBOARD, ITEMNAME_FIREFLY, ITEMNAME_WHISPERER,
@@ -55,6 +55,11 @@ public:
 	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 	ITEM_TYPE		Get_ItemType() { return m_eItemType; }
 
+	_uint			Get_Price() { return m_iPrice; }
+	_uint			Get_Value() { return m_iValue; }
+	_uint			Get_Level() { return m_iLevel; }
+	_uint			Get_AddDamage() { return m_iAddDamage; }
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -70,6 +75,13 @@ private:
 	_bool					m_isEquip = { false };
 
 	_uint					m_iCount = { 0 }; // 아이템 개수
+
+#pragma region Weapon Upgrade Data // 강화에 필요한 데이터들 (weapon만 해당)
+	_uint					m_iPrice = { 0 }; // Soul 가격
+	_uint					m_iValue = { 0 }; // 필요 강화 재료 개수
+	_uint					m_iLevel = { 0 }; // Weapon 레벨
+	_uint					m_iAddDamage = { 0 }; // 레벨 별 증가하는 데미지
+#pragma endregion Weapon Upgrade Data
 
 	wstring					m_wszTexture = TEXT("");
 	wstring					m_wszItemName = TEXT("");

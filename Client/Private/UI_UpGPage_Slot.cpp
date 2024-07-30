@@ -66,7 +66,9 @@ void CUI_UpGPage_Slot::Tick(_float fTimeDelta)
 		}
 	}
 
+	m_pSelectUI->Update_Data(m_iSlotIdx);
 	m_pSelectUI->Tick(fTimeDelta);
+
 	m_pItemSlot->Tick(fTimeDelta);
 	
 	if (nullptr != m_pItemIcon)
@@ -176,6 +178,7 @@ void CUI_UpGPage_Slot::Create_ItemIcon()
 	pDesc.fSizeY = 64.f;
 	pDesc.eUISort = TENTH;
 
+	// 처음 시작할 때 하나만 가지고 시작할 것이기 때문에 이게 맞긴 함
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize() - 1; ++i)
 		++weapon;
@@ -192,8 +195,6 @@ void CUI_UpGPage_Slot::Setting_SelectItemName()
 
 _bool CUI_UpGPage_Slot::Check_ItemIconNull()
 {
-	// ItemIcon이 있는지 없는지 반환 필요
-	// 없으면 None, 있으면 해당 텍스쳐를 활용해야 하는 상황
 	if (nullptr == m_pItemIcon)
 		return true;
 	else

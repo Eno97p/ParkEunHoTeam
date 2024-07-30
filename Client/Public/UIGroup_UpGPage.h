@@ -29,6 +29,7 @@ private:
 	
 	vector<class CUI*>			m_vecUI;
 	vector<class CUI*>			m_vecSlot;
+	vector<class CUI*>			m_ValuesSlot;
 	class CUI_ItemIcon*			m_pItemIcon = { nullptr };
 
 private:

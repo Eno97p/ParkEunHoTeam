@@ -234,6 +234,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Upgrade.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_UP_Completed.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
 
 

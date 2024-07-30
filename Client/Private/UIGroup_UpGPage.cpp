@@ -81,6 +81,21 @@ void CUIGroup_UpGPage::Tick(_float fTimeDelta)
 			pSlot->Tick(fTimeDelta);
 		}
 
+		for (auto& pValue : m_ValuesSlot)
+		{
+			if (!m_isRenderOnAnim && !(pValue->Get_RenderOnAnim()))
+			{
+				pValue->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pValue->Get_RenderOnAnim())
+			{
+				pValue->Resset_Animation(false);
+			}
+
+			dynamic_cast<CUI_UpGPage_Value*>(pValue)->Update_Value(m_iCurSlotIdx);
+			pValue->Tick(fTimeDelta);
+		}
+
 		m_pItemIcon->Tick(fTimeDelta);
 	}
 
@@ -97,6 +112,9 @@ void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
 
 		for (auto& pSlot : m_vecSlot)
 			pSlot->Late_Tick(fTimeDelta);
+
+		for (auto& pValue : m_ValuesSlot)
+			pValue->Late_Tick(fTimeDelta);
 
 		m_pItemIcon->Late_Tick(fTimeDelta);
 	}
@@ -153,10 +171,10 @@ HRESULT CUIGroup_UpGPage::Create_UI()
 
 	pValueDesc.eLevel = LEVEL_STATIC;
 	pValueDesc.eValueType = CUI_UpGPage_Value::VALUE_SOUL;
-	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
+	m_ValuesSlot.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
 
 	pValueDesc.eValueType = CUI_UpGPage_Value::VALUE_MATERIAL;
-	m_vecUI.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
+	m_ValuesSlot.emplace_back(dynamic_cast<CUI_UpGPage_Value*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage_Value"), &pValueDesc)));
 
 	if (FAILED(Create_Slot()))
 		return E_FAIL;
@@ -275,6 +293,9 @@ void CUIGroup_UpGPage::Free()
 
 	for (auto& pSlot : m_vecSlot)
 		Safe_Release(pSlot);
+
+	for (auto& pValues : m_ValuesSlot)
+		Safe_Release(pValues);
 
 	Safe_Release(m_pItemIcon);
 }

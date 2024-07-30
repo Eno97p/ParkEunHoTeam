@@ -121,6 +121,10 @@
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
 #include "UIGroup_UpGPage.h"
+
+
+
+#include "UIGroup_UP_Completed.h"
 #pragma endregion Upgrade
 
 #pragma region Map
@@ -138,7 +142,6 @@
 #include "UI_Shop_SoulBG.h"
 #include "UI_ShopSelect.h"
 #include "UI_Shop_RemainIcon.h"
-
 #include "UIGroup_Shop.h"
 #pragma endregion Shop
 

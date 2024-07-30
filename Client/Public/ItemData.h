@@ -55,6 +55,11 @@ public:
 	ITEM_NAME		Get_ItemName() { return m_eItemName; }
 	ITEM_TYPE		Get_ItemType() { return m_eItemType; }
 
+	_uint			Get_Price() { return m_iPrice; }
+	_uint			Get_Value() { return m_iValue; }
+	_uint			Get_Level() { return m_iLevel; }
+	_uint			Get_AddDamage() { return m_iAddDamage; }
+
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;

@@ -622,6 +622,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
       <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed">
+      <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1277,6 +1280,9 @@
     <ClInclude Include="..\Public\UI_Shop_RemainIcon.h">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1905,6 +1911,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

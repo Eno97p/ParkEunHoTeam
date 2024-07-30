@@ -3,7 +3,7 @@
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_Texture, g_DesolveTexture;
 float3		g_DiffuseColor;
-
+float		g_BloomPower;
 struct VS_IN
 {
 	float3 Position0 : POSITION0;
@@ -171,6 +171,29 @@ PS_OUT PS_DEFAULT(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_BLOOM(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	if (vNoise.r < fRatio)
+	{
+		discard;
+	}
+
+	Out.vColor.a *= 1 - Out.vColor.r;
+	Out.vColor.rgb = g_DiffuseColor;
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	Out.vColor.a *= g_BloomPower;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -184,6 +207,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_DEFAULT();
+	}
+
+	pass BloomPass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = compile gs_5_0 GS_MAIN();
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLOOM();
 	}
 }
 

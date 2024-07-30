@@ -149,9 +149,7 @@ void CUIGroup_Quick::Update_QuickSlot_Add(CItemData* pItemData, _int iInvenIdx)
 			return;
 		}
 		else
-		{
 			++slot;
-		}
 	}
 }
 
@@ -183,6 +181,8 @@ void CUIGroup_Quick::Update_QuickSlot_Delete(_uint iInvenIdx)
 			(*slot)->Delete_ItemIcon();
 			break;
 		}
+		else
+			++slot;
 	}
 }
 
@@ -208,6 +208,9 @@ void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
 
 		if ((*slot)->Get_isItemIconNull())
 			break;
+
+		_bool isEquip = (*slot)->Get_isEquip();
+
 		wstring wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick;
 		wstrTexture = (*slot)->Get_Texture();
 		wstrItemName = (*slot)->Get_ItemName();
@@ -218,13 +221,10 @@ void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
 		(*slot)->Delete_ItemIcon();
 
 		--slot;
-		(*slot)->Pull_ItemIcon(wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
+		(*slot)->Pull_ItemIcon(isEquip, wstrTexture, wstrItemName, wstrItemExplain, wstrItemExplain_Quick);
 
 		++slot;
 	}
-
-
-
 }
 
 HRESULT CUIGroup_Quick::Create_UI()

@@ -49,7 +49,9 @@ _bool CUI_Manager::Get_isMouseOn()
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade");
 
-	 if ((*menu).second->Get_Rend() || (*quick).second->Get_Rend() || (*upgrade).second->Get_Rend() || (*logo).second->Get_Rend())
+	// 여기에 shop도 넣기
+
+	 if ((*menu).second->Get_Rend() || (*quick).second->Get_Rend() || (*upgrade).second->Get_Rend() || (*logo).second->Get_Rend() || m_isShopOn)
 		return true;
 	else
 		return false;

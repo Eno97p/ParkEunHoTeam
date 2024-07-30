@@ -22,7 +22,11 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Update_Data(_uint iCurSlotIdx);
+
 private:
+	_uint								m_iLevel = { 0 };
+	_uint								m_iAddDamage = { 0 };
 	wstring								m_wstrItemName;
 
 private:

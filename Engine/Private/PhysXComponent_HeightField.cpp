@@ -16,6 +16,13 @@ CPhysXComponent_HeightField::CPhysXComponent_HeightField(ID3D11Device * pDevice,
 
 CPhysXComponent_HeightField::CPhysXComponent_HeightField(const CPhysXComponent_HeightField & rhs)
 	: CPhysXComponent{ rhs }
+	,m_fMinHeight{rhs.m_fMinHeight}
+	,m_fMaxHeight{rhs.m_fMaxHeight}
+	,m_pHeightField{rhs.m_pHeightField}
+	,m_fHeightScale{rhs.m_fHeightScale}
+	,m_iNumVerticeX{rhs.m_iNumVerticeX}
+	,m_iNumVerticeZ{rhs.m_iNumVerticeZ}
+	
 
 #ifdef _DEBUG
 	,m_OutDesc{rhs.m_OutDesc}
@@ -28,10 +35,71 @@ HRESULT CPhysXComponent_HeightField::Initialize_Prototype(const wstring& strProt
 	CVIBuffer_Terrain* TerrainCom = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Prototype(m_pGameInstance->Get_CurrentLevel(), strPrototypeTag));
 	if(!TerrainCom)
 		return E_FAIL;
+	m_iNumVerticeX = TerrainCom->GetNumVerticesX();
+	m_iNumVerticeZ = TerrainCom->GetNumVerticesZ();
+	_float4* TerrainPosition = TerrainCom->Get_VertexPositions();
 
 
 
 
+
+
+	for(PxU32 s = 0 ; s < m_iNumVerticeX * m_iNumVerticeZ; s++)
+	{
+
+		m_fMinHeight = PxMin(m_fMinHeight, TerrainPosition[s].y);
+		m_fMaxHeight = PxMax(m_fMaxHeight, TerrainPosition[s].y);
+	}
+
+	PxReal fdeltaHeight = m_fMaxHeight - m_fMinHeight;
+	PxReal fquantization = (PxReal)0x7fff/* 32767*/;
+
+	m_fHeightScale = PxMax(fdeltaHeight / fquantization, PX_MIN_HEIGHTFIELD_Y_SCALE);
+	
+
+
+
+
+	PxHeightFieldSample* pSamples = new PxHeightFieldSample[m_iNumVerticeX * m_iNumVerticeZ];
+	for (PxU32 row = 0; row < m_iNumVerticeX; row++)
+	{
+		for (PxU32 col = 0; col < m_iNumVerticeZ; col++)
+		{
+			PxU32 index = row * m_iNumVerticeZ + col;
+
+			PxI16 height = static_cast<PxI16>((TerrainPosition[index].y- m_fMinHeight) / m_fHeightScale) - 32768;
+			pSamples[index].height = height;
+			pSamples[index].materialIndex0 = 0;
+			pSamples[index].materialIndex1 = 0;
+			//PxI16 height = static_cast<PxI16>((TerrainPostion[index].y / heightScale) * 32767);
+			//pSamples[index].height = 
+
+		}
+
+	}
+
+	PxHeightFieldDesc hfDesc;
+	hfDesc.format = PxHeightFieldFormat::eS16_TM;
+	hfDesc.nbColumns = m_iNumVerticeX;
+	hfDesc.nbRows = m_iNumVerticeZ;
+	hfDesc.samples.data = pSamples;
+	hfDesc.samples.stride = sizeof(PxHeightFieldSample);
+
+	PxPhysics* physics = m_pGameInstance->GetPhysics();
+	m_pHeightField = PxCreateHeightField(hfDesc, physics->getPhysicsInsertionCallback());
+
+
+	if (!m_pHeightField)
+	{
+		Safe_Delete_Array(pSamples);
+		return E_FAIL; // 생성 실패 처리
+	}
+
+
+
+
+
+	Safe_Delete_Array(pSamples);
 
 
 	if(FAILED(__super::Initialize_Prototype()))
@@ -51,6 +119,32 @@ HRESULT CPhysXComponent_HeightField::Initialize_Prototype(const wstring& strProt
 HRESULT CPhysXComponent_HeightField::Initialize(void * pArg)
 {
 	CPhysXComponent::PHYSX_DESC* pDesc = static_cast<CPhysXComponent::PHYSX_DESC*>(pArg);
+
+
+
+
+	// 원본 지형 데이터에서 사용한 스케일 값을 가져옵니다.
+	const float terrainScaleX = 3.f;  // TerrainCom에서 이 값을 가져올 수 있다면 더 좋습니다.
+	const float terrainScaleZ = 3.f;
+	const float heightScale = 1000.f;
+
+
+	float offsetX = (m_iNumVerticeX - 1) * terrainScaleX * 0.5f;
+	float offsetZ = (m_iNumVerticeZ - 1) * terrainScaleZ * 0.5f;
+
+
+	PxPhysics* physics = m_pGameInstance->GetPhysics();
+
+
+	PxHeightFieldGeometry hfGeom(m_pHeightField, PxMeshGeometryFlags(), m_fHeightScale, terrainScaleX, terrainScaleZ);
+
+
+	PxTransform transform(PxVec3(-offsetX, heightScale, -offsetZ)); // 위치 설정
+	PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.1f); // 마찰계수, 반발계수 등을 적절히 설정
+
+
+	m_pActor = PxCreateStatic(*physics, transform, hfGeom, *material);
+	m_pActor->setName("HeightField");
 
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -133,6 +227,8 @@ void CPhysXComponent_HeightField::Free()
 {
 	__super::Free();
 
+	Safe_physX_Release(m_pHeightField);
+	
 
 	
 

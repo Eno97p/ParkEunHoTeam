@@ -834,15 +834,15 @@ HRESULT CGameInstance::Add_UI(CGameObject* ui, UISORT_PRIORITY type)
 	return m_UISorter->Add_UI(ui, type);
 }
 
-_bool CGameInstance::IsVisibleObject(CGameObject* obj)
-{
-	return m_pOctTree->IsObjectVisible(obj);
-}
+//_bool CGameInstance::IsVisibleObject(CGameObject* obj)
+//{
+//	return m_pOctTree->IsObjectVisible(obj);
+//}
 
-void CGameInstance::AddCullingObject(CGameObject* obj, PxActor* pActor)
-{
-	m_pOctTree->AddObject(obj, pActor);
-}
+//void CGameInstance::AddCullingObject(CGameObject* obj, PxActor* pActor)
+//{
+//	m_pOctTree->AddObject(obj, pActor);
+//}
 
 template<typename T, typename... Args>
 void CGameInstance::AddWork(T&& Func, Args&&... args)

@@ -241,6 +241,7 @@ HRESULT CUIGroup_Weapon::Create_Slot()
 		for (size_t j = 0; j < 5; ++j)
 		{
 			ZeroMemory(&pDesc, sizeof(pDesc));
+			pDesc.iSlotIdx = (i * j) + j;
 			pDesc.eLevel = LEVEL_STATIC;
 			pDesc.fX = 230.f + (j * 76.f); // 160
 			pDesc.fY = 200.f + (i * 76.f);
@@ -349,7 +350,8 @@ void CUIGroup_Weapon::Change_Tab()
 		slot = m_vecSlot.begin();
 		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
 		{
-			(*slot)->Change_ItemIcon_Weapon();
+			(*slot)->Change_ItemIcon_Weapon(); // 여기서 몇 번째 슬롯인지 넣어줄까?
+			++slot; // ???
 		}
 
 		// Equip Slot 리셋하고 채워넣기

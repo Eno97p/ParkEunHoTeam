@@ -55,21 +55,11 @@ void CTerrain::Priority_Tick(_float fTimeDelta)
 
 void CTerrain::Tick(_float fTimeDelta)
 {
-	if (CImgui_Manager::GetInstance()->Get_IsReLoad())
-		Setting_NewTerrain();
 
-	if (m_isReLoad)
+	if (m_pGameInstance->Key_Pressing(DIK_0))
 	{
-		Terrain_Desc pDesc{};
-
-		pDesc.iVerticesX = m_iVerticesX;
-		pDesc.iVerticesZ = m_iVerticesZ;
-
-		Setting_NewTerrain(&pDesc); // Tick에서 호출하지 않으면 렌더링이 변하지 않으므로 어쩔 수 없이 구조체 두 번 거치기로
+		m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
 	}
-
-
-	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
 
 	/*if (m_pImgui_Manager->Get_IsNaviClear())
 	{
@@ -89,7 +79,7 @@ void CTerrain::Late_Tick(_float fTimeDelta)
 	//	m_fTest = 0.f;
 	//	m_pVIBufferCom->Update_Height(fTimeDelta);
 	//}
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 }
 
 HRESULT CTerrain::Render()

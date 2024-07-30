@@ -98,6 +98,14 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 		m_pAttackColliderCom->Reset();
 	}
 
+	if (m_iState == STATE_ATTACK)
+	{
+		m_bMotionBlur = true;
+	}
+	else
+	{
+		m_bMotionBlur = false;
+	}
 }
 
 void CJuggulus_HandOne::Late_Tick(_float fTimeDelta)
@@ -142,7 +150,7 @@ HRESULT CJuggulus_HandOne::Render()
 	}
 
 #pragma region 모션블러
-	m_PrevWorldMatrix = m_WorldMatrix;
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
 #pragma endregion 모션블러
 
@@ -407,6 +415,9 @@ HRESULT CJuggulus_HandOne::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
 		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))

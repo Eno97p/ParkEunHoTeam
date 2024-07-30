@@ -26,6 +26,7 @@ private:
 	virtual ~CUI_Slot() = default;
 
 public:
+	_bool			Get_isEquip() { return m_isEquip; }
 	void			Set_isEquip(_bool isEquip) { m_isEquip = isEquip; }
 	
 	_bool			Get_isItemIconNull()
@@ -62,10 +63,11 @@ public:
 	HRESULT			Change_ItemIcon_Weapon();
 	HRESULT			Change_ItemIcon_Skill();
 
-	HRESULT			Pull_ItemIcon(wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick); // 빈 Slot에 다음 슬롯의 ItemIcon을 당겨오는 함수
+	HRESULT			Pull_ItemIcon(_bool isEquip, wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick); // 빈 Slot에 다음 슬롯의 ItemIcon을 당겨오는 함수
 	HRESULT			Delete_ItemIcon();
 
 	void			Resset_Data(); // 이거랑 Delete랑 똑같음...
+	void			Clear_ItemIcon(); // nullptr로만 만들어주는 함수
 	void			Check_Equip(_bool isWeapon, CItemData* pItemData);
 
 private:

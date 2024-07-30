@@ -1,10 +1,11 @@
 #pragma once
 #include "BlendObject.h"
 #include "Effect_Define.h"
-#include "VIBuffer_Lightning.h"
+
 BEGIN(Engine)
 class CShader;
 class CTexture;
+class CModel;
 END
 
 BEGIN(Effect)
@@ -13,12 +14,15 @@ class CElectronic final : public CBlendObject
 public:
 	typedef struct ELECTRONICDESC
 	{
-		CVIBuffer_Lightning::LIGHTNINGDESC		 BufferDesc;
-		_float4									 vStartPos = { 0.f,0.f,0.f,1.f };
-		_int									 iNumNoise = 0;
-		_float3									 vColor = { 0.f,0.f,0.f };
-		wstring									 Texture = TEXT("");
-		wstring									 TexturePath = TEXT("");
+		_float3 vSize = { 8.f,8.f,8.f };
+		_float3 vOffset = { 0.f,0.f,0.f };
+		_float4 vStartPos = { 0.f,0.f,0.f,1.f };
+		_float fMaxLifeTime = 0.3f;
+		_float fBloomPower = 1.f;
+		_float fUVSpeed = 4.f;
+		_float3 vColor = { 1.f,1.f,1.f };
+		_float3 vBloomColor = { 1.f,1.f,1.f };
+		_int	ParticleIndex = 0;
 	};
 
 private:
@@ -35,27 +39,25 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
-	virtual HRESULT Render_Blur() override;
-
-
 
 private:
-	CTexture* m_pTextureCom = { nullptr };
-	CTexture* m_pNoiseTex = { nullptr };
-	CShader* m_pShaderCom = { nullptr };
-	CVIBuffer_Lightning* m_pVIBufferCom = { nullptr };
-	shared_ptr<ELECTRONICDESC>	OwnDesc;
-	_float						fTime = 0.f;
+	CTexture*			m_pNoiseTex = { nullptr };
+	CShader*			m_pShaderCom = { nullptr };
+	CModel*				m_pModelCom = { nullptr };
+	shared_ptr<ELECTRONICDESC>				OwnDesc;
+
+private:
+	_float				m_fCurLifeTime = 0.f;
+	_float				m_fRatio = 0.f;
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
-	HRESULT Bind_BlurResources();
+	HRESULT Bind_BloomResources();
 
 public:
 	static CElectronic* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-
 };
 
 END

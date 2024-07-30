@@ -26,7 +26,12 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Update_Value(_uint iCurSlotIdx);
+
 private:
+	_uint			m_iPrive = { 0 };
+	_uint			m_iValue = { 0 };
+	_uint			m_iJemstone = { 0 };
 	wstring			m_wstrText;
 
 	VALUE_TYPE		m_eValueType = { VALUE_END };
@@ -36,6 +41,7 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Rend_Font();
+	void	Update_Jemstone();
 
 public:
 	static CUI_UpGPage_Value*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

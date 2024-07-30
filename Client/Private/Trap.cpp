@@ -89,6 +89,8 @@ void CTrap::Tick(_float fTimeDelta)
 			_float4 vPartPos;
 			XMStoreFloat4(&vPartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(30, vPartPos);
+			EFFECTMGR->Generate_Particle(42, vPartPos);
+			EFFECTMGR->Generate_Particle(43, vPartPos);
 		}
 	}
 

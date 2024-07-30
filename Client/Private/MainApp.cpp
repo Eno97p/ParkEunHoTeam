@@ -121,6 +121,10 @@
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
 #include "UIGroup_UpGPage.h"
+
+
+
+#include "UIGroup_UP_Completed.h"
 #pragma endregion Upgrade
 
 #pragma region Map
@@ -138,7 +142,6 @@
 #include "UI_Shop_SoulBG.h"
 #include "UI_ShopSelect.h"
 #include "UI_Shop_RemainIcon.h"
-
 #include "UIGroup_Shop.h"
 #pragma endregion Shop
 
@@ -491,6 +494,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_DistortionRect.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
+	//MeshEffect
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_MeshEffect"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_MeshEffect.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
 
 #pragma endregion SHADER
 
@@ -528,6 +536,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FireAlpha"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Fire/alpha01.dds"), 1))))
+		return E_FAIL;
+
+	//퍼린 노이즈
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_PerlinNoise"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/Perlin%d.png"), 2))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_Fire */
@@ -588,6 +601,20 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	//Grass
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_GrassParticle"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/GrassParticle.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//Rock
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RockParticle1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/RockParticle0.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//Rock2
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RockParticle2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/RockParticle1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//LightningProp
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_InstanceLightning"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Jugglus_Lightning.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	//Blade
@@ -724,19 +751,24 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma region Icon
 #pragma region Weapon
-	/* Prototype_Component_Texture_Icon_Catharsis */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Catharsis"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_LimboBlade.png"), 1))))
+	/* Prototype_Component_Texture_Icon_Durgas_Claymore */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Durgas_Claymore"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Durgas_Claymore.png"), 1))))
 		return E_FAIL;
 
-	/* Prototype_Component_Texture_Icon_NaruehsGlaive */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_NaruehsGlaive"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_NaruehsGlaive.png"), 1))))
+	/* Prototype_Component_Texture_Icon_Elish */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Elish"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Elish.png"), 1))))
 		return E_FAIL;
 
-	/* Prototype_Component_Texture_Icon_EtherBolt */
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_EtherBolt"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_EtherBolt.png"), 1))))
+	/* Prototype_Component_Texture_Icon_Pretorian*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Pretorian"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Pretorian.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Radamanthes*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Radamanthes"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Radamanthes_Dagger.png"), 1))))
 		return E_FAIL;
 #pragma endregion Weapon
 

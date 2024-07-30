@@ -56,6 +56,7 @@ protected:
 	ID3D11DeviceContext*		m_pContext = { nullptr };
 
 	_bool						m_bisVisible = false;
+	_bool						m_bMotionBlur = false;
 	wstring						m_wstrMoDelName = L"";
 	_float4x4					m_PrevWorldMatrix;
 	_float4x4					m_PrevViewMatrix;

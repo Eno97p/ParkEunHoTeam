@@ -8,6 +8,7 @@ class CShader;
 class CTexture;
 class CNavigation;
 class CVIBuffer_Terrain;
+class CPhysXComponent_HeightField;
 END
 
 BEGIN(Client)
@@ -34,7 +35,7 @@ private:
 	CTexture*						m_pTextureCom[TEX_END] = { nullptr };
 	CNavigation*					m_pNavigationCom = { nullptr };
 	CVIBuffer_Terrain*				m_pVIBufferCom = { nullptr };
-
+	CPhysXComponent_HeightField*	m_pPhysXCom = { nullptr };
 private:
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
 

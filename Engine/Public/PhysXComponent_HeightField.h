@@ -44,8 +44,13 @@ private:
 private:
 	PhysX_HeightFiel_Editable_Desc m_OutDesc;
 #endif
-	PxHeightFieldGeometry m_HeightFieldGeometry;
+	PxReal m_fMinHeight = PX_MAX_F32;
+	PxReal m_fMaxHeight = -PX_MAX_F32;
+	PxHeightField* m_pHeightField = nullptr;
+	_float m_fHeightScale = 0.0f;
 
+	_uint m_iNumVerticeX = 0;
+	_uint m_iNumVerticeZ = 0;
 public:
 	static CPhysXComponent_HeightField* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strPrototypeTag);
 	virtual CComponent* Clone(void* pArg) override;

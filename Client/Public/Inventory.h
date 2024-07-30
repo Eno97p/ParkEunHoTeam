@@ -30,6 +30,7 @@ public:
 	_uint								Get_WeaponSize() { return m_vecWeapon.size(); }
 	_uint								Get_SkillSize() { return m_vecSkill.size(); }
 
+	vector<class CItemData*>*			Get_ItemDatas(){ return&m_vecItem; }
 	vector<class CItemData*>*			Get_Weapons() { return &m_vecWeapon; }
 	class CItemData*					Get_EquipWeapon(_uint iArrIdx) { return m_arrEquipWeapon[iArrIdx]; }
 	class CItemData*					Get_EquipSkill(_uint iArrIdx) { return m_arrEquipSkill[iArrIdx]; }

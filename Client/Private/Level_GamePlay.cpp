@@ -49,12 +49,12 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 	
-	CGameObject::GAMEOBJECT_DESC gameobjDesc;
-	gameobjDesc.mWorldMatrix._41 = 155.f;
-	gameobjDesc.mWorldMatrix._42 = 522.f;
-	gameobjDesc.mWorldMatrix._43 = 113.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &gameobjDesc)))
-		return E_FAIL;
+	//CGameObject::GAMEOBJECT_DESC gameobjDesc;
+	//gameobjDesc.mWorldMatrix._41 = 155.f;
+	//gameobjDesc.mWorldMatrix._42 = 522.f;
+	//gameobjDesc.mWorldMatrix._43 = 113.f;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &gameobjDesc)))
+	//	return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
@@ -62,9 +62,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-#ifdef _DEBUG
+/*#ifdef _DEBUG
 #else
-#endif // _DEBUG
+#endif*/ // _DEBUG
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Tutorial.bin"));
 
 	Load_Data_Decals();
@@ -683,7 +683,7 @@ HRESULT CLevel_GamePlay::Load_Data_Decals()
 
 
 #ifdef _DEBUG
-	//MSG_BOX("Decal Data Loaded");
+	MSG_BOX("Decal Data Loaded");
 #endif
 	return S_OK;
 }

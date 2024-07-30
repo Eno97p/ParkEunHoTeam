@@ -147,17 +147,6 @@ void CBody_Andras::Tick(_float fTimeDelta)
 			m_pWeapon[2]->Set_Active(false);
 		}
 	}
-	//else if (*m_pState == CAndras::STATE_ATTACK3)
-	//{
-	//	if (m_iPastAnimIndex < 6 || m_iPastAnimIndex > 8)
-	//	{
-	//		m_iPastAnimIndex = 6;
-	//	}
-	//	fAnimSpeed = 1.5f;
-	//	m_pModelCom->Set_LerpTime(1.3);
-	//	AnimDesc.isLoop = false;
-	//	AnimDesc.iAnimIndex = m_iPastAnimIndex;
-	//}
 	else if (*m_pState == CAndras::STATE_ATTACK4)
 	{
 		if (m_iPastAnimIndex < 0 || m_iPastAnimIndex > 4)
@@ -252,6 +241,17 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 32;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
+	}
+
+	if (*m_pState == CAndras::STATE_DASHLEFT || *m_pState == CAndras::STATE_DASHRIGHT ||
+		*m_pState == CAndras::STATE_DASHFRONT || *m_pState == CAndras::STATE_DASHBACK ||
+		*m_pState == CAndras::STATE_SPRINTATTACK || *m_pState == CAndras::STATE_KICKATTACK)
+	{
+		m_bMotionBlur = true;
+	}
+	else
+	{
+		m_bMotionBlur = false;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
@@ -459,6 +459,9 @@ HRESULT CBody_Andras::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
 		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))

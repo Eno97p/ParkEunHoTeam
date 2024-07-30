@@ -57,6 +57,16 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	// Test
+	if (m_pGameInstance->Get_DIKeyState(DIK_B))
+	{
+		m_pGameInstance->Set_MotionBlur(true);
+	}
+	else
+	{
+		m_pGameInstance->Set_MotionBlur(false);
+	}
+
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
 		if (m_bIsCloaking)
@@ -702,7 +712,7 @@ NodeStates CPlayer::SpecialAttack(_float fTimeDelta)
 		return COOLING;
 	}
 
-	return Special1(fTimeDelta);
+	return Special2(fTimeDelta);
 }
 
 NodeStates CPlayer::Special1(_float fTimeDelta)
@@ -756,19 +766,19 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 			{
 				if (m_fBRIS < 2.f + BRISDELAY)
 				{
-					m_fBRIS += fTimeDelta * (2.f) / BRISDELAY;
+					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				}
 				m_pGameInstance->Set_BRIS(0.1f);
-				m_pGameInstance->Set_Mirror(m_fBRIS - (2.f));
+				m_pGameInstance->Set_Mirror(m_fBRIS - 2.f);
 			}
 			else if (m_fSpecialAttack >= 2.f)
 			{
 				// 2.f : 갈라지는 시간(x - 1.f = 갈라지는 총 시간)
 				if (m_fBRIS < 2.f)
 				{
-					m_fBRIS += fTimeDelta * (2.f) / BRISDELAY;
+					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				}
-				m_pGameInstance->Set_BRIS(m_fBRIS * 0.1f / (2.f));
+				m_pGameInstance->Set_BRIS(m_fBRIS * 0.1f / 2.f);
 			}
 		}
 		if (m_bAnimFinished)

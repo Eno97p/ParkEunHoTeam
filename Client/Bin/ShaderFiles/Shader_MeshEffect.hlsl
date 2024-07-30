@@ -10,6 +10,9 @@ float		g_CurTime, g_Speed;
 float3		g_Color;
 float		g_FrameRatio;
 
+//블룸 파워
+float		g_BloomPower;
+
 
 struct VS_IN
 {
@@ -24,6 +27,7 @@ struct VS_OUT
 	float4		vPosition : SV_POSITION;
 	float2		vTexcoord : TEXCOORD0;
 };
+
 
 /* 정점 셰이더 :  /* 
 /* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
@@ -299,6 +303,39 @@ PS_OUT PS_UVYPLUS(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_Lightning(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_Lightning_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+	Color.a = g_BloomPower;
+
+	Out.vColor = Color;
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -413,6 +450,34 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_UVYPLUS();
+	}
+
+	pass Lightning	//8pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Lightning();
+	}
+
+	pass Lightning_Bloom	//9pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Lightning_Bloom();
 	}
 }
 

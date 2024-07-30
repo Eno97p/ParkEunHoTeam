@@ -42,6 +42,13 @@ void CAndrasLazer::Tick(_float fTimeDelta)
 	if (m_OwnDesc->fLifeTime < 0.f)
 		m_pGameInstance->Erase(this);
 
+	CurInterval -= fTimeDelta;
+	if (CurInterval < 0.f)
+	{
+		CurInterval = m_OwnDesc->ElectricInterval;
+		Generate_Electric();
+	}
+
 }
 
 void CAndrasLazer::Late_Tick(_float fTimeDelta)
@@ -65,7 +72,7 @@ HRESULT CAndrasLazer::Add_Child_Effects()
 	m_OwnDesc->CylinderDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
 	m_OwnDesc->RainDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
 	m_OwnDesc->ScrewDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
-	m_OwnDesc->ElectricDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
+
 
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
 		TEXT("Prototype_GameObject_Andras_LazerBase"), &m_OwnDesc->BaseDesc);
@@ -74,11 +81,18 @@ HRESULT CAndrasLazer::Add_Child_Effects()
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
 		TEXT("Prototype_GameObject_Andras_Screw"), &m_OwnDesc->ScrewDesc);
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
-		TEXT("Prototype_GameObject_ElectricCylinder"), &m_OwnDesc->ElectricDesc);
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
 		TEXT("Prototype_GameObject_AndrasRain"), &m_OwnDesc->RainDesc);
 
 	return S_OK;
+}
+
+void CAndrasLazer::Generate_Electric()
+{
+	if (m_OwnDesc->fLifeTime < m_OwnDesc->ElectricDesc.fMaxLifeTime)
+		return;
+
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
+		TEXT("Prototype_GameObject_ElectricCylinder"), &m_OwnDesc->ElectricDesc);
 }
 
 CAndrasLazer* CAndrasLazer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

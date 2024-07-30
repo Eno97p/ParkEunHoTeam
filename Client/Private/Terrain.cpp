@@ -90,6 +90,11 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_Brush"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_BRUSH]))))
 		return E_FAIL;
 
+	/* For.Com_Physx */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_HeightField"),
+		TEXT("Com_Physx"), reinterpret_cast<CComponent**>(&m_pPhysXCom))))
+		return E_FAIL;
+
 	///* For.Com_Navigation */
 	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
 	//	TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
@@ -156,4 +161,5 @@ void CTerrain::Free()
 		Safe_Release(pTexture);
 	
 	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pPhysXCom);
 }

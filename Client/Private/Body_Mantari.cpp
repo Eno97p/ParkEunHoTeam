@@ -214,6 +214,9 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			PartPos.y = m_WorldMatrix._42;
 			EFFECTMGR->Generate_Particle(17, PartPos);
 			EFFECTMGR->Generate_Particle(18, PartPos);
+			EFFECTMGR->Generate_Particle(42, PartPos);
+			EFFECTMGR->Generate_Particle(43, PartPos);
+			
 		}
 
 
@@ -277,6 +280,15 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 12;
 		fAnimSpeed = 1.f;
+	}
+
+	if (*m_pState == CMantari::STATE_JUMPATTACK)
+	{
+		m_bMotionBlur = true;
+	}
+	else
+	{
+		m_bMotionBlur = false;
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
@@ -541,6 +553,9 @@ HRESULT CBody_Mantari::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
 		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))

@@ -90,11 +90,16 @@ public: /* For.Renderer */
 	HRESULT Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
 	void Set_BRIS(_float fBRIS);
 	void Set_Mirror(_float fMirror);
+	// 화면 전체 모션블러 여부
+	void Set_MotionBlur(_bool bMotionBlur) { m_bMotionBlur = bMotionBlur; }
+	_bool Get_MotionBlur() { return m_bMotionBlur; }
+private:
+	_bool m_bMotionBlur = false;
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
-
+public:
 	//이민영 추가 240621 1423PM
 	void Set_ShadowEyeFocus(_vector vEye, _vector vFocus, _float fThreshold);
 	_vector Get_ShadowEye();

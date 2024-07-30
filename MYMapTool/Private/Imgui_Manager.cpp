@@ -601,7 +601,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
         if (item_current == 0)
         {
             ImGui::ColorEdit3("Top Color", TopCol);
-            ImGui::ColorEdit3("Light Diffuse", BotCol);
+            ImGui::ColorEdit3("Bot Color", BotCol);
 
             m_TopCol = { TopCol[0], TopCol[1], TopCol[2] };
             m_BotCol = { BotCol[0], BotCol[1], BotCol[2] };

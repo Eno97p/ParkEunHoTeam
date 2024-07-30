@@ -624,6 +624,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lightnings">
+      <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1282,6 +1285,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Lightning.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
+      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1914,6 +1923,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Lightning.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
+      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

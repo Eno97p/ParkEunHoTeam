@@ -13,13 +13,17 @@ BEGIN(Effect)
 
 class CSTrail final : public CBlendObject
 {
+
 public:
 	typedef struct STRAIL_DESC
 	{
 		CVIBuffer_SwordTrail::SwordTrailDesc			traildesc;
 		_bool								isBloom = false;
+		_bool								isDestortion = false;
 		_int								iDesolveNum = 0;
 		_float3								vColor = { 1.f,1.f,1.f };
+		_float3								vBloomColor = { 1.f,1.f,1.f };
+		_float								fBloomPower = 1.f;
 		wstring								Texture = TEXT("");
 		wstring								TexturePath = TEXT("");
 	};
@@ -49,6 +53,8 @@ private:
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Bind_BlurResources();
+
 public:
 	static CSTrail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

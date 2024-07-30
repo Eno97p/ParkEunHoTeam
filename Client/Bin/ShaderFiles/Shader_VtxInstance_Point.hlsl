@@ -7,6 +7,8 @@ float		g_BlurPower, g_DesolvePower;
 float3		g_StartColor, g_EndColor, g_DesolveColor, g_BloomColor;
 bool		g_Desolve, g_Alpha, g_Color;
 
+float		g_TimeAcc;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -187,6 +189,7 @@ PS_OUT PS_BLOOM(PS_IN In)
 	}
 	return Out;
 }
+
 
 technique11 DefaultTechnique
 {

@@ -12,7 +12,7 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath);
+//	virtual HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath);
 	HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath, _bool realmap);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _float Compute_Height(const _float3& vLocalPos) override;
@@ -28,14 +28,14 @@ public:
 
 	HRESULT UpdateVertexBuffer(_ushort* pHeightMapData, int iWidth, int iHeight, float terrainScale);
 
-	HRESULT UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, int iHeight, float terrainScale);
+	//HRESULT UpdateVertexBuffer(BYTE* pHeightMapData, int iWidth, int iHeight, float terrainScale);
 
 
 	void SplatBrushOnHeightMap(ID3D11Texture2D* pHeightMapTexture, const _float4& vBrushPos, float fBrushSize, float fBrushStrength, CTexture* pBrushTexture);
 
 	void Recalculate_Normals();
 
-	void Update_Height(const _float4& vBrushPos, float fBrushSize, float fBrushStrength, CTexture* pBrushTexture);
+	//void Update_Height(const _float4& vBrushPos, float fBrushSize, float fBrushStrength, CTexture* pBrushTexture);
 
 	_uint GetNumVerticesX() { return m_iNumVerticesX; }
 	_uint GetNumVerticesZ() { return m_iNumVerticesZ; }
@@ -49,10 +49,11 @@ private:
 	_uint				m_iNumVerticesZ = { 0 };
 
 	class CQuadTree*	m_pQuadTree = { nullptr };
+	class COctTree*		m_pOctTree = { nullptr };
 	PxActor* m_pTerrainActor = { nullptr };
 
 public:
-	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath);
+	//static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath);
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath, _bool realmap);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;

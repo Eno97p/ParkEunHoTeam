@@ -7,7 +7,7 @@
 #include "PartObject.h"
 #include "Player.h"
 #include "Particle_STrail.h"
-#include "Electronic.h"
+
 #include "Andras.h"
 #include "AndrasLazer_Base.h"
 #include "AndrasLazer_Cylinder.h"
@@ -336,6 +336,12 @@ void CImguiMgr::EffectTool_Rework()
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Grass", MeshDesc.eModelType == EFFECTMODELTYPE::GRASS))
 			MeshDesc.eModelType = EFFECTMODELTYPE::GRASS;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rock1", MeshDesc.eModelType == EFFECTMODELTYPE::ROCK0))
+			MeshDesc.eModelType = EFFECTMODELTYPE::ROCK0;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rock2", MeshDesc.eModelType == EFFECTMODELTYPE::ROCK1))
+			MeshDesc.eModelType = EFFECTMODELTYPE::ROCK1;
 	}
 
 	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
@@ -1286,9 +1292,14 @@ void CImguiMgr::SwordTrail_Tool()
 	ImGui::InputFloat("MovingTime", &StaticDesc.traildesc.fMaxTime);
 	ImGui::InputInt("DesolveNum", &StaticDesc.iDesolveNum);
 	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&StaticDesc.vColor));
-	ImGui::Checkbox("Bloom", &StaticDesc.isBloom);
 
-	
+	ImGui::Checkbox("Bloom", &StaticDesc.isBloom);
+	if (StaticDesc.isBloom == true)
+	{
+		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&StaticDesc.vBloomColor));
+		ImGui::InputFloat("BloomPower", &StaticDesc.fBloomPower);
+	}
+	ImGui::Checkbox("Distortion", &StaticDesc.isDestortion);
 
 #pragma region BUTTONS
 	if (ImGui::Button("Add", ButtonSize))
@@ -1449,8 +1460,12 @@ HRESULT CImguiMgr::Save_SwordTrail()
 	{
 		file.write((char*)&iter->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
 		file.write((char*)&iter->isBloom, sizeof(_bool));
+		file.write((char*)&iter->isDestortion, sizeof(_bool));
 		file.write((char*)&iter->iDesolveNum, sizeof(_int));
 		file.write((char*)&iter->vColor, sizeof(_float3));
+		file.write((char*)&iter->vBloomColor, sizeof(_float3));
+		file.write((char*)&iter->fBloomPower, sizeof(_float));
+
 		save_wstring_to_stream(iter->Texture, file);
 		save_wstring_to_stream(iter->TexturePath, file);
 	}
@@ -1497,12 +1512,27 @@ HRESULT CImguiMgr::Load_SwordTrail()
 	inFile.read((char*)&iSize, sizeof(_uint));
 	for (int i = 0; i < iSize; ++i)
 	{
+		//file.write((char*)&iter->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
+		//file.write((char*)&iter->isBloom, sizeof(_bool));
+		//file.write((char*)&iter->isDestortion, sizeof(_bool));
+		//file.write((char*)&iter->iDesolveNum, sizeof(_int));
+		//file.write((char*)&iter->vColor, sizeof(_float3));
+		//file.write((char*)&iter->vBloomColor, sizeof(_float3));
+		//file.write((char*)&iter->fBloomPower, sizeof(_float));
+
+
+
+
 		shared_ptr<CSTrail::STRAIL_DESC> readFile = make_shared<CSTrail::STRAIL_DESC>();
 		inFile.read((char*)&readFile->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
 		readFile->traildesc.ParentMat = nullptr;
 		inFile.read((char*)&readFile->isBloom, sizeof(_bool));
+		inFile.read((char*)&readFile->isDestortion, sizeof(_bool));
 		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
 		inFile.read((char*)&readFile->vColor, sizeof(_float3));
+		inFile.read((char*)&readFile->vBloomColor, sizeof(_float3));
+		inFile.read((char*)&readFile->fBloomPower, sizeof(_float));
+
 		readFile->Texture = load_wstring_from_stream(inFile);
 		readFile->TexturePath = load_wstring_from_stream(inFile);
 		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
@@ -1935,19 +1965,16 @@ void CImguiMgr::Electron_Tool()
 	ImVec2 ButtonSize = { 100.f,30.f };
 
 	static CElectronic::ELECTRONICDESC Desc{};
-	ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &Desc.BufferDesc.iNumInstance, NULL, NULL, "%u");
-	ImGui::InputFloat3("Top", reinterpret_cast<float*>(&Desc.BufferDesc.vStartpos));
-	ImGui::InputFloat3("Bottom", reinterpret_cast<float*>(&Desc.BufferDesc.vEndpos));
-	ImGui::InputFloat2("Thick", reinterpret_cast<float*>(&Desc.BufferDesc.fThickness));
-	ImGui::InputFloat2("LifeTime", reinterpret_cast<float*>(&Desc.BufferDesc.fLifeTime));
-	ImGui::InputInt2("NumSegments", Desc.BufferDesc.NumSegments);
-	ImGui::InputInt("NumNoise", &Desc.iNumNoise);
-	ImGui::InputFloat2("Amplitude", reinterpret_cast<float*>(&Desc.BufferDesc.Amplitude));
+	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&Desc.vSize));
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.vOffset));
 	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
-	ImGui::ColorEdit3("StartColor", reinterpret_cast<float*>(&Desc.vColor));
+	ImGui::InputFloat("LifeTime", &Desc.fMaxLifeTime);
+	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+	ImGui::InputFloat("UVSpeed", &Desc.fUVSpeed);
 
-	Desc.Texture = m_pTextureProtoName;
-	Desc.TexturePath = m_pTextureFilePath;
+	ImGui::ColorEdit3("BaseColor", reinterpret_cast<float*>(&Desc.vColor));
+	ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.vBloomColor));
+	ImGui::InputInt("Particle", &Desc.ParticleIndex);
 
 	if (ImGui::Button("Generate", ButtonSize))
 	{
@@ -1956,9 +1983,208 @@ void CImguiMgr::Electron_Tool()
 			TEXT("Layer_Electronic"), TEXT("Prototype_GameObject_Electronic_Effect"), &Desc);
 	}
 
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Electronic"));
+	}
 
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_Lightnings(effectname, Desc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Lightning()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Lightning()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	Electron_ListBox(&Desc);
 
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Lightnings(char* Name, CElectronic::ELECTRONICDESC Lightning)
+{
+	string sName = Name;
+	shared_ptr<CElectronic::ELECTRONICDESC> StockValue = make_shared<CElectronic::ELECTRONICDESC>(Lightning);
+	m_Lightnings.emplace_back(StockValue);
+	LightningNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Electron_ListBox(CElectronic::ELECTRONICDESC* Lightning)
+{
+	if (m_Lightnings.size() < 1)
+		return;
+
+	if (m_Lightnings.size() != LightningNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Lightning_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+
+	if (ImGui::BeginListBox("LightningList", list_box_size))
+	{
+		for (int i = 0; i < LightningNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(LightningNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (current_item >= 0 && current_item < LightningNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Electronic"), TEXT("Prototype_GameObject_Electronic_Effect"), m_Lightnings[current_item].get());
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Lightning = *m_Lightnings[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Lightnings[current_item] = make_shared<CElectronic::ELECTRONICDESC>(*Lightning);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Lightnings[current_item].reset();
+			m_Lightnings.erase(m_Lightnings.begin() + current_item);
+			LightningNames.erase(LightningNames.begin() + current_item);
+
+			if (current_item >= m_Lightnings.size())
+				current_item = m_Lightnings.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Lightnings)
+				iter.reset();
+			m_Lightnings.clear();
+			LightningNames.clear();
+			current_item = 0;
+		}
+	}
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Lightning()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Lightning.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Lightnings.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Lightnings)
+	{
+		file.write((char*)iter.get(), sizeof(CElectronic::ELECTRONICDESC));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lightning.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : LightningNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lightnings.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < LightningNames.size(); ++i)
+	{
+		NumberFile << i << ". " << LightningNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Lightning()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Lightning.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Lightnings)
+		iter.reset();
+	m_Lightnings.clear();
+	LightningNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CElectronic::ELECTRONICDESC readFile{};
+		//shared_ptr<CElectronic::ELECTRONICDESC> readFile = make_shared<CElectronic::ELECTRONICDESC>();
+		inFile.read((char*)&readFile, sizeof(CElectronic::ELECTRONICDESC));
+		shared_ptr<CElectronic::ELECTRONICDESC> StockValue = make_shared<CElectronic::ELECTRONICDESC>(readFile);
+		m_Lightnings.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lightning.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		LightningNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::Lazer_Tool()
@@ -2006,12 +2232,14 @@ void CImguiMgr::Lazer_Tool()
 
 	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Electron");
 
+	ImGui::InputFloat("E_Interval", &TotalDesc.ElectricInterval);
 	ImGui::InputFloat3("E_MaxSize", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.vMaxSize));
 	ImGui::InputFloat3("E_Offset", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.vOffset));
-	ImGui::InputFloat("E_RotSpeed", &TotalDesc.ElectricDesc.fRotationSpeed);
-	ImGui::InputFloat("E_FrameSpeed", &TotalDesc.ElectricDesc.frameSpeed);
+	ImGui::InputFloat("E_LifeTime", &TotalDesc.ElectricDesc.fMaxLifeTime);
+	ImGui::InputFloat("E_UVSpeed", &TotalDesc.ElectricDesc.fUVSpeed);
 	ImGui::ColorEdit3("E_Color", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.fColor));
-
+	ImGui::ColorEdit3("E_BloomColor", reinterpret_cast<float*>(&TotalDesc.ElectricDesc.fBloomColor));
+	ImGui::InputFloat("E_BloomPower", &TotalDesc.ElectricDesc.fBloomPower);
 	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Rain");
 
 	ImGui::InputFloat3("R_MaxSize", reinterpret_cast<float*>(&TotalDesc.RainDesc.vMaxSize));

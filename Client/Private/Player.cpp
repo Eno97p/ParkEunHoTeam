@@ -702,7 +702,7 @@ NodeStates CPlayer::SpecialAttack(_float fTimeDelta)
 		return COOLING;
 	}
 
-	return Special1(fTimeDelta);
+	return Special2(fTimeDelta);
 }
 
 NodeStates CPlayer::Special1(_float fTimeDelta)

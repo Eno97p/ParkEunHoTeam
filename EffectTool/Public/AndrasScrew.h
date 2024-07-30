@@ -13,7 +13,7 @@ class CAndrasScrew final : public CBlendObject
 public:
 	typedef struct ANDRAS_SCREW_DESC
 	{
-		_float3 vMaxSize = { 1.5f,1.5f,30.f };
+		_float3 vMaxSize = { 2.f,2.f,30.f };
 		_float3 vOffset = { 0.f,1.f,2.f };
 		_float3 fColor = { 1.f,1.f,1.f };
 		_float fRotationSpeed = 1000.f;

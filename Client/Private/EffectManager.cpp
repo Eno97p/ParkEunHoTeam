@@ -45,6 +45,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Distortion");
 		return E_FAIL;
 	}
+	if (FAILED(Load_Lightnings()))
+	{
+		MSG_BOX("FAILED_Load_Lightnings");
+		return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -174,6 +179,22 @@ HRESULT CEffectManager::Generate_Distortion(const _int iIndex, const _float4 vSt
 	return S_OK;
 }
 
+HRESULT CEffectManager::Generate_Lightning(const _int iIndex, const _float4 vStartpos)
+{
+	if (iIndex >= m_pLightnings.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CElectronic::ELECTRONICDESC* Lightning = m_pLightnings[iIndex].get();
+		Lightning->vStartPos = vStartpos;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Electronic_Effect"), Lightning);
+	}
+	return S_OK;
+}
 
 
 HRESULT CEffectManager::Load_Trails()
@@ -235,8 +256,11 @@ HRESULT CEffectManager::Load_SwordTrails()
 		inFile.read((char*)&readFile->traildesc, sizeof(CVIBuffer_SwordTrail::SwordTrailDesc));
 		readFile->traildesc.ParentMat = nullptr;
 		inFile.read((char*)&readFile->isBloom, sizeof(_bool));
+		inFile.read((char*)&readFile->isDestortion, sizeof(_bool));
 		inFile.read((char*)&readFile->iDesolveNum, sizeof(_int));
 		inFile.read((char*)&readFile->vColor, sizeof(_float3));
+		inFile.read((char*)&readFile->vBloomColor, sizeof(_float3));
+		inFile.read((char*)&readFile->fBloomPower, sizeof(_float));
 		readFile->Texture = load_wstring_from_stream(inFile);
 		readFile->TexturePath = load_wstring_from_stream(inFile);
 		Add_Texture_Prototype(readFile->TexturePath, readFile->Texture);
@@ -340,6 +364,29 @@ HRESULT CEffectManager::Load_Distortions()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Lightnings()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Lightning.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CElectronic::ELECTRONICDESC readFile{};
+		inFile.read((char*)&readFile, sizeof(CElectronic::ELECTRONICDESC));
+		shared_ptr<CElectronic::ELECTRONICDESC> StockValue = make_shared<CElectronic::ELECTRONICDESC>(readFile);
+		m_pLightnings.emplace_back(StockValue);
+	}
+	inFile.close();
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -369,6 +416,11 @@ HRESULT CEffectManager::Ready_GameObjects()
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Fire_Effect"),
 		CFireEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Electronic_Effect"),
+		CElectronic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

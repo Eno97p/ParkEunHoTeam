@@ -74,7 +74,7 @@ void CWeapon_Andras3::Tick(_float fTimeDelta)
 		}
 	}
 
-	Generate_Trail(5);
+	Generate_Trail(3);
 }
 
 void CWeapon_Andras3::Late_Tick(_float fTimeDelta)

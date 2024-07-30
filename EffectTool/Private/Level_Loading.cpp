@@ -46,28 +46,27 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 {
 	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+
+		m_pGameInstance->Set_NextLevel(m_eNextLevel);
+
+		CLevel*		pNewLevel = { nullptr };
+
+		switch (m_eNextLevel)
 		{
-			m_pGameInstance->Set_NextLevel(m_eNextLevel);
+		case LEVEL_LOGO:
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_GAMEPLAY:
+			pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+			break;
+		}
 
-			CLevel*		pNewLevel = { nullptr };
+		if (nullptr == pNewLevel)
+			return;
 
-			switch (m_eNextLevel)
-			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_GAMEPLAY:
-				pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pNewLevel)
-				return;
-
-			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
-				return;
-		}		
+		if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+			return;
+		
 	}
 
 

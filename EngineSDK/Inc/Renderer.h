@@ -164,11 +164,11 @@ private:
 	//Fog
 private:
 	_float4 m_vFogColor = { 0.235f, 0.260f, 0.329f, 1.f };
-	_float m_fFogRange = 230.f;
-	_float m_fFogHeightFalloff = 0.87f;
-	_float m_fFogGlobalDensity = 1.f;
-	_float m_fFogTimeOffset = 10.f;
-	_float m_fNoiseIntensity = 0.2f;
+	_float m_fFogRange = 1000000.f;
+	_float m_fFogHeightFalloff = 0.f;
+	_float m_fFogGlobalDensity = 0.f;
+	_float m_fFogTimeOffset = 0.f;
+	_float m_fNoiseIntensity = 0.f;
 	_float m_fNoiseSize = 0.1f;
 
 private:

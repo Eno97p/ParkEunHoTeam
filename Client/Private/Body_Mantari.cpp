@@ -214,6 +214,9 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			PartPos.y = m_WorldMatrix._42;
 			EFFECTMGR->Generate_Particle(17, PartPos);
 			EFFECTMGR->Generate_Particle(18, PartPos);
+			EFFECTMGR->Generate_Particle(42, PartPos);
+			EFFECTMGR->Generate_Particle(43, PartPos);
+			
 		}
 
 

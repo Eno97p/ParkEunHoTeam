@@ -241,9 +241,6 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Dynamic">
       <UniqueIdentifier>{33d62eec-bb0d-4d1c-aa4d-de56e800574a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\08.Frustum\OctTree">
-      <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\996 .Worker">
       <UniqueIdentifier>{36b86822-d906-4595-be78-eb1fe1cfe95b}</UniqueIdentifier>
     </Filter>
@@ -267,6 +264,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Components\PhysXComponent\Static\HeightField">
       <UniqueIdentifier>{090c7ee8-6857-4353-9512-056221ad2d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\OctTree">
+      <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -502,7 +502,7 @@
       <Filter>01.Utility\03.Components\Shader\ComputeShader\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\OctTree.h">
-      <Filter>01.Utility\08.Frustum\OctTree</Filter>
+      <Filter>01.Utility\03.Components\VIBuffer\Terrain\OctTree</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle</Filter>
@@ -801,7 +801,7 @@
       <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
     </ClCompile>
     <ClCompile Include="..\private\OctTree.cpp">
-      <Filter>01.Utility\08.Frustum\OctTree</Filter>
+      <Filter>01.Utility\03.Components\VIBuffer\Terrain\OctTree</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CWorker.cpp">
       <Filter>01.Utility\996 .Worker</Filter>

@@ -54,7 +54,12 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case GRASS:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_GrassParticle");
 		break;
-
+	case ROCK0:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_RockParticle1");
+		break;
+	case ROCK1:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_RockParticle2");
+		break;
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))
@@ -165,7 +170,7 @@ HRESULT CParticleMesh::Render()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (OwnDesc->eModelType >= BLADE_SLASH)
+		if (OwnDesc->eModelType >= BLADE_SLASH && OwnDesc->eModelType <= BLADE_SLASH_LONG)
 			m_pShaderCom->Begin(2);
 		else
 			m_pShaderCom->Begin(0);
@@ -188,7 +193,7 @@ HRESULT CParticleMesh::Render_Bloom()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (OwnDesc->eModelType >= BLADE_SLASH)
+		if (OwnDesc->eModelType >= BLADE_SLASH && OwnDesc->eModelType <= BLADE_SLASH_LONG)
 			m_pShaderCom->Begin(3);
 		else
 			m_pShaderCom->Begin(1);
@@ -211,7 +216,7 @@ HRESULT CParticleMesh::Render_Blur()
 		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (OwnDesc->eModelType >= BLADE_SLASH)
+		if (OwnDesc->eModelType >= BLADE_SLASH && OwnDesc->eModelType <= BLADE_SLASH_LONG)
 			m_pShaderCom->Begin(2);
 		else
 			m_pShaderCom->Begin(0);

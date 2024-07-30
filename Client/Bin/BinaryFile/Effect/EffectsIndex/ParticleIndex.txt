@@ -39,3 +39,7 @@
 38. BeokReokIllSum1
 39. TornadoSubEffect
 40. GrassBlowSample
+41. LightningSubEffect
+42. RockSplit0
+43. RockSplit1
+44. LightningSub2

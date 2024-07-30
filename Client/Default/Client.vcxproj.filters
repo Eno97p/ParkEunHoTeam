@@ -622,6 +622,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
       <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lightnings">
+      <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1280,6 +1283,9 @@
     <ClInclude Include="..\Public\Lightning.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
+      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1911,6 +1917,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Lightning.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
+      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

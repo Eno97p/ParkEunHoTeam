@@ -234,6 +234,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
 			PartPos.y = m_WorldMatrix._42;
 			EFFECTMGR->Generate_Particle(2, PartPos);
+			EFFECTMGR->Generate_Particle(42, PartPos);
+			EFFECTMGR->Generate_Particle(43, PartPos);
 			EFFECTMGR->Generate_Particle(16, PartPos, nullptr, XMVectorZero(), 0.f, XMVectorSet(m_WorldMatrix._31, m_WorldMatrix._32, m_WorldMatrix._33, 0.f));
 			PartPos.y += 0.2f;
 			EFFECTMGR->Generate_Particle(21, PartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
@@ -311,10 +313,48 @@ void CBody_Player::Tick(_float fTimeDelta)
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK2)
 	{
 		AnimDesc.isLoop = false;
+
 		if (m_iPastAnimIndex != 143 && m_iPastAnimIndex != 86 && m_iPastAnimIndex != 58 && m_iPastAnimIndex != 65)
 		{
 			m_iPastAnimIndex = 143;
 		}
+
+		_matrix World = XMLoadFloat4x4(&m_WorldMatrix);
+		_float4 ParticlePos;
+		XMStoreFloat4(&ParticlePos, World.r[3]);
+		
+		if (m_iPastAnimIndex == 143)
+		{
+			ParticlePos.y += 1.f;
+			if( m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+				EFFECTMGR->Generate_Particle(31, ParticlePos);
+		}
+		else if (m_iPastAnimIndex == 86)
+		{
+			ParticlePos.y += 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+				EFFECTMGR->Generate_Particle(31, ParticlePos);
+		}
+		else if (m_iPastAnimIndex == 65)
+		{
+			ParticlePos.y += 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+				EFFECTMGR->Generate_Particle(31, ParticlePos);
+		}
+		else if (m_iPastAnimIndex == 58)
+		{
+			if (m_pModelCom->Check_CurDuration(0.6f))
+			{
+				EFFECTMGR->Generate_Particle(34, ParticlePos);
+				EFFECTMGR->Generate_Particle(33, ParticlePos);
+				EFFECTMGR->Generate_Particle(33, ParticlePos, nullptr, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
+				ParticlePos.y += 1.f;
+				EFFECTMGR->Generate_Particle(32, ParticlePos);
+			}
+		}
+
+
+
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		m_pModelCom->Set_LerpTime(1.2f);
 		m_fDamageTiming += fTimeDelta;

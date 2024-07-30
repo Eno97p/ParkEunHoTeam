@@ -10,6 +10,7 @@
 #include "Particle_STrail.h"
 #include "Distortion_Effect.h"
 #include "FireEffect.h"
+#include "Electronic.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -104,9 +105,12 @@ private:
 	HRESULT StoreFires(char* Name, CFireEffect::FIREEFFECTDESC Fire);
 	void FireListBox(CFireEffect::FIREEFFECTDESC* Fire);
 
-private:
+private:	//Lightning
 	void Electron_Tool();
-
+	HRESULT Store_Lightnings(char* Name, CElectronic::ELECTRONICDESC Lightning);
+	void Electron_ListBox(CElectronic::ELECTRONICDESC* Lightning);
+	HRESULT Save_Lightning();
+	HRESULT Load_Lightning();
 private:
 	void Lazer_Tool();
 	void Tornado_Tool();
@@ -142,12 +146,14 @@ private:
 	vector<shared_ptr<CSTrail::STRAIL_DESC>>	m_SwordTrails;
 	vector<shared_ptr<CDistortionEffect::DISTORTIONEFFECT>> m_Distortions;
 	vector<shared_ptr<CFireEffect::FIREEFFECTDESC>>			m_Fires;
+	vector<shared_ptr<CElectronic::ELECTRONICDESC>>			m_Lightnings;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
 	vector<string> SwordTrailNames;
 	vector<string> DistortionNames;
 	vector<string> FireNames;
+	vector<string> LightningNames;
 
 private:
 	vector<string> ModelName;

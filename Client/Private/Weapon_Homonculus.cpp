@@ -86,7 +86,7 @@ void CWeapon_Homonculus::Tick(_float fTimeDelta)
 	//	PxVec3 hitPoint = hit.block.position;
 	//}
 
-	Generate_Trail(6);
+	Generate_Trail(4);
 }
 
 void CWeapon_Homonculus::Late_Tick(_float fTimeDelta)

@@ -43,7 +43,6 @@ HRESULT CUI_UpGPage_Value::Initialize(void* pArg)
 		m_fSizeX = 100.f; // 128   85.3f
 	}
 
-
 	m_fSizeY = 42.6f; // 64
 
 	Setting_Position();
@@ -59,6 +58,8 @@ void CUI_UpGPage_Value::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	Update_Jemstone();
 }
 
 void CUI_UpGPage_Value::Late_Tick(_float fTimeDelta)
@@ -78,6 +79,19 @@ HRESULT CUI_UpGPage_Value::Render()
 	Rend_Font();
 
 	return S_OK;
+}
+
+void CUI_UpGPage_Value::Update_Value(_uint iCurSlotIdx)
+{
+	if (CInventory::GetInstance()->Get_WeaponSize() - 1 < iCurSlotIdx) // 빈 슬롯 예외 처리
+		return;
+
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < iCurSlotIdx; ++i)
+		++weapon;
+
+	m_iPrive = (*weapon)->Get_Price();
+	m_iValue = (*weapon)->Get_Value();
 }
 
 HRESULT CUI_UpGPage_Value::Add_Components()
@@ -124,27 +138,51 @@ HRESULT CUI_UpGPage_Value::Bind_ShaderResources()
 
 HRESULT CUI_UpGPage_Value::Rend_Font()
 {
-	// 선택한 현재 weapon의 종류에 따라 / 강화 정도에 따라 필요로 하는 재료 값들이 달라지도록 구현 해야 함
-
-
-	// m_eValueType에 따라 나누고(Soul / Material) Player로부터 >> Soul을 Inventory에 넣기? Player로부터 가져올 필요 없을 듯
 	if (VALUE_SOUL == m_eValueType)
 	{
-		m_wstrText = to_wstring(CInventory::GetInstance()->Get_Soul()) + TEXT(" / ") + TEXT("100");
+		_vector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+		if (CInventory::GetInstance()->Get_Soul() < m_iPrive)
+		{
+			vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
+		}
+		m_wstrText = to_wstring(CInventory::GetInstance()->Get_Soul()) + TEXT(" / ") + to_wstring(m_iPrive);
 
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), m_wstrText, _float2(m_fX - 35.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), m_wstrText, _float2(m_fX - 35.f, m_fY - 10.f), vColor)))
 			return E_FAIL;
 	}
 	else if (VALUE_MATERIAL == m_eValueType)
 	{
-		m_wstrText = TEXT("200");
+		_vector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+		if (m_iJemstone < m_iValue)
+		{
+			vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
+		}
+		m_wstrText = to_wstring(m_iJemstone) + TEXT(" / ") + to_wstring(m_iValue);
 
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), m_wstrText, _float2(m_fX - 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), m_wstrText, _float2(m_fX - 20.f, m_fY - 10.f), vColor)))
 			return E_FAIL;
 	}
 
-
 	return S_OK;
+}
+
+void CUI_UpGPage_Value::Update_Jemstone()
+{
+	// Inventory를 순회하면서 ItemName이 강화 재료인 걸 검색하는 식으로 해야 하나? 그렇게도 가능하긴 할듯
+
+	vector<CItemData*>::iterator item = CInventory::GetInstance()->Get_ItemDatas()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_vecItemSize(); ++i)
+	{
+		// Level에 따른 분기 처리도 필요함 (3렙 이상이면 더 강화된 재료 써야하는 식)
+
+		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE")) // 이름 비교해서 분기 처리하기
+		{
+			// 해당 아이템의 현재 개수 몇 개 들고 있는지 받아오기
+			m_iJemstone = (*item)->Get_Count();
+		}
+		else
+			++item;
+	}
 }
 
 CUI_UpGPage_Value* CUI_UpGPage_Value::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

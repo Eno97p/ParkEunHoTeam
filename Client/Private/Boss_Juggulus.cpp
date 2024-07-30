@@ -133,36 +133,8 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
 	m_pUI_HP->Tick(fTimeDelta);
 
-	if (m_fCircleSphereSpawnTime < CIRCLESPHERESPAWNTIME)
-	{
-		m_fCircleSphereSpawnTime -= fTimeDelta;
-
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		CGameObject::GAMEOBJECT_DESC gameObjDesc;
-		gameObjDesc.fSpeedPerSec = 3.f;
-		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 20.f;
-		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 15.f;
-		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
-
-		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
-		{
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
-			m_iCircleSphereCount++;
-		}
-		else if (m_fCircleSphereSpawnTime < 1.33f && m_iCircleSphereCount == 1)
-		{
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
-			m_iCircleSphereCount++;
-		}
-		else if (m_fCircleSphereSpawnTime < 0.66f && m_iCircleSphereCount == 2)
-		{
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
-			m_iCircleSphereCount = 0;
-			m_fCircleSphereSpawnTime = CIRCLESPHERESPAWNTIME;
-		}
-	}
-
-
+	Spawn_CircleSphere(fTimeDelta);
+	Spawn_Lightning(fTimeDelta);
 }
 
 void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
@@ -358,6 +330,75 @@ void CBoss_Juggulus::Check_AnimFinished()
 	}
 }
 
+void CBoss_Juggulus::Spawn_CircleSphere(_float fTimeDelta)
+{
+	if (m_fCircleSphereSpawnTime < CIRCLESPHERESPAWNTIME)
+	{
+		m_fCircleSphereSpawnTime -= fTimeDelta;
+
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		CGameObject::GAMEOBJECT_DESC gameObjDesc;
+		gameObjDesc.fSpeedPerSec = 3.f;
+		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 20.f;
+		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 15.f;
+		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
+
+		if (m_fCircleSphereSpawnTime < 2.f && m_iCircleSphereCount == 0)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
+			m_iCircleSphereCount++;
+		}
+		else if (m_fCircleSphereSpawnTime < 1.33f && m_iCircleSphereCount == 1)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
+			m_iCircleSphereCount++;
+		}
+		else if (m_fCircleSphereSpawnTime < 0.66f && m_iCircleSphereCount == 2)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_CircleSphere"), &gameObjDesc);
+			m_iCircleSphereCount = 0;
+			m_fCircleSphereSpawnTime = CIRCLESPHERESPAWNTIME;
+		}
+	}
+}
+
+void CBoss_Juggulus::Spawn_Lightning(_float fTimeDelta)
+{
+	if (m_fLightningSpawnTime < LIGHTNINGSPAWNTIME)
+	{
+		m_fLightningSpawnTime -= fTimeDelta;
+
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		CGameObject::GAMEOBJECT_DESC gameObjDesc;
+		gameObjDesc.fSpeedPerSec = 3.f;
+		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
+		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 5.f;
+		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
+
+		if (m_fLightningSpawnTime < 8.f && m_iLightningCount == 0)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Lightning"), &gameObjDesc);
+			m_iLightningCount++;
+		}
+		else if (m_fLightningSpawnTime < 6.f && m_iLightningCount == 1)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Lightning"), &gameObjDesc);
+			m_iLightningCount++;
+		}
+		else if (m_fLightningSpawnTime < 4.f && m_iLightningCount == 2)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Lightning"), &gameObjDesc);
+			m_iLightningCount++;
+		}
+		else if (m_fLightningSpawnTime < 2.f && m_iLightningCount == 3)
+		{
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_Lightning"), &gameObjDesc);
+			m_iLightningCount = 0;
+			m_fLightningSpawnTime = LIGHTNINGSPAWNTIME;
+		}
+	}
+}
+
 NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
 	if (0.f >= m_fCurHp)
@@ -513,18 +554,13 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		m_iState = STATE_SPHERE_ATTACK;
 		break;
 	case 2:
-		m_iState = STATE_HAMMER_ATTACK;
-		break;
-	case 3:
-		m_iState = STATE_SPHERE_ATTACK;
-		break;
-	/*case 2:
 		m_iState = STATE_FLAME_ATTACK;
 		break;
 	case 3:
 		m_iState = STATE_THUNDER_ATTACK;
-		break;*/
+		break;
 	}
+	m_iState = STATE_THUNDER_ATTACK;
 	return SUCCESS;
 }
 
@@ -608,9 +644,14 @@ NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 
 	if (m_iState == STATE_THUNDER_ATTACK)
 	{
+		if (m_fLightningSpawnTime == LIGHTNINGSPAWNTIME)
+		{
+			m_fLightningSpawnTime -= 0.01f;
+		}
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE_SEC;
+
 			return SUCCESS;
 		}
 		return RUNNING;

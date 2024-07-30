@@ -27,6 +27,8 @@ public:
 	_bool				Get_isMouseOn();
 	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
+	void				Set_isShopOn(_bool isOn) { m_isShopOn = isOn; }
+
 public:
 	HRESULT				Initialize();
 	void				Tick(_float fTimeDelta);
@@ -49,6 +51,7 @@ public:
 
 private:
 	_bool					m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
+	_bool					m_isShopOn = { false }; // 상점 활성화 여부
 
 	CGameInstance*			m_pGameInstance = { nullptr };
 

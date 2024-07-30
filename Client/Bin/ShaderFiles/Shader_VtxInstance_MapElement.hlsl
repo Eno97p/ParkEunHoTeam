@@ -23,6 +23,7 @@ bool g_bOpacity = false;
 bool g_bEmissive = false;
 bool g_bRoughness = false;
 bool g_bMetalic = false;
+bool g_MotionBlur = false;
 
 struct VS_IN
 {
@@ -174,7 +175,10 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
 
-    Out.vVelocity = In.vVelocity;
+    if (g_MotionBlur)
+    {
+        Out.vVelocity = In.vVelocity;
+    }
     return Out;
 }
 
@@ -227,7 +231,10 @@ PS_OUT PS_TILING(PS_IN In)
     if (g_bEmissive) Out.vEmissive = vEmissive;
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
-    Out.vVelocity = In.vVelocity;
+    if (g_MotionBlur)
+    {
+        Out.vVelocity = In.vVelocity;
+    }
     return Out;
 }
 

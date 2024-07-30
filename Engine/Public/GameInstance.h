@@ -3,7 +3,6 @@
 #include"CProfileScope.h"
 #include"CProfiler.h"
 
-
 #include "Renderer.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
@@ -68,8 +67,6 @@ public: /* For.Object_Manager */
 	list< class CGameObject*> Get_GameObjects_Ref(_uint iLevelIndex, const wstring& strLayerTag);
 	void Get_LayerTags_String(_uint iLevelIndex, vector<const char*>* vecRefLayerName);
 
-	
-
 	//240622 2113 PM 이민영 추가
 	//FOR CAMERA SWITCH
 	HRESULT Add_Camera(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr); // 카메라 추가 시 이 함수 불러야됨
@@ -78,7 +75,6 @@ public: /* For.Object_Manager */
 	CCamera* Get_MainCamera();
 	_uint Get_MainCameraIdx();
 	void Clear_Cameras();
-
 
 public: /* For.Component_Manager */
 	HRESULT Add_Prototype(_uint iLevelIndex, const wstring& strPrototypeTag, CComponent* pPrototype);
@@ -90,11 +86,16 @@ public: /* For.Renderer */
 	HRESULT Add_RenderObject(CRenderer::RENDERGROUP eRenderGroup, class CGameObject* pRenderObject);
 	void Set_BRIS(_float fBRIS);
 	void Set_Mirror(_float fMirror);
+	// 화면 전체 모션블러 여부
+	void Set_MotionBlur(_bool bMotionBlur) { m_bMotionBlur = bMotionBlur; }
+	_bool Get_MotionBlur() { return m_bMotionBlur; }
+private:
+	_bool m_bMotionBlur = false;
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
-
+public:
 	//이민영 추가 240621 1423PM
 	void Set_ShadowEyeFocus(_vector vEye, _vector vFocus, _float fThreshold);
 	_vector Get_ShadowEye();
@@ -133,8 +134,6 @@ public: /* For.Light_Manager */
 
 	void Edit_Light(_uint iIndex, LIGHT_DESC* desc);
 	list<class CLight*> Get_Lights();
-
-
 
 public: /* For.Font_Manager */
 	HRESULT Add_Font(const wstring& strFontTag, const wstring& strFontFilePath);
@@ -178,7 +177,6 @@ public: /* For PhysX */
 	PxScene* GetScene();
 	PxControllerManager* GetControllerManager();
 	
-	 
 public: // Sound Mgr
 	void PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
 	void PlayBGM(const TCHAR* pSoundKey, float fVolume);
@@ -194,14 +192,9 @@ public: // For OctTree
 	_bool isVisible(_vector vPos, PxActor* actor);
 	void AddCullingObject(CGameObject* obj, PxActor* pActor);
 
-
 public:	// For Worker
 	template<typename T, typename... Args>
 	void AddWork(T&& Func, Args&&... args);
-	
-
-
-
 
 #ifdef _DEBUG
 public:
@@ -238,16 +231,6 @@ private:
 public:	
 	static void Release_Engine();
 	virtual void Free() override;
-
-
-
-
-
-
-
-
-
 };
 
 END
-

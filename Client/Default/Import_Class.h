@@ -38,6 +38,7 @@
 #include "Juggulus_HandThree.h"
 #include "Aspiration.h"
 #include "CircleSphere.h"
+#include "Lightning.h"
 #include "Sphere.h"
 
 #include "Mantari.h"

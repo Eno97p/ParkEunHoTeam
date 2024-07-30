@@ -1,6 +1,7 @@
 #include "UI_UpGPage_SelectSlot.h"
 
 #include "GameInstance.h"
+#include "Inventory.h"
 
 CUI_UpGPage_SelectSlot::CUI_UpGPage_SelectSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -59,6 +60,19 @@ HRESULT CUI_UpGPage_SelectSlot::Render()
 	return S_OK;
 }
 
+void CUI_UpGPage_SelectSlot::Update_Data(_uint iCurSlotIdx)
+{
+	if (CInventory::GetInstance()->Get_WeaponSize() - 1 < iCurSlotIdx) // 빈 슬롯 예외 처리
+		return;
+
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < iCurSlotIdx; ++i)
+		++weapon;
+
+	m_iLevel = (*weapon)->Get_Level();
+	m_iAddDamage = (*weapon)->Get_AddDamage();
+}
+
 HRESULT CUI_UpGPage_SelectSlot::Add_Components()
 {
 	/* For. Com_VIBuffer */
@@ -110,7 +124,10 @@ void CUI_UpGPage_SelectSlot::Rend_Font()
 	// NameBox
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrItemName, _float2((g_iWinSizeX >> 1) + 210.f, 217.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("|  level : "), _float2((g_iWinSizeX >> 1) + 400.f, 217.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+
+	// Level
+	wstring wstrLevel = TEXT("|  level : ") + to_wstring(m_iLevel);
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), wstrLevel, _float2((g_iWinSizeX >> 1) + 400.f, 217.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	// Damage
@@ -120,6 +137,13 @@ void CUI_UpGPage_SelectSlot::Rend_Font()
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("Next level"), _float2((g_iWinSizeX >> 1) + 180.f, (g_iWinSizeY >> 1)), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
+
+	//Add Damage를 Level과 곱해서 출력해주기
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("+ ") + to_wstring(m_iAddDamage * m_iLevel), _float2((g_iWinSizeX >> 1) + 340.f, (g_iWinSizeY >> 1) - 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("+ ") + to_wstring(m_iAddDamage * (m_iLevel + 1)), _float2((g_iWinSizeX >> 1) + 340.f, (g_iWinSizeY >> 1)), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+
 }
 
 CUI_UpGPage_SelectSlot* CUI_UpGPage_SelectSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

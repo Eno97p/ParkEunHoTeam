@@ -125,6 +125,68 @@ PS_OUT PS_MAIN(PS_IN In)
 }
 
 
+PS_OUT PS_WIRE(PS_IN In)
+{
+    PS_OUT      Out = (PS_OUT)0;
+
+    // 노멀값을 이용한 경사 계산
+    float3 worldNormal = normalize(In.vNormal.xyz);
+    float slope = 1.0f - dot(worldNormal, float3(0, 1, 0));
+
+    // 텍스처 샘플링
+    vector vLowDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vMidDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vHighDiffuse = g_DiffuseTexture[2].Sample(LinearSampler, In.vTexcoord * 30.f);
+
+    vector vLowNormal = g_NormalTexture[0].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vMidNormal = g_NormalTexture[1].Sample(LinearSampler, In.vTexcoord * 30.f);
+    vector vHighNormal = g_NormalTexture[2].Sample(LinearSampler, In.vTexcoord * 30.f);
+
+    // 경사도에 따른 블렌딩
+    vector vMtrlDiffuse, vNormalDesc;
+    if (slope < 0.3) // 낮은 경사
+    {
+        float blend = smoothstep(0.0, 0.3, slope);
+        vMtrlDiffuse = lerp(vLowDiffuse, vMidDiffuse, blend);
+        vNormalDesc = lerp(vLowNormal, vMidNormal, blend);
+    }
+    else if (slope < 0.7) // 중간 경사
+    {
+        float blend = smoothstep(0.3, 0.7, slope);
+        vMtrlDiffuse = lerp(vMidDiffuse, vHighDiffuse, blend);
+        vNormalDesc = lerp(vMidNormal, vHighNormal, blend);
+    }
+    else // 높은 경사
+    {
+        vMtrlDiffuse = vHighDiffuse;
+        vNormalDesc = vHighNormal;
+    }
+
+    // 브러시 적용 (기존 코드 유지)
+    vector vBrush = float4(0.0f, 0.f, 0.f, 0.f);
+    if (g_vBrushPos.x - g_fBrushRange < In.vWorldPos.x && In.vWorldPos.x <= g_vBrushPos.x + g_fBrushRange &&
+        g_vBrushPos.z - g_fBrushRange < In.vWorldPos.z && In.vWorldPos.z <= g_vBrushPos.z + g_fBrushRange)
+    {
+        float2 vTexcoord = (float2)0.f;
+        vTexcoord.x = (In.vWorldPos.x - (g_vBrushPos.x - g_fBrushRange)) / (2.f * g_fBrushRange);
+        vTexcoord.y = ((g_vBrushPos.z + g_fBrushRange) - In.vWorldPos.z) / (2.f * g_fBrushRange);
+        vBrush = g_BrushTexture.Sample(LinearSampler, vTexcoord);
+    }
+
+    // 최종 디퓨즈 색상 계산
+   // Out.vDiffuse = vMtrlDiffuse + vBrush * 0.5f;
+    Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+
+    // 노말 계산
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    Out.vNormal = vector(worldNormal * 0.5f + 0.5f, 0.f);
+
+    // 깊이 정보
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {

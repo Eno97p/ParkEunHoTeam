@@ -54,27 +54,30 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 {
 	CPhysXComponent::PHYSX_DESC* pDesc = static_cast<CPhysXComponent::PHYSX_DESC*>(pArg);
 	
-	m_pModelCom =dynamic_cast<CModel*>(pDesc->pComponent);
-	m_WorldMatrix = pDesc->fWorldMatrix;
-	m_fBoxProperty= pDesc->fBoxProperty;
-	m_fCapsuleProperty = pDesc->fCapsuleProperty;
-	m_Mass = pDesc->fMass;
-	PxFilterData filterData = pDesc->filterData;
+	if (pDesc != nullptr)
+	{
+		m_pModelCom = dynamic_cast<CModel*>(pDesc->pComponent);
+		m_WorldMatrix = pDesc->fWorldMatrix;
+		m_fBoxProperty = pDesc->fBoxProperty;
+		m_fCapsuleProperty = pDesc->fCapsuleProperty;
+		m_Mass = pDesc->fMass;
+		PxFilterData filterData = pDesc->filterData;
+
+
+		PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
+		PxTransform pxOffsetTrans = Convert_DxMat_To_PxTrans(pDesc->fOffsetMatrix);
+
+		m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(pDesc->fMatterial.x, pDesc->fMatterial.y, pDesc->fMatterial.z);
+
+
+		CreateActor(pDesc->eGeometryType, pxTrans, pxOffsetTrans);
+		MakeFilterData(filterData);
+		//pDesc
+		if (pDesc->pName)
+			m_pActor->setName(pDesc->pName);
+	}
 
 	
-	PxTransform pxTrans =Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
-	PxTransform pxOffsetTrans =Convert_DxMat_To_PxTrans(pDesc->fOffsetMatrix);
-	
-	m_pMaterial=m_pGameInstance->GetPhysics()->createMaterial(pDesc->fMatterial.x, pDesc->fMatterial.y, pDesc->fMatterial.z);
-
-
-	CreateActor(pDesc->eGeometryType, pxTrans, pxOffsetTrans);
-	MakeFilterData(filterData);
-	
-
-	//pDesc
-	if(pDesc->pName)
-		m_pActor->setName(pDesc->pName);
 #ifdef _DEBUG
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
 	

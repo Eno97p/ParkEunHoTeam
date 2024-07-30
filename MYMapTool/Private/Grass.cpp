@@ -40,7 +40,7 @@ HRESULT CGrass::Initialize(void* pArg)
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&((GRASS_DESC*)pArg)->vStartPos));
 		 
 		_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
-		m_vPivotPos.y += 5.f;
+		m_vPivotPos.y += 10.f;
 		XMStoreFloat3(&m_vPivotPos, vPos);
 
 

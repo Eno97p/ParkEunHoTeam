@@ -1032,6 +1032,11 @@ void CRenderer::Render_Reflection()
     m_pGameInstance->End_MRT();
 }
 
+void CRenderer::Render_MotionBlur()
+{
+
+}
+
 void CRenderer::Render_Blur()
 {
     m_pGameInstance->Begin_MRT(TEXT("MRT_Blur"));

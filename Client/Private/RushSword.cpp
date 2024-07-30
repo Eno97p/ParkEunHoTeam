@@ -292,6 +292,9 @@ HRESULT CRushSword::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
 		return E_FAIL;
+	m_bMotionBlur = true;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &m_bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;

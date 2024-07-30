@@ -118,8 +118,6 @@ private:
 
 
 
-
-
 #pragma region PARKJAEWON
 public:
 	void ProcessByThread(DWORD dwThreadIndex);
@@ -184,6 +182,7 @@ private:
 	void Render_NonLight();
 	void Render_Blend();
 	void Render_Reflection();
+	void Render_MotionBlur();
 	void Render_Blur();
 	void Render_Bloom();
 	void Render_Distortion();

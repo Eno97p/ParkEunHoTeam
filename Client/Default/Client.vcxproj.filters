@@ -1277,6 +1277,9 @@
     <ClInclude Include="..\Public\UI_Shop_RemainIcon.h">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Lightning.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1905,6 +1908,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp">
       <Filter>02.GameObjects\07. UI\Shop\RemainIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lightning.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

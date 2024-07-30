@@ -71,7 +71,7 @@ void CDurgaSword::Tick(_float fTimeDelta)
 
 	_matrix vMatrix = m_pTransformCom->Get_WorldMatrix() * SocketMatrix;
 	// 달릴 때 칼 위치 맞추기 위해 보정
-	if (*m_pState == CPlayer::STATE_RUN)
+	if (*m_pState == CPlayer::STATE_RUN || *m_pState == CPlayer::STATE_WALK)
 	{
 		vMatrix.r[3].m128_f32[0] -= 0.08f;
 		vMatrix.r[3].m128_f32[1] -= 0.32f;
@@ -82,6 +82,21 @@ void CDurgaSword::Tick(_float fTimeDelta)
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
 	Generate_Trail(0);
+
+	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
+		*m_pState == CPlayer::STATE_SPECIALATTACK || *m_pState == CPlayer::STATE_SPECIALATTACK2 ||
+		*m_pState == CPlayer::STATE_SPECIALATTACK3 || *m_pState == CPlayer::STATE_SPECIALATTACK4 ||
+		*m_pState == CPlayer::STATE_RCHARGEATTACK || *m_pState == CPlayer::STATE_RUNLATTACK1 ||
+		*m_pState == CPlayer::STATE_RUNLATTACK2 || *m_pState == CPlayer::STATE_ROLL || *m_pState == CPlayer::STATE_DASH ||
+		*m_pState == CPlayer::STATE_DASH_FRONT || *m_pState == CPlayer::STATE_DASH_BACK || *m_pState == CPlayer::STATE_DASH_LEFT ||
+		*m_pState == CPlayer::STATE_DASH_RIGHT)
+	{
+		m_bMotionBlur = true;
+	}
+	else
+	{
+		m_bMotionBlur = false;
+	}
 }
 
 void CDurgaSword::Late_Tick(_float fTimeDelta)
@@ -282,6 +297,9 @@ HRESULT CDurgaSword::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
 		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))

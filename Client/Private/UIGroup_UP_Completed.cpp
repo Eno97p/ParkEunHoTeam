@@ -44,18 +44,14 @@ void CUIGroup_UP_Completed::Tick(_float fTimeDelta)
 {
 	for (auto& pUI : m_vecUI)
 	{
-		if (!m_isRenderOnAnim && !(pUI->Get_RenderOnAnim()))
-		{
-			pUI->Resset_Animation(true);
-		}
-		else if (m_isRenderOnAnim && pUI->Get_RenderOnAnim())
-		{
-			pUI->Resset_Animation(false);
-		}
-
 		pUI->Tick(fTimeDelta);
 	}
 
+	m_fCloseTimer += fTimeDelta;
+	if (3.f <= m_fCloseTimer)
+	{
+		m_isEnd = true;
+	}
 }
 
 void CUIGroup_UP_Completed::Late_Tick(_float fTimeDelta)

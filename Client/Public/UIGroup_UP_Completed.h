@@ -9,8 +9,11 @@ class CUIGroup_UP_Completed final : public CUIGroup
 public:
 	typedef struct UIGroup_Completed_Desc : public UIGROUP_DESC
 	{
-		_uint	iCurSlotIdx; // Group 클래스에서 CurSlotIdx 활용해 TextrueName 받아준 뒤 그것을 Forge 생성할 때 구조체 값으로 넘겨주기
+		_uint	iCurSlotIdx;
 	}UIGROUP_COMPLETED_DESC;
+
+public:
+	_bool				Get_isEnd() { return m_isEnd; }
 
 private:
 	CUIGroup_UP_Completed(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -26,6 +29,9 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool						m_isEnd = { false };
+	_float						m_fCloseTimer = { 0.f };
+
 	vector<class CUI*>			m_vecUI;
 
 private:

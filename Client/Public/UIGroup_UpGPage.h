@@ -42,6 +42,10 @@ private:
 	void					Update_CurSlot();
 	void					Update_ItemIcon();
 
+	void					Upgrade_ItemLevel();
+	_bool					Check_Enough(); // 업그레이드 강화 재료 충분한지
+	void					Calculate_UpgradeCost(); // 업그레이드 비용 계산
+
 public:
 	static CUIGroup_UpGPage*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(void* pArg) override;

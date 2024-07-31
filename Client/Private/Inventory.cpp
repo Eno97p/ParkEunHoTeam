@@ -101,7 +101,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_BUFF1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_BUFF3);
+	Add_DropItem(CItem::ITEM_UPGRADE1);
 
 	return S_OK;
 }

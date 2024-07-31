@@ -59,7 +59,6 @@ void CUI_UpGPageBtn::Tick(_float fTimeDelta)
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
-	// ItemIcon이 있을 때만 넘어가야 하는 예외 처리 필요
 	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // 클릭한 경우 강화 화면으로 넘어가기
 	{
 		dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Create_CompletedPage();

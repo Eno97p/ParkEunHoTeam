@@ -122,8 +122,6 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	default:
 		break;
 	}
-
-
 }
 
 void CItemData::Apply_UseCount(_uint iInvenIdx)

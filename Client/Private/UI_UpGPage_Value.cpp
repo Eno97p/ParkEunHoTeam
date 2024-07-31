@@ -144,7 +144,13 @@ HRESULT CUI_UpGPage_Value::Rend_Font()
 		if (CInventory::GetInstance()->Get_Soul() < m_iPrive)
 		{
 			vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
+			m_isEnough = false;
 		}
+		else
+		{
+			m_isEnough = true;
+		}
+
 		m_wstrText = to_wstring(CInventory::GetInstance()->Get_Soul()) + TEXT(" / ") + to_wstring(m_iPrive);
 
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo"), m_wstrText, _float2(m_fX - 35.f, m_fY - 10.f), vColor)))
@@ -156,7 +162,13 @@ HRESULT CUI_UpGPage_Value::Rend_Font()
 		if (m_iJemstone < m_iValue)
 		{
 			vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
+			m_isEnough = false;
 		}
+		else
+		{
+			m_isEnough = true;
+		}
+
 		m_wstrText = to_wstring(m_iJemstone) + TEXT(" / ") + to_wstring(m_iValue);
 
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), m_wstrText, _float2(m_fX - 20.f, m_fY - 10.f), vColor)))
@@ -168,8 +180,6 @@ HRESULT CUI_UpGPage_Value::Rend_Font()
 
 void CUI_UpGPage_Value::Update_Jemstone()
 {
-	// Inventory를 순회하면서 ItemName이 강화 재료인 걸 검색하는 식으로 해야 하나? 그렇게도 가능하긴 할듯
-
 	vector<CItemData*>::iterator item = CInventory::GetInstance()->Get_ItemDatas()->begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_vecItemSize(); ++i)
 	{
@@ -181,8 +191,11 @@ void CUI_UpGPage_Value::Update_Jemstone()
 			m_iJemstone = (*item)->Get_Count();
 		}
 		else
+		{
 			++item;
-	}
+			m_iJemstone = 0;
+		}
+	}``
 }
 
 CUI_UpGPage_Value* CUI_UpGPage_Value::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

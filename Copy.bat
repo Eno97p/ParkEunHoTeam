@@ -3,14 +3,31 @@
 xcopy			/y		.\Engine\Public\*.*					.\EngineSDK\Inc\
 xcopy			/y/s	.\Engine\Public\*.*					.\EngineSDK\Inc\
 
-xcopy			/y		.\Engine\Bin\Engine.dll				.\Client\Bin\
-xcopy			/y		.\Engine\Bin\Engine.dll				.\Client\Bin\Release\
 xcopy			/y		.\Engine\Bin\Engine.dll				.\EffectTool\Bin\
 xcopy			/y		.\Engine\Bin\Engine.lib				.\EngineSDK\Lib\
 
-xcopy			/y		.\Engine\ThirdPartyLib\*.*			.\EngineSDK\Lib\
+xcopy			/y/s		.\Engine\ThirdPartyLib\*.*			.\EngineSDK\Lib\
 
 
+//Engine
+xcopy			/y		.\Engine\Bin\Engine.dll					.\Client\Bin\
+xcopy			/y		.\Engine\Bin\Engine.dll					.\Client\Bin\Release\
+
+//블래스트
+xcopy			/y/s		.\Engine\DLL\Blast\Debug\*.*		.\Client\Bin\
+xcopy			/y/s		.\Engine\DLL\Blast\Release\*.*		.\Client\Bin\Release\
+
+//ASSIMP
+xcopy			/y/s		.\Engine\DLL\Assimp\Debug\*.*		.\Client\Bin\
+xcopy			/y/s		.\Engine\DLL\Assimp\Release\*.*		.\Client\Bin\Release\
+
+//FOMOD
+xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\Client\Bin\
+xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\Client\Bin\Release\
+
+//PhysX	
+xcopy			/y/s		.\Engine\DLL\PhysX\Debug\*.*		.\Client\Bin\
+xcopy			/y/s		.\Engine\DLL\PhysX\Release\*.*		.\Client\Bin\Release\
 
 
 // 피직스 
@@ -23,15 +40,6 @@ xcopy			/y		.\Engine\Bin\PhysXFoundation_64.dll		.\Client\Bin\
 xcopy			/y		.\Engine\Bin\PhysXGpu_64.dll			.\Client\Bin\
 xcopy			/y		.\Engine\Bin\PVDRuntime_64.dll			.\Client\Bin\
 
-
-xcopy			/y		.\Engine\Bin\freeglutd.dll					.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysX_64.dll					.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysXCommon_64.dll				.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysXCooking_64.dll			.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysXDevice64.dll				.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysXFoundation_64.dll			.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PhysXGpu_64.dll				.\Client\Bin\Release\
-xcopy			/y		.\Engine\Bin\PVDRuntime_64.dll				.\Client\Bin\Release\
 
 
 

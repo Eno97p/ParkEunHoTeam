@@ -640,6 +640,9 @@
     <Filter Include="02.GameObjects\07. UI\Up_Completed\Crucible">
       <UniqueIdentifier>{d2127b06-1227-4a66-96ee-f09fc4497164}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\AnimBG">
+      <UniqueIdentifier>{e6b0da4a-fe04-4aba-b86a-8c91f7fff6b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1316,6 +1319,9 @@
     <ClInclude Include="..\Public\UI_UpCompleted_Crucible.h">
       <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_AnimBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1965,6 +1971,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_UpCompleted_Crucible.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_AnimBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

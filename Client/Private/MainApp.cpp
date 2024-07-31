@@ -139,6 +139,7 @@
 #pragma endregion Map
 
 #pragma region Shop
+#include "UI_Shop_AnimBG.h"
 #include "UI_ShopBG.h"
 #include "UI_Shop_SoulBG.h"
 #include "UI_ShopSelect.h"
@@ -1197,6 +1198,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/Shop_RemainIcon.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_UI_ValnirBG_Anim */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ValnirBG_Anim"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/AnimBG.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion Shop
 
 #pragma region ETC
@@ -1742,6 +1748,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion Map
 
 #pragma region Shop
+	/* For.Prototype_GameObject_UI_Shop_AnimBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Shop_AnimBG"),
+		CUI_Shop_AnimBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UI_ShopBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ShopBG"),
 		CUI_ShopBG::Create(m_pDevice, m_pContext))))

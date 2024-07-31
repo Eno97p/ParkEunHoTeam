@@ -7,6 +7,8 @@
 #include "UI_Script_DialogBox.h"
 #include "UI_Script_NameBox.h"
 
+#include "UI_Shop_AnimBG.h"
+
 CUIGroup_Script::CUIGroup_Script(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
 {
@@ -116,11 +118,17 @@ HRESULT CUIGroup_Script::Create_UI()
 	// BG Aura
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));
 
-	// BG Npc
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
-
 	CUI::UI_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+
+	if (NPC_VALNIR == m_eNpcType)
+	{
+		// AnimBG
+		m_vecUI.emplace_back(dynamic_cast<CUI_Shop_AnimBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Shop_AnimBG"), &pDesc)));
+	}
+
+	// BG Npc
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
 
 	// DialogBox
 	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));

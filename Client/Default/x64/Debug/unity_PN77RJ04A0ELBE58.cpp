@@ -300,6 +300,9 @@
 #include "C:\Real3DProject\Client\Private\UI_ShopSelect.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Shop_AnimBG.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Shop_RemainIcon.cpp"
 
 

@@ -4,18 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_ScriptBG_Aura final : public CUI
+class CUI_Shop_AnimBG final : public CUI
 {
-public:
-	typedef struct UI_Aura_Desc : public UI_DESC
-	{
-		_uint		iTextureNum;
-	}UI_AURA_DESC;
-
 private:
-	CUI_ScriptBG_Aura(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_ScriptBG_Aura(const CUI_ScriptBG_Aura& rhs);
-	virtual ~CUI_ScriptBG_Aura() = default;
+	CUI_Shop_AnimBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_Shop_AnimBG(const CUI_Shop_AnimBG& rhs);
+	virtual ~CUI_Shop_AnimBG() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -28,16 +22,12 @@ public:
 private:
 	_float			m_fFlowTimer = { 0.f };
 
-	_uint			m_iTextureNum = { 0 };
-
-	CTexture* m_pMaskTextureCom = { nullptr };
-
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_ScriptBG_Aura*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_Shop_AnimBG*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(void* pArg) override;
 	virtual void				Free() override;
 };

@@ -90,8 +90,8 @@ void CUI_UpGPage_Value::Update_Value(_uint iCurSlotIdx)
 	for (size_t i = 0; i < iCurSlotIdx; ++i)
 		++weapon;
 
-	m_iPrive = (*weapon)->Get_Price();
-	m_iValue = (*weapon)->Get_Value();
+	m_iPrive = (*weapon)->Get_Price() + ((*weapon)->Get_Level() * 5); // Level에 따라 필요 재료 늘어나도록
+	m_iValue = (*weapon)->Get_Value() + ((*weapon)->Get_Level());
 }
 
 HRESULT CUI_UpGPage_Value::Add_Components()
@@ -195,7 +195,7 @@ void CUI_UpGPage_Value::Update_Jemstone()
 			++item;
 			m_iJemstone = 0;
 		}
-	}``
+	}
 }
 
 CUI_UpGPage_Value* CUI_UpGPage_Value::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

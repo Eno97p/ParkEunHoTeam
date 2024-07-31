@@ -8,6 +8,9 @@
 #include"CUserErrorCallBack.h"
 
 
+
+
+
 PxDefaultAllocator		gAllocator;
 PxDefaultErrorCallback	gErrorCallback;
 CSimulationCallBack g_SimulationCallBack;
@@ -25,6 +28,7 @@ CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+	
 	
 }
 

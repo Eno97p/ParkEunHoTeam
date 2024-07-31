@@ -11,6 +11,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\Private\BehaviorTree.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\BlastMgr.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Engine\private\BlendObject.cpp"
 
 

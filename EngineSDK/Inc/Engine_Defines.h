@@ -18,6 +18,11 @@
 
 
 #include"PxPhysicsAPI.h"
+#include"NvBlast.h"
+#include"NvBlastTk.h"
+
+#include"NvBlastGlobals.h"
+
 
 #include <random>
 
@@ -47,6 +52,8 @@
 using namespace DirectX;
 using namespace physx;
 using namespace physx::vehicle2;
+using namespace Nv;
+using namespace Nv::Blast;
 
 #include <vector>
 #include <list>

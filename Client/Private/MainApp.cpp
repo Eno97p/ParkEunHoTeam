@@ -121,9 +121,10 @@
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
 #include "UIGroup_UpGPage.h"
-
-
-
+#include "UI_UpCompletedBG.h"
+#include "UI_UpCompleted_Circle.h"
+#include "UI_UpCompleted_Forge.h"
+#include "UI_UpCompleted_Crucible.h"
 #include "UIGroup_UP_Completed.h"
 #pragma endregion Upgrade
 
@@ -1124,6 +1125,23 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion UpGPage
 
+#pragma region Up_Completed
+	/* Prototype_Component_Texture_UI_UpCompleted_Circle_1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_UpCompleted_Circle_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic_small.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_UpCompleted_Forge */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Forge"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle2.png"), 1))))
+		return E_FAIL;
+#pragma endregion Up_Completed
+
 #pragma endregion Upgrade
 
 #pragma region Map
@@ -1656,6 +1674,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_UpGPage::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion UpGPage
+
+#pragma region UP_Completed
+	/* For.Prototype_GameObject_UI_UpCompletedBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompletedBG"),
+		CUI_UpCompletedBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Circle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Circle"),
+		CUI_UpCompleted_Circle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Forge*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Forge"),
+		CUI_UpCompleted_Forge::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Crucible*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Crucible"),
+		CUI_UpCompleted_Crucible::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UP_Completed*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UP_Completed"),
+		CUIGroup_UP_Completed::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion UP_Completed
 
 #pragma endregion Upgrade
 

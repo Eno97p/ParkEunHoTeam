@@ -23,18 +23,21 @@ public:
 	virtual HRESULT Render() override;
 
 	void			Add_WeaponList(_uint iWeaponIdx);
+	void			Create_CompletedPage();
 
 private:
 	_uint						m_iCurSlotIdx = { 0 }; // 현재 선택된 Slot의 인덱스
 	
-	vector<class CUI*>			m_vecUI;
-	vector<class CUI*>			m_vecSlot;
-	vector<class CUI*>			m_ValuesSlot;
-	class CUI_ItemIcon*			m_pItemIcon = { nullptr };
+	vector<class CUI*>				m_vecUI;
+	vector<class CUI*>				m_vecSlot;
+	vector<class CUI*>				m_ValuesSlot;
+	class CUI_ItemIcon*				m_pItemIcon = { nullptr };
+	class CUIGroup_UP_Completed*	m_pCompletedPage = { nullptr };
 
 private:
 	HRESULT					Create_UI();
 	HRESULT					Create_Slot();
+
 
 	void					Update_CurSlot();
 	void					Update_ItemIcon();

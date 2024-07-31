@@ -624,9 +624,21 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Lightnings">
       <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\BG">
+      <UniqueIdentifier>{0f45e09d-06f0-489c-bbe4-a8110583038b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Circle">
+      <UniqueIdentifier>{ac8b3476-de65-48ce-9a00-4e0f3a7dcdff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Forge">
+      <UniqueIdentifier>{98d3e829-be77-4f3f-89d3-2f4f49b29f2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Crucible">
+      <UniqueIdentifier>{d2127b06-1227-4a66-96ee-f09fc4497164}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1285,12 +1297,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lightning.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompletedBG.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Circle.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Forge.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Forge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Crucible.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1923,12 +1947,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lightning.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompletedBG.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Circle.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Forge.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Forge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Crucible.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

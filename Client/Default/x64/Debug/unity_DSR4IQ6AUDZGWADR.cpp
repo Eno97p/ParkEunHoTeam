@@ -309,6 +309,18 @@
 #include "C:\Real3DProject\Client\Private\UI_Slot_EquipSign.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_UpCompletedBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpCompleted_Circle.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpCompleted_Crucible.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_UpCompleted_Forge.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_UpGPageBG.cpp"
 
 

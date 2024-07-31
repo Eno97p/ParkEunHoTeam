@@ -285,6 +285,10 @@
     <ClInclude Include="..\Public\UI_Shop_RemainIcon.h" />
     <ClInclude Include="..\Public\UI_Shop_SoulBG.h" />
     <ClInclude Include="..\Public\UI_Slot_EquipSign.h" />
+    <ClInclude Include="..\Public\UI_UpCompletedBG.h" />
+    <ClInclude Include="..\Public\UI_UpCompleted_Circle.h" />
+    <ClInclude Include="..\Public\UI_UpCompleted_Crucible.h" />
+    <ClInclude Include="..\Public\UI_UpCompleted_Forge.h" />
     <ClInclude Include="..\Public\UI_UpGPageBG.h" />
     <ClInclude Include="..\Public\UI_UpGPageBtn.h" />
     <ClInclude Include="..\Public\UI_UpGPageBtn_Select.h" />
@@ -502,6 +506,10 @@
     <ClCompile Include="..\Private\UI_Shop_RemainIcon.cpp" />
     <ClCompile Include="..\Private\UI_Shop_SoulBG.cpp" />
     <ClCompile Include="..\Private\UI_Slot_EquipSign.cpp" />
+    <ClCompile Include="..\Private\UI_UpCompletedBG.cpp" />
+    <ClCompile Include="..\Private\UI_UpCompleted_Circle.cpp" />
+    <ClCompile Include="..\Private\UI_UpCompleted_Crucible.cpp" />
+    <ClCompile Include="..\Private\UI_UpCompleted_Forge.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBG.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBtn.cpp" />
     <ClCompile Include="..\Private\UI_UpGPageBtn_Select.cpp" />

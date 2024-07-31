@@ -15,6 +15,7 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Upgrade.h"
 #include "UIGroup_UpGPage.h"
+#include "UIGroup_UP_Completed.h"
 #include "UIGroup_Map.h"
 
 #include "UI_ScreenBlood.h"
@@ -224,6 +225,10 @@ HRESULT CUI_Manager::Create_UI()
 	// UpGPage
 	m_mapUIGroup.emplace("UpGPage", dynamic_cast<CUIGroup_UpGPage*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage"), &pDesc)));
 
+	// >>> 이것을 UpGPage가 가지고 있도록 로직을 수정하는 것으로 변경
+	// UP_Completed
+	//m_mapUIGroup.emplace("UP_Completed", dynamic_cast<CUIGroup_UP_Completed*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UP_Completed"), &pDesc)));
+
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
@@ -310,12 +315,18 @@ void CUI_Manager::Key_Input()
 			}
 		}
 
-		// test용
+		// test용 >> 나중에 다르게 처리해야 함
 		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 		(*upgrade).second->Set_Rend(false);
 
 		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
 		(*upgpage).second->Set_Rend(false);
+
+		//map<string, CUIGroup*>::iterator upCompleted = m_mapUIGroup.find("UP_Completed"); // Upgrade
+		//(*upCompleted).second->Set_Rend(false);
+
+
+
 
 	}
 	else if (m_pGameInstance->Key_Down(DIK_I))

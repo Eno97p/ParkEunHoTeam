@@ -139,20 +139,12 @@ PS_OUT PS_MAIN_FLOW_HORIZONTAL_SHOPBG(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
 
-	// 위로 그냥 계속 올라가게 하지 말고 아래위로 움직이도록 할지?
-
 	float2 vDetailUV = In.vTexcoord;
 	vDetailUV.y += g_fFlowTime;
 
 	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
 
 	Out.vColor = vDestDiffuse;
-
-	if (Out.vColor.a < 0.1f)
-		discard;
-
-	/*if (0.2 < Out.vColor.a)
-		Out.vColor.a = 0.2;*/
 
 	return Out;
 }

@@ -17,6 +17,7 @@
 #include "UIGroup_UpGPage.h"
 #include "UIGroup_UP_Completed.h"
 #include "UIGroup_Map.h"
+#include "UIGroup_Setting.h"
 
 #include "UI_ScreenBlood.h"
 #include "Camera.h"
@@ -225,10 +226,9 @@ HRESULT CUI_Manager::Create_UI()
 	// UpGPage
 	m_mapUIGroup.emplace("UpGPage", dynamic_cast<CUIGroup_UpGPage*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UpGPage"), &pDesc)));
 
-	// >>> 이것을 UpGPage가 가지고 있도록 로직을 수정하는 것으로 변경
-	// UP_Completed
-	//m_mapUIGroup.emplace("UP_Completed", dynamic_cast<CUIGroup_UP_Completed*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UP_Completed"), &pDesc)));
-
+	// Setting  
+	m_mapUIGroup.emplace("Setting", dynamic_cast<CUIGroup_Setting*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Setting"), &pDesc)));
+	
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
@@ -246,6 +246,7 @@ void CUI_Manager::Key_Input()
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
 	map<string, CUIGroup*>::iterator invsub = m_mapUIGroup.find("InvSub");
+
 	_bool isLogoOpen = (*logo).second->Get_Rend();
 	_bool isLoadingOpen = (*loading).second->Get_Rend();
 	_bool isMenuOpen = (*menu).second->Get_Rend();
@@ -261,11 +262,13 @@ void CUI_Manager::Key_Input()
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
 		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 		map<string, CUIGroup*>::iterator mapPage = m_mapUIGroup.find("Map");
+		map<string, CUIGroup*>::iterator setting = m_mapUIGroup.find("Setting");
 
 		_bool isChOpen = (*character).second->Get_Rend();
 		_bool isInvOpen = (*inventory).second->Get_Rend();
 		_bool isWeaponOpen = (*weapon).second->Get_Rend();
 		_bool isMapOpen = (*mapPage).second->Get_Rend();
+		_bool isSettingOpen = (*setting).second->Get_Rend();
 
 		if (isMenuOpen)
 		{
@@ -290,6 +293,10 @@ void CUI_Manager::Key_Input()
 				else if (isMapOpen)
 				{
 					(*mapPage).second->Set_RenderOnAnim(false);
+				}
+				else if (isSettingOpen)
+				{
+					(*setting).second->Set_RenderOnAnim(false);
 				}
 				else
 				{
@@ -321,11 +328,6 @@ void CUI_Manager::Key_Input()
 
 		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
 		(*upgpage).second->Set_Rend(false);
-
-		//map<string, CUIGroup*>::iterator upCompleted = m_mapUIGroup.find("UP_Completed"); // Upgrade
-		//(*upCompleted).second->Set_Rend(false);
-
-
 
 
 	}

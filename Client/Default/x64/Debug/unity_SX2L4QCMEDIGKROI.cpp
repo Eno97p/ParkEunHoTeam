@@ -231,6 +231,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Setting.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Shop.cpp"
 
 
@@ -292,6 +295,18 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Script_NameBox.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Setting_BackBtn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Setting_Btn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Setting_Overlay.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Setting_Star.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_ShopBG.cpp"

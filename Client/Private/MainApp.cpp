@@ -147,6 +147,14 @@
 #include "UIGroup_Shop.h"
 #pragma endregion Shop
 
+#pragma region Setting
+#include "UI_Setting_Star.h"
+#include "UI_Setting_Overlay.h"
+#include "UI_Setting_Btn.h"
+#include "UI_Setting_BackBtn.h"
+#include "UIGroup_Setting.h"
+#pragma endregion Setting
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -1205,6 +1213,28 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 #pragma endregion Shop
 
+#pragma region Setting
+	/* Prototype_Component_Texture_UI_Setting_Star */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Star"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/star.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_OnOffBtn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_OnOffBtn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/OnOffBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_Overlay */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Overlay"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/T_Options_Overlay.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_BackBtn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
+		return E_FAIL;
+#pragma endregion Setting
+
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
@@ -1778,6 +1808,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Shop::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Shop
+
+#pragma region Setting
+	/* For.Prototype_GameObject_UI_Setting_Star*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Star"),
+		CUI_Setting_Star::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_Overlay*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Overlay"),
+		CUI_Setting_Overlay::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Btn"),
+		CUI_Setting_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_BackBtn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_BackBtn"),
+		CUI_Setting_BackBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Setting*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Setting"),
+		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Setting
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

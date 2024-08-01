@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_Shop_AnimBG final : public CUI
+class CUI_Setting_Overlay final : public CUI
 {
 private:
-	CUI_Shop_AnimBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_Shop_AnimBG(const CUI_Shop_AnimBG& rhs);
-	virtual ~CUI_Shop_AnimBG() = default;
+	CUI_Setting_Overlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_Setting_Overlay(const CUI_Setting_Overlay& rhs);
+	virtual ~CUI_Setting_Overlay() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -18,18 +18,15 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
-	
-private:
-	_float			m_fFlowTimer = { 0.f };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_Shop_AnimBG*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*		Clone(void* pArg) override;
-	virtual void				Free() override;
+	static CUI_Setting_Overlay*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
+	virtual void					Free() override;
 };
 
 END

@@ -643,6 +643,21 @@
     <Filter Include="02.GameObjects\07. UI\Shop\AnimBG">
       <UniqueIdentifier>{e6b0da4a-fe04-4aba-b86a-8c91f7fff6b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting">
+      <UniqueIdentifier>{4a54f9d6-9d5f-4fbd-848c-ed1ee25057e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Star">
+      <UniqueIdentifier>{ebbba6ff-08f7-4721-850e-e42b4fe07261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Overlay">
+      <UniqueIdentifier>{f21664aa-0444-4b93-85fc-ec9ad794d356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Btn">
+      <UniqueIdentifier>{84f20eee-8974-4449-a67e-a3f0dc1c6155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Back">
+      <UniqueIdentifier>{91a6a92d-35bd-4c31-90b7-6397a4063fb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1322,6 +1337,21 @@
     <ClInclude Include="..\Public\UI_Shop_AnimBG.h">
       <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Setting.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Star.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Star</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Overlay.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Btn.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_BackBtn.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1974,6 +2004,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Shop_AnimBG.cpp">
       <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Setting.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Star.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Overlay.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Btn.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_BackBtn.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

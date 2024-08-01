@@ -259,6 +259,7 @@
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Map.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
+    <ClInclude Include="..\Public\UIGroup_Setting.h" />
     <ClInclude Include="..\Public\UIGroup_Shop.h" />
     <ClInclude Include="..\Public\UIGroup_UpGPage.h" />
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
@@ -280,6 +281,10 @@
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
     <ClInclude Include="..\Public\UI_Script_DialogBox.h" />
     <ClInclude Include="..\Public\UI_Script_NameBox.h" />
+    <ClInclude Include="..\Public\UI_Setting_BackBtn.h" />
+    <ClInclude Include="..\Public\UI_Setting_Btn.h" />
+    <ClInclude Include="..\Public\UI_Setting_Overlay.h" />
+    <ClInclude Include="..\Public\UI_Setting_Star.h" />
     <ClInclude Include="..\Public\UI_ShopBG.h" />
     <ClInclude Include="..\Public\UI_ShopSelect.h" />
     <ClInclude Include="..\Public\UI_Shop_AnimBG.h" />
@@ -481,6 +486,7 @@
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Map.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Setting.cpp" />
     <ClCompile Include="..\Private\UIGroup_Shop.cpp" />
     <ClCompile Include="..\Private\UIGroup_UpGPage.cpp" />
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
@@ -502,6 +508,10 @@
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />
     <ClCompile Include="..\Private\UI_Script_DialogBox.cpp" />
     <ClCompile Include="..\Private\UI_Script_NameBox.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_BackBtn.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_Btn.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_Overlay.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_Star.cpp" />
     <ClCompile Include="..\Private\UI_ShopBG.cpp" />
     <ClCompile Include="..\Private\UI_ShopSelect.cpp" />
     <ClCompile Include="..\Private\UI_Shop_AnimBG.cpp" />

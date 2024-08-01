@@ -183,6 +183,7 @@
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\Body_Andras.h" />
+    <ClInclude Include="..\Public\Body_Choron.h" />
     <ClInclude Include="..\Public\Body_Ghost.h" />
     <ClInclude Include="..\Public\Body_Homonculus.h" />
     <ClInclude Include="..\Public\Body_Juggulus.h" />
@@ -241,6 +242,7 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Lightning.h" />
     <ClInclude Include="..\Public\Npc.h" />
+    <ClInclude Include="..\Public\NPC_Choron.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\Npc_Valnir.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
@@ -414,6 +416,7 @@
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\Body_Andras.cpp" />
+    <ClCompile Include="..\Private\Body_Choron.cpp" />
     <ClCompile Include="..\Private\Body_Ghost.cpp" />
     <ClCompile Include="..\Private\Body_Homonculus.cpp" />
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
@@ -468,6 +471,7 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Lightning.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
+    <ClCompile Include="..\Private\NPC_Choron.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\Npc_Valnir.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />

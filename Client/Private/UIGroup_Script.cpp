@@ -114,6 +114,18 @@ HRESULT CUIGroup_Script::Create_UI()
 		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
 		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
 	}
+	else if (NPC_CHORON == m_eNpcType)
+	{
+		pAuraDesc.iTextureNum = 4;
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir"); // Prototype_Component_Texture_Script_Npc_Choron
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
+	}
+	else if (NPC_YAAK == m_eNpcType)
+	{
+		pAuraDesc.iTextureNum = 4;
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
+	}
 
 	// BG Aura
 	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));

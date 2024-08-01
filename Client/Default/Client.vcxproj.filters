@@ -658,6 +658,12 @@
     <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Back">
       <UniqueIdentifier>{91a6a92d-35bd-4c31-90b7-6397a4063fb1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Choron">
+      <UniqueIdentifier>{ba90cae1-42a8-4b12-9fe1-381c627d9348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Choron\Body">
+      <UniqueIdentifier>{d38e4306-7778-4027-8488-fdc47178a55c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1352,6 +1358,12 @@
     <ClInclude Include="..\Public\UI_Setting_BackBtn.h">
       <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Choron.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Choron.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2019,6 +2031,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Setting_BackBtn.cpp">
       <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Choron.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Choron.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

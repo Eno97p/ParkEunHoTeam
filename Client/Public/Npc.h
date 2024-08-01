@@ -48,6 +48,8 @@ protected:
 	HRESULT				Create_Activate();
 	virtual HRESULT		Create_Script() = 0;
 
+	_bool				Check_Distance();
+
 public:
 	virtual CGameObject*	Clone(void* pArg) = 0;
 	virtual void			Free() override;

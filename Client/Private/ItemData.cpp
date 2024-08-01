@@ -297,17 +297,21 @@ void CItemData::Set_Item_Data()
 		break;
 	}
 	case Client::CItemData::ITEMNAME_OPH:
-		break;
-	case Client::CItemData::ITEMNAME_ETHERBOLT:
 	{
 		m_eItemType = ITEMTYPE_SKILL;
-		m_wszItemName = TEXT("ETHERBOLT");
-		m_wszItemExplain = TEXT("어둠 속에서도 빛나는\n정화의 상징\n강력한 에테르의 힘으로\n멀리까지 날아간다.");
-		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Ether");
+		m_wszItemName = TEXT("Oph");
+		m_wszItemExplain = TEXT("전설적인 메다크 바니르가\n만든 유물 중 하나\n일시적으로 무기에 포함된\n하드로아니트를 활성화하여\n피해를 크게 증가시킨다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Oph");
 		break;
 	}
-	case Client::CItemData::ITEMNAME_AEGIS:
+	case Client::CItemData::ITEMNAME_AKSHA:
+	{
+		m_eItemType = ITEMTYPE_SKILL;
+		m_wszItemName = TEXT("Aksha");
+		m_wszItemExplain = TEXT("Niphur의 Sentient에서\n개발한 프로토타입\n소유자가 일시적으로\n감지 대상에서 벗어난다.");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Aksha");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_CATALYST:
 		break;
 	case Client::CItemData::ITEMNAME_HOVERBOARD:

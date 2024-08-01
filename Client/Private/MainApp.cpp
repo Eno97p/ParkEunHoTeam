@@ -782,6 +782,18 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Weapon
 
+#pragma region Skill
+	/* Prototype_Component_Texture_Icon_Oph */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Oph"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Oph.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Aksha */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Aksha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Aksha.png"), 1))))
+		return E_FAIL;
+#pragma endregion Skill
+
 #pragma region Item
 
 #pragma region DropItem

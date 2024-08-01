@@ -88,7 +88,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 
 	// Skill에 추가
-	pDesc.eItemName = CItemData::ITEMNAME_ETHERBOLT;
+	pDesc.eItemName = CItemData::ITEMNAME_OPH;
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함

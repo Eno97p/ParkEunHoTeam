@@ -315,10 +315,16 @@ void CItemData::Set_Item_Data()
 	case Client::CItemData::ITEMNAME_CATALYST:
 		break;
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
+	{
+		m_eItemType = ITEMTYPE_ETC;
+		m_wszItemName = TEXT("HOVERBOARD");
+		m_wszItemExplain = TEXT("왕국의 기술과\n마법이 결합된 결과물\n지형의 제약을 받지 않는\n고성능 탈 것");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_HoverBoard");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_FIREFLY:
 	{
-		m_eItemType = ITEMTYPE_WEAPON;
+		m_eItemType = ITEMTYPE_ETC;
 		m_wszItemName = TEXT("FIREFLY");
 		m_wszItemExplain = TEXT("모험가의 앞길을 밝혀주는\n희망의 상징\n아무리 어둥이 짙어도\n빛은 항상 길을 찾아낸다.");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Firefly");

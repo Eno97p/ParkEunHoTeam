@@ -303,6 +303,9 @@
 #include "C:\Real3DProject\Client\Private\UI_ScriptBG_Npc.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Script_BGKey.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Script_DialogBox.cpp"
 
 

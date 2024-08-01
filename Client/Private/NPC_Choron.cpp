@@ -74,7 +74,7 @@ void CNPC_Choron::Late_Tick(_float fTimeDelta)
 		{
 			m_pScriptUI->Set_Rend(true);
 			if (m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("첫번째 스크립트"));
+				m_pScriptUI->Set_DialogText(TEXT("왕국의 기술과 마법을 결합한 지혜와 힘의 상징. 전설의 유물을 알고 있나?"));
 			m_isScriptOn = true;
 		}
 	}
@@ -117,6 +117,43 @@ HRESULT CNPC_Choron::Create_Script()
 
 void CNPC_Choron::Key_Input()
 {
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		switch (m_iDialogCnt)
+		{
+		case 3:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("이 유물은 오랜 세월 동안 잊혀졌으나 지금 그대의 손에서 다시금 빛을 발할 것이다.\n"));
+			--m_iDialogCnt;
+			break;
+		}
+		case 2:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("어둠의 세력과 맞서 싸울 때 이것을 이용해주게."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 1:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("행운을 비네, 용사여."));
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			--m_iDialogCnt;
+
+			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_HOVERBOARD); // Inventory에 Firefly 추가
+
+			break;
+		}
+		case 0:
+		{
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 CNPC_Choron* CNPC_Choron::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

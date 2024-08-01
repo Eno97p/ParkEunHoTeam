@@ -177,6 +177,27 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	return S_OK;
 }
 
+HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
+{
+	// 무기 획득 함수
+
+	// Inventory에도 넣어줘야하고 / UI Weapon에도 넣어줘야 하고 / 
+
+	CItemData::ITEMDATA_DESC pDesc{};
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = eItemName;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	// Upgrade Page에도 weapon 추가
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
+
+	return S_OK;
+}
+
 HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 {
 	// Inventory에서 현재 선택한 아이템을 QuickAccess에 등록

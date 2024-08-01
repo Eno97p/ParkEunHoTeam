@@ -38,7 +38,7 @@ HRESULT CNPC_Yaak::Initialize(void* pArg)
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
-	m_iDialogCnt = 3;
+	m_iDialogCnt = 4;
 
 	Create_Script();
 
@@ -74,7 +74,7 @@ void CNPC_Yaak::Late_Tick(_float fTimeDelta)
 		{
 			m_pScriptUI->Set_Rend(true);
 			if (m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("첫 번째 스크립트"));
+				m_pScriptUI->Set_DialogText(TEXT("방랑하는 망령을 쓰러뜨렸구나. 새로운 여정의 시작이라고 볼 수도 있겠지."));
 			m_isScriptOn = true;
 		}
 	}
@@ -117,6 +117,50 @@ HRESULT CNPC_Yaak::Create_Script()
 
 void CNPC_Yaak::Key_Input()
 {
+	if (m_pGameInstance->Key_Down(DIK_RETURN))
+	{
+		switch (m_iDialogCnt)
+		{
+		case 4:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("네가 과연 어디까지 도달할 수 있을지 궁금한걸. 도움을 주지."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 3:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("이 검은 네가 마주할 모든 어둠을 밝히는 불꽃이 될 것이고 그 불꽃은 네가 지닌 용기를\n시험할 것이다."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 2:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("왕국의 운명을 짊어진 자여, 행운을 빈다. 네 여정이 불꽃처럼 밝게 빛나기를."));
+			--m_iDialogCnt;
+			break;
+		}
+		case 1:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("잊지 마라. 좋은 무기는 오직 진정한 용사만이 다룰 수 있다는 것을."));
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			--m_iDialogCnt;
+
+			CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_DURGASWORD);
+
+
+			break;
+		}
+		case 0:
+		{
+			m_isScriptOn = false;
+			m_pScriptUI->Set_Rend(false);
+			break;
+		}
+		default:
+			break;
+		}
+	}
 }
 
 CNPC_Yaak* CNPC_Yaak::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

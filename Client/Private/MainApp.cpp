@@ -100,6 +100,7 @@
 #include "UI_ScriptBG_Npc.h"
 #include "UI_Script_DialogBox.h"
 #include "UI_Script_NameBox.h"
+#include "UI_Script_BGKey.h"
 #include "UIGroup_Script.h"
 #pragma endregion Script
 
@@ -849,6 +850,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Firefly.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_Icon_HoverBoard */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_HoverBoard"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.png"), 1))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_Item */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item.png"), 1))))
@@ -1075,6 +1081,21 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_Script_Npc_Valnir */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Valnir"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Valnir.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_ChoronBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_BG.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_ChoronKey */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronKey"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_Key_%d.png"), 2))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_YaakBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_YaakBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/YaakBG.png"), 1))))
 		return E_FAIL;
 #pragma endregion Script
 
@@ -1626,6 +1647,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_ScriptBG_NameBox*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ScriptBG_NameBox"),
 		CUI_Script_NameBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Script_BGKey*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Script_BGKey"),
+		CUI_Script_BGKey::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Script*/

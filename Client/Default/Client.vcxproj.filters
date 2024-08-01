@@ -664,6 +664,12 @@
     <Filter Include="02.GameObjects\02.LandObject\04. Npc\Choron\Body">
       <UniqueIdentifier>{d38e4306-7778-4027-8488-fdc47178a55c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Yaak">
+      <UniqueIdentifier>{528869d5-9a08-44fc-ac6b-0d0f57da505e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Yaak\Body">
+      <UniqueIdentifier>{2fffda1f-381a-43ba-82e2-7fc06a971726}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1364,6 +1370,12 @@
     <ClInclude Include="..\Public\Body_Choron.h">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC_Yaak.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Yaak.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak\Body</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2037,6 +2049,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Choron.cpp">
       <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Yaak.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Yaak.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

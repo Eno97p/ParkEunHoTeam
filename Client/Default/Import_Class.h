@@ -78,8 +78,8 @@
 #include "Body_Valnir.h"
 #include "NPC_Choron.h"
 #include "Body_Choron.h"
-
-
+#include "NPC_Yaak.h"
+#include "Body_Yaak.h"
 #pragma endregion NPC
 
 #pragma region DECAL

@@ -374,6 +374,16 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CBody_Choron::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Npc_Yaak*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Npc_Yaak"),
+		CNPC_Yaak::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Yaak*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Yaak"),
+		CBody_Yaak::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 #pragma endregion Npc
 

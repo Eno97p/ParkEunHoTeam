@@ -192,6 +192,7 @@
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
     <ClInclude Include="..\Public\Body_Valnir.h" />
+    <ClInclude Include="..\Public\Body_Yaak.h" />
     <ClInclude Include="..\Public\BossDeco.h" />
     <ClInclude Include="..\Public\BossStatue.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
@@ -245,6 +246,7 @@
     <ClInclude Include="..\Public\NPC_Choron.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\Npc_Valnir.h" />
+    <ClInclude Include="..\Public\NPC_Yaak.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
@@ -425,6 +427,7 @@
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
     <ClCompile Include="..\Private\Body_Valnir.cpp" />
+    <ClCompile Include="..\Private\Body_Yaak.cpp" />
     <ClCompile Include="..\Private\BossDeco.cpp" />
     <ClCompile Include="..\Private\BossStatue.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
@@ -474,6 +477,7 @@
     <ClCompile Include="..\Private\NPC_Choron.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\Npc_Valnir.cpp" />
+    <ClCompile Include="..\Private\NPC_Yaak.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />

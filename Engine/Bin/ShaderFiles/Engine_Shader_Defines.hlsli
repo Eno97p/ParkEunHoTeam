@@ -168,3 +168,22 @@ float PerlinNoise(float2 st)
              dot(PerlinRandom(i + float2(1.0, 1.0)), f - float2(1.0, 1.0)), u.x),
         u.y);
 }
+
+float2 RadialShear(float2 texCoord, float2 center, float strength, float offset) //동그랗게 왜곡시켜줌
+{
+    float2 toCenter = texCoord - center;
+    float distance = length(toCenter);
+    
+    // 거리가 0인 경우 (중심점에 있는 경우) NaN을 방지하기 위한 처리
+    if (distance > 0.0001f)
+    {
+        float2 normalizedDir = toCenter / distance;
+        float shearAmount = distance * strength + offset;
+        float2 shearOffset = normalizedDir * shearAmount;
+        return texCoord + shearOffset;
+    }
+    else
+    {
+        return texCoord;
+    }
+}

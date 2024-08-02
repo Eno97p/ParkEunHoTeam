@@ -301,10 +301,7 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//landObjDesc.mWorldMatrix._43 = 98.f;
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 
-	CHoverboard::HoverboardInfo hoverboardInfo;
-	hoverboardInfo.vPosition = _float3(75.f, 553.f, 98.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
-		return E_FAIL;
+
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
 	//	return E_FAIL;

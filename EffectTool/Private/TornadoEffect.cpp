@@ -30,12 +30,11 @@ HRESULT CTornadoEffect::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	if (FAILED(Add_Child_Effects()))
-		return E_FAIL;
-
 	RootInterval = m_OwnDesc->fRootInterval;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_OwnDesc->vStartPos));
+	if (FAILED(Add_Child_Effects()))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -87,12 +86,38 @@ HRESULT CTornadoEffect::Add_Components()
 HRESULT CTornadoEffect::Add_Child_Effects()
 {
 	m_OwnDesc->WindDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->WindDesc2.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->WindDesc3.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->RingDesc1.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->RingDesc2.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+	m_OwnDesc->WindDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
+	m_OwnDesc->WindDesc2.fMaxLifeTime = m_OwnDesc->fLifeTime;
+	m_OwnDesc->WindDesc3.fMaxLifeTime = m_OwnDesc->fLifeTime;
+	m_OwnDesc->RingDesc1.fMaxLifeTime = m_OwnDesc->fLifeTime;
+	m_OwnDesc->RingDesc2.fMaxLifeTime = m_OwnDesc->fLifeTime;
+
+	m_OwnDesc->WindDesc.NumModels = 0;
+	m_OwnDesc->WindDesc2.NumModels = 1;
+	m_OwnDesc->WindDesc3.NumModels = 2;
+
 	CGameObject* Wind = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Wind"), &m_OwnDesc->WindDesc);
 	m_EffectClasses.emplace_back(Wind);
 
-	m_OwnDesc->SpringDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	CGameObject* Spring = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Spring"), &m_OwnDesc->SpringDesc);
-	m_EffectClasses.emplace_back(Spring);
+	Wind = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Wind"), &m_OwnDesc->WindDesc2);
+	m_EffectClasses.emplace_back(Wind);
+
+	Wind = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Wind"), &m_OwnDesc->WindDesc3);
+	m_EffectClasses.emplace_back(Wind);
+
+	CGameObject* Ring = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Ring"), &m_OwnDesc->RingDesc1);
+	m_EffectClasses.emplace_back(Ring);
+
+	m_OwnDesc->RingDesc2.StartWithBody = true;
+	Ring = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Tornado_Ring"), &m_OwnDesc->RingDesc2);
+	m_EffectClasses.emplace_back(Ring);
+
+
 	return S_OK;
 }
 

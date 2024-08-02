@@ -104,6 +104,12 @@
     <Filter Include="Objects\05. Monster\Andras\AndrasLazer\Effects">
       <UniqueIdentifier>{b8f8f708-a98d-4bb5-80bd-75d460d62187}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\10. FirePillar">
+      <UniqueIdentifier>{1bf3ef14-2bfb-4a7f-8320-7982367cfb8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\10. FirePillar\Effects">
+      <UniqueIdentifier>{db991e8b-eea8-4feb-9c6f-d6fec86719aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -250,9 +256,6 @@
     <ClInclude Include="..\Public\Tornado_Root.h">
       <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Tornado_Spring.h">
-      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AndrasLazer.h">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClInclude>
@@ -270,6 +273,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\ElectricCylinder.h">
       <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ShieldSphere.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tornado_Ring.h">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FirePillar.h">
+      <Filter>Objects\02. Effects\10. FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FirePillarEffect.h">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -402,9 +417,6 @@
     <ClCompile Include="..\Private\Tornado_Root.cpp">
       <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Tornado_Spring.cpp">
-      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AndrasLazer.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasLazer</Filter>
     </ClCompile>
@@ -422,6 +434,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\ElectricCylinder.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ShieldSphere.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tornado_Ring.cpp">
+      <Filter>Objects\02. Effects\09. Tornado\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FirePillar.cpp">
+      <Filter>Objects\02. Effects\10. FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FirePillarEffect.cpp">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

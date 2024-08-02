@@ -25,6 +25,15 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 }
 
 
+HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFilePath)
+{
+	//형태만 유지
+
+
+
+	return S_OK;
+}
+
 HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFilePath, _bool realmap)
 {
 	_ulong			dwByte = { 0 };
@@ -728,18 +737,18 @@ PxRigidStatic* CreateTerrainActor(PxPhysics* physics, PxScene* scene, const vect
 	return terrainActor;
 }
 
-//CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strHeightMapFilePath)
-//{
-//	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pContext);
-//
-//	if (FAILED(pInstance->Initialize_Prototype(strHeightMapFilePath)))
-//	{
-//		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
-//		Safe_Release(pInstance);
-//	}
-//
-//	return pInstance;
-//}
+CVIBuffer_Terrain * CVIBuffer_Terrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring& strHeightMapFilePath)
+{
+	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(strHeightMapFilePath)))
+	{
+		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
 
 CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath, _bool realmap)
 {

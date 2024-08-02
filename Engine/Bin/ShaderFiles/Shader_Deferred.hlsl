@@ -573,9 +573,16 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
         vColor = vector(vColor.rgb * 0.5f, 1.f);
     Out.vColor = vColor;
 
+
+
+
+
     //안개
     float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
     float distanceToCamera = length(cameraToWorldPos);
+
+
+
 
     // 안개 방향 계산
     float3 fogDirection = normalize(cameraToWorldPos);

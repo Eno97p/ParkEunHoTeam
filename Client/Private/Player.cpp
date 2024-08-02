@@ -52,6 +52,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
+	m_iLevel = 1;
+
 	return S_OK;
 }
 

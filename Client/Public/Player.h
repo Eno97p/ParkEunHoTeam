@@ -71,6 +71,8 @@ public:
 	_float			Get_MaxHP() { return m_fMaxHp; }
 	_float			Get_MaxStamina() { return m_fMaxStamina; }
 	_float			Get_MaxMP() { return m_fMaxMp; }
+	_uint			Get_Level() { return m_iLevel; }
+	void			Set_Level(_int iAdd) { m_iLevel += iAdd; }
 
 private:
 	HRESULT Add_Nodes();
@@ -175,6 +177,10 @@ private:
 
 	//초기 위치
 	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
+
+#pragma region UI관련 Data
+	_uint		m_iLevel = { 0 };
+#pragma endregion UI관련 Data
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

@@ -38,7 +38,7 @@ HRESULT CNPC_Choron::Initialize(void* pArg)
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
 
-	m_iDialogCnt = 3;
+	m_iDialogCnt = 4;
 
 	Create_Script();
 
@@ -74,7 +74,7 @@ void CNPC_Choron::Late_Tick(_float fTimeDelta)
 		{
 			m_pScriptUI->Set_Rend(true);
 			if (m_iDialogCnt != 0)
-				m_pScriptUI->Set_DialogText(TEXT("왕국의 기술과 마법을 결합한 지혜와 힘의 상징. 전설의 유물을 알고 있나?"));
+				m_pScriptUI->Set_DialogText(TEXT("방랑하는 망령을 쓰러뜨렸군. 새로운 여정의 시작이라고 볼 수도 있겠지."));
 			m_isScriptOn = true;
 		}
 	}
@@ -121,26 +121,32 @@ void CNPC_Choron::Key_Input()
 	{
 		switch (m_iDialogCnt)
 		{
+		case 4:
+		{
+			m_pScriptUI->Set_DialogText(TEXT("그대가 과연 어디까지 도달할 수 있을지 궁금하군. 도움을 주마."));
+			--m_iDialogCnt;
+			break;
+		}
 		case 3:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("이 유물은 오랜 세월 동안 잊혀졌으나 지금 그대의 손에서 다시금 빛을 발할 것이다.\n"));
+			m_pScriptUI->Set_DialogText(TEXT("이 검은 그대가 마주할 모든 어둠을 밝히는 불꽃이 될 것이고 그 불꽃은 그대가 지닌 용기를\n끝없이 시험할 것이다."));
 			--m_iDialogCnt;
 			break;
 		}
 		case 2:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("어둠의 세력과 맞서 싸울 때 이것을 이용해주게."));
+			m_pScriptUI->Set_DialogText(TEXT("왕국의 운명을 짊어진 자여, 행운을 빈다. 그대의 여정이 불꽃처럼 밝게 빛나기를."));
 			--m_iDialogCnt;
 			break;
 		}
 		case 1:
 		{
-			m_pScriptUI->Set_DialogText(TEXT("행운을 비네, 용사여."));
+			m_pScriptUI->Set_DialogText(TEXT("잊지 마라. 좋은 무기는 오직 진정한 용사만이 다룰 수 있다는 것을."));
 			m_isScriptOn = false;
 			m_pScriptUI->Set_Rend(false);
 			--m_iDialogCnt;
 
-			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_HOVERBOARD); // Inventory에 Firefly 추가
+			CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_DURGASWORD);
 
 			break;
 		}

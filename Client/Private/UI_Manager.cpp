@@ -18,6 +18,7 @@
 #include "UIGroup_UP_Completed.h"
 #include "UIGroup_Map.h"
 #include "UIGroup_Setting.h"
+#include "UIGroup_Ch_Upgrade.h"
 
 #include "UI_ScreenBlood.h"
 #include "Camera.h"
@@ -229,6 +230,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Setting  
 	m_mapUIGroup.emplace("Setting", dynamic_cast<CUIGroup_Setting*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Setting"), &pDesc)));
 	
+	// Ch_Upgrade
+	m_mapUIGroup.emplace("Ch_Upgrade", dynamic_cast<CUIGroup_Ch_Upgrade*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade"), &pDesc)));
+
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
@@ -329,6 +333,9 @@ void CUI_Manager::Key_Input()
 		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
 		(*upgpage).second->Set_Rend(false);
 
+		map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+		(*ch_upgrade).second->Set_Rend(false);
+
 
 	}
 	else if (m_pGameInstance->Key_Down(DIK_I))
@@ -356,6 +363,13 @@ void CUI_Manager::Key_Input()
 	{
 		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 		(*upgrade).second->Set_Rend(true);
+
+		m_pGameInstance->Get_MainCamera()->Inactivate();
+	}
+	else if (m_pGameInstance->Key_Down(DIK_Y))
+	{
+		map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+		(*ch_upgrade).second->Set_Rend(true);
 
 		m_pGameInstance->Get_MainCamera()->Inactivate();
 	}

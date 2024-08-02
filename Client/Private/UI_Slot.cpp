@@ -557,13 +557,16 @@ void CUI_Slot::Render_Font()
 	{
 		wstring wstrTitle = m_wszItemName;
 
-		// Level
-		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-		for (size_t i = 0; i < m_iSlotIdx; ++i)
-			++weapon;
-		if (0 < (*weapon)->Get_Level())
+		if (SLOT_WEAPON == m_eSlotType)
 		{
-			wstrTitle = m_wszItemName + TEXT("   + ") + to_wstring((*weapon)->Get_Level());
+			// Level
+			vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+			for (size_t i = 0; i < m_iSlotIdx; ++i)
+				++weapon;
+			if (0 < (*weapon)->Get_Level())
+			{
+				wstrTitle = m_wszItemName + TEXT("   + ") + to_wstring((*weapon)->Get_Level());
+			}
 		}
 
 		// Title

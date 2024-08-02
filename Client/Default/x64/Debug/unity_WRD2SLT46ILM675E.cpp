@@ -234,6 +234,9 @@
 #include "C:\Real3DProject\Client\Private\Tree.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Ch_Upgrade.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"
 
 
@@ -259,6 +262,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Ch_UpgradeBtn.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"

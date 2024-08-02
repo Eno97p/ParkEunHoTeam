@@ -673,6 +673,12 @@
     <Filter Include="02.GameObjects\07. UI\Script\Key">
       <UniqueIdentifier>{4c1f2b64-d3fe-4fb3-8d53-d762c6e6e3a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade">
+      <UniqueIdentifier>{a9507cd2-e936-47b2-a14e-1cf967fe9524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\Btn">
+      <UniqueIdentifier>{d58146bd-636c-4d90-b24f-ac3e502c1dd0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1382,6 +1388,12 @@
     <ClInclude Include="..\Public\UI_Script_BGKey.h">
       <Filter>02.GameObjects\07. UI\Script\Key</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Ch_Upgrade.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2064,6 +2076,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Script_BGKey.cpp">
       <Filter>02.GameObjects\07. UI\Script\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Ch_Upgrade.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

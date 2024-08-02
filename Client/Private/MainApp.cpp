@@ -129,6 +129,13 @@
 #include "UIGroup_UP_Completed.h"
 #pragma endregion Upgrade
 
+#pragma region Ch_Upgrade
+#include "UI_Ch_UpgradeBtn.h"
+
+
+#include "UIGroup_Ch_Upgrade.h"
+#pragma endregion Ch_Upgrade
+
 #pragma region Map
 #include "UI_MapBG.h"
 #include "UI_MapArea.h"
@@ -1184,6 +1191,18 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Up_Completed
 
+#pragma region Ch_Upgrade
+	/* Prototype_Component_Texture_Ch_Upgrade_Btn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_Btn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_Weapons_Slot.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Ch_Upgrade_BtnSelect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_BtnSelect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_LevleUp_Select.png"), 1))))
+		return E_FAIL;
+#pragma endregion Ch_Upgrade
+
 #pragma endregion Upgrade
 
 #pragma region Map
@@ -1777,6 +1796,21 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion UP_Completed
 
 #pragma endregion Upgrade
+
+#pragma region Ch_Upgrade
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade_Btn"),
+		CUI_Ch_UpgradeBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade"),
+		CUIGroup_Ch_Upgrade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Ch_Upgrade
 
 #pragma region Map
 	/* For.Prototype_GameObject_UI_MapBG*/

@@ -49,10 +49,6 @@ HRESULT CPhysX::Initialize()
 	m_pPvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
 #endif // _DEBUG
 	
-
-	
- 
-
 	PxTolerancesScale scale;
 	scale.length = WORLD_METER;
 	scale.speed = WORLD_SPEED;
@@ -63,14 +59,6 @@ HRESULT CPhysX::Initialize()
 		return E_FAIL;
 	}
 	
-	
-
-
-	
-
-
-
-
 	PxCudaContextManagerDesc cudaContextManagerDesc;
 	
 	m_pCudaContextManager= PxCreateCudaContextManager(*m_pFoundation, cudaContextManagerDesc, PxGetProfilerCallback());	//Create the CUDA context manager, required for GRB to dispatch CUDA kernels.
@@ -88,9 +76,6 @@ HRESULT CPhysX::Initialize()
 	//deviceName = m_pCudaContextManager->getDeviceName();
 	//int iDeviceVersion = m_pCudaContextManager->getDriverVersion();
 
-	
-	
-	
 	PxSceneDesc sceneDesc(m_pPhysics->getTolerancesScale());
 	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
 	PxU32 numCores = PxThread::getNbPhysicalCores();
@@ -109,7 +94,6 @@ HRESULT CPhysX::Initialize()
 		yieldProcessorCount
 	);
 
-
 	
 	//m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(0);
 	if(!m_pCPUDispatcher)
@@ -121,9 +105,7 @@ HRESULT CPhysX::Initialize()
 	//sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	sceneDesc.filterShader = FilterShaderExample;
 	sceneDesc.simulationEventCallback = &g_SimulationCallBack;
-
 	sceneDesc.cudaContextManager = m_pCudaContextManager;
-
 
 	//sceneDesc.flags |= PxSceneFlag::eENABLE_DIRECT_GPU_API;			//https://nvidia-omniverse.github.io/PhysX/physx/5.4.0/docs/DirectGPUAPI.html#direct-gpu-api-limitations
 	sceneDesc.flags |= PxSceneFlag::eENABLE_GPU_DYNAMICS;
@@ -135,20 +117,12 @@ HRESULT CPhysX::Initialize()
 	sceneDesc.broadPhaseType = PxBroadPhaseType::eGPU;
 	sceneDesc.gpuMaxNumPartitions = 8;
 	
-	
-	
-
-	
-
-
 	m_pScene = m_pPhysics->createScene(sceneDesc);
 	if (!m_pScene)
 	{
 		MSG_BOX("Failed To Create : Physx_Scene");
 		return E_FAIL;
 	}
-
-
 
 	PxPvdSceneClient* pvdClient = m_pScene->getScenePvdClient();
 	if (pvdClient)
@@ -157,6 +131,7 @@ HRESULT CPhysX::Initialize()
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_CONTACTS, false);
 		pvdClient->setScenePvdFlag(PxPvdSceneFlag::eTRANSMIT_SCENEQUERIES, false);
 	}
+	
 
 #ifdef _DEBUG
 	m_pScene->setVisualizationParameter(PxVisualizationParameter::eSCALE, 1.0f);
@@ -189,6 +164,10 @@ HRESULT CPhysX::Initialize()
 	}
 
 	PxInitVehicleExtension(*m_pFoundation);
+
+
+
+
 
 
 	//const PxU32 maxParticles = 1000;
@@ -271,7 +250,9 @@ void CPhysX::Tick(_float fTimeDelta)
 {
 	m_pScene->simulate(fTimeDelta);
 
-
+	//FractureTool
+	
+	
 	PxU32 errorState = 0;
 
 	bool resultFetched = m_pScene->fetchResults(true,&errorState);

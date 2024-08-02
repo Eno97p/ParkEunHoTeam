@@ -86,8 +86,6 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	m_ShaderComponentDesc.iCurrentPass = iPassIndex;
 	if (nullptr == m_InputLayouts[iPassIndex])
 		return E_FAIL;
-	
-
 
 	m_pContext->IASetInputLayout(m_InputLayouts[iPassIndex]);
 	
@@ -98,10 +96,6 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	/* 이 쉐이더에 이 패스로 그립니다. */
 	/* 쉐이더에 전달해야할 모든 데이터를 다 던져놓아야한다. */
 	pPass->Apply(0, m_pContext);
-
-
-
-	
 
 	return S_OK;
 }

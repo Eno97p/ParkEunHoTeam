@@ -2046,5 +2046,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -95,6 +95,18 @@ BlendState		BS_AlphaBlend
 	BlendOp = Add;
 };
 
+BlendState CloudBlendState
+{
+    BlendEnable[0] = TRUE;
+    SrcBlend[0] = SRC_ALPHA;
+    DestBlend[0] = INV_SRC_ALPHA;
+    BlendOp[0] = ADD;
+    SrcBlendAlpha[0] = ONE;
+    DestBlendAlpha[0] = INV_SRC_ALPHA;
+    BlendOpAlpha[0] = ADD;
+    RenderTargetWriteMask[0] = 0x0F;
+};
+
 BlendState BS_ParticleBlend
 {
     BlendEnable[0] = true;

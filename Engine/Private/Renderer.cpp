@@ -923,6 +923,21 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset", &m_fFogTimeOffset, sizeof(_float))))
         return;
 
+    if (FAILED(m_pShader->Bind_RawValue("g_vFogColor2", &m_vFogColor2, sizeof(_float4))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset2", &m_fFogTimeOffset2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseSize2", &m_fNoiseSize2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseIntensity2", &m_fNoiseIntensity2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))
+        return;
+
     m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
@@ -1691,7 +1706,7 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
@@ -1699,6 +1714,7 @@ void CRenderer::Render_Debug()
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+   // m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 }
 
 #endif

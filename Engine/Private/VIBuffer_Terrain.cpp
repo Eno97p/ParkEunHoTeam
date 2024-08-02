@@ -18,8 +18,10 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 	, m_iNumVerticesX{ rhs.m_iNumVerticesX }
 	, m_iNumVerticesZ{ rhs.m_iNumVerticesZ }
 	, m_pOctTree { rhs.m_pOctTree }
+	, m_pQuadTree { rhs.m_pQuadTree }
 {
 	Safe_AddRef(m_pOctTree);
+	Safe_AddRef(m_pQuadTree);
 }
 
 
@@ -48,20 +50,44 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 		return E_FAIL;
 	}
 
+	// 원본 크기 계산
+	int originalSize = static_cast<int>(sqrt(static_cast<float>(fileSize) / sizeof(WORD)));
+
 	// RAW 파일의 크기로부터 지형의 크기를 계산
-	m_iNumVerticesX = m_iNumVerticesZ = static_cast<int>(sqrt(static_cast<float>(fileSize) / sizeof(WORD)));
+	m_iNumVerticesX = m_iNumVerticesZ = originalSize + 1;
 
 	// RAW 데이터를 저장할 버퍼 생성
 	vector<WORD> rawData(m_iNumVerticesX * m_iNumVerticesZ);
 
-	// RAW 파일 읽기
-	if (!ReadFile(hFile, rawData.data(), fileSize, &dwByte, nullptr))
+	// 원본 RAW 파일 읽기
+	vector<WORD> originalData(originalSize * originalSize);
+	if (!ReadFile(hFile, originalData.data(), fileSize, &dwByte, nullptr))
 	{
 		CloseHandle(hFile);
 		return E_FAIL;
 	}
 
 	CloseHandle(hFile);
+
+	// 데이터 확장 (1024x1024 -> 1025x1025)
+	for (int z = 0; z < m_iNumVerticesZ; ++z)
+	{
+		for (int x = 0; x < m_iNumVerticesX; ++x)
+		{
+			if (x < originalSize && z < originalSize)
+			{
+				// 원본 데이터 복사
+				rawData[z * m_iNumVerticesX + x] = originalData[z * originalSize + x];
+			}
+			else
+			{
+				// 마지막 행/열 복제
+				int sourceX = min(x, originalSize - 1);
+				int sourceZ = min(z, originalSize - 1);
+				rawData[z * m_iNumVerticesX + x] = originalData[sourceZ * originalSize + sourceX];
+			}
+		}
+	}
 
 	m_ePrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_iIndexFormat = DXGI_FORMAT_R32_UINT;
@@ -73,6 +99,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
 
 #pragma region VERTEX_BUFFER 
+	// 버텍스 버퍼 생성 부분 수정
+	m_iNumVertices = m_iNumVerticesX * m_iNumVerticesZ;
 	VTXNORTEX* pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
 	m_pVertexPositions = new _float4[m_iNumVertices];
@@ -117,6 +145,8 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 
 #pragma region INDEX_BUFFER 
 
+	// 인덱스 버퍼 크기 수정
+	m_iNumIndices = (m_iNumVerticesX - 1) * (m_iNumVerticesZ - 1) * 2 * 3;
 
 	_uint* pIndices = new _uint[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_uint) * m_iNumIndices);
@@ -224,18 +254,26 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	}
 
 
-	_float3 vMin = _float3(-offsetX, minHeight, -offsetZ);
-	_float3 vMax = _float3(
-		(m_iNumVerticesX - 1) * terrainScaleX - offsetX,
-		maxHeight,
-		(m_iNumVerticesZ - 1) * terrainScaleZ - offsetZ
-	);
+	//_float3 vMin = _float3(-offsetX, minHeight, -offsetZ);
+	//_float3 vMax = _float3(
+	//	(m_iNumVerticesX - 1) * terrainScaleX - offsetX,
+	//	maxHeight,
+	//	(m_iNumVerticesZ - 1) * terrainScaleZ - offsetZ
+	//);
 
-	m_pOctTree = COctTree::Create(vMin, vMax, 0);
-	if (nullptr == m_pOctTree)
+	//m_pOctTree = COctTree::Create(vMin, vMax, 0);
+	//if (nullptr == m_pOctTree)
+	//	return E_FAIL;
+
+	//m_pOctTree->Make_Neighbors();
+
+
+  // QuadTree 생성 부분 수정
+	m_pQuadTree = CQuadTree::Create(m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX, m_iNumVerticesX * m_iNumVerticesZ - 1, m_iNumVerticesX - 1, 0);
+	if (nullptr == m_pQuadTree)
 		return E_FAIL;
 
-	m_pOctTree->Make_Neighbors();
+	m_pQuadTree->Make_Neighbors();
 
 	
 	return S_OK;
@@ -291,16 +329,62 @@ _float CVIBuffer_Terrain::Compute_Height(const _float3 & vLocalPos)
 
 void CVIBuffer_Terrain::Culling(_fmatrix WorldMatrixInv)
 {
+	/* 로컬스페이스상의 평면을 구성한다. */
 	m_pGameInstance->Transform_ToLocalSpace(WorldMatrixInv);
 
-	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
 	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
 
 	_uint* pIndices = ((_uint*)SubResource.pData);
-	_uint  iNumIndices = { 0 };
 
-	// OctTree를 사용한 컬링
-	m_pOctTree->Culling(m_pVertexPositions, pIndices, &iNumIndices);
+	_uint		iNumIndices = { 0 };
+
+	m_pQuadTree->Culling(m_pVertexPositions, pIndices, &iNumIndices);
+
+	/*
+	for (size_t i = 0; i < m_iNumVerticesZ - 1; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX - 1; j++)
+		{
+			_uint		iIndex = i * m_iNumVerticesX + j;
+
+			_uint		iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			_bool		isIn[4] = {
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[0]])),
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[1]])),
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[2]])),
+				m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&m_pVertexPositions[iIndices[3]]))
+			};
+
+
+			if (true == isIn[0] &&
+				true == isIn[1] &&
+				true == isIn[2])
+			{
+				pIndices[iNumIndices++] = iIndices[0];
+				pIndices[iNumIndices++] = iIndices[1];
+				pIndices[iNumIndices++] = iIndices[2];
+			}
+
+
+			if (true == isIn[0] &&
+				true == isIn[2] &&
+				true == isIn[3])
+			{
+				pIndices[iNumIndices++] = iIndices[0];
+				pIndices[iNumIndices++] = iIndices[2];
+				pIndices[iNumIndices++] = iIndices[3];
+			}
+		}
+	}
+	*/
 
 	m_iNumIndices = iNumIndices;
 
@@ -698,4 +782,5 @@ void CVIBuffer_Terrain::Free()
 	__super::Free();
 
 	Safe_Release(m_pOctTree);
+	Safe_Release(m_pQuadTree);
 }

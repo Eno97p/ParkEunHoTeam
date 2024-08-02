@@ -103,10 +103,7 @@ public:
 	ID3D11Texture2D* Get_PrevDepthTex();
 
 	//ÀÌ¹Î¿µ Ãß°¡ 240727 2106PM
-	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-		_float fFogTimeOffset,
-		_float fNoiseIntensity,
-		_float fNoiseSize);
+	void Set_FogOption(CRenderer::FOG_DESC desc);
 
 public: /* For.PipeLine */
 	const _float4x4* Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState);

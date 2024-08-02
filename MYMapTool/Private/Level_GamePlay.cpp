@@ -402,6 +402,19 @@ HRESULT CLevel_GamePlay::Save_Data()
             WriteFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
             WriteFile(hFile, &dStartTime, sizeof(_double), &dwByte, nullptr);
         }
+        else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+        {
+            strcpy_s(szModelName, iter->Get_ModelName());
+            eModelType = iter->Get_ModelType();
+            strcpy_s(szLayer, iter->Get_Layer());
+            iTriggerType = iter->Get_TriggerType();
+
+            WriteFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+            WriteFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+        }
         else
         {
             strcpy_s(szModelName, iter->Get_ModelName());
@@ -894,6 +907,29 @@ HRESULT CLevel_GamePlay::Load_Data()
             pDesc.dStartTimeOffset = dStartTime;
 
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pDesc)))
+                return E_FAIL;
+        }
+        else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+        {
+            ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+            ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+            ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+            if (0 == dwByte)
+                break;
+
+            CToolObj::TOOLOBJ_DESC pDesc{};
+
+            strcpy_s(pDesc.szObjName, szName);
+            strcpy_s(pDesc.szLayer, szLayer);
+            strcpy_s(pDesc.szModelName, szModelName);
+            pDesc.mWorldMatrix = WorldMatrix;
+            pDesc.eModelType = eModelType;
+            pDesc.TriggerType = iTriggerType;
+
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_TreasureChest"), TEXT("Prototype_GameObject_TreasureChest"), &pDesc)))
                 return E_FAIL;
         }
         else 

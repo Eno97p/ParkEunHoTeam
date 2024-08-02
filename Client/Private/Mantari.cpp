@@ -11,7 +11,7 @@
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
-
+#include "ThirdPersonCamera.h"
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -343,6 +343,25 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+		pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		
+		if (m_pPlayer->Get_m_bParry())
+		{
+			if (m_bParryFirstHit)
+			{
+				pThirdPersonCamera->StartTilt(18.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+			else
+			{
+				pThirdPersonCamera->StartTilt(-25.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+		}
+		m_pGameInstance->Set_MotionBlur(true);
+
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };
 		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
@@ -363,6 +382,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		return RUNNING;
 		break;
 	case CCollider::COLL_FINISH:
+		m_pGameInstance->Set_MotionBlur(false);
 		m_iState = STATE_HIT;
 		break;
 	case CCollider::COLL_NOCOLL:

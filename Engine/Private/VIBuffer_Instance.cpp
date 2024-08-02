@@ -950,13 +950,9 @@ void CVIBuffer_Instance::Lenz_Flare(_float fTimeDelta)
 		vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
 		vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
 
-		XMStoreFloat4(&pVertices[i].vRight, vRight);
-		XMStoreFloat4(&pVertices[i].vUp, vUp);
-		XMStoreFloat4(&pVertices[i].vLook, vLook);
-
-		pVertices[i].vRight.x = m_pSize[i];
-		pVertices[i].vUp.y = m_pSize[i];
-		pVertices[i].vLook.z = m_pSize[i];
+		XMStoreFloat4(&pVertices[i].vRight, XMVector3Normalize(vRight) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, XMVector3Normalize(vUp) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vLook, XMVector3Normalize(vLook) * m_pSize[i]);
 
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{

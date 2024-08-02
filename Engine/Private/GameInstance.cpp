@@ -12,7 +12,8 @@
 #include "Renderer.h"
 #include "Picking.h"
 #include "Frustum.h"
-#include"CPhysX.h"
+#include "CPhysX.h"
+#include "BlastMgr.h"
 #include "EventMgr.h"
 #include "Calculator.h"
 #include "Cascade.h"
@@ -106,6 +107,10 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	m_pPhysX = CPhysX::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pPhysX)
 		return E_FAIL;
+	m_pBlastMgr = CBlastMgr::Create();
+	if (nullptr == m_pBlastMgr)
+		return E_FAIL;
+
 
 	m_pEvent_Manager = CEventMgr::Create(m_pObject_Manager);
 	if (nullptr == m_pEvent_Manager)
@@ -520,12 +525,9 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 	return m_pRenderer->Get_PrevDepthTex();
 }
 
-void CGameInstance::Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-	_float fFogTimeOffset,
-	_float fNoiseIntensity,
-	_float fNoiseSize)
+void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
 {
-	m_pRenderer->Set_FogOption(fogCol, fogRng, fogHeightFalloff, fogDensity, fFogTimeOffset, fNoiseIntensity, fNoiseSize);
+	m_pRenderer->Set_FogOption(desc);
 }
 
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
@@ -915,6 +917,7 @@ void CGameInstance::Free()
 
 
 	Safe_Release(m_pPhysX);
+	Safe_Release(m_pBlastMgr);
 	m_iRefCnt;
 	int ttmp = 0;
 

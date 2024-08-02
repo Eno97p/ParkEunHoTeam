@@ -95,6 +95,18 @@ BlendState		BS_AlphaBlend
 	BlendOp = Add;
 };
 
+BlendState CloudBlendState
+{
+    BlendEnable[0] = TRUE;
+    SrcBlend[0] = SRC_ALPHA;
+    DestBlend[0] = INV_SRC_ALPHA;
+    BlendOp[0] = ADD;
+    SrcBlendAlpha[0] = ONE;
+    DestBlendAlpha[0] = INV_SRC_ALPHA;
+    BlendOpAlpha[0] = ADD;
+    RenderTargetWriteMask[0] = 0x0F;
+};
+
 BlendState BS_ParticleBlend
 {
     BlendEnable[0] = true;
@@ -155,4 +167,23 @@ float PerlinNoise(float2 st)
         lerp(dot(PerlinRandom(i + float2(0.0, 1.0)), f - float2(0.0, 1.0)),
              dot(PerlinRandom(i + float2(1.0, 1.0)), f - float2(1.0, 1.0)), u.x),
         u.y);
+}
+
+float2 RadialShear(float2 texCoord, float2 center, float strength, float offset) //동그랗게 왜곡시켜줌
+{
+    float2 toCenter = texCoord - center;
+    float distance = length(toCenter);
+    
+    // 거리가 0인 경우 (중심점에 있는 경우) NaN을 방지하기 위한 처리
+    if (distance > 0.0001f)
+    {
+        float2 normalizedDir = toCenter / distance;
+        float shearAmount = distance * strength + offset;
+        float2 shearOffset = normalizedDir * shearAmount;
+        return texCoord + shearOffset;
+    }
+    else
+    {
+        return texCoord;
+    }
 }

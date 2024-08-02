@@ -33,7 +33,7 @@ CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pCont
 HRESULT CLevel_Ackbar::Initialize()
 {
 
-	m_pGameInstance->Set_FogOption({ 0.235f, 0.260f, 0.329f, 1.f }, 230.f, 0.87f, 1.f, 10.f, 0.2f, 0.1f);
+	//m_pGameInstance->Set_FogOption({ 0.235f, 0.260f, 0.329f, 1.f }, 230.f, 0.87f, 1.f, 10.f, 0.2f, 0.1f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;

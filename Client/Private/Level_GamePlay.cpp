@@ -40,9 +40,20 @@ HRESULT CLevel_GamePlay::Initialize()
 {
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
-
-	m_pGameInstance->Set_FogOption({ 0.286f, 0.238f, 0.289f, 1.f }, 500, 0.f, 0.1f, 0.f, 0.f, 0.f);
-
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 37.f / 255.f, 36.f / 255.f, 54.f / 255.f, 1.f };
+	fogDesc.vFogColor2 = { 1.f, 1.f, 1.f, 1.f };
+	fogDesc.fFogRange = 200.f;
+	fogDesc.fFogHeightFalloff = 0.05f;
+	fogDesc.fFogGlobalDensity = 1.0f;
+	fogDesc.fFogTimeOffset = 2.89f;
+	fogDesc.fFogTimeOffset2 = 8.22f;
+	fogDesc.fNoiseIntensity = 0.0f;
+	fogDesc.fNoiseIntensity2 = 1.3f;
+	fogDesc.fNoiseSize = 0.1f;
+	fogDesc.fNoiseSize2 = 0.068f;
+	fogDesc.fFogBlendFactor = 0.106f;
+	m_pGameInstance->Set_FogOption(fogDesc);
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
 
@@ -290,10 +301,12 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//landObjDesc.mWorldMatrix._43 = 98.f;
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 
+
 	//CHoverboard::HoverboardInfo hoverboardInfo;
 	//hoverboardInfo.vPosition = _float3(75.f, 553.f, 98.f);
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
 	//	return E_FAIL;
+
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
 	//	return E_FAIL;

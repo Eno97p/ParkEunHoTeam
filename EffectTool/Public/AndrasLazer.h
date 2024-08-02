@@ -6,6 +6,7 @@
 #include "AndrasRain.h"
 #include "ElectricCylinder.h"
 #include "AndrasScrew.h"
+#include "ShieldSphere.h"
 
 BEGIN(Effect)
 class CAndrasLazer : public CGameObject
@@ -16,12 +17,14 @@ public:
 		const _float4x4* ShooterMat = nullptr;
 		_float fLifeTime = 0.f;
 		_float3 vOffsetPos = { 0.f,0.f,0.f };
-		_float ElectricInterval = 0.2f;
+		_float ElectricInterval = 0.1f;
+		_float ShieldInterval = 0.1f;
 		CAndrasLazerBase::ANDRAS_LASER_BASE_DESC BaseDesc{};
 		CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CylinderDesc{};
 		CAndrasRain::ANDRAS_RAIN_DESC RainDesc{};
 		CAndrasScrew::ANDRAS_SCREW_DESC ScrewDesc{};
 		CElectricCylinder::ANDRAS_ELECTRIC_DESC ElectricDesc{};
+		CShieldSphere::SHIELD_DESC ShieldDesc{};
 	};
 private:
 	CAndrasLazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -38,10 +41,12 @@ private:
 	HRESULT Add_Components();
 	HRESULT Add_Child_Effects();
 	void Generate_Electric();
+	void Generate_Shield();
 
 private:
 	shared_ptr<ANDRAS_LAZER_TOTALDESC>	m_OwnDesc;
-	_float CurInterval = 0.2f;
+	_float CurInterval = 0.f;
+	_float ShieldInterval = 0.f;
 
 public:
 	static CAndrasLazer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

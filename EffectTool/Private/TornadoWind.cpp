@@ -26,6 +26,24 @@ HRESULT CTornado_Wind::Initialize(void* pArg)
 	desc.fSpeedPerSec = 0.f;
 	if (FAILED(__super::Initialize(&desc)))
 		return E_FAIL;
+
+	switch (m_OwnDesc->NumModels)
+	{
+	case Tor_1:
+		m_ModelProtoName = TEXT("Prototype_Component_Model_TornadoWind");
+		break;
+	case Tor_2:
+		m_ModelProtoName = TEXT("Prototype_Component_Model_TornadoWind2");
+		break;
+	case Tor_3:
+		m_ModelProtoName = TEXT("Prototype_Component_Model_TornadoWind3");
+		break;
+	default:
+		return E_FAIL;
+	}
+
+
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -83,7 +101,8 @@ void CTornado_Wind::Late_Tick(_float fTimeDelta)
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
+	if(m_OwnDesc->IsDistortion)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
 }
 
 HRESULT CTornado_Wind::Render()
@@ -95,6 +114,9 @@ HRESULT CTornado_Wind::Render()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+			return E_FAIL;
+
 		m_pShaderCom->Begin(6);
 
 		m_pModelCom->Render(i);
@@ -105,14 +127,17 @@ HRESULT CTornado_Wind::Render()
 
 HRESULT CTornado_Wind::Render_Bloom()
 {
-	if (FAILED(Bind_ShaderResources()))
+	if (FAILED(Bind_BloomResources()))
 		return E_FAIL;
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		m_pShaderCom->Begin(6);
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(12);
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
@@ -127,6 +152,9 @@ HRESULT CTornado_Wind::Render_Distortion()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+			return E_FAIL;
+
 		m_pShaderCom->Begin(6);
 		m_pModelCom->Render(i);
 	}
@@ -135,7 +163,7 @@ HRESULT CTornado_Wind::Render_Distortion()
 
 HRESULT CTornado_Wind::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoWind"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, m_ModelProtoName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -166,7 +194,49 @@ HRESULT CTornado_Wind::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Ratio", &m_fLifeTimeRatio, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_RadialStrength", &m_OwnDesc->RadicalStrength, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_OpacityPower", &m_OwnDesc->OpacityPower, sizeof(_float))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_OwnDesc->fColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color2", &m_OwnDesc->fColor2, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Opacity", &m_OwnDesc->Opacity, sizeof(_bool))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTornado_Wind::Bind_BloomResources()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", m_OwnDesc->NumDesolve)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_CurTime", &m_fCurLifeTime, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Speed", &m_OwnDesc->fUVSpeed, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Ratio", &m_fLifeTimeRatio, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_RadialStrength", &m_OwnDesc->RadicalStrength, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BloomPower", &m_OwnDesc->fBloomPower, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_OpacityPower", &m_OwnDesc->OpacityPower, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &m_OwnDesc->fColor, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Color2", &m_OwnDesc->fColor2, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_Opacity", &m_OwnDesc->Opacity, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

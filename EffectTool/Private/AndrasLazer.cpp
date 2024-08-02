@@ -48,6 +48,13 @@ void CAndrasLazer::Tick(_float fTimeDelta)
 		CurInterval = m_OwnDesc->ElectricInterval;
 		Generate_Electric();
 	}
+	ShieldInterval -= fTimeDelta;
+	if (ShieldInterval < 0.f)
+	{
+		ShieldInterval = m_OwnDesc->ShieldInterval;
+		Generate_Shield();
+	}
+
 
 }
 
@@ -67,6 +74,8 @@ HRESULT CAndrasLazer::Add_Child_Effects()
 	m_OwnDesc->RainDesc.ParentMatrix = m_OwnDesc->ShooterMat;
 	m_OwnDesc->ScrewDesc.ParentMatrix = m_OwnDesc->ShooterMat;
 	m_OwnDesc->ElectricDesc.ParentMatrix = m_OwnDesc->ShooterMat;
+	m_OwnDesc->ShieldDesc.ParentMatrix = m_OwnDesc->ShooterMat;
+
 
 	m_OwnDesc->BaseDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
 	m_OwnDesc->CylinderDesc.fMaxLifeTime = m_OwnDesc->fLifeTime;
@@ -93,6 +102,16 @@ void CAndrasLazer::Generate_Electric()
 
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
 		TEXT("Prototype_GameObject_ElectricCylinder"), &m_OwnDesc->ElectricDesc);
+
+
+}
+
+void CAndrasLazer::Generate_Shield()
+{
+	if (m_OwnDesc->fLifeTime < m_OwnDesc->ShieldDesc.fMaxLifeTime)
+		return;
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
+		TEXT("Prototype_GameObject_ShieldShpere"), &m_OwnDesc->ShieldDesc);
 }
 
 CAndrasLazer* CAndrasLazer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

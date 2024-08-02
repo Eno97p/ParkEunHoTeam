@@ -65,14 +65,28 @@ HRESULT CPhysXComponent_HeightField::Initialize_Prototype(const wstring& strProt
 	{
 		for (PxU32 col = 0; col < m_iNumVerticeZ; col++)
 		{
-			PxU32 index = row * m_iNumVerticeZ + col;
+			PxU32 sourceIndex = row * m_iNumVerticeX + col;
+			PxU32 destIndex = col * m_iNumVerticeX + row;
 
-			PxI16 height = static_cast<PxI16>((TerrainPosition[index].y- m_fMinHeight) / m_fHeightScale) - 32768;
-			pSamples[index].height = height;
-			pSamples[index].materialIndex0 = 0;
-			pSamples[index].materialIndex1 = 0;
-			//PxI16 height = static_cast<PxI16>((TerrainPostion[index].y / heightScale) * 32767);
-			//pSamples[index].height = 
+	
+			// 높이 값 계산
+			PxI16 height = static_cast<PxI16>((TerrainPosition[sourceIndex].y - m_fMinHeight) / m_fHeightScale) - 32768;
+			pSamples[destIndex].height = height; // destIndex를 row * m_iNumVerticeX + col로 설정
+			pSamples[destIndex].materialIndex0 = 0;
+			pSamples[destIndex].materialIndex1 = 0;
+
+			////PxU32 index = row * m_iNumVerticeZ + col;
+			//PxU32 flippedRow = m_iNumVerticeZ - 1 - row;
+			//PxU32 sourceIndex = flippedRow * m_iNumVerticeX + col;
+			//PxU32 destIndex = row * m_iNumVerticeX + col;
+
+
+
+			//PxI16 height = static_cast<PxI16>((TerrainPosition[sourceIndex].y - m_fMinHeight) / m_fHeightScale) -32768;
+			//pSamples[destIndex].height = height;
+			//pSamples[destIndex].materialIndex0 = 0;
+			//pSamples[destIndex].materialIndex1 = 0;
+
 
 		}
 
@@ -123,8 +137,7 @@ HRESULT CPhysXComponent_HeightField::Initialize(void * pArg)
 
 
 
-	// 원본 지형 데이터에서 사용한 스케일 값을 가져옵니다.
-	const float terrainScaleX = 3.f;  // TerrainCom에서 이 값을 가져올 수 있다면 더 좋습니다.
+	const float terrainScaleX = 3.f;  
 	const float terrainScaleZ = 3.f;
 	const float heightScale = 1000.f;
 
@@ -135,12 +148,12 @@ HRESULT CPhysXComponent_HeightField::Initialize(void * pArg)
 
 	PxPhysics* physics = m_pGameInstance->GetPhysics();
 
-
-	PxHeightFieldGeometry hfGeom(m_pHeightField, PxMeshGeometryFlags(), m_fHeightScale, terrainScaleX, terrainScaleZ);
-
+	
+	PxHeightFieldGeometry hfGeom(m_pHeightField, PxMeshGeometryFlag::eTIGHT_BOUNDS, m_fHeightScale, terrainScaleX, terrainScaleZ);
+	//PxMeshGeometryFlags hfFlags = 
 
 	PxTransform transform(PxVec3(-offsetX, heightScale, -offsetZ)); // 위치 설정
-	PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.1f); // 마찰계수, 반발계수 등을 적절히 설정
+	PxMaterial* material = physics->createMaterial(0.5f, 0.5f, 0.6f); // 마찰계수, 반발계수 등을 적절히 설정
 
 
 	m_pActor = PxCreateStatic(*physics, transform, hfGeom, *material);

@@ -103,10 +103,7 @@ public:
 	ID3D11Texture2D* Get_PrevDepthTex();
 
 	//이민영 추가 240727 2106PM
-	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-		_float fFogTimeOffset,
-		_float fNoiseIntensity,
-		_float fNoiseSize);
+	void Set_FogOption(CRenderer::FOG_DESC desc);
 
 public: /* For.PipeLine */
 	const _float4x4* Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
@@ -167,7 +164,7 @@ public: /*for Calculator*/
 public:		//for Event_Manager
 	HRESULT EventUpdate();				//메인 앱에서 렌더함수 끝나고 호출
 	void CreateObject(_uint Level, const wchar_t* Layer, const wstring& strPrototypeTag, void* pArg = nullptr); // 동적으로 객체 생성하는 기능
-	void CreateObject_Self(_uint Level, const wchar_t* Layer, class CGameObject* pObj); //뭔가 동작을 해주고 만들어야 할 때
+	void CreateObject_Self(_uint Level, const wchar_t* Layer, class CGameObject* pObj);			//뭔가 동작을 해주고 만들어야 할 때
 	void Erase(CGameObject* _pObj); //동적으로 객체 삭제하는 기능
 	void Scene_Change(_uint LevelIdx, CLevel* nextLevel); // 씬체인지
 
@@ -224,6 +221,7 @@ private:
 	class CTarget_Manager*			m_pTarget_Manager = { nullptr };
 	class CFrustum*					m_pFrustum = { nullptr };
 	class CPhysX*					m_pPhysX = { nullptr };
+	class CBlastMgr*				m_pBlastMgr = { nullptr };
 	class CEventMgr*				m_pEvent_Manager = { nullptr };
 	class CCalculator*				m_pCalculator = { nullptr };
 	class CCascade*					m_pCascade = { nullptr };

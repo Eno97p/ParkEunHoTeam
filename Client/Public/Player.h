@@ -63,6 +63,7 @@ public:
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	_bool Get_Parry() { return m_bParrying; }
+	_bool Get_m_bParry() { return m_bParry; }
 	void Parry_Succeed();
 	void Set_ParriedMonsterFloat4x4(const _float4x4* pMatrix) { m_pParriedMonsterFloat4x4 = pMatrix; }
 	_bool Get_Cloaking() { return m_bIsCloaking; }

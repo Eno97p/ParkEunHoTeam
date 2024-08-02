@@ -11,6 +11,7 @@
 #include "Distortion_Effect.h"
 #include "FireEffect.h"
 #include "Electronic.h"
+#include "TornadoEffect.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -113,7 +114,13 @@ private:	//Lightning
 	HRESULT Load_Lightning();
 private:
 	void Lazer_Tool();
+
+private:
 	void Tornado_Tool();
+	HRESULT Store_Tornados(char* Name, CTornadoEffect::TORNADODESC desc);
+	void Tornado_ListBox(CTornadoEffect::TORNADODESC* Tornado);
+	HRESULT Save_Tornado();
+	HRESULT Load_Tornado();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
@@ -147,6 +154,7 @@ private:
 	vector<shared_ptr<CDistortionEffect::DISTORTIONEFFECT>> m_Distortions;
 	vector<shared_ptr<CFireEffect::FIREEFFECTDESC>>			m_Fires;
 	vector<shared_ptr<CElectronic::ELECTRONICDESC>>			m_Lightnings;
+	vector<shared_ptr<CTornadoEffect::TORNADODESC>>			m_Tornados;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -154,6 +162,7 @@ private:
 	vector<string> DistortionNames;
 	vector<string> FireNames;
 	vector<string> LightningNames;
+	vector<string> TornadoNames;
 
 private:
 	vector<string> ModelName;

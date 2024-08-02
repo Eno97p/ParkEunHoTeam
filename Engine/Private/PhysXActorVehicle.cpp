@@ -68,7 +68,7 @@ void PhysXIntegrationState::create(const BaseVehicleParams& baseParams, const Ph
 	//피직스에서 제공하는 기본적인 설정
 	const PxVehiclePhysXRigidActorParams physxActorParams(baseParams.rigidBodyParams, NULL);
 	const PxBoxGeometry boxGeom(physxParams.physxActorBoxShapeHalfExtents);
-	const PxVehiclePhysXRigidActorShapeParams physxActorShapeParams(boxGeom, physxParams.physxActorBoxShapeLocalPose, defaultMaterial, PxShapeFlags(/*PxShapeFlag::eSIMULATION_SHAPE */), PxFilterData(), PxFilterData());
+	const PxVehiclePhysXRigidActorShapeParams physxActorShapeParams(boxGeom, physxParams.physxActorBoxShapeLocalPose, defaultMaterial, PxShapeFlags(/*PxShapeFlag::eSIMULATION_SHAPE*/ ), PxFilterData(), PxFilterData());
 	const PxVehiclePhysXWheelParams physxWheelParams(baseParams.axleDescription, baseParams.wheelParams);
 	const PxVehiclePhysXWheelShapeParams physxWheelShapeParams(defaultMaterial, PxShapeFlags(0), PxFilterData(), PxFilterData());
 	

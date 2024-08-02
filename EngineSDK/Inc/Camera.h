@@ -51,6 +51,8 @@ public:
 	}
 
 	void Set_Fovy(_float fFov) { m_fFovy = fFov; }
+	void Zoom(_float fTargetFov, _float fMaxZoomTime, _float fRecoverTime);
+
 
 protected:
 	_float				m_fFovy = { 0.f };
@@ -58,6 +60,15 @@ protected:
 	_float				m_fNear = { 0.f };
 	_float				m_fFar = { 0.f };
 
+	//For ZOOM 기능
+	_float m_fCurrentFovy = { 0.f };  // 현재 FOV
+	_float m_fStartFovy = { 0.f };    // 줌 시작 시점의 FOV
+	_float m_fTargetFovy = { 0.f };   // 목표 FOV
+	_float m_fZoomTimer = { 0.f };
+	_float m_fMaxZoomTime = { 0.f };
+	_float m_fRecoverTime = { 0.f };
+	bool m_bZoom = false;
+	bool m_bZooming = false;
 
 protected:
 	_bool				m_bCamActivated = { true };

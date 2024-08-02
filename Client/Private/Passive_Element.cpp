@@ -70,11 +70,7 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     {
       //  m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
         m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-        _uint iCascadeNum = m_pGameInstance->Get_CascadeNum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.f);
-        if (iCascadeNum == FRUSTUM_NEAR)
-        {
-            m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
-        }
+        m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
     }
 
 

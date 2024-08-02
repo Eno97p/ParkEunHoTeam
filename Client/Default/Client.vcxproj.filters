@@ -625,6 +625,12 @@
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lightnings">
+      <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Tornado">
+      <UniqueIdentifier>{30e9c3c3-18cb-42e0-837b-7a323a9f2494}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1289,6 +1295,18 @@
     <ClInclude Include="Import_Class.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1927,6 +1945,18 @@
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2014,6 +2044,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

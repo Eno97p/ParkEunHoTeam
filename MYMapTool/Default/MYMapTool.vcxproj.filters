@@ -25,6 +25,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\MainApp.cpp">
@@ -135,9 +138,6 @@
     <ClCompile Include="..\private\EventTrigger.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\DecalBox.cpp">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Elevator.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
@@ -167,6 +167,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02. GameObjects\07. Vegetation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Cloud.cpp">
+      <Filter>02. GameObjects\08. Cloud</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -296,9 +299,6 @@
     <ClInclude Include="..\public\EventTrigger.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\DecalBox.h">
-      <Filter>02. GameObjects\05. Active_Elements</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Elevator.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
@@ -328,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Tree.h">
       <Filter>02. GameObjects\07. Vegetation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Cloud.h">
+      <Filter>02. GameObjects\08. Cloud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -428,6 +431,9 @@
     </Filter>
     <Filter Include="02. GameObjects\07. Vegetation">
       <UniqueIdentifier>{db78c6b5-b7e2-41c0-8cf8-653de0547703}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObjects\08. Cloud">
+      <UniqueIdentifier>{ac35b88f-8b8b-4013-aa75-d336ba50a7e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

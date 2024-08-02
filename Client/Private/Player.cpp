@@ -69,6 +69,13 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 		m_pGameInstance->Set_MotionBlur(false);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_H))
+	{
+		_float4 TorPos;
+		XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		EFFECTMGR->Generate_Tornado(0, TorPos, this);
+	}
+
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
 		if (m_bIsCloaking)

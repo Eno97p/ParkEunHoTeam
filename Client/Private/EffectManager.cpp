@@ -50,7 +50,12 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Lightnings");
 		return E_FAIL;
 	}
-
+	if (FAILED(Load_Tornados()))
+	{
+		MSG_BOX("FAILED_Load_Tornado");
+		return E_FAIL;
+	}
+	
 	return S_OK;
 }
 
@@ -192,6 +197,25 @@ HRESULT CEffectManager::Generate_Lightning(const _int iIndex, const _float4 vSta
 		Lightning->vStartPos = vStartpos;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Electronic_Effect"), Lightning);
+	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Tornado(const _int iIndex, const _float4 vStartpos, CGameObject* pTarget)
+{
+	if (iIndex >= m_Tornados.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CTornadoEffect::TORNADODESC* pDesc = m_Tornados[iIndex].get();
+		pDesc->vStartPos = vStartpos;
+		pDesc->pTarget = pTarget;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Tornado"), pDesc);
+
 	}
 	return S_OK;
 }
@@ -387,6 +411,31 @@ HRESULT CEffectManager::Load_Lightnings()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Tornados()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Tornados.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CTornadoEffect::TORNADODESC readFile{};
+		inFile.read((char*)&readFile, sizeof(CTornadoEffect::TORNADODESC));
+		readFile.pTarget = nullptr;
+		shared_ptr<CTornadoEffect::TORNADODESC> StockValue = make_shared<CTornadoEffect::TORNADODESC>(readFile);
+		m_Tornados.emplace_back(StockValue);
+	}
+	inFile.close();
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -420,6 +469,23 @@ HRESULT CEffectManager::Ready_GameObjects()
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Electronic_Effect"),
 		CElectronic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Tornado"),
+		CTornadoEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Wind"),
+		CTornado_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Root"),
+		CTornado_Root::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Ring"),
+		CTornado_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

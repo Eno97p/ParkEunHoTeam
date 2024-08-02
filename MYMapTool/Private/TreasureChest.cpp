@@ -63,6 +63,23 @@ HRESULT CTreasureChest::Initialize(void* pArg)
 
 		//TRIGGER STATE SET
 	}
+	switch (m_iTriggerType)
+	{
+	case TREASURE_NORMAL:
+		m_iShaderPath = 0;
+		m_iBloomShaderPath = 2;
+		break;
+	case TREASURE_EPIC:
+		m_iShaderPath = 3;
+		m_iBloomShaderPath = 4;
+		m_TreasureColor = { 0.265282571f, 0.f, 0.5637f, 1.f };
+		break;
+	case TREASURE_CLOAKING:
+		m_iShaderPath = 3;
+		m_iBloomShaderPath = 4;
+		m_TreasureColor = {0.161764681f,  0.161764681f, 0.161764681, 1.f };
+		break;
+	}
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
@@ -134,19 +151,14 @@ HRESULT CTreasureChest::Render()
 		//	return E_FAIL;
 
 		//if ( i != 29)
-		
-		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Red", &i, sizeof(_uint))))
-		//	return E_FAIL;
+		_float4 col = CImgui_Manager::GetInstance()->Get_GlobalColorPicker();
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_EpicColor", &col, sizeof(_float4))))
+			return E_FAIL;
 
 		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
 		//	return E_FAIL;
 
-		if (i == 2)
-		{
-		/*	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;*/
-		}
-		m_pShaderCom->Begin(0);
+		i == 2 ? m_pShaderCom->Begin(m_iShaderPath) : m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
 	}
@@ -169,6 +181,9 @@ HRESULT CTreasureChest::Render_Bloom()
 
 
 	
+	_float4 col = CImgui_Manager::GetInstance()->Get_GlobalColorPicker();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_EpicColor", &col, sizeof(_float4))))
+		return E_FAIL;
 
 	m_pShaderCom->Unbind_SRVs();
 
@@ -178,7 +193,7 @@ HRESULT CTreasureChest::Render_Bloom()
 		return E_FAIL;
 
 
-	m_pShaderCom->Begin(2);
+	m_pShaderCom->Begin(m_iBloomShaderPath);
 
 	m_pModelCom->Render(2);
 }

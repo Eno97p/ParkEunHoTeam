@@ -73,9 +73,13 @@ void CUI_CharacterBG::Update_Data()
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 
-	m_wstrVitality = to_wstring(0);
-	m_wstrStamina = to_wstring(0);
-	m_wstrForce = to_wstring(0);
+	m_wstrLevel = to_wstring(pPlayer->Get_Level());
+
+	m_wstrVitality = to_wstring(pPlayer->Get_VitalityLv());
+	m_wstrStamina = to_wstring(pPlayer->Get_StaminaLv());
+	m_wstrStrenght = to_wstring(pPlayer->Get_StrenghtLv());
+	m_wstrMysticism = to_wstring(pPlayer->Get_MysticismLv());
+	m_wstrKnowledge = to_wstring(pPlayer->Get_KnowledgeLv());
 
 	m_wstrHealth = to_wstring((_uint)pPlayer->Get_MaxHP());
 	m_wstrStamina_State = to_wstring((_uint)pPlayer->Get_MaxStamina());
@@ -83,8 +87,6 @@ void CUI_CharacterBG::Update_Data()
 
 	m_wstrPhysicalDmg = to_wstring(0);
 	m_wstrEtheralDmg = to_wstring(0);
-
-
 }
 
 HRESULT CUI_CharacterBG::Add_Components()
@@ -145,27 +147,31 @@ void CUI_CharacterBG::Render_Text()
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), TEXT("Essence:"), _float2(fFirstColX, 215.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
+	// Player Level
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo35"), m_wstrLevel, _float2(115.f, (g_iWinSizeY >> 1) - 25.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+
 
 	// ÁÂÃø
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("VITALITY"), _float2(fFirstColX, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrVitality, _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fFirstColX, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina, _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("FORCE"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STRENGHT"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStrenght, _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("MYSTIC"), _float2(fFirstColX, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrMysticism, _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("KNOWLEDGE"), _float2(fFirstColX, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrKnowledge, _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	// ¿ìÃø

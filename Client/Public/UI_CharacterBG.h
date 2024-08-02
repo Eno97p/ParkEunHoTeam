@@ -23,9 +23,13 @@ public:
 
 private:
 	// 출력 해야 하는 Text들 가지고 있기
+	wstring			m_wstrLevel;
+	
 	wstring			m_wstrVitality;
 	wstring			m_wstrStamina;
-	wstring			m_wstrForce;
+	wstring			m_wstrStrenght;
+	wstring			m_wstrMysticism;
+	wstring			m_wstrKnowledge;
 
 	wstring			m_wstrHealth;
 	wstring			m_wstrStamina_State;

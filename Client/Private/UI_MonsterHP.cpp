@@ -51,6 +51,13 @@ void CUI_MonsterHP::Tick(_float fTimeDelta)
 			m_fPastRatio = m_fCurrentRatio;
 		}
 	}
+
+	if (m_isDamageRend)
+	{
+		m_fDamageTimer += fTimeDelta;
+		if (2. <= m_fDamageTimer)
+			m_isDamageRend = false;
+	}
 }
 
 void CUI_MonsterHP::Late_Tick(_float fTimeDelta)
@@ -79,12 +86,30 @@ HRESULT CUI_MonsterHP::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (m_isDamageRend)
+	{
+		// Monster HP Damage는 월드상에 있는 UI이므로? 
+
+		//if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), m_wstrDamage, _float2(m_fX + 50.f, m_fY - 50.f), XMVectorSet(0.f, 0.f, 0.f, 1.f))))
+		//	return E_FAIL;
+
+		/*if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo23"), m_wstrDamage, _float2(m_fX + 50.f, m_fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;*/
+	}
+
 	return S_OK;
 }
 
 void CUI_MonsterHP::Update_Pos(_vector vMonsterPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMonsterPos);
+}
+
+void CUI_MonsterHP::Rend_Damage(_int iValue)
+{
+	m_isDamageRend = true;
+	m_fDamageTimer = 0.f;
+	m_wstrDamage = to_wstring(iValue);
 }
 
 HRESULT CUI_MonsterHP::Add_Components()

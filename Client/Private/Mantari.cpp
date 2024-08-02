@@ -373,6 +373,8 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
+
+		// UI Damage 띄울 것
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
@@ -680,6 +682,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 
 void CMantari::Add_Hp(_int iValue)
 {
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
+
 	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
 	if (m_fCurHp == 0)
 	{

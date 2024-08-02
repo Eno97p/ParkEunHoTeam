@@ -50,6 +50,13 @@ void CUI_BossHP::Tick(_float fTimeDelta)
 			m_fPastRatio = m_fCurrentRatio;
 		}
 	}
+
+	if (m_isDamageRend)
+	{
+		m_fDamageTimer += fTimeDelta;
+		if (2. <= m_fDamageTimer)
+			m_isDamageRend = false;
+	}
 }
 
 void CUI_BossHP::Late_Tick(_float fTimeDelta)
@@ -74,7 +81,23 @@ HRESULT CUI_BossHP::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+	if (m_isDamageRend)
+	{
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), m_wstrDamage, _float2(m_fX + 270.f, m_fY - 50.f), XMVectorSet(0.f, 0.f, 0.f, 1.f))))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo23"), m_wstrDamage, _float2(m_fX + 270.f, m_fY - 50.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL;
+	}
+
 	return S_OK;
+}
+
+void CUI_BossHP::Rend_Damage(_int iValue)
+{
+	m_isDamageRend = true;
+	m_fDamageTimer = 0.f;
+	m_wstrDamage = to_wstring(iValue);
 }
 
 HRESULT CUI_BossHP::Add_Components()

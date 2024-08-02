@@ -76,6 +76,17 @@ public:
 	_uint			Get_Level() { return m_iLevel; }
 	void			Set_Level(_int iAdd) { m_iLevel += iAdd; }
 
+	_uint			Get_VitalityLv() { return m_iVitalityLv; }
+	void			Set_VitalityLv(_int iValue) { m_iVitalityLv += iValue; }
+	_uint			Get_StaminaLv() { return m_iStaminaLv; }
+	void			Set_StaminaLv(_int iValue) { m_iStaminaLv += iValue; }
+	_uint			Get_StrenghtLv() { return m_iStrenghtLv; }
+	void			Set_StrengthLv(_int iValue) { m_iStrenghtLv += iValue; }
+	_uint			Get_MysticismLv() { return m_iMysticismLv; }
+	void			Set_MysticismLv(_int iValue) { m_iMysticismLv += iValue; }
+	_uint			Get_KnowledgeLv() { return m_iKnowledgeLv; }
+	void			Set_KnowledgeLv(_int iValue) { m_iKnowledgeLv += iValue; }
+
 private:
 	HRESULT Add_Nodes();
 
@@ -191,6 +202,13 @@ private:
 
 #pragma region UI관련 Data
 	_uint		m_iLevel = { 0 };
+	_uint		m_iVitalityLv = { 0 };
+	_uint		m_iStaminaLv = { 0 };
+	_uint		m_iStrenghtLv = { 0 };
+	_uint		m_iMysticismLv = { 0 };
+	_uint		m_iKnowledgeLv = { 0 };
+
+
 #pragma endregion UI관련 Data
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

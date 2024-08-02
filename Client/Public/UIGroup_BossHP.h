@@ -32,6 +32,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void			Rend_Damage(_int iValue);
+
 private:
 	_uint					m_iDamage = { 0 }; // 누적 데미지
 	_float					m_fHPRatio = { 0.f };

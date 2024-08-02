@@ -275,6 +275,8 @@
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
+    <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
+    <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
@@ -513,6 +515,8 @@
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
+    <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
+    <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />

@@ -779,6 +779,8 @@ NodeStates CAndras::Idle(_float fTimeDelta)
 
 void CAndras::Add_Hp(_int iValue)
 {
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
+
 	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
 	if (m_fCurHp == 0)
 	{

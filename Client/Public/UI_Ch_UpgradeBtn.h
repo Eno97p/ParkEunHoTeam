@@ -28,15 +28,20 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_bool			m_isPlus = { false }; // + or -
+	_bool								m_isPlus = { false }; // + or -
 
-	ABILITY_TYPE	m_eAbilityType = { ABILITY_END };
+	ABILITY_TYPE						m_eAbilityType = { ABILITY_END };
+
+	class CUI_Ch_UpgradeBtn_Select*		m_pSelect = { nullptr };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
+	HRESULT	Create_Select();
+
 	void	Rend_Font();
+	void	Apply_BtnEvent();
 
 public:
 	static CUI_Ch_UpgradeBtn*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

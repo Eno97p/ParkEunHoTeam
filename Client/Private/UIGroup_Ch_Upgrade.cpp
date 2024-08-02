@@ -6,6 +6,7 @@
 #include "UI_CharacterTop.h"
 #include "UI_StateSoul.h"
 #include "UI_Ch_UpgradeBtn.h"
+#include "UI_Ch_Upgrade_OkBtn.h"
 
 CUIGroup_Ch_Upgrade::CUIGroup_Ch_Upgrade(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -102,8 +103,6 @@ HRESULT CUIGroup_Ch_Upgrade::Create_UI()
     m_vecUI.emplace_back(dynamic_cast<CUI_CharacterBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_CharacterBG"), &pDesc)));
 
     // Character Top 
-    ZeroMemory(&pDesc, sizeof(pDesc));
-    pDesc.eLevel = LEVEL_STATIC;
     m_vecUI.emplace_back(dynamic_cast<CUI_CharacterTop*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_CharacterTop"), &pDesc)));
 
     // Soul
@@ -111,7 +110,7 @@ HRESULT CUIGroup_Ch_Upgrade::Create_UI()
     pSoulDesc.eLevel = LEVEL_STATIC;
     pSoulDesc.isSoulCntRend = false;
     pSoulDesc.isNextlevel = true;
-    pSoulDesc.fX = 500.f;
+    pSoulDesc.fX = 450.f; // 500
     pSoulDesc.fY = 207.f;
     pSoulDesc.fSizeX = 24.f;
     pSoulDesc.fSizeY = 24.f;
@@ -120,7 +119,7 @@ HRESULT CUIGroup_Ch_Upgrade::Create_UI()
 
     pSoulDesc.isSoulCntRend = true;
     pSoulDesc.isNextlevel = false;
-    pSoulDesc.fX = 500.f;
+    pSoulDesc.fX = 450.f;
     pSoulDesc.fY = 227.f;
     pSoulDesc.fSizeX = 24.f;
     pSoulDesc.fSizeY = 24.f;
@@ -128,6 +127,9 @@ HRESULT CUIGroup_Ch_Upgrade::Create_UI()
 
     if (FAILED(Create_Btn()))
         return E_FAIL;
+
+    // OkBtn 
+    m_vecUI.emplace_back(dynamic_cast<CUI_Ch_Upgrade_OkBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade_OKBtn"), &pDesc)));
 
     return S_OK;
 }

@@ -68,10 +68,23 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
 
     if (iLayerIdx == 2) // ActiveELement
     {
-        wstring wst = L"";
-        wst = CharToWstring(pDesc.szObjName);
-        if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), wst.c_str(), &pDesc)))
-            return E_FAIL;
+        //Treasure CHest 예외
+        if (iSelectIdx >= 8 && iSelectIdx <= 10)
+        {
+            wstring wst = L"";
+            wst = CharToWstring(pDesc.szObjName);
+            pDesc.TriggerType = iSelectIdx % 8;
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), wst.c_str(), &pDesc)))
+                return E_FAIL;
+        }
+        else
+        {
+            wstring wst = L"";
+            wst = CharToWstring(pDesc.szObjName);
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), wst.c_str(), &pDesc)))
+                return E_FAIL;
+        }
+    
     }
     else if(iLayerIdx == 0) 
     {
@@ -295,7 +308,8 @@ void CToolObj_Manager::Initialize()
 
         TEXT("Prototype_Component_Model_Elevator"),
         TEXT("Prototype_Component_Model_Model_Hachoir"),
-        TEXT("Prototype_Component_Model_TreasureChest")
+        TEXT("Prototype_Component_Model_TreasureChest"),
+        TEXT("Prototype_Component_Model_BasicCube") // 구름
 
     };
 }
@@ -494,6 +508,12 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_Elevator";
         case 8:
             return "Prototype_GameObject_TreasureChest";
+        case 9:
+            return "Prototype_GameObject_TreasureChest";
+        case 10:
+            return "Prototype_GameObject_TreasureChest";
+        case 11:
+            return "Prototype_GameObject_Cloud";
         default:
             break;
         }

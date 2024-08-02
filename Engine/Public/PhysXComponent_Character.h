@@ -78,6 +78,7 @@ public:
 	_bool Get_IsJump() { return m_bIsJump; }
 	_float Get_CurrentJumpSpeed() { return m_fCurrentY_Velocity; }
 	_float Get_LengthFromGround();
+	void Set_Gravity(_bool bGravity = true) { m_bGravity = bGravity; }
 
 
 private:
@@ -92,6 +93,7 @@ private:
 	_float m_fJumpSpeed = 0.f;
 	_float m_fCurrentY_Velocity = 0.f;
 	const _float m_fGravity = -30.f;
+	_bool m_bGravity = true;
 	_float m_fSpeed = 3.f;
 #ifdef _DEBUG
 	PhysX_Character_Editable_Desc m_OutDesc;

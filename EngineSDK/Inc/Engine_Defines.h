@@ -3,6 +3,7 @@
 #pragma warning (disable : 4251)
 
 #include <vld.h>
+#include<malloc.h>
 #include <d3d11_4.h>
 
 
@@ -18,6 +19,41 @@
 
 
 #include"PxPhysicsAPI.h"
+
+#pragma region Lowlevel_Blast
+#include"NvBlast.h"
+#pragma endregion Lowlevel_Blast
+
+#pragma region ToolKit_Blast
+#include"NvBlastTk.h"
+#pragma endregion ToolKit_Blast
+
+#pragma region Global_Blast
+#include"NvBlastGlobals.h"
+#pragma endregion Global_Blast
+
+#pragma region Ext_Blast
+#include"NvBlastExtAssetUtils.h"
+#include"NvBlastExtAuthoring.h"
+#include"NvBlastExtAuthoringBondGenerator.h"
+#include"NvBlastExtAuthoringBooleanTool.h"
+#include"NvBlastExtAuthoringCutout.h"
+#include"NvBlastExtAuthoringFractureTool.h"
+#include"NvBlastExtAuthoringMeshCleaner.h"
+#include"NvBlastExtAuthoringAccelerator.h"
+#include"NvBlastExtAuthoringConvexMeshBuilder.h"
+#include"NvBlastExtAuthoringMesh.h"
+#include"NvBlastExtAuthoringPatternGenerator.h"
+#include"NvBlastExtAuthoringTypes.h"
+#include"NvBlastExtLlSerialization.h"
+#include"NvBlastExtSerialization.h"
+#include"NvBlastExtTkSerialization.h"
+#include"NvBlastExtDamageShaders.h"
+#include"NvBlastExtStressSolver.h"
+
+#pragma endregion Ext_Blast
+
+
 
 #include <random>
 
@@ -47,6 +83,9 @@
 using namespace DirectX;
 using namespace physx;
 using namespace physx::vehicle2;
+using namespace Nv;
+using namespace Nv::Blast;
+
 
 #include <vector>
 #include <list>
@@ -89,6 +128,8 @@ namespace Engine
 		ELEVENTH, TWELFTH, THIRTEENTH, FOURTEENTH, FIFTEENTH, SIXTEENTH, SEVENTEENTH,  SORT_END }; //UI정렬
 
 	enum CHANNELID { SOUND_EFFECT, SOUND_PLAYER, SOUND_MONSTER, SOUND_BOSS, SOUND_BGM, SOUND_SUBBGM, MAXCHANNEL };
+
+	enum FRUSTUM { FRUSTUM_NEAR, FRUSTUM_MIDDLE, FRUSTUM_FAR, FRUSTUM_END };
 
 	enum class eEVENT_TYPE
 	{

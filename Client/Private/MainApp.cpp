@@ -100,6 +100,7 @@
 #include "UI_ScriptBG_Npc.h"
 #include "UI_Script_DialogBox.h"
 #include "UI_Script_NameBox.h"
+#include "UI_Script_BGKey.h"
 #include "UIGroup_Script.h"
 #pragma endregion Script
 
@@ -121,11 +122,19 @@
 #include "UI_UpGPage_MatSlot.h"
 #include "UI_UpGPage_Value.h"
 #include "UIGroup_UpGPage.h"
-
-
-
+#include "UI_UpCompletedBG.h"
+#include "UI_UpCompleted_Circle.h"
+#include "UI_UpCompleted_Forge.h"
+#include "UI_UpCompleted_Crucible.h"
 #include "UIGroup_UP_Completed.h"
 #pragma endregion Upgrade
+
+#pragma region Ch_Upgrade
+#include "UI_Ch_UpgradeBtn.h"
+
+
+#include "UIGroup_Ch_Upgrade.h"
+#pragma endregion Ch_Upgrade
 
 #pragma region Map
 #include "UI_MapBG.h"
@@ -138,12 +147,21 @@
 #pragma endregion Map
 
 #pragma region Shop
+#include "UI_Shop_AnimBG.h"
 #include "UI_ShopBG.h"
 #include "UI_Shop_SoulBG.h"
 #include "UI_ShopSelect.h"
 #include "UI_Shop_RemainIcon.h"
 #include "UIGroup_Shop.h"
 #pragma endregion Shop
+
+#pragma region Setting
+#include "UI_Setting_Star.h"
+#include "UI_Setting_Overlay.h"
+#include "UI_Setting_Btn.h"
+#include "UI_Setting_BackBtn.h"
+#include "UIGroup_Setting.h"
+#pragma endregion Setting
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -627,6 +645,28 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/NewBlade.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Tornado
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoWind"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Core.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//2
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoWind2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Second.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//3
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoWind3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Third.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//Ring
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoRing"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/New/NewTornado_Ring.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoBottom"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/TornadoRoot.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 
 	if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))
@@ -772,6 +812,18 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion Weapon
 
+#pragma region Skill
+	/* Prototype_Component_Texture_Icon_Oph */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Oph"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Oph.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Aksha */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Aksha"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Aksha.png"), 1))))
+		return E_FAIL;
+#pragma endregion Skill
+
 #pragma region Item
 
 #pragma region DropItem
@@ -825,6 +877,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_Icon_Firefly */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Firefly"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Firefly.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_HoverBoard */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_HoverBoard"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.png"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Item */
@@ -1054,6 +1111,21 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Valnir"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Valnir.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_ChoronBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_BG.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_ChoronKey */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronKey"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_Key_%d.png"), 2))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Script_Npc_YaakBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_YaakBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/YaakBG.png"), 1))))
+		return E_FAIL;
 #pragma endregion Script
 
 #pragma region Upgrade
@@ -1124,6 +1196,35 @@ HRESULT CMainApp::Ready_Texture_UI()
 		return E_FAIL;
 #pragma endregion UpGPage
 
+#pragma region Up_Completed
+	/* Prototype_Component_Texture_UI_UpCompleted_Circle_1 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_UpCompleted_Circle_2 */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic_small.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_UpCompleted_Forge */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Forge"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle2.png"), 1))))
+		return E_FAIL;
+#pragma endregion Up_Completed
+
+#pragma region Ch_Upgrade
+	/* Prototype_Component_Texture_Ch_Upgrade_Btn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_Btn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_Weapons_Slot.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Ch_Upgrade_BtnSelect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_BtnSelect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_LevleUp_Select.png"), 1))))
+		return E_FAIL;
+#pragma endregion Ch_Upgrade
+
 #pragma endregion Upgrade
 
 #pragma region Map
@@ -1179,7 +1280,34 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/Shop_RemainIcon.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_UI_ValnirBG_Anim */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ValnirBG_Anim"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/AnimBG.png"), 1))))
+		return E_FAIL;
+
 #pragma endregion Shop
+
+#pragma region Setting
+	/* Prototype_Component_Texture_UI_Setting_Star */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Star"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/star.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_OnOffBtn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_OnOffBtn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/OnOffBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_Overlay */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Overlay"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/T_Options_Overlay.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_BackBtn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
+		return E_FAIL;
+#pragma endregion Setting
 
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
@@ -1562,6 +1690,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_Script_NameBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_Script_BGKey*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Script_BGKey"),
+		CUI_Script_BGKey::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_Script*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Script"),
 		CUIGroup_Script::Create(m_pDevice, m_pContext))))
@@ -1657,7 +1790,49 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion UpGPage
 
+#pragma region UP_Completed
+	/* For.Prototype_GameObject_UI_UpCompletedBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompletedBG"),
+		CUI_UpCompletedBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Circle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Circle"),
+		CUI_UpCompleted_Circle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Forge*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Forge"),
+		CUI_UpCompleted_Forge::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_UpCompleted_Crucible*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_UpCompleted_Crucible"),
+		CUI_UpCompleted_Crucible::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_UP_Completed*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_UP_Completed"),
+		CUIGroup_UP_Completed::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion UP_Completed
+
 #pragma endregion Upgrade
+
+#pragma region Ch_Upgrade
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade_Btn"),
+		CUI_Ch_UpgradeBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade"),
+		CUIGroup_Ch_Upgrade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Ch_Upgrade
 
 #pragma region Map
 	/* For.Prototype_GameObject_UI_MapBG*/
@@ -1697,6 +1872,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 #pragma endregion Map
 
 #pragma region Shop
+	/* For.Prototype_GameObject_UI_Shop_AnimBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Shop_AnimBG"),
+		CUI_Shop_AnimBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UI_ShopBG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ShopBG"),
 		CUI_ShopBG::Create(m_pDevice, m_pContext))))
@@ -1722,6 +1902,33 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Shop::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Shop
+
+#pragma region Setting
+	/* For.Prototype_GameObject_UI_Setting_Star*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Star"),
+		CUI_Setting_Star::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_Overlay*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Overlay"),
+		CUI_Setting_Overlay::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Btn"),
+		CUI_Setting_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_BackBtn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_BackBtn"),
+		CUI_Setting_BackBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Setting*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Setting"),
+		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Setting
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

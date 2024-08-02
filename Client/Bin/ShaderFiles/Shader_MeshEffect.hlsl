@@ -2,17 +2,24 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture , g_DesolveTexture, g_ElectricTex;
+texture2D	g_Texture , g_DesolveTexture, g_ElectricTex , g_OpacityTex;
 float		g_Ratio;
 
 //레이져
 float		g_CurTime, g_Speed;
-float3		g_Color;
+float3		g_Color, g_Color2;
 float		g_FrameRatio;
 
 //블룸 파워
 float		g_BloomPower;
+bool		g_Opacity = false;
 
+float		g_RadialStrength;
+float		g_OpacityPower;
+
+
+//vector vOpacity = g_OpacityTex.Sample(LinearSampler, Texcoord);
+// if(g_Opacity)Diffuse.a *= vOpacity.r;
 
 struct VS_IN
 {
@@ -249,17 +256,31 @@ PS_OUT PS_TornadoWind(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
+	float2 Center = float2(0.5f, 0.5f);
 	float2 uv = In.vTexcoord;
 
 	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
 
-	vector Color = g_Texture.Sample(LinearSampler, uv);
+	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
+	
+	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, MovedUV);
+	
+	if (g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+		
+		
 
-	Color.a = (Color.r + Color.g + Color.b) / 3.0f;
+	if (Color.a < 0.1f)
+		discard;
 
-	if (Color.a < 0.1f) discard;
-	Color.rgb = g_Color;
+	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
+	Color.rgb = lerp(g_Color2, g_Color, luminance);
 
 	if (g_Ratio > 0.7f)
 	{
@@ -268,7 +289,6 @@ PS_OUT PS_TornadoWind(PS_IN In)
 		{
 			discard; // 픽셀 폐기
 		}
-
 	}
 	Out.vColor = Color;
 	return Out;
@@ -332,6 +352,142 @@ PS_OUT PS_Lightning_Bloom(PS_IN In)
 	Color.rgb = g_Color;
 	Color.a = g_BloomPower;
 
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_Shield(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	float2 originalUV = uv;
+	if (uv.y < 0.5f)
+	{
+		uv.y -= g_CurTime * g_Speed;
+	}
+	if (uv.y >= 0.5f)
+	{
+		uv = originalUV;
+	}
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	Color.a = Color.r;
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+
+	if (g_Ratio > 0.5f)
+	{
+		Color.a *= 1 - g_Ratio;
+	}
+
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_Shield_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	float2 originalUV = uv;
+	if (uv.y < 0.5f)
+	{
+		uv.y -= g_CurTime * g_Speed;
+	}
+	if (uv.y >= 0.5f)
+	{
+		uv = originalUV;
+	}
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	Color.a = Color.r;
+	if (Color.a < 0.1f) discard;
+	Color.rgb = g_Color;
+	Color.a *= g_BloomPower;
+
+	if (g_Ratio > 0.5f)
+	{
+		Color.a *= 1 - g_Ratio;
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
+
+PS_OUT PS_TornadoWind_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
+
+	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
+
+	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, MovedUV);
+
+	if (g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+	if (Color.a < 0.1f)
+		discard;
+
+	Color.a *= g_BloomPower;
+
+	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
+	Color.rgb = lerp(g_Color2, g_Color, luminance);
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+	}
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_TornadoRoot_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+
+	Color.a = Color.r;
+
+
+	if (Color.a < 0.1f)
+		discard;
+
+	Color.a *= g_BloomPower;
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+	}
 	Out.vColor = Color;
 	return Out;
 }
@@ -478,6 +634,60 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_Lightning_Bloom();
+	}
+
+	pass Sheild //10pass
+	{
+				SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Shield();
+	}
+
+	pass Sheild_Bloom //11pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Shield_Bloom();
+	}
+
+	pass Tornado_Bloom	//12Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TornadoWind_Bloom();
+	}
+
+	pass Tornado_Root_Bloom	//13Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_TornadoRoot_Bloom();
 	}
 }
 

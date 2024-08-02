@@ -317,7 +317,7 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		m_isDefaultAttack = false;
-		Add_Hp(-10);
+		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		return RUNNING;
 		break;
 	}

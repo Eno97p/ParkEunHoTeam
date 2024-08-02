@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Inventory.h"
+#include "Player.h"
 
 CUI_StateSoul::CUI_StateSoul(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{pDevice, pContext}
@@ -24,6 +25,7 @@ HRESULT CUI_StateSoul::Initialize(void* pArg)
 
 	m_isSoulCntRend = pDesc->isSoulCntRend;
 	m_eUISort = pDesc->eUISort;
+	m_isNextLevel = pDesc->isNextlevel;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -42,6 +44,19 @@ void CUI_StateSoul::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateSoul::Tick(_float fTimeDelta)
 {
+	if (!m_pPlayer)
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+		Safe_AddRef(m_pPlayer);
+	}
+	else
+	{
+		// Player Level에 Ch_Upgrade 시 필요한 Soul 개수 계산하기
+		m_wstrLevelSout = to_wstring(m_pPlayer->Get_Level() * 325);
+	}
+
+
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 
@@ -70,11 +85,7 @@ HRESULT CUI_StateSoul::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if(m_isSoulCntRend)
-		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(CInventory::GetInstance()->Get_Soul()), _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
-
-	if(m_isCalculRend)
-		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrCalculText, _float2(m_fX + 20.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	Rend_Font();
 
 	return S_OK;
 }
@@ -125,6 +136,17 @@ HRESULT CUI_StateSoul::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CUI_StateSoul::Rend_Font()
+{
+	if (m_isSoulCntRend)
+		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(CInventory::GetInstance()->Get_Soul()), _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+	else if (m_isNextLevel)
+		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrLevelSout, _float2(m_fX + 20.f, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+
+	if (m_isCalculRend)
+		m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wstrCalculText, _float2(m_fX + 20.f, m_fY + 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f));
+}
+
 CUI_StateSoul* CUI_StateSoul::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_StateSoul* pInstance = new CUI_StateSoul(pDevice, pContext);
@@ -154,4 +176,6 @@ CGameObject* CUI_StateSoul::Clone(void* pArg)
 void CUI_StateSoul::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pPlayer);
 }

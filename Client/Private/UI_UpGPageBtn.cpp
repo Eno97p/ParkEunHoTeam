@@ -5,6 +5,7 @@
 #include "CMouse.h"
 
 #include "UI_UpGPageBtn_Select.h"
+#include "UIGroup_UpGPage.h"
 
 CUI_UpGPageBtn::CUI_UpGPageBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -57,6 +58,11 @@ void CUI_UpGPageBtn::Tick(_float fTimeDelta)
 					LONG(m_fY + m_fSizeY * 0.3f) };
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
+
+	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // 클릭한 경우 강화 화면으로 넘어가기
+	{
+		dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Create_CompletedPage();
+	}
 
 	if(nullptr != m_pSelectUI)
 		m_pSelectUI->Tick(fTimeDelta);

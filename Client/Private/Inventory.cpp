@@ -88,7 +88,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 
 	// Skill에 추가
-	pDesc.eItemName = CItemData::ITEMNAME_ETHERBOLT;
+	pDesc.eItemName = CItemData::ITEMNAME_OPH;
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
@@ -101,7 +101,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_BUFF1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_BUFF3);
+	Add_DropItem(CItem::ITEM_UPGRADE1);
 
 	return S_OK;
 }
@@ -173,6 +173,27 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 
 	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
 	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+
+	return S_OK;
+}
+
+HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
+{
+	// 무기 획득 함수
+
+	// Inventory에도 넣어줘야하고 / UI Weapon에도 넣어줘야 하고 / 
+
+	CItemData::ITEMDATA_DESC pDesc{};
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = eItemName;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+
+	// Upgrade Page에도 weapon 추가
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
 	return S_OK;
 }

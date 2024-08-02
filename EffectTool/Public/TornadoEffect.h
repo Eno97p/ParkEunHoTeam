@@ -3,7 +3,7 @@
 #include "Effect_Define.h"
 #include "TornadoWind.h"
 #include "Tornado_Root.h"
-#include "Tornado_Spring.h"
+#include "Tornado_Ring.h"
 
 BEGIN(Effect)
 class CTornadoEffect : public CGameObject
@@ -18,8 +18,12 @@ public:
 		_float fRootInterval = 0.f;
 		CGameObject* pTarget = nullptr;
 		CTornado_Wind::TORNADO_WIND WindDesc{};
+		CTornado_Wind::TORNADO_WIND WindDesc2{};
+		CTornado_Wind::TORNADO_WIND WindDesc3{};
 		CTornado_Root::TORNADO_ROOT RootDesc{};
-		CTornado_Spring::TORNADO_SPRING SpringDesc{};
+		CTornado_Ring::TORNADO_RING RingDesc1{};
+		CTornado_Ring::TORNADO_RING RingDesc2{};
+		_int NumParticle = 0;
 	};
 
 private:

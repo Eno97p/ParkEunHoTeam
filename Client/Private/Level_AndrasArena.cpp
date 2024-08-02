@@ -29,7 +29,7 @@ CLevel_AndrasArena::CLevel_AndrasArena(ID3D11Device * pDevice, ID3D11DeviceConte
 
 HRESULT CLevel_AndrasArena::Initialize()
 {
-	m_pGameInstance->Set_FogOption({ 0.367f, 0.254f, 0.200f, 1.f }, 460, 1.f, 0.1f, 10.f, 0.53f, 0.1f);
+	//m_pGameInstance->Set_FogOption({ 0.367f, 0.254f, 0.200f, 1.f }, 460, 1.f, 0.1f, 10.f, 0.53f, 0.1f);
 
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;

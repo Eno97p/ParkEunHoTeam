@@ -135,6 +135,20 @@ PS_OUT PS_MAIN_FLOW_HORIZONTAL(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_FLOW_HORIZONTAL_SHOPBG(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	float2 vDetailUV = In.vTexcoord;
+	vDetailUV.y += g_fFlowTime;
+
+	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
+
+	Out.vColor = vDestDiffuse;
+
+	return Out;
+}
+
 PS_OUT PS_MAIN_FLOW_VERTICAL(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;
@@ -145,7 +159,7 @@ PS_OUT PS_MAIN_FLOW_VERTICAL(PS_IN In)
 	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
 	vector		vMask = g_MaskTexture.Sample(LinearSampler, In.vTexcoord);
 
-	if (0.1f > vMask.r && 0.1f > vMask.g && 0.1f > vMask.b)
+	if (0.8f > vMask.r && 0.8f > vMask.g && 0.8f > vMask.b) // 0.1f > vMask.r && 0.1f > vMask.g && 0.1f > vMask.b
 		discard;
 
 	vector		vResult = vDestDiffuse * vMask;
@@ -217,6 +231,21 @@ PS_OUT PS_FADE(PS_IN In)
 
 		Out.vColor.a = fResultAlpha;
 	}
+
+	return Out;
+}
+
+PS_OUT PS_NOT_FADE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	/*if (0.2 < Out.vColor.a)
+		Out.vColor.a = 0.2;*/
 
 	return Out;
 }
@@ -397,6 +426,32 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_ALPHA();
+	}
+
+	pass DefaultPass_9
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FLOW_HORIZONTAL_SHOPBG();
+	}
+
+	pass FlowHorizontalPass_10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_NOT_FADE();
 	}
 }
 

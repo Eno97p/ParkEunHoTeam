@@ -233,7 +233,7 @@ HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 
 	PxControllerFilters filters;
 	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
-	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+ 	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
 
 
 
@@ -399,7 +399,6 @@ void CPhysXComponent_Character::Set_Position(_vector vPos)
 	m_pController->setFootPosition(vPosition);
 }
 
-
 _float CPhysXComponent_Character::Get_LengthFromGround()
 {
 	PxExtendedVec3 vFootPosition = m_pController->getFootPosition();
@@ -428,7 +427,10 @@ void CPhysXComponent_Character::Tick(_float fTimeDelta)
 	//m_pGameInstance->GetControllerManager()->computeInteractions(fTimeDelta, m_pFilterCallBack);
 
 	
-	m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
+	if (m_bGravity)
+	{
+		m_fCurrentY_Velocity += m_fGravity * fTimeDelta;
+	}
 	// 변위 계산: s = ut + 0.5 * a * t^2
 	float displacement = m_fCurrentY_Velocity * fTimeDelta + 0.5f * m_fGravity * fTimeDelta * fTimeDelta;
 

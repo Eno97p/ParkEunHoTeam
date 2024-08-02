@@ -55,6 +55,11 @@ namespace Engine
         _float result;
         XMStoreFloat(&result, resultVec);
         return result;
+    }   
+    
+    inline _float SmoothStepFloat(_float t)
+    {
+        return t * t * (3 - 2 * t);
     }
 
     //matrix를 선형보간 해주는 함수

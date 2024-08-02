@@ -39,6 +39,7 @@
 #include "Aspiration.h"
 #include "CircleSphere.h"
 #include "Lightning.h"
+#include "Electronic.h"
 #include "Sphere.h"
 
 #include "Mantari.h"
@@ -76,6 +77,10 @@
 #include "Body_Rlya.h"
 #include "Npc_Valnir.h"
 #include "Body_Valnir.h"
+#include "NPC_Choron.h"
+#include "Body_Choron.h"
+#include "NPC_Yaak.h"
+#include "Body_Yaak.h"
 #pragma endregion NPC
 
 #pragma region DECAL

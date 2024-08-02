@@ -9,7 +9,7 @@ class CUI_Script_DialogBox;
 class CUIGroup_Script final : public CUIGroup
 {
 public:
-	enum NPC_TYPE { NPC_RLYA, NPC_VALNIR, NPC_END };
+	enum NPC_TYPE { NPC_RLYA, NPC_VALNIR, NPC_CHORON, NPC_YAAK, NPC_END };
 	typedef struct UIGroup_Script_Desc : public UIGROUP_DESC
 	{
 		NPC_TYPE eNpcType;

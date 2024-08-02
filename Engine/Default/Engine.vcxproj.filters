@@ -154,9 +154,6 @@
     <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\QuadTree">
       <UniqueIdentifier>{3618fb28-10c1-45cd-b1a5-4075d31d9fbf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\999.PhysX">
-      <UniqueIdentifier>{04b97ef4-e9d0-4a30-a9b2-52f176b5bc3a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\998. EventManager">
       <UniqueIdentifier>{6042aba1-0576-42a4-aa4a-fffd6b6b573d}</UniqueIdentifier>
     </Filter>
@@ -235,9 +232,6 @@
     <Filter Include="01.Utility\997. Profiler\ProfileScope">
       <UniqueIdentifier>{c3ca219b-9671-4a90-9e1d-27120fd31469}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\999.PhysX\ErrorCallBack">
-      <UniqueIdentifier>{b1c9970c-9fb9-40cd-9015-ce14073ecc95}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Components\PhysXComponent\Dynamic">
       <UniqueIdentifier>{33d62eec-bb0d-4d1c-aa4d-de56e800574a}</UniqueIdentifier>
     </Filter>
@@ -259,14 +253,29 @@
     <Filter Include="01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle">
       <UniqueIdentifier>{4a633241-1fef-458c-96ae-a1fbfb192b3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\999.PhysX\HitCallBack">
-      <UniqueIdentifier>{34dde36e-3db2-4015-a2c5-14fca1202fb1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Components\PhysXComponent\Static\HeightField">
       <UniqueIdentifier>{090c7ee8-6857-4353-9512-056221ad2d78}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\OctTree">
       <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\10. Cascade">
+      <UniqueIdentifier>{d4040144-2383-447a-a19f-a221a532df88}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="01.Utility\999.Nvidia">
+      <UniqueIdentifier>{04b97ef4-e9d0-4a30-a9b2-52f176b5bc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\999.Nvidia\PhysX">
+      <UniqueIdentifier>{b6ff77a6-2773-45ae-a451-37ea36e03568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\999.Nvidia\PhysX\HitCallBack">
+      <UniqueIdentifier>{34dde36e-3db2-4015-a2c5-14fca1202fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\999.Nvidia\PhysX\ErrorCallBack">
+      <UniqueIdentifier>{b1c9970c-9fb9-40cd-9015-ce14073ecc95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\999.Nvidia\Blast">
+      <UniqueIdentifier>{d33396cc-a383-4427-a233-b6a79c863d2c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -432,9 +441,6 @@
     <ClInclude Include="..\Public\SoundMgr.h">
       <Filter>00.System\00.Device\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\CPhysX.h">
-      <Filter>01.Utility\999.PhysX</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\EventMgr.h">
       <Filter>01.Utility\998. EventManager</Filter>
     </ClInclude>
@@ -523,7 +529,7 @@
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Trail</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CUserErrorCallBack.h">
-      <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
+      <Filter>01.Utility\999.Nvidia\PhysX\ErrorCallBack</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CWorker.h">
       <Filter>01.Utility\996 .Worker</Filter>
@@ -550,13 +556,22 @@
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CSimulationCallBack.h">
-      <Filter>01.Utility\999.PhysX\HitCallBack</Filter>
+      <Filter>01.Utility\999.Nvidia\PhysX\HitCallBack</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CCCTFilterCallBack.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PhysXComponent_HeightField.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cascade.h">
+      <Filter>01.Utility\10. Cascade</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\CPhysX.h">
+      <Filter>01.Utility\999.Nvidia\PhysX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BlastMgr.h">
+      <Filter>01.Utility\999.Nvidia\Blast</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -716,9 +731,6 @@
     <ClCompile Include="..\Private\SoundMgr.cpp">
       <Filter>00.System\00.Device\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\CPhysX.cpp">
-      <Filter>01.Utility\999.PhysX</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\EventMgr.cpp">
       <Filter>01.Utility\998. EventManager</Filter>
     </ClCompile>
@@ -798,7 +810,7 @@
       <Filter>01.Utility\03.Components\VIBuffer\Instance\Trail</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CUserErrorCallBack.cpp">
-      <Filter>01.Utility\999.PhysX\ErrorCallBack</Filter>
+      <Filter>01.Utility\999.Nvidia\PhysX\ErrorCallBack</Filter>
     </ClCompile>
     <ClCompile Include="..\private\OctTree.cpp">
       <Filter>01.Utility\03.Components\VIBuffer\Terrain\OctTree</Filter>
@@ -825,13 +837,22 @@
       <Filter>01.Utility\03.Components\PhysXComponent\Vehicle\VehicleClass\MyVehicle</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CSimulationCallBack.cpp">
-      <Filter>01.Utility\999.PhysX\HitCallBack</Filter>
+      <Filter>01.Utility\999.Nvidia\PhysX\HitCallBack</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CCCTFilterCallBack.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Character\CallBackHitReport</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\PhysXComponent_HeightField.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cascade.cpp">
+      <Filter>01.Utility\10. Cascade</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\CPhysX.cpp">
+      <Filter>01.Utility\999.Nvidia\PhysX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BlastMgr.cpp">
+      <Filter>01.Utility\999.Nvidia\Blast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

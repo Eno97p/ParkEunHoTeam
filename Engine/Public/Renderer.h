@@ -18,6 +18,22 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONDECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
+	
+	typedef struct FOG_DESC
+	{
+		_float4 vFogColor;
+		_float4 vFogColor2;  // 두 번째 안개 색상
+		_float fFogRange;
+		_float fFogHeightFalloff;
+		_float fFogGlobalDensity;
+		_float fFogTimeOffset;
+		_float fFogTimeOffset2;  // 두 번째 안개 시간 오프셋
+		_float fNoiseIntensity;
+		_float fNoiseIntensity2;  // 두 번째 안개 노이즈 강도
+		_float fNoiseSize;
+		_float fNoiseSize2;  // 두 번째 안개 노이즈 크기
+		_float fFogBlendFactor;  // 안개 블렌딩 팩터
+	}FOG_DESC;
 
 private:
 	CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -80,20 +96,20 @@ public:
 	ID3D11Texture2D* Get_PrevDepthTex() { return m_pPrevDepthTexture; }
 	_float Sample_HZB(_float2 uv, UINT mipLevel);
 
-	//이민영 추가 240727 2106PM
-	void Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-		_float fFogTimeOffset,
-	_float fNoiseIntensity,
-	_float fNoiseSize) // 컬러, 레인지, 높이감쇠값, 밀도, 흐르는 시간, 노이즈 강도, 노이즈 크기
-	{ 
-		m_vFogColor = fogCol;
-		m_fFogRange = fogRng; 
-		m_fFogHeightFalloff = fogHeightFalloff;
-		m_fFogGlobalDensity = fogDensity;
-
-		m_fFogTimeOffset = fFogTimeOffset;
-		m_fNoiseIntensity = fNoiseIntensity;
-		m_fNoiseSize = fNoiseSize;
+	void Set_FogOption(const FOG_DESC& fogDesc)
+	{
+		m_vFogColor = fogDesc.vFogColor;
+		m_fFogRange = fogDesc.fFogRange;
+		m_fFogHeightFalloff = fogDesc.fFogHeightFalloff;
+		m_fFogGlobalDensity = fogDesc.fFogGlobalDensity;
+		m_fFogTimeOffset = fogDesc.fFogTimeOffset;
+		m_fNoiseIntensity = fogDesc.fNoiseIntensity;
+		m_fNoiseSize = fogDesc.fNoiseSize;
+		m_vFogColor2 = fogDesc.vFogColor2;
+		m_fFogTimeOffset2 = fogDesc.fFogTimeOffset2;
+		m_fNoiseIntensity2 = fogDesc.fNoiseIntensity2;
+		m_fNoiseSize2 = fogDesc.fNoiseSize2;
+		m_fFogBlendFactor = fogDesc.fFogBlendFactor;
 	}
 
 	//이민영 추가 240711 2002PM
@@ -166,6 +182,12 @@ private:
 	_float m_fFogTimeOffset = 0.f;
 	_float m_fNoiseIntensity = 0.f;
 	_float m_fNoiseSize = 0.1f;
+
+	_float4 m_vFogColor2 = { 0.235f, 0.260f, 0.329f, 1.f };
+	_float m_fFogTimeOffset2 = 0.f;
+	_float m_fNoiseIntensity2 = 0.f;
+	_float m_fNoiseSize2 = 0.1f;
+	_float m_fFogBlendFactor = 0.6;
 
 private:
 	void Render_Priority();

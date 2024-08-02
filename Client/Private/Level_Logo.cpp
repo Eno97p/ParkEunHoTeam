@@ -27,8 +27,15 @@ void CLevel_Logo::Tick(_float fTimeDelta)
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
 		m_pUI_Manager->Render_UIGroup(false, "Logo");
-
+		
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+			return;
+	}
+	if(KEY_TAP(DIK_8))
+	{
+		m_pUI_Manager->Render_UIGroup(false, "Logo");
+
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GRASSLAND))))
 			return;
 	}
 

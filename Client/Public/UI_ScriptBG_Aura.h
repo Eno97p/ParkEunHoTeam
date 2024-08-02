@@ -26,7 +26,11 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_float			m_fFlowTimer = { 0.f };
+
 	_uint			m_iTextureNum = { 0 };
+
+	CTexture* m_pMaskTextureCom = { nullptr };
 
 private:
 	HRESULT	Add_Components();

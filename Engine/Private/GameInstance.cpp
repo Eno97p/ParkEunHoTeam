@@ -12,9 +12,11 @@
 #include "Renderer.h"
 #include "Picking.h"
 #include "Frustum.h"
-#include"CPhysX.h"
+#include "CPhysX.h"
+#include "BlastMgr.h"
 #include "EventMgr.h"
 #include "Calculator.h"
+#include "Cascade.h"
 
 #include "SoundMgr.h"
 #include "UISorter.h"
@@ -98,10 +100,17 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_pFrustum)
 		return E_FAIL;
 
+	m_pCascade = CCascade::Create();
+	if (nullptr == m_pCascade)
+		return E_FAIL;
 
 	m_pPhysX = CPhysX::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pPhysX)
 		return E_FAIL;
+	m_pBlastMgr = CBlastMgr::Create();
+	if (nullptr == m_pBlastMgr)
+		return E_FAIL;
+
 
 	m_pEvent_Manager = CEventMgr::Create(m_pObject_Manager);
 	if (nullptr == m_pEvent_Manager)
@@ -187,6 +196,10 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 		}));
 	//PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+
+	futures.push_back(m_pWorker->Add_Job([this]() {
+		PROFILE_CALL("Cascade Tick", m_pCascade->Update());
+		}));
 
 	for (auto& worker : futures)
 	{
@@ -512,12 +525,9 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 	return m_pRenderer->Get_PrevDepthTex();
 }
 
-void CGameInstance::Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-	_float fFogTimeOffset,
-	_float fNoiseIntensity,
-	_float fNoiseSize)
+void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
 {
-	m_pRenderer->Set_FogOption(fogCol, fogRng, fogHeightFalloff, fogDensity, fFogTimeOffset, fNoiseIntensity, fNoiseSize);
+	m_pRenderer->Set_FogOption(desc);
 }
 
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
@@ -850,7 +860,10 @@ void CGameInstance::AddWork(T&& Func, Args&&... args)
 	m_pWorker->Add_Job(Func, args...);
 }
 
-
+_uint CGameInstance::Get_CascadeNum(_fvector vPosition, _float fRange)
+{
+	return m_pCascade->Get_CascadeNum(vPosition, fRange);
+}
 
 #ifdef _DEBUG
 
@@ -879,6 +892,7 @@ void CGameInstance::Free()
 
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pCascade);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);
@@ -903,6 +917,7 @@ void CGameInstance::Free()
 
 
 	Safe_Release(m_pPhysX);
+	Safe_Release(m_pBlastMgr);
 	m_iRefCnt;
 	int ttmp = 0;
 

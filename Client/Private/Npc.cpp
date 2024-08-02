@@ -70,6 +70,14 @@ HRESULT CNpc::Create_Activate()
 	return S_OK;
 }
 
+_bool CNpc::Check_Distance()
+{
+	_vector vBetween = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
+
+	return ACTIVATE_DISTANCE >= fDistance;
+}
+
 void CNpc::Free()
 {
 	__super::Free();

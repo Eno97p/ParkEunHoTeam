@@ -1,58 +1,68 @@
-#include "..\Public\Frustum.h"
+#include "..\Public\Cascade.h"
 #include "GameInstance.h"
 
-CFrustum::CFrustum()
+CCascade::CCascade()
 	: m_pGameInstance { CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CFrustum::Initialize()
+HRESULT CCascade::Initialize()
 {
 	m_vPoints[0] = _float3(-1.f, 1.f, 0.f);
 	m_vPoints[1] = _float3(1.f, 1.f, 0.f);
 	m_vPoints[2] = _float3(1.f, -1.f, 0.f);
 	m_vPoints[3] = _float3(-1.f, -1.f, 0.f);
 
-	m_vPoints[4] = _float3(-1.f, 1.f, 1.f);
-	m_vPoints[5] = _float3(1.f, 1.f, 1.f);
-	m_vPoints[6] = _float3(1.f, -1.f, 1.f);
-	m_vPoints[7] = _float3(-1.f, -1.f, 1.f);
+	m_vPoints[4] = _float3(-1.f, 1.f, 0.001f);
+	m_vPoints[5] = _float3(1.f, 1.f, 0.001f);
+	m_vPoints[6] = _float3(1.f, -1.f, 0.001f);
+	m_vPoints[7] = _float3(-1.f, -1.f, 0.001f);
+
+	m_vPoints[8] = _float3(-1.f, 1.f, 0.5f);
+	m_vPoints[9] = _float3(1.f, 1.f, 0.5f);
+	m_vPoints[10] = _float3(1.f, -1.f, 0.5f);
+	m_vPoints[11] = _float3(-1.f, -1.f, 0.5f);
+
+	m_vPoints[12] = _float3(-1.f, 1.f, 1.f);
+	m_vPoints[13] = _float3(1.f, 1.f, 1.f);
+	m_vPoints[14] = _float3(1.f, -1.f, 1.f);
+	m_vPoints[15] = _float3(-1.f, -1.f, 1.f);
 
 	return S_OK;
 }
 
-void CFrustum::Update()
+void CCascade::Update()
 {
 	_matrix ViewMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_VIEW);
 	_matrix ProjMatrixInverse = m_pGameInstance->Get_Transform_Matrix_Inverse(CPipeLine::D3DTS_PROJ);
 
-	_float4	vPoints[8] = {};
+	_float4	vPoints[16] = {};
 
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < 16; i++)
 	{
 		XMStoreFloat4(&vPoints[i], XMVector3TransformCoord(XMLoadFloat3(&m_vPoints[i]), ProjMatrixInverse));		
 	}
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < 16; i++)
 		XMStoreFloat4(&m_vWorldPoints[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
 
 	Make_Planes(m_vWorldPoints, m_vWorldPlanes);
 
 	m_fTotalTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
-
 }
 
-void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)
+void CCascade::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)
 {
-	_float4		vLocalPoints[8] = {};
+	_float4		vLocalPoints[24] = {};
 
-	for (size_t i = 0; i < 8; i++)
+	for (size_t i = 0; i < 24; i++)
 		XMStoreFloat4(&vLocalPoints[i], XMVector3Transform(XMLoadFloat4(&m_vWorldPoints[i]), WorldMatrixInv));
 
 	Make_Planes(vLocalPoints, m_vLocalPlanes);
 }
 
-_bool CFrustum::isIn_WorldFrustum(_fvector vPosition, _float fRange)
+
+_bool CCascade::isIn_WorldCascade(_fvector vPosition, _float fRange)
 {
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -65,7 +75,7 @@ _bool CFrustum::isIn_WorldFrustum(_fvector vPosition, _float fRange)
 }
 
 
-_bool CFrustum::isIn_LocalFrustum(_fvector vPosition, _float fRange)
+_bool CCascade::isIn_LocalCascade(_fvector vPosition, _float fRange)
 {
 	for (size_t i = 0; i < 6; i++)
 	{		
@@ -75,7 +85,32 @@ _bool CFrustum::isIn_LocalFrustum(_fvector vPosition, _float fRange)
 	return true;
 }
 
-bool CFrustum::isVisible(_vector vPos, PxActor* actor)
+_uint CCascade::Get_CascadeNum(_fvector vPosition, _float fRange)
+{
+	for (size_t i = 0; i < 18; i++)
+	{
+		_vector	vResult = XMPlaneDotCoord(XMLoadFloat4(&m_vWorldPlanes[i]), vPosition);
+		_float	fResult = XMVectorGetX(vResult);
+		if (0.f >= fResult)
+		{
+			if (i < 6)
+			{
+				return FRUSTUM_NEAR;
+			}
+			else if (i < 12)
+			{
+				return FRUSTUM_MIDDLE;
+			}
+			else
+			{
+				return FRUSTUM_FAR;
+			}
+		}			
+	}
+	return FRUSTUM_END;
+}
+
+bool CCascade::isVisible(_vector vPos, PxActor* actor)
 {
     // 거리 기반 컬링
     _vector vCamPos = m_pGameInstance->Get_CamPosition();
@@ -90,7 +125,7 @@ bool CFrustum::isVisible(_vector vPos, PxActor* actor)
 
     // 바운딩 구를 사용한 프러스텀 컬링
     float radius = extents.magnitude();
-    if (!isIn_WorldFrustum(XMLoadFloat3(&XMFLOAT3(center.x, center.y, center.z)), radius))
+    if (!isIn_WorldCascade(XMLoadFloat3(&XMFLOAT3(center.x, center.y, center.z)), radius))
         return false;
 
     // 뷰 프로젝션 변환
@@ -145,7 +180,7 @@ bool CFrustum::isVisible(_vector vPos, PxActor* actor)
 
     return minZ <= hzbDepth;
 }
-float CFrustum::SampleHZB(ID3D11ShaderResourceView* pHZBSRV, float x, float y, UINT level)
+float CCascade::SampleHZB(ID3D11ShaderResourceView* pHZBSRV, float x, float y, UINT level)
 {
     // 이 함수는 HZB를 샘플링하는 간단한 구현입니다.
     // 실제 구현에서는 GPU를 사용하여 더 효율적으로 샘플링해야 합니다.
@@ -156,7 +191,7 @@ float CFrustum::SampleHZB(ID3D11ShaderResourceView* pHZBSRV, float x, float y, U
 }
 
 
-void CFrustum::Make_Planes(const _float4 * pPoints, _float4 * pPlanes)
+void CCascade::Make_Planes(const _float4 * pPoints, _float4 * pPlanes)
 {
 	XMStoreFloat4(&pPlanes[0], XMPlaneFromPoints(XMLoadFloat4(&pPoints[1]), XMLoadFloat4(&pPoints[5]), XMLoadFloat4(&pPoints[6])));
 
@@ -169,21 +204,47 @@ void CFrustum::Make_Planes(const _float4 * pPoints, _float4 * pPlanes)
 	XMStoreFloat4(&pPlanes[4], XMPlaneFromPoints(XMLoadFloat4(&pPoints[5]), XMLoadFloat4(&pPoints[4]), XMLoadFloat4(&pPoints[7])));
 
 	XMStoreFloat4(&pPlanes[5], XMPlaneFromPoints(XMLoadFloat4(&pPoints[0]), XMLoadFloat4(&pPoints[1]), XMLoadFloat4(&pPoints[2])));
+
+
+	XMStoreFloat4(&pPlanes[6], XMPlaneFromPoints(XMLoadFloat4(&pPoints[5]), XMLoadFloat4(&pPoints[9]), XMLoadFloat4(&pPoints[10])));
+
+	XMStoreFloat4(&pPlanes[7], XMPlaneFromPoints(XMLoadFloat4(&pPoints[11]), XMLoadFloat4(&pPoints[8]), XMLoadFloat4(&pPoints[4])));
+
+	XMStoreFloat4(&pPlanes[8], XMPlaneFromPoints(XMLoadFloat4(&pPoints[8]), XMLoadFloat4(&pPoints[9]), XMLoadFloat4(&pPoints[5])));
+
+	XMStoreFloat4(&pPlanes[9], XMPlaneFromPoints(XMLoadFloat4(&pPoints[7]), XMLoadFloat4(&pPoints[6]), XMLoadFloat4(&pPoints[10])));
+
+	XMStoreFloat4(&pPlanes[10], XMPlaneFromPoints(XMLoadFloat4(&pPoints[9]), XMLoadFloat4(&pPoints[8]), XMLoadFloat4(&pPoints[11])));
+
+	XMStoreFloat4(&pPlanes[11], XMPlaneFromPoints(XMLoadFloat4(&pPoints[4]), XMLoadFloat4(&pPoints[5]), XMLoadFloat4(&pPoints[6])));
+
+
+	XMStoreFloat4(&pPlanes[12], XMPlaneFromPoints(XMLoadFloat4(&pPoints[9]), XMLoadFloat4(&pPoints[13]), XMLoadFloat4(&pPoints[14])));
+
+	XMStoreFloat4(&pPlanes[13], XMPlaneFromPoints(XMLoadFloat4(&pPoints[15]), XMLoadFloat4(&pPoints[12]), XMLoadFloat4(&pPoints[8])));
+
+	XMStoreFloat4(&pPlanes[14], XMPlaneFromPoints(XMLoadFloat4(&pPoints[12]), XMLoadFloat4(&pPoints[13]), XMLoadFloat4(&pPoints[9])));
+
+	XMStoreFloat4(&pPlanes[15], XMPlaneFromPoints(XMLoadFloat4(&pPoints[11]), XMLoadFloat4(&pPoints[10]), XMLoadFloat4(&pPoints[14])));
+
+	XMStoreFloat4(&pPlanes[16], XMPlaneFromPoints(XMLoadFloat4(&pPoints[13]), XMLoadFloat4(&pPoints[12]), XMLoadFloat4(&pPoints[15])));
+
+	XMStoreFloat4(&pPlanes[17], XMPlaneFromPoints(XMLoadFloat4(&pPoints[8]), XMLoadFloat4(&pPoints[9]), XMLoadFloat4(&pPoints[10])));
 }
 
-CFrustum * CFrustum::Create()
+CCascade * CCascade::Create()
 {
-	CFrustum*		pInstance = new CFrustum();
+	CCascade*		pInstance = new CCascade();
 
 	if (FAILED(pInstance->Initialize()))
 	{
-		MSG_BOX("Failed to Created : CFrustum");
+		MSG_BOX("Failed to Created : CCascade");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
-void CFrustum::Free()
+void CCascade::Free()
 {
 	Safe_Release(m_pGameInstance);
 }

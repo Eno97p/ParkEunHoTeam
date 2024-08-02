@@ -16,6 +16,7 @@
 #include "BlastMgr.h"
 #include "EventMgr.h"
 #include "Calculator.h"
+#include "Cascade.h"
 
 #include "SoundMgr.h"
 #include "UISorter.h"
@@ -99,6 +100,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	if (nullptr == m_pFrustum)
 		return E_FAIL;
 
+	m_pCascade = CCascade::Create();
+	if (nullptr == m_pCascade)
+		return E_FAIL;
 
 	m_pPhysX = CPhysX::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pPhysX)
@@ -192,6 +196,10 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 		PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 		}));
 	//PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+
+	futures.push_back(m_pWorker->Add_Job([this]() {
+		PROFILE_CALL("Cascade Tick", m_pCascade->Update());
+		}));
 
 	for (auto& worker : futures)
 	{
@@ -852,7 +860,10 @@ void CGameInstance::AddWork(T&& Func, Args&&... args)
 	m_pWorker->Add_Job(Func, args...);
 }
 
-
+_uint CGameInstance::Get_CascadeNum(_fvector vPosition, _float fRange)
+{
+	return m_pCascade->Get_CascadeNum(vPosition, fRange);
+}
 
 #ifdef _DEBUG
 
@@ -881,6 +892,7 @@ void CGameInstance::Free()
 
 	Safe_Release(m_pEvent_Manager);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pCascade);
 	Safe_Release(m_pTarget_Manager);
 	Safe_Release(m_pFont_Manager);
 	Safe_Release(m_pLight_Manager);

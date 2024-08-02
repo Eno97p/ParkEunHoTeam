@@ -40,6 +40,8 @@ public:
 	_bool Get_Active() { return m_bIsActive; }
 	void Set_RenderAvailable(_bool render) { m_bRenderAvailable = render; }
 	void Set_Dir(_vector vDir) { m_vDir = vDir; }
+	_float Get_Damage() { return m_fDamage; }
+	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
 
 protected:
 	CShader*						m_pShaderCom = { nullptr };
@@ -49,6 +51,7 @@ protected:
 	_bool							m_bRenderAvailable = true;
 	_vector							m_vDir;
 	_bool							m_bGenerageTrail = false;
+	_float							m_fDamage = 0.f;
 
 
 

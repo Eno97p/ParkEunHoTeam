@@ -142,10 +142,11 @@ HRESULT CPassive_Element::Render_LightDepth()
         return E_FAIL;
 
     _float4x4      ViewMatrix, ProjMatrix;
-
+    _float4 fPos = m_pGameInstance->Get_PlayerPos();
+    
     /* ±¤¿ø ±âÁØÀÇ ºä º¯È¯Çà·Ä. */
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_pGameInstance->Get_ShadowEye(), m_pGameInstance->Get_ShadowFocus(), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 1000.f));
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
 
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
         return E_FAIL;
@@ -167,11 +168,6 @@ HRESULT CPassive_Element::Render_LightDepth()
 
     return S_OK;
 }
-
-
-
-
-
 
 HRESULT CPassive_Element::Render_Mirror()
 {

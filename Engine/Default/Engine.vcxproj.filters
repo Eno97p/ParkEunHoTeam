@@ -259,6 +259,9 @@
     <Filter Include="01.Utility\03.Components\VIBuffer\Terrain\OctTree">
       <UniqueIdentifier>{e853607a-23ad-43bb-8b29-0b5ce618f40e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\10. Cascade">
+      <UniqueIdentifier>{d4040144-2383-447a-a19f-a221a532df88}</UniqueIdentifier>
+	</Filter>
     <Filter Include="01.Utility\999.Nvidia">
       <UniqueIdentifier>{04b97ef4-e9d0-4a30-a9b2-52f176b5bc3a}</UniqueIdentifier>
     </Filter>
@@ -561,6 +564,9 @@
     <ClInclude Include="..\Public\PhysXComponent_HeightField.h">
       <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Cascade.h">
+      <Filter>01.Utility\10. Cascade</Filter>
+	</ClInclude>
     <ClInclude Include="..\public\CPhysX.h">
       <Filter>01.Utility\999.Nvidia\PhysX</Filter>
     </ClInclude>
@@ -839,6 +845,9 @@
     <ClCompile Include="..\Private\PhysXComponent_HeightField.cpp">
       <Filter>01.Utility\03.Components\PhysXComponent\Static\HeightField</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Cascade.cpp">
+      <Filter>01.Utility\10. Cascade</Filter>
+	</ClCompile>
     <ClCompile Include="..\private\CPhysX.cpp">
       <Filter>01.Utility\999.Nvidia\PhysX</Filter>
     </ClCompile>

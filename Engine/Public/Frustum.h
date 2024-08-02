@@ -20,6 +20,7 @@ public:
 	void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);
 	_bool isIn_WorldFrustum(_fvector vPosition, _float fRange = 0.f);
 	_bool isIn_LocalFrustum(_fvector vPosition, _float fRange);
+	_uint Get_FrustumNum();
 
 	_bool isVisible(_vector vPos, PxActor* actor);
 	

@@ -135,7 +135,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	else if (*m_pState == CPlayer::STATE_BUFF)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 199;
+		AnimDesc.iAnimIndex = 189;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
@@ -144,6 +144,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 42;
 		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_SLIDE)
+	{
+		AnimDesc.isLoop = true;
+		AnimDesc.iAnimIndex = 41;
+		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CPlayer::STATE_HIT)
@@ -217,21 +224,20 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 210;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
-		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.7f)
+		if (m_pModelCom->Get_Ratio_Betwin(0.8f, 1.f))
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_JUMPATTACK_LAND)
 	{
 		if (m_pModelCom->Check_CurDuration(0.01))
 		{
-			_float4 PartPos = XM3TO4(m_pWeapon->Get_Collider_Center());
+			_float4 PartPos = XM3TO4(m_pWeapon[*m_pCurWeapon]->Get_Collider_Center());
 			PartPos.y = m_WorldMatrix._42;
 			EFFECTMGR->Generate_Particle(2, PartPos);
 			EFFECTMGR->Generate_Particle(42, PartPos);
@@ -244,7 +250,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 209;
 		fAnimSpeed = 0.8f;
 		m_pModelCom->Set_LerpTime(0.5);
-		m_pWeapon->Set_Active();
+		m_pWeapon[*m_pCurWeapon]->Set_Active();
 	}
 	else if (*m_pState == CPlayer::STATE_ROLLATTACK)
 	{
@@ -261,11 +267,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 33) // 34
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_BACKATTACK) // X
@@ -280,11 +286,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 72)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK)
@@ -303,21 +309,16 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_fDamageTiming += fTimeDelta;
 		if (m_fDamageTiming > 1.f && m_fDamageTiming < 1.15f)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK2)
 	{
 		AnimDesc.isLoop = false;
-
-		if (m_iPastAnimIndex != 143 && m_iPastAnimIndex != 86 && m_iPastAnimIndex != 58 && m_iPastAnimIndex != 65)
-		{
-			m_iPastAnimIndex = 143;
-		}
 
 		_matrix World = XMLoadFloat4x4(&m_WorldMatrix);
 		_float4 ParticlePos;
@@ -326,24 +327,35 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 143)
 		{
 			ParticlePos.y += 1.f;
-			if( m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+			if (m_pModelCom->Get_Ratio_Betwin(0.25f, 0.85f))
+			{
 				EFFECTMGR->Generate_Particle(31, ParticlePos);
+				m_pWeapon[*m_pCurWeapon]->Set_Active();
+			}
+				
 		}
 		else if (m_iPastAnimIndex == 86)
 		{
 			ParticlePos.y += 1.f;
-			if (m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+			if (m_pModelCom->Get_Ratio_Betwin(0.25f, 0.85f))
+			{
 				EFFECTMGR->Generate_Particle(31, ParticlePos);
+				m_pWeapon[*m_pCurWeapon]->Set_Active();
+			}
+				
 		}
 		else if (m_iPastAnimIndex == 65)
 		{
 			ParticlePos.y += 1.f;
-			if (m_pModelCom->Get_Ratio_Betwin(0.25, 0.85))
+			if (m_pModelCom->Get_Ratio_Betwin(0.25f, 0.85f))
+			{
+				m_pWeapon[*m_pCurWeapon]->Set_Active();
 				EFFECTMGR->Generate_Particle(31, ParticlePos);
+			}
 		}
 		else if (m_iPastAnimIndex == 58)
 		{
-			if (m_pModelCom->Check_CurDuration(0.6f))
+			if (m_pModelCom->Check_CurDuration(0.4f))
 			{
 				EFFECTMGR->Generate_Particle(34, ParticlePos);
 				EFFECTMGR->Generate_Particle(33, ParticlePos);
@@ -351,8 +363,16 @@ void CBody_Player::Tick(_float fTimeDelta)
 				ParticlePos.y += 1.f;
 				EFFECTMGR->Generate_Particle(32, ParticlePos);
 			}
+			if (m_pModelCom->Get_Ratio_Betwin(0.3f, 0.5f))
+			{
+				m_pWeapon[*m_pCurWeapon]->Set_Active(true);
+			}
 		}
 
+		if (m_iPastAnimIndex != 143 && m_iPastAnimIndex != 86 && m_iPastAnimIndex != 58 && m_iPastAnimIndex != 65)
+		{
+			m_iPastAnimIndex = 143;
+		}
 
 
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
@@ -365,11 +385,102 @@ void CBody_Player::Tick(_float fTimeDelta)
 		else
 		{
 			fAnimSpeed = 2.5f;
-			if (m_iPastAnimIndex == 58 && m_pModelCom->Get_Current_Ratio() > 0.5f && m_pModelCom->Get_Current_Ratio() < 0.6f)
+			if (m_iPastAnimIndex == 58 && m_pModelCom->Get_Current_Ratio() > 0.1f && m_pModelCom->Get_Current_Ratio() < 0.2f)
 			{
 				fAnimSpeed = 0.1f;
 			}
 		}
+	}
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK3)
+	{
+		if (m_iPastAnimIndex < 121 || m_iPastAnimIndex > 130)
+		{
+			m_iPastAnimIndex = 121;
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		if(m_iPastAnimIndex > 125 && m_iPastAnimIndex < 129)
+		{
+			fAnimSpeed = 1.f;
+		}
+		else
+		{
+			fAnimSpeed = 1.5f; // 2
+		}
+		if ((m_iPastAnimIndex > 122 && m_iPastAnimIndex < 126) || m_iPastAnimIndex > 128)
+		{
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
+		}
+		else
+		{
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
+		}
+	}
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK4)
+	{
+		if (m_iPastAnimIndex != 58 && m_iPastAnimIndex != 143 && m_iPastAnimIndex != 358)
+		{
+			m_iPastAnimIndex = 58;
+		}
+
+		AnimDesc.isLoop = false;
+
+		_matrix World = XMLoadFloat4x4(&m_WorldMatrix);
+		_float4 ParticlePos;
+		XMStoreFloat4(&ParticlePos, World.r[3]);
+
+		if (m_iPastAnimIndex == 58)
+		{
+			ParticlePos.y += 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
+			{
+				//EFFECTMGR->Generate_Particle(31, ParticlePos);
+				m_pWeapon[*m_pCurWeapon]->Set_Active(true);
+			}
+			else
+			{
+				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
+			}
+			fAnimSpeed = 1.f;
+		}
+		else if (m_iPastAnimIndex == 143)
+		{
+			ParticlePos.y += 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
+			{
+				//EFFECTMGR->Generate_Particle(31, ParticlePos);
+				m_pWeapon[*m_pCurWeapon]->Set_Active();
+			}
+			else
+			{
+				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
+			}
+			fAnimSpeed = 2.f;
+		}
+		else if (m_iPastAnimIndex == 358)
+		{
+			ParticlePos.y += 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
+			{
+				//EFFECTMGR->Generate_Particle(31, ParticlePos);
+				m_pWeapon[*m_pCurWeapon]->Set_Active();
+			}
+			else
+			{
+				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
+			}
+			fAnimSpeed = 2.f;
+		}
+
+		if (m_iPastAnimIndex >= 300)
+		{
+			AnimDesc.iAnimIndex = m_iPastAnimIndex - 300;
+		}
+		else
+		{
+			AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		}
+		m_pModelCom->Set_LerpTime(1.2f);
 	}
 	else if (*m_pState == CPlayer::STATE_LCHARGEATTACK)
 	{
@@ -387,11 +498,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 150)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK)
@@ -411,15 +522,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 133)
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 		else if (m_iPastAnimIndex > 131)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 
 	}
@@ -439,11 +550,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK2)
@@ -459,11 +570,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138 && m_iPastAnimIndex < 142)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK3)
@@ -472,14 +583,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.8f; // 1
 		m_pModelCom->Set_LerpTime(1.2);
-		m_fDamageTiming += fTimeDelta;
-		if (m_fDamageTiming > 0.15f && m_fDamageTiming < 0.3f) // m_fDamageTiming > 0.35f && m_fDamageTiming < 0.5f
+		if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK1)
@@ -495,11 +605,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 122)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RATTACK2)
@@ -517,11 +627,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK1)
@@ -538,22 +648,22 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_RUNLATTACK2)
 	{
 		if (m_iPastAnimIndex == 142)
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 		else
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		if (m_iPastAnimIndex < 82 || m_iPastAnimIndex > 85)
 		{
@@ -577,11 +687,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_COUNTER)
@@ -596,11 +706,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 49 || m_iPastAnimIndex == 52)
 		{
-			m_pWeapon->Set_Active();
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
-			m_pWeapon->Set_Active(false);
+			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CPlayer::STATE_ROLL)
@@ -767,8 +877,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 	_bool isLerp = false;
 	// 여러 애니메이션을 재생할 때 마지막 애니메이션은 보간 필요
 	if (m_iPastAnimIndex == 37 || m_iPastAnimIndex == 28 || m_iPastAnimIndex == 53 || m_iPastAnimIndex == 149 || 
-		m_iPastAnimIndex == 74 || m_iPastAnimIndex == 153 || m_iPastAnimIndex == 79 || m_iPastAnimIndex == 125 || m_iPastAnimIndex == 136 ||
-		m_iPastAnimIndex == 142 || AnimDesc.iAnimIndex == 209 || m_iPastAnimIndex == 85 ||
+		m_iPastAnimIndex == 74 || m_iPastAnimIndex == 153 || m_iPastAnimIndex == 79 || m_iPastAnimIndex == 125 || 
+		m_iPastAnimIndex == 136 || m_iPastAnimIndex == 142 || AnimDesc.iAnimIndex == 209 || m_iPastAnimIndex == 85 ||
 		(m_iPastAnimIndex == 0 && *m_pState != CPlayer::STATE_LATTACK1 && *m_pState != CPlayer::STATE_LATTACK2
 			&& *m_pState != CPlayer::STATE_LATTACK3 && *m_pState != CPlayer::STATE_RATTACK1))
 	{
@@ -778,7 +888,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 
 	m_bAnimFinished = false;
 	_bool animFinished = m_pModelCom->Get_AnimFinished();
-	if (animFinished && *m_pState != CPlayer::STATE_SPECIALATTACK2)
+	if (animFinished && *m_pState != CPlayer::STATE_SPECIALATTACK2 && *m_pState != CPlayer::STATE_SPECIALATTACK4)
 	{
 		// rollattack
 		if (AnimDesc.iAnimIndex >= 33 && AnimDesc.iAnimIndex < 37)
@@ -810,6 +920,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex++;
 		}
+		// 스킬3
+		else if (*m_pState == CPlayer::STATE_SPECIALATTACK3 && AnimDesc.iAnimIndex == 124)
+		{
+			m_iPastAnimIndex += 2;
+		}
 		// 우공격1
 		else if (AnimDesc.iAnimIndex >= 121 && AnimDesc.iAnimIndex < 125)
 		{
@@ -835,6 +950,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex++;
 		}
+		else if (AnimDesc.iAnimIndex >= 126 && AnimDesc.iAnimIndex < 130)
+		{
+			m_iPastAnimIndex++;
+		}
 		else
 		{
 			m_iPastAnimIndex = 0;
@@ -853,7 +972,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_bAnimFinished = false;
 		}
 	}
-	else if(*m_pState == CPlayer::STATE_SPECIALATTACK2)
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK2)
 	{
 		m_bAnimFinished = false;
 		if (m_iPastAnimIndex == 143 && animFinished)
@@ -874,10 +993,27 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_bAnimFinished = true;
 		}
 	}
+	else if (*m_pState == CPlayer::STATE_SPECIALATTACK4)
+	{
+		m_bAnimFinished = false;
+		if (m_iPastAnimIndex == 58 && animFinished)
+		{
+			m_iPastAnimIndex = 143;
+		}
+		else if (m_iPastAnimIndex == 143 && animFinished)
+		{
+			m_iPastAnimIndex = 358;
+		}
+		else if (m_iPastAnimIndex == 358 && animFinished)
+		{
+			m_iPastAnimIndex = 0;
+			m_bAnimFinished = true;
+		}
+	}
 
 	if (m_bAnimFinished)
 	{
-		m_pWeapon->Set_Active(false);
+		m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		m_fDamageTiming = 0.f;
 	}
 
@@ -896,7 +1032,11 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+		_uint iCascadeNum = m_pGameInstance->Get_CascadeNum(XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f), 1.f);
+ 		if (iCascadeNum == FRUSTUM_NEAR)
+		{
+			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+		}
 	}
 }
 
@@ -1102,8 +1242,10 @@ HRESULT CBody_Player::Render_LightDepth()
 
 	_float4x4		ViewMatrix, ProjMatrix;
 
+	_float4 fPos = m_pGameInstance->Get_PlayerPos();
+
 	/* 광원 기준의 뷰 변환행렬. */
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(0.f, 10.f, -10.f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))

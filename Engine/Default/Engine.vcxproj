@@ -200,6 +200,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\CActionNode.cpp" />
     <ClCompile Include="..\Private\Calculator.cpp" />
     <ClCompile Include="..\private\Camera.cpp" />
+    <ClCompile Include="..\Private\Cascade.cpp" />
     <ClCompile Include="..\Private\CCCTFilterCallBack.cpp" />
     <ClCompile Include="..\private\Cell.cpp" />
     <ClCompile Include="..\private\Channel.cpp" />
@@ -294,6 +295,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\CActionNode.h" />
     <ClInclude Include="..\Public\Calculator.h" />
     <ClInclude Include="..\public\Camera.h" />
+    <ClInclude Include="..\Public\Cascade.h" />
     <ClInclude Include="..\Public\CCCTFilterCallBack.h" />
     <ClInclude Include="..\public\Cell.h" />
     <ClInclude Include="..\public\Channel.h" />

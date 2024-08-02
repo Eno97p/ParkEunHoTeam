@@ -308,6 +308,12 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
+		m_pPhysXCom->Set_Gravity(false);
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vPos.m128_f32[1] += fTimeDelta * 0.25f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_pPhysXCom->Set_Position(vPos);
+
 		if (m_isAnimFinished)
 		{
 			if (!m_bDead)
@@ -366,7 +372,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
-		Add_Hp(-10);
+		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;

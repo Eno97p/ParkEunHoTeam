@@ -92,6 +92,8 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	if (nullptr == m_pAIScene)
 		return E_FAIL;
 
+
+
 	m_eModelType = eModelType;
 
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);

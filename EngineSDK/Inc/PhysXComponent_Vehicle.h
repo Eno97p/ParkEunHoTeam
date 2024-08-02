@@ -37,6 +37,7 @@ public:
 		1은 완전히 밟은 상태
 		*/
 		PxReal brake = 0.0f;
+		PxReal handbrake = 0.0f;
 
 		/* 기어 상태*/
 		PxVehicleDirectDriveTransmissionCommandState::Enum gear = PxVehicleDirectDriveTransmissionCommandState::Enum::eNEUTRAL;

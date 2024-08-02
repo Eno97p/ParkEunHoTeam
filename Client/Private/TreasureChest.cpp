@@ -38,8 +38,24 @@ HRESULT CTreasureChest::Initialize(void* pArg)
 
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 
-		
-		//TRIGGER STATE SET
+		m_eTreasureState = (TREASURE_COLOR)pDesc->TriggerType;
+		switch (m_eTreasureState)
+		{
+		case TREASURE_NORMAL:
+			m_iShaderPath = 0;
+			m_iBloomShaderPath = 2;
+			break;
+		case TREASURE_EPIC:
+			m_iShaderPath = 3;
+			m_iBloomShaderPath = 4;
+			m_TreasureColor = { 0.265282571f, 0.f, 0.5637f, 1.f };
+			break;
+		case TREASURE_CLOAKING:
+			m_iShaderPath = 3;
+			m_iBloomShaderPath = 4;
+			m_TreasureColor = { 0.161764681f,  0.161764681f, 0.161764681f, 1.f };
+			break;
+		}
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -85,12 +101,6 @@ HRESULT CTreasureChest::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_pGameInstance->Key_Down(DIK_UP))
-	{
-		m_iTest++;
-	}
-
-
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMeshes; ++i) // 해당 Model의 Mesh만큼 순회
@@ -102,14 +112,7 @@ HRESULT CTreasureChest::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-			return E_FAIL;
-
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-			return E_FAIL;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_EpicColor", &m_TreasureColor, sizeof(_float4))))
 			return E_FAIL;
 
 		//if ( i != 29)
@@ -120,10 +123,16 @@ HRESULT CTreasureChest::Render()
 		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &m_iTest, sizeof(_uint))))
 		//	return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		i == 2 ? m_pShaderCom->Begin(m_iShaderPath) : m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
 	}
+
+#pragma region 모션블러
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
+
 }
 
 HRESULT CTreasureChest::Render_Bloom()
@@ -131,33 +140,21 @@ HRESULT CTreasureChest::Render_Bloom()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_pGameInstance->Key_Down(DIK_9))
-	{
-		m_iTest++;
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_0))
-	{
-		m_iTest--;
-	}
+	m_pShaderCom->Unbind_SRVs();
 
 
-	
 
 	m_pShaderCom->Unbind_SRVs();
 
 	m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", 2);
 
-
-	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", 2, aiTextureType_DIFFUSE)))
-		return E_FAIL;
-
-
 	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", 2, aiTextureType_EMISSIVE)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_EpicColor", &m_TreasureColor, sizeof(_float4))))
+		return E_FAIL;
 
-	m_pShaderCom->Begin(6);
+	m_pShaderCom->Begin(m_iBloomShaderPath);
 
 	m_pModelCom->Render(2);
 }
@@ -173,7 +170,7 @@ HRESULT CTreasureChest::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxTreasureChest"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
@@ -187,6 +184,17 @@ HRESULT CTreasureChest::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
+
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 

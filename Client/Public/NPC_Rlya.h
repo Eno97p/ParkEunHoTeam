@@ -31,7 +31,6 @@ private:
 
 	virtual HRESULT		Create_Script() override;
 
-	_bool				Check_Distance();
 	void				Key_Input();
 
 public:

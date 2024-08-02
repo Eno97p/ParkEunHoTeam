@@ -33,7 +33,6 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
-	_float m_fPlayerY = 0.f;
 
 	class CPlayer* m_pPlayer = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };

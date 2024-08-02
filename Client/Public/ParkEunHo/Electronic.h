@@ -46,6 +46,11 @@ private:
 	CModel*				m_pModelCom = { nullptr };
 	shared_ptr<ELECTRONICDESC>				OwnDesc;
 
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
+
 private:
 	_float				m_fCurLifeTime = 0.f;
 	_float				m_fRatio = 0.f;

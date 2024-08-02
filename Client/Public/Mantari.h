@@ -73,6 +73,8 @@ private:
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;
 
+	_bool										m_bParryFirstHit = true;
+
 private:
 	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
 

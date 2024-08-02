@@ -27,13 +27,11 @@ HRESULT CThirdPersonCamera::Initialize(void* pArg)
 {
     THIRDPERSONCAMERA_DESC* pDesc = (THIRDPERSONCAMERA_DESC*)pArg;
     m_fSensor = pDesc->fSensor;
-    m_pPlayerTrans = pDesc->pPlayerTrans;//dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Vehicle"),TEXT("Com_Transform"), 0));
+    m_pPlayerTrans = pDesc->pPlayerTrans;
     Safe_AddRef(m_pPlayerTrans);
 
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
-
-    //__super::Activate();
 
     // 초기 카메라 위치 설정
     _float4 vPlayerPosition;
@@ -54,15 +52,25 @@ HRESULT CThirdPersonCamera::Initialize(void* pArg)
 
 void CThirdPersonCamera::Priority_Tick(_float fTimeDelta)
 {
-  
+
     if (!m_bCamActivated) return;
-    Mouse_Move(fTimeDelta);
-    Key_Input(fTimeDelta);
+
+    if (m_pGameInstance->Key_Down(DIK_GRAVE))
+    {
+        m_bFix = !m_bFix;
+    }
+
+    if (!m_bFix)
+    {
+        Mouse_Move(fTimeDelta);
+        Key_Input(fTimeDelta);
+    }
+
 
     //if (m_pGameInstance->Mouse_Down(DIM_RB))
     if (m_pGameInstance->Key_Down(DIK_M))
     {
-        Shake_Camera(false, 0.5f);
+        //Shake_Camera(false, 0.5f);
         m_bIsShaking = true;
         m_fShakeTimer = 0.f;
         m_fShakeIntervalTimer = 0.f;
@@ -77,7 +85,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
 {
     if (!m_bCamActivated || m_pPlayerTrans == nullptr)
     {
-        if (CAM_SIDEVIEW == m_pGameInstance->Get_MainCameraIdx())
+        if (2 == m_pGameInstance->Get_MainCameraIdx())
         {
             m_pTransformCom->Set_WorldMatrix(dynamic_cast<CTransform*>(m_pGameInstance->Get_MainCamera()->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix());
             return;
@@ -109,13 +117,13 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
                 _vector vProjectedPoint = vCamPos + vCamToTarget * 10.0f;
 
                 // 투영점과 타겟 사이의 거리 계산
-                float distToRay = XMVectorGetX(XMVector3Length(vTP - vProjectedPoint));
+                _float distToRay = XMVectorGetX(XMVector3Length(vTP - vProjectedPoint));
 
                 // 카메라와 투영점 사이의 거리 계산 (깊이)
-                float depthOnRay = 10.0f;
+                _float depthOnRay = 10.0f;
 
                 // 거리에 가중치를 주어 깊이도 고려 (예: 깊이에 0.5 가중치)
-                float weightedDistance = distToRay + depthOnRay * 0.5f;
+                _float weightedDistance = distToRay + depthOnRay * 0.5f;
 
                 // 가중 거리를 기준으로 락온 해제 판단
                 if (40.0f < weightedDistance || (m_pTarget->Get_Dead()))
@@ -136,7 +144,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
 
         if (m_bIsTransitioning)
         {
-            float t = 1.0f - exp(-m_fTransitionSpeed * fTimeDelta);
+            _float t = 1.0f - exp(-m_fTransitionSpeed * fTimeDelta);
 
             XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
                 XMLoadFloat4(&m_vCameraPosition),
@@ -172,14 +180,14 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         bool bHitObstacle = RaycastFromCameraToPlayer(vTargetCameraPosition, vPlayerPosition, &hitPoint, &hitDistance);
 
         // 목표 거리 계산
-        float fTargetDistance = m_fDistance;
+        _float fTargetDistance = m_fDistance;
         if (bHitObstacle && hitDistance < m_fDistance)
         {
             fTargetDistance = max(hitDistance * 0.7f, m_fMinDistance * 0.66f);
         }
 
         // 거리 부드럽게 조정
-        float fDistanceLerpSpeed = 5.0f;
+        _float fDistanceLerpSpeed = 5.0f;
         m_fDistance = XMVectorGetX(XMVectorLerp(XMLoadFloat(&m_fDistance), XMLoadFloat(&fTargetDistance), 1.0f - exp(-fDistanceLerpSpeed * fTimeDelta)));
 
         // 새로운 카메라 위치 계산
@@ -191,7 +199,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         vTargetCameraPosition.y = max(vTargetCameraPosition.y, vPlayerPosition.y + m_fMinHeight * 0.5f);
 
         // 부드러운 카메라 이동
-        float fPositionLerpSpeed = 10.0f;
+        _float fPositionLerpSpeed = 10.0f;
         XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
             XMLoadFloat4(&m_vCameraPosition),
             XMLoadFloat4(&vTargetCameraPosition),
@@ -216,284 +224,31 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
         ParryingZoomOut(fTimeDelta);
     }
 
-    // 카메라 셰이킹 처리
+
+    Update_Shake(fTimeDelta);
+
+    // 셰이크 효과 적용
     if (m_bIsShaking)
     {
-        m_fShakeTimer += fTimeDelta;
-        m_fShakeIntervalTimer += fTimeDelta;
+        _vector vShakePosition = XMLoadFloat4(&m_vCameraPosition) + XMLoadFloat3(&m_vShakeOffset);
+        XMStoreFloat4(&m_vCameraPosition, vShakePosition);
 
-        m_fShakeAmount = max(m_fShakeAmount * (1.0f - fTimeDelta * 2.0f), m_fInitialShakeAmount * 0.1f);
-        float frequency = 1.0f + sin(m_fShakeTimer * 5.0f) * 0.5f;
-        m_fShakeInterval = min(0.4f, m_fInitialShakeInterval + m_fShakeTimer * 0.05f);
-
-        if (m_fShakeIntervalTimer >= m_fShakeInterval)
-        {
-            m_fShakeIntervalTimer = 0.f;
-            m_vShakeTargetPosition = m_vCameraPosition;
-
-            float noiseX = PerlinNoise(m_fShakeTimer * m_fShakeSpeed * frequency, 0, 10, 0.5f);
-            float noiseY = PerlinNoise(0, m_fShakeTimer * m_fShakeSpeed * frequency, 10, 0.8f);
-            float noiseZ = PerlinNoise(m_fShakeTimer * m_fShakeSpeed * frequency, m_fShakeTimer * m_fShakeSpeed * frequency, 10, 0.5f);
-
-            XMVECTOR shake = XMVectorSet(noiseX, noiseY, noiseZ, 0) * m_fShakeAmount;
-            XMStoreFloat4(&m_vShakeTargetPosition, XMLoadFloat4(&m_vShakeTargetPosition) + shake);
-
-            XMVECTOR rotationShake = XMQuaternionRotationRollPitchYaw(noiseX * 0.1f, noiseY * 0.1f, noiseZ * 0.1f);
-            XMStoreFloat4(&m_qShakeRotation, XMLoadFloat4(&m_qShakeRotation) * rotationShake);
-        }
-
-        float t = m_fShakeIntervalTimer / m_fShakeInterval;
-        t = t * t * (3.0f - 2.0f * t); // Smoothstep
-        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(XMLoadFloat4(&m_vCameraPosition), XMLoadFloat4(&m_vShakeTargetPosition), t));
-
-        XMVECTOR lookVector = XMVector3Normalize(XMLoadFloat4(&m_vLookAtPosition) - XMLoadFloat4(&m_vCameraPosition));
-        lookVector = XMVector3Rotate(lookVector, XMLoadFloat4(&m_qShakeRotation));
-        XMStoreFloat4(&m_vLookAtPosition, XMLoadFloat4(&m_vCameraPosition) + lookVector);
-
-        if (m_fShakeTimer > m_fShakeDuration)
-        {
-            m_bIsShaking = false;
-            m_fShakeTimer = 0.f;
-            m_fShakeIntervalTimer = 0.f;
-            m_fShakeInterval = m_fInitialShakeInterval;
-            m_fShakeAmount = m_fInitialShakeAmount;
-            XMStoreFloat4(&m_qShakeRotation, XMQuaternionIdentity());
-        }
+        _vector vLookAt = XMLoadFloat4(&m_vLookAtPosition);
+        _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+        XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(m_vShakeRotation.x, m_vShakeRotation.y, m_vShakeRotation.z);
+        _vector vShakeLookAt = XMVector3TransformNormal(XMVectorSubtract(vLookAt, vShakePosition), rotationMatrix);
+        vShakeLookAt = XMVectorAdd(vShakePosition, vShakeLookAt);
+        XMStoreFloat4(&m_vLookAtPosition, vShakeLookAt);
     }
 
     // 최종 카메라 위치 및 방향 설정
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
     m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
 
+    TiltAdjust(fTimeDelta);
+
     __super::Tick(fTimeDelta);
 }
-
-void CThirdPersonCamera::Get_LockOnCamPos(const _float4& vPlayerPosition, _float4* pOutCameraPosition, _float4* pOutLookAtPosition)
-{
-    // 플레이어와 타겟 사이의 방향 벡터 계산
-    _float4 vPlayerToTarget;
-    XMStoreFloat4(&vPlayerToTarget, XMLoadFloat4(&m_vLockedTargetPos) - XMLoadFloat4(&vPlayerPosition));
-
-    // 플레이어와 타겟 사이의 거리 계산
-    float fDistancePlayerToTarget = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vPlayerToTarget)));
-
-    // 카메라 거리 조정 (플레이어-타겟 거리에 따라)
-    float fAdjustedDistance = max(m_fDistance, fDistancePlayerToTarget * 0.5f);
-    fAdjustedDistance = min(fAdjustedDistance, m_fMaxDistance);
-
-    // 플레이어 뒤쪽 방향 계산
-    _float4 vPlayerBackward;
-    XMStoreFloat4(&vPlayerBackward, XMVector3Normalize(XMLoadFloat4(&vPlayerToTarget) * -1));
-
-    // 카메라 위치 계산 (플레이어 뒤쪽)
-    XMStoreFloat4(pOutCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * fAdjustedDistance);
-    pOutCameraPosition->y += m_fHeightOffset * 2.5f;
-
-    // LookAt 위치 계산 (플레이어와 타겟의 중간점)
-    if (m_bZoomIn)
-    {
-        XMStoreFloat4(pOutLookAtPosition, XMLoadFloat4(&m_vLockedTargetPos));
-    }
-    else
-    {
-        XMStoreFloat4(pOutLookAtPosition, (XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&m_vLockedTargetPos)) * 0.5f);
-    }
-}
-
-void CThirdPersonCamera::Get_ThirdCamPos(const _float4& vPlayerPosition, _float4* pOutCameraPosition, _float4* pOutLookAtPosition)
-{
-    _float4 vCameraOffset;
-    XMStoreFloat4(&vCameraOffset, XMVectorSet(
-        -m_fDistance * sinf(XMConvertToRadians(m_fYaw)) * cosf(XMConvertToRadians(m_fPitch)),
-        m_fDistance * sinf(XMConvertToRadians(m_fPitch)) + m_fHeightOffset,
-        -m_fDistance * cosf(XMConvertToRadians(m_fYaw)) * cosf(XMConvertToRadians(m_fPitch)),
-        0.f
-    ));
-
-    XMStoreFloat4(pOutCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vCameraOffset));
-    *pOutLookAtPosition = vPlayerPosition;
-    pOutLookAtPosition->y += m_fHeightOffset;
-}
-
-void CThirdPersonCamera::Update_LockOnCam(_float fTimeDelta)
-{
-    _float4 vPlayerPosition;
-    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-
-    _float4 vTargetCameraPosition, vTargetLookAtPosition;
-    Get_LockOnCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
-
-    float fLerpFactor = 1.0f - exp(-m_fLockOnTransitionSpeed * fTimeDelta);
-
-    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vCameraPosition),
-        XMLoadFloat4(&vTargetCameraPosition),
-        fLerpFactor
-    ));
-
-    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vLookAtPosition),
-        XMLoadFloat4(&vTargetLookAtPosition),
-        fLerpFactor
-    ));
-}
-
-void CThirdPersonCamera::Update_ThirdCam(_float fTimeDelta)
-{
-    _float4 vPlayerPosition;
-    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-
-    _float4 vTargetCameraPosition, vTargetLookAtPosition;
-    Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
-
-    // 보간 factor 계산
-    float fLerpFactor = 1.0f - exp(-m_fFollowSpeed * fTimeDelta);
-
-    // 카메라 위치 보간
-    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vCameraPosition),
-        XMLoadFloat4(&vTargetCameraPosition),
-        fLerpFactor
-    ));
-
-    // 시선 위치 보간
-    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vLookAtPosition),
-        XMLoadFloat4(&vTargetLookAtPosition),
-        fLerpFactor
-    ));
-}
-
-void CThirdPersonCamera::Update_TransitionCam(_float fTimeDelta)
-{
-    m_fTransitionProgress += fTimeDelta;
-    float t = min(m_fTransitionProgress / m_fTransitionDuration, 1.0f);
-    t = t * t * (3.0f - 2.0f * t); // Smoothstep interpolation
-
-    _float4 vPlayerPosition;
-    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-
-    _float4 vTargetCameraPosition, vTargetLookAtPosition;
-    Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
-
-    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vLastLockedPosition),
-        XMLoadFloat4(&vTargetCameraPosition),
-        t
-    ));
-
-    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
-        XMLoadFloat4(&m_vLookAtPosition),
-        XMLoadFloat4(&vTargetLookAtPosition),
-        t
-    ));
-}
-
-void CThirdPersonCamera::ParryingZoomIn(_float fTimeDelta)
-{
-    // 거리와 FOV 조정
-    m_fDistance -= 30.f * fTimeDelta;
-    m_fFovy -= XMConvertToRadians(1.f);
-
-    // 최소값 제한
-    m_fDistance = max(m_fDistance, 4.5f);
-    m_fFovy = max(m_fFovy, XMConvertToRadians(45.f));
-
-    _float4 vPlayerPosition;
-
-    if (!m_bIsTargetLocked)
-    {
-        // 플레이어 위치와 Look 벡터 가져오기
-        XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-        _vector vPlayerLook = m_pPlayerTrans->Get_State(CTransform::STATE_LOOK);
-
-        // 플레이어 뒤쪽 방향으로 Yaw 조정
-        _float3 vPlayerLookFloat3;
-        XMStoreFloat3(&vPlayerLookFloat3, vPlayerLook);
-        m_fYaw = XMConvertToDegrees(atan2f(vPlayerLookFloat3.x, vPlayerLookFloat3.z)); // 180도 추가하여 뒤쪽을 바라보도록 함
-
-        // Get_ThirdCamPos 함수를 사용하여 목표 카메라 위치 계산
-        _float4 vTargetCameraPosition, vTargetLookAtPosition;
-        Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
-
-        // 현재 카메라 위치에서 목표 위치로 보간
-        float fLerpFactor = 5.f * fTimeDelta; // 보간 속도 조절
-        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(XMLoadFloat4(&m_vCameraPosition), XMLoadFloat4(&vTargetCameraPosition), fLerpFactor));
-
-        // LookAt 위치 업데이트
-        XMStoreFloat4(&m_vLookAtPosition, XMLoadFloat4(&vTargetLookAtPosition));
-    }
-    else
-    {
-        XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
-
-        _float4 vTargetCameraPosition, vTargetLookAtPosition;
-        Get_LockOnCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
-            // 플레이어 위치와 Look 벡터 가져오기
-            _vector vPlayerLook = m_pPlayerTrans->Get_State(CTransform::STATE_LOOK);
-
-            // 플레이어 뒤쪽 방향으로 카메라 위치 조정
-            _float3 vPlayerLookFloat3;
-            XMStoreFloat3(&vPlayerLookFloat3, vPlayerLook);
-            _float4 vPlayerBackward;
-            XMStoreFloat4(&vPlayerBackward, XMVector3Normalize(XMLoadFloat3(&vPlayerLookFloat3) * -1));
-            XMStoreFloat4(&vTargetCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * m_fDistance);
-            vTargetCameraPosition.y += m_fHeightOffset;
-
-
-            float fLerpFactor = 1.0f - exp(-m_fLockOnTransitionSpeed * fTimeDelta * 5.f);
-
-            XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
-                XMLoadFloat4(&m_vCameraPosition),
-                XMLoadFloat4(&vTargetCameraPosition),
-                fLerpFactor
-            ));
-
-            XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
-                XMLoadFloat4(&m_vLookAtPosition),
-                XMLoadFloat4(&vTargetLookAtPosition),
-                fLerpFactor
-            ));
-        
-    }
-
-
-    // 줌인 완료 체크
-    if (m_fDistance <= 4.5f && m_fFovy <= XMConvertToRadians(45.f))
-    {
-        m_bZoomIn = false;
-    }
-}
-
-void CThirdPersonCamera::ParryingZoomOut(_float fTimeDelta)
-{
-    bool bDistanceReached = false;
-    bool bFovyReached = false;
-
-    m_fDistance += 6.f * fTimeDelta;
-    m_fFovy += XMConvertToRadians(1.f);
-
-    if (m_fDistance > 5.3f)
-    {
-        m_fDistance = 5.3f;
-        bDistanceReached = true;
-    }
-
-    if (m_fFovy > XMConvertToRadians(60.f))
-    {
-        m_fFovy = XMConvertToRadians(60.f);
-        bFovyReached = true;
-    }
-
-    // 두 조건이 모두 만족되면 m_bZoomOut을 false로 설정
-    if (bDistanceReached && bFovyReached)
-    {
-        m_bZoomOut = false;
-        m_fShakeDuration = 0.4f;
-    }
-}
-
-
 
 void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
 {
@@ -501,6 +256,8 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
     {
         return;
     }
+
+
 
     if (m_pGameInstance->Mouse_Down(DIM_MB))
     {
@@ -514,8 +271,8 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
 
             list<CGameObject*> monsters = (m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster")));
 
-            float closestWeightedDistance = FLT_MAX;
-            float closestActualDistance = FLT_MAX;
+            _float closestWeightedDistance = FLT_MAX;
+            _float closestActualDistance = FLT_MAX;
             CGameObject* closestMonster = nullptr;
 
             for (auto& monster : monsters)
@@ -530,11 +287,11 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
                 {
                     _vector projectedPoint = ProjectPointLine(vMonsterPos, vCamPos, vRayEnd);
 
-                    float distToRay = XMVectorGetX(XMVector3Length(vMonsterPos - projectedPoint));
-                    float depthOnRay = XMVectorGetX(XMVector3Length(projectedPoint - vCamPos));
-                    float weightedDistance = distToRay + depthOnRay * 0.5f;
+                    _float distToRay = XMVectorGetX(XMVector3Length(vMonsterPos - projectedPoint));
+                    _float depthOnRay = XMVectorGetX(XMVector3Length(projectedPoint - vCamPos));
+                    _float weightedDistance = distToRay + depthOnRay * 0.5f;
 
-                    float actualDistance = XMVectorGetX(XMVector3Length(vMonsterPos - vCamPos));
+                    _float actualDistance = XMVectorGetX(XMVector3Length(vMonsterPos - vCamPos));
 
                     if (weightedDistance < closestWeightedDistance)
                     {
@@ -589,7 +346,7 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
             TargetLock_Off();
         }
     }
-   
+
 
 
 }
@@ -597,6 +354,231 @@ void CThirdPersonCamera::Late_Tick(_float fTimeDelta)
 HRESULT CThirdPersonCamera::Render()
 {
     return S_OK;
+}
+
+void CThirdPersonCamera::Get_LockOnCamPos(const _float4& vPlayerPosition, _float4* pOutCameraPosition, _float4* pOutLookAtPosition)
+{
+    // 플레이어와 타겟 사이의 방향 벡터 계산
+    _float4 vPlayerToTarget;
+    XMStoreFloat4(&vPlayerToTarget, XMLoadFloat4(&m_vLockedTargetPos) - XMLoadFloat4(&vPlayerPosition));
+
+    // 플레이어와 타겟 사이의 거리 계산
+    _float fDistancePlayerToTarget = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vPlayerToTarget)));
+
+    // 카메라 거리 조정 (플레이어-타겟 거리에 따라)
+    _float fAdjustedDistance = max(m_fDistance, fDistancePlayerToTarget * 0.5f);
+    fAdjustedDistance = min(fAdjustedDistance, m_fMaxDistance);
+
+    // 플레이어 뒤쪽 방향 계산
+    _float4 vPlayerBackward;
+    XMStoreFloat4(&vPlayerBackward, XMVector3Normalize(XMLoadFloat4(&vPlayerToTarget) * -1));
+
+    // 카메라 위치 계산 (플레이어 뒤쪽)
+    XMStoreFloat4(pOutCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * fAdjustedDistance);
+    pOutCameraPosition->y += m_fHeightOffset * 2.5f;
+
+    // LookAt 위치 계산 (플레이어와 타겟의 중간점)
+    if (m_bZoomIn)
+    {
+        XMStoreFloat4(pOutLookAtPosition, XMLoadFloat4(&m_vLockedTargetPos));
+    }
+    else
+    {
+        XMStoreFloat4(pOutLookAtPosition, (XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&m_vLockedTargetPos)) * 0.5f);
+    }
+}
+
+void CThirdPersonCamera::Get_ThirdCamPos(const _float4& vPlayerPosition, _float4* pOutCameraPosition, _float4* pOutLookAtPosition)
+{
+    _float4 vCameraOffset;
+    XMStoreFloat4(&vCameraOffset, XMVectorSet(
+        -m_fDistance * sinf(XMConvertToRadians(m_fYaw)) * cosf(XMConvertToRadians(m_fPitch)),
+        m_fDistance * sinf(XMConvertToRadians(m_fPitch)) + m_fHeightOffset,
+        -m_fDistance * cosf(XMConvertToRadians(m_fYaw)) * cosf(XMConvertToRadians(m_fPitch)),
+        0.f
+    ));
+
+    XMStoreFloat4(pOutCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vCameraOffset));
+    *pOutLookAtPosition = vPlayerPosition;
+    pOutLookAtPosition->y += m_fHeightOffset;
+}
+
+void CThirdPersonCamera::Update_LockOnCam(_float fTimeDelta)
+{
+    _float4 vPlayerPosition;
+    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+
+    _float4 vTargetCameraPosition, vTargetLookAtPosition;
+    Get_LockOnCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
+
+    _float fLerpFactor = 1.0f - exp(-m_fLockOnTransitionSpeed * fTimeDelta);
+
+    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vCameraPosition),
+        XMLoadFloat4(&vTargetCameraPosition),
+        fLerpFactor
+    ));
+
+    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vLookAtPosition),
+        XMLoadFloat4(&vTargetLookAtPosition),
+        fLerpFactor
+    ));
+}
+
+void CThirdPersonCamera::Update_ThirdCam(_float fTimeDelta)
+{
+    _float4 vPlayerPosition;
+    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+
+    _float4 vTargetCameraPosition, vTargetLookAtPosition;
+    Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
+
+    // 보간 factor 계산
+    _float fLerpFactor = 1.0f - exp(-m_fFollowSpeed * fTimeDelta);
+
+    // 카메라 위치 보간
+    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vCameraPosition),
+        XMLoadFloat4(&vTargetCameraPosition),
+        fLerpFactor
+    ));
+
+    // 시선 위치 보간
+    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vLookAtPosition),
+        XMLoadFloat4(&vTargetLookAtPosition),
+        fLerpFactor
+    ));
+}
+
+void CThirdPersonCamera::Update_TransitionCam(_float fTimeDelta)
+{
+    m_fTransitionProgress += fTimeDelta;
+    _float t = min(m_fTransitionProgress / m_fTransitionDuration, 1.0f);
+    t = t * t * (3.0f - 2.0f * t); // Smoothstep interpolation
+
+    _float4 vPlayerPosition;
+    XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+
+    _float4 vTargetCameraPosition, vTargetLookAtPosition;
+    Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
+
+    XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vLastLockedPosition),
+        XMLoadFloat4(&vTargetCameraPosition),
+        t
+    ));
+
+    XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
+        XMLoadFloat4(&m_vLookAtPosition),
+        XMLoadFloat4(&vTargetLookAtPosition),
+        t
+    ));
+}
+
+void CThirdPersonCamera::ParryingZoomIn(_float fTimeDelta)
+{
+    // 거리와 FOV 조정
+    m_fDistance -= 30.f * fTimeDelta;
+    m_fFovy -= XMConvertToRadians(1.f);
+
+    // 최소값 제한
+    m_fDistance = max(m_fDistance, 4.5f);
+    m_fFovy = max(m_fFovy, XMConvertToRadians(45.f));
+
+    _float4 vPlayerPosition;
+
+    if (!m_bIsTargetLocked)
+    {
+        // 플레이어 위치와 Look 벡터 가져오기
+        XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+        _vector vPlayerLook = m_pPlayerTrans->Get_State(CTransform::STATE_LOOK);
+
+        // 플레이어 뒤쪽 방향으로 Yaw 조정
+        _float3 vPlayerLookFloat3;
+        XMStoreFloat3(&vPlayerLookFloat3, vPlayerLook);
+        m_fYaw = XMConvertToDegrees(atan2f(vPlayerLookFloat3.x, vPlayerLookFloat3.z)); // 180도 추가하여 뒤쪽을 바라보도록 함
+
+        // Get_ThirdCamPos 함수를 사용하여 목표 카메라 위치 계산
+        _float4 vTargetCameraPosition, vTargetLookAtPosition;
+        Get_ThirdCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
+
+        // 현재 카메라 위치에서 목표 위치로 보간
+        _float fLerpFactor = 5.f * fTimeDelta; // 보간 속도 조절
+        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(XMLoadFloat4(&m_vCameraPosition), XMLoadFloat4(&vTargetCameraPosition), fLerpFactor));
+
+        // LookAt 위치 업데이트
+        XMStoreFloat4(&m_vLookAtPosition, XMLoadFloat4(&vTargetLookAtPosition));
+    }
+    else
+    {
+        XMStoreFloat4(&vPlayerPosition, m_pPlayerTrans->Get_State(CTransform::STATE_POSITION));
+
+        _float4 vTargetCameraPosition, vTargetLookAtPosition;
+        Get_LockOnCamPos(vPlayerPosition, &vTargetCameraPosition, &vTargetLookAtPosition);
+        // 플레이어 위치와 Look 벡터 가져오기
+        _vector vPlayerLook = m_pPlayerTrans->Get_State(CTransform::STATE_LOOK);
+
+        // 플레이어 뒤쪽 방향으로 카메라 위치 조정
+        _float3 vPlayerLookFloat3;
+        XMStoreFloat3(&vPlayerLookFloat3, vPlayerLook);
+        _float4 vPlayerBackward;
+        XMStoreFloat4(&vPlayerBackward, XMVector3Normalize(XMLoadFloat3(&vPlayerLookFloat3) * -1));
+        XMStoreFloat4(&vTargetCameraPosition, XMLoadFloat4(&vPlayerPosition) + XMLoadFloat4(&vPlayerBackward) * m_fDistance);
+        vTargetCameraPosition.y += m_fHeightOffset;
+
+
+        _float fLerpFactor = 1.0f - exp(-m_fLockOnTransitionSpeed * fTimeDelta * 5.f);
+
+        XMStoreFloat4(&m_vCameraPosition, XMVectorLerp(
+            XMLoadFloat4(&m_vCameraPosition),
+            XMLoadFloat4(&vTargetCameraPosition),
+            fLerpFactor
+        ));
+
+        XMStoreFloat4(&m_vLookAtPosition, XMVectorLerp(
+            XMLoadFloat4(&m_vLookAtPosition),
+            XMLoadFloat4(&vTargetLookAtPosition),
+            fLerpFactor
+        ));
+
+    }
+
+
+    // 줌인 완료 체크
+    if (m_fDistance <= 4.5f && m_fFovy <= XMConvertToRadians(45.f))
+    {
+        m_bZoomIn = false;
+    }
+}
+
+void CThirdPersonCamera::ParryingZoomOut(_float fTimeDelta)
+{
+    bool bDistanceReached = false;
+    bool bFovyReached = false;
+
+    m_fDistance += 6.f * fTimeDelta;
+    m_fFovy += XMConvertToRadians(1.f);
+
+    if (m_fDistance > 5.3f)
+    {
+        m_fDistance = 5.3f;
+        bDistanceReached = true;
+    }
+
+    if (m_fFovy > XMConvertToRadians(60.f))
+    {
+        m_fFovy = XMConvertToRadians(60.f);
+        bFovyReached = true;
+    }
+
+    // 두 조건이 모두 만족되면 m_bZoomOut을 false로 설정
+    if (bDistanceReached && bFovyReached)
+    {
+        m_bZoomOut = false;
+        m_fShakeDuration = 0.4f;
+    }
 }
 
 _bool CThirdPersonCamera::RaycastFromCameraToPlayer(const _float4& cameraPosition, const _float4& playerPosition, _float4* hitPoint, _float* hitDistance)
@@ -608,7 +590,7 @@ _bool CThirdPersonCamera::RaycastFromCameraToPlayer(const _float4& cameraPositio
     physx::PxVec3 direction = physx::PxVec3(playerPosition.x - cameraPosition.x,
         playerPosition.y - cameraPosition.y,
         playerPosition.z - cameraPosition.z);
-    float maxDistance = direction.magnitude();
+    _float maxDistance = direction.magnitude();
     direction.normalize();
 
     physx::PxRaycastBuffer hit;
@@ -631,33 +613,95 @@ _bool CThirdPersonCamera::RaycastFromCameraToPlayer(const _float4& cameraPositio
     return false;
 }
 
-void CThirdPersonCamera::Revolution360(_float fTimeDelta)
-{
-    if (m_fRevolutionAccTime < m_fRevolutionTime)
-    {
-        m_fRevolutionAccTime += fTimeDelta;
-        float fRevolutionAngle = m_fRevolutionAccTime / m_fRevolutionTime * XM_2PI;
-
-        vEye.x = vAt.x + cosf(fRevolutionAngle) * fDistance;
-        vEye.y = vAt.y + m_fHeight;
-        vEye.z = vAt.z + sinf(fRevolutionAngle) * fDistance;
-        vEye.w = 1.f;
-    }
-}
 
 void CThirdPersonCamera::TiltAdjust(_float fTimeDelta)
 {
-    _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-    _vector vRight = XMVector3Cross(XMLoadFloat4(&vAt) - XMLoadFloat4(&vEye), vUp);
-    vUp = XMVector3Cross(vRight, XMLoadFloat4(&vAt) - XMLoadFloat4(&vEye));
+    if (!m_bTilt)
+        return;
 
-    _matrix matRoll = XMMatrixRotationAxis(XMLoadFloat4(&vAt) - XMLoadFloat4(&vEye), XMConvertToRadians(m_fRollAngle));
+    m_fTiltTimer += fTimeDelta;
+
+    if (m_bTiltingToTarget)
+    {
+        if (m_fTiltTimer <= m_fTiltDuration)
+        {
+            _float t = m_fTiltTimer / m_fTiltDuration;
+            m_fRollAngle = LerpFloat(m_fStartRollAngle, m_fTargetRollAngle, SmoothStepFloat(t));
+        }
+        else
+        {
+            m_bTiltingToTarget = false;
+            m_fTiltTimer = 0.f;
+            m_fStartRollAngle = m_fTargetRollAngle;
+        }
+    }
+    else
+    {
+        if (m_fTiltTimer <= m_fTiltRecoveryDuration)
+        {
+            // 원래 각도로 복귀
+            _float t = m_fTiltTimer / m_fTiltRecoveryDuration;
+            m_fRollAngle = LerpFloat(m_fStartRollAngle, 0.f, SmoothStepFloat(t));
+        }
+        else
+        {
+            // Tilt 종료
+            m_bTilt = false;
+            m_fRollAngle = 0.f;
+            //return;
+        }
+    }
+
+    // Look 벡터 계산
+    _vector vLook = XMLoadFloat4(&m_vLookAtPosition) - XMLoadFloat4(&m_vCameraPosition);
+    vLook = XMVector3Normalize(vLook);
+
+    // Right 벡터 계산
+    _vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+    vRight = XMVector3Normalize(vRight);
+
+    // Up 벡터 계산
+    _vector vUp = XMVector3Cross(vLook, vRight);
+
+    // Roll 회전 적용
+    XMMATRIX matRoll = XMMatrixRotationAxis(vLook, XMConvertToRadians(m_fRollAngle));
+    vRight = XMVector3TransformNormal(vRight, matRoll);
     vUp = XMVector3TransformNormal(vUp, matRoll);
 
+    // 변환 행렬 생성 및 적용
+    XMMATRIX matView = XMMatrixLookToLH(XMLoadFloat4(&m_vCameraPosition), vLook, vUp);
+    m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, matView);
+
+    // Transform 컴포넌트 업데이트
+    m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
     m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+    m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
 }
 
+void CThirdPersonCamera::StartTilt(_float targetAngle, _float duration, _float recoveryDuration)
+{
+    m_bTilt = true;
+    m_fTiltTimer = 0.f;
+    m_fStartRollAngle = m_fRollAngle;  // 현재 각도를 시작 각도로 설정
+    m_fTargetRollAngle = targetAngle;
+    m_fTiltDuration = duration;
+    m_fTiltRecoveryDuration = recoveryDuration;
+    m_bTiltingToTarget = true;  // 목표 각도로 Tilt 중임을 표시
+}
+
+_float CThirdPersonCamera::Approach(_float fCurrent, _float fTarget, _float fDelta)
+{
+    _float fDifference = fTarget - fCurrent;
+
+    if (fDifference > fDelta)
+        return fCurrent + fDelta;
+    if (fDifference < -fDelta)
+        return fCurrent - fDelta;
+
+    return fTarget;
+}
 // TargetLock_On 함수 수정
+
 void CThirdPersonCamera::TargetLock_On(_vector vTargetPos)
 {
     XMStoreFloat4(&m_vLockedTargetPos, vTargetPos);
@@ -680,7 +724,7 @@ void CThirdPersonCamera::TargetLock_Off()
     m_bIsFirstUpdate = true;
 }
 
-float CThirdPersonCamera::DistancePointLine(_vector point, _vector lineStart, _vector lineEnd)
+_float CThirdPersonCamera::DistancePointLine(_vector point, _vector lineStart, _vector lineEnd)
 {
     _vector projection = ProjectPointLine(point, lineStart, lineEnd);
     return XMVectorGetX(XMVector3Length(projection - point));
@@ -689,7 +733,7 @@ float CThirdPersonCamera::DistancePointLine(_vector point, _vector lineStart, _v
 _vector CThirdPersonCamera::ProjectPointLine(_vector point, _vector lineStart, _vector lineEnd)
 {
     _vector lineDirection = lineEnd - lineStart;
-    float lineLengthSq = XMVectorGetX(XMVector3LengthSq(lineDirection));
+    _float lineLengthSq = XMVectorGetX(XMVector3LengthSq(lineDirection));
 
     if (lineLengthSq < 1e-12f)  // 라인의 길이가 거의 0인 경우
     {
@@ -697,7 +741,7 @@ _vector CThirdPersonCamera::ProjectPointLine(_vector point, _vector lineStart, _
     }
 
     _vector toPoint = point - lineStart;
-    float t = XMVectorGetX(XMVector3Dot(toPoint, lineDirection)) / lineLengthSq;
+    _float t = XMVectorGetX(XMVector3Dot(toPoint, lineDirection)) / lineLengthSq;
 
     // t를 0과 1 사이로 제한 (선분에 대한 투영을 위해)
     t = max(0.f, min(1.f, t));
@@ -715,10 +759,10 @@ void CThirdPersonCamera::TargetLockView(_float fTimeDelta)
     XMStoreFloat4(&vPlayerToTarget, XMLoadFloat4(&m_vLockedTargetPos) - XMLoadFloat4(&vPlayerPosition));
 
     // 플레이어와 타겟 사이의 거리 계산
-    float fDistancePlayerToTarget = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vPlayerToTarget)));
+    _float fDistancePlayerToTarget = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vPlayerToTarget)));
 
     // 카메라 거리 조정 (플레이어-타겟 거리에 따라)
-    float fAdjustedDistance = max(m_fDistance, fDistancePlayerToTarget * 0.7f);
+    _float fAdjustedDistance = max(m_fDistance, fDistancePlayerToTarget * 0.7f);
     fAdjustedDistance = min(fAdjustedDistance, m_fMaxDistance);
 
     // 플레이어 뒤쪽 방향 계산
@@ -743,41 +787,12 @@ void CThirdPersonCamera::TargetLockView(_float fTimeDelta)
     XMStoreFloat4(&m_vLookAtPosition, XMLoadFloat4(&m_vLockedTargetPos));
 }
 
-void CThirdPersonCamera::Shaking()
+_float CThirdPersonCamera::PerlinNoise(_float x, _float y, int octaves, _float persistence)
 {
-    _vector vLook;
-    _vector vRight;
-    _vector vUp;
-
-    vLook = XMVector3Normalize(XMLoadFloat4(&vAt) - XMLoadFloat4(&vEye));
-    vRight = XMVector3Cross(vLook, m_pTransformCom->Get_State(CTransform::STATE_UP));
-    vUp = XMVector3Cross(vLook, vRight);
-
-    // -1.5f ~ 1.5f 사이의값 구함
-    float offsetY = ((rand() % 100 / 100.0f) * m_fIntensity) - (m_fIntensity * 0.5f);
-    _vector eye = XMLoadFloat4(&vEye);
-    _vector at = XMLoadFloat4(&vAt);
-    eye += vUp * offsetY;
-    at += vUp * offsetY;
-
-    if (!m_bLockWidth)
-    {
-        float offsetX = ((rand() % 100 / 100.0f) * m_fIntensity) - (m_fIntensity * 0.5f);
-        eye += vRight * offsetX;
-        at += vRight * offsetX;
-    }
-
-    m_pTransformCom->Set_State(CTransform::STATE_POSITION, eye);
-    m_pTransformCom->LookAt(at);
-
-}
-
-float CThirdPersonCamera::PerlinNoise(float x, float y, int octaves, float persistence)
-{
-    float total = 0;
-    float frequency = 1;
-    float amplitude = 1;
-    float maxValue = 0;
+    _float total = 0;
+    _float frequency = 1;
+    _float amplitude = 1;
+    _float maxValue = 0;
 
     for (int i = 0; i < octaves; i++)
     {
@@ -788,47 +803,47 @@ float CThirdPersonCamera::PerlinNoise(float x, float y, int octaves, float persi
     }
 
     // 정규화된 값을 -1에서 1 사이로 매핑
-    float normalizedValue = total / maxValue;
+    _float normalizedValue = total / maxValue;
     return normalizedValue;
 }
 
-float CThirdPersonCamera::InterpolatedNoise(float x, float y)
+_float CThirdPersonCamera::InterpolatedNoise(_float x, _float y)
 {
     int intX = static_cast<int>(floor(x));
-    float fracX = x - intX;
+    _float fracX = x - intX;
     int intY = static_cast<int>(floor(y));
-    float fracY = y - intY;
+    _float fracY = y - intY;
 
-    float v1 = SmoothNoise(intX, intY);
-    float v2 = SmoothNoise(intX + 1, intY);
-    float v3 = SmoothNoise(intX, intY + 1);
-    float v4 = SmoothNoise(intX + 1, intY + 1);
+    _float v1 = SmoothNoise(intX, intY);
+    _float v2 = SmoothNoise(intX + 1, intY);
+    _float v3 = SmoothNoise(intX, intY + 1);
+    _float v4 = SmoothNoise(intX + 1, intY + 1);
 
-    float i1 = CosineInterpolate(v1, v2, fracX);
-    float i2 = CosineInterpolate(v3, v4, fracX);
+    _float i1 = CosineInterpolate(v1, v2, fracX);
+    _float i2 = CosineInterpolate(v3, v4, fracX);
 
     return CosineInterpolate(i1, i2, fracY);
 }
 
-float CThirdPersonCamera::SmoothNoise(int x, int y)
+_float CThirdPersonCamera::SmoothNoise(int x, int y)
 {
-    float corners = (Noise(x - 1, y - 1) + Noise(x + 1, y - 1) + Noise(x - 1, y + 1) + Noise(x + 1, y + 1)) / 16.0f;
-    float sides = (Noise(x - 1, y) + Noise(x + 1, y) + Noise(x, y - 1) + Noise(x, y + 1)) / 8.0f;
-    float center = Noise(x, y) / 4.0f;
+    _float corners = (Noise(x - 1, y - 1) + Noise(x + 1, y - 1) + Noise(x - 1, y + 1) + Noise(x + 1, y + 1)) / 16.0f;
+    _float sides = (Noise(x - 1, y) + Noise(x + 1, y) + Noise(x, y - 1) + Noise(x, y + 1)) / 8.0f;
+    _float center = Noise(x, y) / 4.0f;
     return corners + sides + center;
 }
 
-float CThirdPersonCamera::Noise(int x, int y)
+_float CThirdPersonCamera::Noise(int x, int y)
 {
     int n = x + y * 57;
     n = (n << 13) ^ n;
     return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
 }
 
-float CThirdPersonCamera::CosineInterpolate(float a, float b, float t)
+_float CThirdPersonCamera::CosineInterpolate(_float a, _float b, _float t)
 {
-    float ft = t * 3.1415927f;
-    float f = (1 - cos(ft)) * 0.5f;
+    _float ft = t * 3.1415927f;
+    _float f = (1 - cos(ft)) * 0.5f;
     return a * (1 - f) + b * f;
 }
 
@@ -836,17 +851,17 @@ void CThirdPersonCamera::Key_Input(_float fTimeDelta)
 {
 
 
- /*    카메라 회전
-    if (m_pGameInstance->Key_Pressing(DIK_LEFT))
-        RotateCamera(-90.0f * fTimeDelta);
-    else if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
-        RotateCamera(90.0f * fTimeDelta);
+    /*    카메라 회전
+       if (m_pGameInstance->Key_Pressing(DIK_LEFT))
+           RotateCamera(-90.0f * fTimeDelta);
+       else if (m_pGameInstance->Key_Pressing(DIK_RIGHT))
+           RotateCamera(90.0f * fTimeDelta);
 
-     거리 조절 (선택적)
-    if (m_pGameInstance->Key_Pressing(DIK_UP))
-        m_fDistance = max(2.0f, m_fDistance - 5.0f * fTimeDelta);
-    else if (m_pGameInstance->Key_Pressing(DIK_DOWN))
-        m_fDistance = min(10.0f, m_fDistance + 5.0f * fTimeDelta);*/
+        거리 조절 (선택적)
+       if (m_pGameInstance->Key_Pressing(DIK_UP))
+           m_fDistance = max(2.0f, m_fDistance - 5.0f * fTimeDelta);
+       else if (m_pGameInstance->Key_Pressing(DIK_DOWN))
+           m_fDistance = min(10.0f, m_fDistance + 5.0f * fTimeDelta);*/
 }
 
 // ThirdPersonCamera.cpp 수정
@@ -872,29 +887,62 @@ void CThirdPersonCamera::Mouse_Move(_float fTimeDelta)
         SetCursorPos(ptCenter.x, ptCenter.y);
     }
 }
-
-void CThirdPersonCamera::Shake_Camera(_bool bSlowMo, _float fDuration)
+void CThirdPersonCamera::Update_Shake(_float fTimeDelta)
 {
-    if (bSlowMo)
+    if (!m_bIsShaking)
+        return;
+
+    m_fShakeTimer += fTimeDelta;
+
+    if (m_fShakeTimer > m_fShakeDuration)
     {
-        fDuration *= 1.5f;
+        m_bIsShaking = false;
+        m_vShakeOffset = { 0.f, 0.f, 0.f };
+        m_vShakeRotation = { 0.f, 0.f, 0.f };
+        return;
     }
 
-    m_fShakeDuration =  fDuration;
+    _float progress = m_fShakeTimer / m_fShakeDuration;
+    _float decreaseAmount = 1.0f - powf(progress, m_fDecayRate);
 
-    //m_fFovy = XMConvertToRadians(60.f);
+    // 주파수를 사용하여 시간에 따른 변화 계산
+    _float time = m_fShakeTimer * m_fShakeFrequency;
 
-    m_bIsShaking = true;
-    m_fShakeTimer = 0.f;
+    // Position shake
+    _float x = sin(time * 1.0f) * m_fPositionShakeAmount * decreaseAmount;
+    _float y = sin(time * 1.1f) * m_fPositionShakeAmount * decreaseAmount;
+    _float z = sin(time * 1.2f) * m_fPositionShakeAmount * decreaseAmount;
 
-    // 펄린 노이즈를 이용한 초기 셰이크 타겟 위치 계산
-    float noiseX = PerlinNoise(0, 0, 10, 0.5f);
-    float noiseY = PerlinNoise(0, 0, 10, 0.5f);
-    XMVECTOR shake = XMVectorSet(noiseX, noiseY, noiseY, 0) * m_fShakeAmount;
-    XMStoreFloat4(&m_vShakeTargetPosition, XMLoadFloat4(&m_vCameraPosition) + shake);
+    // 랜덤성 추가
+    x += RandomFloat(-0.5f, 0.5f) * m_fPositionShakeAmount * decreaseAmount;
+    y += RandomFloat(-0.5f, 0.5f) * m_fPositionShakeAmount * decreaseAmount;
+    z += RandomFloat(-0.5f, 0.5f) * m_fPositionShakeAmount * decreaseAmount;
+
+    m_vShakeOffset = { x, y, z };
+
+    // Rotation shake
+    _float pitch = sin(time * 1.3f) * m_fRotationShakeAmount * decreaseAmount;
+    _float yaw = sin(time * 1.4f) * m_fRotationShakeAmount * decreaseAmount;
+    _float roll = sin(time * 1.5f) * m_fRotationShakeAmount * decreaseAmount;
+
+    // 랜덤성 추가
+    pitch += RandomFloat(-0.5f, 0.5f) * m_fRotationShakeAmount * decreaseAmount;
+    yaw += RandomFloat(-0.5f, 0.5f) * m_fRotationShakeAmount * decreaseAmount;
+    roll += RandomFloat(-0.5f, 0.5f) * m_fRotationShakeAmount * decreaseAmount;
+
+    m_vShakeRotation = { pitch, yaw, roll };
 }
 
-void CThirdPersonCamera::RotateCamera(float fDeltaX, float fDeltaY)
+void CThirdPersonCamera::Set_TPS_DESC(const THIRDPERSONCAMERA_DESC& tpsDesc)
+{
+    m_fInitialShakeAmount = tpsDesc.fInitialShakeAmount;
+    m_fShakeSpeed = tpsDesc.fShakeSpeed;
+    m_fShakeDuration = tpsDesc.fShakeDuration;
+    m_fInitialShakeInterval = tpsDesc.fInitialShakeInterval;
+    // 다른 필요한 변수들도 여기에서 설정
+}
+
+void CThirdPersonCamera::RotateCamera(_float fDeltaX, _float fDeltaY)
 {
     m_fYaw += fDeltaX;
     m_fPitch += fDeltaY;
@@ -909,7 +957,7 @@ void CThirdPersonCamera::RotateCamera(float fDeltaX, float fDeltaY)
     m_fPitch = max(m_fMinPitch, min(m_fMaxPitch, m_fPitch));
 
     // 수직 각도에 따른 거리 조정 (보간 함수 사용)
-    float fPitchRatio = (m_fPitch - m_fMinPitch) / (m_fMaxPitch - m_fMinPitch);
+    _float fPitchRatio = (m_fPitch - m_fMinPitch) / (m_fMaxPitch - m_fMinPitch);
     m_fDistance = m_fMinDistance + (m_fMaxDistance - m_fMinDistance) * (1.0f - fPitchRatio * fPitchRatio);
 }
 

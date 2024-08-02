@@ -11,6 +11,9 @@ BEGIN(Client)
 
 class CTreasureChest final : public CActive_Element
 {
+public:
+	enum TREASURE_COLOR { TREASURE_NORMAL, TREASURE_EPIC, TREASURE_CLOAKING, TREASURE_END }; // 노멀상자, 에픽상자, 클로킹상자
+
 private:
 	CTreasureChest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTreasureChest(const CTreasureChest& rhs);
@@ -30,8 +33,12 @@ private:
 	CCollider* m_pColliderCom = { nullptr };
 	CPhysXComponent_static* m_pPhysXCom = { nullptr };
 private:
+	TREASURE_COLOR m_eTreasureState = TREASURE_END; // 상자 타입
+	_float4 m_TreasureColor = { 0.f, 0.f, 0.f, 1.f };
+	_uint m_iShaderPath = 0;
+	_uint m_iBloomShaderPath = 2;
+
 	_vector m_vTargetPos;
-	_float m_fReboundTimer = 0.f;
 
 	_bool m_bChestOpened = false;
 

@@ -37,150 +37,30 @@ HRESULT CQuadTree::Initialize(_uint iLT, _uint iRT, _uint iRB, _uint iLB)
 
 void CQuadTree::Culling(const _float4* pVertexPositions, _uint* pIndices, _uint* pNumIndices)
 {
-	if (nullptr == m_pChildren[CORNER_LT] || 
-		true == isDraw(pVertexPositions))
-	{	
-		_bool		isDraw[NEIGHBOR_END] = { true, true, true, true };
-
-		for (size_t i = 0; i < NEIGHBOR_END; i++)
-		{
-			if (nullptr != m_pNeighbors[i])
-				isDraw[i] = m_pNeighbors[i]->isDraw(pVertexPositions);
-		}
-
-		_bool		isIn[4] = {
-			m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCorners[CORNER_LT]])),
-			m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCorners[CORNER_RT]])),
-			m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCorners[CORNER_RB]])),
-			m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCorners[CORNER_LB]]))
-		};
-
-		if (true == isDraw[NEIGHBOR_LEFT] &&
-			true == isDraw[NEIGHBOR_TOP] &&
-			true == isDraw[NEIGHBOR_RIGHT] &&
-			true == isDraw[NEIGHBOR_BOTTOM])
-		{
-			if (true == isIn[0] ||
-				true == isIn[1] ||
-				true == isIn[2])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-			}
-
-
-			if (true == isIn[0] ||
-				true == isIn[2] ||
-				true == isIn[3])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
-			}
-
-			return;
-		}
-
-		_uint		iLC, iTC, iRC, iBC;
-
-		iLC = (m_iCorners[CORNER_LT] + m_iCorners[CORNER_LB]) >> 1;
-		iTC = (m_iCorners[CORNER_LT] + m_iCorners[CORNER_RT]) >> 1;
-		iRC = (m_iCorners[CORNER_RT] + m_iCorners[CORNER_RB]) >> 1;
-		iBC = (m_iCorners[CORNER_LB] + m_iCorners[CORNER_RB]) >> 1;
-
-		if (true == isIn[0] ||
-			true == isIn[2] ||
-			true == isIn[3])
-		{
-			if (false == isDraw[NEIGHBOR_LEFT])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = iLC;
-
-				pIndices[(*pNumIndices)++] = iLC;
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
-			}
-			else
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
-			}
-
-			if (false == isDraw[NEIGHBOR_BOTTOM])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = iBC;
-
-				pIndices[(*pNumIndices)++] = iBC;
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-			}
-			else
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-			}
-		}
-
-		if (true == isIn[0] ||
-			true == isIn[1] ||
-			true == isIn[2])
-		{
-			if (false == isDraw[NEIGHBOR_TOP])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = iTC;
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = iTC;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
-			}
-			else
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-			}
-
-			if (false == isDraw[NEIGHBOR_RIGHT])
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
-				pIndices[(*pNumIndices)++] = iRC;
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-				pIndices[(*pNumIndices)++] = iRC;
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-			}
-			else
-			{
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
-				pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
-				pIndices[(*pNumIndices)++] = m_iCenterIndex;
-			}
-		}
-
-		return;
-	}
-
-	_float			fRadius = XMVectorGetX(XMVector3Length(XMLoadFloat4(&pVertexPositions[m_iCorners[CORNER_LT]]) - XMLoadFloat4(&pVertexPositions[m_iCenterIndex])));
-
-	if (true == m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCenterIndex]), fRadius))
+	if (nullptr == m_pChildren[CORNER_LT] || isDraw(pVertexPositions))
 	{
+		// 현재 노드를 그리는 로직
+		if (m_pGameInstance->isIn_LocalFrustum(XMLoadFloat4(&pVertexPositions[m_iCenterIndex]), 5.f))
+		{
+			// 단순화된 삼각형 추가
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RT];
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
+
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LT];
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_RB];
+			pIndices[(*pNumIndices)++] = m_iCorners[CORNER_LB];
+		}
+	}
+	else
+	{
+		// 자식 노드 순회
 		for (size_t i = 0; i < CORNER_END; i++)
 		{
 			m_pChildren[i]->Culling(pVertexPositions, pIndices, pNumIndices);
 		}
-	}	
+	}
 }
-
 void CQuadTree::Make_Neighbors()
 {
 	if (nullptr == m_pChildren[CORNER_LT]->m_pChildren[CORNER_LT])

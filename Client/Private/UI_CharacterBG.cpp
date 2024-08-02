@@ -149,56 +149,56 @@ void CUI_CharacterBG::Render_Text()
 	// ÁÂÃø
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("VITALITY"), _float2(fFirstColX, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 300.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fFirstColX, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 300.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("FORCE"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 300.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("MYSTIC"), _float2(fFirstColX, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 300.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("KNOWLEDGE"), _float2(fFirstColX, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 300.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	// ¿ìÃø
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("HELTH"), _float2(fSecColX, fSecColY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrHealth, _float2(fSecColX + 350.f, fSecColY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrHealth, _float2(fSecColX + 330.f, fSecColY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fSecColX, fSecColY + 28.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina_State, _float2(fSecColX + 350.f, fSecColY + 28.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina_State, _float2(fSecColX + 330.f, fSecColY + 28.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("ETHER"), _float2(fSecColX, fSecColY + 56.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEther, _float2(fSecColX + 350.f, fSecColY + 56.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEther, _float2(fSecColX + 330.f, fSecColY + 56.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("PHYSICAL DAMAGE"), _float2(fSecColX, fSecColY + 108.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrPhysicalDmg, _float2(fSecColX + 350.f, fSecColY + 108.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrPhysicalDmg, _float2(fSecColX + 330.f, fSecColY + 108.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("ETHERAL DAMAGE"), _float2(fSecColX, fSecColY + 134.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEtheralDmg, _float2(fSecColX + 350.f, fSecColY + 134.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEtheralDmg, _float2(fSecColX + 330.f, fSecColY + 134.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("PHYSICAL ARMOR"), _float2(fSecColX, fSecColY + 188.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 350.f, fSecColY + 188.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 330.f, fSecColY + 188.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("ETHERAL ARMOR"), _float2(fSecColX, fSecColY + 213.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 350.f, fSecColY + 213.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 330.f, fSecColY + 213.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 }

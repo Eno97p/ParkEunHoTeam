@@ -987,6 +987,18 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Valnir"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Valnir/Valnir.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	// Npc Choron
+	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Choron"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Choron/Choron.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	// Npc Yaak
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Yaak"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Yaak/Yaak.fbx", PreTransformMatrix))))
+		return E_FAIL;
 #pragma endregion Npc
 
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));

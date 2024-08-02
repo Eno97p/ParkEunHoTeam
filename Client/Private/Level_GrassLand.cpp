@@ -19,6 +19,9 @@
 #include "Trap.h"
 #include "Item.h"
 
+
+#include "CHoverBoard.h"
+
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -252,6 +255,10 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
 
+	CHoverboard::HoverboardInfo hoverboardInfo;
+	hoverboardInfo.vPosition = _float3(-8.3f, 50.5f, -2.4f);
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
+		return E_FAIL;
 
 	return S_OK;
 }

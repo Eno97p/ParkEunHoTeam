@@ -32,15 +32,20 @@ HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
+	m_fDamage = 15.f;
+
 	return S_OK;
 }
 
 void CWhisperSword_Anim::Priority_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_ELISH) return;
 }
 
 void CWhisperSword_Anim::Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_ELISH) return;
+
 	switch (m_eDisolveType)
 	{
 	case TYPE_INCREASE:
@@ -107,6 +112,8 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 
 void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_ELISH) return;
+
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);

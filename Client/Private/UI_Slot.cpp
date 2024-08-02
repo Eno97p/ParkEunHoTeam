@@ -555,8 +555,22 @@ void CUI_Slot::Render_Font()
 {
 	if (SLOT_INV == m_eSlotType || SLOT_WEAPON == m_eSlotType)
 	{
+		wstring wstrTitle = m_wszItemName;
+
+		if (SLOT_WEAPON == m_eSlotType)
+		{
+			// Level
+			vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+			for (size_t i = 0; i < m_iSlotIdx; ++i)
+				++weapon;
+			if (0 < (*weapon)->Get_Level())
+			{
+				wstrTitle = m_wszItemName + TEXT("   + ") + to_wstring((*weapon)->Get_Level());
+			}
+		}
+
 		// Title
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_wszItemName, _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), wstrTitle, _float2((g_iWinSizeX >> 1) + 50.f, 150.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 			return;
 
 		// Explain

@@ -5,7 +5,6 @@
 #include "Inventory.h"
 
 #include "Body_Rlya.h"
-#include "Player.h"
 #include "UI_Activate.h"
 #include "UIGroup_Script.h"
 #include "ItemData.h"
@@ -29,14 +28,11 @@ HRESULT CNPC_Rlya::Initialize(void* pArg)
 {
 	NPC_DESC Desc;
 
-	Desc.fSpeedPerSec = 3.f; // 수정 필요
-	Desc.fRotationPerSec = XMConvertToRadians(90.0f);
 	Desc.eLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 	 
-
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(277.f, 8.6f, -25.8f, 1.f)); // Test
 
 	if (FAILED(Add_PartObjects()))
@@ -66,8 +62,6 @@ void CNPC_Rlya::Tick(_float fTimeDelta)
 
 		Key_Input();
 	}
-
-	//m_pTransformCom->BillBoard_Y();
 }
 
 void CNPC_Rlya::Late_Tick(_float fTimeDelta)
@@ -107,14 +101,6 @@ HRESULT CNPC_Rlya::Add_PartObjects()
 	m_pBody = dynamic_cast<CBody_Rlya*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Rlya"), &pDesc));
 
 	return S_OK;
-}
-
-_bool CNPC_Rlya::Check_Distance()
-{
-	_vector vBetween = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
-
-	return ACTIVATE_DISTANCE >= fDistance;
 }
 
 void CNPC_Rlya::Key_Input()

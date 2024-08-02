@@ -624,9 +624,63 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Lightnings">
       <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\BG">
+      <UniqueIdentifier>{0f45e09d-06f0-489c-bbe4-a8110583038b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Circle">
+      <UniqueIdentifier>{ac8b3476-de65-48ce-9a00-4e0f3a7dcdff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Forge">
+      <UniqueIdentifier>{98d3e829-be77-4f3f-89d3-2f4f49b29f2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Up_Completed\Crucible">
+      <UniqueIdentifier>{d2127b06-1227-4a66-96ee-f09fc4497164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Shop\AnimBG">
+      <UniqueIdentifier>{e6b0da4a-fe04-4aba-b86a-8c91f7fff6b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting">
+      <UniqueIdentifier>{4a54f9d6-9d5f-4fbd-848c-ed1ee25057e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Star">
+      <UniqueIdentifier>{ebbba6ff-08f7-4721-850e-e42b4fe07261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Overlay">
+      <UniqueIdentifier>{f21664aa-0444-4b93-85fc-ec9ad794d356}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Btn">
+      <UniqueIdentifier>{84f20eee-8974-4449-a67e-a3f0dc1c6155}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Back">
+      <UniqueIdentifier>{91a6a92d-35bd-4c31-90b7-6397a4063fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Choron">
+      <UniqueIdentifier>{ba90cae1-42a8-4b12-9fe1-381c627d9348}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Choron\Body">
+      <UniqueIdentifier>{d38e4306-7778-4027-8488-fdc47178a55c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Yaak">
+      <UniqueIdentifier>{528869d5-9a08-44fc-ac6b-0d0f57da505e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\04. Npc\Yaak\Body">
+      <UniqueIdentifier>{2fffda1f-381a-43ba-82e2-7fc06a971726}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Script\Key">
+      <UniqueIdentifier>{4c1f2b64-d3fe-4fb3-8d53-d762c6e6e3a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade">
+      <UniqueIdentifier>{a9507cd2-e936-47b2-a14e-1cf967fe9524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\Btn">
+      <UniqueIdentifier>{d58146bd-636c-4d90-b24f-ac3e502c1dd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Tornado">
+      <UniqueIdentifier>{30e9c3c3-18cb-42e0-837b-7a323a9f2494}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1124,9 +1178,6 @@
     <ClInclude Include="..\Public\Trap.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\03. Trap</Filter>
     </ClInclude>
-    <ClInclude Include="Import_Class.h">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Activate.h">
       <Filter>02.GameObjects\07. UI\Activate</Filter>
     </ClInclude>
@@ -1285,12 +1336,78 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lightning.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
-      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="Import_Class.h">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompletedBG.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Circle.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Forge.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Forge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_UpCompleted_Crucible.h">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Shop_AnimBG.h">
+      <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Setting.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Star.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Star</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Overlay.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Btn.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_BackBtn.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Choron.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Choron.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC_Yaak.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Yaak.h">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Script_BGKey.h">
+      <Filter>02.GameObjects\07. UI\Script\Key</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Ch_Upgrade.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1923,12 +2040,75 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lightning.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
-      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompletedBG.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Circle.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Forge.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Forge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_UpCompleted_Crucible.cpp">
+      <Filter>02.GameObjects\07. UI\Up_Completed\Crucible</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Shop_AnimBG.cpp">
+      <Filter>02.GameObjects\07. UI\Shop\AnimBG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Setting.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Star.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Star</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Overlay.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Overlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Btn.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_BackBtn.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Back</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Choron.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Choron.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Choron\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC_Yaak.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Yaak.cpp">
+      <Filter>02.GameObjects\02.LandObject\04. Npc\Yaak\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Script_BGKey.cpp">
+      <Filter>02.GameObjects\07. UI\Script\Key</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Ch_Upgrade.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2017,6 +2197,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

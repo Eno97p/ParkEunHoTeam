@@ -1,6 +1,8 @@
 #include "Electronic.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "Player.h"
+
 CElectronic::CElectronic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
 {
@@ -44,6 +46,12 @@ HRESULT CElectronic::Initialize(void* pArg)
 	_float4 ParticlePos;
 	XMStoreFloat4(&ParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	EFFECTMGR->Generate_Particle(OwnDesc->ParticleIndex, ParticlePos);
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+
 	return S_OK;
 }
 
@@ -66,6 +74,20 @@ void CElectronic::Tick(_float fTimeDelta)
 
 void CElectronic::Late_Tick(_float fTimeDelta)
 {
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	{
+		m_pPlayer->PlayerHit(10);
+		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+		_vector vPos = Mat.r[3];
+		_float4 vStartPos;
+		XMStoreFloat4(&vStartPos, vPos);
+	}
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -84,6 +106,11 @@ HRESULT CElectronic::Render()
 		m_pModelCom->Render(i);
 
 	}
+//#pragma region 모션블러
+//	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+//	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+//#pragma endregion 모션블러
+	return S_OK;
 	return S_OK;
 }
 
@@ -108,6 +135,17 @@ HRESULT CElectronic::Render_Bloom()
 
 HRESULT CElectronic::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(0.7f, 0.7f, 0.7f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_MeshEffect"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -131,6 +169,15 @@ HRESULT CElectronic::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+//#pragma region 모션블러
+//	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+//		return E_FAIL;
+//	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+//		return E_FAIL;
+//	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+//	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+//		return E_FAIL;
+//#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
@@ -204,4 +251,6 @@ void CElectronic::Free()
 	Safe_Release(m_pNoiseTex);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

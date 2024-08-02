@@ -442,9 +442,9 @@ HRESULT CRenderer::Initialize()
         float currentY = startY;
 
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
-       return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
@@ -485,9 +485,9 @@ HRESULT CRenderer::Initialize()
         //   return E_FAIL;
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LUT"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //currentX += targetWidth + gap;
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
@@ -514,9 +514,9 @@ HRESULT CRenderer::Initialize()
         //currentX += targetWidth + gap;
 
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Specular"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
@@ -839,8 +839,6 @@ void CRenderer::Render_LightAcc()
     if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
         return;
 
-
-
     if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
@@ -848,9 +846,6 @@ void CRenderer::Render_LightAcc()
 
     if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
         return;
-
-
-
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
         return;
@@ -862,7 +857,6 @@ void CRenderer::Render_LightAcc()
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Metalic"), m_pShader, "g_MetalicTexture")))
         return;
-
 
     m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
 
@@ -887,8 +881,10 @@ void CRenderer::Render_DeferredResult()
         return;
     _float4x4      ViewMatrix, ProjMatrix;
 
+    _float4 fPos = m_pGameInstance->Get_PlayerPos();
+
     /* 광원 기준의 뷰 변환행렬. */
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
     XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
     //매직넘버 던져줌
@@ -921,6 +917,21 @@ void CRenderer::Render_DeferredResult()
     
     //타임 오프셋
     if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset", &m_fFogTimeOffset, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_vFogColor2", &m_vFogColor2, sizeof(_float4))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset2", &m_fFogTimeOffset2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseSize2", &m_fNoiseSize2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fNoiseIntensity2", &m_fNoiseIntensity2, sizeof(_float))))
+        return;
+
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))
         return;
 
     m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
@@ -1691,7 +1702,10 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
+
 	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
@@ -1699,6 +1713,7 @@ void CRenderer::Render_Debug()
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
+   // m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 }
 
 #endif

@@ -117,8 +117,14 @@ _tchar* CUI_Script_NameBox::Setting_Text()
 	{
 	case Client::CUI_Script_NameBox::NPC_RLYA:
 		return TEXT("RLYA");
-	default:
+	case Client::CUI_Script_NameBox::NPC_VALNIR:
 		return TEXT("VALNIR");
+	case Client::CUI_Script_NameBox::NPC_CHORON:
+		return TEXT("CHORON");
+	case Client::CUI_Script_NameBox::NPC_YAAK:
+		return TEXT("YAAK");
+	default:
+		return TEXT("");
 	}
 }
 

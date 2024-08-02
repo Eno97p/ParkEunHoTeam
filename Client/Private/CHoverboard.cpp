@@ -91,12 +91,14 @@ void CHoverboard::Tick(_float fTimeDelta)
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
 		command->throttle = 0.3f;
 		command->brake = 0.0f;
+		command->handbrake = 0.0f;
 	}
 	else if (KEY_HOLD(DIK_S))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eREVERSE;
 		command->throttle = 0.1f;
 		command->brake = 0.0f;
+		command->handbrake = 0.0f;
 	}
 	else
 	{
@@ -134,10 +136,15 @@ void CHoverboard::Tick(_float fTimeDelta)
 	if (KEY_HOLD(DIK_SPACE))
 	{
 		command->brake = 1.0f;
+		
 		command->throttle = 0.0f;
 	}
-
-	
+	//if (KEY_HOLD(DIK_7))
+	//{
+	//	command->handbrake = 1.0f;
+	//	command->throttle = 0.0f;
+	//}
+	//
 	m_pPhysXCom->Tick(fTimeDelta);
 
 	
@@ -147,7 +154,12 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
+	
+	
+
+
 	m_pPhysXCom->Late_Tick(fTimeDelta);
+
 
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
 	m_pPhysXCom->GetCommand(command);
@@ -184,6 +196,8 @@ HRESULT CHoverboard::Render()
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
+
+	
 }
 
 HRESULT CHoverboard::Add_Components()

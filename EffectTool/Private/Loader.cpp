@@ -30,13 +30,14 @@
 #include "ElectricCylinder.h"
 #include "AndrasRain.h"
 #include "AndrasLazer.h"
+#include "ShieldSphere.h"
 #pragma endregion ANDRAS
 
 #pragma region TornadoEffects
 #include "TornadoEffect.h"
 #include "TornadoWind.h"
 #include "Tornado_Root.h"
-#include "Tornado_Spring.h"
+#include "Tornado_Ring.h"
 #pragma endregion TornadoEffects
 
 
@@ -226,6 +227,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 
+
 	//Blade
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Blade_Slash"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/Blade.fbx", PreTransformMatrix))))
@@ -292,6 +294,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/AndrasLazerLightning.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//ShieldSphere
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_ShieldShphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/ShieldSphere/ShieldSphere.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Screw"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/AndrasScrew.fbx", PreTransformMatrix))))
@@ -300,15 +307,35 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//Tornado
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoWind"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoCore.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Core.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//2
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoWind2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Second.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//3
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoWind3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/New/NewTornado_Wind_Third.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//Ring
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoRing"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/New/NewTornado_Ring.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoBottom"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoRoot.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_TornadoSpring"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/TornadoEffect/TornadoSpring.fbx", PreTransformMatrix))))
+
+	//FirePillar
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL
@@ -491,8 +518,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CTornado_Root::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Spring"),
-		CTornado_Spring::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Tornado_Ring"),
+		CTornado_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//Shield Sphere
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ShieldShpere"),
+		CShieldSphere::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

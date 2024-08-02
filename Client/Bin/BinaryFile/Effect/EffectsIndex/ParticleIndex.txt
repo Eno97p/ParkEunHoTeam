@@ -43,3 +43,8 @@
 42. RockSplit0
 43. RockSplit1
 44. LightningSub2
+45. GateOfBabilonMagic
+46. AndrasLazerMagic
+47. GateOfBabilonShoot
+48. Tornado_Rock0
+49. Tornado_Rock1

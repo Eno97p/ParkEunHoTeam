@@ -10,18 +10,25 @@ END
 BEGIN(Effect)
 class CTornado_Wind final : public CBlendObject
 {
+	enum TornadoModel{ Tor_1, Tor_2, Tor_3, Tor_End};
 public:
 	typedef struct TORNADO_WIND
 	{
-		_float3 vMaxSize = { 0.f,0.f,0.f };
+		_float3 vMaxSize = { 1.f,1.f,1.f };
 		_float3 vOffset = { 0.f,0.f,0.f };
 		_float3 fColor = { 1.f,1.f,1.f };
-		_float fRotationSpeed = 0.f;
+		_float3 fColor2 = { 1.f,1.f,1.f };
 		_float fBloomPower = 0.f;
-		_float fMaxLifeTime = 0.f;
-		_float fUVSpeed = 0.f;
-		_float fGrowSpeed = 1.f;
+		_float fRotationSpeed = 360.f;
+		_float fMaxLifeTime = 10.f;
+		_float fUVSpeed = 1.f;
+		_float RadicalStrength = 1.f;
+		_float fGrowSpeed = 3.f;
+		_bool Opacity = false;
+		_bool IsDistortion = false;
+		_float OpacityPower = 0.5f;
 		_int NumDesolve = 0;
+		_int NumModels = Tor_1;
 		const _float4x4* ParentMatrix = nullptr;
 	};
 
@@ -42,6 +49,7 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Bind_BloomResources();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -53,6 +61,9 @@ private:
 	_float						m_fCurLifeTime = 0.f;
 	_float						m_fLifeTimeRatio = 0.f;
 	_float3						m_CurrentSize{};
+
+private:
+	wstring						m_ModelProtoName = TEXT("");
 
 private:
 	_bool						EffectDead = false;

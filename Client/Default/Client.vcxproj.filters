@@ -624,9 +624,6 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
-	</Filter>
-    <Filter Include="02.GameObjects\06.Effect\Lightnings">
-      <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1124,9 +1121,6 @@
     <ClInclude Include="..\Public\Trap.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\03. Trap</Filter>
     </ClInclude>
-    <ClInclude Include="Import_Class.h">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_Activate.h">
       <Filter>02.GameObjects\07. UI\Activate</Filter>
     </ClInclude>
@@ -1285,12 +1279,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lightning.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
-      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="Import_Class.h">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1923,12 +1920,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lightning.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
-      <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

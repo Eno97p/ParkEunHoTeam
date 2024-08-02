@@ -363,7 +363,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
-		Add_Hp(-10);
+		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;

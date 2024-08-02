@@ -21,6 +21,7 @@ public:
 	{
 		const _float4x4* pParentMatrix;
 		const _uint* pState;
+		const _uint* pCurWeapon;
 		_bool* pCanCombo;
 		LEVEL					eLevel;
 		_float* pCurHp;
@@ -52,6 +53,7 @@ protected:
 	_float4x4				m_WorldMatrix;
 	const _float4x4* m_pParentMatrix = { nullptr };
 	const _uint* m_pState = { nullptr };
+	const _uint* m_pCurWeapon = { nullptr };
 	_bool* m_pCanCombo = { nullptr };
 	_float m_fDisolveValue = 1.f;
 	CTexture* m_pDisolveTextureCom = nullptr;

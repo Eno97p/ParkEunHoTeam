@@ -45,16 +45,41 @@ HRESULT CHoverboard::Initialize(void* pArg)
 
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
 
+	m_fDisolveValue = 0.f;
+
 	return S_OK;
 }
 
 void CHoverboard::Priority_Tick(_float fTimeDelta)
 {
+	switch (m_eDisolveType)
+	{
+	case TYPE_INCREASE:
+		m_fDisolveValue += fTimeDelta * 5.f;
+		if (m_fDisolveValue > 1.f)
+		{
+			m_eDisolveType = TYPE_IDLE;
+			m_fDisolveValue = 1.f;
+		}
+		break;
+	case TYPE_DECREASE:
+		m_fDisolveValue -= fTimeDelta * 5.f;
+		if (m_fDisolveValue < 0.f)
+		{
+			m_pGameInstance->Erase(this);
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void CHoverboard::Tick(_float fTimeDelta)
 {
-	
+	if (!m_bOnRide)
+	{
+		return;
+	}
 	
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
 	m_pPhysXCom->GetCommand(command);
@@ -63,11 +88,11 @@ void CHoverboard::Tick(_float fTimeDelta)
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);
 
-	m_bIsMoving = KEY_HOLD(DIK_W) || KEY_HOLD(DIK_S);
+	m_bIsMoving = (KEY_HOLD(DIK_W) || KEY_HOLD(DIK_S));
 	if (m_bIsMoving)
 	{
 	
-		steerResponse->maxResponse = XMConvertToRadians(45.f); // 원래 값 
+		steerResponse->maxResponse = XMConvertToRadians(60.f); // 원래 값 
 		steerResponse->wheelResponseMultipliers[0] = 1.0f;
 		steerResponse->wheelResponseMultipliers[1] = 1.0f;
 		steerResponse->wheelResponseMultipliers[2] = 0.0f;
@@ -179,7 +204,12 @@ HRESULT CHoverboard::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(11);
 
 		m_pModelCom->Render(i);
 	}
@@ -210,6 +240,11 @@ HRESULT CHoverboard::Add_Components()
 	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
 		TEXT("Com_PhysX_Vehicle"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))
+		return E_FAIL;
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_DisolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
 
@@ -270,4 +305,5 @@ void CHoverboard::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pPhysXCom);
+	Safe_Release(m_pDisolveTextureCom);
 }

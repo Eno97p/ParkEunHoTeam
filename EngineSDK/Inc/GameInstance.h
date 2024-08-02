@@ -196,6 +196,13 @@ public:	// For Worker
 	template<typename T, typename... Args>
 	void AddWork(T&& Func, Args&&... args);
 
+public:
+	_float4 Get_PlayerPos() { return m_fPlayerPos; }
+	void Set_PlayerPos(_vector vPos) { XMStoreFloat4(&m_fPlayerPos, vPos); }
+
+public:
+	_uint Get_CascadeNum(_fvector vPosition, _float fRange);
+
 #ifdef _DEBUG
 public:
 	HRESULT Ready_RTDebug(const wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
@@ -219,6 +226,7 @@ private:
 	class CPhysX*					m_pPhysX = { nullptr };
 	class CEventMgr*				m_pEvent_Manager = { nullptr };
 	class CCalculator*				m_pCalculator = { nullptr };
+	class CCascade*					m_pCascade = { nullptr };
 
 	class CSoundMgr*				m_pSound_Manager = { nullptr };
 	class CUISorter*				m_UISorter = { nullptr };
@@ -228,6 +236,8 @@ private:
 
 	class CWorker*				m_pWorker = { nullptr };
 	class CRenderWorker*		m_pRenderWorker = { nullptr };
+
+	_float4 m_fPlayerPos;
 public:	
 	static void Release_Engine();
 	virtual void Free() override;

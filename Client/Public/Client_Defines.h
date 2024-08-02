@@ -9,6 +9,8 @@ namespace Client
 
 	enum CAMERA_INDEX { CAM_FREE = 0, CAM_THIRDPERSON, CAM_SIDEVIEW, CAM_TRANSITION, CAM_END };
 
+	enum FRUSTUM { FRUSTUM_NEAR, FRUSTUM_MIDDLE, FRUSTUM_FAR, FRUSTUM_END };
+
 #define EFFECTMGR 						CEffectManager::GetInstance()
 	//아래 enum, 건들지 말것 - 박은호
 #pragma region EFFECT_ENUM

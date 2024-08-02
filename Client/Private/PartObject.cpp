@@ -22,6 +22,7 @@ HRESULT CPartObject::Initialize(void* pArg)
 
 	m_pParentMatrix = pPartObjDesc->pParentMatrix;
 	m_pState = pPartObjDesc->pState;
+	m_pCurWeapon = pPartObjDesc->pCurWeapon;
 
 	m_eLevel = pPartObjDesc->eLevel;
 

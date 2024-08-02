@@ -32,12 +32,12 @@ HRESULT CLightning::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	m_pTransformCom->Scaling(0.3f, 0.3f, 0.3f);
+
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
-	m_fPlayerY = XMVectorGetY(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
 	return S_OK;
 }
@@ -57,31 +57,16 @@ void CLightning::Tick(_float fTimeDelta)
 	}
 	else
 	{
-		// 번개치기
+		_float4 vPos;
+		XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vPos.y -= 8.f;
+		EFFECTMGR->Generate_Lightning(0, vPos);
+		m_pGameInstance->Erase(this);
 	}
 }
 
 void CLightning::Late_Tick(_float fTimeDelta)
 {
-	_float4 fPos;
-	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
-	m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
-	if (m_eColltype == CCollider::COLL_START)
-	{
-		m_pPlayer->PlayerHit(10);
-		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-		_vector vPos = Mat.r[3];
-		_float4 vStartPos;
-		XMStoreFloat4(&vStartPos, vPos);
-		EFFECTMGR->Generate_Particle(14, vStartPos);
-		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
-		// 여기서 폭발 이펙트 재생
-		m_pGameInstance->Erase(this);
-	}
-
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }

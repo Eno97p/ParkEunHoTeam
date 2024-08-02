@@ -35,7 +35,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 400.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
+	//m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 400.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -50,7 +50,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	Load_LevelData(TEXT("../Bin/MapData/test.bin"));
+	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas.bin"));
 	Load_LevelData(TEXT("../Bin/MapData/Stage_Jugglas_Traps.bin")); //Traps
 
 	Load_Data_Effects();
@@ -426,6 +426,31 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 			pTrapDesc.dStartTimeOffset = dStartTime;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pTrapDesc)))
+				return E_FAIL;
+		}
+		else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pChestDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pChestDesc.wstrLayer = wszLayer;
+			pChestDesc.wstrModelName = wszModelName;
+			pChestDesc.mWorldMatrix = WorldMatrix;
+			pChestDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_TreasureChest"), TEXT("Prototype_GameObject_TreasureChest"), &pChestDesc)))
 				return E_FAIL;
 		}
 		else

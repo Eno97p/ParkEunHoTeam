@@ -112,7 +112,7 @@ void CTrap::Late_Tick(_float fTimeDelta)
 		m_pPlayer->PlayerHit(10);
 	}
 
-	if (m_pGameInstance->isIn_WorldFrustum(m_ColliderMat.r[3], 5.f))
+	if (m_pGameInstance->isIn_WorldFrustum(m_ColliderMat.r[3], 10.f))
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -146,11 +146,11 @@ HRESULT CTrap::Render()
 			return E_FAIL;
 
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RoughnessTexture", i, aiTextureType_SHININESS)))
+		//	return E_FAIL;
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
-			return E_FAIL;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MetalicTexture", i, aiTextureType_METALNESS)))
+		//	return E_FAIL;
 
 		//if ( i != 29)
 		
@@ -169,6 +169,12 @@ HRESULT CTrap::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+#pragma region 모션블러
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
+
 }
 
 HRESULT CTrap::Render_Bloom()
@@ -272,6 +278,18 @@ HRESULT CTrap::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
+
+#pragma endregion 모션블러
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 

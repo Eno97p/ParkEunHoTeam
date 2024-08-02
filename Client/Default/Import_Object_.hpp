@@ -236,6 +236,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CLightning::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Electronic */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Electronic"),
+		CElectronic::Create(pDevice, pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Mantari */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
 		CMantari::Create(pDevice, pContext))))

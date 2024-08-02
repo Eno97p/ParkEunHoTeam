@@ -36,8 +36,9 @@ public:
 		STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_SPECIALATTACK, STATE_SPECIALATTACK2, STATE_SPECIALATTACK3, STATE_SPECIALATTACK4, 
 		STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,	STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, 
 		STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, 
-		STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_END
+		STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_RIDE, STATE_SLIDE, STATE_END
 	};
+	enum WEAPON { WEAPON_DURGASWORD, WEAPON_PRETORIANSWORD, WEAPON_RADAMANTHESWORD, WEAPON_ELISH, WEAPON_END };
 
 private:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -62,6 +63,7 @@ public:
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
 	_bool Get_Parry() { return m_bParrying; }
+	_bool Get_m_bParry() { return m_bParry; }
 	void Parry_Succeed();
 	void Set_ParriedMonsterFloat4x4(const _float4x4* pMatrix) { m_pParriedMonsterFloat4x4 = pMatrix; }
 	_bool Get_Cloaking() { return m_bIsCloaking; }
@@ -95,6 +97,8 @@ private:
 	NodeStates RChargeAttack(_float fTimeDelta);
 	NodeStates LAttack(_float fTimeDelta);
 	NodeStates RAttack(_float fTimeDelta);
+	void Generate_HoverBoard();
+	NodeStates Slide(_float fTimeDelta);
 	NodeStates Dash(_float fTimeDelta);
 	NodeStates Jump(_float fTimeDelta);
 	NodeStates Roll(_float fTimeDelta);
@@ -105,10 +109,13 @@ private:
 	void Add_Hp(_float iValue);
 	void Add_Stamina(_float iValue);
 	void Add_Mp(_float iValue);
+	_uint* Get_CurWeapon() { return &m_iCurWeapon; }
+	void Change_Weapon();
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	_uint										m_iState = { 0 };
+	_uint										m_iCurWeapon = { WEAPON_DURGASWORD };
 	class CPhysXComponent_Character* m_pPhysXCom = { nullptr };
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 	_float										m_fButtonCooltime = 0.f;
@@ -131,6 +138,8 @@ private:
 	_bool										m_bDisolved_Yaak = false;
 	_bool										m_bStaminaCanDecrease = true;
 	_bool										m_bIsCloaking = false;
+	_bool										m_bRiding = false;
+	_bool										m_bRided = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
@@ -149,6 +158,8 @@ private:
 	_float m_fBRIS = 0.f;
 	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr };
 	CTransform* m_pCameraTransform = { nullptr };
+	class CHoverboard* m_pHoverBoard = nullptr;
+	CTransform* m_pHoverBoardTransform = nullptr;
 
 #pragma region 플레이어 스탯
 

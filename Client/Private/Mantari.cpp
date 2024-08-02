@@ -11,7 +11,7 @@
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
-
+#include "ThirdPersonCamera.h"
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -308,6 +308,12 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
+		m_pPhysXCom->Set_Gravity(false);
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		vPos.m128_f32[1] += fTimeDelta * 0.25f;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_pPhysXCom->Set_Position(vPos);
+
 		if (m_isAnimFinished)
 		{
 			if (!m_bDead)
@@ -337,6 +343,25 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+		pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		
+		if (m_pPlayer->Get_m_bParry())
+		{
+			if (m_bParryFirstHit)
+			{
+				pThirdPersonCamera->StartTilt(18.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+			else
+			{
+				pThirdPersonCamera->StartTilt(-25.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+		}
+		m_pGameInstance->Set_MotionBlur(true);
+
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };
 		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);
@@ -347,7 +372,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
-		Add_Hp(-10);
+		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
@@ -357,6 +382,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		return RUNNING;
 		break;
 	case CCollider::COLL_FINISH:
+		m_pGameInstance->Set_MotionBlur(false);
 		m_iState = STATE_HIT;
 		break;
 	case CCollider::COLL_NOCOLL:

@@ -33,15 +33,20 @@ HRESULT CDurgaSword::Initialize(void* pArg)
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
+	m_fDamage = 10.f;
+
 	return S_OK;
 }
 
 void CDurgaSword::Priority_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_DURGASWORD) return;
 }
 
 void CDurgaSword::Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_DURGASWORD) return;
+
 	switch (m_eDisolveType)
 	{
 	case TYPE_INCREASE:
@@ -101,6 +106,8 @@ void CDurgaSword::Tick(_float fTimeDelta)
 
 void CDurgaSword::Late_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_DURGASWORD) return;
+
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);

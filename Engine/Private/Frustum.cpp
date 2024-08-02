@@ -52,7 +52,6 @@ void CFrustum::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)
 	Make_Planes(vLocalPoints, m_vLocalPlanes);
 }
 
-
 _bool CFrustum::isIn_WorldFrustum(_fvector vPosition, _float fRange)
 {
 	for (size_t i = 0; i < 6; i++)

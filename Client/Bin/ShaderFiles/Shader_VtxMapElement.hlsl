@@ -1,7 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_PrevWorldMatrix, g_PrevViewMatrix;
 texture2D	g_DiffuseTexture;
 texture2D	g_NormalTexture;
 texture2D	g_SpecularTexture;
@@ -69,6 +69,7 @@ struct VS_OUT
 	float4		vLocalPos : TEXCOORD2;
 	float4		vTangent : TANGENT;
 	float4		vBinormal : BINORMAL;
+	float2		vVelocity : TEXCOORD3;
 };
 
 /* 정점 셰이더 :  /*
@@ -76,12 +77,14 @@ struct VS_OUT
 /* 2. 정점의 구성정보를 변경한다. */
 VS_OUT VS_MAIN(VS_IN In)
 {
-	VS_OUT		Out = (VS_OUT)0;
+	VS_OUT      Out = (VS_OUT)0;
 
-	matrix		matWV, matWVP;
+	matrix      matWV, matWVP, matPrevWV, matPrevWVP;
 
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
+	matPrevWV = mul(g_PrevWorldMatrix, g_PrevViewMatrix);
+	matPrevWVP = mul(matPrevWV, g_ProjMatrix);
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vNormal = normalize(mul(vector(In.vNormal.xyz, 0.f), g_WorldMatrix));
@@ -91,7 +94,9 @@ VS_OUT VS_MAIN(VS_IN In)
 	Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
 	Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
 
-
+	vector vPrevPos = mul(float4(In.vPosition, 1.f), matPrevWVP);
+	Out.vVelocity = (Out.vPosition.xy / Out.vPosition.w) - (vPrevPos.xy / vPrevPos.w);
+	Out.vVelocity *= -2.f;
 	return Out;
 }
 
@@ -129,41 +134,6 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 
 }
 
-struct GS_GRASS_OUT
-{
-	float4 vPosition : SV_POSITION;
-	float4 vNormal : NORMAL;
-	float2 vTexcoord : TEXCOORD0;
-	float4 vProjPos : TEXCOORD1;
-	float4 vLocalPos : TEXCOORD2;
-	float4 vTangent : TANGENT;
-	float4 vBinormal : BINORMAL;
-};
-VS_IN VS_MAIN_GRASS(VS_IN In)
-{
-	return In;
-}
-
-//GRASS
-
-[maxvertexcount(3)]
-void GS_MAIN_GRASS(triangle VS_IN input[3], inout TriangleStream<GS_GRASS_OUT> outStream)
-{
-	for (int i = 0; i < 3; i++)
-	{
-		GS_GRASS_OUT output;
-		output.vPosition = mul(float4(input[i].vPosition, 1.0f), mul(mul(g_WorldMatrix, g_ViewMatrix), g_ProjMatrix));
-		output.vNormal = mul(float4(input[i].vNormal, 0.0f), g_WorldMatrix);
-		output.vTexcoord = input[i].vTexcoord;
-		output.vProjPos = output.vPosition;
-		output.vLocalPos = float4(input[i].vPosition, 1.0f);
-		output.vTangent = mul(float4(input[i].vTangent, 0.0f), g_WorldMatrix);
-		output.vBinormal = float4(cross(output.vNormal.xyz, output.vTangent.xyz), 0.0f);
-		outStream.Append(output);
-	}
-	outStream.RestartStrip();
-}
-
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;
@@ -173,6 +143,7 @@ struct PS_IN
 	float4		vLocalPos : TEXCOORD2;
 	float4		vTangent : TANGENT;
 	float4		vBinormal : BINORMAL;
+	float2		vVelocity : TEXCOORD3;
 };
 
 struct PS_OUT
@@ -184,7 +155,7 @@ struct PS_OUT
 	vector		vEmissive : SV_TARGET4;
 	vector		vRoughness : SV_TARGET5;
 	vector		vMetalic : SV_TARGET6;
-
+	float2		vVelocity : SV_TARGET7;
 };
 
 
@@ -236,7 +207,10 @@ PS_OUT PS_MAIN(PS_IN In)
 	//{
 	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
 	//}
-
+	if (g_MotionBlur)
+	{
+		Out.vVelocity = In.vVelocity;
+	}
 
 	return Out;
 }
@@ -266,35 +240,6 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 		discard;
 
 	Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.0f, 0.f, 0.f);
-
-	return Out;
-}
-
-PS_OUT PS_GRASS_ORDINARY(PS_IN In)
-{
-	PS_OUT Out = (PS_OUT)0;
-
-	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-	if (vDiffuse.a < 0.1f)
-		discard;
-
-	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
-
-	vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-	float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
-
-	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-	vNormal = mul(vNormal, WorldMatrix);
-
-	float4 grayColor = float4(0.1, 0.1, 0.1, 1.f);
-	float localPosY = In.vLocalPos.y;
-	float grayIntensity = 1.0 - saturate(abs(localPosY) / 0.5);
-
-	Out.vDiffuse = lerp(vDiffuse, grayColor, grayIntensity);
-	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
-	Out.vSpecular = vSpecular;
-	Out.vRoughness = 0.f;
 
 	return Out;
 }
@@ -437,11 +382,11 @@ technique11 DefaultTechnique
 		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-		VertexShader = compile vs_5_0 VS_MAIN_GRASS();
-		GeometryShader = compile gs_5_0 GS_MAIN_GRASS();
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_GRASS_ORDINARY();
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
 		pass Dissolve

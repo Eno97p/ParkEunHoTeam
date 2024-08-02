@@ -123,7 +123,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 			if (m_eColltype == CCollider::COLL_START)
 			{
-				Add_Hp(-10);
+				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
 	} 
@@ -171,8 +171,8 @@ HRESULT CBoss_Juggulus::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(3.f, 10.f, 3.f);
-	ColliderDesc.vCenter = _float3(10.f, ColliderDesc.vExtents.y - 15.f, 0.f);
+	ColliderDesc.vExtents = _float3(3.f, 15.f, 1.5f);
+	ColliderDesc.vCenter = _float3(5.f, ColliderDesc.vExtents.y - 15.f, 1.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

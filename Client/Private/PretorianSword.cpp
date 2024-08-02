@@ -33,15 +33,20 @@ HRESULT CPretorianSword::Initialize(void* pArg)
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
+	m_fDamage = 8.f;
+
 	return S_OK;
 }
 
 void CPretorianSword::Priority_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_PRETORIANSWORD) return;
 }
 
 void CPretorianSword::Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_PRETORIANSWORD) return;
+
 	switch (m_eDisolveType)
 	{
 	case TYPE_INCREASE:
@@ -101,6 +106,8 @@ void CPretorianSword::Tick(_float fTimeDelta)
 
 void CPretorianSword::Late_Tick(_float fTimeDelta)
 {
+	if (*m_pCurWeapon != CPlayer::WEAPON_PRETORIANSWORD) return;
+
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);

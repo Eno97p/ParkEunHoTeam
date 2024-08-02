@@ -39,6 +39,7 @@
 #include "Aspiration.h"
 #include "CircleSphere.h"
 #include "Lightning.h"
+#include "Electronic.h"
 #include "Sphere.h"
 
 #include "Mantari.h"

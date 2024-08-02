@@ -285,7 +285,8 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 {
 	
 	m_pPhysXActorVehicle->getCommandState().brakes[0] = m_Command.brake;
-	m_pPhysXActorVehicle->getCommandState().nbBrakes = 1;
+	m_pPhysXActorVehicle->getCommandState().brakes[1] = m_Command.handbrake;
+	m_pPhysXActorVehicle->getCommandState().nbBrakes = 2;
 	m_pPhysXActorVehicle->getCommandState().throttle = m_Command.throttle;
 	m_pPhysXActorVehicle->getCommandState().steer = m_Command.steer;
 	m_pPhysXActorVehicle->getTransmissionCommandState().gear = m_Command.gear;

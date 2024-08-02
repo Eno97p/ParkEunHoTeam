@@ -512,12 +512,9 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 	return m_pRenderer->Get_PrevDepthTex();
 }
 
-void CGameInstance::Set_FogOption(_float4 fogCol, _float fogRng, _float fogHeightFalloff, _float fogDensity,
-	_float fFogTimeOffset,
-	_float fNoiseIntensity,
-	_float fNoiseSize)
+void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
 {
-	m_pRenderer->Set_FogOption(fogCol, fogRng, fogHeightFalloff, fogDensity, fFogTimeOffset, fNoiseIntensity, fNoiseSize);
+	m_pRenderer->Set_FogOption(desc);
 }
 
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)

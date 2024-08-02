@@ -75,6 +75,7 @@ public:
 	_float3 Get_LeafCol() { return m_LeafCol; }
 	_bool Get_TreeBloom() { return m_bTreeBloom; }
 
+	_float4 Get_GlobalColorPicker() { return m_GlobalColor; }
 	void	Add_vecCreateObj(_char* pName) { m_vecCreateObj.emplace_back(pName); }
 	void	Add_vecCreateCell(_int iIndex)
 	{
@@ -110,10 +111,12 @@ private:
 	void Shadow_Editor();
 
 	void Camera_Editor();
+	void Battle_Camera_Editor();
 
 	void Terrain_Editor();
 	void GlobalWind_Editor();
 	void Fog_Editor();
+	void Cloud_Editor();
 
 private:
 	wstring m_LightsDataPath = L""; //Lights 저장 경로
@@ -124,9 +127,11 @@ private:
 	_bool	m_bLightWindow = false;
 	_bool	m_bShadowWindow = false;
 	_bool	m_bCameraWindow = false;
+	_bool	m_bBattleCameraWindow = false;
 	_bool	m_bTerrainWindow = false;
 	_bool	m_bGlobalWindWindow = false;
 	_bool	m_bFogWindow = false;
+	_bool	m_bCloudWindow = false;
 	
 	_bool	m_bShowDecalTextureWindow = false;
 
@@ -203,6 +208,9 @@ private:
 	vector<CCamera::CameraKeyFrame>	m_vCameraKeyFrames;
 	_float m_fKeyFrameTime = 0.f;
 	_int m_iSelectedKeyFrame = 0;
+
+private:
+	_float4 m_GlobalColor = { 1.f, 1.f, 1.f, 1.f };
 private:
 	void	Setting_ObjListBox(_int iLayerIdx);
 

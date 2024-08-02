@@ -15,6 +15,10 @@
 
 #include "Light.h"
 #include "Terrain.h"
+#include "Renderer.h"
+
+#include "ThirdPersonCamera.h"
+
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
 static ImGuizmo::OPERATION mGizmoOperation(ImGuizmo::TRANSLATE);
@@ -108,7 +112,8 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         ImGui::Text("x: %.1f, y: %.1f, z: %.1f, w: %.1f", m_ClickedMousePos.x, m_ClickedMousePos.y, m_ClickedMousePos.z, m_ClickedMousePos.w);
 
-
+        ImGui::Separator();
+        ImGui::ColorEdit4("Global ColorPicker", &m_GlobalColor.x);
         ImGui::Separator();
 
         // Stage 선택(List Box)
@@ -214,8 +219,13 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("Shadow Edit", &m_bShadowWindow);
         ImGui::Spacing();
 
+
         ImGui::Separator();
-        ImGui::Checkbox("Camera Edit", &m_bCameraWindow);
+        ImGui::Checkbox("Battle Camera Edit", &m_bBattleCameraWindow);
+        ImGui::Spacing();
+
+        ImGui::Separator();
+        ImGui::Checkbox("Cinematic Camera Edit", &m_bCameraWindow);
         ImGui::Spacing();
 
         ImGui::Separator();
@@ -287,6 +297,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bCameraWindow)
     {
         Camera_Editor();
+    }
+    
+    if (m_bBattleCameraWindow)
+    {
+        Battle_Camera_Editor();
     }
 
     if (m_bTerrainWindow)
@@ -535,7 +550,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Treasure Chest" };
+                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud"  };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -1382,6 +1397,97 @@ void CImgui_Manager::Camera_Editor()
     ImGui::PopStyleColor(4);
 }
 
+void CImgui_Manager::Battle_Camera_Editor()
+{
+    if (m_pGameInstance->Get_MainCameraIdx() == 1) // 메인 카메라가 ThirdPersonCamera일 때
+    {
+        CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+        if (pThirdPersonCamera)
+        {
+            ImGui::Begin("Battle Camera Editor");
+
+            // 셰이크 설정
+            static float fShakeDuration = 0.5f;
+            static float fShakePosAmount = 0.1f;
+            static float fShakeRotAmount = 0.1f;
+            static float fShakeFrequency = 25.f;
+
+            // Zoom 설정
+            static float fTargetFov = 45.0f;
+            static float fMaxZoomTime = 0.5f;
+            static float fRecoverTime = 1.0f;
+
+            static bool autoUpdate = false;
+            bool settingsChanged = false;
+
+            // 셰이크 설정
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Shake Settings");
+            settingsChanged |= ImGui::SliderFloat("Shake Duration", &fShakeDuration, 0.1f, 2.0f);
+            settingsChanged |= ImGui::SliderFloat("Position Amount", &fShakePosAmount, 0.01f, 1.0f);
+            settingsChanged |= ImGui::SliderFloat("Rotation Amount", &fShakeRotAmount, 0.01f, 1.0f);
+            settingsChanged |= ImGui::SliderFloat("Shake Frequency", &fShakeFrequency, 1.0f, 100.0f);
+
+            if (ImGui::Button("Test Shake"))
+            {
+                pThirdPersonCamera->Shake_Camera(fShakeDuration, fShakePosAmount, fShakeRotAmount, fShakeFrequency);
+            }
+
+            // 현재 셰이크 상태 표시
+            ImGui::Text("Current Shake State:");
+            ImGui::Text("Is Shaking: %s", pThirdPersonCamera->Get_isShaking() ? "Yes" : "No");
+            ImGui::Text("Shake Timer: %.2f / %.2f", pThirdPersonCamera->Get_ShakeTimer(), pThirdPersonCamera->Get_ShakeDuration());
+
+            // Zoom 설정
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Zoom Settings");
+            settingsChanged |= ImGui::SliderFloat("Target FOV", &fTargetFov, 10.0f, 120.0f);
+            settingsChanged |= ImGui::SliderFloat("Max Zoom Time", &fMaxZoomTime, 0.1f, 2.0f);
+            settingsChanged |= ImGui::SliderFloat("Recover Time", &fRecoverTime, 0.1f, 2.0f);
+
+       
+            if (ImGui::Button("Test Zoom"))
+            {
+                pThirdPersonCamera->Zoom(fTargetFov, fMaxZoomTime, fRecoverTime);
+            }
+
+            ImGui::Checkbox("Auto Update", &autoUpdate);
+
+            if (ImGui::Button("Apply Settings") || (autoUpdate && settingsChanged))
+            {
+                // 여기서는 즉시 적용하지 않고, Test 버튼을 누를 때 적용됩니다.
+            }
+
+            // 현재 Zoom 상태 표시
+           /* ImGui::Text("Current Zoom State:");
+            ImGui::Text("Is Zooming: %s", pThirdPersonCamera->Get_isZooming() ? "Yes" : "No");
+            ImGui::Text("Current FOV: %.2f", pThirdPersonCamera->Get_CurrentFOV());*/
+
+            // Tilt 설정
+            static float fTiltAngle = 30.0f;
+            static float fTiltDuration = 0.5f;
+            static float fTiltRecoveryDuration = 0.5f;
+
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Tilt Settings");
+            settingsChanged |= ImGui::SliderFloat("Tilt Angle", &fTiltAngle, -45.0f, 45.0f);
+            settingsChanged |= ImGui::SliderFloat("Tilt Duration", &fTiltDuration, 0.1f, 2.0f);
+            settingsChanged |= ImGui::SliderFloat("Tilt Recovery Duration", &fTiltRecoveryDuration, 0.1f, 2.0f);
+
+            if (ImGui::Button("Test Tilt"))
+            {
+                pThirdPersonCamera->StartTilt(fTiltAngle, fTiltDuration, fTiltRecoveryDuration);
+            }
+
+            // 현재 Tilt 상태 표시
+  /*          ImGui::Text("Current Tilt State:");
+            ImGui::Text("Is Tilting: %s", pThirdPersonCamera->Get_isTilting() ? "Yes" : "No");
+            ImGui::Text("Tilt Timer: %.2f / %.2f", pThirdPersonCamera->Get_TiltTimer(),
+                pThirdPersonCamera->Get_TiltDuration() + pThirdPersonCamera->Get_TiltRecoveryDuration());
+            ImGui::Text("Current Roll Angle: %.2f", pThirdPersonCamera->Get_CurrentRollAngle());*/
+
+
+            ImGui::End();
+        }
+    }
+}
 void CImgui_Manager::Terrain_Editor()
 {
     static char heightMapPath[256] = "../Bin/Resources/Textures/Terrain/heightmap.r16";
@@ -1543,57 +1649,62 @@ void CImgui_Manager::Fog_Editor()
 {
     ImGui::Begin("Fog Settings", &m_bFogWindow);
 
-    static float fogColor[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-    static float fogRange = 100.0f;
-    static float heightFalloff = 0.1f;
-    static float globalDensity = 0.1f;
-
-    static float FogTimeOffset = 0.1f;
-    static float NoiseIntensity = 0.3f;
-    static float NoiseSize = 0.1f;
-
+    static CRenderer::FOG_DESC fogDesc = {};
     static bool autoUpdateFog = false;
 
-    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Color");
-    if (ImGui::ColorEdit4("##FogColor", fogColor))
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Color 1");
+    if (ImGui::ColorEdit4("##FogColor1", (float*)&fogDesc.vFogColor))
     {
         if (autoUpdateFog)
-        {
-            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
-        }
+            m_pGameInstance->Set_FogOption(fogDesc);
+    }
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Color 2");
+    if (ImGui::ColorEdit4("##FogColor2", (float*)&fogDesc.vFogColor2))
+    {
+        if (autoUpdateFog)
+            m_pGameInstance->Set_FogOption(fogDesc);
     }
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Range");
-    if (ImGui::SliderFloat("##FogRange", &fogRange, 0.0f, 1000.0f, "%.1f"))
+    if (ImGui::SliderFloat("##FogRange", &fogDesc.fFogRange, 0.0f, 3000.0f, "%.1f"))
     {
         if (autoUpdateFog)
-        {
-            m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
-        }
+            m_pGameInstance->Set_FogOption(fogDesc);
     }
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Height Falloff");
-    ImGui::SliderFloat("##HeightFalloff", &heightFalloff, 0.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat("##HeightFalloff", &fogDesc.fFogHeightFalloff, 0.0f, 5.0f, "%.3f");
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Global Density");
-    ImGui::SliderFloat("##GlobalDensity", &globalDensity, 0.0f, 1.0f, "%.3f");
+    ImGui::SliderFloat("##GlobalDensity", &fogDesc.fFogGlobalDensity, 0.0f, 1.0f, "%.3f");
 
-    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Time Offset");
-    ImGui::SliderFloat("##FogTimeOffset", &FogTimeOffset, 0.0f, 10.0f, "%.3f");
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Time Offset 1");
+    ImGui::SliderFloat("##FogTimeOffset1", &fogDesc.fFogTimeOffset, 0.0f, 30.0f, "%.3f");
 
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Time Offset 2");
+    ImGui::SliderFloat("##FogTimeOffset2", &fogDesc.fFogTimeOffset2, 0.0f, 30.0f, "%.3f");
 
-    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "NoiseIntensity");
-    ImGui::SliderFloat("##NoiseIntensity", &NoiseIntensity, 0.0f, 10.0f, "%.3f"); 
-    
-    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "NoiseSize");
-    ImGui::SliderFloat("##NoiseSize", &NoiseSize, 0.0f, 0.5f, "%.6f");
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Intensity 1");
+    ImGui::SliderFloat("##NoiseIntensity1", &fogDesc.fNoiseIntensity, 0.0f, 10.0f, "%.3f");
 
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Intensity 2");
+    ImGui::SliderFloat("##NoiseIntensity2", &fogDesc.fNoiseIntensity2, 0.0f, 10.0f, "%.3f");
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Size 1");
+    ImGui::SliderFloat("##NoiseSize1", &fogDesc.fNoiseSize, 0.0f, 0.1f, "%.6f");
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Size 2");
+    ImGui::SliderFloat("##NoiseSize2", &fogDesc.fNoiseSize2, 0.0f, 0.1f, "%.6f");
+
+    ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Blend Factor");
+    ImGui::SliderFloat("##FogBlendFactor", &fogDesc.fFogBlendFactor, 0.0f, 1.0f, "%.3f");
 
     ImGui::Checkbox("Auto Update Fog", &autoUpdateFog);
 
     if (ImGui::Button("Apply Fog Settings") || autoUpdateFog)
     {
-        m_pGameInstance->Set_FogOption({ fogColor[0], fogColor[1], fogColor[2], fogColor[3] }, fogRange, heightFalloff, globalDensity, FogTimeOffset, NoiseIntensity, NoiseSize);
+        m_pGameInstance->Set_FogOption(fogDesc);
     }
 
     if (ImGui::Button("Close"))
@@ -1601,7 +1712,10 @@ void CImgui_Manager::Fog_Editor()
 
     ImGui::End();
 }
+void CImgui_Manager::Cloud_Editor()
+{
 
+}
 void CImgui_Manager::Setting_CreateObj_ListBox()
 {
     if (m_IsNaviMode) // Navi 상태 활성화

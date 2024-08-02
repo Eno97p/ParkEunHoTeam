@@ -34,6 +34,12 @@ float      g_fFogTimeOffset;
 float      g_fNoiseSize;
 float      g_fNoiseIntensity;
 
+vector      g_vFogColor2;
+float      g_fFogBlendFactor;
+float      g_fFogTimeOffset2;
+float      g_fNoiseSize2;
+float      g_fNoiseIntensity2;
+
 texture2D   g_Texture;
 texture2D   g_MaskTexture;
 texture2D   g_NormalTexture;
@@ -571,44 +577,57 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
     float distanceToCamera = length(cameraToWorldPos);
 
-    // 시간에 따라 변화하는 오프셋 추가
-    float2 timeOffset = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
+    // 안개 방향 계산
+    float3 fogDirection = normalize(cameraToWorldPos);
 
-    // FBM을 사용한 노이즈 계산
-    float2 fbmCoord = vWorldPos.xz * g_fNoiseSize + timeOffset;
-    float2 q = float2(
-        fbm(fbmCoord),
-        fbm(fbmCoord + float2(5.2, 1.3))
-    );
-    float2 r = float2(
-        fbm(fbmCoord + 2.0 * q + float2(1.7, 9.2)),
-        fbm(fbmCoord + 2.0 * q + float2(8.3, 2.8))
-    );
-    float fbmValue = fbm(fbmCoord + 2.0 * r);
+    // 노이즈 적용 범위 설정 (안개 범위의 절반)
+    float noiseRange = g_fFogRange * 0.5f;
+
+    // 첫 번째 안개 계산
+    float2 timeOffset1 = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
+    float2 fbmCoord1 = vWorldPos.xz * g_fNoiseSize + timeOffset1;
+    float2 q1 = float2(fbm(fbmCoord1), fbm(fbmCoord1 + float2(5.2, 1.3)));
+    float2 r1 = float2(fbm(fbmCoord1 + 2.0 * q1 + float2(1.7, 9.2)), fbm(fbmCoord1 + 2.0 * q1 + float2(8.3, 2.8)));
+    float fbmValue1 = fbm(fbmCoord1 + 2.0 * r1);
+
+    // 두 번째 안개 계산
+    float2 timeOffset2 = float2(-g_Time * g_fFogTimeOffset2 * 0.8f, -g_Time * g_fFogTimeOffset2 * 0.6f);
+    float2 fbmCoord2 = vWorldPos.xz * g_fNoiseSize2 + timeOffset2;
+    float2 q2 = float2(fbm(fbmCoord2), fbm(fbmCoord2 + float2(4.3, 2.6)));
+    float2 r2 = float2(fbm(fbmCoord2 + 1.7 * q2 + float2(2.5, 8.4)), fbm(fbmCoord2 + 1.7 * q2 + float2(7.6, 3.1)));
+    float fbmValue2 = fbm(fbmCoord2 + 1.7 * r2);
+
+    // 노이즈 샘플 계산 및 거리에 따른 보간
+    float noiseFade = saturate(1.0 - (distanceToCamera - noiseRange) / noiseRange);
+    float noiseSample1 = lerp(1.0, 1.0 + (fbmValue1 - 0.5) * 2.0 * g_fNoiseIntensity, noiseFade);
+    float noiseSample2 = lerp(1.0, 1.0 + (fbmValue2 - 0.5) * 2.0 * g_fNoiseIntensity2, noiseFade);
+
+    // 안개 깊이 계산 및 노이즈 적용
+    float fogDepth1 = distanceToCamera * noiseSample1 * g_fFogGlobalDensity;
+    float fogDepth2 = distanceToCamera * noiseSample2 * g_fFogGlobalDensity;
 
     // 거리 기반 안개 계산
-    float distanceFog = saturate(distanceToCamera / g_fFogRange);
+    float distanceFog1 = saturate(fogDepth1 / g_fFogRange);
+    float distanceFog2 = saturate(fogDepth2 / g_fFogRange);
 
     // 높이 기반 안개 계산
-    float cVolFogHeightDensityAtViewer = exp(-g_fFogHeightFalloff * g_vCamPosition.y);
-    float heightFogInt = distanceToCamera * cVolFogHeightDensityAtViewer;
-    const float cSlopeThreshold = 0.01f;
-    if (abs(cameraToWorldPos.y) > cSlopeThreshold)
-    {
-        float t = g_fFogHeightFalloff * cameraToWorldPos.y;
-        heightFogInt *= (1.0 - exp(-t)) / t;
-    }
-    float heightFogFactor = 1.f - exp(-g_fFogGlobalDensity * heightFogInt);
+    float heightFactor = 0.05;
+    float fogFactor1 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
+        (1.0 - exp(-fogDepth1 * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
+    float fogFactor2 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
+        (1.0 - exp(-fogDepth2 * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
 
-    // FBM 노이즈를 안개 강도에 적용
-    float noiseFactor = (fbmValue - 0.5) * 0.5; // -0.25 to 0.25 range
-    float baseFogFactor = max(distanceFog, heightFogFactor);
-    float distanceAttenuation = saturate(1.0 - distanceToCamera / (g_fFogRange * 0.5));
-    float noisyFogFactor = lerp(baseFogFactor, saturate(baseFogFactor + noiseFactor * distanceAttenuation), g_fNoiseIntensity);
+    fogFactor1 = saturate(fogFactor1 * g_fFogGlobalDensity);
+    fogFactor2 = saturate(fogFactor2 * g_fFogGlobalDensity);
+
+    // 최종 안개 팩터 계산
+    float finalFogFactor1 = max(distanceFog1, fogFactor1);
+    float finalFogFactor2 = max(distanceFog2, fogFactor2);
 
     // 최종 색상 계산
-    float4 noisyFogColor = g_vFogColor + float4(noiseFactor * 0.05, noiseFactor * 0.05, noiseFactor * 0.05, 0);
-    float4 finalColor = lerp(vColor, noisyFogColor, noisyFogFactor);
+    float4 finalColor = lerp(vColor, g_vFogColor, finalFogFactor1);
+    finalColor = lerp(finalColor, g_vFogColor2, finalFogFactor2 * g_fFogBlendFactor);
+
     vector vEmissiveDesc = g_EmissiveTexture.Sample(PointSampler, In.vTexcoord);
     finalColor.rgb += vEmissiveDesc.rgb;
 

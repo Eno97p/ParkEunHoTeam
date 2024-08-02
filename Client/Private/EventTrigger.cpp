@@ -193,7 +193,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 						return;
 					}
 
-					m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 160.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
+					//m_pGameInstance->Set_FogOption({ 0.272f, 0.252f, 0.367f, 1.f }, 160.f, 0.08f, 0.005f, 10.f, 1.f, 0.5f);
 
 					//m_pGameInstance->Set_MainCamera(1);
 				}
@@ -220,9 +220,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
 
 					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
-					vMat = { -0.905f, 0.f, -0.426f, 0.f,
+					vMat = { 0.845f, 0.f, -0.536f, 0.f,
 				   0.f, 1.f, 0.f, 0.f,
-				   0.426f, 0.f, -0.905f, 0.f,
+				   0.536f, 0.f, 0.845f, 0.f,
 				   -420.068f, 67.932f, 13.209f, 1.f };
 					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
 					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);

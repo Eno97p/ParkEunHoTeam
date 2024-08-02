@@ -9,7 +9,7 @@ BEGIN(MYMapTool)
 class CTreasureChest final : public CToolObj
 {
 public:
-	enum ELEVATOR_STATE { ELEVATOR_IDLE, ELEVATOR_DESCEND, ELEVATOR_ASCEND, ELEVATOR_REBOUND, ELEVATOR_END };
+	enum TREASURE_COLOR { TREASURE_NORMAL, TREASURE_EPIC, TREASURE_CLOAKING, TREASURE_END };
 private:
 	CTreasureChest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTreasureChest(const CTreasureChest& rhs);
@@ -23,11 +23,6 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
-
-public:
-	void Ascend(_vector vTargetPos) { m_eTreasureChestState = ELEVATOR_ASCEND; m_vTargetPos = vTargetPos; }
-	void Descend(_vector vTargetPos) { m_eTreasureChestState = ELEVATOR_DESCEND; m_vTargetPos = vTargetPos; }
-	void Idle(_vector vTargetPos) { m_eTreasureChestState = ELEVATOR_IDLE; m_vTargetPos = {0.f, 0.f, 0.f, 1.f}; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -59,12 +54,15 @@ private:
 
 private:
 	//	_bool m_bElevate = false;
-	ELEVATOR_STATE m_eTreasureChestState = ELEVATOR_END;
+	TREASURE_COLOR m_eTreasureColor = TREASURE_END;
 	_float m_fElevateTimer= 0.f;
 	_uint m_iTest = 0;
 
 
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
+	_float4 m_TreasureColor = { 0.f, 0.f, 0.f, 1.f };
+	_uint m_iShaderPath = 0;
+	_uint m_iBloomShaderPath = 2;
 
 public:
 	static CTreasureChest* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

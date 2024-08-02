@@ -150,14 +150,6 @@ HRESULT CNpc_Valnir::Create_Shop()
 	return S_OK;
 }
 
-_bool CNpc_Valnir::Check_Distance()
-{
-	_vector vBetween = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
-
-	return ACTIVATE_DISTANCE >= fDistance;
-}
-
 void CNpc_Valnir::Set_DialogText()
 {
 	_int iSelectIdx = m_pShopUI->Get_SelectIdx();

@@ -91,6 +91,8 @@ HRESULT CUIGroup_Character::Create_UI()
     // Soul
     CUI_StateSoul::UI_SOUL_DESC pSoulDesc{};
     pSoulDesc.eLevel = LEVEL_STATIC;
+    pSoulDesc.isSoulCntRend = false;
+    pSoulDesc.isNextlevel = true;
     pSoulDesc.fX = 500.f;
     pSoulDesc.fY = 207.f;
     pSoulDesc.fSizeX = 24.f;
@@ -98,6 +100,8 @@ HRESULT CUIGroup_Character::Create_UI()
     pSoulDesc.eUISort = NINETH;
     m_vecUI.emplace_back(dynamic_cast<CUI_StateSoul*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_StateSoul"), &pSoulDesc)));
 
+    pSoulDesc.isSoulCntRend = true;
+    pSoulDesc.isNextlevel = false;
     pSoulDesc.fX = 500.f;
     pSoulDesc.fY = 227.f;
     pSoulDesc.fSizeX = 24.f;

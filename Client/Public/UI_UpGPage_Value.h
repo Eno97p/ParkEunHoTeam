@@ -19,6 +19,9 @@ private:
 	virtual ~CUI_UpGPage_Value() = default;
 
 public:
+	_bool			Get_isEnough() { return m_isEnough; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -29,6 +32,7 @@ public:
 	void			Update_Value(_uint iCurSlotIdx);
 
 private:
+	_bool			m_isEnough = { false };
 	_uint			m_iPrive = { 0 };
 	_uint			m_iValue = { 0 };
 	_uint			m_iJemstone = { 0 };

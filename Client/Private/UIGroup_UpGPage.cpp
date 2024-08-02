@@ -14,6 +14,8 @@
 #include "UI_UpGPage_Value.h"
 #include "UI_ItemIcon.h"
 
+#include "UIGroup_UP_Completed.h"
+
 CUIGroup_UpGPage::CUIGroup_UpGPage(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
 {
@@ -97,6 +99,21 @@ void CUIGroup_UpGPage::Tick(_float fTimeDelta)
 		}
 
 		m_pItemIcon->Tick(fTimeDelta);
+
+		if (nullptr != m_pCompletedPage)
+		{
+			if (m_pCompletedPage->Get_isEnd())
+			{
+				Safe_Release(m_pCompletedPage);
+				m_pCompletedPage = nullptr;
+
+				// 여기서 Inventory의 weapon을 강화하는 것으로? Level을 올려주기
+				Upgrade_ItemLevel();
+
+
+			}else
+				m_pCompletedPage->Tick(fTimeDelta);
+		}
 	}
 
 	Update_CurSlot();
@@ -117,6 +134,9 @@ void CUIGroup_UpGPage::Late_Tick(_float fTimeDelta)
 			pValue->Late_Tick(fTimeDelta);
 
 		m_pItemIcon->Late_Tick(fTimeDelta);
+
+		if (nullptr != m_pCompletedPage)
+			m_pCompletedPage->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -212,6 +232,32 @@ HRESULT CUIGroup_UpGPage::Create_Slot()
 	return S_OK;
 }
 
+void CUIGroup_UpGPage::Create_CompletedPage()
+{
+	// 빈 슬롯을 클릭한 경우 예외 처리
+	vector<CUI*>::iterator slot = m_vecSlot.begin();
+	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+		++slot;
+
+	if (dynamic_cast<CUI_UpGPage_Slot*>(*slot)->Check_ItemIconNull())
+		return;
+
+	// 추후 수급 재료가 충족되어야 업그레이드 되도록 로직 추가 필요
+	if (!Check_Enough())
+		return;
+	else // Soul과 해당 아이템 개수 만큼 제거해야 함!
+	{
+		Calculate_UpgradeCost();
+	}
+
+	CUIGroup_UP_Completed::UIGROUP_COMPLETED_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.iCurSlotIdx = m_iCurSlotIdx;
+	m_pCompletedPage = dynamic_cast<CUIGroup_UP_Completed*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_UP_Completed"), &pDesc));
+
+	return;
+}
+
 void CUIGroup_UpGPage::Update_CurSlot()
 {
 	// m_iCurSlotIdx에 맞춰서 상태들 갱신
@@ -258,6 +304,50 @@ void CUIGroup_UpGPage::Update_ItemIcon()
 	m_pItemIcon->Change_Texture(wstrItemTexture);
 }
 
+void CUIGroup_UpGPage::Upgrade_ItemLevel()
+{
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+		++weapon;
+
+	(*weapon)->Set_Level(1);
+}
+
+_bool CUIGroup_UpGPage::Check_Enough()
+{
+	for (auto& value : m_ValuesSlot)
+	{
+		if (!dynamic_cast<CUI_UpGPage_Value*>(value)->Get_isEnough())
+			return false;
+	}
+
+	return true;
+}
+
+void CUIGroup_UpGPage::Calculate_UpgradeCost()
+{
+	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+		++weapon;
+	 
+	// Soul
+	CInventory::GetInstance()->Calcul_Soul(-(*weapon)->Get_Price());
+
+	// Upgrade Material
+	vector<CItemData*>::iterator item =  CInventory::GetInstance()->Get_ItemDatas()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_vecItemSize(); ++i)
+	{
+		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE"))
+		{
+			for(size_t j = 0; j < (*weapon)->Get_Value(); ++j)
+				(*item)->Apply_UseCount(i);
+		}
+		else
+			++item;
+	}
+
+}
+
 CUIGroup_UpGPage* CUIGroup_UpGPage::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUIGroup_UpGPage* pInstance = new CUIGroup_UpGPage(pDevice, pContext);
@@ -298,4 +388,5 @@ void CUIGroup_UpGPage::Free()
 		Safe_Release(pValues);
 
 	Safe_Release(m_pItemIcon);
+	Safe_Release(m_pCompletedPage);
 }

@@ -6,6 +6,9 @@
 #include "UI_ScriptBG_Npc.h"
 #include "UI_Script_DialogBox.h"
 #include "UI_Script_NameBox.h"
+#include "UI_Script_BGKey.h"
+
+#include "UI_Shop_AnimBG.h"
 
 CUIGroup_Script::CUIGroup_Script(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -108,19 +111,51 @@ HRESULT CUIGroup_Script::Create_UI()
 	}
 	else if (NPC_VALNIR == m_eNpcType)
 	{
-		pAuraDesc.iTextureNum = 4;
 		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_Valnir");
 		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_VALNIR;
 	}
+	else if (NPC_CHORON == m_eNpcType)
+	{
+		pAuraDesc.iTextureNum = 3;
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_ChoronBG");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_CHORON;
+	}
+	else if (NPC_YAAK == m_eNpcType)
+	{
+		pScriptDesc.wstrTextureName = TEXT("Prototype_Component_Texture_Script_Npc_YaakBG");
+		pNameDesc.eNpcType = CUI_Script_NameBox::NPC_YAAK;
+	}
 
-	// BG Aura
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));
+	if (NPC_YAAK != m_eNpcType && NPC_VALNIR != m_eNpcType)
+	{
+		// BG Aura
+		m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Aura*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Aura"), &pAuraDesc)));
+	}
 
-	// BG Npc
-	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
+	if (NPC_CHORON == m_eNpcType)
+	{
+		// Key  
+		for (size_t i = 0; i < 2; ++i)
+		{
+			CUI_Script_BGKey::UI_SCRIPT_KEY_DESC pKeyDesc{};
+			pKeyDesc.eLevel = LEVEL_STATIC;
+			pKeyDesc.iKeyIdx = i;
+			m_vecUI.emplace_back(dynamic_cast<CUI_Script_BGKey*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_BGKey"), &pKeyDesc)));
+		}
+
+	}
 
 	CUI::UI_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+
+	if (NPC_VALNIR == m_eNpcType)
+	{
+		// AnimBG
+		m_vecUI.emplace_back(dynamic_cast<CUI_Shop_AnimBG*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Shop_AnimBG"), &pDesc)));
+	}
+
+	// BG Npc
+	m_vecUI.emplace_back(dynamic_cast<CUI_ScriptBG_Npc*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScriptBG_Npc"), &pScriptDesc)));
 
 	// DialogBox
 	m_pDialogBox = dynamic_cast<CUI_Script_DialogBox*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Script_DialogBox"), &pDesc));

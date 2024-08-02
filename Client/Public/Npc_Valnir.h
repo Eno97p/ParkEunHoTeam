@@ -34,7 +34,6 @@ private:
 	virtual HRESULT		Create_Script() override;
 	HRESULT				Create_Shop();
 
-	_bool				Check_Distance();
 	void				Set_DialogText();
 
 public:

@@ -175,6 +175,8 @@
     <ClInclude Include="..\Public\ElectricCylinder.h" />
     <ClInclude Include="..\public\Electronic.h" />
     <ClInclude Include="..\public\FireEffect.h" />
+    <ClInclude Include="..\public\FirePillar.h" />
+    <ClInclude Include="..\Public\FirePillarEffect.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -194,11 +196,12 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerHead.h" />
     <ClInclude Include="..\Public\QuarterCamera.h" />
+    <ClInclude Include="..\public\ShieldSphere.h" />
     <ClInclude Include="..\public\TextureFrame.h" />
     <ClInclude Include="..\public\TornadoEffect.h" />
     <ClInclude Include="..\Public\TornadoWind.h" />
+    <ClInclude Include="..\Public\Tornado_Ring.h" />
     <ClInclude Include="..\Public\Tornado_Root.h" />
-    <ClInclude Include="..\Public\Tornado_Spring.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="EffectTool.h" />
@@ -230,6 +233,8 @@
     <ClCompile Include="..\Private\ElectricCylinder.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />
     <ClCompile Include="..\private\FireEffect.cpp" />
+    <ClCompile Include="..\private\FirePillar.cpp" />
+    <ClCompile Include="..\Private\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -249,11 +254,12 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerHead.cpp" />
     <ClCompile Include="..\Private\QuarterCamera.cpp" />
+    <ClCompile Include="..\private\ShieldSphere.cpp" />
     <ClCompile Include="..\private\TextureFrame.cpp" />
     <ClCompile Include="..\private\TornadoEffect.cpp" />
     <ClCompile Include="..\Private\TornadoWind.cpp" />
+    <ClCompile Include="..\Private\Tornado_Ring.cpp" />
     <ClCompile Include="..\Private\Tornado_Root.cpp" />
-    <ClCompile Include="..\Private\Tornado_Spring.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="EffectTool.cpp" />

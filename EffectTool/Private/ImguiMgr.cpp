@@ -14,7 +14,6 @@
 #include "AndrasScrew.h"
 #include "AndrasRain.h"
 #include "ElectricCylinder.h"
-#include "TornadoEffect.h"
 #include "AndrasLazer.h"
 
 
@@ -2251,6 +2250,18 @@ void CImguiMgr::Lazer_Tool()
 	ImGui::InputInt("R_NumDesolve", &TotalDesc.RainDesc.NumDesolve);
 	ImGui::ColorEdit3("R_Color", reinterpret_cast<float*>(&TotalDesc.RainDesc.fColor));
 
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Shield");
+
+	ImGui::InputFloat("SH_Interval", &TotalDesc.ShieldInterval);
+	ImGui::InputFloat("SH_LifeTime", &TotalDesc.ShieldDesc.fMaxLifeTime);
+	ImGui::InputFloat3("SH_MaxSize", reinterpret_cast<float*>(&TotalDesc.ShieldDesc.vMaxSize));
+	ImGui::InputFloat3("SH_Offset", reinterpret_cast<float*>(&TotalDesc.ShieldDesc.vOffset));
+	ImGui::InputFloat("SH_BloomPower", &TotalDesc.ShieldDesc.fBloomPower);
+	ImGui::InputFloat("SH_UVSpeed", &TotalDesc.ShieldDesc.fUVSpeed);
+	ImGui::ColorEdit3("SH_Color", reinterpret_cast<float*>(&TotalDesc.ShieldDesc.fColor));
+	ImGui::ColorEdit3("SH_BloomColor", reinterpret_cast<float*>(&TotalDesc.ShieldDesc.fBloomColor));
+
+
 	/*static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
 	static CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CDesc{};
 	static CAndrasScrew::ANDRAS_SCREW_DESC SDesc{};
@@ -2327,6 +2338,7 @@ void CImguiMgr::Lazer_Tool()
 
 void CImguiMgr::Tornado_Tool()
 {
+#pragma region VALUES
 	ImVec2 ButtonSize = { 100.f,30.f };
 	ImGui::Begin("Tornado_Editor");
 
@@ -2334,6 +2346,7 @@ void CImguiMgr::Tornado_Tool()
 	ImGui::InputFloat("Speed", &TDesc.fSpeed);
 	ImGui::InputFloat("Rot_Speed", &TDesc.fRotationSpeed);
 	ImGui::InputFloat("LifeTime", &TDesc.fLifeTime);
+	ImGui::InputInt("NumParticle", &TDesc.NumParticle);
 
 	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&TDesc.vStartPos));
 
@@ -2342,14 +2355,61 @@ void CImguiMgr::Tornado_Tool()
 	ImGui::InputFloat3("WindMaxSize", reinterpret_cast<float*>(&TDesc.WindDesc.vMaxSize));
 	ImGui::InputFloat3("WindOffset", reinterpret_cast<float*>(&TDesc.WindDesc.vOffset));
 	ImGui::ColorEdit3("WindColor", reinterpret_cast<float*>(&TDesc.WindDesc.fColor));
+	ImGui::ColorEdit3("WindColor2", reinterpret_cast<float*>(&TDesc.WindDesc.fColor2));
 
 
 	ImGui::InputFloat("WindRotSpeed", &TDesc.WindDesc.fRotationSpeed);
 	ImGui::InputFloat("WindUVSpeed", &TDesc.WindDesc.fUVSpeed);
 	ImGui::InputFloat("WindGrowSpeed", &TDesc.WindDesc.fGrowSpeed);
 	ImGui::InputFloat("WindBloomPower", &TDesc.WindDesc.fBloomPower);
-	ImGui::InputFloat("WindLifeTime", &TDesc.WindDesc.fMaxLifeTime);
 	ImGui::InputInt("WindNumDesolve", &TDesc.WindDesc.NumDesolve);
+
+	ImGui::InputFloat("RadialStrength", &TDesc.WindDesc.RadicalStrength);
+	ImGui::Checkbox("Distortion", &TDesc.WindDesc.IsDistortion);
+	ImGui::Checkbox("Opacity", &TDesc.WindDesc.Opacity);
+	if (TDesc.WindDesc.Opacity == true)
+		ImGui::InputFloat("OpacityStrength", &TDesc.WindDesc.OpacityPower);
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Wind2");
+
+	ImGui::InputFloat3("2WindMaxSize", reinterpret_cast<float*>(&TDesc.WindDesc2.vMaxSize));
+	ImGui::InputFloat3("2WindOffset", reinterpret_cast<float*>(&TDesc.WindDesc2.vOffset));
+	ImGui::ColorEdit3("2WindColor", reinterpret_cast<float*>(&TDesc.WindDesc2.fColor));
+	ImGui::ColorEdit3("2WindColor2", reinterpret_cast<float*>(&TDesc.WindDesc2.fColor2));
+
+
+	ImGui::InputFloat("2WindRotSpeed", &TDesc.WindDesc2.fRotationSpeed);
+	ImGui::InputFloat("2WindUVSpeed", &TDesc.WindDesc2.fUVSpeed);
+	ImGui::InputFloat("2WindGrowSpeed", &TDesc.WindDesc2.fGrowSpeed);
+	ImGui::InputFloat("2WindBloomPower", &TDesc.WindDesc2.fBloomPower);
+	ImGui::InputInt("2WindNumDesolve", &TDesc.WindDesc2.NumDesolve);
+
+	ImGui::InputFloat("2RadialStrength", &TDesc.WindDesc2.RadicalStrength);
+	ImGui::Checkbox("2Distortion", &TDesc.WindDesc2.IsDistortion);
+	ImGui::Checkbox("2Opacity", &TDesc.WindDesc2.Opacity);
+	if (TDesc.WindDesc2.Opacity == true)
+		ImGui::InputFloat("2OpacityStrength", &TDesc.WindDesc2.OpacityPower);
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Wind3");
+
+	ImGui::InputFloat3("3WindMaxSize", reinterpret_cast<float*>(&TDesc.WindDesc3.vMaxSize));
+	ImGui::InputFloat3("3WindOffset", reinterpret_cast<float*>(&TDesc.WindDesc3.vOffset));
+	ImGui::ColorEdit3("3WindColor", reinterpret_cast<float*>(&TDesc.WindDesc3.fColor));
+	ImGui::ColorEdit3("3WindColor2", reinterpret_cast<float*>(&TDesc.WindDesc3.fColor2));
+
+
+	ImGui::InputFloat("3WindRotSpeed", &TDesc.WindDesc3.fRotationSpeed);
+	ImGui::InputFloat("3WindUVSpeed", &TDesc.WindDesc3.fUVSpeed);
+	ImGui::InputFloat("3WindGrowSpeed", &TDesc.WindDesc3.fGrowSpeed);
+	ImGui::InputFloat("3WindBloomPower", &TDesc.WindDesc3.fBloomPower);
+	ImGui::InputInt("3WindNumDesolve", &TDesc.WindDesc3.NumDesolve);
+
+	ImGui::InputFloat("3RadialStrength", &TDesc.WindDesc3.RadicalStrength);
+	ImGui::Checkbox("3Distortion", &TDesc.WindDesc3.IsDistortion);
+	ImGui::Checkbox("3Opacity", &TDesc.WindDesc3.Opacity);
+	if (TDesc.WindDesc3.Opacity == true)
+		ImGui::InputFloat("3OpacityStrength", &TDesc.WindDesc3.OpacityPower);
+
 
 	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Root");
 
@@ -2367,19 +2427,46 @@ void CImguiMgr::Tornado_Tool()
 	ImGui::InputFloat("RootGrowSpeed", &TDesc.RootDesc.fGrowSpeed);
 	ImGui::InputInt("RootNumDesolve", &TDesc.RootDesc.NumDesolve);
 
-	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Spring");
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Ring1");
 
-	ImGui::InputFloat3("SpringMaxSize", reinterpret_cast<float*>(&TDesc.SpringDesc.vMaxSize));
-	ImGui::InputFloat3("SpringOffset", reinterpret_cast<float*>(&TDesc.SpringDesc.vOffset));
-	ImGui::ColorEdit3("SpringColor", reinterpret_cast<float*>(&TDesc.SpringDesc.fColor));
+	ImGui::InputFloat3("RingMaxSize", reinterpret_cast<float*>(&TDesc.RingDesc1.vMaxSize));
+	ImGui::InputFloat3("RingOffset", reinterpret_cast<float*>(&TDesc.RingDesc1.vOffset));
+	ImGui::ColorEdit3("RingColor", reinterpret_cast<float*>(&TDesc.RingDesc1.fColor));
+	ImGui::ColorEdit3("RingColor2", reinterpret_cast<float*>(&TDesc.RingDesc1.fColor2));
 
-	ImGui::InputFloat("SpringRotSpeed", &TDesc.SpringDesc.fRotationSpeed);
-	ImGui::InputFloat("SpringBloompower", &TDesc.SpringDesc.fBloomPower);
-	ImGui::InputFloat("SpringLifeTime", &TDesc.SpringDesc.fMaxLifeTime);
-	ImGui::InputFloat("SpringUVSpeed", &TDesc.SpringDesc.fUVSpeed);
-	ImGui::InputFloat("SpringGrowSpeed", &TDesc.SpringDesc.fGrowSpeed);
-	ImGui::InputInt("SpringNumDesolve", &TDesc.SpringDesc.NumDesolve);
 
+	ImGui::InputFloat("RingRotSpeed", &TDesc.RingDesc1.fRotationSpeed);
+	ImGui::InputFloat("RingUVSpeed", &TDesc.RingDesc1.fUVSpeed);
+	ImGui::InputFloat("RingGrowSpeed", &TDesc.RingDesc1.fGrowSpeed);
+	ImGui::InputFloat("RingBloomPower", &TDesc.RingDesc1.fBloomPower);
+	ImGui::InputInt("RingNumDesolve", &TDesc.RingDesc1.NumDesolve);
+
+	ImGui::InputFloat("Ring_RadialStrength", &TDesc.RingDesc1.RadicalStrength);
+	ImGui::Checkbox("Ring_Distortion", &TDesc.RingDesc1.IsDistortion);
+	ImGui::Checkbox("Ring_Opacity", &TDesc.RingDesc1.Opacity);
+	if (TDesc.RingDesc1.Opacity == true)
+		ImGui::InputFloat("Ring_OpacityStrength", &TDesc.RingDesc1.OpacityPower);
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Ring2");
+
+	ImGui::InputFloat3("2RingMaxSize", reinterpret_cast<float*>(&TDesc.RingDesc2.vMaxSize));
+	ImGui::InputFloat3("2RingOffset", reinterpret_cast<float*>(&TDesc.RingDesc2.vOffset));
+	ImGui::ColorEdit3("2RingColor", reinterpret_cast<float*>(&TDesc.RingDesc2.fColor));
+	ImGui::ColorEdit3("2RingColor2", reinterpret_cast<float*>(&TDesc.RingDesc2.fColor2));
+
+
+	ImGui::InputFloat("2RingRotSpeed", &TDesc.RingDesc2.fRotationSpeed);
+	ImGui::InputFloat("2RingUVSpeed", &TDesc.RingDesc2.fUVSpeed);
+	ImGui::InputFloat("2RingGrowSpeed", &TDesc.RingDesc2.fGrowSpeed);
+	ImGui::InputFloat("2RingBloomPower", &TDesc.RingDesc2.fBloomPower);
+	ImGui::InputInt("2RingNumDesolve", &TDesc.RingDesc2.NumDesolve);
+
+	ImGui::InputFloat("2Ring_RadialStrength", &TDesc.RingDesc2.RadicalStrength);
+	ImGui::Checkbox("2Ring_Distortion", &TDesc.RingDesc2.IsDistortion);
+	ImGui::Checkbox("2Ring_Opacity", &TDesc.RingDesc2.Opacity);
+	if (TDesc.RingDesc2.Opacity == true)
+		ImGui::InputFloat("2Ring_OpacityStrength", &TDesc.RingDesc2.OpacityPower);
+#pragma endregion VALUES
 
 	TDesc.pTarget = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(),
 		TEXT("LayerDummy"));
@@ -2389,13 +2476,218 @@ void CImguiMgr::Tornado_Tool()
 		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
 			TEXT("Layer_Tornado"), TEXT("Prototype_GameObject_Tornado"), &TDesc);
 	}
-
+	ImGui::SameLine();
 	if (ImGui::Button("Erase", ButtonSize))
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Tornado"));
 	}
 
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_Tornados(effectname, TDesc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Tornado()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Tornado()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+
+	Tornado_ListBox(&TDesc);
+
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Tornados(char* Name, CTornadoEffect::TORNADODESC desc)
+{
+	string sName = Name;
+	shared_ptr<CTornadoEffect::TORNADODESC> StockValue = make_shared<CTornadoEffect::TORNADODESC>(desc);
+	m_Tornados.emplace_back(StockValue);
+	TornadoNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Tornado_ListBox(CTornadoEffect::TORNADODESC* Tornado)
+{
+#pragma region exception
+	if (m_Tornados.size() < 1)
+		return;
+
+	if (m_Tornados.size() != TornadoNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Tornado_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+
+	if (ImGui::BeginListBox("Tornado_List", list_box_size))
+	{
+		for (int i = 0; i < TornadoNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(TornadoNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (current_item >= 0 && current_item < TornadoNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CTornadoEffect::TORNADODESC* Desc = m_Tornados[current_item].get();
+			Desc->pTarget = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("LayerDummy"));
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Tornado"), TEXT("Prototype_GameObject_Tornado"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Tornado = *m_Tornados[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Tornados[current_item] = make_shared<CTornadoEffect::TORNADODESC>(*Tornado);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Tornados[current_item].reset();
+			m_Tornados.erase(m_Tornados.begin() + current_item);
+			TornadoNames.erase(TornadoNames.begin() + current_item);
+
+			if (current_item >= m_Tornados.size())
+				current_item = m_Tornados.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Tornados)
+				iter.reset();
+			m_Tornados.clear();
+			TornadoNames.clear();
+			current_item = 0;
+		}
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Tornado()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Tornados.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Tornados.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Tornados)
+	{
+		file.write((char*)iter.get(), sizeof(CTornadoEffect::TORNADODESC));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Tornados.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : TornadoNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Tornados.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < TornadoNames.size(); ++i)
+	{
+		NumberFile << i << ". " << TornadoNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Tornado()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Tornados.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Tornados)
+		iter.reset();
+	m_Tornados.clear();
+	TornadoNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CTornadoEffect::TORNADODESC readFile{};
+		inFile.read((char*)&readFile, sizeof(CTornadoEffect::TORNADODESC));
+		readFile.pTarget = nullptr;
+		shared_ptr<CTornadoEffect::TORNADODESC> StockValue = make_shared<CTornadoEffect::TORNADODESC>(readFile);
+		m_Tornados.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Tornados.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		TornadoNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::FrameTextureTool()

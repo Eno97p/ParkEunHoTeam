@@ -624,9 +624,12 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Lightnings">
       <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Tornado">
+      <UniqueIdentifier>{30e9c3c3-18cb-42e0-837b-7a323a9f2494}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1285,12 +1288,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lightning.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1923,12 +1938,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lightning.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
       <Filter>02.GameObjects\06.Effect\Lightnings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

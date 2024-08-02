@@ -43,6 +43,7 @@ public:
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
+	HRESULT Bind_BloomResources();
 
 private:
 	CShader* m_pShaderCom = { nullptr };

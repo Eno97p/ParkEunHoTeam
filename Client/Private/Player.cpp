@@ -48,7 +48,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
-	// m_pTransformCom->Set_Scale(2.f, 2.f, 1.f);
 
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -65,6 +64,13 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 	else
 	{
 		m_pGameInstance->Set_MotionBlur(false);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_H))
+	{
+		_float4 TorPos;
+		XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		EFFECTMGR->Generate_Tornado(0, TorPos, this);
 	}
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)

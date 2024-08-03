@@ -136,6 +136,16 @@ HRESULT CTarget_Manager::End_MRT(ID3D11DeviceContext* pDeferredContext)
 	return S_OK;
 }
 
+ID3D11RenderTargetView* CTarget_Manager::Get_RTV(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+
+	if (nullptr == pRenderTarget)
+		return nullptr;
+
+	return pRenderTarget->Get_RTV();
+}
+
 HRESULT CTarget_Manager::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)
 {
 	CRenderTarget*		pRenderTarget = Find_RenderTarget(strTargetTag);

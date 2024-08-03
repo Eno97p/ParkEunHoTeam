@@ -131,8 +131,8 @@
 
 #pragma region Ch_Upgrade
 #include "UI_Ch_UpgradeBtn.h"
-
-
+#include "UI_Ch_UpgradeBtn_Select.h"
+#include "UI_Ch_Upgrade_OkBtn.h"
 #include "UIGroup_Ch_Upgrade.h"
 #pragma endregion Ch_Upgrade
 
@@ -528,7 +528,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 40))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 43))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -1825,6 +1825,15 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_Ch_UpgradeBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade_BtnSelect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade_BtnSelect"),
+		CUI_Ch_UpgradeBtn_Select::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade_OKBtn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade_OKBtn"),
+		CUI_Ch_Upgrade_OkBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 
@@ -1984,7 +1993,16 @@ HRESULT CMainApp::Ready_Fonts()
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo23"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_23.spritefont"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo24"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_24.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo25"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_25.spritefont"))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo27"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_27.spritefont"))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Cardo35"), TEXT("../Bin/Resources/Fonts/Cardo_Regular_35.spritefont"))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_HeirofLight12"), TEXT("../Bin/Resources/Fonts/HeirofLight12.spritefont"))))

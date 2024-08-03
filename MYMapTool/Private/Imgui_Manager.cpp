@@ -18,6 +18,7 @@
 #include "Renderer.h"
 
 #include "ThirdPersonCamera.h"
+#include "Cloud.h"
 
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
@@ -243,6 +244,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         ImGui::Separator();
         ImGui::Checkbox("Fog Edit", &m_bFogWindow);
+        ImGui::Spacing(); 
+        
+        
+        ImGui::Separator();
+        ImGui::Checkbox("Cloud Edit", &m_bCloudWindow);
         ImGui::Spacing();
 
         ImGui::End();
@@ -317,6 +323,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bFogWindow) 
     {
         Fog_Editor();
+    }
+
+    if (m_bCloudWindow)
+    {
+        Cloud_Editor();
     }
     if (m_bShowDecalTextureWindow)
     {
@@ -1712,9 +1723,52 @@ void CImgui_Manager::Fog_Editor()
 
     ImGui::End();
 }
+
 void CImgui_Manager::Cloud_Editor()
 {
+    list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    if (!clouds.empty())
+    {
+        CCloud* cloud = dynamic_cast<CCloud*>(clouds.front());
+        if (cloud)
+        {
+            ImGui::Begin("Cloud Editor");
 
+            // 기존 구름 설정
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Cloud Settings");
+            ImGui::SliderFloat("Cloud Density", &cloud->m_fCloudDensity, 0.1f, 2.0f);
+            ImGui::SliderFloat("Cloud Scale", &cloud->m_fCloudScale, 0.001f, 0.1f);
+            ImGui::SliderFloat("Cloud Speed", &cloud->m_fCloudSpeed, 0.01f, 1.0f);
+            ImGui::SliderFloat("Cloud Height", &cloud->m_fCloudHeight, 50.0f, 200.0f);
+            ImGui::ColorEdit3("Cloud Color", (float*)&cloud->m_vCloudColor);
+
+            // Sphere Tracing 설정
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Sphere Tracing Settings");
+            ImGui::SliderFloat("Sphere Tracing Threshold", &cloud->m_fSphereTracingThreshold, 0.001f, 0.1f);
+            ImGui::SliderFloat("Max Ray Distance", &cloud->m_fMaxRayDistance, 100.0f, 2000.0f);
+            ImGui::SliderInt("Max Steps", &cloud->m_iMaxSteps, 32, 256);
+
+            // Noise 설정
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Settings");
+            ImGui::SliderInt("Perlin Octaves", &cloud->m_iPerlinOctaves, 1, 10);
+            ImGui::SliderFloat("Perlin Frequency", &cloud->m_fPerlinFrequency, 1.0f, 10.0f);
+            ImGui::SliderFloat("Worley Frequency", &cloud->m_fWorleyFrequency, 1.0f, 10.0f);
+
+            // 새로 추가된 최적화 관련 설정
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Optimization Settings");
+            ImGui::SliderFloat("Coarse Step Size", &cloud->m_fCoarseStepSize, 0.5f, 5.0f);
+            ImGui::SliderFloat("Fine Step Size", &cloud->m_fFineStepSize, 0.1f, 1.0f);
+            ImGui::SliderInt("Max Coarse Steps", &cloud->m_iMaxCoarseSteps, 10, 100);
+            ImGui::SliderInt("Max Fine Steps", &cloud->m_iMaxFineSteps, 32, 128);
+            ImGui::SliderFloat("Density Threshold", &cloud->m_fDensityThreshold, 0.01f, 0.1f);
+            ImGui::SliderFloat("Alpha Threshold", &cloud->m_fAlphaThreshold, 0.9f, 0.99f);
+
+            ImGui::End();
+        }
+    }
 }
 void CImgui_Manager::Setting_CreateObj_ListBox()
 {

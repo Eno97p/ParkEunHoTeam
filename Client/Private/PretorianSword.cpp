@@ -85,13 +85,19 @@ void CPretorianSword::Tick(_float fTimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, vMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+	m_pSpecialColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
-	Generate_Trail(0);
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK4)
+	{
+		Generate_Trail(5);
+	}
+	else
+	{
+		Generate_Trail(0);
+	}
 
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
-		*m_pState == CPlayer::STATE_SPECIALATTACK || *m_pState == CPlayer::STATE_SPECIALATTACK2 ||
-		*m_pState == CPlayer::STATE_SPECIALATTACK3 || *m_pState == CPlayer::STATE_SPECIALATTACK4 ||
-		*m_pState == CPlayer::STATE_RCHARGEATTACK || *m_pState == CPlayer::STATE_RUNLATTACK1 ||
+		*m_pState == CPlayer::STATE_SPECIALATTACK4 || *m_pState == CPlayer::STATE_RCHARGEATTACK || *m_pState == CPlayer::STATE_RUNLATTACK1 ||
 		*m_pState == CPlayer::STATE_RUNLATTACK2 || *m_pState == CPlayer::STATE_ROLL || *m_pState == CPlayer::STATE_DASH ||
 		*m_pState == CPlayer::STATE_DASH_FRONT || *m_pState == CPlayer::STATE_DASH_BACK || *m_pState == CPlayer::STATE_DASH_LEFT ||
 		*m_pState == CPlayer::STATE_DASH_RIGHT)
@@ -116,6 +122,7 @@ void CPretorianSword::Late_Tick(_float fTimeDelta)
 	if (m_bIsActive)
 	{
 		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+		m_pGameInstance->Add_DebugComponent(m_pSpecialColliderCom);
 	}
 
 #endif
@@ -262,11 +269,22 @@ HRESULT CPretorianSword::Render_Bloom()
 	return S_OK;
 }
 
+CCollider* CPretorianSword::Get_Collider()
+{
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK4)
+	{
+		return m_pSpecialColliderCom;
+	}
+	else
+	{
+		return m_pColliderCom;
+	}
+}
+
 HRESULT CPretorianSword::Add_Components()
 {
 	/* For.Com_Collider */
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
 	ColliderDesc.eType = CCollider::TYPE_OBB;
 	ColliderDesc.vExtents = _float3(1.5f, 2.f, 2.5f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
@@ -274,6 +292,17 @@ HRESULT CPretorianSword::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	/* For.Com_Collider */
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc2{};
+	ColliderDesc2.eType = CCollider::TYPE_OBB;
+	ColliderDesc2.vExtents = _float3(7.5f, 10.f, 12.5f);
+	ColliderDesc2.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+	ColliderDesc2.vRotation = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider2"), reinterpret_cast<CComponent**>(&m_pSpecialColliderCom), &ColliderDesc2)))
 		return E_FAIL;
 
 	/* For.Com_Model */
@@ -348,4 +377,6 @@ CGameObject* CPretorianSword::Clone(void* pArg)
 void CPretorianSword::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSpecialColliderCom);
 }

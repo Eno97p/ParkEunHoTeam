@@ -47,8 +47,7 @@ public:
 	void Draw();
 	void Set_Mirror(_float fMirror) { m_fMirror = fMirror; }
 	void Set_BRIS(_float fBRIS) { m_fBRIS = fBRIS; }
-
-
+	HRESULT SaveRenderTargetToDDS(ID3D11RenderTargetView* pRenderTargetView, const WCHAR* filePath);
 
 #ifdef _DEBUG
 public:
@@ -160,6 +159,7 @@ private:
 	//LUT TEXTURE
 	class CTexture* m_pLUTTex = { nullptr };
 	class CTexture* m_pDistortionTex = { nullptr };
+	class CTexture* m_pShadowTex = { nullptr };
 	_float								m_fLUTOffset = 0.f;
 	vector<_matrix> m_vDecalMatricesInv;
 	class CTexture* m_pDecalTex = { nullptr };

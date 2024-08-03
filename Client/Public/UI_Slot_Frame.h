@@ -25,7 +25,7 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	UISORT_PRIORITY			m_eUISort = { SORT_END };
+	UISORT_PRIORITY						m_eUISort = { SORT_END };
 
 private:
 	HRESULT	Add_Components();

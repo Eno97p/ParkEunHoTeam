@@ -22,12 +22,18 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void			Rend_Damage(_int iValue);
 
 private:
-	class CMonster*		m_pMonster = { nullptr }; // Boss로 변경
+	_bool				m_isDamageRend = { false };
+	_int				m_iAccumDamage = { 0 };
 	_float				m_fCurrentRatio = 1.f;
 	_float				m_fPastRatio = 1.f;
-	_float m_fHudRatio = 0.55f;
+	_float				m_fHudRatio = 0.55f;
+	_float				m_fDamageTimer = { 0.f };
+	wstring				m_wstrDamage;
+
+	class CMonster*		m_pMonster = { nullptr }; // Boss로 변경
 
 private:
 	HRESULT	Add_Components();

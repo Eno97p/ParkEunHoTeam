@@ -1,7 +1,10 @@
 #include "UI_CharacterBG.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "Player.h"
+
+#include "UIGroup_Ch_Upgrade.h"
 
 CUI_CharacterBG::CUI_CharacterBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -73,18 +76,20 @@ void CUI_CharacterBG::Update_Data()
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 
-	m_wstrVitality = to_wstring(0);
-	m_wstrStamina = to_wstring(0);
-	m_wstrForce = to_wstring(0);
+	m_wstrLevel = to_wstring(pPlayer->Get_Level());
+
+	m_wstrVitality = to_wstring(pPlayer->Get_VitalityLv());
+	m_wstrStamina = to_wstring(pPlayer->Get_StaminaLv());
+	m_wstrStrenght = to_wstring(pPlayer->Get_StrenghtLv());
+	m_wstrMysticism = to_wstring(pPlayer->Get_MysticismLv());
+	m_wstrKnowledge = to_wstring(pPlayer->Get_KnowledgeLv());
 
 	m_wstrHealth = to_wstring((_uint)pPlayer->Get_MaxHP());
 	m_wstrStamina_State = to_wstring((_uint)pPlayer->Get_MaxStamina());
 	m_wstrEther = to_wstring((_uint)pPlayer->Get_MaxMP());
 
-	m_wstrPhysicalDmg = to_wstring(0);
-	m_wstrEtheralDmg = to_wstring(0);
-
-
+	m_wstrPhysicalDmg = to_wstring(pPlayer->Get_PhysicalDmg());
+	m_wstrEtheralDmg = to_wstring(pPlayer->Get_EtherDmg());
 }
 
 HRESULT CUI_CharacterBG::Add_Components()
@@ -145,27 +150,31 @@ void CUI_CharacterBG::Render_Text()
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo13"), TEXT("Essence:"), _float2(fFirstColX, 215.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
+	// Player Level
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo35"), m_wstrLevel, _float2(115.f, (g_iWinSizeY >> 1) - 25.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return;
+
 
 	// 좌측
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("VITALITY"), _float2(fFirstColX, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrVitality, _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fFirstColX, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina, _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("FORCE"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STRENGHT"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStrenght, _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("MYSTIC"), _float2(fFirstColX, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrMysticism, _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("KNOWLEDGE"), _float2(fFirstColX, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrKnowledge, _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
 	// 우측
@@ -201,6 +210,98 @@ void CUI_CharacterBG::Render_Text()
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 330.f, fSecColY + 213.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
+}
+
+_vector CUI_CharacterBG::Check_Difference(ABILITY_TYPE eAbilityType)
+{
+	// 값을 원본과 비교하여 다르다면 녹색을 반환
+	CUIGroup_Ch_Upgrade::ORIGIN_DATA tOriginData =
+		dynamic_cast<CUIGroup_Ch_Upgrade*>(CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade"))->Get_OriginData();
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+	_vector vColorWhite = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+	_vector vColorGreen = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+
+	switch (eAbilityType)
+	{
+	case Client::CUI_CharacterBG::ABILITY_VITALITY:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STAMINA:
+	{
+		if (pPlayer->Get_StaminaLv() != tOriginData.iOriginStaminaLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STRENGHT:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_MYSTICISM:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_KNOWLEDGE:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_HEALTH:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STAMINA_STATE:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_ETHER:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_PHYSICALDMG:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_ETHERDMG:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	default:
+		break;
+	}
+
+
+	return XMVectorSet(1.f, 1.f, 1.f, 1.f);
 }
 
 CUI_CharacterBG* CUI_CharacterBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

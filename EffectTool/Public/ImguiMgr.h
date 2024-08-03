@@ -12,7 +12,7 @@
 #include "FireEffect.h"
 #include "Electronic.h"
 #include "TornadoEffect.h"
-
+#include "FirePillar.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -121,6 +121,9 @@ private:
 	void Tornado_ListBox(CTornadoEffect::TORNADODESC* Tornado);
 	HRESULT Save_Tornado();
 	HRESULT Load_Tornado();
+
+private:
+	void FirePillarTool();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);

@@ -35,16 +35,17 @@ HRESULT CFirePillarEffect::Initialize(void* pArg)
 	case F_3:
 		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar3");
 		break;
+	case F_4:
+		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar4");
+		break;
 	default:
 		return E_FAIL;
 	}
-
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	_matrix WorldMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
-	WorldMat.r[3] = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffset), WorldMat);
 	WorldMat.r[0] = XMVector4Normalize(WorldMat.r[0]);
 	WorldMat.r[1] = XMVector4Normalize(WorldMat.r[1]);
 	WorldMat.r[2] = XMVector4Normalize(WorldMat.r[2]);
@@ -77,13 +78,47 @@ void CFirePillarEffect::Tick(_float fTimeDelta)
 
 	_vector CurSize = XMLoadFloat3(&m_CurrentSize);
 
+	if (!SizeUpDone[0] && !SizeUpDone[1])
+	{
+		CurSize = XMVectorLerp(CurSize, XMLoadFloat3(&m_OwnDesc->vMaxSize) * 2, 0.5f);
+		XMStoreFloat3(&m_CurrentSize, CurSize);
+		if (((m_OwnDesc->vMaxSize.x * 2.f) - m_CurrentSize.x) < 0.1f)
+			SizeUpDone[0] = true;
+
+	}
+	else if(SizeUpDone[0]&& !SizeUpDone[1])
+	{
+		CurSize = XMVectorLerp(CurSize, XMLoadFloat3(&m_OwnDesc->vMaxSize), 0.2f);
+		XMStoreFloat3(&m_CurrentSize, CurSize);
+		if ((m_CurrentSize.x - (m_OwnDesc->vMaxSize.x)) < 0.1f)
+			SizeUpDone[1] = true;
+	}
+	else
+	{
+		if (!SizeDirectionChange)
+		{
+			m_CurrentSize.x -= m_OwnDesc->fGrowSpeed * fTimeDelta;
+			m_CurrentSize.z -= m_OwnDesc->fGrowSpeed * fTimeDelta;
+		}
+		else
+		{
+			m_CurrentSize.x += m_OwnDesc->fGrowSpeed * fTimeDelta;
+			m_CurrentSize.z += m_OwnDesc->fGrowSpeed * fTimeDelta;
+		}
+	}
+
+	m_Interval -= fTimeDelta;
+	if (m_Interval < 0.f)
+	{
+		m_Interval = m_OwnDesc->SizeInterval;
+		SizeDirectionChange = !SizeDirectionChange;
+	}
 
 
 
+	
+	
 	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
-
-	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
-	_vector vFinalPos = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffset), ParentMat);
 }
 
 void CFirePillarEffect::Late_Tick(_float fTimeDelta)
@@ -106,9 +141,11 @@ HRESULT CFirePillarEffect::Render()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
-			return E_FAIL;
-
+		if (m_OwnDesc->NumModels != F_4)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+				return E_FAIL;
+		}
 		m_pShaderCom->Begin(6);
 
 		m_pModelCom->Render(i);
@@ -126,8 +163,11 @@ HRESULT CFirePillarEffect::Render_Bloom()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
-			return E_FAIL;
+		if (m_OwnDesc->NumModels != F_4)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Begin(12);
 		m_pModelCom->Render(i);
@@ -144,8 +184,11 @@ HRESULT CFirePillarEffect::Render_Distortion()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
-			return E_FAIL;
+		if (m_OwnDesc->NumModels != F_4)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTex", i, aiTextureType_OPACITY)))
+				return E_FAIL;
+		}
 
 		m_pShaderCom->Begin(6);
 		m_pModelCom->Render(i);

@@ -40,6 +40,12 @@
 #include "Tornado_Ring.h"
 #pragma endregion TornadoEffects
 
+#pragma region FIREPILLAR
+#include "FirePillar.h"
+#include "FirePillarEffect.h"
+#include "FirePillar_Bottom.h"
+#pragma endregion FIREPILLAR
+
 
 
 
@@ -130,7 +136,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 #pragma region TEXTURE
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 40))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 43))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -337,6 +343,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar3"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar3.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar_Core.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//FirePillarBottom
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar_Bottom"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar_Bottom.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -525,6 +538,19 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//Shield Sphere
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ShieldShpere"),
 		CShieldSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//FirePillar
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar"),
+		CFirePillar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Effect"),
+		CFirePillarEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Bottom"),
+		CFirePillar_Bottom::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

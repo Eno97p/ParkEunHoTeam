@@ -10,8 +10,9 @@ HRESULT CBlastMgr::Initialize()
 	m_pFramework = NvBlastTkFrameworkCreate();
 	if (nullptr == m_pFramework)
 		return E_FAIL;
+	FractureTool* fTool = NvBlastExtAuthoringCreateFractureTool();
 	
-
+	
 	//vector<NvBlastChunkDesc> chunkDescs;
 	//chunkDescs.resize(2);
 	//chunkDescs[0].parentChunkDescIndex = UINT32_MAX;

@@ -215,6 +215,10 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pMaskTex)
         return E_FAIL;
 
+    m_pShadowTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Shadow/Shadow%d.dds"), 2);
+    if (nullptr == m_pMaskTex)
+        return E_FAIL;
+
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Mirror"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Mirror"), TEXT("Target_Mirror"))))
@@ -659,6 +663,43 @@ void CRenderer::Draw()
     
 
 }
+
+HRESULT CRenderer::SaveRenderTargetToDDS(ID3D11RenderTargetView* pRenderTargetView, const WCHAR* filePath)
+{
+    HRESULT hr = S_OK;
+
+    // 1. 렌더 타겟 뷰에서 텍스처 가져오기
+    ID3D11Texture2D* pRenderTargetTexture = nullptr;
+    pRenderTargetView->GetResource(reinterpret_cast<ID3D11Resource**>(&pRenderTargetTexture));
+
+    // 2. 텍스처 설명 가져오기
+    D3D11_TEXTURE2D_DESC textureDesc;
+    pRenderTargetTexture->GetDesc(&textureDesc);
+
+    // 3. CPU에서 접근 가능한 새 텍스처 생성
+    textureDesc.Usage = D3D11_USAGE_STAGING;
+    textureDesc.BindFlags = 0;
+    textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_WRITE;
+    textureDesc.MiscFlags = 0;
+
+    ID3D11Texture2D* pStagingTexture = nullptr;
+    hr = m_pDevice->CreateTexture2D(&textureDesc, nullptr, &pStagingTexture);
+    if (FAILED(hr))
+        return hr;
+
+    // 4. 렌더 타겟 텍스처 내용을 스테이징 텍스처로 복사
+    m_pContext->CopyResource(pStagingTexture, pRenderTargetTexture);
+
+    // 6. 수정된 텍스처를 파일로 저장
+    hr = SaveDDSTextureToFile(m_pContext, pStagingTexture, filePath);
+
+    // 7. 리소스 해제
+    Safe_Release(pStagingTexture);
+    Safe_Release(pRenderTargetTexture);
+
+    return hr;
+}
+
 #ifdef _DEBUG
 HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 {
@@ -881,10 +922,11 @@ void CRenderer::Render_DeferredResult()
         return;
     _float4x4      ViewMatrix, ProjMatrix;
 
-    _float4 fPos = m_pGameInstance->Get_PlayerPos();
+    //_float4 fPos = m_pGameInstance->Get_PlayerPos();
 
-    /* 광원 기준의 뷰 변환행렬. */
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    ///* 광원 기준의 뷰 변환행렬. */
+    //XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+
     XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
     XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
@@ -952,7 +994,11 @@ void CRenderer::Render_DeferredResult()
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
         return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
+    // 그림자맵 사용
+    if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture_NotMove", 1)))
+        return;
+    // 그림자 직접 렌더링
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture_Move")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
@@ -1393,6 +1439,11 @@ void CRenderer::Render_Final()
     //_int i = (_int)(m_fValue * 100);
     //wsprintf(m_szFPS, TEXT("1. reinhard   2. ACES   3. HDR Decrease   4. HDR Increase\n5. LUT\nValue : %d"), i);
     //m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+    if (m_pGameInstance->Get_DIKeyState(DIK_7))
+    {
+        SaveRenderTargetToDDS(m_pGameInstance->Get_RTV(TEXT("Target_LightDepth")), L"../Bin/Resources/Textures/RenderTarget.dds");
+    }
 }
 
 void CRenderer::Compute_HDR()
@@ -1783,5 +1834,6 @@ void CRenderer::Free()
     Safe_Release(m_pMaskTex);
     Safe_Release(m_pDistortionTex);
     Safe_Release(m_pDecalTex);
+    Safe_Release(m_pShadowTex);
     Safe_Release(m_pReflectionDepthStencilView);
 }

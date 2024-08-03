@@ -46,7 +46,8 @@ texture2D   g_NormalTexture;
 texture2D   g_DiffuseTexture;
 texture2D   g_ShadeTexture;
 texture2D   g_DepthTexture;
-texture2D   g_LightDepthTexture;
+texture2D   g_LightDepthTexture_Move;
+texture2D   g_LightDepthTexture_NotMove;
 texture2D   g_SpecularTexture;
 texture2D g_DecalDepthTexture;
 
@@ -565,9 +566,14 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
     vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
 
-    vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
+    float lightDepthDesc_Move = g_LightDepthTexture_Move.Sample(LinearSampler, vTexcoord);
+    float lightDepthDesc_NotMove = g_LightDepthTexture_NotMove.Sample(LinearSampler, vTexcoord);
+    float lightDepthDesc = 0.f;
+    lightDepthDesc = min(lightDepthDesc_Move, lightDepthDesc_NotMove);
 
-    float fLightOldDepth = vLightDepthDesc.x * 3000.f;
+    //vector vLightDepthDesc = g_LightDepthTexture_Move.Sample(PointSampler, vTexcoord);
+
+    float fLightOldDepth = lightDepthDesc * 3000.f;
 
     if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
         vColor = vector(vColor.rgb * 0.5f, 1.f);

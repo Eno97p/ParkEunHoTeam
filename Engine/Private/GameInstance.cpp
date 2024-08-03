@@ -677,6 +677,11 @@ HRESULT CGameInstance::End_MRT(ID3D11DeviceContext* pDeferredContext)
 	return m_pTarget_Manager->End_MRT(pDeferredContext);
 }
 
+ID3D11RenderTargetView* CGameInstance::Get_RTV(const wstring& strTargetTag)
+{
+	return m_pTarget_Manager->Get_RTV(strTargetTag);
+}
+
 HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)
 {
 	return m_pTarget_Manager->Bind_RenderTargetSRV(strTargetTag, pShader, pConstantName);

@@ -90,6 +90,7 @@ void CWhisperSword_Anim::Tick(_float fTimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, vMatrix * XMLoadFloat4x4(m_pParentMatrix));
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+	m_pSpecialColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
 	Generate_Trail(0);
 
@@ -121,10 +122,11 @@ void CWhisperSword_Anim::Late_Tick(_float fTimeDelta)
 
 
 #ifdef _DEBUG
-	if (m_bIsActive) 
+	if (m_bIsActive)
 	{
 		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-	}
+		m_pGameInstance->Add_DebugComponent(m_pSpecialColliderCom);
+}
 
 #endif
 }
@@ -255,6 +257,18 @@ HRESULT CWhisperSword_Anim::Render_Bloom()
 	return S_OK;
 }
 
+CCollider* CWhisperSword_Anim::Get_Collider()
+{
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK)
+	{
+		return m_pSpecialColliderCom;
+	}
+	else
+	{
+		return m_pColliderCom;
+	}
+}
+
 HRESULT CWhisperSword_Anim::Add_Components()
 {
 	/* For.Com_Collider */
@@ -267,6 +281,17 @@ HRESULT CWhisperSword_Anim::Add_Components()
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	/* For.Com_Collider */
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc2{};
+	ColliderDesc2.eType = CCollider::TYPE_OBB;
+	ColliderDesc2.vExtents = _float3(15.f, 20.f, 15.f);
+	ColliderDesc2.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+	ColliderDesc2.vRotation = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider2"), reinterpret_cast<CComponent**>(&m_pSpecialColliderCom), &ColliderDesc2)))
 		return E_FAIL;
 
 	/* For.Com_Model */
@@ -342,4 +367,6 @@ CGameObject* CWhisperSword_Anim::Clone(void* pArg)
 void CWhisperSword_Anim::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSpecialColliderCom);
 }

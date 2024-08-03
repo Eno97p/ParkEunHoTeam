@@ -311,6 +311,10 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
+		else if (m_fDamageTiming > 2.05f && m_fDamageTiming < 2.20f)
+		{
+			m_pWeapon[*m_pCurWeapon]->Set_Active();
+		}
 		else
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
@@ -434,7 +438,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 			ParticlePos.y += 1.f;
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
-				//EFFECTMGR->Generate_Particle(31, ParticlePos);
 				m_pWeapon[*m_pCurWeapon]->Set_Active(true);
 			}
 			else
@@ -448,28 +451,26 @@ void CBody_Player::Tick(_float fTimeDelta)
 			ParticlePos.y += 1.f;
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
-				//EFFECTMGR->Generate_Particle(31, ParticlePos);
 				m_pWeapon[*m_pCurWeapon]->Set_Active();
 			}
 			else
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 			}
-			fAnimSpeed = 2.f;
+			fAnimSpeed = 1.f;
 		}
 		else if (m_iPastAnimIndex == 358)
 		{
 			ParticlePos.y += 1.f;
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
-				//EFFECTMGR->Generate_Particle(31, ParticlePos);
 				m_pWeapon[*m_pCurWeapon]->Set_Active();
 			}
 			else
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 			}
-			fAnimSpeed = 2.f;
+			fAnimSpeed = 1.f;
 		}
 
 		if (m_iPastAnimIndex >= 300)
@@ -1245,7 +1246,7 @@ HRESULT CBody_Player::Render_LightDepth()
 	_float4 fPos = m_pGameInstance->Get_PlayerPos();
 
 	/* ±¤¿ø ±âÁØÀÇ ºä º¯È¯Çà·Ä. */
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_pGameInstance->Get_ShadowEye(), m_pGameInstance->Get_ShadowFocus(), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))

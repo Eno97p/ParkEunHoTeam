@@ -41,7 +41,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
-	CCollider* Get_Collider() { return m_pColliderCom; }
+	virtual CCollider* Get_Collider() { return m_pColliderCom; }
 	_float3 Get_Collider_Center() {
 		return m_pColliderCom->Get_Center();
  }

@@ -26,9 +26,9 @@ HRESULT CUI_StateHP::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 390.f;
+	m_fX = 282.2f; // 390
 	m_fY = 45.f;
-	m_fSizeX = 768.f;
+	m_fSizeX = 300.f; // 768
 	m_fSizeY = 24.f;
 
 	Setting_Position();
@@ -43,8 +43,6 @@ void CUI_StateHP::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateHP::Tick(_float fTimeDelta)
 {
-	// 현재 : Player가 없으면 현재 레벨의 플레이어를 받아와서 할당함 > 레벨 넘어가면 참조 중인 플레이어가 있기 때문에(댕글링 포인터) 해당 값을 못 받아오는 이슈 있음
-
 	if (!m_pPlayer)
 	{
 		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
@@ -55,6 +53,10 @@ void CUI_StateHP::Tick(_float fTimeDelta)
 	{
 		m_fCurrentRatio = m_pPlayer->Get_HpRatio();
 	}
+
+	m_fSizeX = m_pPlayer->Get_MaxHP(); // 134   500
+	m_fX = ORIGIN_X - ((ORIGIN_SIZEX - m_fSizeX) / 2 * 0.77f); // 282.8f
+	Setting_Position();
 
 	// 체력 감소
 	if (m_fCurrentRatio < m_fPastRatio)

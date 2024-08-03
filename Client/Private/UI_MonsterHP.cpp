@@ -93,7 +93,7 @@ HRESULT CUI_MonsterHP::Render()
 		// Transform의 m_Matrix[MAT_PROJ] 를 활용해야 하는 것인지 > 받아오는 함수가 없는데
 
 		const _float4x4* pProj = m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ); // 얘 사용 X
-		
+		// 저 matrix들로 뷰, 투영 행렬을 곱해서 투영 공간까지 올려주도록 하기?
 
 		//if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), m_wstrDamage, _float2(pProj->m[2][0], pProj->m[2][1]), XMVectorSet(0.f, 0.f, 0.f, 1.f))))
 		//	return E_FAIL;

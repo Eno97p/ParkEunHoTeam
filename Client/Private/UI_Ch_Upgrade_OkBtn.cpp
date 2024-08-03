@@ -3,6 +3,10 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "CMouse.h"
+#include "Camera.h"
+#include "Player.h"
+
+#include "UIGroup_Ch_Upgrade.h"
 
 CUI_Ch_Upgrade_OkBtn::CUI_Ch_Upgrade_OkBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -52,8 +56,11 @@ void CUI_Ch_Upgrade_OkBtn::Tick(_float fTimeDelta)
 
     if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
     {
-        //CUI_Manager::GetInstance()->Get_UIGroup("Setting")->Set_RenderOnAnim(false);
-        //dynamic_cast<CUIGroup_Menu*>(CUI_Manager::GetInstance()->Get_UIGroup("Menu"))->Set_MenuPageState(false);
+        // 창이 종료되고 Origin의 값들을 현재 값으로 적용
+        CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade")->Set_RenderOnAnim(false);
+        dynamic_cast<CUIGroup_Ch_Upgrade*>(CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade"))->Resset_OriginData();
+   
+        m_pGameInstance->Get_MainCamera()->Activate();
     }
 }
 

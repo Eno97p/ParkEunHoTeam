@@ -33,7 +33,7 @@ auto CWorker::Add_Job(T&& Func, Args&&...args) -> future<decltype(Func(args...))
 void CWorker::Shutdown()
 {
 
-
+	
 	{
 		unique_lock<mutex> lock(m_JobMutex);
 		m_bIsShutdown = true;

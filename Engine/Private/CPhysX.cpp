@@ -19,7 +19,7 @@ CUserErrorCallBack g_ErrorCallBack;
 
 
 
-PxPBDParticleSystem* particleSystem;
+
 PxParticleBuffer* particleBuffer;
 
 CPhysX::CPhysX(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -166,82 +166,91 @@ HRESULT CPhysX::Initialize()
 	PxInitVehicleExtension(*m_pFoundation);
 
 
+	/*m_pParticleSystem = m_pPhysics->createPBDParticleSystem(*m_pCudaContextManager, 48, 0.5f);
 
 
 
 
-	//const PxU32 maxParticles = 1000;
-	//particleSystem= m_pPhysics->createPBDParticleSystem(*m_pCudaContextManager, 96);
 
-	//const PxReal restOffset = 0.5f * 0.2f / 0.6f;
-	//const PxReal solidRestOffset = restOffset;
-	//const PxReal fluidRestOffset = restOffset * 0.6f;
-	//const PxReal particleMass = 1000.f * 1.333f * 3.14159f * 0.2f * 0.2f * 0.2f;
 
-	//particleSystem->setRestOffset(restOffset);
-	//particleSystem->setContactOffset(restOffset + 0.01f);
-	//particleSystem->setParticleContactOffset(PxMax(solidRestOffset + 0.01f, fluidRestOffset / 0.6f));
-	//particleSystem->setSolidRestOffset(solidRestOffset);
-	//particleSystem->setFluidRestOffset(fluidRestOffset);
-	//particleSystem->setParticleFlag(PxParticleFlag::eENABLE_SPECULATIVE_CCD, false);
 
-	//m_pScene->addActor(*particleSystem);
-	//
-	//PxU32* phase = PX_EXT_PINNED_MEMORY_ALLOC(PxU32, *m_pCudaContextManager, maxParticles);
-	//PxVec4* position = PX_EXT_PINNED_MEMORY_ALLOC(PxVec4, *m_pCudaContextManager, maxParticles);
-	//PxVec4* velocity = PX_EXT_PINNED_MEMORY_ALLOC(PxVec4, *m_pCudaContextManager, maxParticles);
-	//
-	//const PxU32 maxMaterials = 3;
-	//PxU32 phases[maxMaterials];
-	//for (PxU32 i = 0; i < maxMaterials; ++i)
-	//{
-	//	PxPBDMaterial* mat = m_pPhysics->createPBDMaterial(0.05f, i / (maxMaterials - 1.0f), 0.f, 10.002f * (i + 1), 0.5f, 0.005f * i, 0.01f, 0.f, 0.f);
-	//	phases[i] = particleSystem->createPhase(mat, PxParticlePhaseFlags(PxParticlePhaseFlag::eParticlePhaseFluid | PxParticlePhaseFlag::eParticlePhaseSelfCollide));
-	//}
+	m_pScene->addActor(*m_pParticleSystem);
 
-	//PxVec3 vecPos = PxVec3(10, 10, 10);
-	//PxReal x = vecPos.x;
-	//PxReal y = vecPos.y;
-	//PxReal z = vecPos.z;
+	PxParticleAndDiffuseBuffer* particleAndDiffuseBuffer = m_pPhysics->createParticleAndDiffuseBuffer(1000, 500, 200, m_pCudaContextManager);*/
+	
 
-	//for (PxU32 i = 0; i < 10; ++i)
-	//{
-	//	for (PxU32 j = 0; j < 10; ++j)
-	//	{
-	//		for (PxU32 k = 0; k < 10; ++k)
-	//		{
-	//			const PxU32 index = i * (10 * 10) + j * 10 + k;
-	//			const PxU16 matIndex = (PxU16)(i * maxMaterials / 10);
-	//			const PxVec4 pos(x, y, z, 1.0f / particleMass);
-	//			phase[index] = phases[matIndex];
-	//			position[index] = pos;
-	//			velocity[index] = PxVec4(0.0f);
+	/*const PxU32 maxParticles = 1000;
+	
+	m_pParticleSystem = m_pPhysics->createPBDParticleSystem(*m_pCudaContextManager, 48,0.5f);	
 
-	//			z += 0.2f;
-	//		}
-	//		z = vecPos.z;
-	//		y += 0.2f;
-	//	}
-	//	y = vecPos.y;
-	//	x += 0.2f;
-	//}
+	const PxReal restOffset = 0.5f * 0.2f / 0.6f;
+	const PxReal solidRestOffset = restOffset;
+	const PxReal fluidRestOffset = restOffset * 0.6f;
+	const PxReal particleMass = 1000.f * 1.333f * 3.14159f * 0.2f * 0.2f * 0.2f;
 
-	//PxParticleBufferDesc bufferDesc;
-	//bufferDesc.maxParticles = maxParticles;
-	//bufferDesc.numActiveParticles = maxParticles;
+	m_pParticleSystem->setRestOffset(restOffset);
+	m_pParticleSystem->setContactOffset(restOffset + 0.01f);
+	m_pParticleSystem->setParticleContactOffset(PxMax(solidRestOffset + 0.01f, fluidRestOffset / 0.6f));
+	m_pParticleSystem->setSolidRestOffset(solidRestOffset);
+	m_pParticleSystem->setFluidRestOffset(fluidRestOffset);
+	m_pParticleSystem->setParticleFlag(PxParticleFlag::eENABLE_SPECULATIVE_CCD, false);
 
-	//bufferDesc.positions = position;
-	//bufferDesc.velocities = velocity;
-	//bufferDesc.phases = phase;
+	m_pScene->addActor(*m_pParticleSystem);
+	
+	PxU32* phase = PX_EXT_PINNED_MEMORY_ALLOC(PxU32, *m_pCudaContextManager, maxParticles);
+	PxVec4* position = PX_EXT_PINNED_MEMORY_ALLOC(PxVec4, *m_pCudaContextManager, maxParticles);
+	PxVec4* velocity = PX_EXT_PINNED_MEMORY_ALLOC(PxVec4, *m_pCudaContextManager, maxParticles);
+	
+	const PxU32 maxMaterials = 3;
+	PxU32 phases[maxMaterials];
+	for (PxU32 i = 0; i < maxMaterials; ++i)
+	{
+		PxPBDMaterial* mat = m_pPhysics->createPBDMaterial(0.05f, i / (maxMaterials - 1.0f), 0.f, 10.002f * (i + 1), 0.5f, 0.005f * i, 0.01f, 0.f, 0.f);
+		phases[i] = m_pParticleSystem->createPhase(mat, PxParticlePhaseFlags(PxParticlePhaseFlag::eParticlePhaseFluid | PxParticlePhaseFlag::eParticlePhaseSelfCollide));
+	}
 
-	//particleBuffer = CreateParticleBuffer(bufferDesc, particleBuffer);
-	//particleSystem->addParticleBuffer(particleBuffer);
-	//
+	PxVec3 vecPos = PxVec3(10, 10, 10);
+	PxReal x = vecPos.x;
+	PxReal y = vecPos.y;
+	PxReal z = vecPos.z;
 
-	//PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, position);
-	//PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, velocity);
-	//PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, phase);
+	for (PxU32 i = 0; i < 10; ++i)
+	{
+		for (PxU32 j = 0; j < 10; ++j)
+		{
+			for (PxU32 k = 0; k < 10; ++k)
+			{
+				const PxU32 index = i * (10 * 10) + j * 10 + k;
+				const PxU16 matIndex = (PxU16)(i * maxMaterials / 10);
+				const PxVec4 pos(x, y, z, 1.0f / particleMass);
+				phase[index] = phases[matIndex];
+				position[index] = pos;
+				velocity[index] = PxVec4(0.0f);
 
+				z += 0.2f;
+			}
+			z = vecPos.z;
+			y += 0.2f;
+		}
+		y = vecPos.y;
+		x += 0.2f;
+	}
+
+	PxParticleBufferDesc bufferDesc;
+	bufferDesc.maxParticles = maxParticles;
+	bufferDesc.numActiveParticles = maxParticles;
+
+	bufferDesc.positions = position;
+	bufferDesc.velocities = velocity;
+	bufferDesc.phases = phase;
+
+	particleBuffer = CreateParticleBuffer(bufferDesc, particleBuffer);
+	m_pParticleSystem->addParticleBuffer(particleBuffer);
+	
+
+	PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, position);
+	PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, velocity);
+	PX_EXT_PINNED_MEMORY_FREE(*m_pCudaContextManager, phase);*/
 
 	return S_OK;
 }
@@ -250,7 +259,6 @@ void CPhysX::Tick(_float fTimeDelta)
 {
 	m_pScene->simulate(fTimeDelta);
 
-	//FractureTool
 	
 	
 	PxU32 errorState = 0;
@@ -346,7 +354,7 @@ PxParticleBuffer* CPhysX::CreateParticleBuffer(const PxParticleBufferDesc& desc,
 	tmpparticleBuffer->setNbParticleVolumes(desc.numVolumes);
 
 	m_pCudaContextManager->getCudaContext()->streamSynchronize(0);
-
+	
 #else
 	PX_UNUSED(cudaContextManager);
 	PX_UNUSED(particleBuffer);

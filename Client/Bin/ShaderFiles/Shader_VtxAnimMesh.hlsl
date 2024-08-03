@@ -145,6 +145,7 @@ struct PS_OUT
 	float2		vVelocity : SV_TARGET7;
 };
 
+[earlydepthstencil]
 PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT Out = (PS_OUT)0;

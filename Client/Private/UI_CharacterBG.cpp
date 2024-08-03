@@ -1,7 +1,10 @@
 #include "UI_CharacterBG.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "Player.h"
+
+#include "UIGroup_Ch_Upgrade.h"
 
 CUI_CharacterBG::CUI_CharacterBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -85,8 +88,8 @@ void CUI_CharacterBG::Update_Data()
 	m_wstrStamina_State = to_wstring((_uint)pPlayer->Get_MaxStamina());
 	m_wstrEther = to_wstring((_uint)pPlayer->Get_MaxMP());
 
-	m_wstrPhysicalDmg = to_wstring(0);
-	m_wstrEtheralDmg = to_wstring(0);
+	m_wstrPhysicalDmg = to_wstring(pPlayer->Get_PhysicalDmg());
+	m_wstrEtheralDmg = to_wstring(pPlayer->Get_EtherDmg());
 }
 
 HRESULT CUI_CharacterBG::Add_Components()
@@ -207,6 +210,98 @@ void CUI_CharacterBG::Render_Text()
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), to_wstring(0), _float2(fSecColX + 330.f, fSecColY + 213.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 
+}
+
+_vector CUI_CharacterBG::Check_Difference(ABILITY_TYPE eAbilityType)
+{
+	// 값을 원본과 비교하여 다르다면 녹색을 반환
+	CUIGroup_Ch_Upgrade::ORIGIN_DATA tOriginData =
+		dynamic_cast<CUIGroup_Ch_Upgrade*>(CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade"))->Get_OriginData();
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+	_vector vColorWhite = XMVectorSet(1.f, 1.f, 1.f, 1.f);
+	_vector vColorGreen = XMVectorSet(0.f, 1.f, 0.f, 1.f);
+
+	switch (eAbilityType)
+	{
+	case Client::CUI_CharacterBG::ABILITY_VITALITY:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STAMINA:
+	{
+		if (pPlayer->Get_StaminaLv() != tOriginData.iOriginStaminaLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STRENGHT:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_MYSTICISM:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_KNOWLEDGE:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_HEALTH:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_STAMINA_STATE:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_ETHER:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_PHYSICALDMG:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	case Client::CUI_CharacterBG::ABILITY_ETHERDMG:
+	{
+		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+			return vColorGreen;
+		else
+			return vColorWhite;
+	}
+	default:
+		break;
+	}
+
+
+	return XMVectorSet(1.f, 1.f, 1.f, 1.f);
 }
 
 CUI_CharacterBG* CUI_CharacterBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

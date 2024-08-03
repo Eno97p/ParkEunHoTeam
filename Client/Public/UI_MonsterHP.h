@@ -27,12 +27,14 @@ public:
 
 private:
 	_bool			m_isDamageRend = { false };
-	class CMonster*	m_pMonster = { nullptr };
+	_int			m_iAccumDamage = { 0 };
 	_float			m_fCurrentRatio = 1.f;
 	_float			m_fPastRatio = 1.f;
 	_float			m_fHudRatio = 1.f;
 	_float			m_fDamageTimer = { 0.f };
 	wstring			m_wstrDamage;
+
+	class CMonster*	m_pMonster = { nullptr };
 
 private:
 	HRESULT	Add_Components();

@@ -95,9 +95,10 @@ HRESULT CUI_BossHP::Render()
 
 void CUI_BossHP::Rend_Damage(_int iValue)
 {
+	m_iAccumDamage += iValue;
 	m_isDamageRend = true;
 	m_fDamageTimer = 0.f;
-	m_wstrDamage = to_wstring(iValue);
+	m_wstrDamage = to_wstring(m_iAccumDamage);
 }
 
 HRESULT CUI_BossHP::Add_Components()

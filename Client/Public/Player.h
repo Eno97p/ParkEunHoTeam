@@ -86,6 +86,10 @@ public:
 	void			Set_MysticismLv(_int iValue) { m_iMysticismLv += iValue; }
 	_uint			Get_KnowledgeLv() { return m_iKnowledgeLv; }
 	void			Set_KnowledgeLv(_int iValue) { m_iKnowledgeLv += iValue; }
+	_uint			Get_PhysicalDmg() { return m_iPhysicalDmg; }
+	void			Set_PhysicalDmg(_int iValue) { m_iPhysicalDmg += iValue; }
+	_uint			Get_EtherDmg() { return m_iEtherDmg; }
+	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
 
 private:
 	HRESULT Add_Nodes();
@@ -207,7 +211,8 @@ private:
 	_uint		m_iStrenghtLv = { 0 };
 	_uint		m_iMysticismLv = { 0 };
 	_uint		m_iKnowledgeLv = { 0 };
-
+	_uint		m_iPhysicalDmg = { 0 };
+	_uint		m_iEtherDmg = { 0 };
 
 #pragma endregion UI°ü·Ã Data
 private:

@@ -352,28 +352,28 @@ HRESULT CRenderer::Initialize()
     //if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PrevDepth"), TEXT("Target_PrevDepth"))))
     //    return E_FAIL;
 
- 
+ /*
     const char* hzbPassNames[] = { "CS_BuildHZB" };
     m_pHZBComputeShader = CComputeShader_Texture::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_HZB.hlsl"), 1, hzbPassNames);
     if (nullptr == m_pHZBComputeShader)
-        return E_FAIL;
+        return E_FAIL;*/
 
-    D3D11_TEXTURE2D_DESC texDesc;
-    ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-    texDesc.Width = ViewportDesc.Width;
-    texDesc.Height = ViewportDesc.Height;
-    texDesc.MipLevels = 1;
-    texDesc.ArraySize = 1;
-    texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //기존 깊이버퍼랑 맞춰야하나
-    texDesc.SampleDesc.Quality = 0;
-    texDesc.SampleDesc.Count = 1;
-    texDesc.Usage = D3D11_USAGE_DEFAULT;  // GPU 읽기/쓰기 가능
-    texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;  // SRV 생성 가능
-    texDesc.CPUAccessFlags = 0;  // CPU 액세스 없음
-    texDesc.MiscFlags = 0;
+    //D3D11_TEXTURE2D_DESC texDesc;
+    //ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+    //texDesc.Width = ViewportDesc.Width;
+    //texDesc.Height = ViewportDesc.Height;
+    //texDesc.MipLevels = 1;
+    //texDesc.ArraySize = 1;
+    //texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //기존 깊이버퍼랑 맞춰야하나
+    //texDesc.SampleDesc.Quality = 0;
+    //texDesc.SampleDesc.Count = 1;
+    //texDesc.Usage = D3D11_USAGE_DEFAULT;  // GPU 읽기/쓰기 가능
+    //texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;  // SRV 생성 가능
+    //texDesc.CPUAccessFlags = 0;  // CPU 액세스 없음
+    //texDesc.MiscFlags = 0;
 
-    if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pPrevDepthTexture)))
-        return E_FAIL;
+    //if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pPrevDepthTexture)))
+    //    return E_FAIL;
 
     // m_pPrevDepthTexture에 대한 SRV 생성
     //D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -382,11 +382,11 @@ HRESULT CRenderer::Initialize()
     //srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     //srvDesc.Texture2D.MipLevels = 1;
     //srvDesc.Texture2D.MostDetailedMip = 0;
-    if (FAILED(m_pDevice->CreateShaderResourceView(m_pPrevDepthTexture, nullptr, &m_pPrevDepthSRV)))
-        return E_FAIL;
+    //if (FAILED(m_pDevice->CreateShaderResourceView(m_pPrevDepthTexture, nullptr, &m_pPrevDepthSRV)))
+    //    return E_FAIL;
 
 
-    ZeroMemory(&texDesc, sizeof(texDesc));
+   /* ZeroMemory(&texDesc, sizeof(texDesc));
     texDesc.Width = ViewportDesc.Width;
     texDesc.Height = ViewportDesc.Height;
     texDesc.MipLevels = 1;
@@ -396,38 +396,38 @@ HRESULT CRenderer::Initialize()
     texDesc.Usage = D3D11_USAGE_DEFAULT;
     texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
     texDesc.CPUAccessFlags = 0;
-    texDesc.MiscFlags = 0;
+    texDesc.MiscFlags = 0;*/
 
-    for (UINT i = 0; i < MAX_MIP_LEVELS; ++i)
-    {
-        if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pHZBTexture[i])))
-            return E_FAIL;
+    //for (UINT i = 0; i < MAX_MIP_LEVELS; ++i)
+    //{
+    //    if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pHZBTexture[i])))
+    //        return E_FAIL;
 
-        // SRV 생성
-        D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-        ZeroMemory(&srvDesc, sizeof(srvDesc));
-        srvDesc.Format = texDesc.Format;
-        srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        srvDesc.Texture2D.MipLevels = 1;
-        srvDesc.Texture2D.MostDetailedMip = 0;
+    //    // SRV 생성
+    //    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    //    ZeroMemory(&srvDesc, sizeof(srvDesc));
+    //    srvDesc.Format = texDesc.Format;
+    //    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+    //    srvDesc.Texture2D.MipLevels = 1;
+    //    srvDesc.Texture2D.MostDetailedMip = 0;
 
-        if (FAILED(m_pDevice->CreateShaderResourceView(m_pHZBTexture[i], /*&srvDesc*/nullptr, &m_pHZBSRV[i])))
-            return E_FAIL;
+    //    if (FAILED(m_pDevice->CreateShaderResourceView(m_pHZBTexture[i], /*&srvDesc*/nullptr, &m_pHZBSRV[i])))
+    //        return E_FAIL;
 
-        // UAV 생성
-        D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-        ZeroMemory(&uavDesc, sizeof(uavDesc));
-        uavDesc.Format = texDesc.Format;
-        uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-        uavDesc.Texture2D.MipSlice = 0;
+    //    // UAV 생성
+    //    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+    //    ZeroMemory(&uavDesc, sizeof(uavDesc));
+    //    uavDesc.Format = texDesc.Format;
+    //    uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+    //    uavDesc.Texture2D.MipSlice = 0;
 
-        if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pHZBTexture[i], &uavDesc, &m_pHZBUAV[i])))
-            return E_FAIL;
+    //    if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pHZBTexture[i], &uavDesc, &m_pHZBUAV[i])))
+    //        return E_FAIL;
 
-        // 다음 밉맵 레벨을 위해 크기 조정
-        texDesc.Width = max(texDesc.Width / 2, 1);
-        texDesc.Height = max(texDesc.Height / 2, 1);
-    }
+    //    // 다음 밉맵 레벨을 위해 크기 조정
+    //    texDesc.Width = max(texDesc.Width / 2, 1);
+    //    texDesc.Height = max(texDesc.Height / 2, 1);
+    //}
 
 #pragma endregion 계층적 Z 버퍼 끝
 
@@ -541,8 +541,8 @@ HRESULT CRenderer::Initialize()
         if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Final"), currentX, currentY, targetWidth, targetHeight)))
            return E_FAIL;*/
 
-           //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
-           //   return E_FAIL;
+           if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
+              return E_FAIL;
 
 
 #endif	
@@ -885,6 +885,7 @@ void CRenderer::Render_DeferredResult()
 
     /* 광원 기준의 뷰 변환행렬. */
     XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
     XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
     //매직넘버 던져줌
@@ -1713,7 +1714,7 @@ void CRenderer::Render_Debug()
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
-   // m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 }
 
 #endif

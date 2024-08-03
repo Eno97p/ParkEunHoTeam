@@ -20,6 +20,8 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype(const wstring& ShaderFilePath, _uint NumPasses, const _char** EntryPointNames);
 	virtual HRESULT Initialize(void* arg) override;
+	HRESULT Initialize3D(void* arg);
+
 	HRESULT Compute(_uint dispatchX, _uint dispatchY, _uint dispatchZ);
 	HRESULT Begin(_uint iPassIndex);
 	HRESULT Bind_RawValue(const _char* pConstantName, const void* pValue, _uint iLength);
@@ -35,9 +37,9 @@ private:
 	_uint						m_iNumPasses = { 0 };
 
 	ID3D11ComputeShader* computeShaders[MAX_PASS] = { nullptr };
-	ID3D11Texture2D* inputTexture = nullptr;
+	ID3D11Texture3D* inputTexture = nullptr;
 	ID3D11ShaderResourceView* inputSRV[MAX_PASS] = { nullptr };
-	ID3D11Texture2D* outputTexture[MAX_PASS] = { nullptr };
+	ID3D11Texture3D* outputTexture[MAX_PASS] = { nullptr };
 	ID3D11UnorderedAccessView* outputUAV[MAX_PASS] = { nullptr };
 	ID3D11ShaderResourceView* outputSRV[MAX_PASS] = { nullptr };
 
@@ -49,3 +51,4 @@ public:
 };
 
 END
+

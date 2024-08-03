@@ -162,6 +162,18 @@ namespace Engine
 
 	}VTXMESH;
 
+	typedef struct ENGINE_DLL VTXCLOUD
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT3		vTexcoord;
+		XMFLOAT3		vTangent;
+
+		static const unsigned int		iNumElements = { 4 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[4];
+
+	}VTXCLOUD;
+
 	typedef struct ENGINE_DLL VTXANIMMESH
 	{
 		XMFLOAT3		vPosition;

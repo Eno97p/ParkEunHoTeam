@@ -308,11 +308,22 @@ NodeStates CMantari::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
-		m_pPhysXCom->Set_Gravity(false);
-		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		vPos.m128_f32[1] += fTimeDelta * 0.25f;
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-		m_pPhysXCom->Set_Position(vPos);
+		if (m_fChasingDelay < 2.f)
+		{
+			m_pPhysXCom->Set_Gravity(false);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos.m128_f32[1] += fTimeDelta * 0.5f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pPhysXCom->Set_Position(vPos);
+		}
+		else
+		{
+			m_pPhysXCom->Set_Gravity(false);
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			vPos.m128_f32[1] += fTimeDelta * 0.3f;
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pPhysXCom->Set_Position(vPos);
+		}
 
 		if (m_isAnimFinished)
 		{
@@ -343,9 +354,14 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		m_fChasingDelay = 0.5f;
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
-		pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
-		pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
+		{
+			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+			pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		}
+		
 		
 		if (m_pPlayer->Get_m_bParry())
 		{
@@ -373,6 +389,8 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		m_iState = STATE_HIT;
 		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
+
+		// UI Damage 띄울 것
 		m_pUI_HP->Set_Rend(true); // >> 임의로 피격 시 Render 하긴 하는데 나중에 보스 대면 시 Render하는 것으로 변경할 것
 		return RUNNING;
 		break;
@@ -680,6 +698,8 @@ NodeStates CMantari::Idle(_float fTimeDelta)
 
 void CMantari::Add_Hp(_int iValue)
 {
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
+
 	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
 	if (m_fCurHp == 0)
 	{

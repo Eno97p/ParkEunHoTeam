@@ -146,7 +146,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[11] = { false,false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[12] = { false,false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -198,10 +198,13 @@ void CImguiMgr::Visible_Data()
 	if (bShow[9] == true)
 		Tornado_Tool();
 
-	ImGui::Checkbox("Model_Change", &bShow[10]);
+	ImGui::Checkbox("FirePillar_Tool", &bShow[10]);
 	if (bShow[10] == true)
-		Model_Change();
+		FirePillarTool();
 
+	ImGui::Checkbox("Model_Change", &bShow[11]);
+	if (bShow[11] == true)
+		Model_Change();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -358,8 +361,8 @@ void CImguiMgr::EffectTool_Rework()
 		{
 			if (parentsDesc.DesolveNum < 0)
 				parentsDesc.DesolveNum = 0;
-			if (parentsDesc.DesolveNum > 39)
-				parentsDesc.DesolveNum = 39;
+			if (parentsDesc.DesolveNum > 42)
+				parentsDesc.DesolveNum = 42;
 		}
 		ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&parentsDesc.vDesolveColor));
 		ImGui::InputFloat("DesolveLength", &parentsDesc.fDesolveLength);
@@ -2688,6 +2691,119 @@ HRESULT CImguiMgr::Load_Tornado()
 	NameFile.close();
 
 	return S_OK;
+}
+
+void CImguiMgr::FirePillarTool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Tornado_Editor");
+
+	static CFirePillar::FIREPILLAR Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat("SizeInterval", &Desc.Interval);
+	ImGui::InputFloat4("vStartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+	ImGui::InputFloat3("vParentScale", reinterpret_cast<float*>(&Desc.vScale));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar1");
+
+	ImGui::InputFloat3("P1_vMaxSize", reinterpret_cast<float*>(&Desc.pillar1.vMaxSize));
+	ImGui::InputFloat("P1_BloomPower", &Desc.pillar1.fBloomPower);
+	ImGui::InputFloat("P1_UVSpeed", &Desc.pillar1.fUVSpeed);
+	ImGui::InputFloat("P1_RadicalStrength", &Desc.pillar1.RadicalStrength);
+	ImGui::InputFloat("P1_GrowSpeed", &Desc.pillar1.fGrowSpeed);
+	ImGui::Checkbox("P1_Distortion", &Desc.pillar1.IsDistortion);
+	ImGui::Checkbox("P1_Opacity", &Desc.pillar1.Opacity);
+	if(Desc.pillar1.Opacity == true)
+		ImGui::InputFloat("P1_OpPower", &Desc.pillar1.OpacityPower);
+
+	ImGui::InputInt("P1_NumDesolve", &Desc.pillar1.NumDesolve);
+
+	ImGui::ColorEdit3("P1_Color1", reinterpret_cast<float*>(&Desc.pillar1.fColor));
+	ImGui::ColorEdit3("P1_Color2", reinterpret_cast<float*>(&Desc.pillar1.fColor2));
+
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar2");
+
+	ImGui::InputFloat3("P2_vMaxSize", reinterpret_cast<float*>(&Desc.pillar2.vMaxSize));
+	ImGui::InputFloat("P2_BloomPower", &Desc.pillar2.fBloomPower);
+	ImGui::InputFloat("P2_UVSpeed", &Desc.pillar2.fUVSpeed);
+	ImGui::InputFloat("P2_RadicalStrength", &Desc.pillar2.RadicalStrength);
+	ImGui::InputFloat("P2_GrowSpeed", &Desc.pillar2.fGrowSpeed);
+	ImGui::Checkbox("P2_Distortion", &Desc.pillar2.IsDistortion);
+	ImGui::Checkbox("P2_Opacity", &Desc.pillar2.Opacity);
+	if (Desc.pillar2.Opacity == true)
+		ImGui::InputFloat("P2_OpPower", &Desc.pillar2.OpacityPower);
+
+	ImGui::InputInt("P2_NumDesolve", &Desc.pillar2.NumDesolve);
+
+	ImGui::ColorEdit3("P2_Color1", reinterpret_cast<float*>(&Desc.pillar2.fColor));
+	ImGui::ColorEdit3("P2_Color2", reinterpret_cast<float*>(&Desc.pillar2.fColor2));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar3");
+
+	ImGui::InputFloat3("P3_vMaxSize", reinterpret_cast<float*>(&Desc.pillar3.vMaxSize));
+	ImGui::InputFloat("P3_BloomPower", &Desc.pillar3.fBloomPower);
+	ImGui::InputFloat("P3_UVSpeed", &Desc.pillar3.fUVSpeed);
+	ImGui::InputFloat("P3_RadicalStrength", &Desc.pillar3.RadicalStrength);
+	ImGui::InputFloat("P3_GrowSpeed", &Desc.pillar3.fGrowSpeed);
+	ImGui::Checkbox("P3_Distortion", &Desc.pillar3.IsDistortion);
+	ImGui::Checkbox("P3_Opacity", &Desc.pillar3.Opacity);
+	if (Desc.pillar3.Opacity == true)
+		ImGui::InputFloat("P3_OpPower", &Desc.pillar3.OpacityPower);
+
+	ImGui::InputInt("P3_NumDesolve", &Desc.pillar3.NumDesolve);
+
+	ImGui::ColorEdit3("P3_Color1", reinterpret_cast<float*>(&Desc.pillar3.fColor));
+	ImGui::ColorEdit3("P3_Color2", reinterpret_cast<float*>(&Desc.pillar3.fColor2));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar4");
+
+	ImGui::InputFloat3("P4_vMaxSize", reinterpret_cast<float*>(&Desc.pillar4.vMaxSize));
+	ImGui::InputFloat("P4_BloomPower", &Desc.pillar4.fBloomPower);
+	ImGui::InputFloat("P4_UVSpeed", &Desc.pillar4.fUVSpeed);
+	ImGui::InputFloat("P4_RadicalStrength", &Desc.pillar4.RadicalStrength);
+	ImGui::InputFloat("P4_GrowSpeed", &Desc.pillar4.fGrowSpeed);
+	ImGui::Checkbox("P4_Opacity", &Desc.pillar4.Opacity);
+	if (Desc.pillar4.Opacity == true)
+		ImGui::InputFloat("P4_OpPower", &Desc.pillar4.OpacityPower);
+
+	ImGui::InputInt("P4_NumDesolve", &Desc.pillar4.NumDesolve);
+
+	ImGui::ColorEdit3("P4_Color1", reinterpret_cast<float*>(&Desc.pillar4.fColor));
+	ImGui::ColorEdit3("P4_Color2", reinterpret_cast<float*>(&Desc.pillar4.fColor2));
+
+
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bottom");
+
+	ImGui::InputFloat3("Bottom_Size", reinterpret_cast<float*>(&Desc.Bottom.vMaxSize));
+	ImGui::InputFloat("Bottom_BloomPower", &Desc.Bottom.fBloomPower);
+
+	ImGui::InputFloat("Bottom_UVSpeed", &Desc.Bottom.fUVSpeed);
+	ImGui::InputFloat("Bottom_RadicalStrength", &Desc.Bottom.RadicalStrength);
+	ImGui::InputFloat("Bottom_GrowSpeed", &Desc.Bottom.fGrowSpeed);
+	ImGui::Checkbox("Bottom_Distortion", &Desc.Bottom.IsDistortion);
+	ImGui::Checkbox("Bottom_Opacity", &Desc.Bottom.Opacity);
+	if (Desc.Bottom.Opacity == true)
+		ImGui::InputFloat("Bottom_OpPower", &Desc.Bottom.OpacityPower);
+
+	ImGui::InputInt("Bottom_NumDesolve", &Desc.Bottom.NumDesolve);
+
+	ImGui::ColorEdit3("Bottom_Color1", reinterpret_cast<float*>(&Desc.Bottom.fColor));
+	ImGui::ColorEdit3("Bottom_Color2", reinterpret_cast<float*>(&Desc.Bottom.fColor2));
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_FirePillar"), TEXT("Prototype_GameObject_FirePillar"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"));
+	}
+
+	ImGui::End();
 }
 
 void CImguiMgr::FrameTextureTool()

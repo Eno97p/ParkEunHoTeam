@@ -85,6 +85,12 @@ HRESULT CUIGroup_BossHP::Render()
 	return S_OK;
 }
 
+void CUIGroup_BossHP::Rend_Damage(_int iValue)
+{
+	vector<CUI*>::iterator hp = m_vecUI.begin();
+	dynamic_cast<CUI_BossHP*>(*hp)->Rend_Damage(iValue);
+}
+
 HRESULT CUIGroup_BossHP::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

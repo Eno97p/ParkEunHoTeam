@@ -370,6 +370,7 @@ void CUI_Manager::Key_Input()
 	{
 		map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
 		(*ch_upgrade).second->Set_Rend(true);
+		dynamic_cast<CUIGroup_Ch_Upgrade*>((*ch_upgrade).second)->Resset_OriginData();
 
 		m_pGameInstance->Get_MainCamera()->Inactivate();
 	}

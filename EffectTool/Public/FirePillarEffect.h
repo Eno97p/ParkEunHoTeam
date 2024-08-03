@@ -10,25 +10,25 @@ END
 BEGIN(Effect)
 class CFirePillarEffect final : public CBlendObject
 {
-	enum FIREPILLARMODELNUM { F_1, F_2, F_3, F_END};
+public:
+	enum FIREPILLARMODELNUM { F_1, F_2, F_3, F_4, F_END};
 public:
 	typedef struct FIREPILLAREFFECTDESC
 	{
-		_float3 vMaxSize = { 1.f,1.f,1.f };
-		_float3 vOffset = { 0.f,0.f,0.f };
+		_float3 vMaxSize = { 0.5f,3.f,0.5f };
 		_float3 fColor = { 1.f,1.f,1.f };
 		_float3 fColor2 = { 1.f,1.f,1.f };
-		_float fBloomPower = 0.f;
-		_float fRotationSpeed = 360.f;
+		_float fBloomPower = 0.5f;
 		_float fMaxLifeTime = 10.f;
 		_float fUVSpeed = 1.f;
-		_float RadicalStrength = 1.f;
-		_float fGrowSpeed = 3.f;
-		_bool Opacity = false;
+		_float RadicalStrength = 0.f;
+		_float fGrowSpeed = 1.f;
+		_bool Opacity = true;
 		_bool IsDistortion = false;
 		_float OpacityPower = 0.5f;
-		_int NumDesolve = 0;
+		_int NumDesolve = 33;
 		_int NumModels = F_1;
+		_float SizeInterval = 0.1f;
 		const _float4x4* ParentMatrix = nullptr;
 	};
 
@@ -66,7 +66,10 @@ private:
 	wstring						m_ModelProtoName = TEXT("");
 
 private:
+	_float						m_Interval = 0.f;
 	_bool						EffectDead = false;
+	_bool						SizeDirectionChange = false; //false 일때 작아지게
+	_bool						SizeUpDone[2] = {false,false};
 
 public:
 	static CFirePillarEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -74,6 +74,14 @@ DepthStencilState DSS_None_Test_None_Write
     DepthWriteMask = zero;
 };
 
+DepthStencilState DSS_Less_Equal_Test_Write
+{
+    DepthEnable = true;
+    DepthWriteMask = ALL;
+    DepthFunc = LESS_EQUAL;
+    StencilEnable = false;
+};
+
 //vector		vSrcColor = vector(1.f, 0.f, 0.f, 0.5f);
 //vector		vDestColor = vector(0.f, 1.f, 0.f, 1.f);
 

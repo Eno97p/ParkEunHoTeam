@@ -286,6 +286,9 @@
     <ClInclude Include="..\Public\FirePillarEffect.h">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FirePillar_Bottom.h">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -445,6 +448,9 @@
       <Filter>Objects\02. Effects\10. FirePillar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\FirePillarEffect.cpp">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FirePillar_Bottom.cpp">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClCompile>
   </ItemGroup>

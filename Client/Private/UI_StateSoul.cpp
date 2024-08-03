@@ -53,7 +53,7 @@ void CUI_StateSoul::Tick(_float fTimeDelta)
 	else
 	{
 		// Player Level에 Ch_Upgrade 시 필요한 Soul 개수 계산하기
-		m_wstrLevelSout = to_wstring(m_pPlayer->Get_Level() * 325);
+		m_wstrLevelSout = to_wstring((m_pPlayer->Get_Level() * 10) + 290);
 	}
 
 

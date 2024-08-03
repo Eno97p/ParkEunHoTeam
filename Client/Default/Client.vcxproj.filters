@@ -682,6 +682,12 @@
     <Filter Include="02.GameObjects\06.Effect\Tornado">
       <UniqueIdentifier>{30e9c3c3-18cb-42e0-837b-7a323a9f2494}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\Btn\Select">
+      <UniqueIdentifier>{f6b6b686-58ae-497c-ae08-577a25842ce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\OkBtn">
+      <UniqueIdentifier>{15bf1a52-67d6-49c4-b72f-54c46cdbcd86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1409,6 +1415,12 @@
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn\Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2109,6 +2121,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\Btn\Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp">
+      <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

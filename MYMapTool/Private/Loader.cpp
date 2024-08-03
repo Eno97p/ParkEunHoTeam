@@ -27,6 +27,8 @@
 #include "TreasureChest.h"
 #include "Decal.h"
 
+#include "ComputeShader_Buffer.h"
+#include "ComputeShader_Texture.h"
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -836,7 +838,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Prototype_Component_Shader_VtxCloud
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCloud"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCloud.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCloud.hlsl"), VTXCLOUD::Elements, VTXCLOUD::iNumElements))))
 		return E_FAIL;
 
 	// Prototype_Component_Shader_Sky
@@ -866,9 +868,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
 		return E_FAIL;
 
+	const char* cloudPassNames[2] = { "GenerateNoise", "CalculateDensity" };
+
+	/* For.Prototype_Component_ComputeShader_GenerateNoise */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_ComputeShader_Cloud"),
+		CComputeShader_Texture::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/ComputeShader_Cloud.hlsl"), 2, &cloudPassNames[0]))))
+		return E_FAIL;
 
 
-	
 #pragma endregion Shader Load
 
 	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));

@@ -95,37 +95,67 @@ HRESULT CCloud::Render()
 
 	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	for (_uint i = 0; i < iNumMeshes; ++i) // 해당 Model의 Mesh만큼 순회
+	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-	/*	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			return E_FAIL;*/
-
-		//if ( i != 29)
-
-
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudDensity", &m_fCloudDensity, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudScale", &m_fCloudScale, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudSpeed", &m_fCloudSpeed, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudHeight", &m_fCloudHeight, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudColor", &m_vCloudColor, sizeof(_float3))))
+			return E_FAIL;
+		/*if (FAILED(m_pShaderCom->Bind_RawValue("g_SphereTracingThreshold", &m_fSphereTracingThreshold, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_MaxRayDistance", &m_fMaxRayDistance, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_MaxSteps", &m_iMaxSteps, sizeof(int))))*/
+		//	return E_FAIL;
+
+		 // 새로운 최적화 관련 값들 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fCoarseStepSize", &m_fCoarseStepSize, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFineStepSize", &m_fFineStepSize, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iMaxCoarseSteps", &m_iMaxCoarseSteps, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iMaxFineSteps", &m_iMaxFineSteps, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fDensityThreshold", &m_fDensityThreshold, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaThreshold", &m_fAlphaThreshold, sizeof(float))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_vector))))
 			return E_FAIL;
-		_float4 tmp;
-		XMStoreFloat4(&tmp, dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION));
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &tmp, sizeof(_float4))))
+
+		_float4 lightPos;
+		XMStoreFloat4(&lightPos, dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION));
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &lightPos, sizeof(_float4))))
 			return E_FAIL;
 
-		_float f = 100.f;
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange",&f, sizeof(_float))))
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange", &m_fLightRange, sizeof(float))))
 			return E_FAIL;
 
-		//if (FAILED(m_pShaderCom->Bind_RawValue("g_Test", &i, sizeof(_uint))))
-		//	return;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &m_vLightDiffuse, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &m_vLightAmbient, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &m_vLightSpecular, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
+			return E_FAIL;
 
 		m_pShaderCom->Begin(0);
-
 		m_pModelCom->Render(i);
 	}
-}
 
+	return S_OK;
+}
 HRESULT CCloud::Add_Components(void* pArg)
 {
 	wstring wstr = string_to_wstring(m_szModelName);

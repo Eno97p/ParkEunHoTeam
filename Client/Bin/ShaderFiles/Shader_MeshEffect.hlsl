@@ -492,6 +492,90 @@ PS_OUT PS_TornadoRoot_Bloom(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_YUp(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.y += g_CurTime * g_Speed;
+
+	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
+
+	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, MovedUV);
+
+	if (g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+
+	if (In.vTexcoord.y < 0.5)
+	{
+		Color.a = In.vTexcoord.y / 0.5;
+	}
+
+	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
+	Color.rgb = lerp(g_Color2, g_Color, luminance);
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+	}
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_YUp_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.y += g_CurTime * g_Speed;
+
+	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
+
+	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
+	vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, MovedUV);
+
+	if (g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+
+	if (In.vTexcoord.y < 0.5)
+	{
+		Color.a = In.vTexcoord.y / 0.5;
+	}
+
+	Color.a *= g_BloomPower;
+
+
+	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
+	Color.rgb = lerp(g_Color2, g_Color, luminance);
+
+	if (g_Ratio > 0.7f)
+	{
+		float dissolveThreshold = (g_Ratio - 0.7f) / 0.3f;
+		if (vNoise.r < dissolveThreshold)
+		{
+			discard; // 픽셀 폐기
+		}
+	}
+	Out.vColor = Color;
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -688,6 +772,34 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_TornadoRoot_Bloom();
+	}
+
+	pass FirePillar_Bottom	//14Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_YUp();
+	}
+
+	pass FirePillar_Bottom_Bloom	//15Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_YUp_Bloom();
 	}
 }
 

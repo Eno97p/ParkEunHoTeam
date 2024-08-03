@@ -23,6 +23,15 @@ float4 g_vLightDir = normalize(float4(-1.0f, -1.0f, -1.0f, 0.0f));
 
 float4 g_vLightPosition;
 float g_fLightRange;
+
+// 셰이더 코드에 추가
+float g_fCoarseStepSize;
+float g_fFineStepSize;
+int g_iMaxCoarseSteps;
+int g_iMaxFineSteps;
+float g_fDensityThreshold;
+float g_fAlphaThreshold;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -148,6 +157,7 @@ float worleyFbm(float3 p, float freq)
         worleyNoise(p * freq * 2.0, freq * 2.0) * 0.25 +
         worleyNoise(p * freq * 4.0, freq * 4.0) * 0.125;
 }
+
 float calculateCloudDensity(float3 position, float time)
 {
     float freq = 4.0;
@@ -196,55 +206,120 @@ struct PS_OUT
 {
     float4 vColor : SV_Target0;
 };
+
+float sphereTrace(float3 start, float3 dir, float maxDist, float stepSize)
+{
+    float t = 0.0;
+    for (int i = 0; i < 128; i++)
+    {
+        float3 pos = start + t * dir;
+        float density = calculateCloudDensity(pos * g_CloudScale, g_fAccTime * g_CloudSpeed);
+        if (density > 0.01)
+        {
+            return t;
+        }
+        t += stepSize;
+        if (t > maxDist) break;
+    }
+    return maxDist;
+}
+
+float coarseSpherTrace(float3 start, float3 dir, float maxDist, float stepSize)
+{
+    float t = 0.0;
+    for (int i = 0; i < 32; i++) // 반복 횟수 감소
+    {
+        float3 pos = start + t * dir;
+        float density = calculateCloudDensity(pos * g_CloudScale, g_fAccTime * g_CloudSpeed);
+        if (density > 0.05) // 임계값 증가
+        {
+            return t;
+        }
+        t += stepSize * 2.0; // 스텝 크기 증가
+        if (t > maxDist) break;
+    }
+    return maxDist;
+}
+
+float fineSpherTrace(float3 start, float3 dir, float maxDist, float stepSize)
+{
+    float t = 0.0;
+    for (int i = 0; i < 16; i++) // 정밀 반복 횟수 제한
+    {
+        float3 pos = start + t * dir;
+        float density = calculateCloudDensity(pos * g_CloudScale, g_fAccTime * g_CloudSpeed);
+        if (density > 0.01)
+        {
+            return t;
+        }
+        t += stepSize * 0.5; // 더 작은 스텝 크기
+        if (t > maxDist) break;
+    }
+    return maxDist;
+}
+
 PS_OUT PS_MAIN(VS_OUT In)
 {
     PS_OUT Out = (PS_OUT)0;
     float3 worldPos = In.vWorldPos;
     float time = g_fAccTime;
-
-    const int MAX_STEPS = 128;
-    const float STEP_SIZE = 0.5;
+    const float MAX_DIST = 100.0;
     float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
     float4 cloudColor = float4(0, 0, 0, 0);
-    float3 currentPos = worldPos;
 
-    float totalDensity = 0.0;
-
-    for (int i = 0; i < MAX_STEPS; i++)
+    // 대략적인 레이 마칭
+    float coarseT = 0.0;
+    for (int i = 0; i < g_iMaxCoarseSteps; i++)
     {
-        float density = calculateCloudDensity(currentPos * g_CloudScale, time * g_CloudSpeed);
-        if (density > 0.01)
+        float3 pos = worldPos + coarseT * viewDir;
+        float density = calculateCloudDensity(pos * g_CloudScale, time * g_CloudSpeed);
+        if (density > g_fDensityThreshold)
+            break;
+        coarseT += g_fCoarseStepSize;
+        if (coarseT > MAX_DIST)
         {
-            totalDensity += density * STEP_SIZE;
-
-            float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
-
-            float3 color = g_CloudColor * lightEnergy * density;
-
-            float transmittance = exp(-density * STEP_SIZE);
-
-            cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
-            cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
-
-            if (cloudColor.a > 0.99) break;
+            discard;
+            return Out;
         }
-        currentPos += viewDir * STEP_SIZE;
     }
 
-    // 전체 밀도를 기반으로 한 추가적인 불투명도 조정
-    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
+    // 정밀한 레이 마칭
+    float t = max(0, coarseT - g_fCoarseStepSize);
+    float3 currentPos = worldPos + t * viewDir;
+    float totalDensity = 0.0;
 
+    [loop]
+        for (int j = 0; j < g_iMaxFineSteps; j++)
+        {
+            float density = calculateCloudDensity(currentPos * g_CloudScale, time * g_CloudSpeed);
+            if (density > 0.01)
+            {
+                totalDensity += density * g_fFineStepSize;
+                float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
+                float3 color = g_CloudColor * lightEnergy * density;
+                float transmittance = exp(-density * g_fFineStepSize);
+                cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
+                cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
+
+                if (cloudColor.a > g_fAlphaThreshold) break;
+            }
+            currentPos += viewDir * g_fFineStepSize;
+            t += g_fFineStepSize;
+            if (t > MAX_DIST) break;
+        }
+
+    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
     if (cloudColor.a < 0.01)
         discard;
 
     float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
     cloudColor.rgb += ambient * (1.0 - cloudColor.a);
-
     cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2);
 
     Out.vColor = cloudColor;
     return Out;
 }
+
 technique11 DefaultTechnique
 {
     pass Cloud

@@ -77,6 +77,13 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Active_Element"), wst.c_str(), &pDesc)))
                 return E_FAIL;
         }
+        else if (iSelectIdx == 11)
+        {
+            wstring wst = L"";
+            wst = CharToWstring(pDesc.szObjName);
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"), wst.c_str(), &pDesc)))
+                return E_FAIL;
+        }
         else
         {
             wstring wst = L"";
@@ -308,6 +315,8 @@ void CToolObj_Manager::Initialize()
 
         TEXT("Prototype_Component_Model_Elevator"),
         TEXT("Prototype_Component_Model_Model_Hachoir"),
+        TEXT("Prototype_Component_Model_TreasureChest"),
+        TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_BasicCube") // ±¸¸§
 

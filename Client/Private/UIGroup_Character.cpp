@@ -93,7 +93,7 @@ HRESULT CUIGroup_Character::Create_UI()
     pSoulDesc.eLevel = LEVEL_STATIC;
     pSoulDesc.isSoulCntRend = false;
     pSoulDesc.isNextlevel = true;
-    pSoulDesc.fX = 500.f;
+    pSoulDesc.fX = 450.f;
     pSoulDesc.fY = 207.f;
     pSoulDesc.fSizeX = 24.f;
     pSoulDesc.fSizeY = 24.f;
@@ -102,7 +102,7 @@ HRESULT CUIGroup_Character::Create_UI()
 
     pSoulDesc.isSoulCntRend = true;
     pSoulDesc.isNextlevel = false;
-    pSoulDesc.fX = 500.f;
+    pSoulDesc.fX = 450.f;
     pSoulDesc.fY = 227.f;
     pSoulDesc.fSizeX = 24.f;
     pSoulDesc.fSizeY = 24.f;

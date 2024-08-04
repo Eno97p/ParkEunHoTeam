@@ -161,7 +161,7 @@ void CUI_Manager::Update_EquipSkill_Add(_uint iEquipSlotIdx)
 	//dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSl
 }
 
-void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx)
+void CUI_Manager::Update_EquipSkill_Delete(_uint iEquipSlotIdx) // 이거 같아도 됨?
 {
 	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 	dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Update_EquipSlot_Delete(iEquipSlotIdx);

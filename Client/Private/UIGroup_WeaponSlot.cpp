@@ -181,15 +181,14 @@ void CUIGroup_WeaponSlot::Key_Input()
     }
     else if (m_pGameInstance->Key_Down(DIK_B)) // Quick Weapon Slot Change
     {
-        if (m_iWeaponIdx < CInventory::GetInstance()->Get_EquipWeaponSize() - 1) // 2가 아니라 값을 넣어주어야
+        if (m_iWeaponIdx < CInventory::GetInstance()->Get_EquipWeaponSize() - 1)
             ++m_iWeaponIdx;
         else
             m_iWeaponIdx = 0;
 
         while (true)
         {
-            // 무기가 아예 없는 경우 예외 처리도 필요
-            if (CInventory::GetInstance()->Get_EquipWeaponSize() == 0)
+            if (CInventory::GetInstance()->Get_EquipWeaponSize() == 0) // 장착된 무기가 아예 없는 경우
                 break;
 
             if (CInventory::GetInstance()->Get_EquipWeapon(m_iWeaponIdx) == nullptr)
@@ -214,7 +213,35 @@ void CUIGroup_WeaponSlot::Key_Input()
             // HUD의 Icon에 따라 Player가 실제로 들고 있는 Weapon 변경
             pPlayer->Update_Weapon(m_pWeaponSlot->Get_TextureName());
 
-            // 현재 손에 들고 있는 무기를 Equip Slot에서 해제 시 처리는 x
+            // ++++) 현재 손에 들고 있는 무기를 Equip Slot에서 해제 시 처리는 x
+        }
+    }
+    else if (m_pGameInstance->Key_Down(DIK_N)) // Quick Skill Slot Change
+    {
+        if (m_iSkillIdx < CInventory::GetInstance()->Get_EquipSkillSize() - 1)
+            ++m_iSkillIdx;
+        else
+            m_iSkillIdx = 0;
+
+        while (true)
+        {
+            if (CInventory::GetInstance()->Get_EquipSkillSize() == 0) // 장착된 Skill이 아예 없는 경우
+                break;
+
+            if (CInventory::GetInstance()->Get_EquipSkill(m_iSkillIdx) == nullptr)
+            {
+                if (m_iSkillIdx < 2)
+                    ++m_iSkillIdx;
+                else
+                    m_iSkillIdx = 0;
+            }
+            else
+                break;
+        }
+
+        if (CInventory::GetInstance()->Get_EquipSkillSize() != 0)
+        {
+            m_pSkillSlot->Change_Texture(CInventory::GetInstance()->Get_EquipSkill(m_iSkillIdx)->Get_TextureName());
         }
     }
 }

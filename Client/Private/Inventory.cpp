@@ -124,6 +124,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	pDesc.eItemName = CItemData::ITEMNAME_OPH;
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
+	// test
+	pDesc.eItemName = CItemData::ITEMNAME_AKSHA;
+	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
 

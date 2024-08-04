@@ -2199,6 +2199,44 @@ void CPlayer::Update_LvData()
 	m_iEtherDmg = 60 + (m_iKnowledgeLv * 3);
 }
 
+void CPlayer::Update_Weapon(wstring wstrTextureName)
+{
+	////무기 바꾸는 부분
+	//if (m_pGameInstance->Get_DIKeyState(DIK_1))
+	//{
+	//	m_iCurWeapon = WEAPON_DURGASWORD;
+	//}
+	//else if (m_pGameInstance->Get_DIKeyState(DIK_2))
+	//{
+	//	m_iCurWeapon = WEAPON_PRETORIANSWORD;
+	//}
+	//else if (m_pGameInstance->Get_DIKeyState(DIK_3))
+	//{
+	//	m_iCurWeapon = WEAPON_RADAMANTHESWORD;
+	//}
+	//else if (m_pGameInstance->Get_DIKeyState(DIK_4))
+	//{
+	//	m_iCurWeapon = WEAPON_ELISH;
+	//}
+
+	if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Durgas_Claymore"))
+	{
+		m_iCurWeapon = WEAPON_DURGASWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Pretorian"))
+	{
+		m_iCurWeapon = WEAPON_PRETORIANSWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Radamanthes"))
+	{
+		m_iCurWeapon = WEAPON_RADAMANTHESWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Elish"))
+	{
+		m_iCurWeapon = WEAPON_ELISH;
+	}
+}
+
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPlayer* pInstance = new CPlayer(pDevice, pContext);

@@ -47,25 +47,31 @@ void CUI_StateBar::Tick(_float fTimeDelta)
 {
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
-
-	switch (m_eBarType)
+	CPlayer* pPlayer = nullptr;
+	if (!PlayerList.empty())
 	{
-	case Client::CUI_StateBar::BAR_HP:
-		m_fSizeX = pPlayer->Get_MaxHP(); // 134   500
-		break;
-	case Client::CUI_StateBar::BAR_ENERGY:
-		m_fSizeX = pPlayer->Get_MaxStamina(); // 134   500
-		break;
-	case Client::CUI_StateBar::BAR_ETHER:
-		m_fSizeX = pPlayer->Get_MaxMP(); // 134   500
-		break;
-	default:
-		break;
+		pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+		switch (m_eBarType)
+		{
+		case Client::CUI_StateBar::BAR_HP:
+			m_fSizeX = pPlayer->Get_MaxHP(); // 134   500
+			break;
+		case Client::CUI_StateBar::BAR_ENERGY:
+			m_fSizeX = pPlayer->Get_MaxStamina(); // 134   500
+			break;
+		case Client::CUI_StateBar::BAR_ETHER:
+			m_fSizeX = pPlayer->Get_MaxMP(); // 134   500
+			break;
+		default:
+			break;
+		}
+
+		m_fX = ORIGIN_X - ((ORIGIN_SIZEX - m_fSizeX) / 2 * 0.77f); // 282.8f
+		Setting_Position();
 	}
 
-	m_fX = ORIGIN_X - ((ORIGIN_SIZEX - m_fSizeX) / 2 * 0.77f); // 282.8f
-	Setting_Position();
+
 }
 
 void CUI_StateBar::Late_Tick(_float fTimeDelta)

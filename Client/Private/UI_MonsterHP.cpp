@@ -88,18 +88,17 @@ HRESULT CUI_MonsterHP::Render()
 
 	if (m_isDamageRend)
 	{
-		// Monster HP Damage는 월드상에 있는 UI이므로? 
-		// 월드의 위치를 투영 공간으로 옮겼을 때 위치가 어디인지 받아와서 적용해주면 될 거 같은데
-		// Transform의 m_Matrix[MAT_PROJ] 를 활용해야 하는 것인지 > 받아오는 함수가 없는데
+		_matrix resultMAtrix;
+		resultMAtrix = XMMatrixMultiply(m_pTransformCom->Get_WorldMatrix(), m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
+		resultMAtrix = XMMatrixMultiply(resultMAtrix, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
 
-		const _float4x4* pProj = m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ); // 얘 사용 X
-		// 저 matrix들로 뷰, 투영 행렬을 곱해서 투영 공간까지 올려주도록 하기?
+		_float fX = resultMAtrix.r[3].m128_f32[0];
+		_float fY = resultMAtrix.r[3].m128_f32[1];
 
-		//if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), m_wstrDamage, _float2(pProj->m[2][0], pProj->m[2][1]), XMVectorSet(0.f, 0.f, 0.f, 1.f))))
-		//	return E_FAIL;
+		// >> 올바른 값 X
 
-		//if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo23"), m_wstrDamage, _float2(m_fX + 50.f, m_fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
-		//	return E_FAIL;
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), TEXT("Test"), _float2(fX, fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+			return E_FAIL; // m_wstrDamage
 	}
 
 	return S_OK;

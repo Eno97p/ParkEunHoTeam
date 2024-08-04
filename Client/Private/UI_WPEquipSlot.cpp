@@ -274,8 +274,11 @@ void CUI_WPEquipSlot::Click_Event()
 	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
 	for (size_t i = 0; i < iCurSlotIdx; ++i)
 	{
-		++weapon;
-		++skill;
+		if(CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
+			++weapon;
+
+		if(CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
+			++skill;
 	}
 
 	if (isAlphaBG_On) // ÀåÂø

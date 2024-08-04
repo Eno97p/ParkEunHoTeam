@@ -91,8 +91,9 @@ public:
 	_uint			Get_EtherDmg() { return m_iEtherDmg; }
 	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
 
-	void	Pull_Status(); // HP / Stamina / MP ¸¦ Pull
-	void	Update_LvData();
+	void			Pull_Status(); // HP / Stamina / MP ¸¦ Pull
+	void			Update_LvData();
+	void			Update_Weapon(wstring wstrTextureName);
 
 private:
 	HRESULT Add_Nodes();

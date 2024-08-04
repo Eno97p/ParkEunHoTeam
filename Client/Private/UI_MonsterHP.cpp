@@ -51,13 +51,6 @@ void CUI_MonsterHP::Tick(_float fTimeDelta)
 			m_fPastRatio = m_fCurrentRatio;
 		}
 	}
-
-	if (m_isDamageRend)
-	{
-		m_fDamageTimer += fTimeDelta;
-		if (2. <= m_fDamageTimer)
-			m_isDamageRend = false;
-	}
 }
 
 void CUI_MonsterHP::Late_Tick(_float fTimeDelta)
@@ -86,35 +79,12 @@ HRESULT CUI_MonsterHP::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if (m_isDamageRend)
-	{
-		_matrix resultMAtrix;
-		resultMAtrix = XMMatrixMultiply(m_pTransformCom->Get_WorldMatrix(), m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
-		resultMAtrix = XMMatrixMultiply(resultMAtrix, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
-
-		_float fX = resultMAtrix.r[3].m128_f32[0];
-		_float fY = resultMAtrix.r[3].m128_f32[1];
-
-		// >> 올바른 값 X
-
-		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo25"), TEXT("Test"), _float2(fX, fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
-			return E_FAIL; // m_wstrDamage
-	}
-
 	return S_OK;
 }
 
 void CUI_MonsterHP::Update_Pos(_vector vMonsterPos)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMonsterPos);
-}
-
-void CUI_MonsterHP::Rend_Damage(_int iValue)
-{
-	m_iAccumDamage += iValue;
-	m_isDamageRend = true;
-	m_fDamageTimer = 0.f;
-	m_wstrDamage = to_wstring(m_iAccumDamage);
 }
 
 HRESULT CUI_MonsterHP::Add_Components()

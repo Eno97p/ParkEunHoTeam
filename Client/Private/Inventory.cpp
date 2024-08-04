@@ -136,10 +136,15 @@ HRESULT CInventory::Initialize_DefaultItem()
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
 	//test
-	//Add_DropItem(CItem::ITEM_ESSENCE);
-	//Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_ESSENCE);
+	Add_DropItem(CItem::ITEM_BUFF1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
+	Add_DropItem(CItem::ITEM_ESSENCE);
+	Add_DropItem(CItem::ITEM_ETHER);
+	Add_DropItem(CItem::ITEM_UPGRADE2);
+
+	Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }

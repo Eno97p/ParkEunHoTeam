@@ -267,8 +267,6 @@ void CUI_WPEquipSlot::Setting_XY()
 void CUI_WPEquipSlot::Click_Event()
 {
 	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();	
-
-	// 얘가 값이 이상해서 오류가 생기는 상황임 !!!!!!!!!!!!!!!!!!!!!
 	_uint iCurSlotIdx = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx();
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
@@ -302,7 +300,6 @@ void CUI_WPEquipSlot::Click_Event()
 		}
 
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true); // Equip Sign 비활성화
-
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false); // AlphaBG 비활성화
 	}
 	else // 장착 해제
@@ -347,8 +344,7 @@ void CUI_WPEquipSlot::Click_Event()
 				}
 			}
 		}
-
-		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount); // >> 원래 여기서 해제해주긴햇는데
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
 	}
 }
 

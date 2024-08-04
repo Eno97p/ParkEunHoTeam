@@ -88,12 +88,6 @@ void CUIGroup_MonsterHP::Update_Pos(_vector vMonsterPos)
 	dynamic_cast<CUI_MonsterHPBar*>(*hp)->Update_Pos(vMonsterPos);
 }
 
-void CUIGroup_MonsterHP::Rend_Damage(_int iValue)
-{
-	vector<CUI*>::iterator hp = m_vecUI.begin();
-	dynamic_cast<CUI_MonsterHP*>(*hp)->Rend_Damage(iValue);
-}
-
 HRESULT CUIGroup_MonsterHP::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

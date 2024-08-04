@@ -76,16 +76,11 @@ PS_OUT PS_SWORDTRAIL(PS_IN In)
 
 	float4 Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	vector vNoise = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
-
 	if (Color.a == 0.f)
 		discard;
 
 	Out.vColor = Color;
-
-	if (g_Alpha)
-	{
-		Out.vColor.a = In.vLifeTime.x - In.vLifeTime.y;
-	}
+	Out.vColor.a *= 1 - fRatio;
 
 	if (g_Desolve)
 	{
@@ -110,6 +105,10 @@ PS_OUT PS_BLOOM(PS_IN In)
 
 	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 
+	Out.vColor.a = g_BloomPower;
+	Out.vColor.a *= 1- fRatio;
+	Out.vColor.rgb = g_BloomColor;
+
 	if (g_Desolve)
 	{
 		if (vNoise.r < fRatio)
@@ -117,8 +116,6 @@ PS_OUT PS_BLOOM(PS_IN In)
 			discard;
 		}
 	}
-
-	Out.vColor = float4(g_BloomColor, g_BloomPower);
 
 	return Out;
 }
@@ -130,7 +127,7 @@ technique11 DefaultTechnique
 	pass SwordTrail
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DS_Particle, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
@@ -144,7 +141,7 @@ technique11 DefaultTechnique
 	pass Trail_Bloom
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DSS_Default, 0);
+		SetDepthStencilState(DS_Particle, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */

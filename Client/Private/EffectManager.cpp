@@ -25,11 +25,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("Failed_Ready_Prototype");
 		return E_FAIL;
 	}
-	if (FAILED(Load_Trails()))
-	{
-		MSG_BOX("FAILED_Load_Trail");
-		return E_FAIL;
-	}
+	//if (FAILED(Load_Trails()))
+	//{
+	//	MSG_BOX("FAILED_Load_Trail");
+	//	return E_FAIL;
+	//}
 	if (FAILED(Load_SwordTrails()))
 	{
 		MSG_BOX("FAILED_Load_SwordTrail");

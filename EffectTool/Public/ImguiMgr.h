@@ -13,6 +13,7 @@
 #include "Electronic.h"
 #include "TornadoEffect.h"
 #include "FirePillar.h"
+#include "HealEffect.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -124,6 +125,9 @@ private:
 
 private:
 	void FirePillarTool();
+
+private:
+	void HealEffectTool();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);

@@ -31,6 +31,7 @@
 #include "AndrasRain.h"
 #include "AndrasLazer.h"
 #include "ShieldSphere.h"
+#include "AndrasHead.h"
 #pragma endregion ANDRAS
 
 #pragma region TornadoEffects
@@ -46,6 +47,10 @@
 #include "FirePillar_Bottom.h"
 #pragma endregion FIREPILLAR
 
+#pragma region HEAL
+#include "HealEffect.h"
+#include "Heal_Ribbon.h"
+#pragma endregion HEAL
 
 
 
@@ -136,7 +141,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 #pragma region TEXTURE
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 43))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 44))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -351,6 +356,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar_Bottom.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Heal
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Aspiration"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Juggulus/Aspiration.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 #pragma region SHADER
@@ -552,6 +562,20 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Bottom"),
 		CFirePillar_Bottom::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasHead"),
+		CAndrasHead::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//HealEffect
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HealEffect"),
+		CHealEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HealEffect_Ribbon"),
+		CHeal_Ribbon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

@@ -146,7 +146,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[12] = { false,false,false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[13] = { false,false,false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -202,8 +202,12 @@ void CImguiMgr::Visible_Data()
 	if (bShow[10] == true)
 		FirePillarTool();
 
-	ImGui::Checkbox("Model_Change", &bShow[11]);
+	ImGui::Checkbox("Heal_Tool", &bShow[11]);
 	if (bShow[11] == true)
+		HealEffectTool();
+
+	ImGui::Checkbox("Model_Change", &bShow[12]);
+	if (bShow[12] == true)
 		Model_Change();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
@@ -246,10 +250,26 @@ void CImguiMgr::Visible_Data()
 		}
 
 	}
-	if (ImGui::Button("Bind_Player_Head"))
+	if (ImGui::Button("Bind_Head"))
 	{
-		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
-		TrailMat = pPlayer->Get_HeadMAt();
+		switch (CurModel)
+		{
+		case 0:
+		{
+			CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = pPlayer->Get_HeadMAt();
+			break;
+		}
+		case 1:
+		{
+			CAndras* Andras = static_cast<CAndras*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = Andras->Get_HeadMat();
+			break;
+		}
+		default:
+			break;
+		}
+
 	}
 	ImGui::End();
 }
@@ -991,11 +1011,6 @@ void CImguiMgr::Trail_Tool()
 	if (ImGui::RadioButton("EternalTrail", classdesc.eFuncType == TRAIL_ETERNAL))
 		classdesc.eFuncType = TRAIL_ETERNAL;
 	
-	if (ImGui::RadioButton("Usage_Sword", classdesc.eUsage == USAGE_SWORD))
-		classdesc.eUsage = USAGE_SWORD;
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Other", classdesc.eUsage == USAGE_EYE))
-		classdesc.eUsage = USAGE_EYE;
 	
 	ImGui::ColorEdit3("Start_Color", reinterpret_cast<float*>(&classdesc.vStartColor));
 	ImGui::ColorEdit3("End_Color", reinterpret_cast<float*>(&classdesc.vEndColor));
@@ -1005,14 +1020,14 @@ void CImguiMgr::Trail_Tool()
 	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&traildesc.vSize));
 	ImGui::InputFloat("Speed", &traildesc.vSpeed);
 	ImGui::InputFloat("lifetime", &traildesc.fLifeTime);
-	ImGui::Checkbox("Alpha", &classdesc.Alpha);
 	ImGui::Checkbox("Desolve", &classdesc.Desolve);
 	if (classdesc.Desolve == true)
 	{
 		ImGui::InputInt("DesolveTextureNum", &classdesc.DesolveNum);
 	}
 	ImGui::Checkbox("Blur", &classdesc.Blur);
-	if (classdesc.Blur == true)
+	ImGui::Checkbox("Bloom", &classdesc.Bloom);
+	if (classdesc.Bloom == true)
 	{
 		ImGui::InputFloat("BloomPower", &classdesc.fBloompower);
 		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&classdesc.vBloomColor));
@@ -1177,9 +1192,7 @@ HRESULT CImguiMgr::Save_TrailList()
 		file.write((char*)&iter->fBloompower, sizeof(_float));
 		file.write((char*)&iter->Desolve, sizeof(_bool));
 		file.write((char*)&iter->Blur, sizeof(_bool));
-		file.write((char*)&iter->Alpha, sizeof(_bool));
 		file.write((char*)&iter->eFuncType, sizeof(TRAILFUNCTYPE));
-		file.write((char*)&iter->eUsage, sizeof(TRAIL_USAGE));
 		file.write((char*)&iter->DesolveNum, sizeof(_int));
 		save_wstring_to_stream(iter->Texture, file);
 		save_wstring_to_stream(iter->TexturePath, file);
@@ -1235,9 +1248,7 @@ HRESULT CImguiMgr::Load_TrailList()
 		inFile.read((char*)&readFile->fBloompower, sizeof(_float));
 		inFile.read((char*)&readFile->Desolve, sizeof(_bool));
 		inFile.read((char*)&readFile->Blur, sizeof(_bool));
-		inFile.read((char*)&readFile->Alpha, sizeof(_bool));
 		inFile.read((char*)&readFile->eFuncType, sizeof(TRAILFUNCTYPE));
-		inFile.read((char*)&readFile->eUsage, sizeof(TRAIL_USAGE));
 		inFile.read((char*)&readFile->DesolveNum, sizeof(_int));
 		readFile->Texture = load_wstring_from_stream(inFile);
 		readFile->TexturePath = load_wstring_from_stream(inFile);
@@ -2801,6 +2812,38 @@ void CImguiMgr::FirePillarTool()
 	if (ImGui::Button("Erase", ButtonSize))
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"));
+	}
+
+	ImGui::End();
+}
+
+void CImguiMgr::HealEffectTool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Heal_Effect_Editor");
+	static CHealEffect::HEALEFFECT Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.vOffset));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Ribbon");
+	ImGui::InputFloat3("RibbonSize", reinterpret_cast<float*>(&Desc.RibbonDesc.vSize));
+	ImGui::ColorEdit3("RibbonColor", reinterpret_cast<float*>(&Desc.RibbonDesc.fColor));
+	ImGui::ColorEdit3("RibbonBloomColor", reinterpret_cast<float*>(&Desc.RibbonDesc.BloomColor));
+	ImGui::InputFloat("RibbonBloomPower", &Desc.RibbonDesc.fBloomPower);
+	ImGui::InputFloat("RibbonLifeTime", &Desc.RibbonDesc.fMaxLifeTime);
+
+	Desc.ParentMat = TrailMat;
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Heal"), TEXT("Prototype_GameObject_HealEffect"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Heal"));
 	}
 
 	ImGui::End();

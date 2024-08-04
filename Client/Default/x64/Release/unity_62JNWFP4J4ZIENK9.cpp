@@ -279,6 +279,12 @@
 #include "C:\NewRepo\Client\Private\UI_Ch_UpgradeBtn.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UI_Ch_UpgradeBtn_Select.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UI_DropItemBG.cpp"
 
 

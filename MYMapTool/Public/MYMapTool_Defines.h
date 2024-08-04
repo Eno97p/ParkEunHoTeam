@@ -2,6 +2,9 @@
 
 #include <process.h>
 #include "vld.h"
+#include "DirectXTex.h"
+#pragma comment(lib, "DirectXTex.lib")
+
 
 namespace MYMapTool
 {

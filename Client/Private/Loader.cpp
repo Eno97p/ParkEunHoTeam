@@ -3347,6 +3347,16 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Mask.dds"), 1))))
 		return E_FAIL;
 
+	// Prototype_Component_Texture_GroundGrass
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Ground"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground/T_Ground_%d.dds"), 17))))
+		return E_FAIL;
+
+	// Prototype_Component_Texture_GroundGrass
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Ground_Roughness"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground/T_Ground_R_%d.dds"), 17))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_Brush*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Brush"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Brush.png"), 1))))

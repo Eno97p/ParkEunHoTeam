@@ -16,7 +16,7 @@ BEGIN(Client)
 class CTerrain final : public CGameObject
 {
 public:
-	enum TEXTURE { TEX_DIFFUSE, TEX_MASK, TEX_BRUSH, TEX_END };
+	enum TEXTURE { TEX_DIFFUSE, TEX_NORMAL, TEX_ROUGHNESS, TEX_MASK, TEX_BRUSH, TEX_END }; // 텍스쳐 목록
 private:
 	CTerrain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CTerrain(const CTerrain& rhs);
@@ -38,6 +38,11 @@ private:
 	CPhysXComponent_HeightField*	m_pPhysXCom = { nullptr };
 private:
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
+
+
+private:
+	_float m_fSnowGroundHeight = 500;
+	_float m_fSnowGroundHeightOffset = 50;
 
 public:
 	HRESULT Add_Components();

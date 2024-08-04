@@ -2,9 +2,12 @@
 
 #include "ToolObj.h"
 
+#include "../Texture3D.h"
+
 BEGIN(Engine)
 class CShader;
 class CTexture;
+class CTexture3D;
 class CVIBuffer_Instance_Point;
 class CCollider;
 END
@@ -27,11 +30,16 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	_uint Get_ShaderPath() { return m_iShaderPath; }
+	void Set_ShaderPath(_uint iIdx) {  m_iShaderPath = iIdx; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	CTexture3D* m_pNoise3DCom = { nullptr };
+
 	CPhysXComponent_static* m_pPhysXCom = { nullptr };
 	CComputeShader_Texture* m_pCloudCS = { nullptr };
 	ID3D11Texture3D* m_pNoiseTexture = nullptr;
@@ -43,19 +51,6 @@ private:
 	HRESULT Bind_ShaderResources();
 
 private:
-	float Lerp(float a, float b, float t)
-	{
-		return a + t * (b - a);
-	}
-
-	float Clamp(float value, float min, float max)
-	{
-		if (value < min) return min;
-		if (value > max) return max;
-		return value;
-	}
-
-private:
 	float m_fAccTime = 0.f;
 	float m_fWindStrength = 1.f;
 	float m_fTargetWindStrength = 1.f;
@@ -64,6 +59,7 @@ private:
 
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
 
+	_uint m_iShaderPath = 0;
 public:
 	// 구름 관련 변수들
 	float m_fCloudDensity = 0.8f;
@@ -93,6 +89,18 @@ public:
 	float m_fPerlinFrequency = 4.0f;
 	float m_fWorleyFrequency = 4.0f;
 
+	// Perlin Noise 관련 새 변수들
+	float m_fPerlinPersistence = 0.5f;
+	float m_fPerlinLacunarity = 2.0f;
+
+	// Worley Noise 관련 새 변수
+	float m_fWorleyJitter = 1.0f;
+
+	// Noise 혼합 관련 새 변수들
+	float m_fPerlinWorleyMix = 0.5f;
+	float m_fNoiseRemapLower = 0.0f;
+	float m_fNoiseRemapUpper = 1.0f;
+
 public:
 	float m_fCoarseStepSize = 2.0f;
 	float m_fFineStepSize = 0.5f;
@@ -100,6 +108,7 @@ public:
 	int m_iMaxFineSteps = 64;
 	float m_fDensityThreshold = 0.05f;
 	float m_fAlphaThreshold = 0.95f;
+
 
 public:
 	static CCloud* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

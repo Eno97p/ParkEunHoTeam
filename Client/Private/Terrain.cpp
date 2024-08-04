@@ -76,9 +76,16 @@ HRESULT CTerrain::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Diffuse */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground"),
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_DIFFUSE]))))
 		return E_FAIL;
+
+
+	// Com_TexMoss
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Roughness"),
+		TEXT("Com_TexNormal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_ROUGHNESS]))))
+		return E_FAIL;
+
 
 	/* For.Com_Mask */
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain_Mask"),
@@ -108,16 +115,41 @@ HRESULT CTerrain::Add_Components()
 HRESULT CTerrain::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;	
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
+
+	//// 조명 정보 Shader에 던져주기
+	//const LIGHT_DESC* pLightDesc = m_pGameInstance->Get_LightDesc(0);
+	//if (nullptr == pLightDesc)
+	//	return E_FAIL;
+
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &pLightDesc->vDirection, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4))))
+	//	return E_FAIL;
+
 	if (FAILED(m_pTextureCom[TEX_DIFFUSE]->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom[TEX_MASK]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+
+	if (FAILED(m_pTextureCom[TEX_ROUGHNESS]->Bind_ShaderResources(m_pShaderCom, "g_RoughnessTexture")))
 		return E_FAIL;
+	//if (FAILED(m_pTextureCom[TEX_MASK]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+	//	return E_FAIL;
 	if (FAILED(m_pTextureCom[TEX_BRUSH]->Bind_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fSnowGroundHeight", &m_fSnowGroundHeight, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fSnowGroundHeightOffset", &m_fSnowGroundHeightOffset, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

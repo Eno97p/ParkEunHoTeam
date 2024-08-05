@@ -1435,6 +1435,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\BlastWall.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2154,6 +2157,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\BlastWall.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

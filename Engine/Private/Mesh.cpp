@@ -145,6 +145,9 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 	ZeroMemory(pNonAnimVT, sizeof(VTXMESH) * m_iNumVertices);
 	ZeroMemory(m_nonAnimpVertices, sizeof(VTXMESH) * m_iNumVertices);
 
+
+	_vector vSum = XMVectorZero();
+
 	for (size_t i = 0; i < m_iNumVertices; i++)
 	{
 		memcpy(&pNonAnimVT[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3)); //포지션 저장
@@ -165,7 +168,21 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 		memcpy(&m_nonAnimpVertices[i].vTexcoord, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		memcpy(&pNonAnimVT[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));	//tangent
 		memcpy(&m_nonAnimpVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+
+
+		//메쉬의 중심점을 계산하기 위한 코드
+		vSum = XMVectorAdd(vSum, XMLoadFloat3(&pNonAnimVT[i].vPosition));
 	}
+
+	_vector vCentor = XMVectorDivide(vSum, XMVectorReplicate(static_cast<float>(m_iNumVertices)));
+
+
+	XMVECTOR vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR vRight = XMVector3Cross(vUp, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
+	XMVECTOR vLook = XMVector3Cross(vRight, vUp);
+
+
+
 	/*memcpy(m_nonAnimpVertices, pNonAnimVT, sizeof(VTXMESH) * m_iNumVertices);*/
 
 	m_InitialData.pSysMem = pNonAnimVT;

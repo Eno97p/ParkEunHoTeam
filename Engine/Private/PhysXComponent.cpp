@@ -57,6 +57,7 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	if (pDesc != nullptr)
 	{
 		m_pModelCom = dynamic_cast<CModel*>(pDesc->pComponent);
+		m_pMeshCom = pDesc->pMesh;
 		m_WorldMatrix = pDesc->fWorldMatrix;
 		m_fBoxProperty = pDesc->fBoxProperty;
 		m_fCapsuleProperty = pDesc->fCapsuleProperty;
@@ -69,8 +70,9 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 
 		m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(pDesc->fMatterial.x, pDesc->fMatterial.y, pDesc->fMatterial.z);
 
+		if(m_pActor==nullptr)
+			CreateActor(pDesc->eGeometryType, pxTrans, pxOffsetTrans);
 
-		CreateActor(pDesc->eGeometryType, pxTrans, pxOffsetTrans);
 		MakeFilterData(filterData);
 		//pDesc
 		if (pDesc->pName)
@@ -82,7 +84,8 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 	m_pActor->setActorFlag(PxActorFlag::eVISUALIZATION, true);	
 	
 #endif
-	m_pGameInstance->AddActor(m_pActor);
+	if (FAILED(m_pGameInstance->AddActor(m_pActor)))
+		return E_FAIL;
 
 	
 
@@ -177,7 +180,7 @@ HRESULT CPhysXComponent::Init_Buffer()
 		}
 		case PxGeometryType::eTRIANGLEMESH:
 		{
-		/*	PxTriangleMeshGeometry triangleMeshGeometry = geometry.triangleMesh();
+			PxTriangleMeshGeometry triangleMeshGeometry = geometry.triangleMesh();
 			PxTriangleMesh* triangleMesh = triangleMeshGeometry.triangleMesh;
 			if (nullptr == triangleMesh)
 				return E_FAIL;
@@ -218,7 +221,7 @@ HRESULT CPhysXComponent::Init_Buffer()
 			}
 
 
-			m_pBuffer.push_back(CVIBuffer_PhysXBuffer::Create(m_pDevice, m_pContext, vecVertices, vecIndices));*/
+			m_pBuffer.push_back(CVIBuffer_PhysXBuffer::Create(m_pDevice, m_pContext, vecVertices, vecIndices));
 
 
 			//정점은 다른곳에서 만들고 있음 반복을 돌 필요 없음
@@ -527,12 +530,122 @@ HRESULT CPhysXComponent::CreateActor(PxGeometryType::Enum eGeometryType, const P
 		break;
 	}
 	case physx::PxGeometryType::eCONVEXMESH:
+	{
+
+		auto Meshresult = CreateTriangleMeshDesc(m_pMeshCom);
+		vector<PxVec3> vecVertices = get<0>(Meshresult);
+		vector<PxU32> vecIndices = get<1>(Meshresult);
+
+		PxConvexMeshDesc convexDesc;
+		convexDesc.points.count = static_cast<PxU32>(vecVertices.size());
+		convexDesc.points.stride = sizeof(PxVec3);
+		convexDesc.points.data = vecVertices.data();
+		convexDesc.flags = PxConvexFlag::eCOMPUTE_CONVEX;
+
+		PxCookingParams cookingParams(m_pGameInstance->GetPhysics()->getTolerancesScale());
+		cookingParams.midphaseDesc.setToDefault(PxMeshMidPhase::eBVH34);
+		cookingParams.buildGPUData = true;
+		cookingParams.meshWeldTolerance = 0.001f;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
+		cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES;
+
+
+
+		// Convex Mesh Cooking
+		PxDefaultMemoryOutputStream convexWriteBuffer;
+		PxConvexMeshCookingResult::Enum convexResult;
+		bool bConvexSuccess = PxCookConvexMesh(cookingParams, convexDesc, convexWriteBuffer);
+		if (!bConvexSuccess)
+			return E_FAIL;
+		
+
+		PxDefaultMemoryInputData convexReadBuffer(convexWriteBuffer.getData(), convexWriteBuffer.getSize());
+		PxConvexMesh* pConvexMesh = m_pGameInstance->GetPhysics()->createConvexMesh(convexReadBuffer);
+
+		if (nullptr == pConvexMesh)
+			return E_FAIL;
+
+		PxConvexMeshGeometry convexGeom = PxConvexMeshGeometry(pConvexMesh);
+
+		// Create a dynamic actor
+		m_pActor = m_pGameInstance->GetPhysics()->createRigidDynamic(pxTrans);
+		if (nullptr == m_pActor)
+			return E_FAIL;
+
+		PxShape* pShape = m_pGameInstance->GetPhysics()->createShape(convexGeom, *m_pMaterial, true);
+		if (!m_pActor->attachShape(*pShape))
+			return E_FAIL;
+
+		pShape->release();
+
+	}
+
 		break;
 	case physx::PxGeometryType::ePARTICLESYSTEM:
 		break;
 	case physx::PxGeometryType::eTETRAHEDRONMESH:
 		break;
 	case physx::PxGeometryType::eTRIANGLEMESH:
+
+		//for (auto& pMesh : m_pModelCom->Get_Meshes())
+		{
+			auto Meshresult = CreateTriangleMeshDesc(m_pMeshCom);
+			vector<PxVec3> vecVertices = get<0>(Meshresult);
+			vector<PxU32> vecIndices = get<1>(Meshresult);
+
+			PxTriangleMeshDesc meshDesc;
+			meshDesc.points.count = static_cast<PxU32>(vecVertices.size());
+			meshDesc.points.stride = sizeof(PxVec3);
+			meshDesc.points.data = vecVertices.data();
+
+			meshDesc.triangles.count = static_cast<PxU32>(vecIndices.size() / 3);
+			meshDesc.triangles.stride = 3 * sizeof(PxU32);
+			meshDesc.triangles.data = vecIndices.data();
+
+
+
+			PxCookingParams cookingParams(m_pGameInstance->GetPhysics()->getTolerancesScale());
+			cookingParams.midphaseDesc.setToDefault(PxMeshMidPhase::eBVH34);
+			cookingParams.buildGPUData = true;
+			cookingParams.meshWeldTolerance = 0.001f;
+			cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eDISABLE_ACTIVE_EDGES_PRECOMPUTE;
+			cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eWELD_VERTICES;
+			cookingParams.meshPreprocessParams |= PxMeshPreprocessingFlag::eFORCE_32BIT_INDICES;
+
+
+			PxDefaultMemoryOutputStream writeBuffer;
+			PxTriangleMeshCookingResult::Enum result;
+			bool bSuccess = PxCookTriangleMesh(cookingParams, meshDesc, writeBuffer, &result);
+			if (!bSuccess)
+				return E_FAIL;
+
+			
+
+			PxDefaultMemoryInputData readBuffer(writeBuffer.getData(), writeBuffer.getSize());
+			PxTriangleMesh* pTriangleMesh = m_pGameInstance->GetPhysics()->createTriangleMesh(readBuffer);
+
+			if (nullptr == pTriangleMesh)
+				return E_FAIL;
+
+			PxTriangleMeshGeometry triGeom = PxTriangleMeshGeometry(pTriangleMesh);
+
+			m_pActor = m_pGameInstance->GetPhysics()->createRigidDynamic(pxTrans);
+			if (nullptr == m_pActor)
+				return E_FAIL;
+			PxShape* pShape = m_pGameInstance->GetPhysics()->createShape(triGeom, *m_pMaterial, true);
+			if(!m_pActor->attachShape(*pShape))
+				return E_FAIL;
+				
+
+			pShape->release();
+
+
+			
+		}
+		
+
+
 		break;
 	case physx::PxGeometryType::eHEIGHTFIELD:
 		break;
@@ -716,4 +829,17 @@ XMMATRIX CPhysXComponent::Convert_PxTrans_To_DxMat(const PxTransform& pTrans)
 
 
 	return worldMatrix;
+}
+
+PxVec4 CPhysXComponent::Convert_XMVec4_To_PxVec4(const _vector pXMVec4)
+{
+
+
+
+	return PxVec4();
+}
+
+XMVECTOR CPhysXComponent::Convert_PxVec4_To_XMVec4(const PxVec4& pPxVec4)
+{
+	return XMVECTOR();
 }

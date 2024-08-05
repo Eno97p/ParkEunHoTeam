@@ -38,6 +38,12 @@ private:/*For. Profile*/
 private:/*For. Memory*/
 	void Render_Memory();
 
+private: /*For. Vehicle_Property*/
+	void RigidBody_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle );
+	void Tire_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle);
+	void Wheel_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle);
+	void Steering_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle);
+
 	
 private:/*For.Imgui Property*/
 	char m_szFPS[MAX_PATH] = {};
@@ -59,8 +65,12 @@ private:
 	int m_iCurrentLayer = 0;
 	int m_iCurrentObject = 0;
 	int m_iCurrentComponent = 0;
+
+	int m_iCurrentComponentVehicleProperty = 0;
 	CGameObject* m_pSelectedObject=nullptr;
 	wstring m_wstrLayerTag;
+
+	CLevel* m_pNewLevel = nullptr;
 public:
 	//static CImGui* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -28,6 +28,33 @@ CItemData* CInventory::Get_ItemData(_uint iSlotIdx)
 	return (*item);
 }
 
+_uint CInventory::Get_EquipWeaponSize()
+{
+	// 장착 슬롯에 값이 들어간 개수가 몇 개인지 반환하는 함수
+	_uint iCount = { 0 };
+
+	for (size_t i = 0; i < 3; ++i)
+	{
+		if (m_arrEquipWeapon[i] != nullptr)
+			++iCount;
+	}
+
+	return iCount;
+}
+
+_uint CInventory::Get_EquipSkillSize()
+{
+	_uint iCount = { 0 };
+
+	for (size_t i = 0; i < 3; ++i)
+	{
+		if (m_arrEquipSkill[i] != nullptr)
+			++iCount;
+	}
+
+	return iCount;
+}
+
 HRESULT CInventory::Initialize()
 {
 	if (FAILED(Initialize_DefaultItem()))
@@ -54,25 +81,31 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// 지금 임의로 이렇게 추가하지만 나중에 실제로 추가할 때는 <<Upgrade의 Slot에 추가하는 로직>>도 필요
 	// test >> 추후 삭제
 	// UI 출력
-	//CUI_Manager::GetInstance()->Update_Weapon_Add();
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-	//pDesc.isDropTem = false;
-	//pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
-	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	//// UI 출력
-	//CUI_Manager::GetInstance()->Update_Weapon_Add();
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	//pDesc.isDropTem = false;
-	//pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
-	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-	//// UI 출력
-	//CUI_Manager::GetInstance()->Update_Weapon_Add();
 
-	//pDesc.isDropTem = false;
-	//pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
-	//m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// UI 출력
+	CUI_Manager::GetInstance()->Update_Weapon_Add();
+	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
+
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
+	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 
 
@@ -91,6 +124,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	pDesc.eItemName = CItemData::ITEMNAME_OPH;
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
+	// test
+	pDesc.eItemName = CItemData::ITEMNAME_AKSHA;
+	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+
 	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
 	//CUI_Manager::GetInstance()->Update_Skill_Add();
 
@@ -102,6 +140,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_DropItem(CItem::ITEM_BUFF1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
+	Add_DropItem(CItem::ITEM_ESSENCE);
+	Add_DropItem(CItem::ITEM_ETHER);
+	Add_DropItem(CItem::ITEM_UPGRADE2);
+
+	Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }

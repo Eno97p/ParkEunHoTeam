@@ -163,6 +163,11 @@
 #include "UIGroup_Setting.h"
 #pragma endregion Setting
 
+#pragma region QTE
+#include "UI_QTE_Btn.h"
+#include "QTE.h"
+#pragma endregion QTE
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -528,7 +533,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 43))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 44))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -644,6 +649,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Blade_Slash_Long"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/NewBlade.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	//Needle
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Needle"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Needle.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 	//Tornado
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -665,6 +675,19 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoBottom"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/TornadoRoot.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//Heal Effect
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Ribbon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Aspiration.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Spiral_Thick"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HealingEffect/Spiral_Thick.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_SmoothLine"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HealingEffect/SmoothLine.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL
@@ -882,6 +905,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_Icon_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_HoverBoard"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Icon_Catalyst */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Catalyst"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_AncientCatalyst.png"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Item */
@@ -1308,6 +1336,33 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
 		return E_FAIL;
 #pragma endregion Setting
+
+#pragma region QTE
+	/* Prototype_Component_Texture_UI_QTE_Btn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Btn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_%d.png"), 4))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Bad */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Bad"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Bad.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Good */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Good"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Good.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Perfect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Perfect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Perfect.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Ring */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Ring"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Ring_%d.png"), 4))))
+		return E_FAIL;
+#pragma endregion QTE
 
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
@@ -1938,6 +1993,22 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Setting
+
+#pragma region QTE
+	/* For.Prototype_GameObject_UI_QTE_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Btn"),
+		CUI_QTE_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+
+	/* For.Prototype_GameObject_QTE*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_QTE"),
+		CQTE::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion QTE
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

@@ -498,12 +498,16 @@ void CUI_Slot::Click_BtnEvent()
 {
 	if (SLOT_INV == m_eSlotType) // 인벤토리에 있는 슬롯을 클릭한 경우
 	{
-		// 사용 가능한 아이템이라는 조건문 추가 필요 (나중에)
-		
-		dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Set_SlotIdx(m_iSlotIdx);
-		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
-		CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
-		CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+		// 장착 가능한 아이템의 경우에만 Quick에 등록
+		if (CItemData::ITEMTYPE_BUFF == CInventory::GetInstance()->Get_ItemData(m_iSlotIdx)->Get_ItemType()
+			|| CItemData::ITEMTYPE_USABLE == CInventory::GetInstance()->Get_ItemData(m_iSlotIdx)->Get_ItemType()
+			|| CItemData::ITEMTYPE_ETC == CInventory::GetInstance()->Get_ItemData(m_iSlotIdx)->Get_ItemType())
+		{
+			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Set_SlotIdx(m_iSlotIdx);
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
+			CUI_Manager::GetInstance()->Render_UIGroup(true, "InvSub");
+			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(true);
+		}
 	}
 	else if (SLOT_WEAPON == m_eSlotType) // Weapon에 있는 슬롯을 클릭한 경우
 	{
@@ -528,7 +532,7 @@ void CUI_Slot::Click_BtnEvent()
 			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iInventoryIdx, false);
 			dynamic_cast<CUIGroup_InvSub*>(CUI_Manager::GetInstance()->Get_UIGroup("InvSub"))->Delete_InvSub_QuickSlot_ToInvIdx(m_iInventoryIdx);
 
-			// Inventory에서 장착 여부 비활성화 해주기 >> 이름으로 접근해야 할 거 같음
+			// Inventory에서 장착 여부 비활성화 해주기
 			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx, m_wszItemName);
 		}
 	}
@@ -536,17 +540,22 @@ void CUI_Slot::Click_BtnEvent()
 	{
 		CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
 
-		if (!pItem->Get_isEquip())
+		// 장착 가능한 아이템만 Quick에 등록
+		if (CItemData::ITEMTYPE_BUFF == pItem->Get_ItemType()
+			|| CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType()
+			|| CItemData::ITEMTYPE_ETC == pItem->Get_ItemType())
 		{
-			CInventory::GetInstance()->Add_QuickAccess(pItem, m_iSlotIdx);
+			if (!pItem->Get_isEquip())
+			{
+				CInventory::GetInstance()->Add_QuickAccess(pItem, m_iSlotIdx);
 
-			// Equip Sign 활성화
-			pItem->Set_isEquip(true);
-			dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
+				// Equip Sign 활성화
+				pItem->Set_isEquip(true);
+				dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Slot_EquipSign(m_iSlotIdx, true);
 
-			// Quick Acess의 InvSlot도 Equip Sign 활성화
-			dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
-
+				// Quick Acess의 InvSlot도 Equip Sign 활성화
+				dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
+			}
 		}
 	}
 }
@@ -597,9 +606,15 @@ void CUI_Slot::Rend_Count()
 	//CItemData* pItem = CInventory::GetInstance()->Get_ItemData_ByName(m_wszItemName);
 
 	_uint iCount = pItem->Get_Count();
-	if (iCount >= 2)
+
+
+	if ((CItemData::ITEMNAME_CATALYST != pItem->Get_ItemName()) && iCount >= 2)
 	{
-		// 뚱땡이 아이템의 경우 가리는 이슈 있음 ㅡㅡ
+		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 17.f, m_fY + 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f)))) // m_fX + 10.f, m_fY + 10.f
+			return;
+	}
+	else if (CItemData::ITEMNAME_CATALYST == pItem->Get_ItemName())
+	{
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 17.f, m_fY + 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f)))) // m_fX + 10.f, m_fY + 10.f
 			return;
 	}

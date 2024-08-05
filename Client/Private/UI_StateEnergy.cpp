@@ -26,9 +26,9 @@ HRESULT CUI_StateEnergy::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 390.f;
+	m_fX = 282.2f; // 390
 	m_fY = 60.f;
-	m_fSizeX = 768.f;
+	m_fSizeX = 300.f; // 768
 	m_fSizeY = 24.f;
 
 	Setting_Position();
@@ -52,6 +52,10 @@ void CUI_StateEnergy::Tick(_float fTimeDelta)
 	{
 		m_fCurrentRatio = m_pPlayer->Get_StaminaRatio();
 	}
+
+	m_fSizeX = m_pPlayer->Get_MaxStamina(); // 134   500
+	m_fX = ORIGIN_X - ((ORIGIN_SIZEX - m_fSizeX) / 2 * 0.77f); // 282.8f
+	Setting_Position();
 
 	// 스태미나 감소
 	if (m_fCurrentRatio < m_fPastRatio)

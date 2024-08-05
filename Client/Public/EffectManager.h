@@ -6,6 +6,7 @@
 #include "Distortion_Effect.h"
 #include "Electronic.h"
 #include "TornadoEffect.h"
+#include "HealEffect.h"
 
 BEGIN(Client)
 class CEffectManager final : public CBase
@@ -27,6 +28,7 @@ public:
 	HRESULT Generate_Distortion(const _int iIndex, const _float4 vStartpos);
 	HRESULT Generate_Lightning(const _int iIndex, const _float4 vStartpos);
 	HRESULT Generate_Tornado(const _int iIndex, const _float4 vStartpos, CGameObject* pTarget = nullptr);
+	HRESULT Generate_HealEffect(const _int iIndex , const _float4x4* BindMat);
 private:		//Load Values
 	HRESULT Load_Trails();
 	HRESULT Load_SwordTrails();
@@ -34,6 +36,7 @@ private:		//Load Values
 	HRESULT Load_Distortions();
 	HRESULT Load_Lightnings();
 	HRESULT Load_Tornados();
+	HRESULT Load_Heals();
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
 private:		//Free
@@ -46,6 +49,7 @@ private:
 	vector<shared_ptr<CDistortionEffect::DISTORTIONEFFECT>>		m_pDistortions;
 	vector<shared_ptr<CElectronic::ELECTRONICDESC>>				m_pLightnings;
 	vector<shared_ptr<CTornadoEffect::TORNADODESC>>				m_Tornados;
+	vector<shared_ptr<CHealEffect::HEALEFFECT>>					m_Heals;
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

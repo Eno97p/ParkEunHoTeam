@@ -159,6 +159,7 @@
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\Andras.h" />
+    <ClInclude Include="..\public\AndrasHead.h" />
     <ClInclude Include="..\public\AndrasLazer.h" />
     <ClInclude Include="..\public\AndrasLazer_Base.h" />
     <ClInclude Include="..\Public\AndrasLazer_Cylinder.h" />
@@ -178,6 +179,10 @@
     <ClInclude Include="..\public\FirePillar.h" />
     <ClInclude Include="..\Public\FirePillarEffect.h" />
     <ClInclude Include="..\Public\FirePillar_Bottom.h" />
+    <ClInclude Include="..\public\HealEffect.h" />
+    <ClInclude Include="..\Public\Heal_Line.h" />
+    <ClInclude Include="..\Public\Heal_Ribbon.h" />
+    <ClInclude Include="..\Public\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -219,6 +224,7 @@
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Andras.cpp" />
+    <ClCompile Include="..\private\AndrasHead.cpp" />
     <ClCompile Include="..\private\AndrasLazer.cpp" />
     <ClCompile Include="..\private\AndrasLazer_Base.cpp" />
     <ClCompile Include="..\Private\AndrasLazer_Cylinder.cpp" />
@@ -237,6 +243,10 @@
     <ClCompile Include="..\private\FirePillar.cpp" />
     <ClCompile Include="..\Private\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\FirePillar_Bottom.cpp" />
+    <ClCompile Include="..\private\HealEffect.cpp" />
+    <ClCompile Include="..\Private\Heal_Line.cpp" />
+    <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
+    <ClCompile Include="..\Private\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />

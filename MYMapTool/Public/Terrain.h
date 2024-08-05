@@ -26,7 +26,7 @@ class CToolObj_Manager;
 class CTerrain : public CGameObject
 {
 public:
-	enum TEXTURE { TEX_DIFFUSE, TEX_NORMAL, TEX_MASK, TEX_BRUSH, TEX_END }; // 텍스쳐 목록
+	enum TEXTURE { TEX_DIFFUSE, TEX_NORMAL, TEX_ROUGHNESS, TEX_MASK, TEX_BRUSH, TEX_END }; // 텍스쳐 목록
 
 public:
 	typedef struct Terrain_Desc : public CGameObject::GAMEOBJECT_DESC
@@ -61,6 +61,9 @@ public:
 	HRESULT			Setting_NewTerrain(void* pArg = nullptr);
 	void			Setting_LoadTerrain(void* pArg); // 테스트용 임시 함수
 
+public:
+	void Set_SnowGroundHeight(_float fHeight) { m_fSnowGroundHeight =  fHeight; }
+	void Set_SnowGroundHeightOffset(_float fHeight) { m_fSnowGroundHeightOffset =  fHeight; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom[TEX_END] = { nullptr };
@@ -83,6 +86,11 @@ private:
 	_float				m_fBrushStrength = 1.f;
 	_float m_fTest = 0.f;
 	_float m_fMaxHeight = 10.f;
+
+private:
+	_float m_fSnowGroundHeight = 500;
+	_float m_fSnowGroundHeightOffset = 50;
+
 private:
 private:
 	ID3D11Texture2D* m_pHeightMapTexture = nullptr;

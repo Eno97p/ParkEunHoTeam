@@ -4,7 +4,7 @@
 #define UIF (1.0 / float(0xffffffffU))
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_InvViewProjMatrix;
 
 vector g_vCamPosition;
 
@@ -27,10 +27,25 @@ float g_fLightRange;
 // 셰이더 코드에 추가
 float g_fCoarseStepSize;
 float g_fFineStepSize;
-int g_iMaxCoarseSteps;
+int g_iMaxCoarseSteps = 64;
 int g_iMaxFineSteps;
 float g_fDensityThreshold;
 float g_fAlphaThreshold;
+
+float m_fPerlinWorleyMix;
+
+int g_iPerlinOctaves;
+float g_fPerlinFrequency;
+float g_fWorleyFrequency;
+float g_fPerlinPersistence;
+float g_fPerlinLacunarity;
+float g_fWorleyJitter;
+float g_fPerlinWorleyMix;
+float g_fNoiseRemapLower;
+float g_fNoiseRemapUpper;
+
+//Noise 3D
+texture3D g_3DNoiseTexture;
 
 struct VS_IN
 {
@@ -125,7 +140,8 @@ float worleyNoise(float3 uv, float freq)
             for (float z = -1.0; z <= 1.0; ++z)
             {
                 float3 offset = float3(x, y, z);
-                float3 h = hash33(fmod(id + offset, float3(freq, freq, freq))) * 0.5 + 0.5;
+                float3 h = hash33(fmod(id + offset, float3(freq, freq, freq)));
+                h = (h - 0.5) * g_fWorleyJitter + 0.5;  // Apply jitter
                 h += offset;
                 float3 d = p - h;
                 minDist = min(minDist, dot(d, d));
@@ -135,16 +151,15 @@ float worleyNoise(float3 uv, float freq)
 
     return 1.0 - minDist;
 }
-
 float perlinfbm(float3 p, float freq, int octaves)
 {
-    float G = exp2(-0.85);
+    float G = g_fPerlinPersistence;
     float amp = 1.0;
     float noise = 0.0;
     for (int i = 0; i < octaves; ++i)
     {
         noise += amp * gradientNoise(p * freq, freq);
-        freq *= 2.0;
+        freq *= g_fPerlinLacunarity;
         amp *= G;
     }
 
@@ -160,17 +175,14 @@ float worleyFbm(float3 p, float freq)
 
 float calculateCloudDensity(float3 position, float time)
 {
-    float freq = 4.0;
-    float pfbm = lerp(1.0, perlinfbm(position + float3(time * 0.1, 0, 0), 4.0, 7), 0.5);
-    pfbm = abs(pfbm * 2.0 - 1.0); // billowy perlin noise
+    float perlin = perlinfbm(position + float3(time * 0.1, 0, 0), g_fPerlinFrequency, g_iPerlinOctaves);
+    float worley = worleyFbm(position + float3(time * 0.05, 0, 0), g_fWorleyFrequency);
 
-    float worley = worleyFbm(position + float3(time * 0.05, 0, 0), freq);
+    float noise = lerp(perlin, worley, g_fPerlinWorleyMix);
+    noise = remap(noise, g_fNoiseRemapLower, g_fNoiseRemapUpper, 0.0, 1.0);
 
-    float perlinWorley = remap(pfbm, 0.0, 1.0, worley, 1.0);
-
-    float cloud = remap(perlinWorley, worley - 1.0, 1.0, 0.0, 1.0);
+    float cloud = remap(noise, 0.0, 1.0, 0.0, 1.0);
     cloud = pow(cloud, 1.5); // 구름 형태를 더 뚜렷하게
-    cloud = remap(cloud, 0.7, 1.0, 0.0, 1.0); // 구름 coverage 조정
 
     return cloud * g_CloudDensity * 2.0; // 밀도 증가
 }
@@ -261,30 +273,26 @@ float fineSpherTrace(float3 start, float3 dir, float maxDist, float stepSize)
 PS_OUT PS_MAIN(VS_OUT In)
 {
     PS_OUT Out = (PS_OUT)0;
+
     float3 worldPos = In.vWorldPos;
+    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
     float time = g_fAccTime;
     const float MAX_DIST = 100.0;
-    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
     float4 cloudColor = float4(0, 0, 0, 0);
 
-    // 대략적인 레이 마칭
-    float coarseT = 0.0;
-    for (int i = 0; i < g_iMaxCoarseSteps; i++)
+    // 대략적인 Sphere Tracing
+    float coarseT = coarseSpherTrace(worldPos, viewDir, MAX_DIST, g_fCoarseStepSize);
+    if (coarseT >= MAX_DIST)
     {
-        float3 pos = worldPos + coarseT * viewDir;
-        float density = calculateCloudDensity(pos * g_CloudScale, time * g_CloudSpeed);
-        if (density > g_fDensityThreshold)
-            break;
-        coarseT += g_fCoarseStepSize;
-        if (coarseT > MAX_DIST)
-        {
-            discard;
-            return Out;
-        }
+        discard;
+        return Out;
     }
 
-    // 정밀한 레이 마칭
-    float t = max(0, coarseT - g_fCoarseStepSize);
+    // 정밀한 Sphere Tracing
+    float t = fineSpherTrace(worldPos + (coarseT - g_fCoarseStepSize) * viewDir, viewDir, g_fCoarseStepSize * 2, g_fFineStepSize);
+    t += coarseT - g_fCoarseStepSize;
+
+    // 레이 마칭 (기존 코드와 유사)
     float3 currentPos = worldPos + t * viewDir;
     float totalDensity = 0.0;
 
@@ -300,11 +308,197 @@ PS_OUT PS_MAIN(VS_OUT In)
                 float transmittance = exp(-density * g_fFineStepSize);
                 cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
                 cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
-
                 if (cloudColor.a > g_fAlphaThreshold) break;
             }
             currentPos += viewDir * g_fFineStepSize;
             t += g_fFineStepSize;
+            if (t > MAX_DIST) break;
+        }
+
+    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
+    if (cloudColor.a < 0.01)
+        discard;
+
+    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+    cloudColor.rgb += ambient * (1.0 - cloudColor.a);
+    cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2);
+
+    Out.vColor = cloudColor;
+    return Out;
+}
+
+float3 mod289(float3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+float4 mod289(float4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+float4 permute(float4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+float4 taylorInvSqrt(float4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float snoise(float3 v)
+{
+    const float2 C = float2(1.0 / 6.0, 1.0 / 3.0);
+    const float4 D = float4(0.0, 0.5, 1.0, 2.0);
+
+    // First corner
+    float3 i = floor(v + dot(v, C.yyy));
+    float3 x0 = v - i + dot(i, C.xxx);
+
+    // Other corners
+    float3 g = step(x0.yzx, x0.xyz);
+    float3 l = 1.0 - g;
+    float3 i1 = min(g.xyz, l.zxy);
+    float3 i2 = max(g.xyz, l.zxy);
+
+    float3 x1 = x0 - i1 + C.xxx;
+    float3 x2 = x0 - i2 + C.yyy;
+    float3 x3 = x0 - D.yyy;
+
+    // Permutations
+    i = mod289(i);
+    float4 p = permute(permute(permute(
+        i.z + float4(0.0, i1.z, i2.z, 1.0))
+        + i.y + float4(0.0, i1.y, i2.y, 1.0))
+        + i.x + float4(0.0, i1.x, i2.x, 1.0));
+
+    // Gradients: 7x7 points over a square, mapped onto an octahedron.
+    // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
+    float n_ = 0.142857142857;
+    float3 ns = n_ * D.wyz - D.xzx;
+
+    float4 j = p - 49.0 * floor(p * ns.z * ns.z);
+
+    float4 x_ = floor(j * ns.z);
+    float4 y_ = floor(j - 7.0 * x_);
+
+    float4 x = x_ * ns.x + ns.yyyy;
+    float4 y = y_ * ns.x + ns.yyyy;
+    float4 h = 1.0 - abs(x) - abs(y);
+
+    float4 b0 = float4(x.xy, y.xy);
+    float4 b1 = float4(x.zw, y.zw);
+
+    float4 s0 = floor(b0) * 2.0 + 1.0;
+    float4 s1 = floor(b1) * 2.0 + 1.0;
+    float4 sh = -step(h, float4(0.0, 0.0, 0.0, 0.0));
+
+    float4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    float4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+
+    float3 p0 = float3(a0.xy, h.x);
+    float3 p1 = float3(a0.zw, h.y);
+    float3 p2 = float3(a1.xy, h.z);
+    float3 p3 = float3(a1.zw, h.w);
+
+    // Normalise gradients
+    float4 norm = taylorInvSqrt(float4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));
+    p0 *= norm.x;
+    p1 *= norm.y;
+    p2 *= norm.z;
+    p3 *= norm.w;
+
+    // Mix final noise value
+    float4 m = max(0.6 - float4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot(m * m, float4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
+}
+
+float calculateCloudDensityFromTexture(float3 position, float time)
+{
+    // 스케일 조정 및 시간에 따른 이동
+    float3 samplePos = position * g_CloudScale + float3(time * g_CloudSpeed, 0, 0);
+
+    // 부드러운 타일링을 위한 노이즈 추가
+    float3 noiseOffset = float3(
+        snoise(samplePos * 0.1),
+        snoise(samplePos * 0.1 + 100),
+        snoise(samplePos * 0.1 + 200)
+    ) * 10.0;
+    samplePos += noiseOffset;
+
+    // 노이즈 데이터 샘플링
+    float4 noiseData = g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos), 0);
+    float perlin = noiseData.r;
+    float worley = noiseData.g;
+    float detailNoise = noiseData.b;
+
+    // Perlin FBM 시뮬레이션
+    float perlinFbm = perlin;
+    for (int i = 1; i < g_iPerlinOctaves; ++i)
+    {
+        float freq = pow(g_fPerlinLacunarity, float(i));
+        float amp = pow(g_fPerlinPersistence, float(i));
+        perlinFbm += g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * freq), 0).r * amp;
+    }
+    perlinFbm = saturate(perlinFbm);
+
+    // Worley FBM 시뮬레이션
+    float worleyFbm = worley * 0.625 +
+        g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * 2.0), 0).g * 0.25 +
+        g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * 4.0), 0).g * 0.125;
+
+    // 기본 구름 형태 생성
+    float baseCloud = lerp(perlinFbm, worleyFbm, g_fPerlinWorleyMix);
+    baseCloud = remap(baseCloud, g_fNoiseRemapLower, g_fNoiseRemapUpper, 0.0, 1.0);
+
+    // 디테일 노이즈 적용
+    float detailModifier = lerp(detailNoise, 1 - detailNoise, saturate(baseCloud * 10));
+    baseCloud = remap(baseCloud, detailModifier * 0.2, 1.0, 0.0, 1.0);
+
+    // 구름 형태 조정
+    float cloud = pow(baseCloud, g_CloudDensity);
+
+    // 최종 밀도 계산 및 클램핑
+    return saturate(cloud) * g_CloudDensity * 2.0; // 밀도 증가
+}
+
+PS_OUT PS_TEX(VS_OUT In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    float3 worldPos = In.vWorldPos;
+    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
+    float time = g_fAccTime;
+    const float MAX_DIST = 100.0;
+    float4 cloudColor = float4(0, 0, 0, 0);
+
+    // 대략적인 레이 마칭
+    float coarseT = 0.0;
+    float coarseDensity = 0.0;
+    for (int i = 0; i < g_iMaxCoarseSteps; i++)
+    {
+        float3 pos = worldPos + coarseT * viewDir;
+        coarseDensity = calculateCloudDensityFromTexture(pos, time);
+        if (coarseDensity > g_fDensityThreshold)
+            break;
+        coarseT += g_fCoarseStepSize;
+        if (coarseT > MAX_DIST)
+        {
+            discard;
+            return Out;
+        }
+    }
+
+    // 정밀한 레이 마칭 (적응형 샘플링)
+    float t = max(0, coarseT - g_fCoarseStepSize);
+    float3 currentPos = worldPos + t * viewDir;
+    float totalDensity = 0.0;
+    float stepSize = (coarseDensity > g_fDensityThreshold) ? g_fFineStepSize : g_fCoarseStepSize;
+    int maxSteps = (coarseDensity > g_fDensityThreshold) ? g_iMaxFineSteps : g_iMaxCoarseSteps;
+
+    [loop]
+        for (int j = 0; j < maxSteps; j++)
+        {
+            float density = calculateCloudDensityFromTexture(currentPos, time);
+            if (density > 0.01)
+            {
+                totalDensity += density * stepSize;
+                float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
+                float3 color = g_CloudColor * lightEnergy * density;
+                float transmittance = exp(-density * stepSize);
+                cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
+                cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
+                if (cloudColor.a > g_fAlphaThreshold) break;
+            }
+            currentPos += viewDir * stepSize;
+            t += stepSize;
             if (t > MAX_DIST) break;
         }
 
@@ -333,5 +527,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+        pass Cloud_Tex
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0); // 깊이 쓰기 비활성화
+        SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_TEX();
     }
 }

@@ -105,7 +105,7 @@
 
 #include "Trap.h"
 #include"CHoverboard.h"
-
+#include"BlastWall.h"
 
 
 #include"TestPhysXCollider.h"

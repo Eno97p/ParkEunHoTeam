@@ -82,6 +82,7 @@ void PhysXIntegrationState::create(const BaseVehicleParams& baseParams, const Ph
 		physxActor);
 
 	physxActor.rigidBody->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+	//physxActor.rigidBody->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 
 	//physxConstraints needs to be populated with constraints.
 	PxVehicleConstraintsCreate(baseParams.axleDescription, physics, *physxActor.rigidBody, physxConstraints);
@@ -100,10 +101,23 @@ void PhysXIntegrationState::destroy()
 
 
 #pragma region PhysXActorVehicle
-bool PhysXActorVehicle::initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc)
+bool PhysXActorVehicle::initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc, void* Vehicleparams)
 {
-	if(FAILED(ReadDescroption(BaseDesc)))
-		return false;
+	if (Vehicleparams != nullptr)
+	{
+		void** pVehicleparams = static_cast<void**>(Vehicleparams);
+		mBaseParams = *static_cast<BaseVehicleParams*>(pVehicleparams[0]);
+		mDirectDriveParams = *static_cast<DirectDrivetrainParams*>(pVehicleparams[1]);
+	}
+	else
+	{
+		if (FAILED(ReadDescroption(BaseDesc)))
+			return false;
+	}
+	
+
+
+
 	setPhysXIntegrationParams(mBaseParams.axleDescription,
 		physXMaterialFrictions,
 		nbPhysXMaterialFrictions,
@@ -268,11 +282,11 @@ void PhysXActorVehicle::getDataForDirectDrivetrainComponent(const PxVehicleAxleD
 	wheelRigidBody1dStates.setData(mBaseState.wheelRigidBody1dStates);
 }
 
-PhysXActorVehicle* PhysXActorVehicle::Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc)
+PhysXActorVehicle* PhysXActorVehicle::Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc, void* Vehicleparams)
 {
 	PhysXActorVehicle* pInstance = new PhysXActorVehicle();
 
-	if (!pInstance->initialize(physics, params, defaultMaterial, physXMaterialFrictions, nbPhysXMaterialFrictions, physXDefaultMaterialFriction, BaseDesc))
+	if (!pInstance->initialize(physics, params, defaultMaterial, physXMaterialFrictions, nbPhysXMaterialFrictions, physXDefaultMaterialFriction, BaseDesc, Vehicleparams))
 	{
 		MSG_BOX("Failed To Created : CVehicleDefault");
 		Safe_Vehicle_Release(pInstance);
@@ -297,7 +311,7 @@ _uint PhysXActorVehicle::Release()
 HRESULT PhysXActorVehicle::ReadDescroption(const BaseVehicleDesc& BaseDesc)
 {
 	
-
+	
 	if(FAILED(ReadAxleDesc(BaseDesc.axleDesc)))
 		return E_FAIL;
 	if (FAILED(ReadFrameDesc(BaseDesc.frameDesc)))
@@ -520,6 +534,7 @@ HRESULT PhysXActorVehicle::ReadSteerResponse(const VehicleBrakeCommandResponse& 
 	{
 		mBaseParams.steerResponseParams.nonlinearResponse = SteerResponse.nonlinearResponse;
 	}
+	
 
 	return S_OK;
 }

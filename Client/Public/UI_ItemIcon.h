@@ -20,6 +20,9 @@ private:
 	virtual ~CUI_ItemIcon() = default;
 
 public:
+	wstring			Get_TextureName() { return m_wszTexture; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;

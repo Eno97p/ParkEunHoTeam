@@ -196,6 +196,9 @@ private:
 	void Render_Decal();
 	void Render_NonDecal();
 	void Render_LightAcc();
+	void Render_Shadow_Move();
+	void Render_Shadow_NotMove();
+	void Render_Shadow_Result();
 	void Render_DeferredResult();
 	void Render_NonLight();
 	void Render_Blend();

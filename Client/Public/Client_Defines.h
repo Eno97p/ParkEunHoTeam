@@ -4,8 +4,26 @@
 
 namespace Client
 {
+#define MAX_THREAD 4
+#define USED_THREAD_COUNT 3
+	static bool g_IsThreadFinish[USED_THREAD_COUNT];
 	//Level이 추가되면 아래 문자열 순서 맞춰서 추가해주기
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_ACKBAR, LEVEL_JUGGLAS, LEVEL_ANDRASARENA, LEVEL_GRASSLAND, LEVEL_END };
+
+	constexpr const char* LevelNames[] = {
+		"Static",
+		"Loading",
+		"Logo",
+		"GamePlay",
+		"Ackbar",
+		"Jugglas",
+		"AndrasArena",
+		"GrassLand",
+		"End"
+	};
+
+
+
 
 	enum CAMERA_INDEX { CAM_FREE = 0, CAM_THIRDPERSON, CAM_SIDEVIEW, CAM_TRANSITION, CAM_END };
 
@@ -26,17 +44,6 @@ namespace Client
 	enum TRAIL_USAGE { USAGE_SWORD, USAGE_EYE, USAGE_END };
 #pragma endregion EFFECT_ENUM
 
-	constexpr const char* LevelNames[] = {
-		"Static",
-		"Loading",
-		"Logo",
-		"GamePlay",
-		"Ackbar",
-		"Jugglas",
-		"AndrasArena",
-		"GrassLand",
-		"End"
-	};
 
 
 	const unsigned int		g_iWinSizeX = 1280;
@@ -50,5 +57,6 @@ namespace Client
 
 extern HINSTANCE g_hInst;
 extern HWND g_hWnd;
+
 
 using namespace Client;

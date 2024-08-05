@@ -107,7 +107,7 @@ using namespace Nv::Blast;
 #include<thread>
 #include<future>
 #include<any>
-
+#include<optional>
 
 #include "fmod.hpp"
 #pragma comment(lib, "fmod_vc.lib")

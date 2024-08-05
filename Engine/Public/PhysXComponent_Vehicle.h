@@ -20,6 +20,7 @@ public:
 
 		PxTransform transform = PxTransform(PxIdentity);
 
+		WheelConfiguration wheelConfig = {0,0};
 		/*  0~1사이에의 값 
 		0은 완전히 안 밟은 상태
 		1은 완전히 밟은 상태*/
@@ -38,11 +39,11 @@ public:
 		*/
 		PxReal brake = 0.0f;
 		PxReal handbrake = 0.0f;
-
+		PxReal curSpeed = 0.0f;
 		/* 기어 상태*/
 		PxVehicleDirectDriveTransmissionCommandState::Enum gear = PxVehicleDirectDriveTransmissionCommandState::Enum::eNEUTRAL;
 
-		_uint WheelCount = 0;
+		
 		void Reset()
 		{
 			throttle = 0.0f;
@@ -55,6 +56,7 @@ public:
 	typedef struct PhysX_Vehicle_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
 	{
 		PhysXActorVehicle* pPhysXActorVehicle = nullptr;
+
 
 	}PhysX_Vehicle_Editable_Desc;
 #endif // _DEBUG

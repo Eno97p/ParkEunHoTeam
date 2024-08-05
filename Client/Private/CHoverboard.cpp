@@ -4,7 +4,7 @@
 
 #include"GameInstance.h"
 
-
+#include"Camera.h"
 
 CHoverboard::CHoverboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -29,8 +29,16 @@ HRESULT CHoverboard::Initialize(void* pArg)
 	if (pArg != nullptr)
 	{
 		HoverboardInfo InfoDesc = *static_cast<HoverboardInfo*>(pArg);
-		m_vPosition = InfoDesc.vPosition;
+		
 
+
+
+		//XMVectorSet
+
+		m_matWorld.r[CTransform::STATE::STATE_RIGHT] =		XMVectorSet(InfoDesc.vRight.x, InfoDesc.vRight.y, InfoDesc.vRight.z, 0.0f);
+		m_matWorld.r[CTransform::STATE::STATE_UP] =			XMVectorSet(InfoDesc.vUp.x, InfoDesc.vUp.y, InfoDesc.vUp.z, 0.0f);
+		m_matWorld.r[CTransform::STATE::STATE_LOOK] =		XMVectorSet(InfoDesc.vLook.x, InfoDesc.vLook.y, InfoDesc.vLook.z, 0.0f);
+		m_matWorld.r[CTransform::STATE::STATE_POSITION] =	XMVectorSet(InfoDesc.vPosition.x, InfoDesc.vPosition.y, InfoDesc.vPosition.z, 1.0f);
 	}
 
 
@@ -84,6 +92,10 @@ void CHoverboard::Tick(_float fTimeDelta)
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND* command;
 	m_pPhysXCom->GetCommand(command);
 	PxVec3 velocity = m_pPhysXCom->GetRigidBody()->getLinearVelocity();
+	PxVec3 AngularVelocity = m_pPhysXCom->GetRigidBody()->getAngularVelocity();
+	PxRigidBody* rigidBody = m_pPhysXCom->GetRigidBody();
+
+	command->curSpeed = 	velocity.magnitude();
 	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);
@@ -92,7 +104,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	if (m_bIsMoving)
 	{
 	
-		steerResponse->maxResponse = XMConvertToRadians(60.f); // 원래 값 
+		steerResponse->maxResponse = XMConvertToRadians(45.f); // 원래 값 
 		steerResponse->wheelResponseMultipliers[0] = 1.0f;
 		steerResponse->wheelResponseMultipliers[1] = 1.0f;
 		steerResponse->wheelResponseMultipliers[2] = 0.0f;
@@ -110,18 +122,28 @@ void CHoverboard::Tick(_float fTimeDelta)
 
 
 	}
+	if (KEY_TAP(DIK_LSHIFT))
+	{
+		if(m_bIsBoost)
+			m_bIsBoost = false;
+		else
+			m_bIsBoost = true;
+	}
+
 
 	if (KEY_HOLD(DIK_W))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-		command->throttle = 0.3f;
+		command->throttle = m_bIsBoost ? 1.0f : 0.2f;
+	
+
 		command->brake = 0.0f;
 		command->handbrake = 0.0f;
 	}
 	else if (KEY_HOLD(DIK_S))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eREVERSE;
-		command->throttle = 0.1f;
+		command->throttle = 0.3f;
 		command->brake = 0.0f;
 		command->handbrake = 0.0f;
 	}
@@ -131,39 +153,138 @@ void CHoverboard::Tick(_float fTimeDelta)
 	}
 
 
+
+	CCamera* Camera = 	m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON];
+	_vector vectorCamLook = {}; 
+	_vector vectorHoverLook = {};
+	if (Camera)
+	{
+		vectorCamLook = Camera->Get_CamLook();
+		vectorCamLook = XMVector3Normalize(vectorCamLook);
+	}
+	vectorHoverLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+	vectorCamLook = XMVector3Normalize(XMVectorSetY(vectorCamLook, 0.0f));
+	vectorHoverLook = XMVector3Normalize(XMVectorSetY(vectorHoverLook, 0.0f));
+	
+	_vector crossProduct = XMVector3Cross(vectorHoverLook, vectorCamLook);
+	_float fDot = XMVectorGetX(XMVector3Dot(vectorCamLook, vectorHoverLook));
+	fDot = std::clamp(fDot, -1.0f, 1.0f); // 안전을 위해 값 범위 제한
+	_float fAngle = std::acos(fDot);
+
+
+	// 회전 방향 결정
+	_float rotationDirection = XMVectorGetY(crossProduct) < 0.0f ? -1.0f : 1.0f;
+
+
+
+
+
+
+
+
+	// 조향 입력 처리
+	float steerInput = 0.0f;
 	if (KEY_HOLD(DIK_A))
 	{
-		if(m_bIsMoving)
-			command->steer = -1.0f;
+		if (m_bIsMoving)
+			steerInput = -1.0f;
 		else
 		{
 			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-			command->throttle = 0.1f;
-			command->steer = -1.0f;
-		}
+			command->throttle = 0.5f;
+			steerInput = -1.0f;
 
+		}
+			
 	}
-	if (KEY_HOLD(DIK_D))
+	else if (KEY_HOLD(DIK_D))
 	{
 		if (m_bIsMoving)
-			command->steer = 1.0f;
+			steerInput = 1.0f;
 		else
 		{
 			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-			command->throttle = 0.1f;
-			command->steer = 1.0f;
+			command->throttle = 0.5f;
+			steerInput = 1.0f;
 		}
-
-
-
-		//command->steer = 1.0f;
+		//steerInput = 1.0f;
 	}
+
+	// 차체 회전과 바퀴 조향 통합
+	float angleThreshold = XMConvertToRadians(10.0f);
+	float rotationStrength = 500.0f; // 회전 강도 감소
+	float steerStrength = 1.0f;
+
+	if (fAngle > angleThreshold)
+	{
+		// 차체 회전
+		float rotationFactor = (fAngle - angleThreshold) / (XM_PI - angleThreshold);
+		PxVec3 torque(0.0f, rotationDirection * rotationFactor * rotationStrength, 0.0f);
+		rigidBody->addTorque(torque, PxForceMode::eACCELERATION);
+
+		// 바퀴 조향 감소
+		steerStrength = 1.0f - rotationFactor;
+	}
+
+	// 최종 조향 적용
+	command->steer = steerInput * steerStrength;
+
+
+
+
+
 	if (KEY_HOLD(DIK_SPACE))
 	{
 		command->brake = 1.0f;
-		
+
 		command->throttle = 0.0f;
 	}
+
+
+
+
+
+	//// 특정 각도 이상 벌어지면 차량을 카메라 방향으로 회전
+	//float angleThreshold = XMConvertToRadians(10.0f); // 각도 임계값 (조정 필요)
+	//if (fAngle > angleThreshold)
+	//{
+	//	float rotationStrength = 1000.0f; // 회전 강도 (조정 필요)
+	//	PxVec3 torque(0.0f, rotationDirection * fAngle * rotationStrength, 0.0f);
+	//	rigidBody->addTorque(torque, PxForceMode::eACCELERATION);
+	//}
+
+
+
+	//if (KEY_HOLD(DIK_A))
+	//{
+
+	//	if(m_bIsMoving)
+	//		command->steer = -1.0f;
+	//	else
+	//	{
+	//		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+	//		command->throttle = 0.5f;
+	//		command->steer = -1.0f;
+	//	}
+
+	//}
+	//if (KEY_HOLD(DIK_D))
+	//{
+	//	if (m_bIsMoving)
+	//		command->steer = 1.0f;
+	//	else
+	//	{
+	//		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
+	//		command->throttle = 0.5f;
+	//		command->steer = 1.0f;
+	//	}
+
+
+
+	//	//command->steer = 1.0f;
+	//}
+	
 	//if (KEY_HOLD(DIK_7))
 	//{
 	//	command->handbrake = 1.0f;
@@ -249,8 +370,8 @@ HRESULT CHoverboard::Add_Components()
 	//landObjDesc.mWorldMatrix._43 = 98.f;
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND command;
-	XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(m_vPosition.x, m_vPosition.y, m_vPosition.z));
-	command.WheelCount = 4;
+	XMStoreFloat4x4(&command.initTransform, m_matWorld);
+	command.wheelConfig = WheelConfiguration(2, 2);
 	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),
 		TEXT("Com_PhysX_Vehicle"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &command)))

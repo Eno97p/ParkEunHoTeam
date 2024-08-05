@@ -222,12 +222,40 @@ void CImGuiMgr::Render_MainMenu()
 	
 	if (ImGui::Button("Reset Current Level"))
 	{
-		(m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel)));
-		
-		int temp = 0;
 
+	//	m_pNewLevel = CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel);
+
+
+		
+		//int temp = 0;
 		return;
 	}
+
+	bool allThreadsFinished = true;
+	for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
+	{
+		if (g_IsThreadFinish[i] == false)
+		{
+			allThreadsFinished = false;
+			break;
+		}
+	}
+
+	if (allThreadsFinished)
+	{
+		if (m_pNewLevel != nullptr)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, m_pNewLevel)))
+			{
+				MSG_BOX("IMGUI::Failed to Open Level");
+				return;
+			}
+		}
+		
+		int test = 0;
+	}
+
+
 
 	m_pGameInstance->Get_LayerTags_String(m_iCurrentLevel, &m_LayerTags);
 	
@@ -434,23 +462,46 @@ void CImGuiMgr::Render_Component_Properties(CComponent* pComponent, const char* 
 		{
 			CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* tDesc = static_cast<CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc*>(tmep);
 			ImGui::Text("Vehicle Properties:");
+			ImGui::Text("Vehicle CurSpeed: %f", tDesc->pPhysXActorVehicle->getActor()->getLinearVelocity().magnitude());
+
 			ImGui::Text("Vehicle Scale: %f", tDesc->pPhysXActorVehicle->mBaseParams.scale.scale);
 			ImGui::InputFloat("Vehicle HorsePower", &tDesc->pPhysXActorVehicle->getDirectDriveParams().directDriveThrottleResponseParams.maxResponse);
 			_uint Wheels = tDesc->pPhysXActorVehicle->mBaseParams.axleDescription.getNbWheels();
 
-			for (_uint i = 0; i < Wheels; ++i)
-			{
-				ImGui::PushID(i);
-				ImGui::Text("Wheel %d", i);
+			vector<const char*> VehiclePropertyNames = { "RigidBody_Property", "Trie_Property", "Wheel_Property", "Steer_Property", "Wheel Damping Rate" };
 
-				ImGui::InputFloat("Radius", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].radius);
-				ImGui::InputFloat("Half Width", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].halfWidth);
-				ImGui::InputFloat("Mass", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].mass);
-				ImGui::InputFloat("Moment of Inertia", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].moi);
-				ImGui::InputFloat("Damping Rate", &tDesc->pPhysXActorVehicle->mBaseParams.wheelParams[i].dampingRate);
 
-				ImGui::PopID();
-			}
+			ImGui::Combo("Vehicle_Property", &m_iCurrentComponentVehicleProperty, VehiclePropertyNames.data(), VehiclePropertyNames.size());
+			
+				switch (m_iCurrentComponentVehicleProperty)
+				{
+					case 0:
+						this->RigidBody_Property(tDesc);
+						break;
+					case 1:
+						this->Tire_Property(tDesc);
+						break;
+					case 2:
+						this->Wheel_Property(tDesc);
+						break;
+					case 3:
+						this->Steering_Property(tDesc);
+						break;
+
+
+				default:
+					break;
+				}
+
+
+				if (ImGui::Button("Save_Property"))
+				{
+					//L"../../Data/Test.dat"
+					Engine::Save_Data(L"../Bin/DataFiles/Vehicle.dat", true,tDesc->pPhysXActorVehicle->mBaseParams, tDesc->pPhysXActorVehicle->getDirectDriveParams());
+					
+				}
+
+
 		}
 
 
@@ -540,6 +591,87 @@ void CImGuiMgr::Render_Memory()
 
 
 
+
+}
+
+void CImGuiMgr::RigidBody_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle)
+{
+	PxVec3& Moi = pVehicle->pPhysXActorVehicle->mBaseParams.rigidBodyParams.moi;
+
+	float MoiValue[3] = { Moi.x, Moi.y, Moi.z };
+	ImGui::InputFloat("Mass", &pVehicle->pPhysXActorVehicle->mBaseParams.rigidBodyParams.mass);
+	if (ImGui::InputFloat3("Moi", MoiValue))
+	{
+		Moi = PxVec3(MoiValue[0], MoiValue[1], MoiValue[2]);
+	}
+}
+
+void CImGuiMgr::Tire_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle)
+{
+	_uint Wheels = pVehicle->pPhysXActorVehicle->mBaseParams.axleDescription.getNbWheels();
+
+	for (_uint i = 0; i < Wheels; ++i)
+	{
+		ImGui::PushID(i);
+		ImGui::Text("Tire %d", i);
+		ImGui::InputFloat("longStiff", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].longStiff);
+		ImGui::InputFloat("latStiffX", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].latStiffX);
+		ImGui::InputFloat("latStiffY", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].latStiffY);
+		ImGui::InputFloat("camberStiff", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].camberStiff);
+
+		//ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[0][0]);
+		ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[0][1]);
+		//ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[1][0]);
+		ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[1][1]);
+		//ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[2][0]);
+		ImGui::InputFloat("frictionVsSlip", &pVehicle->pPhysXActorVehicle->mBaseParams.tireForceParams[i].frictionVsSlip[2][1]);
+
+
+		ImGui::PopID();
+
+	}
+
+
+
+
+}
+
+void CImGuiMgr::Wheel_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle)
+{
+	_uint Wheels = pVehicle->pPhysXActorVehicle->mBaseParams.axleDescription.getNbWheels();
+
+
+
+	for (_uint i = 0; i < Wheels; ++i)
+	{
+		ImGui::PushID(i);
+		ImGui::Text("Wheel %d", i);
+
+		ImGui::InputFloat("Radius", &pVehicle->pPhysXActorVehicle->mBaseParams.wheelParams[i].radius);
+		ImGui::InputFloat("Half Width", &pVehicle->pPhysXActorVehicle->mBaseParams.wheelParams[i].halfWidth);
+		ImGui::InputFloat("Mass", &pVehicle->pPhysXActorVehicle->mBaseParams.wheelParams[i].mass);
+		ImGui::InputFloat("Moment of Inertia", &pVehicle->pPhysXActorVehicle->mBaseParams.wheelParams[i].moi);
+		ImGui::InputFloat("Damping Rate", &pVehicle->pPhysXActorVehicle->mBaseParams.wheelParams[i].dampingRate);
+
+		ImGui::PopID();
+	}
+
+}
+
+void CImGuiMgr::Steering_Property(CPhysXComponent_Vehicle::PhysX_Vehicle_Editable_Desc* pVehicle)
+{
+	_uint Wheels = pVehicle->pPhysXActorVehicle->mBaseParams.axleDescription.getNbWheels();
+
+	for (_uint i = 0; i < Wheels; ++i)
+	{
+		ImGui::PushID(i);
+		ImGui::Text("Wheel %d Steering", i);
+		_float fAngle = XMConvertToDegrees(pVehicle->pPhysXActorVehicle->mBaseParams.steerResponseParams.maxResponse);
+		ImGui::InputFloat("Steer Angle", &fAngle);
+		pVehicle->pPhysXActorVehicle->mBaseParams.steerResponseParams.maxResponse = XMConvertToRadians(fAngle);
+		ImGui::InputFloat("Steer Multiplier", &pVehicle->pPhysXActorVehicle->mBaseParams.steerResponseParams.wheelResponseMultipliers[i]);
+		ImGui::PopID();
+	}
 
 }
 

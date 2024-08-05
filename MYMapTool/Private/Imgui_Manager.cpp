@@ -1,4 +1,4 @@
-
+#pragma once
 #include "..\Default\framework.h"
 #include "../Public/Imgui_Manager.h"
 #include "GameInstance.h"
@@ -19,6 +19,12 @@
 
 #include "ThirdPersonCamera.h"
 #include "Cloud.h"
+
+#include <DirectXTex.h>
+#include <vector>
+#include <list>
+#include <d3d11.h>
+#include <windows.h>
 
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
@@ -1511,6 +1517,33 @@ void CImgui_Manager::Terrain_Editor()
 
     ImGui::Begin("Terrain Editor");
 
+    ImGui::Separator();
+
+    // 눈 지형 설정
+    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Snow Ground Settings");
+
+    static float snowGroundHeight = 500.0f;
+    static float snowGroundHeightOffset = 50.0f;
+
+    if (ImGui::SliderFloat("Snow Ground Height", &snowGroundHeight, 0.0f, 1000.0f))
+    {
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        if (pTerrain)
+        {
+            pTerrain->Set_SnowGroundHeight(snowGroundHeight);
+        }
+    }
+
+    if (ImGui::SliderFloat("Snow Ground Height Offset", &snowGroundHeightOffset, 0.0f, 200.0f))
+    {
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        if (pTerrain)
+        {
+            pTerrain->Set_SnowGroundHeightOffset(snowGroundHeightOffset);
+        }
+    }
+
+
     // 높이맵 섹션
     ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Height Map");
     ImGui::InputText("Height Map Path", heightMapPath, IM_ARRAYSIZE(heightMapPath));
@@ -1733,43 +1766,364 @@ void CImgui_Manager::Cloud_Editor()
         if (cloud)
         {
             ImGui::Begin("Cloud Editor");
-
+            // ShaderPath 설정
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Shader Settings");
+            static int currentShaderPath = 0;
+            const char* shaderPaths[] = { "For Tool", "Texture" }; // 예시 경로들
+            if (ImGui::Combo("Shader Path", &currentShaderPath, shaderPaths, IM_ARRAYSIZE(shaderPaths)))
+            {
+                cloud->Set_ShaderPath((_uint)currentShaderPath);
+            }
             // 기존 구름 설정
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Cloud Settings");
-            ImGui::SliderFloat("Cloud Density", &cloud->m_fCloudDensity, 0.1f, 2.0f);
-            ImGui::SliderFloat("Cloud Scale", &cloud->m_fCloudScale, 0.001f, 0.1f);
-            ImGui::SliderFloat("Cloud Speed", &cloud->m_fCloudSpeed, 0.01f, 1.0f);
+            ImGui::SliderFloat("Cloud Density", &cloud->m_fCloudDensity, 0.000001f, 5.0f, "%.6f");
+            ImGui::SliderFloat("Cloud Scale", &cloud->m_fCloudScale, 0.000001f, 0.01f, "%.6f");
+            ImGui::SliderFloat("Cloud Speed", &cloud->m_fCloudSpeed, 0.01f, 1.0f, "%.6f");
             ImGui::SliderFloat("Cloud Height", &cloud->m_fCloudHeight, 50.0f, 200.0f);
             ImGui::ColorEdit3("Cloud Color", (float*)&cloud->m_vCloudColor);
-
-            // Sphere Tracing 설정
-            ImGui::Separator();
-            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Sphere Tracing Settings");
-            ImGui::SliderFloat("Sphere Tracing Threshold", &cloud->m_fSphereTracingThreshold, 0.001f, 0.1f);
-            ImGui::SliderFloat("Max Ray Distance", &cloud->m_fMaxRayDistance, 100.0f, 2000.0f);
-            ImGui::SliderInt("Max Steps", &cloud->m_iMaxSteps, 32, 256);
 
             // Noise 설정
             ImGui::Separator();
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Settings");
+
+            // Perlin Noise 설정
+            ImGui::Text("Perlin Noise");
             ImGui::SliderInt("Perlin Octaves", &cloud->m_iPerlinOctaves, 1, 10);
-            ImGui::SliderFloat("Perlin Frequency", &cloud->m_fPerlinFrequency, 1.0f, 10.0f);
-            ImGui::SliderFloat("Worley Frequency", &cloud->m_fWorleyFrequency, 1.0f, 10.0f);
+            ImGui::SliderFloat("Perlin Frequency", &cloud->m_fPerlinFrequency, 0.1f, 20.0f);
+            ImGui::SliderFloat("Perlin Persistence", &cloud->m_fPerlinPersistence, 0.1f, 1.0f);
+            ImGui::SliderFloat("Perlin Lacunarity", &cloud->m_fPerlinLacunarity, 1.0f, 4.0f);
 
-            // 새로 추가된 최적화 관련 설정
+            // Worley Noise 설정
+            ImGui::Text("Worley Noise");
+            ImGui::SliderFloat("Worley Frequency", &cloud->m_fWorleyFrequency, 0.1f, 20.0f);
+            ImGui::SliderFloat("Worley Jitter", &cloud->m_fWorleyJitter, 0.0f, 1.0f);
+
+            // Noise 혼합 설정
+            ImGui::Text("Noise Mixing");
+            ImGui::SliderFloat("Perlin-Worley Mix", &cloud->m_fPerlinWorleyMix, 0.0f, 1.0f);
+            ImGui::SliderFloat("Noise Remap Lower", &cloud->m_fNoiseRemapLower, 0.0f, 1.0f);
+            ImGui::SliderFloat("Noise Remap Upper", &cloud->m_fNoiseRemapUpper, 0.0f, 1.0f);
+
+            // 적응형 샘플링 설정
             ImGui::Separator();
-            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Optimization Settings");
-            ImGui::SliderFloat("Coarse Step Size", &cloud->m_fCoarseStepSize, 0.5f, 5.0f);
-            ImGui::SliderFloat("Fine Step Size", &cloud->m_fFineStepSize, 0.1f, 1.0f);
-            ImGui::SliderInt("Max Coarse Steps", &cloud->m_iMaxCoarseSteps, 10, 100);
-            ImGui::SliderInt("Max Fine Steps", &cloud->m_iMaxFineSteps, 32, 128);
-            ImGui::SliderFloat("Density Threshold", &cloud->m_fDensityThreshold, 0.01f, 0.1f);
-            ImGui::SliderFloat("Alpha Threshold", &cloud->m_fAlphaThreshold, 0.9f, 0.99f);
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Sampling Settings");
+            ImGui::SliderFloat("Coarse Step Size", &cloud->m_fCoarseStepSize, 0.1f, 10.0f);
+            ImGui::SliderFloat("Fine Step Size", &cloud->m_fFineStepSize, 0.01f, 1.f);
+            ImGui::SliderInt("Max Coarse Steps", &cloud->m_iMaxCoarseSteps, 10, 400);
+            ImGui::SliderInt("Max Fine Steps", &cloud->m_iMaxFineSteps, 10, 400);
+            ImGui::SliderFloat("Density Threshold", &cloud->m_fDensityThreshold, 0.001f, 0.1f);
+            ImGui::SliderFloat("Alpha Threshold", &cloud->m_fAlphaThreshold, 0.9f, 0.999f);
 
+            // 조명 설정
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Light Settings");
+
+            // Gizmo 세팅
+            float cameraView[16];
+            float cameraProjection[16];
+            memcpy(cameraView, CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW), sizeof(float) * 16);
+            memcpy(cameraProjection, CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ), sizeof(float) * 16);
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+            ImGuiIO& io = ImGui::GetIO();
+            ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+            ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
+
+            // 조명 위치를 나타내는 행렬 생성
+            XMFLOAT4X4 lightMatrix;
+            XMStoreFloat4x4(&lightMatrix, XMMatrixTranslation(
+                cloud->m_vLightPosition.x,
+                cloud->m_vLightPosition.y,
+                cloud->m_vLightPosition.z
+            ));
+
+            // Gizmo 조작
+            if (ImGuizmo::Manipulate(cameraView, cameraProjection, ImGuizmo::TRANSLATE, ImGuizmo::WORLD, (float*)&lightMatrix, NULL, NULL))
+            {
+                // 조작된 행렬에서 위치 추출
+                XMFLOAT4 newPosition;
+                XMStoreFloat4(&newPosition, XMLoadFloat4((XMFLOAT4*)&lightMatrix._41));
+                cloud->m_vLightPosition = XMFLOAT4(newPosition.x, newPosition.y, newPosition.z, 1.0f);
+            }
+
+            // 조명 위치 수동 입력
+            ImGui::InputFloat3("Light Position", (float*)&cloud->m_vLightPosition);
+
+            // 조명 범위 설정
+            ImGui::SliderFloat("Light Range", &cloud->m_fLightRange, 300.0f, 3000.0f);
+
+            // 조명 색상 설정
+            ImGui::ColorEdit3("Light Color", (float*)&cloud->m_vLightDiffuse);
+
+            // 태양 방향 설정 (정규화된 방향 벡터)
+            static float sunDirection[3] = { -1.0f, -1.0f, -1.0f };
+            if (ImGui::SliderFloat3("Sun Direction", sunDirection, -1.0f, 1.0f))
+            {
+                // 정규화
+                XMVECTOR vDir = XMVector3Normalize(XMLoadFloat3((XMFLOAT3*)sunDirection));
+                XMStoreFloat4(&cloud->m_vLightDir, vDir);
+            }
+
+
+            // 노이즈 텍스처 생성 및 저장 버튼
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Noise Texture Generation");
+
+            static int textureSize[3] = { 128, 128, 128 }; // 기본 텍스처 크기
+            ImGui::InputInt3("Texture Size (Width, Height, Depth)", textureSize);
+
+            static char fileName[256] = "NoiseTexture.dds";
+            ImGui::InputText("File Name", fileName, IM_ARRAYSIZE(fileName));
+            swprintf_s(m_filePath, MAX_PATH, L"../Bin/Resources/Textures/Noise/Cloud/%S", fileName);
+
+            if (ImGui::Button("Generate and Save 3D Noise Texture"))
+            {
+                HRESULT hr = Create3DNoiseTexture(textureSize[0], textureSize[1], textureSize[2], DXGI_FORMAT_R8G8B8A8_UNORM);
+                if (SUCCEEDED(hr))
+                {
+                    // 파일 경로 생성
+
+                    //hr = Save3DTextureToDDS(m_pNoiseTextureView, filePath);
+                    if (SUCCEEDED(hr))
+                        MessageBox(NULL, L"3D Noise Texture saved successfully!", L"Success", MB_OK | MB_ICONINFORMATION);
+                    else
+                        MessageBox(NULL, L"Failed to save 3D Noise Texture!", L"Error", MB_OK | MB_ICONERROR);
+                }
+                else
+                {
+                    MessageBox(NULL, L"Failed to generate 3D Noise Texture!", L"Error", MB_OK | MB_ICONERROR);
+                }
+            }
             ImGui::End();
+
         }
     }
 }
+
+HRESULT CImgui_Manager::Create3DNoiseTexture(UINT width, UINT height, UINT depth, DXGI_FORMAT format)
+{
+    // 텍스처 생성
+    D3D11_TEXTURE3D_DESC desc = {};
+    desc.Width = width;
+    desc.Height = height;
+    desc.Depth = depth;
+    desc.MipLevels = 1;
+    desc.Format = format;
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+
+    std::vector<BYTE> noiseData(width * height * depth * 4);
+
+    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    if (clouds.empty())
+    {
+        MessageBox(NULL, L"No cloud object found!", L"Error", MB_OK | MB_ICONERROR);
+        return E_FAIL;
+    }
+    CCloud* cloud = dynamic_cast<CCloud*>(clouds.front());
+    if (!cloud)
+    {
+        MessageBox(NULL, L"Failed to cast to CCloud object!", L"Error", MB_OK | MB_ICONERROR);
+        return E_FAIL;
+    }
+
+    GenerateNoiseData(noiseData.data(), width, height, depth);
+
+    D3D11_SUBRESOURCE_DATA initData = {};
+    initData.pSysMem = noiseData.data();
+    initData.SysMemPitch = width * 4;
+    initData.SysMemSlicePitch = width * height * 4;
+
+    ID3D11Texture3D* pNoiseTexture = nullptr;
+    HRESULT hr = m_pDevice->CreateTexture3D(&desc, &initData, &pNoiseTexture);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, L"Failed to create 3D texture!", L"Error", MB_OK | MB_ICONERROR);
+        return hr;
+    }
+
+    // 셰이더 리소스 뷰 생성
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+    srvDesc.Format = format;
+    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+    srvDesc.Texture3D.MipLevels = 1;
+
+    hr = m_pDevice->CreateShaderResourceView(pNoiseTexture, &srvDesc, &m_pNoiseTextureView);
+    if (FAILED(hr))
+    {
+        Safe_Release(pNoiseTexture);
+        MessageBox(NULL, L"Failed to create shader resource view!", L"Error", MB_OK | MB_ICONERROR);
+        return hr;
+    }
+
+    // 텍스처 생성 후 DDS 파일로 저장
+    if (SUCCEEDED(hr))
+    {
+        // DirectXTex의 ScratchImage로 텍스처 데이터 캡처
+        DirectX::ScratchImage scratchImage;
+        hr = DirectX::CaptureTexture(m_pDevice, m_pContext, pNoiseTexture, scratchImage);
+        if (SUCCEEDED(hr))
+        {
+            // DDS 파일로 저장
+            hr = DirectX::SaveToDDSFile(scratchImage.GetImages(), scratchImage.GetImageCount(), scratchImage.GetMetadata(), DirectX::DDS_FLAGS_NONE, m_filePath);
+            if (FAILED(hr))
+            {
+                MessageBox(NULL, L"Failed to save 3D texture to DDS file!", L"Error", MB_OK | MB_ICONERROR);
+            }
+        }
+        else
+        {
+            MessageBox(NULL, L"Failed to capture texture data!", L"Error", MB_OK | MB_ICONERROR);
+        }
+    }
+
+    Safe_Release(pNoiseTexture);
+    return S_OK;
+}
+
+void CImgui_Manager::GenerateNoiseData(BYTE* data, UINT width, UINT height, UINT depth)
+{
+    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    CCloud* cloud = dynamic_cast<CCloud*>(clouds.front());
+    float perlinFreq = cloud->m_fPerlinFrequency;
+    int perlinOctaves = cloud->m_iPerlinOctaves;
+    float worleyFreq = cloud->m_fWorleyFrequency;
+    float perlinPersistence = cloud->m_fPerlinPersistence;
+    float perlinLacunarity = cloud->m_fPerlinLacunarity;
+    float worleyJitter = cloud->m_fWorleyJitter;
+
+    auto hash33 = [](XMFLOAT3 p) -> XMFLOAT3 {
+        XMUINT3 q;
+        q.x = (UINT)(p.x) * 1597334673U;
+        q.y = (UINT)(p.y) * 3812015801U;
+        q.z = (UINT)(p.z) * 2798796415U;
+
+        q.x = (q.x ^ q.y ^ q.z) * 1597334673U;
+        q.y = (q.y ^ q.z ^ q.x) * 3812015801U;
+        q.z = (q.z ^ q.x ^ q.y) * 2798796415U;
+
+        const float invMaxUint = 1.0f / 4294967295.0f;
+        return XMFLOAT3(
+            -1.0f + 2.0f * (float)q.x * invMaxUint,
+            -1.0f + 2.0f * (float)q.y * invMaxUint,
+            -1.0f + 2.0f * (float)q.z * invMaxUint
+        );
+        };
+
+    auto gradientNoise = [&](XMFLOAT3 x, float freq) -> float {
+        XMFLOAT3 p = XMFLOAT3(std::floor(x.x), std::floor(x.y), std::floor(x.z));
+        XMFLOAT3 w = XMFLOAT3(x.x - p.x, x.y - p.y, x.z - p.z);
+
+        auto smoothstep = [](XMFLOAT3 t) -> XMFLOAT3 {
+            return XMFLOAT3(
+                t.x * t.x * t.x * (t.x * (t.x * 6.0f - 15.0f) + 10.0f),
+                t.y * t.y * t.y * (t.y * (t.y * 6.0f - 15.0f) + 10.0f),
+                t.z * t.z * t.z * (t.z * (t.z * 6.0f - 15.0f) + 10.0f)
+            );
+            };
+
+        XMFLOAT3 u = smoothstep(w);
+
+        auto fmod = [](XMFLOAT3 a, float b) -> XMFLOAT3 {
+            return XMFLOAT3(fmodf(a.x, b), fmodf(a.y, b), fmodf(a.z, b));
+            };
+
+        XMFLOAT3 ga = hash33(fmod(XMFLOAT3(p.x + 0.0f, p.y + 0.0f, p.z + 0.0f), freq));
+        XMFLOAT3 gb = hash33(fmod(XMFLOAT3(p.x + 1.0f, p.y + 0.0f, p.z + 0.0f), freq));
+        XMFLOAT3 gc = hash33(fmod(XMFLOAT3(p.x + 0.0f, p.y + 1.0f, p.z + 0.0f), freq));
+        XMFLOAT3 gd = hash33(fmod(XMFLOAT3(p.x + 1.0f, p.y + 1.0f, p.z + 0.0f), freq));
+        XMFLOAT3 ge = hash33(fmod(XMFLOAT3(p.x + 0.0f, p.y + 0.0f, p.z + 1.0f), freq));
+        XMFLOAT3 gf = hash33(fmod(XMFLOAT3(p.x + 1.0f, p.y + 0.0f, p.z + 1.0f), freq));
+        XMFLOAT3 gg = hash33(fmod(XMFLOAT3(p.x + 0.0f, p.y + 1.0f, p.z + 1.0f), freq));
+        XMFLOAT3 gh = hash33(fmod(XMFLOAT3(p.x + 1.0f, p.y + 1.0f, p.z + 1.0f), freq));
+
+        float va = Dot(ga, XMFLOAT3(w.x - 0.0f, w.y - 0.0f, w.z - 0.0f));
+        float vb = Dot(gb, XMFLOAT3(w.x - 1.0f, w.y - 0.0f, w.z - 0.0f));
+        float vc = Dot(gc, XMFLOAT3(w.x - 0.0f, w.y - 1.0f, w.z - 0.0f));
+        float vd = Dot(gd, XMFLOAT3(w.x - 1.0f, w.y - 1.0f, w.z - 0.0f));
+        float ve = Dot(ge, XMFLOAT3(w.x - 0.0f, w.y - 0.0f, w.z - 1.0f));
+        float vf = Dot(gf, XMFLOAT3(w.x - 1.0f, w.y - 0.0f, w.z - 1.0f));
+        float vg = Dot(gg, XMFLOAT3(w.x - 0.0f, w.y - 1.0f, w.z - 1.0f));
+        float vh = Dot(gh, XMFLOAT3(w.x - 1.0f, w.y - 1.0f, w.z - 1.0f));
+
+        return va +
+            u.x * (vb - va) +
+            u.y * (vc - va) +
+            u.z * (ve - va) +
+            u.x * u.y * (va - vb - vc + vd) +
+            u.y * u.z * (va - vc - ve + vg) +
+            u.z * u.x * (va - vb - ve + vf) +
+            u.x * u.y * u.z * (-va + vb + vc - vd + ve - vf - vg + vh);
+        };
+
+    auto worleyNoise = [&](XMFLOAT3 uv, float freq) -> float {
+        XMFLOAT3 id = Floor(uv);
+        XMFLOAT3 p = Frac(uv);
+
+        float minDist = 10000.0f;
+        for (float x = -1.0f; x <= 1.0f; ++x)
+        {
+            for (float y = -1.0f; y <= 1.0f; ++y)
+            {
+                for (float z = -1.0f; z <= 1.0f; ++z)
+                {
+                    XMFLOAT3 offset(x, y, z);
+                    XMFLOAT3 h = hash33(XMFLOAT3(fmodf(id.x + offset.x, freq), fmodf(id.y + offset.y, freq), fmodf(id.z + offset.z, freq)));
+                    h = Add(Multiply(Subtract(h, XMFLOAT3(0.5f, 0.5f, 0.5f)), worleyJitter), XMFLOAT3(0.5f, 0.5f, 0.5f));
+                    h = Add(h, offset);
+                    XMFLOAT3 d = Subtract(p, h);
+                    minDist = min(minDist, Dot(d, d));
+                }
+            }
+        }
+
+        return 1.0f - minDist;
+        };
+
+    auto perlinfbm = [&](XMFLOAT3 p, float freq, int octaves) -> float {
+        float G = perlinPersistence;
+        float amp = 1.0f;
+        float noise = 0.0f;
+        for (int i = 0; i < octaves; ++i)
+        {
+            noise += amp * gradientNoise(Multiply(p, freq), freq);
+            freq *= perlinLacunarity;
+            amp *= G;
+        }
+        return noise;
+        };
+
+    for (UINT z = 0; z < depth; ++z)
+    {
+        for (UINT y = 0; y < height; ++y)
+        {
+            for (UINT x = 0; x < width; ++x)
+            {
+                XMFLOAT3 position = {
+                    (float)x / width,
+                    (float)y / height,
+                    (float)z / depth
+                };
+
+                float perlin = perlinfbm(position, perlinFreq, perlinOctaves);
+                float worley = worleyNoise(Multiply(position, worleyFreq), worleyFreq);
+                float detailNoise = gradientNoise(Multiply(position, worleyFreq * 4), worleyFreq * 4);
+
+                // 노이즈 값을 0-1 범위로 정규화
+                perlin = (perlin + 1.0f) * 0.5f;
+                detailNoise = (detailNoise + 1.0f) * 0.5f;
+
+                // 노이즈 값을 0-255 범위로 변환하여 저장
+                UINT index = (z * width * height + y * width + x) * 4;
+                data[index] = (BYTE)(saturate(perlin) * 255.0f);      // R: Perlin noise
+                data[index + 1] = (BYTE)(saturate(worley) * 255.0f);  // G: Worley noise
+                data[index + 2] = (BYTE)(saturate(detailNoise) * 255.0f); // B: Detail noise
+                data[index + 3] = 255;                                // A: Fully opaque
+            }
+        }
+    }
+}
+
 void CImgui_Manager::Setting_CreateObj_ListBox()
 {
     if (m_IsNaviMode) // Navi 상태 활성화

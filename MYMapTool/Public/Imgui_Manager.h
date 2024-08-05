@@ -102,6 +102,10 @@ private:
 	void Light_Editor();
 	ImTextureID DirectXTextureToImTextureID(_uint iIdx);
 
+	HRESULT Create3DNoiseTexture(UINT width, UINT height, UINT depth, DXGI_FORMAT format);
+	void GenerateNoiseData(BYTE* data, UINT width, UINT height, UINT depth);
+
+
 public:
 	void Save_Lights();
 	void Load_Lights();
@@ -118,8 +122,12 @@ private:
 	void Fog_Editor();
 	void Cloud_Editor();
 
+
+
 private:
 	wstring m_LightsDataPath = L""; //Lights 저장 경로
+	WCHAR m_filePath[MAX_PATH];
+
 
 private:
 	_bool	m_bShowWindow;
@@ -211,6 +219,9 @@ private:
 
 private:
 	_float4 m_GlobalColor = { 1.f, 1.f, 1.f, 1.f };
+
+	private:
+		ID3D11ShaderResourceView* m_pNoiseTextureView = { nullptr };
 private:
 	void	Setting_ObjListBox(_int iLayerIdx);
 
@@ -218,8 +229,212 @@ private:
 
 	void	Setting_CreateObj_ListBox();
 	void	Delete_Obj();
+	//Utility  유틸리티 함수들
+	_float3 hash33(_float x, _float y, _float z)
+	{
+		int q[3];
+		q[0] = (int)(x * 1597334673U);
+		q[1] = (int)(y * 3812015801U);
+		q[2] = (int)(z * 2798796415U);
+
+		q[0] = (q[0] ^ q[1] ^ q[2]) * 1597334673U;
+		q[1] = (q[1] ^ q[2] ^ q[0]) * 3812015801U;
+		q[2] = (q[2] ^ q[0] ^ q[1]) * 2798796415U;
+
+		_float3 r;
+		r.x = (_float)q[0] / 0xffffffffU * 2.0f - 1.0f;
+		r.y = (_float)q[1] / 0xffffffffU * 2.0f - 1.0f;
+		r.z = (_float)q[2] / 0xffffffffU * 2.0f - 1.0f;
+
+		return r;
+	}
+
+	_float remap(_float x, _float a, _float b, _float c, _float d)
+	{
+		return (((x - a) / (b - a)) * (d - c)) + c;
+	}
+
+	_float lerp(_float a, _float b, _float t)
+	{
+		return a + t * (b - a);
+	}
+
+	_float dot(_float x1, _float y1, _float z1, _float x2, _float y2, _float z2)
+	{
+		return x1 * x2 + y1 * y2 + z1 * z2;
+	}
+
+	_float gradientNoise(_float x, _float y, _float z, _float freq)
+	{
+		_float px = std::floor(x);
+		_float py = std::floor(y);
+		_float pz = std::floor(z);
+		_float wx = x - px;
+		_float wy = y - py;
+		_float wz = z - pz;
+
+		_float ux = wx * wx * wx * (wx * (wx * 6.0f - 15.0f) + 10.0f);
+		_float uy = wy * wy * wy * (wy * (wy * 6.0f - 15.0f) + 10.0f);
+		_float uz = wz * wz * wz * (wz * (wz * 6.0f - 15.0f) + 10.0f);
+
+		_float3 ga = hash33(fmodf(px + 0.0f, freq), fmodf(py + 0.0f, freq), fmodf(pz + 0.0f, freq));
+		_float3 gb = hash33(fmodf(px + 1.0f, freq), fmodf(py + 0.0f, freq), fmodf(pz + 0.0f, freq));
+		_float3 gc = hash33(fmodf(px + 0.0f, freq), fmodf(py + 1.0f, freq), fmodf(pz + 0.0f, freq));
+		_float3 gd = hash33(fmodf(px + 1.0f, freq), fmodf(py + 1.0f, freq), fmodf(pz + 0.0f, freq));
+		_float3 ge = hash33(fmodf(px + 0.0f, freq), fmodf(py + 0.0f, freq), fmodf(pz + 1.0f, freq));
+		_float3 gf = hash33(fmodf(px + 1.0f, freq), fmodf(py + 0.0f, freq), fmodf(pz + 1.0f, freq));
+		_float3 gg = hash33(fmodf(px + 0.0f, freq), fmodf(py + 1.0f, freq), fmodf(pz + 1.0f, freq));
+		_float3 gh = hash33(fmodf(px + 1.0f, freq), fmodf(py + 1.0f, freq), fmodf(pz + 1.0f, freq));
+
+		_float va = dot(ga.x, ga.y, ga.z, wx - 0.0f, wy - 0.0f, wz - 0.0f);
+		_float vb = dot(gb.x, gb.y, gb.z, wx - 1.0f, wy - 0.0f, wz - 0.0f);
+		_float vc = dot(gc.x, gc.y, gc.z, wx - 0.0f, wy - 1.0f, wz - 0.0f);
+		_float vd = dot(gd.x, gd.y, gd.z, wx - 1.0f, wy - 1.0f, wz - 0.0f);
+		_float ve = dot(ge.x, ge.y, ge.z, wx - 0.0f, wy - 0.0f, wz - 1.0f);
+		_float vf = dot(gf.x, gf.y, gf.z, wx - 1.0f, wy - 0.0f, wz - 1.0f);
+		_float vg = dot(gg.x, gg.y, gg.z, wx - 0.0f, wy - 1.0f, wz - 1.0f);
+		_float vh = dot(gh.x, gh.y, gh.z, wx - 1.0f, wy - 1.0f, wz - 1.0f);
+
+		return va +
+			ux * (vb - va) +
+			uy * (vc - va) +
+			uz * (ve - va) +
+			ux * uy * (va - vb - vc + vd) +
+			uy * uz * (va - vc - ve + vg) +
+			uz * ux * (va - vb - ve + vf) +
+			ux * uy * uz * (-va + vb + vc - vd + ve - vf - vg + vh);
+	}
 
 
+	// XMFLOAT3에 대한 연산 함수들
+	XMFLOAT3 Add(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return XMFLOAT3(a.x + b.x, a.y + b.y, a.z + b.z);
+	}
+
+	XMFLOAT3 Multiply(const XMFLOAT3& a, float scalar)
+	{
+		return XMFLOAT3(a.x * scalar, a.y * scalar, a.z * scalar);
+	}
+
+	XMFLOAT3 Subtract(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return XMFLOAT3(a.x - b.x, a.y - b.y, a.z - b.z);
+	}
+
+	// floor 함수 (XMFLOAT3 버전)
+	XMFLOAT3 Floor(const XMFLOAT3& v)
+	{
+		return XMFLOAT3(std::floor(v.x), std::floor(v.y), std::floor(v.z));
+	}
+
+	// frac 함수 (XMFLOAT3 버전)
+	XMFLOAT3 Frac(const XMFLOAT3& v)
+	{
+		return XMFLOAT3(v.x - std::floor(v.x), v.y - std::floor(v.y), v.z - std::floor(v.z));
+	}
+
+	// dot 함수 (XMFLOAT3 버전)
+	float Dot(const XMFLOAT3& a, const XMFLOAT3& b)
+	{
+		return a.x * b.x + a.y * b.y + a.z * b.z;
+	}
+
+	_float worleyNoise(_float x, _float y, _float z, _float freq, _float jitter)
+	{
+		XMFLOAT3 pos(x * freq, y * freq, z * freq);
+		XMFLOAT3 id = Floor(pos);
+		XMFLOAT3 localPos = Frac(pos);
+
+		_float minDist = 10000.0f;
+		for (int i = -1; i <= 1; i++)
+		{
+			for (int j = -1; j <= 1; j++)
+			{
+				for (int k = -1; k <= 1; k++)
+				{
+					XMFLOAT3 offset2 = { _float(i), _float(j), _float(k)};
+					XMFLOAT3 cellId = Add(id , offset2);
+					XMFLOAT3 h = hash33(cellId.x, cellId.y, cellId.z);
+					h = Add(Multiply(h, jitter), offset2);
+					XMFLOAT3 d = Subtract(localPos, h);
+					_float dist = Dot(d, d);
+					minDist = std::min(minDist, dist);
+				}
+			}
+		}
+
+		return 1.0f - std::sqrt(minDist);
+	}
+
+	_float saturate(_float x)
+	{
+		return std::max(0.0f, std::min(1.0f, x));
+	}
+
+	float improvedPerlinNoise(float x, float y, float z, float freq)
+	{
+		XMFLOAT3 p(x * freq, y * freq, z * freq);
+		XMFLOAT3 pi = Floor(p);
+		XMFLOAT3 pf = Frac(p);
+
+		XMFLOAT3 pf_min1 = Subtract(pf, XMFLOAT3(1.0f, 1.0f, 1.0f));
+
+		float n000 = Dot(hash33(pi.x, pi.y, pi.z), pf);
+		float n100 = Dot(hash33(pi.x + 1, pi.y, pi.z), XMFLOAT3(pf.x - 1, pf.y, pf.z));
+		float n010 = Dot(hash33(pi.x, pi.y + 1, pi.z), XMFLOAT3(pf.x, pf.y - 1, pf.z));
+		float n110 = Dot(hash33(pi.x + 1, pi.y + 1, pi.z), XMFLOAT3(pf.x - 1, pf.y - 1, pf.z));
+		float n001 = Dot(hash33(pi.x, pi.y, pi.z + 1), XMFLOAT3(pf.x, pf.y, pf.z - 1));
+		float n101 = Dot(hash33(pi.x + 1, pi.y, pi.z + 1), XMFLOAT3(pf.x - 1, pf.y, pf.z - 1));
+		float n011 = Dot(hash33(pi.x, pi.y + 1, pi.z + 1), XMFLOAT3(pf.x, pf.y - 1, pf.z - 1));
+		float n111 = Dot(hash33(pi.x + 1, pi.y + 1, pi.z + 1), pf_min1);
+
+		XMFLOAT3 u = XMFLOAT3(
+			pf.x * pf.x * (3 - 2 * pf.x),
+			pf.y * pf.y * (3 - 2 * pf.y),
+			pf.z * pf.z * (3 - 2 * pf.z)
+		);
+
+		return lerp(
+			lerp(lerp(n000, n100, u.x), lerp(n010, n110, u.x), u.y),
+			lerp(lerp(n001, n101, u.x), lerp(n011, n111, u.x), u.y),
+			u.z
+		);
+	}
+
+	// 개선된 워리 노이즈 함수
+	float improvedWorleyNoise(float x, float y, float z, float freq, float jitter)
+	{
+		XMFLOAT3 pos(x * freq, y * freq, z * freq);
+		XMFLOAT3 id = Floor(pos);
+		XMFLOAT3 localPos = Frac(pos);
+
+		float minDist = 10000.0f;
+		for (int offsetZ = -1; offsetZ <= 1; offsetZ++)
+		{
+			for (int offsetY = -1; offsetY <= 1; offsetY++)
+			{
+				for (int offsetX = -1; offsetX <= 1; offsetX++)
+				{
+					XMFLOAT3 offset = { _float(offsetX), _float(offsetY), _float(offsetZ) };
+					XMFLOAT3 cellId = Add(id, offset);
+					XMFLOAT3 cellPos = Add(hash33(cellId.x, cellId.y, cellId.z), offset);
+					cellPos = Add(Multiply(cellPos, jitter), offset);
+
+					XMFLOAT3 diff = Subtract(cellPos, localPos);
+					float dist = Dot(diff, diff);  // 거리의 제곱을 사용
+					minDist = min(minDist, dist);
+				}
+			}
+		}
+
+		return sqrt(minDist);  // 최종 결과에서만 제곱근을 적용
+	}
+
+public:
+	
+
+public:
 
 public:
 	virtual void Free() override;

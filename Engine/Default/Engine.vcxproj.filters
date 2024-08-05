@@ -277,6 +277,9 @@
     <Filter Include="01.Utility\999.Nvidia\Blast">
       <UniqueIdentifier>{d33396cc-a383-4427-a233-b6a79c863d2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\Texture\Texture3D">
+      <UniqueIdentifier>{4404ca08-8830-4fa4-a07c-4b6913fdd46a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -573,6 +576,9 @@
     <ClInclude Include="..\public\BlastMgr.h">
       <Filter>01.Utility\999.Nvidia\Blast</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Texture3D.h">
+      <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -853,6 +859,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BlastMgr.cpp">
       <Filter>01.Utility\999.Nvidia\Blast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Texture3D.cpp">
+      <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

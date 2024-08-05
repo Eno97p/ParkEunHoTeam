@@ -130,12 +130,37 @@ HRESULT CCloud::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaThreshold", &m_fAlphaThreshold, sizeof(float))))
 			return E_FAIL;
 
+		// 새로운 노이즈 관련 값들 바인딩
+		   // 펄린 노이즈 옥타브 및 주파수 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iPerlinOctaves", &m_iPerlinOctaves, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinFrequency", &m_fPerlinFrequency, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinPersistence", &m_fPerlinPersistence, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinLacunarity", &m_fPerlinLacunarity, sizeof(float))))
+			return E_FAIL;
+
+		// Worley 노이즈 주파수 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWorleyFrequency", &m_fWorleyFrequency, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWorleyJitter", &m_fWorleyJitter, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinWorleyMix", &m_fPerlinWorleyMix, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNoiseRemapLower", &m_fNoiseRemapLower, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNoiseRemapUpper", &m_fNoiseRemapUpper, sizeof(float))))
+			return E_FAIL;
+	
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_vector))))
 			return E_FAIL;
 
-		_float4 lightPos;
-		XMStoreFloat4(&lightPos, dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION));
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &lightPos, sizeof(_float4))))
+		//_float4 lightPos;
+		//XMStoreFloat4(&lightPos, dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION));
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &m_vLightPosition, sizeof(_float4))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange", &m_fLightRange, sizeof(float))))
@@ -150,7 +175,7 @@ HRESULT CCloud::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(m_iShaderPath);
 		m_pModelCom->Render(i);
 	}
 
@@ -168,6 +193,11 @@ HRESULT CCloud::Add_Components(void* pArg)
 	/* For.Com_Shader */
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxCloud"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;	
+	
+	/* For.Com_Shader */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture3D_Noise"),
+		TEXT("Com_Noise3D"), reinterpret_cast<CComponent**>(&m_pNoise3DCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -179,7 +209,21 @@ HRESULT CCloud::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+
+	// CCloud::Render() 함수 내에서
+	XMMATRIX viewProjMatrix = XMLoadFloat4x4(m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW)) *
+		XMLoadFloat4x4(m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
+	XMMATRIX invViewProjMatrix = XMMatrixInverse(nullptr, viewProjMatrix);
+	XMFLOAT4X4 invViewProjFloat4x4;
+	XMStoreFloat4x4(&invViewProjFloat4x4, invViewProjMatrix);
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_InvViewProjMatrix", &invViewProjFloat4x4)))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pNoise3DCom->Bind_ShaderResource(m_pShaderCom, "g_3DNoiseTexture")))
 		return E_FAIL;
 
 	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))

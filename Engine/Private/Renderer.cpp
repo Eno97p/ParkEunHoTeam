@@ -505,9 +505,12 @@ HRESULT CRenderer::Initialize()
         //    return E_FAIL;
         //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+
+
+        /*if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;*/
+
 
         //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Specular"), currentX, currentY, targetWidth, targetHeight)))
         //    return E_FAIL;
@@ -531,6 +534,10 @@ HRESULT CRenderer::Initialize()
 
         if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Final"), currentX, currentY, targetWidth, targetHeight)))
            return E_FAIL;*/
+
+
+          /* if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
+              return E_FAIL;*/
 
 #endif	
 

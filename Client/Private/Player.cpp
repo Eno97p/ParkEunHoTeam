@@ -53,8 +53,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
-	m_iLevel = 1;
-
 	return S_OK;
 }
 
@@ -123,6 +121,8 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 	{
 		m_bIsCloaking = false;
 	}
+
+	//Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
 }
 
 void CPlayer::Tick(_float fTimeDelta)
@@ -350,6 +350,13 @@ void CPlayer::Parry_Succeed()
 	m_bParry = true;
 	m_fSlowDelay = 0.f;
 	fSlowValue = 0.2f;
+}
+
+void CPlayer::Pull_Status()
+{
+	m_fCurHp = m_fMaxHp;
+	m_fCurStamina = m_fMaxStamina;
+	m_fCurMp = m_fMaxMp;
 }
 
 HRESULT CPlayer::Add_Nodes()
@@ -2202,6 +2209,37 @@ bool CPlayer::OnFilterCallback(const PxController& Caller, const PxController& O
 	
 	return true;
 	
+}
+
+void CPlayer::Update_LvData()
+{
+	// Level에 따라 Data들을 갱신하는 함수
+	m_fMaxHp = 300 + (m_iVitalityLv * 100);
+	m_fMaxStamina = 300 + (m_iStaminaLv * 100);
+	m_fMaxMp = 300 + (m_iStrenghtLv * 100);
+
+	m_iPhysicalDmg = 80 + (m_iMysticismLv * 5);
+	m_iEtherDmg = 60 + (m_iKnowledgeLv * 3);
+}
+
+void CPlayer::Update_Weapon(wstring wstrTextureName)
+{
+	if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Durgas_Claymore"))
+	{
+		m_iCurWeapon = WEAPON_DURGASWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Pretorian"))
+	{
+		m_iCurWeapon = WEAPON_PRETORIANSWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Radamanthes"))
+	{
+		m_iCurWeapon = WEAPON_RADAMANTHESWORD;
+	}
+	else if (wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Elish"))
+	{
+		m_iCurWeapon = WEAPON_ELISH;
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

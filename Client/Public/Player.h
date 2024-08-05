@@ -91,6 +91,10 @@ public:
 	_uint			Get_EtherDmg() { return m_iEtherDmg; }
 	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
 
+	void			Pull_Status(); // HP / Stamina / MP 를 Pull
+	void			Update_LvData();
+	void			Update_Weapon(wstring wstrTextureName);
+
 private:
 	HRESULT Add_Nodes();
 
@@ -172,7 +176,7 @@ private:
 	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
 	_float m_fBRIS = 0.f;
-	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr };
+	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr }; 
 	CTransform* m_pCameraTransform = { nullptr };
 	class CHoverboard* m_pHoverBoard = nullptr;
 	CTransform* m_pHoverBoardTransform = nullptr;
@@ -180,21 +184,21 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	_float m_fMaxHp = 1000.f;
+	_float m_fMaxHp = 300.f; // 1000
 #else
-	_float m_fMaxHp = 100.f;
+	_float m_fMaxHp = 300.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;
 
 #ifdef _DEBUG
-	_float m_fMaxStamina = 1000.f;
+	_float m_fMaxStamina = 300.f;
 #else
-	_float m_fMaxStamina = 100.f;
+	_float m_fMaxStamina = 300.f;
 #endif // _DEBUG
 	_float m_fCurStamina = m_fMaxStamina;
 
-	_float m_fMaxMp = 100.f;
+	_float m_fMaxMp = 300.f;
 	_float m_fCurMp = m_fMaxMp;
 
 	_float m_iMoney = 0;
@@ -206,16 +210,16 @@ private:
 	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
 
 #pragma region UI관련 Data
-	_uint		m_iLevel = { 0 };
+	_uint		m_iLevel = { 1 };
 	_uint		m_iVitalityLv = { 0 };
 	_uint		m_iStaminaLv = { 0 };
 	_uint		m_iStrenghtLv = { 0 };
 	_uint		m_iMysticismLv = { 0 };
 	_uint		m_iKnowledgeLv = { 0 };
-	_uint		m_iPhysicalDmg = { 0 };
-	_uint		m_iEtherDmg = { 0 };
-
+	_uint		m_iPhysicalDmg = { 80 };
+	_uint		m_iEtherDmg = { 60 };
 #pragma endregion UI관련 Data
+
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

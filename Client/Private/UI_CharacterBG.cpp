@@ -158,48 +158,48 @@ void CUI_CharacterBG::Render_Text()
 	// ÁÂÃø
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("VITALITY"), _float2(fFirstColX, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrVitality, _float2(fFirstColX + 280.f, fFirstRowX), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrVitality, _float2(fFirstColX + 280.f, fFirstRowX), Check_Difference(ABILITY_VITALITY))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fFirstColX, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina, _float2(fFirstColX + 280.f, fFirstRowX + 30.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina, _float2(fFirstColX + 280.f, fFirstRowX + 30.f), Check_Difference(ABILITY_STAMINA))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STRENGHT"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStrenght, _float2(fFirstColX + 280.f, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStrenght, _float2(fFirstColX + 280.f, fFirstRowX + 60.f), Check_Difference(ABILITY_STRENGHT))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("MYSTIC"), _float2(fFirstColX, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrMysticism, _float2(fFirstColX + 280.f, fFirstRowX + 90.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrMysticism, _float2(fFirstColX + 280.f, fFirstRowX + 90.f), Check_Difference(ABILITY_MYSTICISM))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("KNOWLEDGE"), _float2(fFirstColX, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrKnowledge, _float2(fFirstColX + 280.f, fFirstRowX + 120.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrKnowledge, _float2(fFirstColX + 280.f, fFirstRowX + 120.f), Check_Difference(ABILITY_KNOWLEDGE))))
 		return;
 
 	// ¿ìÃø
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("HELTH"), _float2(fSecColX, fSecColY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrHealth, _float2(fSecColX + 330.f, fSecColY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrHealth, _float2(fSecColX + 330.f, fSecColY), Check_Difference(ABILITY_HEALTH))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STAMINA"), _float2(fSecColX, fSecColY + 28.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina_State, _float2(fSecColX + 330.f, fSecColY + 28.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina_State, _float2(fSecColX + 330.f, fSecColY + 28.f), Check_Difference(ABILITY_STAMINA_STATE))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("ETHER"), _float2(fSecColX, fSecColY + 56.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEther, _float2(fSecColX + 330.f, fSecColY + 56.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEther, _float2(fSecColX + 330.f, fSecColY + 56.f), Check_Difference(ABILITY_ETHER))))
 		return;
 
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("PHYSICAL DAMAGE"), _float2(fSecColX, fSecColY + 108.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrPhysicalDmg, _float2(fSecColX + 330.f, fSecColY + 108.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrPhysicalDmg, _float2(fSecColX + 330.f, fSecColY + 108.f), Check_Difference(ABILITY_PHYSICALDMG))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("ETHERAL DAMAGE"), _float2(fSecColX, fSecColY + 134.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEtheralDmg, _float2(fSecColX + 330.f, fSecColY + 134.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrEtheralDmg, _float2(fSecColX + 330.f, fSecColY + 134.f), Check_Difference(ABILITY_ETHERDMG))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("PHYSICAL ARMOR"), _float2(fSecColX, fSecColY + 188.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
@@ -242,56 +242,56 @@ _vector CUI_CharacterBG::Check_Difference(ABILITY_TYPE eAbilityType)
 	}
 	case Client::CUI_CharacterBG::ABILITY_STRENGHT:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_StrenghtLv() != tOriginData.iOriginStrenghtLv)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_MYSTICISM:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_MysticismLv() != tOriginData.iOriginMysticismLv)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_KNOWLEDGE:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_KnowledgeLv() != tOriginData.iOriginKnowledgeLv)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_HEALTH:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_MaxHP() != tOriginData.iOriginHealth)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_STAMINA_STATE:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_MaxStamina() != tOriginData.iOriginStamina_State)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_ETHER:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_MaxMP() != tOriginData.iOriginEther)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_PHYSICALDMG:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_PhysicalDmg() != tOriginData.iOriginPhysicalDmg)
 			return vColorGreen;
 		else
 			return vColorWhite;
 	}
 	case Client::CUI_CharacterBG::ABILITY_ETHERDMG:
 	{
-		if (pPlayer->Get_VitalityLv() != tOriginData.iOriginVitalityLv)
+		if (pPlayer->Get_EtherDmg() != tOriginData.iOriginEtherDmg)
 			return vColorGreen;
 		else
 			return vColorWhite;

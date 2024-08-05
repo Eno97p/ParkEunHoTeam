@@ -688,6 +688,18 @@
     <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\OkBtn">
       <UniqueIdentifier>{15bf1a52-67d6-49c4-b72f-54c46cdbcd86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE">
+      <UniqueIdentifier>{b97ce2fb-4d24-4678-a5c1-e9900ccdd9b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn">
+      <UniqueIdentifier>{4ad03b4c-a384-4103-b3a8-f14df4213172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
+      <UniqueIdentifier>{927f20e7-ac6f-419d-b35f-191ef3582a9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Ring">
+      <UniqueIdentifier>{c99645d8-4ef8-4ae1-9c92-f523d21b7107}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Heals">
       <UniqueIdentifier>{23f5d785-8fe0-45b6-886c-acc058241b42}</UniqueIdentifier>
     </Filter>
@@ -1424,6 +1436,12 @@
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\QTE.h">
+      <Filter>02.GameObjects\07. UI\QTE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Btn.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\HealEffect.h">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>
     </ClInclude>
@@ -2145,6 +2163,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\QTE.cpp">
+      <Filter>02.GameObjects\07. UI\QTE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Btn.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>

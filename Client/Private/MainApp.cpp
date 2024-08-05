@@ -163,6 +163,11 @@
 #include "UIGroup_Setting.h"
 #pragma endregion Setting
 
+#pragma region QTE
+#include "UI_QTE_Btn.h"
+#include "QTE.h"
+#pragma endregion QTE
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -902,6 +907,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.png"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_Icon_Catalyst */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Catalyst"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_AncientCatalyst.png"), 1))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_Item */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Item"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Item/Item.png"), 1))))
@@ -1326,6 +1336,33 @@ HRESULT CMainApp::Ready_Texture_UI()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
 		return E_FAIL;
 #pragma endregion Setting
+
+#pragma region QTE
+	/* Prototype_Component_Texture_UI_QTE_Btn */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Btn"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_%d.png"), 4))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Bad */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Bad"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Bad.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Good */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Good"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Good.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Score_Perfect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Score_Perfect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Perfect.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Ring */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Ring"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Ring_%d.png"), 4))))
+		return E_FAIL;
+#pragma endregion QTE
 
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
@@ -1956,6 +1993,22 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Setting
+
+#pragma region QTE
+	/* For.Prototype_GameObject_UI_QTE_Btn*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Btn"),
+		CUI_QTE_Btn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+
+	/* For.Prototype_GameObject_QTE*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_QTE"),
+		CQTE::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion QTE
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

@@ -35,7 +35,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual HRESULT Render_Bloom() override;
+	//virtual HRESULT Render_Bloom() override;
 	void On_Ride() { m_bOnRide = true; }
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 

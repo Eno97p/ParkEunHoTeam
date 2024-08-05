@@ -207,6 +207,18 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\HealEffect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Heal_Line.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Heal_Ribbon.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\TornadoEffect.cpp"
 
 
@@ -217,6 +229,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Tornado_Root.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\QTE.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\RotateGate.cpp"
@@ -319,6 +334,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_QTE_Btn.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_ScreenBlood.cpp"

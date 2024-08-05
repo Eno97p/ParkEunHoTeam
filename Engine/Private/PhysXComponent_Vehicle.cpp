@@ -46,7 +46,7 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 	BaseVehicleParams pBaseVehicleParams;
 	DirectDrivetrainParams pDirectDrivetrainParams;
 	_bool isLoad = false;
-	decltype(auto) Load_data = Load_Data<BaseVehicleParams, DirectDrivetrainParams>(L"../Bin/DataFiles/Vehicle.dat");
+	decltype(auto) Load_data = Load_Data<BaseVehicleParams, DirectDrivetrainParams>(L"../Bin/DataFiles/Vehicle.bin");
 	//optional<tuple<BaseVehicleParams, DirectDrivetrainParams>> Load_data = Load_Data<BaseVehicleParams, DirectDrivetrainParams>(L"../Bin/DataFiles/Vehicle.dat");
 	if (!Load_data)
 	{
@@ -419,7 +419,7 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 	m_pPhysXActorVehicle->getCommandState().throttle = m_Command.throttle;
 	m_pPhysXActorVehicle->getCommandState().steer = m_Command.steer;
 	m_pPhysXActorVehicle->getTransmissionCommandState().gear = m_Command.gear;
-	m_pPhysXActorVehicle->getDirectDriveParams().directDriveThrottleResponseParams.maxResponse = m_Command.MaxHorsePower;
+	//m_pPhysXActorVehicle->getDirectDriveParams().directDriveThrottleResponseParams.maxResponse = m_Command.MaxHorsePower;
 	m_pPhysXActorVehicle->step(fTimeDelta, m_pVehicleSimulationContext);
 }
 

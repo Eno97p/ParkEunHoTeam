@@ -73,7 +73,8 @@ CComponent * CComponent_Manager::Find_Prototype(_uint iLevelIndex, const wstring
 {
 	auto	iter = m_pPrototypes[iLevelIndex].find(strPrototypeTag);
 	auto&   temp = m_pPrototypes[iLevelIndex];
-
+	
+	
 
 	if (iter == m_pPrototypes[iLevelIndex].end())
 		return nullptr;

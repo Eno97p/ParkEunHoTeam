@@ -347,11 +347,7 @@ void CBody_Mantari::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
-	_uint iCascadeNum = m_pGameInstance->Get_CascadeNum(XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f), 1.f);
-	if (iCascadeNum == FRUSTUM_NEAR)
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
-	}
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -505,7 +501,7 @@ HRESULT CBody_Mantari::Render_LightDepth()
 	_float4 fPos = m_pGameInstance->Get_PlayerPos();
 
 	/* ±¤¿ø ±âÁØÀÇ ºä º¯È¯Çà·Ä. */
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 100.f, fPos.z - 100.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
@@ -526,8 +522,6 @@ HRESULT CBody_Mantari::Render_LightDepth()
 
 		m_pModelCom->Render(i);
 	}
-
-	return S_OK;
 
 	return S_OK;
 }

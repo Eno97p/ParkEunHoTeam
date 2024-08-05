@@ -60,6 +60,8 @@ void CAndras::Tick(_float fTimeDelta)
 		for (auto& iter : m_PartObjects)
 			iter->Tick(fTimeDelta);
 	}
+
+	m_Head->Tick(fTimeDelta);
 }
 
 void CAndras::Late_Tick(_float fTimeDelta)
@@ -70,6 +72,7 @@ void CAndras::Late_Tick(_float fTimeDelta)
 			iter->Late_Tick(fTimeDelta);
 	}
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+
 }
 
 HRESULT CAndras::Render()
@@ -175,6 +178,10 @@ HRESULT CAndras::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
+	
+	WeaponDesc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("Andras-Head");
+	m_Head = static_cast<CWeapon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_AndrasHead"), &WeaponDesc));
+
 	return S_OK;
 }
 
@@ -276,6 +283,11 @@ const _float4x4* CAndras::Get_WeaponMat(_int Index)
 	{
 		m_PartObjects[Index]->Get_WorldMat();
 	}
+}
+
+const _float4x4* CAndras::Get_HeadMat()
+{
+	return static_cast<CWeapon*>(m_Head)->Get_WorldMat();
 }
 
 NodeStates CAndras::IDLE(_float fTimeDelta)
@@ -439,4 +451,6 @@ void CAndras::Free()
 	Safe_Release(m_pBehaviorCom);
 	for (auto& iter : m_PartObjects)
 		Safe_Release(iter);
+
+	Safe_Release(m_Head);
 }

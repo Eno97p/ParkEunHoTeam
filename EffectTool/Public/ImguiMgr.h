@@ -13,6 +13,7 @@
 #include "Electronic.h"
 #include "TornadoEffect.h"
 #include "FirePillar.h"
+#include "HealEffect.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -126,6 +127,13 @@ private:
 	void FirePillarTool();
 
 private:
+	void HealEffectTool();
+	HRESULT Store_Heal(char* Name, CHealEffect::HEALEFFECT desc);
+	void Heal_ListBox(CHealEffect::HEALEFFECT* Tornado);
+	HRESULT Save_Heal();
+	HRESULT Load_Heal();
+
+private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
 private:
@@ -158,6 +166,7 @@ private:
 	vector<shared_ptr<CFireEffect::FIREEFFECTDESC>>			m_Fires;
 	vector<shared_ptr<CElectronic::ELECTRONICDESC>>			m_Lightnings;
 	vector<shared_ptr<CTornadoEffect::TORNADODESC>>			m_Tornados;
+	vector<shared_ptr<CHealEffect::HEALEFFECT>>				m_Heals;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -166,6 +175,8 @@ private:
 	vector<string> FireNames;
 	vector<string> LightningNames;
 	vector<string> TornadoNames;
+	vector<string> HealNames;
+
 
 private:
 	vector<string> ModelName;

@@ -21,7 +21,18 @@ public:
 	}
 
 	_bool is_Finished() const {
-		return m_isFinished;
+		for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
+		{
+			if (m_bIsFinish[i] == true)
+			{
+
+				return m_isFinished;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 
 public:	
@@ -36,13 +47,16 @@ private:
 	ID3D11DeviceContext*	m_pContext = { nullptr };	
 
 
-#define MAX_THREAD 4
+
 private:
 	void Finish_Thread(const _uint& iIndex)
 	{
 		m_bIsFinish[iIndex] = true;
-		if (++m_iFinishedThreadCount == USED_THREAD_COUNT)
+		g_IsThreadFinish[iIndex] = true;  //전역 변수
+		m_iFinishedThreadCount++;
+		if (m_iFinishedThreadCount == USED_THREAD_COUNT)
 		{
+			
 			lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 			m_isFinished = true;
 		}
@@ -50,7 +64,7 @@ private:
 
 private:
 	/*For. Thread*/
-	static const int USED_THREAD_COUNT = 3;
+	
 	atomic<bool> 		m_bIsFinish[MAX_THREAD];
 	atomic<int>			m_iFinishedThreadCount;
 

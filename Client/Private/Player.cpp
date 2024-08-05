@@ -13,6 +13,7 @@
 #include "EffectManager.h"
 #include "ThirdPersonCamera.h"
 #include "CHoverBoard.h"
+#include "Monster.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -178,6 +179,7 @@ void CPlayer::Tick(_float fTimeDelta)
 		vParticlePos.y += 1.f;
 		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
+
 
 }
 
@@ -1300,7 +1302,11 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 	if (m_iAttackCount == 0) m_iAttackCount = 1;
 	if (m_bLAttacking)
 	{
-		if (m_bIsRunAttack)
+		if (CanBackAttack() || m_iState == STATE_BACKATTACK)
+		{
+			m_iState = STATE_BACKATTACK;
+		}
+		else if (m_bIsRunAttack)
 		{
 			switch (m_iAttackCount)
 			{
@@ -1364,6 +1370,19 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 	}
 }
 
+_bool CPlayer::CanBackAttack()
+{
+	list<CGameObject*>& MonsterList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+	for (auto iter : MonsterList)
+	{
+		if (static_cast<CMonster*>(iter)->CanBackAttack())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 NodeStates CPlayer::RAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
@@ -1419,6 +1438,7 @@ void CPlayer::Generate_HoverBoard()
 		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
+		hoverboardInfo.vLook = _float3(vLook.m128_f32[0], vLook.m128_f32[1], vLook.m128_f32[2]);
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"));
 		m_pHoverBoard = dynamic_cast<CHoverboard*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo));
 		m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"), m_pHoverBoard);
@@ -1443,6 +1463,8 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		if (m_bRiding)
 		{
 			m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_DECREASE);
+			m_pHoverBoard = nullptr;
+			m_pHoverBoardTransform = nullptr;
 		}
 		m_bRiding = !m_bRiding;
 		m_bJumping = true;
@@ -1620,15 +1642,15 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 	if (m_bJumping)
 	{
 		_float3 fScale = m_pTransformCom->Get_Scaled();
-		// 스케일 적용하면 이상해져서 적용안함
-		_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+		_vector vRight;
 		_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 		_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		vRight = XMVector3Cross(vUp, vLook);
 		vLook = XMVector3Cross(vRight, vUp);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * fScale.x);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp * fScale.y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
 
 		m_pPhysXCom->Set_Gravity();
 		m_bRided = false;
@@ -1849,6 +1871,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
+		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);

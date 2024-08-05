@@ -700,6 +700,9 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Ring">
       <UniqueIdentifier>{c99645d8-4ef8-4ae1-9c92-f523d21b7107}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Heals">
+      <UniqueIdentifier>{23f5d785-8fe0-45b6-886c-acc058241b42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1439,6 +1442,21 @@
     <ClInclude Include="..\Public\UI_QTE_Btn.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HealEffect.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\BlastWall.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2151,6 +2169,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\BlastWall.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -122,9 +122,9 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		m_pOriginalSize[i] = m_pSize[i] = m_TrailDescription.vSize;
-		pInstanceVertices[i].vRight = _float4(m_pSize[i].x, 0.f, 0.f, 0.f);
-		pInstanceVertices[i].vUp = _float4(0.f, m_pSize[i].y, 0.f, 0.f);
-		pInstanceVertices[i].vLook = _float4(0.f, 0.f, m_pSize[i].z, 0.f);
+		XMStoreFloat4(&pInstanceVertices[i].vRight , XMVector4Normalize(ParentMat.r[0])* m_pSize[i].x);
+		XMStoreFloat4(&pInstanceVertices[i].vUp , XMVector4Normalize(ParentMat.r[1])* m_pSize[i].y);
+		XMStoreFloat4(&pInstanceVertices[i].vLook , XMVector4Normalize(ParentMat.r[2])* m_pSize[i].z);
 		XMStoreFloat4(&pInstanceVertices[i].vTranslation, vPos);
 		pInstanceVertices[i].vLifeTime = _float2(m_TrailDescription.fLifeTime, 0.f);
 		m_pOriginalSpeeds[i] = m_pSpeeds[i] = m_TrailDescription.vSpeed;
@@ -174,9 +174,11 @@ HRESULT CVIBuffer_Trail::Render()
 
 void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 {
-	_matrix ParentMat;
-	if(m_TrailDescription.ParentMat != nullptr)
+	XMMATRIX ParentMat;
+	if (m_TrailDescription.ParentMat != nullptr)
+	{
 		ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
+	}
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
@@ -184,30 +186,34 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		pVertices[i].vLifeTime.y += fDelta;
-		m_pSpeeds[i] += fDelta;
 
 		if (m_TrailDescription.ParentMat != nullptr)
 		{
-
 			if (i > 0)  // 첫 번째 인스턴스가 아니면 이전 인스턴스의 위치를 따라감
 			{
-				_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-				_vector Up = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vUp), XMLoadFloat4(&pVertices[i - 1].vUp), m_pSpeeds[i] * fDelta));
-				_vector Right = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vRight), XMLoadFloat4(&pVertices[i - 1].vRight), m_pSpeeds[i] * fDelta));
-				_vector Look = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vLook), XMLoadFloat4(&pVertices[i - 1].vLook), m_pSpeeds[i] * fDelta));
+				XMMATRIX thisMat , FrontMat;
+				thisMat.r[0] = XMLoadFloat4(&pVertices[i].vRight);
+				thisMat.r[1] = XMLoadFloat4(&pVertices[i].vUp);
+				thisMat.r[2] = XMLoadFloat4(&pVertices[i].vLook);
+				thisMat.r[3] = XMLoadFloat4(&pVertices[i].vTranslation);
+				
+				FrontMat.r[0] = XMLoadFloat4(&pVertices[i-1].vRight);
+				FrontMat.r[1] = XMLoadFloat4(&pVertices[i-1].vUp);
+				FrontMat.r[2] = XMLoadFloat4(&pVertices[i-1].vLook);
+				FrontMat.r[3] = XMLoadFloat4(&pVertices[i-1].vTranslation);
 
-				vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
+				thisMat = XMMatrixSlerp(thisMat, FrontMat, m_pSpeeds[i] * fDelta);
 
-				XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-				XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
-				XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-				XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
+				XMStoreFloat4(&pVertices[i].vTranslation, thisMat.r[3]);
+				XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(thisMat.r[0])* m_pSize[i].x);
+				XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(thisMat.r[1]) * m_pSize[i].y);
+				XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(thisMat.r[2]) * m_pSize[i].z);
 			}
 			else  // 첫 번째 인스턴스는 고정된 위치
 			{
-				_vector vRight = XMVector4Normalize(ParentMat.r[0]);
-				_vector vUp = XMVector4Normalize(ParentMat.r[1]);
-				_vector vLook = XMVector4Normalize(ParentMat.r[2]);
+				XMVECTOR vRight = XMVector4Normalize(ParentMat.r[0]);
+				XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+				XMVECTOR vLook = XMVector4Normalize(ParentMat.r[2]);
 				XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
 
 				XMStoreFloat4(&pVertices[i].vTranslation, vPos);
@@ -235,7 +241,7 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 
 void CVIBuffer_Trail::EternalTrail(_float fDelta)
 {
-	_matrix ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
+	XMMATRIX ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
 	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
@@ -245,27 +251,33 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 		
 		if (i > 0)  // 첫 번째 인스턴스가 아니면 이전 인스턴스의 위치를 따라감
 		{
-			_vector vPos = XMLoadFloat4(&pVertices[i].vTranslation);
-			_vector Up = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vUp), XMLoadFloat4(&pVertices[i - 1].vUp), m_pSpeeds[i] * fDelta));
-			_vector Right = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vRight), XMLoadFloat4(&pVertices[i - 1].vRight), m_pSpeeds[i] * fDelta));
-			_vector Look = XMVector3Normalize(XMVectorLerp(XMLoadFloat4(&pVertices[i].vLook), XMLoadFloat4(&pVertices[i - 1].vLook), m_pSpeeds[i] * fDelta));
+			XMMATRIX thisMat, FrontMat;
+			thisMat.r[0] = XMLoadFloat4(&pVertices[i].vRight);
+			thisMat.r[1] = XMLoadFloat4(&pVertices[i].vUp);
+			thisMat.r[2] = XMLoadFloat4(&pVertices[i].vLook);
+			thisMat.r[3] = XMLoadFloat4(&pVertices[i].vTranslation);
 
-			vPos = XMVectorLerp(vPos, XMLoadFloat4(&pVertices[i - 1].vTranslation), m_pSpeeds[i] * fDelta);
-			
-			XMStoreFloat4(&pVertices[i].vTranslation, vPos);
-			XMStoreFloat4(&pVertices[i].vRight, Right * m_pSize[i].x);
-			XMStoreFloat4(&pVertices[i].vUp, Up * m_pSize[i].y);
-			XMStoreFloat4(&pVertices[i].vLook, Look * m_pSize[i].z);
+			FrontMat.r[0] = XMLoadFloat4(&pVertices[i - 1].vRight);
+			FrontMat.r[1] = XMLoadFloat4(&pVertices[i - 1].vUp);
+			FrontMat.r[2] = XMLoadFloat4(&pVertices[i - 1].vLook);
+			FrontMat.r[3] = XMLoadFloat4(&pVertices[i - 1].vTranslation);
+
+			thisMat = XMMatrixSlerp(thisMat, FrontMat, m_pSpeeds[i] * fDelta);
+
+			XMStoreFloat4(&pVertices[i].vTranslation, thisMat.r[3]);
+			XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(thisMat.r[0]) * m_pSize[i].x);
+			XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(thisMat.r[1]) * m_pSize[i].y);
+			XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(thisMat.r[2]) * m_pSize[i].z);
 
 			float ratio = static_cast<float>(i) / static_cast<float>(m_iNumInstance - 1);
 			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x * ratio;
 		}
 		else  // 첫 번째 인스턴스는 고정된 위치
 		{
-			_vector vRight = XMVector4Normalize(ParentMat.r[0]);
-			_vector vUp = XMVector4Normalize(ParentMat.r[1]);
-			_vector vLook = XMVector4Normalize(ParentMat.r[2]);
-			pVertices[i].vLifeTime.y = 0.f;
+			XMVECTOR vRight = XMVector4Normalize(ParentMat.r[0]);
+			XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+			XMVECTOR vLook = XMVector4Normalize(ParentMat.r[2]);
+			pVertices[i].vLifeTime.y = 1.f;
 			XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
 
 			XMStoreFloat4(&pVertices[i].vTranslation, vPos);

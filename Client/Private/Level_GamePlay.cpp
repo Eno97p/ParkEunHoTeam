@@ -295,8 +295,6 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 
 
-	
-
 
 	//landObjDesc.mWorldMatrix._41 = 75.f;
 	//landObjDesc.mWorldMatrix._42 = 523.f;
@@ -706,7 +704,7 @@ HRESULT CLevel_GamePlay::Load_Data_Decals()
 
 
 #ifdef _DEBUG
-	MSG_BOX("Decal Data Loaded");
+	//MSG_BOX("Decal Data Loaded");
 #endif
 	return S_OK;
 }

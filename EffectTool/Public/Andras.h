@@ -38,6 +38,7 @@ public:
 public:
 	const _float4x4* Get_WorldMat();
 	const _float4x4* Get_WeaponMat(_int Index);
+	const _float4x4* Get_HeadMat();
 
 private:
 	NodeStates IDLE(_float fTimeDelta);
@@ -52,6 +53,7 @@ private:
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 private:
 	vector<CWeapon*>					m_PartObjects;
+	CGameObject*						m_Head;
 	_bool								m_bAnimFinish = false;
 public:
 	HRESULT Add_Components();

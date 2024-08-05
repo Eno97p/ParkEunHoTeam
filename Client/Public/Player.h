@@ -115,6 +115,7 @@ private:
 	NodeStates LChargeAttack(_float fTimeDelta);
 	NodeStates RChargeAttack(_float fTimeDelta);
 	NodeStates LAttack(_float fTimeDelta);
+	_bool CanBackAttack();
 	NodeStates RAttack(_float fTimeDelta);
 	void Generate_HoverBoard();
 	NodeStates Slide(_float fTimeDelta);

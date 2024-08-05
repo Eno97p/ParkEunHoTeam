@@ -35,6 +35,21 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 37.f / 255.f, 36.f / 255.f, 54.f / 255.f, 1.f };
+	fogDesc.vFogColor2 = { 1.f, 1.f, 1.f, 1.f };
+	fogDesc.fFogRange = 100000000.f;
+	fogDesc.fFogHeightFalloff = 0.05f;
+	fogDesc.fFogGlobalDensity = 1.0f;
+	fogDesc.fFogTimeOffset = 2.89f;
+	fogDesc.fFogTimeOffset2 = 8.22f;
+	fogDesc.fNoiseIntensity = 0.0f;
+	fogDesc.fNoiseIntensity2 = 1.3f;
+	fogDesc.fNoiseSize = 0.1f;
+	fogDesc.fNoiseSize2 = 0.068f;
+	fogDesc.fFogBlendFactor = 0.106f;
+	m_pGameInstance->Set_FogOption(fogDesc);
+
 
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
@@ -255,10 +270,12 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
 
-	CHoverboard::HoverboardInfo hoverboardInfo;
-	hoverboardInfo.vPosition = _float3(-8.3f, 50.5f, -2.4f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
+
+	//Blast Wall Test Code
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
 		return E_FAIL;
+	
+
 
 	return S_OK;
 }

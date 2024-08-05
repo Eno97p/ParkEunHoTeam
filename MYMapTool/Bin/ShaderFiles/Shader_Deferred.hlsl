@@ -46,8 +46,10 @@ texture2D   g_NormalTexture;
 texture2D   g_DiffuseTexture;
 texture2D   g_ShadeTexture;
 texture2D   g_DepthTexture;
-texture2D   g_LightDepthTexture_Move;
-texture2D   g_LightDepthTexture_NotMove;
+texture2D   g_LightDepthTexture;
+texture2D   g_ShadowTexture;
+texture2D   g_Shadow_MoveTexture;
+texture2D   g_Shadow_NotMoveTexture;
 texture2D   g_SpecularTexture;
 texture2D g_DecalDepthTexture;
 
@@ -523,6 +525,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDecal = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vShadow = g_ShadowTexture.Sample(LinearSampler, In.vTexcoord);
     if (0.0f == vDiffuse.a)
         discard;
 
@@ -559,23 +562,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
-    vLightPos = mul(vLightPos, g_LightProjMatrix);
-
-    float2 vTexcoord;
-    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-
-    float lightDepthDesc_Move = g_LightDepthTexture_Move.Sample(LinearSampler, vTexcoord);
-    float lightDepthDesc_NotMove = g_LightDepthTexture_NotMove.Sample(LinearSampler, vTexcoord);
-    float lightDepthDesc = 0.f;
-    lightDepthDesc = min(lightDepthDesc_Move, lightDepthDesc_NotMove);
-
-    //vector vLightDepthDesc = g_LightDepthTexture_Move.Sample(PointSampler, vTexcoord);
-
-    float fLightOldDepth = lightDepthDesc * 3000.f;
-
-    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    if (vShadow.a != 0.f)
         vColor = vector(vColor.rgb * 0.5f, 1.f);
     Out.vColor = vColor;
 
@@ -645,6 +632,56 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     finalColor.rgb += vEmissiveDesc.rgb;
 
     Out.vColor = finalColor;
+    return Out;
+}
+
+PS_OUT PS_SHADOW(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    vector vWorldPos;
+
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+
+    /* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+    /* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
+    vLightPos = mul(vLightPos, g_LightProjMatrix);
+
+    float2 vTexcoord;
+    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
+    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
+
+    float lightDepthDesc = g_LightDepthTexture.Sample(LinearSampler, vTexcoord).r;
+
+    float fLightOldDepth = lightDepthDesc * 3000.f;
+
+    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+
+    return Out;
+}
+
+PS_OUT PS_SHADOW_RESULT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    vector vShadow_Move = g_Shadow_MoveTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vShadow_NotMove = g_Shadow_NotMoveTexture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor = vShadow_Move + vShadow_NotMove;
+
     return Out;
 }
 
@@ -1453,5 +1490,35 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_REFLECTION();
+    }
+
+    pass Shadow_19
+    {
+       SetRasterizerState(RS_Default);
+       SetDepthStencilState(DSS_None_Test_None_Write, 0);
+       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+       VertexShader = compile vs_5_0 VS_MAIN();
+       GeometryShader = NULL;
+       HullShader = NULL;
+       DomainShader = NULL;
+       PixelShader = compile ps_5_0 PS_SHADOW();
+    }
+
+    pass Shadow_Result_19
+    {
+       SetRasterizerState(RS_Default);
+       SetDepthStencilState(DSS_None_Test_None_Write, 0);
+       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+       VertexShader = compile vs_5_0 VS_MAIN();
+       GeometryShader = NULL;
+       HullShader = NULL;
+       DomainShader = NULL;
+       PixelShader = compile ps_5_0 PS_SHADOW_RESULT();
     }
 }

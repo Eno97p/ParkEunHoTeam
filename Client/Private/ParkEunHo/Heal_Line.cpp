@@ -165,7 +165,7 @@ CHeal_Line* CHeal_Line::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 		MSG_BOX("Failed To Created : CHeal_Line");
 		Safe_Release(pInstance);
 	}
-	return pInstance;
+	return pInstance; //d
 }
 
 CGameObject* CHeal_Line::Clone(void* pArg)

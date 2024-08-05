@@ -12,6 +12,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\BackGround.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\BlastWall.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Body_Andras.cpp"
 
 

@@ -270,10 +270,17 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
 
-	CHoverboard::HoverboardInfo hoverboardInfo;
-	hoverboardInfo.vPosition = _float3(-8.3f, 50.5f, -2.4f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
+
+	//Blast Wall Test Code
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
 		return E_FAIL;
+	
+
+
+	//CHoverboard::HoverboardInfo hoverboardInfo;
+	//hoverboardInfo.vPosition = _float3(-8.3f, 50.5f, -2.4f);
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

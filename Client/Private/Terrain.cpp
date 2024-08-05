@@ -37,12 +37,12 @@ void CTerrain::Priority_Tick(_float fTimeDelta)
 
 void CTerrain::Tick(_float fTimeDelta)
 {
-	//m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
+//	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix_Inverse());
 }
 
 void CTerrain::Late_Tick(_float fTimeDelta)
 {
-	m_pNavigationCom->Update(m_pTransformCom->Get_WorldFloat4x4());
+	//m_pNavigationCom->Update(m_pTransformCom->Get_WorldFloat4x4());
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 

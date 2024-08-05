@@ -5,6 +5,7 @@
 
 #include<fstream>
 #include<tuple>
+//#include<optional>
 using namespace std;
 
 
@@ -153,13 +154,18 @@ namespace Engine
 	}
 
 	template<typename T1, typename... Types>
-	void Save_Data(T1 FilePath, Types... arg)
+	void Save_Data(T1 FilePath,bool IsCover, Types... arg)
 	{
 		std::wstring filePathWithoutExtension = RemoveExtension(FilePath);
 		std::wstring fullPath = filePathWithoutExtension + L".bin";
 
+		ios_base::openmode mode = ios::out | ios::binary;
+		if(IsCover)
+			mode |= ios::trunc;
+	
 
-		std::ofstream outFile(fullPath, ios::out | ios::binary/*| std::ios::app*/);
+
+		std::ofstream outFile(fullPath, mode/*| std::ios::app*/);
 
 		if (outFile.is_open())
 		{
@@ -225,15 +231,22 @@ namespace Engine
 	// 파일에서 데이터를 읽어오는 함수 (타입 지정) 명시적으로 어떤 타입인지 지정해줘야 함
 	template<typename... Types>	//타입이 지정이 되었다면, 
 	//튜플의 반환값을 지정된 타입으로 반환시킨다
-	tuple<Types...> Load_Data(const wstring& FilePath)
+	std::optional<tuple<Types...>> Load_Data(const wstring& FilePath)
 	{
 		std::wstring filePathWithoutExtension = RemoveExtension(FilePath);
 		wstring fullPath = filePathWithoutExtension + L".bin";
 		ifstream inFile(fullPath, ios::in | ios::binary);
 		//튜플을 만든다.
-		tuple<Types...> data;
 
-		if (inFile.is_open())
+		if (!inFile.is_open())
+		{
+			// 파일이 없으면 nullopt 반환
+			return std::nullopt;
+		}
+
+
+		tuple<Types...> data;
+		//if (inFile.is_open())
 		{
 			//튜플에 값을 채운다.(Load_Data_Recursive 이 함수 내에서 재귀적으로 채우는 거임 )
 			//Load_Data_Recursive()이 함수를 호출할 때 원래는 Load_Data_Recursive<?,?>이런식으로 호출해야 하지만

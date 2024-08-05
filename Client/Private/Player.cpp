@@ -179,6 +179,7 @@ void CPlayer::Tick(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
 
+
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -1412,6 +1413,7 @@ void CPlayer::Generate_HoverBoard()
 		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
+		hoverboardInfo.vLook = _float3(vLook.m128_f32[0], vLook.m128_f32[1], vLook.m128_f32[2]);
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"));
 		m_pHoverBoard = dynamic_cast<CHoverboard*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo));
 		m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"), m_pHoverBoard);
@@ -1842,6 +1844,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
+		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);

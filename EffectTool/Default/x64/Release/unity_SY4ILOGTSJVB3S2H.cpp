@@ -23,6 +23,9 @@
 #include "C:\NewRepo\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\AndrasHead.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\AndrasLazer.cpp"
 
 
@@ -75,6 +78,18 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\FirePillar_Bottom.cpp"
+
+
+#include "C:\NewRepo\EffectTool\private\HealEffect.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Line.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Ribbon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Spiral.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"

@@ -1421,6 +1421,9 @@
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BlastWall.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2127,6 +2130,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BlastWall.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

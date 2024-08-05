@@ -412,6 +412,10 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CTestPhysXCollider::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlastWall"),
+		CBlastWall::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

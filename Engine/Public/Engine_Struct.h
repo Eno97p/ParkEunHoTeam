@@ -475,6 +475,16 @@ namespace Engine
 			}
 		};
 
+		struct ENGINE_DLL WheelConfiguration
+		{
+			WheelConfiguration(_uint _frontWheels, _uint _rearWheels)
+				: frontWheels(_frontWheels), rearWheels(_rearWheels)
+			{
+			}
+
+			_uint frontWheels;
+			_uint rearWheels;
+		};
 
 
 		struct ENGINE_DLL AxleDescription

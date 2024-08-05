@@ -26,7 +26,6 @@ public:
 
 public:
 	void			Update_Pos(_vector vMonsterPos);
-	void			Rend_Damage(_int iValue);
 
 private:
 	_uint					m_iDamage = { 0 }; // 누적 데미지

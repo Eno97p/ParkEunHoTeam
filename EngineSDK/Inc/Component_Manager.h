@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "ComputeShader_Texture.h"
 #include "Texture.h"
+#include "Texture3D.h"
 #include "Collider.h"
 #include "Navigation.h"
 #include "BehaviorTree.h"

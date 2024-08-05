@@ -23,16 +23,11 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Update_Pos(_vector vMonsterPos);
-	void			Rend_Damage(_int iValue);
 
 private:
-	_bool			m_isDamageRend = { false };
-	_int			m_iAccumDamage = { 0 };
 	_float			m_fCurrentRatio = 1.f;
 	_float			m_fPastRatio = 1.f;
 	_float			m_fHudRatio = 1.f;
-	_float			m_fDamageTimer = { 0.f };
-	wstring			m_wstrDamage;
 
 	class CMonster*	m_pMonster = { nullptr };
 

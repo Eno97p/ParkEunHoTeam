@@ -196,13 +196,18 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	// Prototype_Component_Texture_GroundGrass
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/T_Ground_%d.png"), 3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground/T_Ground_%d.dds"), 17))))
 		return E_FAIL;
 
-	// Prototype_Component_Texture_GroundMoss
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Normal"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/T_Ground_N_%d.png"), 3))))
+	// Prototype_Component_Texture_GroundGrass
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Roughness"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/Ground/T_Ground_R_%d.dds"), 17))))
 		return E_FAIL;
+
+	//// Prototype_Component_Texture_GroundMoss
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Normal"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Terrain/T_Ground_N_%d.png"), 3))))
+	//	return E_FAIL;
 
 
 	//Sky
@@ -241,6 +246,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 16))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture3D_Noise*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture3D_Noise"),
+		CTexture3D::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Noise/Cloud/pleaseplease.dds")))))
 		return E_FAIL;
 
 #pragma region  Environmental Element Model Load

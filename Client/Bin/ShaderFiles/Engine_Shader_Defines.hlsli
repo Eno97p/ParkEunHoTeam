@@ -31,7 +31,14 @@ sampler LinearClamp = sampler_state
     AddressW = Clamp;
 };
 
-
+//Cloud
+sampler CloudSampler = sampler_state
+{
+    filter = min_mag_mip_linear;
+    AddressU = WRAP;
+    AddressV = WRAP;
+    AddressW = WRAP;
+};
 
 
 RasterizerState		RS_Default

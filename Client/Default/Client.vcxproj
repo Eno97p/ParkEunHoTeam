@@ -251,10 +251,15 @@
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HealEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h" />
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h" />
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h" />
+    <ClInclude Include="..\Public\QTE.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\RushSword.h" />
     <ClInclude Include="..\Public\SideViewCamera.h" />
@@ -289,6 +294,7 @@
     <ClInclude Include="..\Public\UI_MapUser.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
+    <ClInclude Include="..\Public\UI_QTE_Btn.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Aura.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
@@ -492,10 +498,15 @@
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp" />
+    <ClCompile Include="..\Private\QTE.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\RushSword.cpp" />
     <ClCompile Include="..\Private\SideViewCamera.cpp" />
@@ -530,6 +541,7 @@
     <ClCompile Include="..\Private\UI_MapUser.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />

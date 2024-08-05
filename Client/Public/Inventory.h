@@ -34,6 +34,9 @@ public:
 	vector<class CItemData*>*			Get_Weapons() { return &m_vecWeapon; }
 	class CItemData*					Get_EquipWeapon(_uint iArrIdx) { return m_arrEquipWeapon[iArrIdx]; }
 	class CItemData*					Get_EquipSkill(_uint iArrIdx) { return m_arrEquipSkill[iArrIdx]; }
+	// 장착 슬롯들에 값이 들어간 총 개수를 반환하는 함수가 필요함
+	_uint								Get_EquipWeaponSize();
+	_uint								Get_EquipSkillSize();
 	vector<class CItemData*>*			Get_Artefact() { return &m_vecArtefact; }
 	vector<class CItemData*>*			Get_Skills() { return &m_vecSkill; }
 
@@ -65,7 +68,7 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 
 private:
-	_uint							m_iSoul = { 700 }; // test
+	_uint							m_iSoul = { 2000 }; // test
 
 	vector<class CItemData*>		m_vecItem;
 	map<_uint, CItemData*>			m_mapQuickAccess;

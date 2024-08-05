@@ -390,9 +390,15 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_TexGround"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_DIFFUSE]))))
 		return E_FAIL;
 
+	//// Com_TexMoss
+	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Normal"),
+	//	TEXT("Com_TexNormal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_NORMAL]))))
+	//	return E_FAIL;
+
+
 	// Com_TexMoss
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Normal"),
-		TEXT("Com_TexNormal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_NORMAL]))))
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Ground_Roughness"),
+		TEXT("Com_TexNormal"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_ROUGHNESS]))))
 		return E_FAIL;
 
 
@@ -453,11 +459,17 @@ HRESULT CTerrain::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom[TEX_DIFFUSE]->Bind_ShaderResources(m_pShaderCom, "g_DiffuseTexture")))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom[TEX_NORMAL]->Bind_ShaderResources(m_pShaderCom, "g_NormalTexture")))
+	if (FAILED(m_pTextureCom[TEX_ROUGHNESS]->Bind_ShaderResources(m_pShaderCom, "g_RoughnessTexture")))
 		return E_FAIL;
 	//if (FAILED(m_pTextureCom[TEX_MASK]->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
 	//	return E_FAIL;
 	if (FAILED(m_pTextureCom[TEX_BRUSH]->Bind_ShaderResource(m_pShaderCom, "g_BrushTexture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fSnowGroundHeight", &m_fSnowGroundHeight, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fSnowGroundHeightOffset", &m_fSnowGroundHeightOffset, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

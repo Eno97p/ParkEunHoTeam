@@ -214,12 +214,20 @@ void CUI_InvSub_Btn::Mouse_Input()
 		{
 			CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
 
-			if (CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType())
+			// ETC는 사용하는 경우 창이 꺼지는 것도 ㄱㅊ을듯 (바로 HUD로 돌아가도록)
+			if (CItemData::ITEMTYPE_USABLE == pItem->Get_ItemType()
+				|| CItemData::ITEMTYPE_BUFF == pItem->Get_ItemType()
+				|| CItemData::ITEMTYPE_ETC == pItem->Get_ItemType())
 			{
 				pItem->Use_Item(m_iSlotIdx);
 
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+
+				if (CItemData::ITEMTYPE_ETC == pItem->Get_ItemType())
+				{
+					// 창 꺼지고 HUD로 돌아가도록? 할지 말지
+				}
 			}
 
 			break;

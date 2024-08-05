@@ -58,8 +58,6 @@ void CUI_Ch_UpgradeBtn::Tick(_float fTimeDelta)
 
     if (m_isSelect && m_pGameInstance->Mouse_Down(DIM_LB))
     {
-        // 클릭 시 + or - 여부에 따라 다르게 로직 구현
-        // 소울이 모자라지 않다면
         Apply_BtnEvent();
     }
 
@@ -196,20 +194,12 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
     {
     case Client::CUI_Ch_UpgradeBtn::ABILITY_VITALITY:
     {
-        if (!m_isPlus && (0 == pPlayer->Get_VitalityLv())) // Level이나 State이 0이면
+        if ((!m_isPlus && (0 == pPlayer->Get_VitalityLv())) ||
+            (m_isPlus && 5 == pPlayer->Get_VitalityLv())) // Level이나 State이 0이면
             return;
         pPlayer->Set_VitalityLv(iValue);
-
-        // Player가 가지고 있는 해당 State 값에 + or - 를 해야 함
-        // 일단 ESC를 누르면 화면을 빠져나가고 여태 계산했던 것들을 리셋해주어야 함
-        // 값을 바로 적용시키는 게 아니라 OK를 누른 경우에 적용되도록? OK 누르면 바로 창 꺼지면서 해당 값들 저장되도록.
-        // 값에 변화가 있으면 초록색으로 렌더해야 하는데... > 기존의 값들을 저장하고 있어야 하나? 
-        // 일단 특정 State의 + 버튼이 눌리면 해당 Font의 Color를 녹색으로 변경해서 출력
-        // 원래 값을 저장하고 있다가 비교 하는 식을 ㅗ행 ㅑ할듯!
-
-
-
-
+        pPlayer->Update_LvData();
+        pPlayer->Pull_Status();
         break;
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_STAMINA:
@@ -217,6 +207,8 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
         if (!m_isPlus && (0 == pPlayer->Get_StaminaLv())) // Level이나 State이 0이면
             return;
         pPlayer->Set_StaminaLv(iValue);
+        pPlayer->Update_LvData();
+        pPlayer->Pull_Status();
         break;
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_STRENGHT:
@@ -224,6 +216,8 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
         if (!m_isPlus && (0 == pPlayer->Get_StrenghtLv())) // Level이나 State이 0이면
             return;
         pPlayer->Set_StrengthLv(iValue);
+        pPlayer->Update_LvData();
+        pPlayer->Pull_Status();
         break;
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_MYSTICISM:

@@ -6,6 +6,8 @@ BEGIN(Client)
 
 class CUI_StateEther final : public CUI
 {
+	const _float ORIGIN_SIZEX = 768.f;
+	const _float ORIGIN_X = 390.f;
 private:
 	CUI_StateEther(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_StateEther(const CUI_StateEther& rhs);

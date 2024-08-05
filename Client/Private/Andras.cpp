@@ -62,6 +62,8 @@ HRESULT CAndras::Initialize(void* pArg)
 
 	m_iState = STATE_IDLE;
 
+	m_bPlayerIsFront = true;
+
 	return S_OK;
 }
 

@@ -74,8 +74,11 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	{
 		//Apply_UseCount(iInvenIdx);
 		// 얘는 0이 되어도 사라지지 않기
+		if (m_iCount > 0)
+		{
+			m_iCount -= 1;
 
-
+		}
 
 		break;
 	}
@@ -313,7 +316,13 @@ void CItemData::Set_Item_Data()
 		break;
 	}
 	case Client::CItemData::ITEMNAME_CATALYST:
+	{
+		m_eItemType = ITEMTYPE_USABLE;
+		m_wszItemName = TEXT("Catalyst");
+		m_wszItemExplain = TEXT("체력템");
+		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catalyst");
 		break;
+	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
 	{
 		m_eItemType = ITEMTYPE_ETC;

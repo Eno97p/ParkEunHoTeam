@@ -156,7 +156,6 @@ HRESULT CUIGroup_Ch_Upgrade::Create_UI()
 
 HRESULT CUIGroup_Ch_Upgrade::Create_Btn()
 {
-    // 
     CUI_Ch_UpgradeBtn::ABILITY_TYPE arrAbility[CUI_Ch_UpgradeBtn::ABILITY_END] =
     { CUI_Ch_UpgradeBtn::ABILITY_VITALITY, CUI_Ch_UpgradeBtn::ABILITY_STAMINA, CUI_Ch_UpgradeBtn::ABILITY_STRENGHT,
       CUI_Ch_UpgradeBtn::ABILITY_MYSTICISM, CUI_Ch_UpgradeBtn::ABILITY_KNOWLEDGE };

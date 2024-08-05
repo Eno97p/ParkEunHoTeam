@@ -6,9 +6,11 @@ BEGIN(Client)
 
 class CUI_StateBar final : public CUI
 {
+	const _float ORIGIN_SIZEX = 768.f;
+	const _float ORIGIN_X = 390.f;
+
 public:
 	enum BAR_TYPE { BAR_HP, BAR_ENERGY, BAR_ETHER, BAR_END };
-
 	typedef struct UI_StateBar_Desc : public UI_DESC
 	{
 		BAR_TYPE	eBarType;

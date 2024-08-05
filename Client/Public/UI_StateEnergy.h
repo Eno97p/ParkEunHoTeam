@@ -6,6 +6,8 @@ BEGIN(Client)
 
 class CUI_StateEnergy final : public CUI
 {
+	const _float ORIGIN_SIZEX = 768.f;
+	const _float ORIGIN_X = 390.f;
 private:
 	CUI_StateEnergy(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_StateEnergy(const CUI_StateEnergy& rhs);

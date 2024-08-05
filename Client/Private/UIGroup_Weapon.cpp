@@ -178,10 +178,16 @@ void CUIGroup_Weapon::Update_Skill_Add()
 	(*slot)->Create_ItemIcon_Skill();
 }
 
-void CUIGroup_Weapon::Update_Slot_EquipSign(_bool isEquip)
+void CUIGroup_Weapon::Update_Slot_EquipSign(_bool isEquip, _uint iSlotIdx)
 {
+	_uint iCount = { 0 };
+	if (isEquip)
+		iCount = m_iCurSlotIdx;
+	else
+		iCount = iSlotIdx;
+
 	vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
-	for (size_t i = 0; i < m_iCurSlotIdx; ++i)
+	for (size_t i = 0; i < iCount; ++i)
 		++slot;
 
 	(*slot)->Set_isEquip(isEquip);
@@ -324,6 +330,7 @@ void CUIGroup_Weapon::Change_Tab()
 		for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
 		{
 			(*slot)->Change_ItemIcon_Skill();
+			++slot;
 		}
 
 		// Equip Slot 리셋하고 채워넣기
@@ -350,8 +357,8 @@ void CUIGroup_Weapon::Change_Tab()
 		slot = m_vecSlot.begin();
 		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
 		{
-			(*slot)->Change_ItemIcon_Weapon(); // 여기서 몇 번째 슬롯인지 넣어줄까?
-			++slot; // ???
+			(*slot)->Change_ItemIcon_Weapon(); // 여기서 몇 번째 슬롯인지 넣어줄                                                 까?
+			++slot;
 		}
 
 		// Equip Slot 리셋하고 채워넣기

@@ -13,6 +13,7 @@
 #include "EffectManager.h"
 #include "ThirdPersonCamera.h"
 #include "CHoverBoard.h"
+#include "Monster.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -1294,7 +1295,11 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 	if (m_iAttackCount == 0) m_iAttackCount = 1;
 	if (m_bLAttacking)
 	{
-		if (m_bIsRunAttack)
+		if (CanBackAttack() || m_iState == STATE_BACKATTACK)
+		{
+			m_iState = STATE_BACKATTACK;
+		}
+		else if (m_bIsRunAttack)
 		{
 			switch (m_iAttackCount)
 			{
@@ -1356,6 +1361,19 @@ NodeStates CPlayer::LAttack(_float fTimeDelta)
 	{
 		return FAILURE;
 	}
+}
+
+_bool CPlayer::CanBackAttack()
+{
+	list<CGameObject*>& MonsterList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+	for (auto iter : MonsterList)
+	{
+		if (static_cast<CMonster*>(iter)->CanBackAttack())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 NodeStates CPlayer::RAttack(_float fTimeDelta)
@@ -1438,6 +1456,8 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		if (m_bRiding)
 		{
 			m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_DECREASE);
+			m_pHoverBoard = nullptr;
+			m_pHoverBoardTransform = nullptr;
 		}
 		m_bRiding = !m_bRiding;
 		m_bJumping = true;
@@ -1615,15 +1635,15 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 	if (m_bJumping)
 	{
 		_float3 fScale = m_pTransformCom->Get_Scaled();
-		// 스케일 적용하면 이상해져서 적용안함
-		_vector vRight = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT));
+		_vector vRight;
 		_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 		_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		vRight = XMVector3Cross(vUp, vLook);
 		vLook = XMVector3Cross(vRight, vUp);
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight * fScale.x);
-		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp * fScale.y);
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook * fScale.z);
+		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+		m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+		m_pTransformCom->Set_State(CTransform::STATE_LOOK, vLook);
+		m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
 
 		m_pPhysXCom->Set_Gravity();
 		m_bRided = false;

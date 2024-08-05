@@ -277,11 +277,6 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	
 
 
-	//CHoverboard::HoverboardInfo hoverboardInfo;
-	//hoverboardInfo.vPosition = _float3(-8.3f, 50.5f, -2.4f);
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vehicle"), TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo)))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 

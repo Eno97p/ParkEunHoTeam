@@ -18,9 +18,6 @@ CHoverboard::CHoverboard(const CHoverboard& rhs)
 
 HRESULT CHoverboard::Initialize_Prototype()
 {
-	
-
-
 	return S_OK;
 }
 
@@ -46,6 +43,11 @@ HRESULT CHoverboard::Initialize(void* pArg)
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(145.f, 522.f, 98.f, 1.0f));
 
 	m_fDisolveValue = 0.f;
+
+	//list<CGameObject*> CameraList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"));
+	//auto iter = ++CameraList.begin();
+	//m_pCameraTransform = dynamic_cast<CTransform*>((*iter)->Get_Component(TEXT("Com_Transform")));
+	//Safe_AddRef(m_pCameraTransform);
 
 	return S_OK;
 }
@@ -87,6 +89,8 @@ void CHoverboard::Tick(_float fTimeDelta)
 	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);
+	//_float MaxHorsePower = 1000.f;
+	//command->MaxHorsePower = MaxHorsePower;
 
 	m_bIsMoving = (KEY_HOLD(DIK_W) || KEY_HOLD(DIK_S));
 	if (m_bIsMoving)
@@ -111,10 +115,30 @@ void CHoverboard::Tick(_float fTimeDelta)
 
 	}
 
+	if (KEY_TAP(DIK_LSHIFT))
+	{
+		m_bShift = !m_bShift;
+	}
+	if (m_bShift)
+	{
+		command->MaxHorsePower = 5000.f;
+	}
+	else
+	{
+		command->MaxHorsePower = 100.f;
+	}
+
 	if (KEY_HOLD(DIK_W))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-		command->throttle = 0.3f;
+		if (m_bShift)
+		{
+			command->throttle = 0.3f;
+		}
+		else
+		{
+			command->throttle = 0.3f;
+		}
 		command->brake = 0.0f;
 		command->handbrake = 0.0f;
 	}
@@ -130,34 +154,54 @@ void CHoverboard::Tick(_float fTimeDelta)
 		command->Reset();
 	}
 
+	//_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	//_vector vCamLook = XMVector3Normalize(m_pCameraTransform->Get_State(CTransform::STATE_LOOK));
+	//_float fDegree = XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(vLook, vCamLook))));
+	//_vector vCross = XMVector3Cross(vLook, vCamLook);
+
+	//if (vCross.m128_f32[1] > 0.f)
+	//{
+	//	command->steer = fDegree;
+	//}
+	//else
+	//{
+	//	command->steer = -fDegree;
+	//}
 
 	if (KEY_HOLD(DIK_A))
 	{
-		if(m_bIsMoving)
+		if (m_bIsMoving)
+		{
 			command->steer = -1.0f;
+
+		}
 		else
 		{
 			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
 			command->throttle = 0.1f;
 			command->steer = -1.0f;
 		}
-
 	}
 	if (KEY_HOLD(DIK_D))
 	{
 		if (m_bIsMoving)
+		{
 			command->steer = 1.0f;
+				
+		}
 		else
 		{
 			command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
 			command->throttle = 0.1f;
 			command->steer = 1.0f;
 		}
-
-
-
 		//command->steer = 1.0f;
 	}
+	else
+	{
+		command->steer = 0.f;
+	}
+
 	if (KEY_HOLD(DIK_SPACE))
 	{
 		command->brake = 1.0f;
@@ -178,6 +222,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 
 	
 	
@@ -225,9 +270,35 @@ HRESULT CHoverboard::Render()
 
 		m_pModelCom->Render(i);
 	}
-	return S_OK;
 
-	
+#pragma region 모션블러
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
+	return S_OK;
+}
+
+HRESULT CHoverboard::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
+
+		m_pModelCom->Render(i);
+	}
+	return S_OK;
 }
 
 HRESULT CHoverboard::Add_Components()
@@ -271,6 +342,15 @@ HRESULT CHoverboard::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 

@@ -243,9 +243,10 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 	m_pVehicleSimulationContext.frame.latAxis = PxVehicleAxes::ePosX;
 	m_pVehicleSimulationContext.frame.vrtAxis = PxVehicleAxes::ePosY;
 	m_pVehicleSimulationContext.scale.scale = WORLD_METER;
+	
 	m_pVehicleSimulationContext.gravity = m_pGameInstance->GetScene()->getGravity();
 	m_pVehicleSimulationContext.physxScene = m_pGameInstance->GetScene();
-	m_pVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
+	m_pVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_VELOCITY;
 	
 #ifdef _DEBUG
 	m_OutDesc.pPhysXActorVehicle = m_pPhysXActorVehicle;
@@ -290,7 +291,7 @@ void CPhysXComponent_Vehicle::Tick(const _float fTimeDelta)
 	m_pPhysXActorVehicle->getCommandState().throttle = m_Command.throttle;
 	m_pPhysXActorVehicle->getCommandState().steer = m_Command.steer;
 	m_pPhysXActorVehicle->getTransmissionCommandState().gear = m_Command.gear;
-	
+	m_pPhysXActorVehicle->getDirectDriveParams().directDriveThrottleResponseParams.maxResponse = m_Command.MaxHorsePower;
 	m_pPhysXActorVehicle->step(fTimeDelta, m_pVehicleSimulationContext);
 }
 

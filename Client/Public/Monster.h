@@ -40,6 +40,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual void Add_Hp(_int iValue) PURE;
 	void Set_Lock(_bool bLock) { m_bIsLocked = bLock; }
+	_bool CanBackAttack();
 
 public:
 	//FOR LOCKON
@@ -60,6 +61,8 @@ protected:
 	_float m_fDeadDelay = 2.f;
 	_float	m_fLengthFromPlayer = 0.f;
 	_bool m_bIsLocked = false;
+	_bool m_bPlayerIsFront = false;
+	_float m_fDegreeBetweenPlayerAndMonster = 180.f;
 
 	_uint							m_iState = { 0 };
 

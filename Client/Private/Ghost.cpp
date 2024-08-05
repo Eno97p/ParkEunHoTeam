@@ -74,6 +74,20 @@ void CGhost::Priority_Tick(_float fTimeDelta)
 
 void CGhost::Tick(_float fTimeDelta)
 {
+	m_fDegreeBetweenPlayerAndMonster = abs(XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
+		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
+	if (!m_bPlayerIsFront)
+	{
+
+		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
+	}
+	else
+	{
+		if (m_pPlayer->Get_Cloaking())
+		{
+			m_bPlayerIsFront = false;
+		}
+	}
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	Check_AnimFinished();
@@ -270,6 +284,7 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
+		m_bPlayerIsFront = true;
 		m_iState = STATE_HIT;
 		m_isDefaultAttack = false;
 		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
@@ -397,14 +412,16 @@ NodeStates CGhost::Down_Attack(_float fTimeDelta)
 
 NodeStates CGhost::Detect(_float fTimeDelta)
 {
-	if (m_pPlayer->Get_Cloaking())
+	if (m_pPlayer->Get_Cloaking() || !m_bPlayerIsFront)
 	{
 		return FAILURE;
 	}
 
 	if (m_fLengthFromPlayer > DETECTRANGE)
 	{
-		return FAILURE;
+		m_bPlayerIsFront = false;
+		m_iState = STATE_IDLE;
+		return SUCCESS;
 	}
 	else if (m_fLengthFromPlayer > ATTACKRANGE)
 	{
@@ -451,7 +468,7 @@ NodeStates CGhost::Move(_float fTimeDelta)
 
 NodeStates CGhost::Idle(_float fTimeDelta)
 {
-	if (!m_pPlayer->Get_Cloaking())
+	if (!m_pPlayer->Get_Cloaking() && m_bPlayerIsFront)
 	{
 		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 	}

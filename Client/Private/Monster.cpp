@@ -65,6 +65,18 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+_bool CMonster::CanBackAttack()
+{
+	if (!m_bPlayerIsFront && m_fLengthFromPlayer < 3.f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 _vector CMonster::Get_MonsterPos()
 {
 	return m_pTransformCom->Get_State(CTransform::STATE_POSITION);

@@ -62,12 +62,14 @@ void CParticle_Trail::Late_Tick(_float fTimeDelta)
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if(m_pTrailDesc->Blur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+
+	if(m_pTrailDesc->Bloom)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-
+	
 }
 
 HRESULT CParticle_Trail::Render()
@@ -95,6 +97,16 @@ HRESULT CParticle_Trail::Render_Bloom()
 
 	m_pVIBufferCom->Render();
 
+	return S_OK;
+}
+
+HRESULT CParticle_Trail::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+	m_pShaderCom->Begin(0);
+	m_pVIBufferCom->Bind_Buffers();
+	m_pVIBufferCom->Render();
 	return S_OK;
 }
 
@@ -139,8 +151,6 @@ HRESULT CParticle_Trail::Bind_ShaderResources()
 	if (FAILED(m_DesolveTexture->Bind_ShaderResource(m_pShaderCom, "g_DesolveTexture", m_pTrailDesc->DesolveNum)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Desolve", &m_pTrailDesc->Desolve, sizeof(_bool))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_pTrailDesc->Alpha, sizeof(_bool))))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartColor", &m_pTrailDesc->vStartColor, sizeof(_float3))))

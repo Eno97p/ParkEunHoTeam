@@ -267,15 +267,17 @@ void CUI_WPEquipSlot::Setting_XY()
 void CUI_WPEquipSlot::Click_Event()
 {
 	_bool isAlphaBG_On = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_EquipMode();	
-
 	_uint iCurSlotIdx = dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx();
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
 	for (size_t i = 0; i < iCurSlotIdx; ++i)
 	{
-		++weapon;
-		++skill;
+		if(CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
+			++weapon;
+
+		if(CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
+			++skill;
 	}
 
 	if (isAlphaBG_On) // 장착
@@ -297,30 +299,52 @@ void CUI_WPEquipSlot::Click_Event()
 			}
 		}
 
-		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
-
-		// AlphaBG 비활성화
-		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false);
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true); // Equip Sign 비활성화
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false); // AlphaBG 비활성화
 	}
 	else // 장착 해제
 	{
+		_uint iCount = { 0 };
+
 		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
-			// Inventory가 가지는 EquipWeapon 에서 삭제되어야 하고, HUD에서도 제거되어야 함
-			CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+ 			weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 
-			// Equip Slot 비활성화
-			(*weapon)->Set_isEquip(false);
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+			{
+				if ((*weapon) == CInventory::GetInstance()->Get_EquipWeapon(m_eSlotNum))
+				{
+					(*weapon)->Set_isEquip(false);
+					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+					break;
+				}
+				else
+				{
+					++weapon;
+					++iCount;
+				}
+			}
 		}
 		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
-			CInventory::GetInstance()->Delete_EquipSkill(m_eSlotNum);
+			skill = CInventory::GetInstance()->Get_Skills()->begin();
 
-			// Equip Slot 비활성화
-			(*skill)->Set_isEquip(false);
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+			{
+				if ((*skill) == CInventory::GetInstance()->Get_EquipSkill(m_eSlotNum))
+				{
+					(*skill)->Set_isEquip(false);
+					CInventory::GetInstance()->Delete_EquipSkill(m_eSlotNum);
+					break;
+				}
+				else
+				{
+					++skill;
+					++iCount;
+				}
+			}
 		}
-
-		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false);
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
 	}
 }
 

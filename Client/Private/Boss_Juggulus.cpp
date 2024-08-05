@@ -70,6 +70,7 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 		m_pBossStatues[i++] = dynamic_cast<CBossStatue*>(iter);
 	}
 	
+	m_bPlayerIsFront = true;
 
 	return S_OK;
 }

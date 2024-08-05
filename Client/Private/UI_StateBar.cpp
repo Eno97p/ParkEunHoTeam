@@ -1,6 +1,7 @@
 #include "UI_StateBar.h"
 
 #include "GameInstance.h"
+#include "Player.h"
 
 CUI_StateBar::CUI_StateBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{pDevice, pContext}
@@ -44,6 +45,33 @@ void CUI_StateBar::Priority_Tick(_float fTimeDelta)
 
 void CUI_StateBar::Tick(_float fTimeDelta)
 {
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	CPlayer* pPlayer = nullptr;
+	if (!PlayerList.empty())
+	{
+		pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+		switch (m_eBarType)
+		{
+		case Client::CUI_StateBar::BAR_HP:
+			m_fSizeX = pPlayer->Get_MaxHP(); // 134   500
+			break;
+		case Client::CUI_StateBar::BAR_ENERGY:
+			m_fSizeX = pPlayer->Get_MaxStamina(); // 134   500
+			break;
+		case Client::CUI_StateBar::BAR_ETHER:
+			m_fSizeX = pPlayer->Get_MaxMP(); // 134   500
+			break;
+		default:
+			break;
+		}
+
+		m_fX = ORIGIN_X - ((ORIGIN_SIZEX - m_fSizeX) / 2 * 0.77f); // 282.8f
+		Setting_Position();
+	}
+
+
 }
 
 void CUI_StateBar::Late_Tick(_float fTimeDelta)
@@ -105,15 +133,15 @@ void CUI_StateBar::Setting_XY()
 	{
 	case Client::CUI_StateBar::BAR_HP:
 		m_fX = 390.f;
-		m_fY = 75.f;
+		m_fY = 45;
 		break;
 	case Client::CUI_StateBar::BAR_ENERGY:
 		m_fX = 390.f;
-		m_fY = 45.f;
+		m_fY = 60.f;
 		break;
 	case Client::CUI_StateBar::BAR_ETHER:
 		m_fX = 390.f;
-		m_fY = 60.f;
+		m_fY = 75;
 		break;
 	default:
 		break;

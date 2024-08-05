@@ -35,6 +35,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	//virtual HRESULT Render_Bloom() override;
 	void On_Ride() { m_bOnRide = true; }
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 
@@ -60,9 +61,11 @@ private:
 	_float m_fDisolveValue = 1.f;
 	CTexture* m_pDisolveTextureCom = nullptr;
 	CCollider::COLLTYPE m_eColltype = CCollider::COLL_END;
+	CTransform* m_pCameraTransform = { nullptr };
 
 	DISOLVETYPE m_eDisolveType = TYPE_IDLE;
 	LEVEL					m_eLevel = { LEVEL_END };
+	_bool m_bShift = false;
 
 	_matrix m_matWorld = {};
 

@@ -4,6 +4,8 @@
 #include "UI_Manager.h"
 #include "CMouse.h"
 
+#include "UIGroup_Ch_Upgrade.h"
+
 CUI_MenuBtn::CUI_MenuBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{pDevice, pContext}
 {
@@ -210,6 +212,7 @@ void CUI_MenuBtn::Open_MenuPage()
 	{
 	case Client::CUI_MenuBtn::MENU_CH:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Menu_Ch");
+		dynamic_cast<CUIGroup_Ch_Upgrade*>(CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade"))->Resset_OriginData();
 		break;
 	case Client::CUI_MenuBtn::MENU_MAP:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Map");

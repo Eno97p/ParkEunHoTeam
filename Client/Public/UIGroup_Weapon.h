@@ -38,7 +38,7 @@ public:
 	void			Update_EquipSlot_Delete(_uint iEquipSlotIdx);
 	void			Update_Skill_Add();
 	
-	void			Update_Slot_EquipSign(_bool isEquip);
+	void			Update_Slot_EquipSign(_bool isEquip, _uint iSlotIdx = 0);
 
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부

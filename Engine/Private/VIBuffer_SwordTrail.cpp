@@ -152,7 +152,6 @@ HRESULT CVIBuffer_SwordTrail::Render()
 
 void CVIBuffer_SwordTrail::Tick(_float fDelta)
 {
-	bool allInstancesDead = true;
 	XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
 	XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
 
@@ -167,7 +166,6 @@ void CVIBuffer_SwordTrail::Tick(_float fDelta)
 	SwordTrailVertex* pVertices = (SwordTrailVertex*)SubResource.pData;
 	for (_int i = m_iNumInstance-1; i >= 0; i--)
 	{
-		pVertices[i].lifetime.y += fDelta;
 		if (i == 0)
 		{
 			pVertices[i].Three = pVertices[i].Zero;
@@ -182,27 +180,15 @@ void CVIBuffer_SwordTrail::Tick(_float fDelta)
 			XMStoreFloat3(&pVertices[i].Zero,m_pTrailVertex[0].first);
 			XMStoreFloat3(&pVertices[i].One,m_pTrailVertex[0].second);
 		}
-		//else
-		//{
-		//	pVertices[i].Three = pVertices[i].Zero;
-		//	pVertices[i].Two = pVertices[i].One;
-		//	pVertices[i].Zero = pVertices[i - 1].Three;
-		//	pVertices[i].One = pVertices[i - 1].Two;
-		//}
-
-		if (pVertices[i].lifetime.y >= pVertices[i].lifetime.x)
+		else
 		{
-			pVertices[i].lifetime.y = pVertices[i].lifetime.x;
+			pVertices[i].Three = pVertices[i].Zero;
+			pVertices[i].Two = pVertices[i].One;
+			pVertices[i].Zero = pVertices[i - 1].Three;
+			pVertices[i].One = pVertices[i - 1].Two;
 		}
-		if (pVertices[i].lifetime.y < pVertices[i].lifetime.x)
-		{
-			allInstancesDead = false;
-		}
-
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
-
-	m_bInstanceDead = allInstancesDead;
 }
 
 void CVIBuffer_SwordTrail::Tick_AI(_float fDelta)
@@ -313,7 +299,6 @@ void CVIBuffer_SwordTrail::Tick_AI(_float fDelta)
 
 void CVIBuffer_SwordTrail::Tick_AI_UPgrade(_float fDelta)
 {
-	bool allInstancesDead = true;
 	XMMATRIX ParentMat = XMLoadFloat4x4(m_pDesc->ParentMat);
 	XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
 
@@ -321,103 +306,27 @@ void CVIBuffer_SwordTrail::Tick_AI_UPgrade(_float fDelta)
 	XMVECTOR Top = vPos + vUp * m_pDesc->vSize;
 	XMVECTOR Bottom = vPos - vUp * m_pDesc->vSize;
 
+	XMFLOAT3 topPoint, bottomPoint;
+	XMStoreFloat3(&topPoint, Top);
+	XMStoreFloat3(&bottomPoint, Bottom);
+
+	m_TopPoints.push_back(topPoint);
+	m_BottomPoints.push_back(bottomPoint);
+
+	if (m_TopPoints.size() > m_iNumInstance)
+	{
+		m_TopPoints.erase(m_TopPoints.begin());
+		m_BottomPoints.erase(m_BottomPoints.begin());
+	}
+
 	D3D11_MAPPED_SUBRESOURCE SubResource{};
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 	SwordTrailVertex* pVertices = (SwordTrailVertex*)SubResource.pData;
 
-	// 첫 번째 인스턴스의 lifetime을 체크
-	bool shouldUpdatePositions = pVertices[0].lifetime.y <= 0.5f;
-
-	if (shouldUpdatePositions)
-	{
-		XMFLOAT3 topPoint, bottomPoint;
-		XMStoreFloat3(&topPoint, Top);
-		XMStoreFloat3(&bottomPoint, Bottom);
-
-		m_TopPoints.push_back(topPoint);
-		m_BottomPoints.push_back(bottomPoint);
-
-		if (m_TopPoints.size() > m_iNumInstance)
-		{
-			m_TopPoints.erase(m_TopPoints.begin());
-			m_BottomPoints.erase(m_BottomPoints.begin());
-		}
-	}
-
 	size_t pointCount = m_TopPoints.size();
 
-	for (_int i = 0; i < m_iNumInstance; i++)
-	{
-		pVertices[i].lifetime.y += fDelta;
 
-		if (shouldUpdatePositions)
-		{
-			float t = static_cast<float>(i) / (m_iNumInstance - 1);
-			float nextT = static_cast<float>(i + 1) / (m_iNumInstance - 1);
 
-			XMVECTOR topPos, bottomPos, nextTopPos, nextBottomPos;
-
-			if (pointCount < 2)
-			{
-				topPos = nextTopPos = Top;
-				bottomPos = nextBottomPos = Bottom;
-			}
-			else if (pointCount < 4)
-			{
-				XMVECTOR topStart = XMLoadFloat3(&m_TopPoints.front());
-				XMVECTOR topEnd = XMLoadFloat3(&m_TopPoints.back());
-				XMVECTOR bottomStart = XMLoadFloat3(&m_BottomPoints.front());
-				XMVECTOR bottomEnd = XMLoadFloat3(&m_BottomPoints.back());
-
-				topPos = XMVectorLerp(topStart, topEnd, t);
-				bottomPos = XMVectorLerp(bottomStart, bottomEnd, t);
-				nextTopPos = XMVectorLerp(topStart, topEnd, nextT);
-				nextBottomPos = XMVectorLerp(bottomStart, bottomEnd, nextT);
-			}
-			else
-			{
-				size_t index = min(static_cast<size_t>(t * (pointCount - 1)), pointCount - 1);
-				size_t p1 = min(max(index, (size_t)1), pointCount - 2);
-
-				XMVECTOR v0 = XMLoadFloat3(&m_TopPoints[p1 - 1]);
-				XMVECTOR v1 = XMLoadFloat3(&m_TopPoints[p1]);
-				XMVECTOR v2 = XMLoadFloat3(&m_TopPoints[p1 + 1]);
-				XMVECTOR v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_TopPoints[p1 + 2]) : v2;
-
-				float localT = t * (pointCount - 1) - p1;
-				float localNextT = nextT * (pointCount - 1) - p1;
-
-				topPos = CatmullRom(v0, v1, v2, v3, localT);
-				nextTopPos = CatmullRom(v0, v1, v2, v3, localNextT);
-
-				v0 = XMLoadFloat3(&m_BottomPoints[p1 - 1]);
-				v1 = XMLoadFloat3(&m_BottomPoints[p1]);
-				v2 = XMLoadFloat3(&m_BottomPoints[p1 + 1]);
-				v3 = p1 + 2 < pointCount ? XMLoadFloat3(&m_BottomPoints[p1 + 2]) : v2;
-
-				bottomPos = CatmullRom(v0, v1, v2, v3, localT);
-				nextBottomPos = CatmullRom(v0, v1, v2, v3, localNextT);
-			}
-
-			XMStoreFloat3(&pVertices[i].Zero, topPos);
-			XMStoreFloat3(&pVertices[i].One, bottomPos);
-			XMStoreFloat3(&pVertices[i].Two, nextBottomPos);
-			XMStoreFloat3(&pVertices[i].Three, nextTopPos);
-		}
-
-		if (pVertices[i].lifetime.y >= pVertices[i].lifetime.x)
-		{
-			pVertices[i].lifetime.y = pVertices[i].lifetime.x;
-		}
-		if (pVertices[i].lifetime.y < pVertices[i].lifetime.x)
-		{
-			allInstancesDead = false;
-		}
-	}
-
-	m_pContext->Unmap(m_pVBInstance, 0);
-
-	m_bInstanceDead = allInstancesDead;
 }
 
 XMVECTOR CVIBuffer_SwordTrail::CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t)

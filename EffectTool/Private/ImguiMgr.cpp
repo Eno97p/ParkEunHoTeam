@@ -146,7 +146,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[12] = { false,false,false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[13] = { false,false,false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -202,8 +202,12 @@ void CImguiMgr::Visible_Data()
 	if (bShow[10] == true)
 		FirePillarTool();
 
-	ImGui::Checkbox("Model_Change", &bShow[11]);
+	ImGui::Checkbox("Heal_Tool", &bShow[11]);
 	if (bShow[11] == true)
+		HealEffectTool();
+
+	ImGui::Checkbox("Model_Change", &bShow[12]);
+	if (bShow[12] == true)
 		Model_Change();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
@@ -246,10 +250,26 @@ void CImguiMgr::Visible_Data()
 		}
 
 	}
-	if (ImGui::Button("Bind_Player_Head"))
+	if (ImGui::Button("Bind_Head"))
 	{
-		CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
-		TrailMat = pPlayer->Get_HeadMAt();
+		switch (CurModel)
+		{
+		case 0:
+		{
+			CPlayerDummy* pPlayer = static_cast<CPlayerDummy*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = pPlayer->Get_HeadMAt();
+			break;
+		}
+		case 1:
+		{
+			CAndras* Andras = static_cast<CAndras*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = Andras->Get_HeadMat();
+			break;
+		}
+		default:
+			break;
+		}
+
 	}
 	ImGui::End();
 }
@@ -344,6 +364,9 @@ void CImguiMgr::EffectTool_Rework()
 		ImGui::SameLine();
 		if (ImGui::RadioButton("Rock2", MeshDesc.eModelType == EFFECTMODELTYPE::ROCK1))
 			MeshDesc.eModelType = EFFECTMODELTYPE::ROCK1;
+
+		if (ImGui::RadioButton("Needle", MeshDesc.eModelType == EFFECTMODELTYPE::NEEDLE))
+			MeshDesc.eModelType = EFFECTMODELTYPE::NEEDLE;
 	}
 
 	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
@@ -991,11 +1014,6 @@ void CImguiMgr::Trail_Tool()
 	if (ImGui::RadioButton("EternalTrail", classdesc.eFuncType == TRAIL_ETERNAL))
 		classdesc.eFuncType = TRAIL_ETERNAL;
 	
-	if (ImGui::RadioButton("Usage_Sword", classdesc.eUsage == USAGE_SWORD))
-		classdesc.eUsage = USAGE_SWORD;
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Other", classdesc.eUsage == USAGE_EYE))
-		classdesc.eUsage = USAGE_EYE;
 	
 	ImGui::ColorEdit3("Start_Color", reinterpret_cast<float*>(&classdesc.vStartColor));
 	ImGui::ColorEdit3("End_Color", reinterpret_cast<float*>(&classdesc.vEndColor));
@@ -1005,14 +1023,14 @@ void CImguiMgr::Trail_Tool()
 	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&traildesc.vSize));
 	ImGui::InputFloat("Speed", &traildesc.vSpeed);
 	ImGui::InputFloat("lifetime", &traildesc.fLifeTime);
-	ImGui::Checkbox("Alpha", &classdesc.Alpha);
 	ImGui::Checkbox("Desolve", &classdesc.Desolve);
 	if (classdesc.Desolve == true)
 	{
 		ImGui::InputInt("DesolveTextureNum", &classdesc.DesolveNum);
 	}
 	ImGui::Checkbox("Blur", &classdesc.Blur);
-	if (classdesc.Blur == true)
+	ImGui::Checkbox("Bloom", &classdesc.Bloom);
+	if (classdesc.Bloom == true)
 	{
 		ImGui::InputFloat("BloomPower", &classdesc.fBloompower);
 		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&classdesc.vBloomColor));
@@ -1177,9 +1195,7 @@ HRESULT CImguiMgr::Save_TrailList()
 		file.write((char*)&iter->fBloompower, sizeof(_float));
 		file.write((char*)&iter->Desolve, sizeof(_bool));
 		file.write((char*)&iter->Blur, sizeof(_bool));
-		file.write((char*)&iter->Alpha, sizeof(_bool));
 		file.write((char*)&iter->eFuncType, sizeof(TRAILFUNCTYPE));
-		file.write((char*)&iter->eUsage, sizeof(TRAIL_USAGE));
 		file.write((char*)&iter->DesolveNum, sizeof(_int));
 		save_wstring_to_stream(iter->Texture, file);
 		save_wstring_to_stream(iter->TexturePath, file);
@@ -1235,9 +1251,7 @@ HRESULT CImguiMgr::Load_TrailList()
 		inFile.read((char*)&readFile->fBloompower, sizeof(_float));
 		inFile.read((char*)&readFile->Desolve, sizeof(_bool));
 		inFile.read((char*)&readFile->Blur, sizeof(_bool));
-		inFile.read((char*)&readFile->Alpha, sizeof(_bool));
 		inFile.read((char*)&readFile->eFuncType, sizeof(TRAILFUNCTYPE));
-		inFile.read((char*)&readFile->eUsage, sizeof(TRAIL_USAGE));
 		inFile.read((char*)&readFile->DesolveNum, sizeof(_int));
 		readFile->Texture = load_wstring_from_stream(inFile);
 		readFile->TexturePath = load_wstring_from_stream(inFile);
@@ -2804,6 +2818,260 @@ void CImguiMgr::FirePillarTool()
 	}
 
 	ImGui::End();
+}
+
+void CImguiMgr::HealEffectTool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Heal_Effect_Editor");
+	static CHealEffect::HEALEFFECT Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputInt("NumParticle", &Desc.iNumParticle);
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.vOffset));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Ribbon");
+	ImGui::InputFloat3("RibbonSize", reinterpret_cast<float*>(&Desc.RibbonDesc.vSize));
+	ImGui::ColorEdit3("RibbonColor", reinterpret_cast<float*>(&Desc.RibbonDesc.fColor));
+	ImGui::ColorEdit3("RibbonBloomColor", reinterpret_cast<float*>(&Desc.RibbonDesc.BloomColor));
+	ImGui::InputFloat("RibbonBloomPower", &Desc.RibbonDesc.fBloomPower);
+	ImGui::InputFloat("RibbonLifeTime", &Desc.RibbonDesc.fMaxLifeTime);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Spiral");
+	ImGui::InputFloat3("SpiralSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vSize));
+	ImGui::ColorEdit3("SpiralColor", reinterpret_cast<float*>(&Desc.SpiralDesc.fColor));
+	ImGui::ColorEdit3("SpiralBloomColor", reinterpret_cast<float*>(&Desc.SpiralDesc.BloomColor));
+	ImGui::InputFloat("SpiralBloomPower", &Desc.SpiralDesc.fBloomPower);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Line");
+	ImGui::InputFloat3("LineSize", reinterpret_cast<float*>(&Desc.LineDesc.vSize));
+	ImGui::ColorEdit3("LineColor", reinterpret_cast<float*>(&Desc.LineDesc.fColor));
+	ImGui::ColorEdit3("LineBloomColor", reinterpret_cast<float*>(&Desc.LineDesc.BloomColor));
+	ImGui::InputFloat("LineBloomPower", &Desc.LineDesc.fBloomPower);
+
+	Desc.ParentMat = TrailMat;
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (Desc.ParentMat == nullptr)
+			MSG_BOX("행렬을 대입해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Heal"), TEXT("Prototype_GameObject_HealEffect"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Heal"));
+	}
+
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_Heal(effectname, Desc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Heal()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Heal()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	Heal_ListBox(&Desc);
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Heal(char* Name, CHealEffect::HEALEFFECT desc)
+{
+	string sName = Name;
+	shared_ptr<CHealEffect::HEALEFFECT> StockValue = make_shared<CHealEffect::HEALEFFECT>(desc);
+	m_Heals.emplace_back(StockValue);
+	HealNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Heal_ListBox(CHealEffect::HEALEFFECT* Tornado)
+{
+#pragma region exception
+	if (m_Heals.size() < 1)
+		return;
+
+	if (m_Heals.size() != HealNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Heal_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("Heal_List", list_box_size))
+	{
+		for (int i = 0; i < HealNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(HealNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+
+	if (current_item >= 0 && current_item < HealNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CHealEffect::HEALEFFECT* Desc = m_Heals[current_item].get();
+			Desc->ParentMat = TrailMat;
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Heal"), TEXT("Prototype_GameObject_HealEffect"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Tornado = *m_Heals[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Heals[current_item] = make_shared<CHealEffect::HEALEFFECT>(*Tornado);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Heals[current_item].reset();
+			m_Heals.erase(m_Heals.begin() + current_item);
+			HealNames.erase(HealNames.begin() + current_item);
+
+			if (current_item >= m_Heals.size())
+				current_item = m_Heals.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Heals)
+				iter.reset();
+			m_Heals.clear();
+			HealNames.clear();
+			current_item = 0;
+		}
+	}
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Heal()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Heals.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Heals.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Heals)
+	{
+		file.write((char*)iter.get(), sizeof(CHealEffect::HEALEFFECT));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Heals.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : HealNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Heal.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < HealNames.size(); ++i)
+	{
+		NumberFile << i << ". " << HealNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Heal()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Heals.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Heals)
+		iter.reset();
+	m_Heals.clear();
+	HealNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CHealEffect::HEALEFFECT readFile{};
+		inFile.read((char*)&readFile, sizeof(CHealEffect::HEALEFFECT));
+		readFile.ParentMat = nullptr;
+		shared_ptr<CHealEffect::HEALEFFECT> StockValue = make_shared<CHealEffect::HEALEFFECT>(readFile);
+		m_Heals.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Heals.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		HealNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::FrameTextureTool()

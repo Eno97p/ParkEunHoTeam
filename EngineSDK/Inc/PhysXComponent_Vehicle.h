@@ -26,6 +26,8 @@ public:
 		1은 완전히 밟은 상태*/
 		PxReal throttle = 0.0f;
 
+		PxF32 MaxHorsePower = 0.0f;
+
 		/*  -1~1사이에의 값
 		-1은 왼쪽으로 완전히 꺾은 상태
 		1은 오른쪽으로 완전히 꺾은 상태

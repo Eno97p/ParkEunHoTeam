@@ -55,7 +55,10 @@ void CUI_BossHP::Tick(_float fTimeDelta)
 	{
 		m_fDamageTimer += fTimeDelta;
 		if (2. <= m_fDamageTimer)
+		{
+			m_iAccumDamage = 0;
 			m_isDamageRend = false;
+		}
 	}
 }
 
@@ -95,7 +98,8 @@ HRESULT CUI_BossHP::Render()
 
 void CUI_BossHP::Rend_Damage(_int iValue)
 {
-	m_iAccumDamage += iValue;
+	_int iDamage = -iValue;
+	m_iAccumDamage += iDamage;
 	m_isDamageRend = true;
 	m_fDamageTimer = 0.f;
 	m_wstrDamage = to_wstring(m_iAccumDamage);

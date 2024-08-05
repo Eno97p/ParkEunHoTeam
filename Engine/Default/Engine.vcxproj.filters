@@ -261,7 +261,7 @@
     </Filter>
     <Filter Include="01.Utility\10. Cascade">
       <UniqueIdentifier>{d4040144-2383-447a-a19f-a221a532df88}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Utility\999.Nvidia">
       <UniqueIdentifier>{04b97ef4-e9d0-4a30-a9b2-52f176b5bc3a}</UniqueIdentifier>
     </Filter>
@@ -276,6 +276,9 @@
     </Filter>
     <Filter Include="01.Utility\999.Nvidia\Blast">
       <UniqueIdentifier>{d33396cc-a383-4427-a233-b6a79c863d2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Components\Texture\Texture3D">
+      <UniqueIdentifier>{4404ca08-8830-4fa4-a07c-4b6913fdd46a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -566,12 +569,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Cascade.h">
       <Filter>01.Utility\10. Cascade</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\CPhysX.h">
       <Filter>01.Utility\999.Nvidia\PhysX</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BlastMgr.h">
       <Filter>01.Utility\999.Nvidia\Blast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Texture3D.h">
+      <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -847,12 +853,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Cascade.cpp">
       <Filter>01.Utility\10. Cascade</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\CPhysX.cpp">
       <Filter>01.Utility\999.Nvidia\PhysX</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BlastMgr.cpp">
       <Filter>01.Utility\999.Nvidia\Blast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Texture3D.cpp">
+      <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

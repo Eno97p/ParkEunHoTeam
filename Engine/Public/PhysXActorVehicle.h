@@ -106,7 +106,7 @@ public:
     virtual ~PhysXActorVehicle() = default;
 
 public:
-    bool initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc);
+    bool initialize(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc, void* Vehicleparams);
 
 
     void setUpActor(PxScene& scene, const PxTransform& pose, const char* vehicleName);
@@ -275,7 +275,7 @@ private:
 
 	PxVehicleDirectDriveTransmissionCommandState mTransmissionCommandState;
 public:
-	static PhysXActorVehicle* Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc);
+	static PhysXActorVehicle* Create(PxPhysics& physics, const PxCookingParams& params, PxMaterial& defaultMaterial, PxVehiclePhysXMaterialFriction* physXMaterialFrictions, PxU32 nbPhysXMaterialFrictions, PxReal physXDefaultMaterialFriction, const BaseVehicleDesc& BaseDesc, void* Vehicleparams = nullptr);
 	
 	_uint Release();
 

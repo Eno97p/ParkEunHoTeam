@@ -577,6 +577,103 @@ PS_OUT PS_YUp_Bloom(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT PS_Aspiration(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.y = lerp(-1.0, In.vTexcoord.y + 1, g_Ratio);
+	if (adjustedUV.y >= 0.0 && adjustedUV.y <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.rgb = g_Color;
+		Color.a *= 1 - g_Ratio;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_Aspiration_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.y = lerp(-1.0, In.vTexcoord.y + 1, g_Ratio);
+	if (adjustedUV.y >= 0.0 && adjustedUV.y <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.rgb = g_Color;
+		Color.a *= g_BloomPower;
+		Color.a *= 1 - g_Ratio;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_XMinusToPlus(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x +1, In.vTexcoord.x -1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
+		Color.rgb = g_Color;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_XMinusToPlus_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x + 1, In.vTexcoord.x - 1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
+		Color.a *= g_BloomPower;
+		Color.rgb = g_Color;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -722,7 +819,7 @@ technique11 DefaultTechnique
 
 	pass Sheild //10pass
 	{
-				SetRasterizerState(RS_NoCull);
+		SetRasterizerState(RS_NoCull);
 		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -800,6 +897,59 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_YUp_Bloom();
+	}
+
+	pass Aspiration	//16Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Aspiration();
+	}
+
+	pass Aspiration_Bloom	//17Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Aspiration_Bloom();
+	}
+
+	pass SpiralThick	//18Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_XMinusToPlus();
+	}
+		
+
+	pass SpiralThick_Bloom	//19Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_XMinusToPlus_Bloom();
 	}
 }
 

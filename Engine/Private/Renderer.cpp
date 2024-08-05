@@ -1847,9 +1847,14 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
+
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
+
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);

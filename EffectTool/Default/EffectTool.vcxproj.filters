@@ -110,6 +110,12 @@
     <Filter Include="Objects\02. Effects\10. FirePillar\Effects">
       <UniqueIdentifier>{db991e8b-eea8-4feb-9c6f-d6fec86719aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\11. HealEffect">
+      <UniqueIdentifier>{72af6fc6-46bd-49a5-8bee-7e87c7666d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\11. HealEffect\Effects">
+      <UniqueIdentifier>{d45c9d42-c8d0-4f5b-93b4-2645d2504c6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -289,6 +295,21 @@
     <ClInclude Include="..\Public\FirePillar_Bottom.h">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AndrasHead.h">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\HealEffect.h">
+      <Filter>Objects\02. Effects\11. HealEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Heal_Ribbon.h">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Heal_Spiral.h">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Heal_Line.h">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -452,6 +473,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\FirePillar_Bottom.cpp">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AndrasHead.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\HealEffect.cpp">
+      <Filter>Objects\02. Effects\11. HealEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Heal_Ribbon.cpp">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Heal_Spiral.cpp">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Heal_Line.cpp">
+      <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

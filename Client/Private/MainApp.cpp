@@ -528,7 +528,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 43))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 44))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -644,6 +644,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Blade_Slash_Long"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/NewBlade.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	//Needle
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Needle"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Needle.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 	//Tornado
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -665,6 +670,19 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_TornadoBottom"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TornadoEffect/TornadoRoot.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//Heal Effect
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Ribbon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Aspiration.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Spiral_Thick"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HealingEffect/Spiral_Thick.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_SmoothLine"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HealingEffect/SmoothLine.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL

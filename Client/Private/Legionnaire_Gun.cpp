@@ -343,6 +343,7 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 		EFFECTMGR->Generate_Particle(0, vResult, nullptr, XMVector3Normalize(vMat.r[2]), Random * 90.f);
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
+		EFFECTMGR->Generate_Distortion(5, vResult);
 		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		return RUNNING;
 		break;

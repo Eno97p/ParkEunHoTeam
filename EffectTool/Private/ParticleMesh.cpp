@@ -59,6 +59,9 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case ROCK1:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_RockParticle2");
 		break;
+	case NEEDLE:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Needle");
+		break;
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))

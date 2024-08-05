@@ -23,6 +23,7 @@ public:
 		PxFilterData filterData = {};
 		PxGeometryType::Enum eGeometryType = PxGeometryType::eINVALID;
 		CComponent* pComponent = nullptr;
+		CMesh* pMesh = nullptr;
 		const char* pName = nullptr;
 
 	}PHYSX_DESC;
@@ -94,6 +95,7 @@ protected:
 	_float4x4 m_WorldMatrix = {};
 private:
 	class CModel* m_pModelCom = { nullptr };
+	class CMesh* m_pMeshCom = { nullptr };
 	vector<_float3> m_vecVertices;
 	_float m_Mass = 0.0f;
 
@@ -115,7 +117,8 @@ public:
 public:
 	static PxTransform Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix);
 	static XMMATRIX Convert_PxTrans_To_DxMat(const PxTransform& pTrans);
-
+	static PxVec4 Convert_XMVec4_To_PxVec4(const _vector pXMVec4);
+	static XMVECTOR Convert_PxVec4_To_XMVec4(const PxVec4& pPxVec4);
 };
 
 END

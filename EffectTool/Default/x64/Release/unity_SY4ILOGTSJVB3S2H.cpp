@@ -83,7 +83,13 @@
 #include "C:\NewRepo\EffectTool\private\HealEffect.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\Heal_Line.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Heal_Ribbon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Spiral.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"

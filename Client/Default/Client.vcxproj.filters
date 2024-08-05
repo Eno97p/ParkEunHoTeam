@@ -688,6 +688,9 @@
     <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\OkBtn">
       <UniqueIdentifier>{15bf1a52-67d6-49c4-b72f-54c46cdbcd86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Heals">
+      <UniqueIdentifier>{23f5d785-8fe0-45b6-886c-acc058241b42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1421,6 +1424,18 @@
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HealEffect.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2127,6 +2142,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp">
       <Filter>02.GameObjects\07. UI\Ch_Upgrade\OkBtn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp">
+      <Filter>02.GameObjects\06.Effect\Heals</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

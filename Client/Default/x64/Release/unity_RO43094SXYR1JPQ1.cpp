@@ -204,6 +204,18 @@
 #include "C:\NewRepo\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\NewRepo\Client\Private\ParkEunHo\HealEffect.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Heal_Line.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Heal_Ribbon.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
 #include "C:\NewRepo\Client\Private\ParkEunHo\TornadoEffect.cpp"
 
 

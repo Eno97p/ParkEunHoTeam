@@ -179,6 +179,7 @@ void CPlayer::Tick(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(10, vParticlePos);
 	}
 
+
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)
@@ -1842,6 +1843,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
+		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);

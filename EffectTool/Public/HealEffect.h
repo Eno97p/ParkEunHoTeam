@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Effect_Define.h"
 #include "Heal_Ribbon.h"
+#include "Heal_Spiral.h"
+#include "Heal_Line.h"
 BEGIN(Effect)
 class CHealEffect final : public CGameObject
 {
@@ -12,6 +14,9 @@ public:
 		_float3 vOffset = { 0.f,1.f,0.f };
 		const _float4x4* ParentMat = nullptr;
 		CHeal_Ribbon::HEAL_RIBBON RibbonDesc{};
+		CHeal_Spiral::HEAL_SPIRAL SpiralDesc{};
+		CHeal_Line::HEAL_LINE LineDesc{};
+		_int	iNumParticle = 0.f;
 	};
 
 private:

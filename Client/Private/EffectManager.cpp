@@ -55,7 +55,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Tornado");
 		return E_FAIL;
 	}
-	
+	if (FAILED(Load_Heals()))
+	{
+		MSG_BOX("FAILED_Load_Heal");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -216,6 +220,23 @@ HRESULT CEffectManager::Generate_Tornado(const _int iIndex, const _float4 vStart
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Tornado"), pDesc);
 
+	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_HealEffect(const _int iIndex, const _float4x4* BindMat)
+{
+	if (iIndex >= m_Heals.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CHealEffect::HEALEFFECT* pDesc = m_Heals[iIndex].get();
+		pDesc->ParentMat = BindMat;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_HealEffect"), pDesc);
 	}
 	return S_OK;
 }
@@ -436,6 +457,31 @@ HRESULT CEffectManager::Load_Tornados()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Heals()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Heals.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CHealEffect::HEALEFFECT readFile{};
+		inFile.read((char*)&readFile, sizeof(CHealEffect::HEALEFFECT));
+		readFile.ParentMat = nullptr;
+		shared_ptr<CHealEffect::HEALEFFECT> StockValue = make_shared<CHealEffect::HEALEFFECT>(readFile);
+		m_Heals.emplace_back(StockValue);
+	}
+	inFile.close();
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -486,6 +532,22 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CTornado_Ring::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//Heal
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HealEffect"),
+		CHealEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HealEffect_Ribbon"),
+		CHeal_Ribbon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HealEffect_Spiral"),
+		CHeal_Spiral::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HealEffect_Line"),
+		CHeal_Line::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

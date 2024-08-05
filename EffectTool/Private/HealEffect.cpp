@@ -72,10 +72,19 @@ HRESULT CHealEffect::Add_Components()
 HRESULT CHealEffect::Add_Child_Effects()
 {
 	m_OwnDesc->RibbonDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->LineDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->SpiralDesc.ParentMatrix = m_OwnDesc->ParentMat;
+	m_OwnDesc->SpiralDesc.fMaxLifeTime = m_OwnDesc->RibbonDesc.fMaxLifeTime;
+	m_OwnDesc->LineDesc.fMaxLifeTime = m_OwnDesc->RibbonDesc.fMaxLifeTime;
 
 	CGameObject* StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HealEffect_Ribbon"), &m_OwnDesc->RibbonDesc);
 	m_EffectClasses.emplace_back(StockValue);
+	
+	StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HealEffect_Spiral"), &m_OwnDesc->SpiralDesc);
+	m_EffectClasses.emplace_back(StockValue);
 
+	StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HealEffect_Line"), &m_OwnDesc->LineDesc);
+	m_EffectClasses.emplace_back(StockValue);
 	return S_OK;
 }
 

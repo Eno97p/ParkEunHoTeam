@@ -48,3 +48,4 @@
 47. GateOfBabilonShoot
 48. Tornado_Rock0
 49. Tornado_Rock1
+50. HealingSubEffect

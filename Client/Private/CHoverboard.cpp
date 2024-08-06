@@ -39,6 +39,8 @@ HRESULT CHoverboard::Initialize(void* pArg)
 		m_matWorld.r[CTransform::STATE::STATE_UP] =			XMVectorSet(InfoDesc.vUp.x, InfoDesc.vUp.y, InfoDesc.vUp.z, 0.0f);
 		m_matWorld.r[CTransform::STATE::STATE_LOOK] =		XMVectorSet(InfoDesc.vLook.x, InfoDesc.vLook.y, InfoDesc.vLook.z, 0.0f);
 		m_matWorld.r[CTransform::STATE::STATE_POSITION] =	XMVectorSet(InfoDesc.vPosition.x, InfoDesc.vPosition.y, InfoDesc.vPosition.z, 1.0f);
+
+		m_fPosition = InfoDesc.vPosition;
 	}
 
 
@@ -393,7 +395,9 @@ HRESULT CHoverboard::Add_Components()
 	//landObjDesc.mWorldMatrix._43 = 98.f;
 	//landObjDesc.mWorldMatrix._44 = 1.f;
 	CPhysXComponent_Vehicle::VEHICLE_COMMAND command;
+	
 	XMStoreFloat4x4(&command.initTransform, m_matWorld);
+	//XMStoreFloat4x4(&command.initTransform, XMMatrixTranslation(m_fPosition.x, m_fPosition.y, m_fPosition.z));
 	command.wheelConfig = WheelConfiguration(2, 2);
 	//command.initTransform = XMMatrixTranslation(0.f, 0.f, 0.f);
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Vehicle"),

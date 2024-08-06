@@ -53,7 +53,7 @@ private:
 	CPhysXComponent_Vehicle* m_pPhysXCom = { nullptr };
 private:
 	
-
+	_float3 m_fPosition = { 0.f,0.f,0.f };
 	_bool m_bIsMoving = false;
 	_bool m_bOnRide = false;
 	_bool m_bIsBoost = false;

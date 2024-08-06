@@ -203,6 +203,8 @@
     <ClInclude Include="..\public\PlayerHead.h" />
     <ClInclude Include="..\Public\QuarterCamera.h" />
     <ClInclude Include="..\public\ShieldSphere.h" />
+    <ClInclude Include="..\Public\SwingEffect.h" />
+    <ClInclude Include="..\Public\Swing_Spiral.h" />
     <ClInclude Include="..\public\TextureFrame.h" />
     <ClInclude Include="..\public\TornadoEffect.h" />
     <ClInclude Include="..\Public\TornadoWind.h" />
@@ -267,6 +269,8 @@
     <ClCompile Include="..\private\PlayerHead.cpp" />
     <ClCompile Include="..\Private\QuarterCamera.cpp" />
     <ClCompile Include="..\private\ShieldSphere.cpp" />
+    <ClCompile Include="..\Private\SwingEffect.cpp" />
+    <ClCompile Include="..\Private\Swing_Spiral.cpp" />
     <ClCompile Include="..\private\TextureFrame.cpp" />
     <ClCompile Include="..\private\TornadoEffect.cpp" />
     <ClCompile Include="..\Private\TornadoWind.cpp" />

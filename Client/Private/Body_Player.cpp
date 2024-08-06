@@ -556,9 +556,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		if(m_iPastAnimIndex == 144)
-			fAnimSpeed = 3.3f; // 2.5
+			fAnimSpeed = 3.3f; // 3.3
+		else if (m_iPastAnimIndex == 146)
+		{
+			fAnimSpeed = 1.f; // 2.2
+		}
 		else
-			fAnimSpeed = 2.2f; // 1.5
+		{
+			fAnimSpeed = 2.2f;
+		}
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 145 && m_iPastAnimIndex < 149)
 		{
@@ -578,7 +584,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 1.8f; // 1
+		if (m_iPastAnimIndex == 139)
+		{
+			fAnimSpeed = 1.f;
+		}
+		else
+		{
+			fAnimSpeed = 1.8f;
+		}
+		
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 138 && m_iPastAnimIndex < 142)
 		{
@@ -595,12 +609,14 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 143;
 		fAnimSpeed = 1.8f; // 1
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
+		if (m_pModelCom->Get_Ratio_Betwin(0.15f, 0.4f))
 		{
+			fAnimSpeed = 1.f;
 			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
 		else
 		{
+			fAnimSpeed = 1.8f;
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
@@ -852,7 +868,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 9;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
-	}
+	}	  
 	else if (*m_pState == CPlayer::STATE_REVIVE)
 	{
 		AnimDesc.isLoop = false;
@@ -860,7 +876,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
-
+	
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
 		*m_pState == CPlayer::STATE_RCHARGEATTACK || *m_pState == CPlayer::STATE_RUNLATTACK1 ||
 		*m_pState == CPlayer::STATE_RUNLATTACK2 || *m_pState == CPlayer::STATE_ROLL || *m_pState == CPlayer::STATE_DASH ||
@@ -1030,7 +1046,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
-
 }
 
 void CBody_Player::Late_Tick(_float fTimeDelta)

@@ -703,6 +703,9 @@
     <Filter Include="02.GameObjects\06.Effect\Heals">
       <UniqueIdentifier>{23f5d785-8fe0-45b6-886c-acc058241b42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel">
+      <UniqueIdentifier>{d0eaf09d-66ea-4aa9-956a-e8f4b61b7ad5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1453,9 +1456,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\BlastWall.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Malkhel.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2181,9 +2187,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp">
       <Filter>02.GameObjects\06.Effect\Heals</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\BlastWall.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\02. FakeWall</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Malkhel.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

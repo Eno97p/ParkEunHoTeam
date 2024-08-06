@@ -60,16 +60,6 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	// Test
-	if (m_pGameInstance->Get_DIKeyState(DIK_B))
-	{
-		m_pGameInstance->Set_MotionBlur(true);
-	}
-	else
-	{
-		m_pGameInstance->Set_MotionBlur(false);
-	}
-
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
 		_float4 TorPos;

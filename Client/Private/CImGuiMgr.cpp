@@ -224,36 +224,40 @@ void CImGuiMgr::Render_MainMenu()
 	{
 
 	//	m_pNewLevel = CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel);
-
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)m_iCurrentLevel))))
+		{
+			MSG_BOX("IMGUI::Failed to Open Level");
+			return;
+		}
 
 		
 		//int temp = 0;
 		return;
 	}
 
-	bool allThreadsFinished = true;
-	for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
-	{
-		if (g_IsThreadFinish[i] == false)
-		{
-			allThreadsFinished = false;
-			break;
-		}
-	}
+	//bool allThreadsFinished = true;
+	//for (_uint i = 0; i < USED_THREAD_COUNT; ++i)
+	//{
+	//	if (g_IsThreadFinish[i] == false)
+	//	{
+	//		allThreadsFinished = false;
+	//		break;
+	//	}
+	//}
 
-	if (allThreadsFinished)
-	{
-		if (m_pNewLevel != nullptr)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, m_pNewLevel)))
-			{
-				MSG_BOX("IMGUI::Failed to Open Level");
-				return;
-			}
-		}
-		
-		int test = 0;
-	}
+	//if (allThreadsFinished)
+	//{
+	//	if (m_pNewLevel != nullptr)
+	//	{
+	//		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, m_pNewLevel)))
+	//		{
+	//			MSG_BOX("IMGUI::Failed to Open Level");
+	//			return;
+	//		}
+	//	}
+	//	
+	//	int test = 0;
+	//}
 
 
 

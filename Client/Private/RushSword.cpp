@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 
 CRushSword::CRushSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -43,6 +44,11 @@ HRESULT CRushSword::Initialize(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(pDesc->mWorldMatrix._31, pDesc->mWorldMatrix._32, pDesc->mWorldMatrix._33, 0.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(pDesc->mWorldMatrix._41, pDesc->mWorldMatrix._42, pDesc->mWorldMatrix._43, 1.f));
 
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	vLook.m128_f32[1] = 0.f;
+	EFFECTMGR->Generate_Particle(45, fPos, nullptr, XMVectorZero(), 0.f, vLook);
 
 	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);

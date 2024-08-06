@@ -218,6 +218,9 @@
 #include "C:\3D_TeamProj\Engine\private\Texture.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\Private\Texture3D.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\Private\Timer.cpp"
 
 

@@ -12,6 +12,9 @@
 #include "C:\3D_TeamProj\Client\private\BackGround.cpp"
 
 
+#include "C:\3D_TeamProj\Client\private\BlastWall.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Body_Andras.cpp"
 
 
@@ -180,6 +183,9 @@
 #include "C:\3D_TeamProj\Client\Private\Lightning.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Malkhel.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Npc.cpp"
 
 
@@ -204,6 +210,18 @@
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\HealEffect.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Heal_Line.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Heal_Ribbon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\TornadoEffect.cpp"
 
 
@@ -214,6 +232,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Tornado_Root.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\QTE.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\RotateGate.cpp"
@@ -316,6 +337,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_QTE_Btn.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_ScreenBlood.cpp"

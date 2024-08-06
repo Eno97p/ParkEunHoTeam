@@ -12,6 +12,9 @@
 #include "E:\3D_ShatteredNew\Client\private\BackGround.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\private\BlastWall.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\Body_Andras.cpp"
 
 
@@ -204,6 +207,18 @@
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\HealEffect.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\Heal_Line.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\Heal_Ribbon.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\TornadoEffect.cpp"
 
 
@@ -214,6 +229,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\Tornado_Root.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\QTE.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\RotateGate.cpp"
@@ -316,6 +334,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_QTE_Btn.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_ScreenBlood.cpp"

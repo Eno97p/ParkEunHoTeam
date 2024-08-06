@@ -124,10 +124,16 @@ void CHoverboard::Tick(_float fTimeDelta)
 	}
 	if (KEY_TAP(DIK_LSHIFT))
 	{
-		if(m_bIsBoost)
+		if (m_bIsBoost)
+		{
 			m_bIsBoost = false;
+			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(90.f));
+		}
 		else
+		{
 			m_bIsBoost = true;
+			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(60.f));
+		}
 	}
 
 

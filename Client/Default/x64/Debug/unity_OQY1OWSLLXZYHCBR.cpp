@@ -183,6 +183,9 @@
 #include "C:\Real3DProject\Client\Private\Lightning.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Malkhel.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Npc.cpp"
 
 

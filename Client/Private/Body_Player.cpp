@@ -502,10 +502,14 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if(m_iPastAnimIndex == 150)
+		if (m_iPastAnimIndex == 150)
+		{
 			fAnimSpeed = 2.f;
+		}
 		else
+		{
 			fAnimSpeed = 1.5f;
+		}
 
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 150)
@@ -517,7 +521,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK)
+	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK) // 고치는 중 <<<<<<<<<<<<<
 	{
 		if (m_iPastAnimIndex < 131 || m_iPastAnimIndex > 136)
 		{
@@ -525,12 +529,32 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if(m_iPastAnimIndex == 134)
+		if (m_iPastAnimIndex == 134)
+		{
+			/*if (m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f))
+			{
+				fAnimSpeed = 2.5f;
+			}
+			else*//* if (m_pModelCom->Get_Ratio_Betwin(0.3f, 1.f))
+			{
+				fAnimSpeed = 1.f;
+			}
+			else
+			{
+				fAnimSpeed = 2.5f;
+			}*/
+
 			fAnimSpeed = 2.5f;
-		else if(m_iPastAnimIndex == 131)
-			fAnimSpeed = 4.f;
+
+		}
+		else if (m_iPastAnimIndex == 131)
+		{
+			fAnimSpeed = 4.f; // 4
+		}
 		else
+		{
 			fAnimSpeed = 1.5f;
+		}
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex == 133)
 		{
@@ -556,8 +580,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		if(m_iPastAnimIndex == 144)
-			fAnimSpeed = 3.3f; // 3.3
-		else if (m_iPastAnimIndex == 146)
+			fAnimSpeed = 3.3f;
+		else if (m_iPastAnimIndex == 146 && (m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f) || m_pModelCom->Get_Ratio_Betwin(0.8f, 1.f))) // 이렇게 하면 다음 공격에서 삑살나는
 		{
 			fAnimSpeed = 1.f; // 2.2
 		}
@@ -584,7 +608,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 142) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 139)
+		if (m_iPastAnimIndex == 139 && m_pModelCom->Get_Ratio_Betwin(0.f, 0.3f))
 		{
 			fAnimSpeed = 1.f;
 		}
@@ -629,7 +653,14 @@ void CBody_Player::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 125) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		fAnimSpeed = 2.5f; // 2
+		if (m_iPastAnimIndex == 123)
+		{
+			fAnimSpeed = 1.f;
+		}
+		else
+		{
+			fAnimSpeed = 2.5f; // 2
+		}
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 122)
 		{
@@ -648,10 +679,18 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if(m_iPastAnimIndex == 76)
-			fAnimSpeed = 2.2f; // 1.7
+		if (m_iPastAnimIndex == 76)
+		{
+			fAnimSpeed = 2.2f;
+		}
+		else if (m_iPastAnimIndex == 78 && m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f))
+		{
+			fAnimSpeed = 1.f;
+		}
 		else
-			fAnimSpeed = 2.5f; // 2
+		{
+			fAnimSpeed = 2.5f;
+		}
 		m_pModelCom->Set_LerpTime(1.2);
 		if (m_iPastAnimIndex > 77)
 		{

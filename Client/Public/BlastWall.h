@@ -38,6 +38,7 @@ private:
 	CShader* m_pShaderCom = nullptr;
 	CPhysXComponent** m_pPhysXCom = { nullptr };
 	_uint	m_iNumMeshes = 0;
+	vector<_float4x4> m_vecMeshsTransforms;
 public:
 	static CBlastWall* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

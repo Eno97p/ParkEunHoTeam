@@ -251,10 +251,10 @@ void CObject_Manager::Clear(_uint iLevelIndex)
 		Safe_Release(Pair.second);
 	}
 
-	/*for (auto& Pair : m_pLayers[iLevelIndex])
-	{
-		Safe_Release(Pair.second);
-	}*/
+	//for (auto& Pair : m_pLayers[iLevelIndex])
+	//{
+	//	Safe_Release(Pair.second);
+	//}
 	m_pLayers[iLevelIndex].clear();
 }
 

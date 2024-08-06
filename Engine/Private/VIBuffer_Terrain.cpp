@@ -268,12 +268,12 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 	//m_pOctTree->Make_Neighbors();
 
 
-  // QuadTree 积己 何盒 荐沥
-	m_pQuadTree = CQuadTree::Create(m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX, m_iNumVerticesX * m_iNumVerticesZ - 1, m_iNumVerticesX - 1, 0);
-	if (nullptr == m_pQuadTree)
-		return E_FAIL;
-
-	m_pQuadTree->Make_Neighbors();
+ // // QuadTree 积己 何盒 荐沥
+	//m_pQuadTree = CQuadTree::Create(m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX, m_iNumVerticesX * m_iNumVerticesZ - 1, m_iNumVerticesX - 1, 0);
+	//if (nullptr == m_pQuadTree)
+	//	return E_FAIL;
+	//
+	//m_pQuadTree->Make_Neighbors();
 
 	
 	return S_OK;

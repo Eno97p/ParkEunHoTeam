@@ -54,6 +54,11 @@
 #include "Heal_Line.h"
 #pragma endregion HEAL
 
+#pragma region SWING
+#include "SwingEffect.h"
+#include "Swing_Spiral.h"
+#pragma endregion SWING
+
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -375,6 +380,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_SmoothLine"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HealingEffect/SmoothLine.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	
+	//Swing Spiral
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Swing_Spiral"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/SwingEffect/Swing_Spiral.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -597,6 +607,15 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HealEffect_Line"),
 		CHeal_Line::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//Swing
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SwingEffect"),
+		CSwingEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Swing_Spiral"),
+		CSwing_Spiral::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

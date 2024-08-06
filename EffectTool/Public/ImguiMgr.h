@@ -14,6 +14,7 @@
 #include "TornadoEffect.h"
 #include "FirePillar.h"
 #include "HealEffect.h"
+#include "SwingEffect.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -132,6 +133,9 @@ private:
 	void Heal_ListBox(CHealEffect::HEALEFFECT* Tornado);
 	HRESULT Save_Heal();
 	HRESULT Load_Heal();
+
+private:
+	void SwingEffectTool();
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);

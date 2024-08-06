@@ -146,7 +146,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[13] = { false,false,false,false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[14] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -206,8 +206,12 @@ void CImguiMgr::Visible_Data()
 	if (bShow[11] == true)
 		HealEffectTool();
 
-	ImGui::Checkbox("Model_Change", &bShow[12]);
+	ImGui::Checkbox("Skill_Tool", &bShow[12]);
 	if (bShow[12] == true)
+		SwingEffectTool();
+
+	ImGui::Checkbox("Model_Change", &bShow[13]);
+	if (bShow[13] == true)
 		Model_Change();
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
@@ -3072,6 +3076,42 @@ HRESULT CImguiMgr::Load_Heal()
 	NameFile.close();
 
 	return S_OK;
+}
+
+void CImguiMgr::SwingEffectTool()
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("SwingEffect_Editor");
+
+	static CSwingEffect::SWINGEFFECT Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Spiral");
+
+	ImGui::InputFloat3("SpiralSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vSize));
+	ImGui::ColorEdit3("SpiralColor", reinterpret_cast<float*>(&Desc.SpiralDesc.fColor));
+	ImGui::ColorEdit3("SpiralBloomColor", reinterpret_cast<float*>(&Desc.SpiralDesc.BloomColor));
+	ImGui::InputFloat("SpiralBloomPower", &Desc.SpiralDesc.fBloomPower);
+	ImGui::InputFloat("SpiralLifeTime", &Desc.SpiralDesc.fMaxLifeTime);
+	Desc.ParentMat = TrailMat;
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (Desc.ParentMat == nullptr)
+			MSG_BOX("행렬을 대입해주세요");
+		else
+		{
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Swing"), TEXT("Prototype_GameObject_SwingEffect"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Swing"));
+	}
+	ImGui::End();
 }
 
 void CImguiMgr::FrameTextureTool()

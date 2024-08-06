@@ -673,6 +673,68 @@ PS_OUT PS_XMinusToPlus_Bloom(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_AdjustSpiral(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x + 1, In.vTexcoord.x - 1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
+		Color.rgb = g_Color;
+
+		//여기
+		float edgeWidth = 0.1;
+		float fadeIn = smoothstep(0.0, edgeWidth, adjustedUV.x);
+		float fadeOut = smoothstep(1.0, 1.0 - edgeWidth, adjustedUV.x);
+		float alphaBlend = lerp(fadeIn, fadeOut, g_Ratio);
+		Color.a *= alphaBlend;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_AdjustSpiral_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x + 1, In.vTexcoord.x - 1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
+		Color.rgb = g_Color;
+
+		//여기
+		float edgeWidth = 0.5;
+		float fadeIn = smoothstep(0.0, edgeWidth, adjustedUV.x);
+		float fadeOut = smoothstep(1.0, 1.0 - edgeWidth, adjustedUV.x);
+		float alphaBlend = lerp(fadeIn, fadeOut, g_Ratio);
+		Color.a *= alphaBlend;
+		Color.a *= g_BloomPower;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -951,5 +1013,34 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_XMinusToPlus_Bloom();
 	}
+
+	pass AdjustSpiral	//20Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_AdjustSpiral();
+	}
+
+	pass AdjustSpiral_Bloom	//21Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_AdjustSpiral_Bloom();
+	}
+
+
+		
 }
 

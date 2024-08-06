@@ -35,7 +35,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	//virtual HRESULT Render_Bloom() override;
+	virtual HRESULT Render_Bloom() override;
 	void On_Ride() { m_bOnRide = true; }
 	void Set_DisolveType(_uint iDisolveType) { m_eDisolveType = (DISOLVETYPE)iDisolveType; }
 
@@ -53,7 +53,7 @@ private:
 	CPhysXComponent_Vehicle* m_pPhysXCom = { nullptr };
 private:
 	
-
+	_float3 m_fPosition = { 0.f,0.f,0.f };
 	_bool m_bIsMoving = false;
 	_bool m_bOnRide = false;
 	_bool m_bIsBoost = false;

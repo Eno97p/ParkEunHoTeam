@@ -207,8 +207,6 @@ HRESULT CWeapon_Mantari::Render_LightDepth()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		
-
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
@@ -230,8 +228,6 @@ HRESULT CWeapon_Mantari::Render_Bloom()
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
 		m_pShaderCom->Unbind_SRVs();
-
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
 			return E_FAIL;

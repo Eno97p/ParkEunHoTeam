@@ -145,9 +145,18 @@ void CUIGroup_Weapon::Update_Weapon_Add()
 
 void CUIGroup_Weapon::Update_EquipSlot_Add(_uint iEquipSlotIdx)
 {
+	// 이미 ItemIcon이 있는 경우 해당 ItemIcon에 대한 값을 비활성화 하고 새로운 ItemIcon으로 갈아끼우는 예외 처리가 필요
+
+
+
+
+
+
 	vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
 	for (size_t i = 0; i < iEquipSlotIdx; ++i)
 		++equipslot;
+
+	// equipslot에 ItemIcon이 있다면?!
 
 	if (TAB_L == m_eTabType)
 	{

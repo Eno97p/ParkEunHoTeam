@@ -116,6 +116,12 @@
     <Filter Include="Objects\02. Effects\11. HealEffect\Effects">
       <UniqueIdentifier>{d45c9d42-c8d0-4f5b-93b4-2645d2504c6e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\12. SwingEffect">
+      <UniqueIdentifier>{83f78fe1-3bcb-4a67-b125-82d7ca5ce83c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\12. SwingEffect\Effects">
+      <UniqueIdentifier>{eccc28df-c5c2-4e5d-9411-68c2a373dbc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -310,6 +316,12 @@
     <ClInclude Include="..\Public\Heal_Line.h">
       <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SwingEffect.h">
+      <Filter>Objects\02. Effects\12. SwingEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Swing_Spiral.h">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -488,6 +500,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Heal_Line.cpp">
       <Filter>Objects\02. Effects\11. HealEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SwingEffect.cpp">
+      <Filter>Objects\02. Effects\12. SwingEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Swing_Spiral.cpp">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -60,16 +60,6 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	// Test
-	if (m_pGameInstance->Get_DIKeyState(DIK_B))
-	{
-		m_pGameInstance->Set_MotionBlur(true);
-	}
-	else
-	{
-		m_pGameInstance->Set_MotionBlur(false);
-	}
-
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
 		_float4 TorPos;
@@ -1434,11 +1424,16 @@ void CPlayer::Generate_HoverBoard()
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
+		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
+		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f , vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
+		hoverboardInfo.vRight = _float3(vRight.m128_f32[0], vRight.m128_f32[1], vRight.m128_f32[2]);
+		hoverboardInfo.vUp = _float3(vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2]);
 		hoverboardInfo.vLook = _float3(vLook.m128_f32[0], vLook.m128_f32[1], vLook.m128_f32[2]);
+
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"));
 		m_pHoverBoard = dynamic_cast<CHoverboard*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HoverBoard"), &hoverboardInfo));
 		m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"), m_pHoverBoard);

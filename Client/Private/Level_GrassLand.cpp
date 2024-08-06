@@ -262,9 +262,14 @@ HRESULT CLevel_GrassLand::Ready_LandObjects()
 
 HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
-	pLandObjDesc->mWorldMatrix._41 = -8.3f;
+	/*pLandObjDesc->mWorldMatrix._41 = -8.3f;
 	pLandObjDesc->mWorldMatrix._42 = 3.5f;
 	pLandObjDesc->mWorldMatrix._43 = -2.4f;
+	pLandObjDesc->mWorldMatrix._44 = 1.f;*/
+
+	pLandObjDesc->mWorldMatrix._41 = 75.f;
+	pLandObjDesc->mWorldMatrix._42 = 530.f;
+	pLandObjDesc->mWorldMatrix._43 = 98.f;
 	pLandObjDesc->mWorldMatrix._44 = 1.f;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))

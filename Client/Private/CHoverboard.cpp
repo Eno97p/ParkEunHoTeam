@@ -126,10 +126,16 @@ void CHoverboard::Tick(_float fTimeDelta)
 	}
 	if (KEY_TAP(DIK_LSHIFT))
 	{
-		if(m_bIsBoost)
+		if (m_bIsBoost)
+		{
 			m_bIsBoost = false;
+			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(90.f));
+		}
 		else
+		{
 			m_bIsBoost = true;
+			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(60.f));
+		}
 	}
 
 
@@ -348,9 +354,32 @@ HRESULT CHoverboard::Render()
 
 		m_pModelCom->Render(i);
 	}
+#pragma region 모션블러
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
 	return S_OK;
+}
 
-	
+HRESULT CHoverboard::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
+
+		m_pModelCom->Render(i);
+	}
+	return S_OK;
 }
 
 HRESULT CHoverboard::Add_Components()
@@ -396,6 +425,15 @@ HRESULT CHoverboard::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 

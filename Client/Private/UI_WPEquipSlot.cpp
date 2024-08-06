@@ -117,6 +117,9 @@ HRESULT CUI_WPEquipSlot::Render()
 
 HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 {
+	// 이미 장착 중인 애를 또 장착하려고 하면 안 되도록 예외 처리 해야함~~~
+	// or 이미 있던 곳 변경되도록! 원래 있던 곳에서 제거해주고 새로 옮기기 
+	
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.fX = m_fX - 3.f;
@@ -127,6 +130,28 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 
 	if (isWeapon)
 	{
+		if (nullptr != m_pItemIcon) // ItemIcon이 이미 있다면 제거
+		{
+			vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+			{
+				if (m_pItemIcon->Get_TextureName() == (*weapon)->Get_TextureName())
+				{
+					(*weapon)->Set_isEquip(false);
+					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+
+					// Equip Sign 제거
+					dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, i);
+					break;
+				}
+				else
+					++weapon;
+			}
+
+			Safe_Release(m_pItemIcon);
+			m_pItemIcon = nullptr;
+		}
+
 		vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
 			++weapon;
@@ -135,6 +160,28 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 	}
 	else
 	{
+		if (nullptr != m_pItemIcon) // ItemIcon이 이미 있다면 제거
+		{
+			vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+			{
+				if (m_pItemIcon->Get_TextureName() == (*skill)->Get_TextureName())
+				{
+					(*skill)->Set_isEquip(false);
+					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+
+					// Equip Sign 제거
+					dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, i);
+					break;
+				}
+				else
+					++skill;
+			}
+
+			Safe_Release(m_pItemIcon);
+			m_pItemIcon = nullptr;
+		}
+
 		vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
 		for (size_t i = 0; i < dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_CurSlotIdx(); ++i)
 			++skill;
@@ -282,6 +329,14 @@ void CUI_WPEquipSlot::Click_Event()
 
 	if (isAlphaBG_On) // 장착
 	{
+		// 이미 ItemIcon이 있는 경우 해당 Itemicon에 대한 장착 여부를 비활성화 하고 새로운 ItemIcon으로 변경해주는 로직 필요
+
+		
+
+
+		
+
+
 		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
 			if (!(*weapon)->Get_isEquip())

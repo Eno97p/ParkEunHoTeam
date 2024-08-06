@@ -416,7 +416,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		return RUNNING;
 		break;
 	case CCollider::COLL_FINISH:
-		m_pGameInstance->Set_MotionBlur(false);
+		//m_pGameInstance->Set_MotionBlur(false);
 		m_iState = STATE_HIT;
 		break;
 	case CCollider::COLL_NOCOLL:

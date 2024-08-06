@@ -596,7 +596,7 @@ NodeStates CAndras::BabylonAttack(_float fTimeDelta)
 		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
 		{
 			m_fSpawnCoolTime = SPAWNCOOLTIME;
-			_float fHeight = 3.f + RandomFloat(0.f, 10.f);
+			_float fHeight = 3.f + RandomFloat(0.f, 5.f);
 			//Ä® »ý¼º À§Ä¡(·£´ý)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_RIGHT)
 				* RandomFloat(-5.f, 5.f) + XMVectorSet(0.f, fHeight, 0.f, 0.f);
@@ -735,6 +735,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			m_iState = STATE_SHOOTINGSTARATTACK;
 			break;
 		}
+		m_iState = STATE_BABYLONATTACK;
 		return SUCCESS;
 	}
 

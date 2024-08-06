@@ -60,20 +60,13 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if (m_pGameInstance->Key_Down(DIK_H))
-	{
-		_float4 TorPos;
-		XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		EFFECTMGR->Generate_Tornado(0, TorPos, this);
-	}
-
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
 		if (m_bIsCloaking)
 		{
 			m_bIsCloaking = false;
 		}
-		else if(m_fCurMp >= 10.f)
+		else if (m_fCurMp >= 10.f)
 		{
 			m_bIsCloaking = true;
 			Add_Mp(-10.f);
@@ -156,7 +149,7 @@ void CPlayer::Tick(_float fTimeDelta)
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Tick(fTimeDelta);
 
-	
+
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 
@@ -230,8 +223,8 @@ HRESULT CPlayer::Add_Components()
 	PhysXDesc.filterData.word1 = (Engine::CollisionGropuID::GROUP_ENVIRONMENT | Engine::CollisionGropuID::GROUP_ENEMY) & ~GROUP_NONCOLLIDE;
 	PhysXDesc.pGameObject = this;
 	PhysXDesc.pFilterCallBack = [this](const PxController& a, const PxController& b) {return this->OnFilterCallback(a, b); };
-	CHitReport::GetInstance()->SetShapeHitCallback([this](const PxControllerShapeHit& hit){this->OnShapeHit(hit);});
-	CHitReport::GetInstance()->SetControllerHitCallback([this](const PxControllersHit& hit){this->OnControllerHit(hit);});
+	CHitReport::GetInstance()->SetShapeHitCallback([this](const PxControllerShapeHit& hit) {this->OnShapeHit(hit); });
+	CHitReport::GetInstance()->SetControllerHitCallback([this](const PxControllersHit& hit) {this->OnControllerHit(hit); });
 	//CHitReport::GetInstance()->SetFilterCallback([this](const PxController& a, const PxController& b) {return this->OnFilterCallback(a, b); });
 	if (FAILED(__super::Add_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
@@ -306,8 +299,8 @@ CGameObject* CPlayer::Get_Weapon()
 void CPlayer::PlayerHit(_float fValue)
 {
 	if (m_bParrying || m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
-		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_SPECIALATTACK || 
-		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 || m_bParry ) return;
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_SPECIALATTACK ||
+		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 || m_bParry) return;
 	m_iState = STATE_HIT;
 	m_bLAttacking = false;
 	m_bRAttacking = false;
@@ -415,7 +408,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 
 NodeStates CPlayer::Dead(_float fTimeDelta)
 {
-	
+
 	if (m_iState == STATE_DEAD)
 	{
 		m_bIsCloaking = false;
@@ -552,7 +545,7 @@ void CPlayer::Move_Counter()
 	// 플레이어 위치 보정
 	_float3 fScale = m_pTransformCom->Get_Scaled();
 	_vector vMonsterLook = XMVector3Normalize(XMVectorSet(m_pParriedMonsterFloat4x4->_31, m_pParriedMonsterFloat4x4->_32, m_pParriedMonsterFloat4x4->_33, 0.f));
-	_vector vMonsterPos =XMVectorSet(m_pParriedMonsterFloat4x4->_41, m_pParriedMonsterFloat4x4->_42, m_pParriedMonsterFloat4x4->_43, 1.f);
+	_vector vMonsterPos = XMVectorSet(m_pParriedMonsterFloat4x4->_41, m_pParriedMonsterFloat4x4->_42, m_pParriedMonsterFloat4x4->_43, 1.f);
 
 	_vector vPlayerLook = XMVector3Normalize(-vMonsterLook) * fScale.z;
 	_vector vPlayerRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook)) * fScale.x;
@@ -596,11 +589,11 @@ NodeStates CPlayer::Parry(_float fTimeDelta)
 		{
 			m_bParrying = true;
 		}
-		else 
+		else
 		{
 			m_bParrying = false;
 		}
-		
+
 		if (m_bAnimFinished)
 		{
 			m_fParryFrame = 0.f;
@@ -659,7 +652,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		}
 		m_iState = STATE_JUMPATTACK;
 		m_bLAttacking = true;
-		
+
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);
@@ -832,7 +825,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 				m_pPhysXCom->Set_Speed(100.f);
 				m_pPhysXCom->Go_Straight(fTimeDelta);
 			}
-			else if(m_fSpecialAttack > 2.f)
+			else if (m_fSpecialAttack > 2.f)
 			{
 				fSlowValue = 0.05f;
 			}
@@ -848,11 +841,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 			}
 			else if (m_fSpecialAttack >= 2.f)
 			{
-				// 2.f : 갈라지는 시간(x - 1.f = 갈라지는 총 시간)
-				if (m_fBRIS < 2.f)
-				{
-					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
-				}
+				m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				m_pGameInstance->Set_BRIS(m_fBRIS * 0.1f / 2.f);
 			}
 		}
@@ -1091,7 +1080,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
 		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_bRiding
-		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM || 
+		|| m_bRAttacking || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM ||
 		(m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
 		return COOLING;
@@ -1427,7 +1416,7 @@ void CPlayer::Generate_HoverBoard()
 		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f , vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
+		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
 		hoverboardInfo.vRight = _float3(vRight.m128_f32[0], vRight.m128_f32[1], vRight.m128_f32[2]);
@@ -1481,7 +1470,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		{
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			_vector vGoalPos = m_pHoverBoardTransform->Get_State(CTransform::STATE_POSITION);
-			
+
 			m_pTransformCom->LookAt_For_LandObject(vGoalPos);
 
 			vGoalPos.m128_f32[1] = vPos.m128_f32[1];
@@ -1612,7 +1601,7 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 	{
 		return COOLING;
 	}
-	
+
 	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping) && (m_fCurStamina >= 10.f || m_bStaminaCanDecrease))
 	{
 		m_bStaminaCanDecrease = true;
@@ -1746,7 +1735,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 			m_iState = STATE_ROLL;
 			m_pPhysXCom->Go_Straight(fTimeDelta);
 		}
-		
+
 	}
 
 	if (m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
@@ -2134,10 +2123,10 @@ void CPlayer::Add_Mp(_float iValue)
 
 void CPlayer::Change_Weapon()
 {
-	if (m_iState == STATE_JUMPATTACK || m_iState == STATE_JUMPATTACK_LAND || m_iState == STATE_ROLLATTACK || m_iState == STATE_SPECIALATTACK || 
-		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 || 
+	if (m_iState == STATE_JUMPATTACK || m_iState == STATE_JUMPATTACK_LAND || m_iState == STATE_ROLLATTACK || m_iState == STATE_SPECIALATTACK ||
+		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 ||
 		m_iState == STATE_LCHARGEATTACK || m_iState == STATE_RCHARGEATTACK || m_iState == STATE_BACKATTACK || m_iState == STATE_LATTACK1 ||
-		m_iState == STATE_LATTACK2 || m_iState == STATE_LATTACK3 || m_iState == STATE_RATTACK1 || m_iState == STATE_RATTACK2 || 
+		m_iState == STATE_LATTACK2 || m_iState == STATE_LATTACK3 || m_iState == STATE_RATTACK1 || m_iState == STATE_RATTACK2 ||
 		m_iState == STATE_RUNLATTACK1 || m_iState == STATE_RUNLATTACK2 || m_iState == STATE_RUNRATTACK || m_iState == STATE_COUNTER)
 	{
 		return;
@@ -2190,8 +2179,8 @@ void CPlayer::OnControllerHit(const PxControllersHit& hit)
 	void* Test = hit.controller->getUserData();
 	void* temp1 = hit.other->getUserData();
 	//static_cast<CPlayer*>(Test)
-	
-	
+
+
 }
 
 bool CPlayer::OnFilterCallback(const PxController& Caller, const PxController& Ohter)
@@ -2201,9 +2190,9 @@ bool CPlayer::OnFilterCallback(const PxController& Caller, const PxController& O
 
 	void* Test = Caller.getUserData();
 	void* temp1 = Ohter.getUserData();
-	
+
 	return true;
-	
+
 }
 
 void CPlayer::Update_LvData()

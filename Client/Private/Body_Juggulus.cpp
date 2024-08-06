@@ -4,12 +4,12 @@
 #include "Boss_Juggulus.h"
 
 CBody_Juggulus::CBody_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CPartObject{pDevice, pContext}
+	: CPartObject{ pDevice, pContext }
 {
 }
 
 CBody_Juggulus::CBody_Juggulus(const CBody_Juggulus& rhs)
-	: CPartObject{rhs}
+	: CPartObject{ rhs }
 {
 }
 
@@ -220,6 +220,11 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 19;
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_THUNDER_ATTACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 19;
+	}
+	else if (*m_pState == CBoss_Juggulus::STATE_TORNADO_ATTACK)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 19;

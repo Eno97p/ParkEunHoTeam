@@ -93,7 +93,7 @@ void CUI_WPEquipSlot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pNoneFrame && !m_isSelect)
 		m_pNoneFrame->Late_Tick(fTimeDelta);
 
-	if (nullptr != m_pItemIcon)
+	if (nullptr != m_pItemIcon && Check_GroupRenderOnAnim())
 		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
@@ -401,6 +401,11 @@ void CUI_WPEquipSlot::Click_Event()
 		}
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
 	}
+}
+
+_bool CUI_WPEquipSlot::Check_GroupRenderOnAnim()
+{
+	return 	CUI_Manager::GetInstance()->Get_UIGroup("Weapon")->Get_RenderOnAnim();
 }
 
 CUI_WPEquipSlot* CUI_WPEquipSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

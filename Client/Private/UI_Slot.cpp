@@ -130,13 +130,14 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pSelectFrame && m_isSelect)
 		m_pSelectFrame->Late_Tick(fTimeDelta);
 
-	if (nullptr != m_pItemIcon)
+	// UIGroup의 RenderOnAnim이 false 일 때가 점점 꺼지는 중인 거니까 그때가 되면 ItemIcon은 아예 Render 그룹에 넣지 않는 것으로?
+	if (nullptr != m_pItemIcon && Check_GroupRenderOnAnim())
 		m_pItemIcon->Late_Tick(fTimeDelta);
 
 	if (nullptr != m_pSymbolIcon && m_isSelect)
 		m_pSymbolIcon->Late_Tick(fTimeDelta);
 
-	if (nullptr != m_pEquipSign && m_isEquip)
+	if (nullptr != m_pEquipSign && m_isEquip && Check_GroupRenderOnAnim())
 		m_pEquipSign->Late_Tick(fTimeDelta);
 }
 
@@ -607,6 +608,8 @@ void CUI_Slot::Rend_Count()
 
 	_uint iCount = pItem->Get_Count();
 
+	if (!Check_GroupRenderOnAnim())
+		return;
 
 	if ((CItemData::ITEMNAME_CATALYST != pItem->Get_ItemName()) && iCount >= 2)
 	{
@@ -618,6 +621,32 @@ void CUI_Slot::Rend_Count()
 		if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), to_wstring(iCount), _float2(m_fX + 17.f, m_fY + 15.f), XMVectorSet(1.f, 1.f, 1.f, 1.f)))) // m_fX + 10.f, m_fY + 10.f
 			return;
 	}
+}
+
+_bool CUI_Slot::Check_GroupRenderOnAnim()
+{
+	// 현재 Slot이 속한 UIGroup의 RenderOnAnim의 여부를 반환하는 함수
+
+	string strUIGroup = "";
+
+	switch (m_eSlotType)
+	{
+	case Client::CUI_Slot::SLOT_QUICK:
+	case Client::CUI_Slot::SLOT_QUICKINV:
+		strUIGroup = "Quick";
+		break;
+	case Client::CUI_Slot::SLOT_INV:
+		strUIGroup = "Inventory";
+		break;
+	case Client::CUI_Slot::SLOT_WEAPON:
+	case Client::CUI_Slot::SLOT_INVSUB:
+		strUIGroup = "Weapon";
+		break;
+	default:
+		break;
+	}
+
+	return 	CUI_Manager::GetInstance()->Get_UIGroup(strUIGroup)->Get_RenderOnAnim();
 }
 
 CUI_Slot* CUI_Slot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

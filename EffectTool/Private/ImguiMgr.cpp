@@ -9,12 +9,8 @@
 #include "Particle_STrail.h"
 
 #include "Andras.h"
-#include "AndrasLazer_Base.h"
-#include "AndrasLazer_Cylinder.h"
-#include "AndrasScrew.h"
-#include "AndrasRain.h"
 #include "ElectricCylinder.h"
-#include "AndrasLazer.h"
+
 
 
 CImguiMgr::CImguiMgr()
@@ -2283,61 +2279,13 @@ void CImguiMgr::Lazer_Tool()
 	ImGui::ColorEdit3("SH_BloomColor", reinterpret_cast<float*>(&TotalDesc.ShieldDesc.fBloomColor));
 
 
-	/*static CAndrasLazerBase::ANDRAS_LASER_BASE_DESC Desc{};
-	static CAndrasLazerCylinder::ANDRAS_LASER_CYLINDER_DESC CDesc{};
-	static CAndrasScrew::ANDRAS_SCREW_DESC SDesc{};
-	static CElectricCylinder::ANDRAS_ELECTRIC_DESC EDesc{};
-	static CAndrasRain::ANDRAS_RAIN_DESC RDesc{};
-
-	ImGui::InputFloat3("MaxSize", reinterpret_cast<float*>(&Desc.vMaxSize));
-	ImGui::InputFloat3("CMaxSize", reinterpret_cast<float*>(&CDesc.vMaxSize));
-	ImGui::InputFloat3("SMaxSize", reinterpret_cast<float*>(&SDesc.vMaxSize));
-	ImGui::InputFloat3("EMaxSize", reinterpret_cast<float*>(&EDesc.vMaxSize));
-	ImGui::InputFloat3("RMaxSize", reinterpret_cast<float*>(&RDesc.vMaxSize));
-
-	ImGui::InputFloat3("OffsetPos", reinterpret_cast<float*>(&Desc.vOffset));
-	ImGui::InputFloat3("COffsetPos", reinterpret_cast<float*>(&CDesc.vOffset));
-	RDesc.vOffset = CDesc.vOffset;
-	ImGui::InputFloat3("SOffsetPos", reinterpret_cast<float*>(&SDesc.vOffset));
-	ImGui::InputFloat3("EOffsetPos", reinterpret_cast<float*>(&EDesc.vOffset));
-
-	ImGui::InputFloat("RotationSpeed", &Desc.fRotationSpeed);
-	ImGui::InputFloat("CRotationSpeed", &CDesc.fRotationSpeed);
-	ImGui::InputFloat("SRotationSpeed", &SDesc.fRotationSpeed);
-	ImGui::InputFloat("ERotationSpeed", &EDesc.fRotationSpeed);
-
-	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
-	ImGui::InputFloat("CBloomPower", &CDesc.fBloomPower);
-	ImGui::InputFloat("SBloomPower", &SDesc.fBloomPower);
-
-	ImGui::InputFloat("DistortionPower", &Desc.fDistortionPower);
-	ImGui::InputFloat("CDistortionPower", &CDesc.fDistortionPower);
-	ImGui::InputFloat("SDistortionPower", &SDesc.fDistortionPower);
-
-	ImGui::InputFloat("MaxLifeTime", &Desc.fMaxLifeTime);
-	ImGui::InputFloat("CMaxLifeTime", &CDesc.fMaxLifeTime);
-	ImGui::InputFloat("SMaxLifeTime", &SDesc.fMaxLifeTime);
-	ImGui::InputFloat("EMaxLifeTime", &EDesc.fMaxLifeTime);
-	RDesc.fMaxLifeTime = CDesc.fMaxLifeTime;
-
-	ImGui::InputFloat("UVSpeed", &Desc.fUVSpeed);
-	ImGui::InputFloat("CUVSpeed", &CDesc.fUVSpeed);
-	ImGui::InputFloat("SUVSpeed", &SDesc.fUVSpeed);
-	ImGui::InputFloat("RUVSpeed", &RDesc.fUVSpeed);
-	ImGui::InputFloat("EFrameSpeed", &EDesc.frameSpeed);
-
-	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
-	ImGui::ColorEdit3("CColor", reinterpret_cast<float*>(&CDesc.fColor));
-	ImGui::ColorEdit3("SColor", reinterpret_cast<float*>(&SDesc.fColor));
-	ImGui::ColorEdit3("RColor", reinterpret_cast<float*>(&RDesc.fColor));
-	ImGui::ColorEdit3("EColor", reinterpret_cast<float*>(&EDesc.fColor));
-
-
-	Desc.ParentMatrix = TrailMat;
-	CDesc.ParentMatrix = TrailMat;
-	SDesc.ParentMatrix = TrailMat;
-	EDesc.ParentMatrix = TrailMat;
-	RDesc.ParentMatrix = TrailMat;*/
+	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Cast");
+	ImGui::InputFloat3("Cast_Size", reinterpret_cast<float*>(&TotalDesc.CastDesc.vSize));
+	ImGui::ColorEdit3("Cast_Color", reinterpret_cast<float*>(&TotalDesc.CastDesc.fColor));
+	ImGui::ColorEdit3("Cast_BloomColor", reinterpret_cast<float*>(&TotalDesc.CastDesc.BloomColor));
+	ImGui::InputFloat3("Cast_Offset", reinterpret_cast<float*>(&TotalDesc.CastDesc.vOffset));
+	ImGui::InputFloat("Cast_BloomPower", &TotalDesc.CastDesc.fBloomPower);
+	ImGui::InputFloat("Cast_LifeTime", &TotalDesc.CastDesc.fMaxLifeTime);
 	
 	if (ImGui::Button("Generate", ButtonSize))
 	{
@@ -2349,12 +2297,216 @@ void CImguiMgr::Lazer_Tool()
 				TEXT("Prototype_GameObject_AndrasLazerSpawner"), &TotalDesc);
 		}
 	}
+	ImGui::SameLine();
 	if (ImGui::Button("Erase", ButtonSize))
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerLazer"));
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"));
 	}
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_Lazer(effectname, TotalDesc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Lazer()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Lazer()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	Lazer_ListBox(&TotalDesc);
+
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Lazer(char* Name, CAndrasLazer::ANDRAS_LAZER_TOTALDESC Lazer)
+{
+	string sName = Name;
+	shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC> StockValue = make_shared<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>(Lazer);
+	m_Lazers.emplace_back(StockValue);
+	LazerNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Lazer_ListBox(CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Lazer)
+{
+#pragma region exception
+	if (m_Lazers.size() < 1)
+		return;
+
+	if (m_Lazers.size() != LazerNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Lazer_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("Lazer_List", list_box_size))
+	{
+		for (int i = 0; i < LazerNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(LazerNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+#pragma region BUTTONS
+	if (current_item >= 0 && current_item < LazerNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Desc = m_Lazers[current_item].get();
+			Desc->ShooterMat = TrailMat;
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("LayerLazer"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Lazer = *m_Lazers[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Lazers[current_item] = make_shared<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>(*Lazer);
+		}
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Lazers[current_item].reset();
+			m_Lazers.erase(m_Lazers.begin() + current_item);
+			LazerNames.erase(LazerNames.begin() + current_item);
+
+			if (current_item >= m_Lazers.size())
+				current_item = m_Lazers.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Lazers)
+				iter.reset();
+			m_Lazers.clear();
+			LazerNames.clear();
+			current_item = 0;
+		}
+	}
+#pragma endregion BUTTONS
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Lazer()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Lazer.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Lazers.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Lazers)
+	{
+		file.write((char*)iter.get(), sizeof(CAndrasLazer::ANDRAS_LAZER_TOTALDESC));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lazers.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : LazerNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lazers.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < LazerNames.size(); ++i)
+	{
+		NumberFile << i << ". " << LazerNames[i] << std::endl;
+	}
+	NumberFile.close();
+
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Lazer()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Lazer.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Lazers)
+		iter.reset();
+	m_Lazers.clear();
+	LazerNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CAndrasLazer::ANDRAS_LAZER_TOTALDESC readFile{};
+		inFile.read((char*)&readFile, sizeof(CAndrasLazer::ANDRAS_LAZER_TOTALDESC));
+		readFile.ShooterMat = nullptr;
+		shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC> StockValue = make_shared<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>(readFile);
+		m_Lazers.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Lazers.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		LazerNames.emplace_back(str);
+	}
+	NameFile.close();
+	return S_OK;
 }
 
 void CImguiMgr::Tornado_Tool()

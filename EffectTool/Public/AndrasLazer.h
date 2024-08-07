@@ -7,6 +7,7 @@
 #include "ElectricCylinder.h"
 #include "AndrasScrew.h"
 #include "ShieldSphere.h"
+#include "LazerCast.h"
 
 BEGIN(Effect)
 class CAndrasLazer : public CGameObject
@@ -25,6 +26,7 @@ public:
 		CAndrasScrew::ANDRAS_SCREW_DESC ScrewDesc{};
 		CElectricCylinder::ANDRAS_ELECTRIC_DESC ElectricDesc{};
 		CShieldSphere::SHIELD_DESC ShieldDesc{};
+		CLazerCast::LAZER_CAST	CastDesc{};
 	};
 private:
 	CAndrasLazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -48,6 +50,9 @@ private:
 	_float CurInterval = 0.f;
 	_float ShieldInterval = 0.f;
 
+private:
+	_bool	LazerSpawned = false;
+	CGameObject* LazerCast = nullptr;
 public:
 	static CAndrasLazer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

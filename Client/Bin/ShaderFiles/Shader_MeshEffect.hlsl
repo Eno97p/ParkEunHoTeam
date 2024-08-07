@@ -63,7 +63,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	float distanceFromStart = dot(worldPos - startPos, laserDir);
 
 	// 거리에 따른 스케일 계산 (0.1에서 시작하여 1.0까지, 5% 거리에서 최대)
-	float rawScale = saturate(distanceFromStart / (totalLength * 0.05f));
+	float rawScale = saturate(distanceFromStart / (totalLength * 0.1f));
 
 	// 비선형 스케일 적용 (더 빠르게 커지도록)
 	float scale = lerp(0.2, 1.0, pow(rawScale, 0.2));
@@ -736,6 +736,54 @@ PS_OUT PS_AdjustSpiral_Bloom(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_LazerCast(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.y = lerp(-1.0, In.vTexcoord.y + 1, g_Ratio);
+	if (adjustedUV.y >= 0.0 && adjustedUV.y <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		if (Color.a < 0.1f)
+			discard;
+		Color.rgb = g_Color;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_LazerCast_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.y = lerp(-1.0, In.vTexcoord.y + 1, g_Ratio);
+	if (adjustedUV.y >= 0.0 && adjustedUV.y <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		if (Color.a < 0.1f)
+			discard;
+		Color.rgb = g_Color;
+		Color.a *= g_BloomPower;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -1041,6 +1089,45 @@ technique11 DefaultTechnique
 	}
 
 
+	pass Screw //22pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_Cylinder();
+	}
+
+	pass LazerCast	//23Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LazerCast();
+	}
+
+	pass LazerCast_Bloom	//24Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LazerCast_Bloom();
+	}
 		
 }
 

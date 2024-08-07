@@ -124,7 +124,8 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 	// 여기에서 뭔가 CInventory에 Arr Equip Weapon을 제거해버리는 코드가 있음
 	// 그거 찾아서 얘외처리를 하든 코드 추가를 하던 해야 함~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
+	// 이거 해줘야하고...........................
+	// Player 벽력일섬에 넣어줄 유리창 깨진 느낌 필요함
 
 
 	

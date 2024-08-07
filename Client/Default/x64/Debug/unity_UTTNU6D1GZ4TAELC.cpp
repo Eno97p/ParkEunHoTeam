@@ -327,6 +327,9 @@
 #include "C:\Real3DProject\Client\Private\UI_Activate.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Broken.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Ch_UpgradeBtn.cpp"
 
 

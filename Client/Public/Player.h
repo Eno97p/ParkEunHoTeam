@@ -225,6 +225,9 @@ private:
 	void OnControllerHit(const PxControllersHit& hit);
 	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
 
+	// UI 관련 함수
+	HRESULT			Create_BrokenUI();
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -291,6 +291,7 @@
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
+    <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
@@ -550,6 +551,7 @@
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
+    <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />

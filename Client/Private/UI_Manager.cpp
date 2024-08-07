@@ -21,6 +21,7 @@
 #include "UIGroup_Ch_Upgrade.h"
 
 #include "UI_ScreenBlood.h"
+#include "UI_Broken.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -43,6 +44,16 @@ void CUI_Manager::Set_ScreenBloodRend(_bool isRend)
 {
 	m_pScreenBlood->Set_Rend(isRend);
 	m_pScreenBlood->Resset_Animation(true);
+}
+
+void CUI_Manager::Set_Broken(_bool isRend)
+{
+	/*if (!m_pBroken->Get_Rend())
+	{
+
+	}*/
+	m_pBroken->Set_Rend(isRend);
+	m_pBroken->Resset_Animation(true);
 }
 
 _bool CUI_Manager::Get_isMouseOn()
@@ -84,6 +95,8 @@ void CUI_Manager::Tick(_float fTimeDelta)
 		pGroup.second->Tick(fTimeDelta);
 
 	m_pScreenBlood->Tick(fTimeDelta);
+
+	m_pBroken->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -98,6 +111,8 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 
 	m_pScreenBlood->Late_Tick(fTimeDelta);
+
+	m_pBroken->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -237,6 +252,11 @@ HRESULT CUI_Manager::Create_UI()
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
 	m_pScreenBlood = dynamic_cast<CUI_ScreenBlood*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScreenBlood"), &pBloodDesc));
+
+	// Broken   
+	CUI::UI_Desc pBrokenDesc{};
+	pBrokenDesc.eLevel = LEVEL_STATIC;
+	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pBrokenDesc));
 
 	return S_OK;
 }
@@ -391,123 +411,6 @@ void CUI_Manager::Key_Input()
 			m_pGameInstance->Get_MainCamera()->Inactivate();
 		}
 	}
-
-
-	//if (m_pGameInstance->Key_Down(DIK_ESCAPE))
-	//{
-	//	map<string, CUIGroup*>::iterator character = m_mapUIGroup.find("Menu_Ch");
-	//	map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
-	//	map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
-	//	map<string, CUIGroup*>::iterator mapPage = m_mapUIGroup.find("Map");
-	//	map<string, CUIGroup*>::iterator setting = m_mapUIGroup.find("Setting");
-
-	//	_bool isChOpen = (*character).second->Get_Rend();
-	//	_bool isInvOpen = (*inventory).second->Get_Rend();
-	//	_bool isWeaponOpen = (*weapon).second->Get_Rend();
-	//	_bool isMapOpen = (*mapPage).second->Get_Rend();
-	//	_bool isSettingOpen = (*setting).second->Get_Rend();
-
-	//	if (isMenuOpen)
-	//	{
-	//		if (!isInvSubOpen)
-	//		{
-	//			if (isChOpen)
-	//			{
-	//				(*character).second->Set_RenderOnAnim(false);
-	//			}
-	//			else if (isInvOpen)
-	//			{
-	//				(*inventory).second->Set_RenderOnAnim(false);
-	//			}
-	//			else if (isWeaponOpen)
-	//			{
-	//				// weapon의 sub도 활성화 되어있지 않을 때 예외 처리 필요
-	//				if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Get_EquipMode())
-	//					(*weapon).second->Set_RenderOnAnim(false);
-	//				else
-	//					dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
-	//			}
-	//			else if (isMapOpen)
-	//			{
-	//				(*mapPage).second->Set_RenderOnAnim(false);
-	//			}
-	//			else if (isSettingOpen)
-	//			{
-	//				(*setting).second->Set_RenderOnAnim(false);
-	//			}
-	//			else
-	//			{
-	//				(*menu).second->Set_RenderOnAnim(false);
-	//				m_pGameInstance->Get_MainCamera()->Activate();
-	//			}
-
-	//			dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_MenuPageState(false);
-	//		}
-	//		else
-	//		{
-	//			(*invsub).second->Set_RenderOnAnim(false);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		if (!isQuickOpen)
-	//		{
-	//			(*menu).second->Set_Rend(true);
-	//			(*menu).second->Set_RenderOnAnim(true);
-
-	//			m_pGameInstance->Get_MainCamera()->Inactivate();
-	//		}
-	//	}
-
-	//	// test용 >> 나중에 다르게 처리해야 함
-	//	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
-	//	(*upgrade).second->Set_Rend(false);
-
-	//	map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
-	//	(*upgpage).second->Set_Rend(false);
-
-	//	map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
-	//	(*ch_upgrade).second->Set_Rend(false);
-
-
-	//}
-	//else if (m_pGameInstance->Key_Down(DIK_I))
-	//{
-	//	if (!isMenuOpen)
-	//	{
-	//		(*quick).second->Set_AnimFinished(false);
-
-	//		if (isQuickOpen) // 퀵슬롯이 켜져 있을 때 > 꺼지게
-	//		{
-	//			(*quick).second->Set_RenderOnAnim(false);
-
-	//			m_pGameInstance->Get_MainCamera()->Activate();
-	//		}
-	//		else // 꺼져있을 때 > 켜지게
-	//		{
-	//			(*quick).second->Set_Rend(true);
-	//			(*quick).second->Set_RenderOnAnim(true);
-
-	//			m_pGameInstance->Get_MainCamera()->Inactivate();
-	//		}
-	//	}
-	//}
-	//else if (m_pGameInstance->Key_Down(DIK_U)) // Test용
-	//{
-	//	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
-	//	(*upgrade).second->Set_Rend(true);
-
-	//	m_pGameInstance->Get_MainCamera()->Inactivate();
-	//}
-	//else if (m_pGameInstance->Key_Down(DIK_Y))
-	//{
-	//	map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
-	//	(*ch_upgrade).second->Set_Rend(true);
-	//	(*ch_upgrade).second->Set_RenderOnAnim(true);
-	//	dynamic_cast<CUIGroup_Ch_Upgrade*>((*ch_upgrade).second)->Resset_OriginData();
-
-	//	m_pGameInstance->Get_MainCamera()->Inactivate();
-	//}
 }
 
 void CUI_Manager::Free()
@@ -518,6 +421,7 @@ void CUI_Manager::Free()
 	}
 	m_mapUIGroup.clear();
 
+	Safe_Release(m_pBroken);
 	Safe_Release(m_pScreenBlood);
 	Safe_Release(m_pGameInstance);
 }

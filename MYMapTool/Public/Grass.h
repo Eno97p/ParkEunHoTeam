@@ -36,7 +36,9 @@ public:
 public:
 	_float3 Get_TopCol() { return m_vTopCol; }
 	_float3 Get_BotCol() { return m_vBotCol; }
+	_uint Get_NumInstance();
 
+	vector<_float4x4*> Get_VtxMatrices();
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };

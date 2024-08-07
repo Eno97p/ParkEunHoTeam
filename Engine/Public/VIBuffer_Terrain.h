@@ -16,11 +16,13 @@ public:
 	HRESULT Initialize_Prototype(const wstring& strHeightMapFilePath, _bool realmap);
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _float Compute_Height(const _float3& vLocalPos) override;
+	_float3 Compute_Normal(const _float3& vWorldPos);
 
 public:
 	void Culling(_fmatrix WorldMatrixInv);
 
 	void Update_Height(float fDeltaTime);
+
 
 	void AdjustHeight(const _float4& vBrushPos, float fBrushSize, float fBrushStrength, float fMaxHeight, bool bRaise);
 

@@ -95,6 +95,9 @@
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\LazerCast.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Level_GamePlay.cpp"
 
 

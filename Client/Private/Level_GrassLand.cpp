@@ -22,6 +22,9 @@
 
 #include "CHoverBoard.h"
 
+#include "Tree.h"
+#include "Grass.h"
+
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -67,7 +70,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 //	Load_LevelData(TEXT("../Bin/MapData/Stage_AndrasArena.bin"));
 
-	//Load_Data_Effects();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -469,7 +472,7 @@ HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 
 HRESULT CLevel_GrassLand::Load_Data_Effects()
 {
-	const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
+	const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_GrassLand_Effects.bin";
 	HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (nullptr == hFile)
 		return E_FAIL;
@@ -480,43 +483,160 @@ HRESULT CLevel_GrassLand::Load_Data_Effects()
 	// 이펙트 개수 읽기
 	ReadFile(hFile, &iEffectCount, sizeof(_uint), &dwByte, nullptr);
 
+	// Tree 객체들을 그룹화하기 위한 맵
+	auto treeCmp = [](const tuple<wstring, float, float, float, bool>& a, const tuple<wstring, float, float, float, bool>& b) {
+		return a < b;
+		};
+	map<tuple<wstring, float, float, float, bool>, vector<_float4x4*>, decltype(treeCmp)> treeGroups(treeCmp);
+
+	// Grass 객체들을 그룹화하기 위한 맵
+	auto grassCmp = [](const tuple<wstring, wstring, _float3, _float3>& a, const tuple<wstring, wstring, _float3, _float3>& b) {
+		if (get<0>(a) != get<0>(b)) return get<0>(a) < get<0>(b);
+		if (get<1>(a) != get<1>(b)) return get<1>(a) < get<1>(b);
+
+		const _float3& topColA = get<2>(a);
+		const _float3& topColB = get<2>(b);
+		if (topColA.x != topColB.x) return topColA.x < topColB.x;
+		if (topColA.y != topColB.y) return topColA.y < topColB.y;
+		if (topColA.z != topColB.z) return topColA.z < topColB.z;
+
+		const _float3& botColA = get<3>(a);
+		const _float3& botColB = get<3>(b);
+		if (botColA.x != botColB.x) return botColA.x < botColB.x;
+		if (botColA.y != botColB.y) return botColA.y < botColB.y;
+		return botColA.z < botColB.z;
+		};
+	map<tuple<wstring, wstring, _float3, _float3>, vector<vector<_float4x4*>>, decltype(grassCmp)> grassGroups(grassCmp);
+
 	for (_uint i = 0; i < iEffectCount; ++i)
 	{
 		char szName[MAX_PATH] = "";
+		char szModelName[MAX_PATH] = "";
 		char szLayer[MAX_PATH] = "";
 		_float4x4 WorldMatrix;
 
 		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
 		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
 
-		// char 배열을 wstring으로 변환
-		wstring wsName, wsLayer;
+		wstring wsName, wsModelName, wsLayer;
 		int nNameLen = MultiByteToWideChar(CP_ACP, 0, szName, -1, NULL, 0);
+		int nModelNameLen = MultiByteToWideChar(CP_ACP, 0, szModelName, -1, NULL, 0);
 		int nLayerLen = MultiByteToWideChar(CP_ACP, 0, szLayer, -1, NULL, 0);
 		wsName.resize(nNameLen);
+		wsModelName.resize(nModelNameLen);
 		wsLayer.resize(nLayerLen);
 		MultiByteToWideChar(CP_ACP, 0, szName, -1, &wsName[0], nNameLen);
+		MultiByteToWideChar(CP_ACP, 0, szModelName, -1, &wsModelName[0], nModelNameLen);
 		MultiByteToWideChar(CP_ACP, 0, szLayer, -1, &wsLayer[0], nLayerLen);
 
-		// 이펙트 생성 및 설정
 		if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Fire_Effect") == 0)
 		{
 			CFireEffect::FIREEFFECTDESC FireDesc{};
 			FireDesc.vStartPos = { WorldMatrix._41, WorldMatrix._42, WorldMatrix._43, 1.f };
-			FireDesc.vStartScale = { 1.f, 1.f }; // 스케일은 필요에 따라 조정
+			FireDesc.vStartScale = { 1.f, 1.f };
 			FireDesc.mWorldMatrix = WorldMatrix;
 
-			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, wsLayer.c_str(), wsName.c_str(), &FireDesc)))
 				return E_FAIL;
 		}
+		else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Grass") == 0)
+		{
+			_float3 TopCol, BotCol;
+			ReadFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
 
+			_uint iVtxMatrixCount = 0;
+			ReadFile(hFile, &iVtxMatrixCount, sizeof(_uint), &dwByte, nullptr);
+
+			vector<_float4x4*> vtxMatrices;
+			for (_uint j = 0; j < iVtxMatrixCount; ++j)
+			{
+				_float4x4* pMatrix = new _float4x4();
+				ReadFile(hFile, pMatrix, sizeof(_float4x4), &dwByte, nullptr);
+				vtxMatrices.push_back(pMatrix);
+			}
+
+			// Grass 그룹화
+			auto key = make_tuple(wsModelName, wsName, TopCol, BotCol);
+			grassGroups[key].emplace_back(move(vtxMatrices));
+		}
+		else if (wcscmp(wsName.c_str(), L"Prototype_GameObject_Tree") == 0)
+		{
+			_float3 LeafCol;
+			bool isBloom;
+			ReadFile(hFile, &LeafCol, sizeof(_float3), &dwByte, nullptr);
+			ReadFile(hFile, &isBloom, sizeof(bool), &dwByte, nullptr);
+
+			// 트리 그룹화
+			auto key = make_tuple(wsModelName, LeafCol.x, LeafCol.y, LeafCol.z, isBloom);
+			_float4x4* pWorldMatrix = new _float4x4(WorldMatrix);
+			treeGroups[key].emplace_back(pWorldMatrix);
+		}
 	}
 
 	CloseHandle(hFile);
 
+	// Tree 객체들을 인스턴싱하여 생성
+	for (const auto& group : treeGroups)
+	{
+		CTree::TREE_DESC TreeDesc{};
+		TreeDesc.wstrModelName = get<0>(group.first);
+		TreeDesc.vLeafCol = _float3(get<1>(group.first), get<2>(group.first), get<3>(group.first));
+		TreeDesc.isBloom = get<4>(group.first);
+		TreeDesc.WorldMats = group.second;
+		TreeDesc.iInstanceCount = group.second.size();
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Tree"), &TreeDesc)))
+			return E_FAIL;
+	}
+
+	// Grass 객체들을 인스턴싱하여 생성
+	for (const auto& group : grassGroups)
+	{
+		CGrass::GRASS_DESC GrassDesc{};
+		GrassDesc.wstrModelName = get<0>(group.first);
+		GrassDesc.vTopCol = get<2>(group.first);
+		GrassDesc.vBotCol = get<3>(group.first);
+
+		// 모든 인스턴스의 정점 매트릭스를 하나의 벡터로 합칩니다.
+		vector<_float4x4*> allVtxMatrices;
+		for (const auto& instanceMatrices : group.second)
+		{
+			allVtxMatrices.insert(allVtxMatrices.end(), instanceMatrices.begin(), instanceMatrices.end());
+		}
+
+		GrassDesc.WorldMats = move(allVtxMatrices);
+		GrassDesc.iInstanceCount = GrassDesc.WorldMats.size();
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Vegetation"), TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
+			return E_FAIL;
+	}
+
+	// Tree 메모리 해제
+	for (auto& group : treeGroups)
+	{
+		for (auto& pMatrix : group.second)
+		{
+			delete pMatrix;
+		}
+	}
+
+	// Grass 메모리 해제
+	for (auto& group : grassGroups)
+	{
+		for (auto& instanceMatrices : group.second)
+		{
+			for (auto& pMatrix : instanceMatrices)
+			{
+				delete pMatrix;
+			}
+		}
+	}
+
 #ifdef _DEBUG
-	MSG_BOX("Effects Data Load");
+	  MSG_BOX("Effect Data Load");
 #endif
 
 	return S_OK;

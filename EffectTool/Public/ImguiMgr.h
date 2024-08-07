@@ -15,6 +15,8 @@
 #include "FirePillar.h"
 #include "HealEffect.h"
 #include "SwingEffect.h"
+#include "AndrasLazer.h"
+
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -116,6 +118,10 @@ private:	//Lightning
 	HRESULT Load_Lightning();
 private:
 	void Lazer_Tool();
+	HRESULT Store_Lazer(char* Name, CAndrasLazer::ANDRAS_LAZER_TOTALDESC Lazer);
+	void Lazer_ListBox(CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Lazer);
+	HRESULT Save_Lazer();
+	HRESULT Load_Lazer();
 
 private:
 	void Tornado_Tool();
@@ -171,6 +177,7 @@ private:
 	vector<shared_ptr<CElectronic::ELECTRONICDESC>>			m_Lightnings;
 	vector<shared_ptr<CTornadoEffect::TORNADODESC>>			m_Tornados;
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>				m_Heals;
+	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -180,6 +187,7 @@ private:
 	vector<string> LightningNames;
 	vector<string> TornadoNames;
 	vector<string> HealNames;
+	vector<string> LazerNames;
 
 
 private:

@@ -36,6 +36,9 @@
 #include "C:\3D_TeamProj\Client\Private\Body_LGGun.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Body_Malkhel.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Body_Player.cpp"
 
 
@@ -559,6 +562,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\Weapon_Legionnaire.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Weapon_Malkhel.cpp"
 
 
 #include "C:\3D_TeamProj\Client\private\Weapon_Mantari.cpp"

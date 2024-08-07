@@ -1,5 +1,5 @@
 #pragma once
-#include "BlendObject.h"
+#include "Weapon.h"
 #include "Client_Defines.h"
 BEGIN(Engine)
 class CShader;
@@ -8,9 +8,11 @@ class CTexture;
 END
 
 BEGIN(Client)
-class CTornado_Wind final : public CBlendObject
+class CTornado_Wind final : public CWeapon
 {
-	enum TornadoModel{ Tor_1, Tor_2, Tor_3, Tor_End};
+#define HITCOOLTIME 1.f
+
+	enum TornadoModel { Tor_1, Tor_2, Tor_3, Tor_End };
 public:
 	typedef struct TORNADO_WIND
 	{
@@ -64,6 +66,11 @@ private:
 
 private:
 	wstring						m_ModelProtoName = TEXT("");
+
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
+	_float m_fHitCoolTime = HITCOOLTIME;
 
 private:
 	_bool						EffectDead = false;

@@ -129,12 +129,10 @@ void CHoverboard::Tick(_float fTimeDelta)
 		if (m_bIsBoost)
 		{
 			m_bIsBoost = false;
-			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(90.f));
 		}
 		else
 		{
 			m_bIsBoost = true;
-			m_pGameInstance->Get_MainCamera()->Set_Fovy(XMConvertToRadians(60.f));
 		}
 	}
 
@@ -185,6 +183,23 @@ void CHoverboard::Tick(_float fTimeDelta)
 	_float rotationDirection = XMVectorGetY(crossProduct) < 0.0f ? -1.0f : 1.0f;
 
 
+
+	//카메라 광각 설정
+	// 최소 및 최대 FOV 설정
+	const float minFOV = XMConvertToRadians(60.f);
+	const float maxFOV = XMConvertToRadians(90.f);
+
+	// 최소 및 최대 속도 설정 (이 값들은 게임의 특성에 맞게 조정해야 합니다)
+	const float minSpeed = 0.f;
+	const float maxSpeed = 100.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
+
+	// 현재 속도에 따른 FOV 계산
+	float t = (m_fCurHoverBoardSpeed - minSpeed) / (maxSpeed - minSpeed);
+	t = clamp(t, 0.f, 1.f); // t를 0과 1 사이로 제한
+	float currentFOV = minFOV + t * (maxFOV - minFOV);
+
+	// 메인 카메라의 FOV 설정
+	Camera->Set_Fovy(currentFOV);
 
 
 

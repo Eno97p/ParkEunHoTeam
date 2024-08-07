@@ -287,46 +287,57 @@ HRESULT CVIBuffer_Terrain::Initialize(void * pArg)
 	return S_OK;
 }
 
-_float CVIBuffer_Terrain::Compute_Height(const _float3 & vLocalPos)
+_float CVIBuffer_Terrain::Compute_Height(const _float3& vWorldPos)
 {
-	_uint			iIndex = _uint(vLocalPos.z) * m_iNumVerticesX + _uint(vLocalPos.x);
-	if (iIndex > m_iNumVertices)
+	// 월드 좌표를 로컬 좌표로 변환
+	_float3 vLocalPos = vWorldPos;
+	vLocalPos.x += (m_iNumVerticesX - 1) * 3.f * 0.5f;  // offsetX 적용
+	vLocalPos.z += (m_iNumVerticesZ - 1) * 3.f * 0.5f;  // offsetZ 적용
+
+	// 지형 내부에 있는지 확인
+	if (vLocalPos.x < 0 || vLocalPos.x >(m_iNumVerticesX - 1) * 3.f ||
+		vLocalPos.z < 0 || vLocalPos.z >(m_iNumVerticesZ - 1) * 3.f)
 		return 0.f;
 
-	_uint			iIndices[] = {
-		iIndex + m_iNumVerticesX, 
-		iIndex + m_iNumVerticesX + 1,
-		iIndex + 1, 
-		iIndex
+	// 해당 위치의 그리드 좌표 계산
+	_uint iX = _uint(vLocalPos.x / 3.f);
+	_uint iZ = _uint(vLocalPos.z / 3.f);
+
+	_uint iIndex = iZ * m_iNumVerticesX + iX;
+
+	// 그리드 내 4개의 정점 인덱스
+	_uint iIndices[4] = {
+		iIndex,
+		iIndex + 1,
+		iIndex + m_iNumVerticesX,
+		iIndex + m_iNumVerticesX + 1
 	};
 
-	_float		fWidth = vLocalPos.x - m_pVertexPositions[iIndices[0]].x;
-	_float		fDepth = m_pVertexPositions[iIndices[0]].z - vLocalPos.z;
+	// 그리드 내 상대 위치 계산
+	_float fRatioX = (vLocalPos.x / 3.f) - iX;
+	_float fRatioZ = (vLocalPos.z / 3.f) - iZ;
 
-	_vector		vPlane = XMVectorZero();
+	_vector vPlane;
 
-	/* 오른쪽 위 삼각형 안. */
-	if (fWidth > fDepth)
+	// 삼각형 선택 및 평면 계산
+	if (fRatioX > fRatioZ)  // 오른쪽 위 삼각형
 	{
-		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]), 			
-			XMLoadFloat4(&m_pVertexPositions[iIndices[1]]), 
-			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]));
+		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[1]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]));
 	}
-	/* 왼쪽 아래 삼각형 안. */
-	else
+	else  // 왼쪽 아래 삼각형
 	{
 		vPlane = XMPlaneFromPoints(XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
 			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]),
 			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]));
 	}
 
-	/*
-	ax + by + cz + d = 0
-	y = (-ax - cz - d) / b
-	*/
-	return (-XMVectorGetX(vPlane) * vLocalPos.x - XMVectorGetZ(vPlane) * vLocalPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
+	// 평면 방정식을 사용하여 높이 계산
+	// ax + by + cz + d = 0
+	// y = (-ax - cz - d) / b
+	return (-XMVectorGetX(vPlane) * vWorldPos.x - XMVectorGetZ(vPlane) * vWorldPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
 }
-
 void CVIBuffer_Terrain::Culling(_fmatrix WorldMatrixInv)
 {
 	/* 로컬스페이스상의 평면을 구성한다. */
@@ -406,6 +417,58 @@ void CVIBuffer_Terrain::Update_Height(float fDeltaTime)
 
 		m_pContext->Unmap(m_pVB, 0);
 	}
+}
+
+_float3 CVIBuffer_Terrain::Compute_Normal(const _float3& vWorldPos)
+{
+	// 월드 좌표를 로컬 좌표로 변환
+	_float3 vLocalPos = vWorldPos;
+	vLocalPos.x += (m_iNumVerticesX - 1) * 3.f * 0.5f;
+	vLocalPos.z += (m_iNumVerticesZ - 1) * 3.f * 0.5f;
+
+	// 지형 내부에 있는지 확인
+	if (vLocalPos.x < 0 || vLocalPos.x >(m_iNumVerticesX - 1) * 3.f ||
+		vLocalPos.z < 0 || vLocalPos.z >(m_iNumVerticesZ - 1) * 3.f)
+		return _float3(0, 1, 0);  // 지형 밖이면 기본 상향 벡터 반환
+
+	// 해당 위치의 그리드 좌표 계산
+	_uint iX = _uint(vLocalPos.x / 3.f);
+	_uint iZ = _uint(vLocalPos.z / 3.f);
+	_uint iIndex = iZ * m_iNumVerticesX + iX;
+
+	// 그리드 내 4개의 정점 인덱스
+	_uint iIndices[4] = {
+		iIndex,
+		iIndex + 1,
+		iIndex + m_iNumVerticesX,
+		iIndex + m_iNumVerticesX + 1
+	};
+
+	// 그리드 내 상대 위치 계산
+	_float fRatioX = (vLocalPos.x / 3.f) - iX;
+	_float fRatioZ = (vLocalPos.z / 3.f) - iZ;
+
+	_vector vNormal;
+
+	// 삼각형 선택 및 노멀 계산
+	if (fRatioX > fRatioZ)  // 오른쪽 위 삼각형
+	{
+		vNormal = XMVector3Normalize(XMVector3Cross(
+			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]) - XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[1]]) - XMLoadFloat4(&m_pVertexPositions[iIndices[0]])
+		));
+	}
+	else  // 왼쪽 아래 삼각형
+	{
+		vNormal = XMVector3Normalize(XMVector3Cross(
+			XMLoadFloat4(&m_pVertexPositions[iIndices[2]]) - XMLoadFloat4(&m_pVertexPositions[iIndices[0]]),
+			XMLoadFloat4(&m_pVertexPositions[iIndices[3]]) - XMLoadFloat4(&m_pVertexPositions[iIndices[0]])
+		));
+	}
+
+	_float3 normal;
+	XMStoreFloat3(&normal, vNormal);
+	return normal;
 }
 
 void CVIBuffer_Terrain::AdjustHeight(const _float4& vBrushPos, float fBrushSize, float fBrushStrength, float fMaxHeight, bool bRaise)

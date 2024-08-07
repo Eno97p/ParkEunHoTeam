@@ -25,41 +25,53 @@ HRESULT CAndrasLazer::Initialize(void* pArg)
 		return E_FAIL;
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-	if (FAILED(Add_Child_Effects()))
-		return E_FAIL;
 
+
+	m_OwnDesc->CastDesc.ParentMatrix = m_OwnDesc->ShooterMat;
+	LazerCast = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_LazerCast"), &m_OwnDesc->CastDesc);
 
 	return S_OK;
 }
 
 void CAndrasLazer::Priority_Tick(_float fTimeDelta)
 {
+	LazerCast->Priority_Tick(fTimeDelta);
 }
 
 void CAndrasLazer::Tick(_float fTimeDelta)
 {
-	m_OwnDesc->fLifeTime -= fTimeDelta;
-	if (m_OwnDesc->fLifeTime < 0.f)
-		m_pGameInstance->Erase(this);
-
-	CurInterval -= fTimeDelta;
-	if (CurInterval < 0.f)
+	if (LazerSpawned == true)
 	{
-		CurInterval = m_OwnDesc->ElectricInterval;
-		Generate_Electric();
+		m_OwnDesc->fLifeTime -= fTimeDelta;
+		if (m_OwnDesc->fLifeTime < 0.f)
+			m_pGameInstance->Erase(this);
+
+		CurInterval -= fTimeDelta;
+		if (CurInterval < 0.f)
+		{
+			CurInterval = m_OwnDesc->ElectricInterval;
+			Generate_Electric();
+		}
+		ShieldInterval -= fTimeDelta;
+		if (ShieldInterval < 0.f)
+		{
+			ShieldInterval = m_OwnDesc->ShieldInterval;
+			Generate_Shield();
+		}
 	}
-	ShieldInterval -= fTimeDelta;
-	if (ShieldInterval < 0.f)
+
+	if (static_cast<CLazerCast*>(LazerCast)->Get_EffectDead() && !LazerSpawned)
 	{
-		ShieldInterval = m_OwnDesc->ShieldInterval;
-		Generate_Shield();
+		LazerSpawned = true;
+		if (FAILED(Add_Child_Effects()))
+			return;
 	}
-
-
+	LazerCast->Tick(fTimeDelta);
 }
 
 void CAndrasLazer::Late_Tick(_float fTimeDelta)
 {
+	LazerCast->Late_Tick(fTimeDelta);
 }
 
 HRESULT CAndrasLazer::Add_Components()
@@ -140,5 +152,5 @@ CGameObject* CAndrasLazer::Clone(void* pArg)
 void CAndrasLazer::Free()
 {
 	__super::Free();
-
+	Safe_Release(LazerCast);
 }

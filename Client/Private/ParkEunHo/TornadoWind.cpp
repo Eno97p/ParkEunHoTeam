@@ -1,13 +1,15 @@
 #include "TornadoWind.h"
 #include "GameInstance.h"
+#include "Player.h"
+#include "EffectManager.h"
 
 CTornado_Wind::CTornado_Wind(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBlendObject(pDevice, pContext)
+	:CWeapon(pDevice, pContext)
 {
 }
 
 CTornado_Wind::CTornado_Wind(const CTornado_Wind& rhs)
-	:CBlendObject(rhs)
+	:CWeapon(rhs)
 {
 }
 
@@ -42,10 +44,12 @@ HRESULT CTornado_Wind::Initialize(void* pArg)
 		return E_FAIL;
 	}
 
-
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 
 	_matrix WorldMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	WorldMat.r[3] = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffset), WorldMat);
@@ -82,12 +86,12 @@ void CTornado_Wind::Tick(_float fTimeDelta)
 	{
 		_vector CurSize = XMLoadFloat3(&m_CurrentSize);
 		_vector LerpSize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
-		CurSize = XMVectorLerp(CurSize, LerpSize, fTimeDelta* m_OwnDesc->fGrowSpeed);
+		CurSize = XMVectorLerp(CurSize, LerpSize, fTimeDelta * m_OwnDesc->fGrowSpeed);
 		XMStoreFloat3(&m_CurrentSize, CurSize);
 	}
 
 	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
-	m_pTransformCom->Turn(XMVectorSet(0.f,1.f,0.f,0.f), fTimeDelta);
+	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	_vector vFinalPos = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffset), ParentMat);
@@ -98,11 +102,46 @@ void CTornado_Wind::Late_Tick(_float fTimeDelta)
 {
 	if (EffectDead)
 		return;
+
+	m_fHitCoolTime -= fTimeDelta;
+	if (!m_bIsActive)
+	{
+		m_bIsActive = true;
+	}
+	if (m_fHitCoolTime < 0.f)
+	{
+		m_bIsActive = false;
+		m_fHitCoolTime = HITCOOLTIME;
+	}
+
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	// 토네이도와 플레이어 충돌처리
+	if (m_bIsActive)
+	{
+		if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+	}
+	else
+	{
+		m_pColliderCom->Reset();
+	}
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	if(m_OwnDesc->IsDistortion)
+	if (m_OwnDesc->IsDistortion)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
+
+#ifdef _DEBUG
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
+#endif
 }
 
 HRESULT CTornado_Wind::Render()
@@ -163,6 +202,17 @@ HRESULT CTornado_Wind::Render_Distortion()
 
 HRESULT CTornado_Wind::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.f, 2.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_ModelProtoName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -271,4 +321,6 @@ void CTornado_Wind::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

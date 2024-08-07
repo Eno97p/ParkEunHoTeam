@@ -85,7 +85,7 @@ HRESULT CAndrasScrew::Render()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(22);
 
 		m_pModelCom->Render(i);
 
@@ -102,7 +102,7 @@ HRESULT CAndrasScrew::Render_Bloom()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(22);
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
@@ -117,7 +117,7 @@ HRESULT CAndrasScrew::Render_Distortion()
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(22);
 		m_pModelCom->Render(i);
 	}
 	return S_OK;

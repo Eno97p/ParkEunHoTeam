@@ -184,6 +184,7 @@
     <ClInclude Include="..\Public\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
+    <ClInclude Include="..\Public\LazerCast.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
@@ -250,6 +251,7 @@
     <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
+    <ClCompile Include="..\Private\LazerCast.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />

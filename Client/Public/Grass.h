@@ -1,7 +1,7 @@
 #pragma once
 
 //#include "MYMapTool_Defines.h"
-#include "ToolObj.h"
+#include "Map_Element.h"
 
 BEGIN(Engine)
 class CShader;
@@ -9,12 +9,12 @@ class CTexture;
 class CVIBuffer_Instance_Point;
 END
 
-BEGIN(MYMapTool)
+BEGIN(Client)
 
-class CGrass final : public CToolObj
+class CGrass final : public CMap_Element
 {
 public:
-	typedef struct GRASS_DESC : public CToolObj::TOOLOBJ_DESC
+	typedef struct GRASS_DESC : public CMap_Element::MAP_ELEMENT_DESC
 	{
 		_float4			vStartPos;
 		_float3			vTopCol = { 1.f, 0.f, 0.f };

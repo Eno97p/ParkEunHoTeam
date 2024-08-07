@@ -20,7 +20,9 @@ CToolObj::CToolObj(const CToolObj& rhs)
 
 _char* CToolObj::Get_ModelName()
 {
-	if (m_pModelCom != nullptr)
+	if (m_pModelCom != nullptr 
+		|| strcmp(m_szModelName, "Prototype_Component_Texture_Grass_TT") //풀 예외처리
+		|| strcmp(m_szModelName, "Prototype_Component_Texture_Grass_TF"))
 	{
 		return m_szModelName;
 	}

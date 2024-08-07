@@ -102,6 +102,7 @@
 #include "EventTrigger.h"
 
 #include "Tree.h"
+#include "Grass.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

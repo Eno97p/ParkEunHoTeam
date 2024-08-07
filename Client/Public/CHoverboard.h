@@ -69,6 +69,7 @@ private:
 
 	_matrix m_matWorld = {};
 
+	_float m_fCurHoverBoardSpeed = 0.f;
 public:
 	static CHoverboard* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -149,6 +149,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CTree::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	//Prototype_GameObject_Grass
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Grass"),
+		CGrass::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 #pragma endregion Active Element
 

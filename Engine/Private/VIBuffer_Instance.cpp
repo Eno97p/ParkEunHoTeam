@@ -1,4 +1,5 @@
 #include "..\Public\VIBuffer_Instance.h"
+#include "VIBuffer_Terrain.h"
 
 CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer{ pDevice, pContext }
@@ -1375,7 +1376,7 @@ void CVIBuffer_Instance::Initial_RotateY()
 	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		_matrix      RotationMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f),
+		_matrix      RotationMatrix = XMMatrixRotationAxis(XMLoadFloat4(&pVertices[i].vUp),
 			XMConvertToRadians(RandomFloat(0.f, 360.f)));
 
 		_vector Right = XMVector4Normalize(XMLoadFloat4(&pVertices[i].vRight));
@@ -1393,6 +1394,35 @@ void CVIBuffer_Instance::Initial_RotateY()
 
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
+vector<_float4x4*> CVIBuffer_Instance::Get_VtxMatrices()
+{
+	vector<_float4x4*> worldMats;
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	if (FAILED(m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource)))
+	{
+		return worldMats; // 맵핑 실패시 빈 벡터 반환
+	}
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		_float4x4* mat = new _float4x4();  // 동적 할당
+		// 정규화된 방향 벡터 계산
+		_vector Right = XMVector4Normalize(XMLoadFloat4(&pVertices[i].vRight));
+		_vector Up = XMVector4Normalize(XMLoadFloat4(&pVertices[i].vUp));
+		_vector Look = XMVector4Normalize(XMLoadFloat4(&pVertices[i].vLook));
+		// 행렬 구성
+		XMStoreFloat4x4(mat, XMMatrixSet(
+			Right.m128_f32[0], Right.m128_f32[1], Right.m128_f32[2], 0.0f,
+			Up.m128_f32[0], Up.m128_f32[1], Up.m128_f32[2], 0.0f,
+			Look.m128_f32[0], Look.m128_f32[1], Look.m128_f32[2], 0.0f,
+			pVertices[i].vTranslation.x, pVertices[i].vTranslation.y, pVertices[i].vTranslation.z, 1.0f
+		));
+		worldMats.push_back(mat);
+	}
+	m_pContext->Unmap(m_pVBInstance, 0);
+	return worldMats;
 }
 
 void CVIBuffer_Instance::Excute_Trail(_float fTimeDelta)

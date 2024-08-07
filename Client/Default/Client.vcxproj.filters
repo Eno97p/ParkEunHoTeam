@@ -1480,6 +1480,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2217,6 +2220,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2308,6 +2314,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

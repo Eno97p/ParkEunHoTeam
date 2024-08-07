@@ -1,14 +1,12 @@
 #include "Grass.h"
-#include "ToolObj.h"
-#include "ToolObj_Manager.h"
 #include "GameInstance.h"
 CGrass::CGrass(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CToolObj(pDevice, pContext)
+	: CMap_Element(pDevice, pContext)
 {
 }
 
 CGrass::CGrass(const CGrass& rhs)
-	: CToolObj(rhs)
+	: CMap_Element(rhs)
 {
 }
 
@@ -27,42 +25,15 @@ HRESULT CGrass::Initialize(void* pArg)
 	if (nullptr != pArg)
 	{
 
-		CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
-
-		/*m_pTransformCom->Set_Scale(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[2][2]);
-
-		m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVectorSet(pDesc->mWorldMatrix.m[0][0], pDesc->mWorldMatrix.m[0][1], pDesc->mWorldMatrix.m[0][2], pDesc->mWorldMatrix.m[0][3]));
-		m_pTransformCom->Set_State(CTransform::STATE_UP, XMVectorSet(pDesc->mWorldMatrix.m[1][0], pDesc->mWorldMatrix.m[1][1], pDesc->mWorldMatrix.m[1][2], pDesc->mWorldMatrix.m[1][3]));
-		m_pTransformCom->Set_State(CTransform::STATE_LOOK, XMVectorSet(pDesc->mWorldMatrix.m[2][0], pDesc->mWorldMatrix.m[2][1], pDesc->mWorldMatrix.m[2][2], pDesc->mWorldMatrix.m[2][3]));
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3]);*/
-
-		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&((GRASS_DESC*)pArg)->vStartPos));
-		 
-		_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
-		m_vPivotPos.y += 10.f;
-		XMStoreFloat3(&m_vPivotPos, vPos);
-
-
-		strcpy_s(m_szName, pDesc->szObjName);
-		strcpy_s(m_szLayer, pDesc->szLayer);
-		m_eModelType = CModel::TYPE_END;
-		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
-
-
-		// 생성 목록에 리스트 번호 매기기
-		string strSize = to_string(CToolObj_Manager::GetInstance()->Get_ToolObjs().size()) + ". ";
-		strcat_s(m_szListName, strSize.c_str());
-		strcat_s(m_szListName, m_szName);
-		CImgui_Manager::GetInstance()->Add_vecCreateObj(m_szListName);
+		
 
 	}
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
-	m_pVIBufferCom->Setup_Onterrain(dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer"))));
-	m_pVIBufferCom->Initial_RotateY();
+	//m_pVIBufferCom->Setup_Onterrain(dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer"))));
+	//m_pVIBufferCom->Initial_RotateY();
 
 
 	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
@@ -149,7 +120,7 @@ HRESULT CGrass::Add_Components(void* pArg)
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	ZeroMemory(&InstanceDesc, sizeof InstanceDesc);
 
-	InstanceDesc.iNumInstance = 10000;
+	InstanceDesc.iNumInstance = 1;
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
 	InstanceDesc.vPivotPos = m_vPivotPos;
 	InstanceDesc.vRange = _float3(25.0f, 0.f, 25.0f);
@@ -163,45 +134,41 @@ HRESULT CGrass::Add_Components(void* pArg)
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &InstanceDesc)))
 		return E_FAIL;
 
+
+
+
 	/* For.Com_Shader */
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Grass"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (rand() % 100 > 50)
+	GRASS_DESC* desc = static_cast<GRASS_DESC*>(pArg);
 	{
-		strcpy_s(m_szModelName, "Prototype_Component_Texture_Grass_TT");
 
 		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
-		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT_Normal"),
-			TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pNormalCom))))
-			return E_FAIL;
+		///* For.Com_Texture */
+		//if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT_Normal"),
+		//	TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pNormalCom))))
+		//	return E_FAIL;
 	}
-	else
-	{
-		strcpy_s(m_szModelName, "Prototype_Component_Texture_Grass_TF");
 
-		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF"),
-			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-			return E_FAIL;
-
-		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF_Normal"),
-			TEXT("Com_Normal"), reinterpret_cast<CComponent**>(&m_pNormalCom))))
-			return E_FAIL;
-	}
 	
 
 	/* For.Com_Texture */
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Noise"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_NoiseRepeat"),
 		TEXT("Com_Noise"), reinterpret_cast<CComponent**>(&m_pNoiseCom))))
 		return E_FAIL;
+
+
+	CVIBuffer_Instance_Point::INSTANCE_MAP_DESC mapdesc{};
+
+	mapdesc.WorldMats = (desc->WorldMats);
+
+	m_pVIBufferCom->Ready_Instance_ForGrass(mapdesc);
 
 	return S_OK;
 }
@@ -218,8 +185,8 @@ HRESULT CGrass::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
-		return E_FAIL;
+	/*if (FAILED(m_pNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+		return E_FAIL;*/
 
 	if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
 		return E_FAIL;
@@ -235,7 +202,7 @@ HRESULT CGrass::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vBotColor", &m_vBotCol, sizeof(_float3))))
 		return E_FAIL;	
 	
-	_float bill = CImgui_Manager::GetInstance()->Get_BillboardFactor();
+	_float bill = 0.5f;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBillboardFactor", &bill, sizeof(_float))))
 		return E_FAIL;	
 	
@@ -248,11 +215,11 @@ HRESULT CGrass::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
 		return E_FAIL;
 
-	m_fWindStrength = CImgui_Manager::GetInstance()->Get_GlobalWindStrenth();
+	m_fWindStrength = 10.f;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWindStrength", &m_fWindStrength, sizeof(_float))))
 		return E_FAIL;	
 	
-	_float3 WindDir = CImgui_Manager::GetInstance()->Get_GlobalWindDir();
+	_float3 WindDir = {1.f, 0.f, 0.f};
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vWindDirection", &WindDir, sizeof(_float3))))
 		return E_FAIL;
 
@@ -292,6 +259,6 @@ void CGrass::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pNoiseCom);
-	Safe_Release(m_pNormalCom);
+	//Safe_Release(m_pNormalCom);
 	Safe_Release(m_pShaderCom);
 }

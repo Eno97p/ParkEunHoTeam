@@ -324,9 +324,12 @@ PxFilterFlags CPhysX::FilterShaderExample(PxFilterObjectAttributes attributes0, 
 	pairFlags = PxPairFlag::eSOLVE_CONTACT | PxPairFlag::eDETECT_DISCRETE_CONTACT
 		| PxPairFlag::eNOTIFY_TOUCH_FOUND
 		| PxPairFlag::eNOTIFY_TOUCH_PERSISTS
-		| PxPairFlag::eNOTIFY_CONTACT_POINTS;
+		| PxPairFlag::eNOTIFY_CONTACT_POINTS
+		| PxPairFlag::eDETECT_CCD_CONTACT;
 
-	return PxFilterFlag::eDEFAULT;
+
+	return PxFilterFlags();
+	//return PxFilterFlag::eDEFAULT;
 }
 
 PxParticleBuffer* CPhysX::CreateParticleBuffer(const PxParticleBufferDesc& desc, PxParticleBuffer* particleBuffer)

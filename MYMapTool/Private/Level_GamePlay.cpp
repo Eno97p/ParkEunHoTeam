@@ -550,13 +550,16 @@ HRESULT CLevel_GamePlay::Load_Data_PhysX()
 
 HRESULT CLevel_GamePlay::Save_Data_Effects()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Ackbar_Effects.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_GrassLand_Effects.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
 
     DWORD dwByte(0);
     _uint iEffectCount = 0;
+
+    vector<_float4x4> grassWorldMats;
+
 
     // 먼저 이펙트 개수를 세고 저장
     for (auto& iter : CToolObj_Manager::GetInstance()->Get_ToolObjs())
@@ -589,25 +592,39 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
             WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
         }
-        else if (strcmp(iter->Get_Name(), "Prototype_GameObject_Grass") == 0)
+        if (strcmp(iter->Get_Name(), "Prototype_GameObject_Grass") == 0)
         {
             char szName[MAX_PATH] = "";
+            char szModelName[MAX_PATH] = "";
             char szLayer[MAX_PATH] = "";
             _float4x4 WorldMatrix;
             _float3 TopCol, BotCol;
-
             strcpy_s(szName, iter->Get_Name());
+            strcpy_s(szModelName, iter->Get_ModelName());
             strcpy_s(szLayer, iter->Get_Layer());
             XMStoreFloat4x4(&WorldMatrix, iter->Get_WorldMatrix());
+            vector<_float4x4*> vtxMatrices = static_cast<CGrass*>(iter)->Get_VtxMatrices();
             TopCol = static_cast<CGrass*>(iter)->Get_TopCol();
             BotCol = static_cast<CGrass*>(iter)->Get_BotCol();
-
             WriteFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+            WriteFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
             WriteFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
             WriteFile(hFile, &TopCol, sizeof(_float3), &dwByte, nullptr);
             WriteFile(hFile, &BotCol, sizeof(_float3), &dwByte, nullptr);
-
+            // 정점 매트릭스 개수 저장
+            _uint iVtxMatrixCount = vtxMatrices.size();
+            WriteFile(hFile, &iVtxMatrixCount, sizeof(_uint), &dwByte, nullptr);
+            // 정점 매트릭스 저장
+            for (_uint i = 0; i < iVtxMatrixCount; ++i)
+            {
+                WriteFile(hFile, vtxMatrices[i], sizeof(_float4x4), &dwByte, nullptr);
+            }
+            // 메모리 해제
+            for (auto& mat : vtxMatrices)
+            {
+                delete mat;
+            }
         }
         else if (strcmp(iter->Get_Name(), "Prototype_GameObject_Tree") == 0)
         {

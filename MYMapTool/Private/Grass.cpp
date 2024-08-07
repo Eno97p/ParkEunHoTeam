@@ -46,7 +46,6 @@ HRESULT CGrass::Initialize(void* pArg)
 
 		strcpy_s(m_szName, pDesc->szObjName);
 		strcpy_s(m_szLayer, pDesc->szLayer);
-		strcpy_s(m_szModelName, "");
 		m_eModelType = CModel::TYPE_END;
 		CToolObj_Manager::GetInstance()->Get_ToolObjs().emplace_back(this); // Obj
 
@@ -62,7 +61,9 @@ HRESULT CGrass::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+	m_pVIBufferCom->Setup_Onterrain(dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer"))));
 	m_pVIBufferCom->Initial_RotateY();
+
 
 	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
 	m_vTopCol = gd->vTopCol;
@@ -131,6 +132,16 @@ HRESULT CGrass::Render()
 	return S_OK;
 }
 
+_uint CGrass::Get_NumInstance()
+{
+	return m_pVIBufferCom->Get_Instance_Desc()->iNumInstance;
+}
+
+vector<_float4x4*> CGrass::Get_VtxMatrices()
+{
+	return m_pVIBufferCom->Get_VtxMatrices();
+}
+
 HRESULT CGrass::Add_Components(void* pArg)
 {
 	CVIBuffer_Instance::INSTANCE_DESC		InstanceDesc{};
@@ -141,7 +152,7 @@ HRESULT CGrass::Add_Components(void* pArg)
 	InstanceDesc.iNumInstance = 10000;
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
 	InstanceDesc.vPivotPos = m_vPivotPos;
-	InstanceDesc.vRange = _float3(25.0f, 0.4f, 25.0f);
+	InstanceDesc.vRange = _float3(25.0f, 0.f, 25.0f);
 	InstanceDesc.vSize = _float2(1.f, 5.f);
 	InstanceDesc.vSpeed = _float2(1.f, 7.f);
 	InstanceDesc.vLifeTime = _float2(10.f, 15.f);
@@ -159,6 +170,8 @@ HRESULT CGrass::Add_Components(void* pArg)
 
 	if (rand() % 100 > 50)
 	{
+		strcpy_s(m_szModelName, "Prototype_Component_Texture_Grass_TT");
+
 		/* For.Com_Texture */
 		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TT"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
@@ -171,6 +184,8 @@ HRESULT CGrass::Add_Components(void* pArg)
 	}
 	else
 	{
+		strcpy_s(m_szModelName, "Prototype_Component_Texture_Grass_TF");
+
 		/* For.Com_Texture */
 		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Grass_TF"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
@@ -218,6 +233,13 @@ HRESULT CGrass::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vBotColor", &m_vBotCol, sizeof(_float3))))
+		return E_FAIL;	
+	
+	_float bill = CImgui_Manager::GetInstance()->Get_BillboardFactor();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBillboardFactor", &bill, sizeof(_float))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fElasticityFactor", &bill, sizeof(_float))))
 		return E_FAIL;
 	
 	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vTopColorOffset", &m_vTopColorOffset, sizeof(_float3))))

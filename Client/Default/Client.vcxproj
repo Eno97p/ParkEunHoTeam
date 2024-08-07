@@ -118,7 +118,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Engine.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Engine.lib;DirectXTKd.lib;LowLevel_static_64.lib;LowLevelAABB_static_64.lib;LowLevelDynamics_static_64.lib;PhysX_64.lib;PhysXCharacterKinematic_static_64.lib;PhysXCommon_64.lib;PhysXCooking_64.lib;PhysXExtensions_static_64.lib;PhysXFoundation_64.lib;PhysXPvdSDK_static_64.lib;PhysXTask_static_64.lib;PhysXVehicle_static_64.lib;PhysXVehicle2_static_64.lib;PVDRuntime_64.lib;SceneQuery_static_64.lib;SimulationController_static_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/;../../EngineSDK/Lib/PhysX/Debug/;../../EngineSDK/Lib/Blast/Debug/</AdditionalLibraryDirectories>
       <StackReserveSize>8388608</StackReserveSize>
     </Link>
@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Body_Juggulus.h" />
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
     <ClInclude Include="..\Public\Body_LGGun.h" />
+    <ClInclude Include="..\Public\Body_Malkhel.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
     <ClInclude Include="..\Public\Body_Valnir.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
     <ClInclude Include="..\Public\Ghost.h" />
+    <ClInclude Include="..\Public\Grass.h" />
     <ClInclude Include="..\Public\Homonculus.h" />
     <ClInclude Include="..\Public\ImGUi\imconfig.h" />
     <ClInclude Include="..\Public\ImGUi\imgui.h" />
@@ -377,6 +379,7 @@
     <ClInclude Include="..\Public\Weapon_Ghost.h" />
     <ClInclude Include="..\Public\Weapon_Homonculus.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h" />
+    <ClInclude Include="..\Public\Weapon_Malkhel.h" />
     <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -450,6 +453,7 @@
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
+    <ClCompile Include="..\Private\Body_Malkhel.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
     <ClCompile Include="..\Private\Body_Valnir.cpp" />
@@ -473,6 +477,7 @@
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Ghost.cpp" />
+    <ClCompile Include="..\Private\Grass.cpp" />
     <ClCompile Include="..\Private\Homonculus.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui.cpp" />
     <ClCompile Include="..\Private\ImGUi\imgui_demo.cpp" />
@@ -633,6 +638,7 @@
     <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />
     <ClCompile Include="..\Private\Weapon_Legionnaire.cpp" />
+    <ClCompile Include="..\Private\Weapon_Malkhel.cpp" />
     <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />
@@ -715,6 +721,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />

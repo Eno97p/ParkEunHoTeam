@@ -29,7 +29,7 @@ HRESULT CBlastWall::Initialize(void* pArg)
 
 
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 523.f, 98.f, 1.0f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 453.f, 98.f, 1.0f));
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -48,13 +48,74 @@ void CBlastWall::Tick(_float fTimeDelta)
 	//for (size_t i = 0; i < m_iNumMeshes; i++)
 		//m_pPhysXCom[i]->Tick(m_pTransformCom->Get_WorldFloat4x4());//Update_Collider(m_pTransformCom->Get_WorldMatrix());
 
-	if (KEY_TAP(DIK_9))
-	{
+
+	CComponent* pPlayerCharacter = m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_PhysX"));
+	if(pPlayerCharacter == nullptr)
+		return;
+	//dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
+
+	PxController* pController = dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
+
+	PxCapsuleController* pCapsuleController = static_cast<PxCapsuleController*>(pController);
+	PxCapsuleGeometry capsuleGeom(pCapsuleController->getRadius(), pCapsuleController->getHeight() * 0.5f);
+	PxVec3 vPlayerVec3(static_cast<_float>(pCapsuleController->getFootPosition().x), static_cast<_float>(pCapsuleController->getFootPosition().y), static_cast<_float>(pCapsuleController->getFootPosition().z));
+	
+	PxTransform pPlayerTransform = PxTransform(vPlayerVec3);
+	
+
+	
+	
 		for (size_t i = 0; i < m_iNumMeshes; i++)
-			m_pPhysXCom[i]->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+		{
 
-	}
+			PxRigidDynamic* pActor = 	m_pPhysXCom[i]->Get_Actor()->is<PxRigidDynamic>();
+			PxShape* pShape;
+			pActor->getShapes(&pShape, 1);
 
+			
+			const PxGeometryHolder geometry = pShape->getGeometry();
+			const PxConvexMeshGeometry& convexGeom = geometry.convexMesh();
+
+			PxTransform wallPos = pActor->getGlobalPose();
+
+			PxVec3 vSweepDir = wallPos.p - pPlayerTransform.p;
+			vSweepDir.normalize();
+
+			PxReal maxDist = 0.01f;
+			PxGeomSweepHit sweepHit;
+			PxGeometryQuery;
+			//m_pGameInstance->GetScene()->sweep()
+			_bool  bIsHit = PxGeometryQuery::sweep(
+				vSweepDir,
+				maxDist,
+				capsuleGeom,
+				pPlayerTransform,
+				convexGeom,
+				wallPos,
+				sweepHit
+			);
+
+			if (bIsHit)
+			{
+				Broken_Wall();
+				int test = 0;
+				break;
+			}
+
+			//m_pGameInstance->GetControllerManager()->getController()
+
+
+			
+
+
+
+			//
+
+		}
+
+	
+
+	//PxSweep
 }
 
 void CBlastWall::Late_Tick(_float fTimeDelta)
@@ -130,6 +191,7 @@ HRESULT CBlastWall::Add_Components()
 		PhysXDesc.eGeometryType = PxGeometryType::eCONVEXMESH;
 		PhysXDesc.fMatterial = _float3(0.5f, 0.5f, 0.5f);
 		PhysXDesc.pMesh = m_pModelCom->Get_Meshes()[i];
+		PhysXDesc.pName = "Wall";
 		XMStoreFloat4x4(&PhysXDesc.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 
 		/* For.Com_Physx */
@@ -138,6 +200,11 @@ HRESULT CBlastWall::Add_Components()
 			return E_FAIL;
 
 		m_pPhysXCom[i]->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
+		m_pPhysXCom[i]->Get_Actor()->userData = this;
+
+		
+		
+
 	}
 
 
@@ -164,6 +231,39 @@ HRESULT CBlastWall::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CBlastWall::Check_Collision()
+{
+
+	PxShape* pShape;
+	m_pPhysXCom[0]->Get_Actor()->is<PxRigidDynamic>()->getShapes(&pShape, 1);
+	PxConvexMeshGeometry geom;
+	const PxGeometryHolder geometry = pShape->getGeometry();
+	geometry.convexMesh();
+
+
+
+}
+
+void CBlastWall::Broken_Wall()
+{
+
+	for (size_t i = 0; i < m_iNumMeshes; i++)
+	{
+
+		m_pPhysXCom[i]->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, false);
+		m_pPhysXCom[i]->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+		//m_pPhysXCom[i]->Get_Actor()
+		PxRigidDynamic* pRigidDynamic = m_pPhysXCom[i]->Get_Actor()->is<PxRigidDynamic>();
+		pRigidDynamic->setLinearVelocity(PxVec3(0.0f, 10.0f, 0.0f));
+		pRigidDynamic->setMass(3.0f);
+
+
+		int test = 0;
+
+	}
+
 }
 
 CBlastWall* CBlastWall::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -1,4 +1,5 @@
 #include "..\Public\VIBuffer_Instance_Point.h"
+#include "VIBuffer_Terrain.h"
 
 CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
@@ -128,8 +129,138 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	return S_OK;
 }
 
+void CVIBuffer_Instance_Point::Setup_Onterrain(CVIBuffer_Terrain* pTerrain)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	VTXPOINT* pPoints = (VTXPOINT*)SubResource.pData;
 
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		_float3 vWorldPos = _float3(pVertices[i].vTranslation.x,
+			pVertices[i].vTranslation.y,
+			pVertices[i].vTranslation.z);
 
+		// 높이 계산
+		_float fTerrainHeight = pTerrain->Compute_Height(vWorldPos);
+
+		// 노멀 계산
+		_float3 vNormal = pTerrain->Compute_Normal(vWorldPos);
+
+		// 높이 적용
+		pVertices[i].vTranslation.y = fTerrainHeight + 1.f;
+
+		// 회전 적용
+		_vector vUp = { 0, 1, 0, 0.f };
+		_vector vTerrainNormal = XMLoadFloat3(&vNormal);
+
+		// 노멀이 (0,1,0)과 거의 같은 경우 회전을 적용하지 않음
+		if (!XMVector3NearEqual(vUp, vTerrainNormal, XMVectorReplicate(0.0001f)))
+		{
+			_vector vRotationAxis = XMVector3Normalize(XMVector3Cross(vUp, vTerrainNormal));
+			float fRotationAngle = XMScalarACos(XMVector3Dot(vUp, vTerrainNormal).m128_f32[0]);
+
+			// 회전 행렬 생성
+			_matrix rotationMatrix = XMMatrixRotationAxis(vRotationAxis, fRotationAngle);
+
+			// 현재 회전 행렬 추출
+			_matrix currentRotation = XMMatrixIdentity();
+			currentRotation.r[0] = XMLoadFloat4(&pVertices[i].vRight);
+			currentRotation.r[1] = XMLoadFloat4(&pVertices[i].vUp);
+			currentRotation.r[2] = XMLoadFloat4(&pVertices[i].vLook);
+
+			// 새로운 회전 적용
+			_matrix newRotation = XMMatrixMultiply(currentRotation, rotationMatrix);
+
+			// 회전 결과를 VTXMATRIX에 저장
+			XMStoreFloat4(&pVertices[i].vRight, newRotation.r[0]);
+			XMStoreFloat4(&pVertices[i].vUp, newRotation.r[1]);
+			XMStoreFloat4(&pVertices[i].vLook, newRotation.r[2]);
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
+HRESULT CVIBuffer_Instance_Point::Ready_Instance_ForGrass(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc)
+{
+	vector<_float4x4*> WorldMats = InstanceDesc.WorldMats;
+	m_iNumInstance = WorldMats.size();
+
+	// 기존 인스턴스 버퍼 해제
+	Safe_Release(m_pVBInstance);
+
+	// 새로운 인스턴스 버퍼 생성
+	m_InstanceBufferDesc.ByteWidth = m_iInstanceStride * m_iNumInstance;
+	m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_InstanceBufferDesc.MiscFlags = 0;
+	m_InstanceBufferDesc.StructureByteStride = m_iInstanceStride;
+
+	VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_iNumInstance];
+	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_iNumInstance);
+
+	for (size_t i = 0; i < m_iNumInstance; ++i)
+	{
+		// _float4x4*를 XMMATRIX로 변환
+		XMMATRIX worldMatrix = XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(WorldMats[i]));
+
+		// XMMATRIX의 각 행을 XMVECTOR로 추출
+		XMVECTOR row0 = worldMatrix.r[0];
+		XMVECTOR row1 = worldMatrix.r[1];
+		XMVECTOR row2 = worldMatrix.r[2];
+		XMVECTOR row3 = worldMatrix.r[3];
+
+		// XMVECTOR를 VTXMATRIX의 각 멤버에 저장
+		XMStoreFloat4(&pInstanceVertices[i].vRight, row0);
+		XMStoreFloat4(&pInstanceVertices[i].vUp, row1);
+		XMStoreFloat4(&pInstanceVertices[i].vLook, row2);
+		XMStoreFloat4(&pInstanceVertices[i].vTranslation, row3);
+	}
+
+	D3D11_SUBRESOURCE_DATA SubResourceData;
+	ZeroMemory(&SubResourceData, sizeof SubResourceData);
+	SubResourceData.pSysMem = pInstanceVertices;
+
+	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &SubResourceData, &m_pVBInstance)))
+	{
+		Safe_Delete_Array(pInstanceVertices);
+		return E_FAIL;
+	}
+
+	Safe_Delete_Array(pInstanceVertices);
+
+	// 기존 데이터 해제
+	Safe_Delete_Array(m_pSpeeds);
+	Safe_Delete_Array(m_pOriginalSpeed);
+	Safe_Delete_Array(m_pOriginalPositions);
+	Safe_Delete_Array(m_pOriginalGravity);
+	Safe_Delete_Array(m_pSize);
+	Safe_Delete_Array(m_pOriginalSize);
+
+	// 새로운 데이터 할당
+	m_pSpeeds = new _float[m_iNumInstance];
+	m_pOriginalSpeed = new _float[m_iNumInstance];
+	m_pOriginalPositions = new _float3[m_iNumInstance];
+	m_pOriginalGravity = new _float[m_iNumInstance];
+	m_pSize = new _float[m_iNumInstance];
+	m_pOriginalSize = new _float[m_iNumInstance];
+
+	// 새로운 데이터 초기화
+	for (size_t i = 0; i < m_iNumInstance; ++i)
+	{
+		m_pSpeeds[i] = 0.f;
+		m_pOriginalSpeed[i] = 0.f;
+		m_pOriginalPositions[i] = _float3((*WorldMats[i])._41, (*WorldMats[i])._42, (*WorldMats[i])._43);
+		m_pOriginalGravity[i] = 0.f;
+		m_pSize[i] = 1.f;
+		m_pOriginalSize[i] = 1.f;
+	}
+
+	return S_OK;
+}
 CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Instance_Point* pInstance = new CVIBuffer_Instance_Point(pDevice, pContext);

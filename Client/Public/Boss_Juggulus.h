@@ -13,8 +13,10 @@ class CBoss_Juggulus final : public CMonster
 #define STATUECOUNT 3
 
 public:
-	enum STATE { STATE_IDLE_FIRST = 0, STATE_IDLE_SEC, STATE_NEXTPHASE, STATE_CREATE_HAMMER,
-		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_DEAD, STATE_GROGGY, STATE_END };
+	enum STATE {
+		STATE_IDLE_FIRST = 0, STATE_IDLE_SEC, STATE_NEXTPHASE, STATE_CREATE_HAMMER,
+		STATE_FLAME_ATTACK, STATE_HAMMER_ATTACK, STATE_SPHERE_ATTACK, STATE_THUNDER_ATTACK, STATE_TORNADO_ATTACK, STATE_DEAD, STATE_GROGGY, STATE_END
+	};
 	enum PHASE { PHASE_ONE, PHASE_TWO, PHASE_END };
 
 private:
@@ -44,7 +46,7 @@ public:
 
 private:
 	_bool							m_isHammerCreate = { false };
-	_bool							m_isAttackDone = { true }; 
+	_bool							m_isAttackDone = { true };
 	_bool							m_isPhaseChanged = { false };
 	_bool							m_isHandOne_On = { false };
 	_bool							m_isHandTwo_On = { false };
@@ -89,12 +91,13 @@ private:
 	NodeStates			FlameAttack(_float fTimeDelta);
 	NodeStates			SphereAttack(_float fTimeDelta);
 	NodeStates			ThunderAttack(_float fTimeDelta);
+	NodeStates			TornadoAttack(_float fTimeDelta);
 
 
 
 public:
-	static CBoss_Juggulus*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*	Clone(void* pArg) override;
+	static CBoss_Juggulus* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
 	virtual void			Free() override;
 };
 

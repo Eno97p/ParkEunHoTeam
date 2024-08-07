@@ -562,8 +562,12 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    if (vShadow.a != 0.f)
-        vColor = vector(vColor.rgb * 0.5f, 1.f);
+    if (vShadow.r != 0.f)
+    {
+        vShadow.a = vShadow.r;
+        vShadow.rgb = float3(0.f, 0.f, 0.f);
+        vColor = lerp(vColor, (vShadow + vColor) * 0.5f, vShadow.a);
+    }
     Out.vColor = vColor;
 
 
@@ -705,10 +709,10 @@ PS_OUT PS_DISTORTION(PS_IN In)
     //if (dist < distortionRadius)
     //{
         // 파동 효과 적용: 사인 함수를 사용하여 텍스처 좌표를 변형
-        distortedTex = float2(
-            In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
-            In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
-        );
+    distortedTex = float2(
+        In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
+        In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
+    );
     //}
 
     // 변형된 텍스처 좌표로 기본 텍스처 샘플링
@@ -765,6 +769,18 @@ PS_OUT PS_FINAL(PS_IN In)
     }
 
     Out.vColor /= float(NumSamples);
+
+    if (g_fMirror != 0.f)
+    {
+        Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
+    }
+    else if (g_fBRIS > 0.09f)
+    {
+        Out.vColor = float4(lerp(Out.vColor.r, 1.f - Out.vColor.r, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.g, 1.f - Out.vColor.g, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.b, 1.f - Out.vColor.b, (g_fBRIS - 0.09f) * 18.f),
+            1.f);
+    }
 
     return Out;
 }
@@ -843,7 +859,7 @@ PS_OUT PS_FINAL3(PS_IN In)
         In.vTexcoord.x = In.vTexcoord.x - (maskColor.g + maskColor.b) * g_fMirror * value;
         In.vTexcoord.y = In.vTexcoord.y - (maskColor.g + maskColor.b) * g_fMirror * value;
     }
-    
+
     if (In.vTexcoord.x > 1.f)
     {
         In.vTexcoord.x = 2.f - In.vTexcoord.x;
@@ -925,10 +941,10 @@ PS_OUT PS_DOWNSAMPLE4X4(PS_IN In)
     //Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     for (int i = 0; i < 4; ++i)
     {
-       for (int j = 0; j < 4; ++j)
-       {
-          Out.vColor += g_DiffuseTexture.Sample(LinearSampler, saturate(In.vTexcoord + float2(-1.5f + i, -1.5f + j) / float2(g_fTexW, g_fTexH)));
-       }
+        for (int j = 0; j < 4; ++j)
+        {
+            Out.vColor += g_DiffuseTexture.Sample(LinearSampler, saturate(In.vTexcoord + float2(-1.5f + i, -1.5f + j) / float2(g_fTexW, g_fTexH)));
+        }
     }
     Out.vColor /= 16.f;
     return Out;
@@ -940,10 +956,10 @@ PS_OUT PS_DOWNSAMPLE5X5(PS_IN In)
     //Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     for (int i = 0; i < 5; ++i)
     {
-       for (int j = 0; j < 5; ++j)
-       {
-          Out.vColor += g_DiffuseTexture.Sample(LinearSampler, saturate(In.vTexcoord + float2(-2.f + i, -2.f + j) / float2(g_fTexW, g_fTexH)));
-       }
+        for (int j = 0; j < 5; ++j)
+        {
+            Out.vColor += g_DiffuseTexture.Sample(LinearSampler, saturate(In.vTexcoord + float2(-2.f + i, -2.f + j) / float2(g_fTexW, g_fTexH)));
+        }
     }
     Out.vColor /= 25.f;
     return Out;
@@ -972,7 +988,7 @@ PS_OUT PS_BLURX(PS_IN In)
         for (int i = -6; i < 7; ++i)
         {
             vUV = In.vTexcoord + float2(1.f / g_fTexW * i, 0);
-            if(vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
                 Out.vColor += g_EffectTexture.Sample(LinearSampler, vUV);
         }
 
@@ -980,38 +996,38 @@ PS_OUT PS_BLURX(PS_IN In)
     }
     else if (g_BlurNum == 1)
     {
-       for (int i = -6; i < 7; ++i)
-       {
-          vUV = In.vTexcoord + float2(1.f / g_fTexW * i, 0);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight[6 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -6; i < 7; ++i)
+        {
+            vUV = In.vTexcoord + float2(1.f / g_fTexW * i, 0);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight[6 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= g_fTotal;
+        Out.vColor /= g_fTotal;
     }
     // 시행횟수 1/2 적용
     else if (g_BlurNum == 2)
     {
-       for (int i = -13; i < 13; ++i)
-       {
-          vUV = In.vTexcoord + float2(1.f / g_fTexW * i * 2.f, 0);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight2[26 + i * 2] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -13; i < 13; ++i)
+        {
+            vUV = In.vTexcoord + float2(1.f / g_fTexW * i * 2.f, 0);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight2[26 + i * 2] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= g_fTotal * 0.8f;
+        Out.vColor /= g_fTotal * 0.8f;
     }
     // 시행횟수 1/10 적용
     else if (g_BlurNum == 3)
     {
-       for (int i = -13; i < 13; ++i)
-       {
-          vUV = In.vTexcoord + float2(1.f / g_fTexW * i * 10.f, 0);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight3[130 + i * 10] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -13; i < 13; ++i)
+        {
+            vUV = In.vTexcoord + float2(1.f / g_fTexW * i * 10.f, 0);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight3[130 + i * 10] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= g_fTotal * 0.8f;
+        Out.vColor /= g_fTotal * 0.8f;
     }
     //Out.vColor = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -1037,36 +1053,36 @@ PS_OUT PS_BLURY(PS_IN In)
     }
     else if (g_BlurNum == 1)
     {
-       for (int i = -6; i < 7; ++i)
-       {
-          vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight[6 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -6; i < 7; ++i)
+        {
+            vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight[6 + i] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= 3;
+        Out.vColor /= 3;
     }
     else if (g_BlurNum == 2)
     {
-       for (int i = -13; i < 13; ++i)
-       {
-          vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i * 2.f);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight2[26 + i * 2.f] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -13; i < 13; ++i)
+        {
+            vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i * 2.f);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight2[26 + i * 2.f] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= g_fTotal * 0.8f;
+        Out.vColor /= g_fTotal * 0.8f;
     }
     else if (g_BlurNum == 3)
     {
-       for (int i = -13; i < 13; ++i)
-       {
-          vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i * 10.f);
-          if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
-            Out.vColor += g_fWeight3[130 + i * 10.f] * g_EffectTexture.Sample(LinearSampler, vUV);
-       }
+        for (int i = -13; i < 13; ++i)
+        {
+            vUV = In.vTexcoord + float2(0, 1.f / g_fTexH * i * 10.f);
+            if (vUV.x >= 0.f && vUV.x <= 1.f && vUV.y >= 0.f && vUV.y <= 1.f)
+                Out.vColor += g_fWeight3[130 + i * 10.f] * g_EffectTexture.Sample(LinearSampler, vUV);
+        }
 
-       Out.vColor /= g_fTotal * 0.8f;
+        Out.vColor /= g_fTotal * 0.8f;
     }
     //Out.vColor = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 

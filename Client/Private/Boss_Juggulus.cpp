@@ -7,16 +7,17 @@
 #include "Juggulus_HandOne.h"
 #include "Juggulus_HandTwo.h"
 #include "Juggulus_HandThree.h"
+#include "EffectManager.h"
 
 #include "UIGroup_BossHP.h"
 
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{pDevice, pContext}
+	: CMonster{ pDevice, pContext }
 {
 }
 
 CBoss_Juggulus::CBoss_Juggulus(const CBoss_Juggulus& rhs)
-	: CMonster{rhs}
+	: CMonster{ rhs }
 {
 }
 
@@ -64,12 +65,12 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayerTransform);
 
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
-	_uint i = 0; 
-	for(auto iter : StatueList)
+	_uint i = 0;
+	for (auto iter : StatueList)
 	{
 		m_pBossStatues[i++] = dynamic_cast<CBossStatue*>(iter);
 	}
-	
+
 	m_bPlayerIsFront = true;
 
 	return S_OK;
@@ -109,7 +110,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 		m_fCurHp = 10.f;
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-	
+
 	if (m_ePhase == PHASE_TWO)
 	{
 		// 플레이어 무기와 몬스터의 충돌 여부
@@ -127,7 +128,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
-	} 
+	}
 
 	//m_pPhysXCom->Tick(fTimeDelta);
 
@@ -180,7 +181,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
-	m_vInitialPos = { -450.f , 56.f ,-5.f, 1.f};
+	m_vInitialPos = { -450.f , 56.f , -5.f, 1.f };
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
 	PhysXDesc.fJumpSpeed = 10.f;
@@ -275,6 +276,7 @@ HRESULT CBoss_Juggulus::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("FlameAttack"), bind(&CBoss_Juggulus::FlameAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("SphereAttack"), bind(&CBoss_Juggulus::SphereAttack, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("ThunderAttack"), bind(&CBoss_Juggulus::ThunderAttack, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("TwoP_Attack"), TEXT("TornadoAttack"), bind(&CBoss_Juggulus::TornadoAttack, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -532,7 +534,7 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 	{
 		m_iState = STATE_IDLE_FIRST;
 	}
-	else if(PHASE_TWO == m_ePhase)
+	else if (PHASE_TWO == m_ePhase)
 	{
 		m_iState = STATE_IDLE_SEC;
 	}
@@ -542,12 +544,12 @@ NodeStates CBoss_Juggulus::Idle(_float fTimeDelta)
 NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 {
 	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState
-		|| STATE_HAMMER_ATTACK == m_iState)
+		|| STATE_HAMMER_ATTACK == m_iState || STATE_TORNADO_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
 
-	_int iRand = RandomInt(0, 3);
+	_int iRand = RandomInt(0, 4);
 	switch (iRand)
 	{
 	case 0:
@@ -562,14 +564,17 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 	case 3:
 		m_iState = STATE_THUNDER_ATTACK;
 		break;
+	case 4:
+		m_iState = STATE_TORNADO_ATTACK;
+		break;
 	}
-	m_iState = STATE_THUNDER_ATTACK;
 	return SUCCESS;
 }
 
 NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 {
-	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
+	if (PHASE_ONE == m_ePhase || STATE_FLAME_ATTACK == m_iState || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState
+		|| STATE_TORNADO_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -591,7 +596,7 @@ NodeStates CBoss_Juggulus::HammerAttack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)
 {
-	if (PHASE_ONE == m_ePhase || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState)
+	if (PHASE_ONE == m_ePhase || STATE_SPHERE_ATTACK == m_iState || STATE_THUNDER_ATTACK == m_iState || STATE_TORNADO_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -627,7 +632,7 @@ NodeStates CBoss_Juggulus::SphereAttack(_float fTimeDelta)
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE_SEC;
-			
+
 			return SUCCESS;
 		}
 		return RUNNING;
@@ -640,7 +645,7 @@ NodeStates CBoss_Juggulus::SphereAttack(_float fTimeDelta)
 
 NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 {
-	if (PHASE_ONE == m_ePhase)
+	if (PHASE_ONE == m_ePhase || STATE_TORNADO_ATTACK == m_iState)
 	{
 		return FAILURE;
 	}
@@ -665,18 +670,46 @@ NodeStates CBoss_Juggulus::ThunderAttack(_float fTimeDelta)
 	}
 }
 
+NodeStates CBoss_Juggulus::TornadoAttack(_float fTimeDelta)
+{
+	if (PHASE_ONE == m_ePhase)
+	{
+		return FAILURE;
+	}
+
+	if (m_iState == STATE_TORNADO_ATTACK)
+	{
+		if (m_isAnimFinished)
+		{
+			_float4 TorPos;
+			XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			TorPos.x += 43.f;
+			TorPos.y -= 3.f;
+			TorPos.z += 4.f;
+			EFFECTMGR->Generate_Tornado(0, TorPos, m_pPlayer);
+			m_iState = STATE_IDLE_SEC;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+	else
+	{
+		return FAILURE;
+	}
+}
+
 
 
 CBoss_Juggulus* CBoss_Juggulus::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CBoss_Juggulus*		pInstance = new CBoss_Juggulus(pDevice, pContext);
-	
+	CBoss_Juggulus* pInstance = new CBoss_Juggulus(pDevice, pContext);
+
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed To Created : CBoss_Juggulus");
 		Safe_Release(pInstance);
 	}
-	
+
 	return pInstance;
 }
 

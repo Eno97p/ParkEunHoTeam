@@ -190,6 +190,7 @@
     <ClInclude Include="..\Public\Body_Juggulus.h" />
     <ClInclude Include="..\Public\Body_Legionnaire.h" />
     <ClInclude Include="..\Public\Body_LGGun.h" />
+    <ClInclude Include="..\Public\Body_Malkhel.h" />
     <ClInclude Include="..\Public\Body_Player.h" />
     <ClInclude Include="..\Public\Body_Rlya.h" />
     <ClInclude Include="..\Public\Body_Valnir.h" />
@@ -370,6 +371,7 @@
     <ClInclude Include="..\Public\Weapon_Ghost.h" />
     <ClInclude Include="..\Public\Weapon_Homonculus.h" />
     <ClInclude Include="..\Public\Weapon_Legionnaire.h" />
+    <ClInclude Include="..\Public\Weapon_Malkhel.h" />
     <ClInclude Include="..\public\Weapon_Mantari.h" />
     <ClInclude Include="..\Public\Map_Element.h" />
     <ClInclude Include="..\public\Monster.h" />
@@ -443,6 +445,7 @@
     <ClCompile Include="..\Private\Body_Juggulus.cpp" />
     <ClCompile Include="..\Private\Body_Legionnaire.cpp" />
     <ClCompile Include="..\Private\Body_LGGun.cpp" />
+    <ClCompile Include="..\Private\Body_Malkhel.cpp" />
     <ClCompile Include="..\Private\Body_Player.cpp" />
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
     <ClCompile Include="..\Private\Body_Valnir.cpp" />
@@ -619,6 +622,7 @@
     <ClCompile Include="..\Private\Weapon_Ghost.cpp" />
     <ClCompile Include="..\Private\Weapon_Homonculus.cpp" />
     <ClCompile Include="..\Private\Weapon_Legionnaire.cpp" />
+    <ClCompile Include="..\Private\Weapon_Malkhel.cpp" />
     <ClCompile Include="..\private\Weapon_Mantari.cpp" />
     <ClCompile Include="..\Private\Map_Element.cpp" />
     <ClCompile Include="..\private\Monster.cpp" />

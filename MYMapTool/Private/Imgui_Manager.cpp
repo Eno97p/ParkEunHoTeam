@@ -630,6 +630,9 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
         static float LeafCol[3] = { 0.0f, 0.0f, 0.0f };
 
+        static float BillboardFactor = 0.f;
+        static float ElasticityFactor = 0.f;
+
         if (item_current == 0)
         {
             ImGui::ColorEdit3("Top Color", TopCol);
@@ -637,6 +640,12 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
             m_TopCol = { TopCol[0], TopCol[1], TopCol[2] };
             m_BotCol = { BotCol[0], BotCol[1], BotCol[2] };
+
+            ImGui::SliderFloat("Billboard Factor", &BillboardFactor, 0.f, 1.f, "%.6f");
+            m_fBillboardFactor = BillboardFactor;   
+            
+            ImGui::SliderFloat("Elasticity Factor", &ElasticityFactor, 0.f, 1.f, "%.6f");
+            m_fElasticityFactor = ElasticityFactor;
         }
         else
         {
@@ -1010,7 +1019,7 @@ void CImgui_Manager::Load_Lights()
         m_LightsDataPath = L"../Bin/MapData/LightsData/Juggulas_Lights.dat";
         break;
     case STAGE_BOSS:
-        m_LightsDataPath = L"../Bin/MapData/LightsData/Stage4_Lights.dat";
+        m_LightsDataPath = L"../Bin/MapData/LightsData/GrassLand_Lights.dat";
         break;
     default:
         MSG_BOX("Setting File Name is Failed");

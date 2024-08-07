@@ -32,6 +32,8 @@ private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 
+	void Check_Collision();
+	void Broken_Wall();
 
 private:
 	CModel* m_pModelCom = nullptr;

@@ -706,6 +706,21 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel">
       <UniqueIdentifier>{d0eaf09d-66ea-4aa9-956a-e8f4b61b7ad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lazer">
+      <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado">
+      <UniqueIdentifier>{182b1577-a31a-4fd3-b2f8-b88ff8baa5eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\MalkhelSword">
+      <UniqueIdentifier>{8b67b8eb-1f89-4b5c-afa4-71733913dba3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body">
+      <UniqueIdentifier>{c000afbf-5735-4064-bc42-464125050740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern">
+      <UniqueIdentifier>{eff48dd8-a8e2-4f8b-ac18-ec5f896e3b85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1370,18 +1385,6 @@
     <ClInclude Include="Import_Class.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UI_UpCompletedBG.h">
       <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
     </ClInclude>
@@ -1462,6 +1465,51 @@
     </ClInclude>
     <ClInclude Include="..\Public\Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Malkhel.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\MalkhelSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Malkhel.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Grass.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2101,18 +2149,6 @@
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Lightning</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp">
-      <Filter>02.GameObjects\06.Effect\Tornado</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UI_UpCompletedBG.cpp">
       <Filter>02.GameObjects\07. UI\Up_Completed\BG</Filter>
     </ClCompile>
@@ -2193,6 +2229,51 @@
     </ClCompile>
     <ClCompile Include="..\Private\Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Malkhel.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\MalkhelSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Malkhel.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Grass.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2284,6 +2365,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTreasureChest.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

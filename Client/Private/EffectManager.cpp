@@ -60,6 +60,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Heal");
 		return E_FAIL;
 	}
+	if (FAILED(Load_Lazers()))
+	{
+		MSG_BOX("FAILED_Load_Lazer");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -237,6 +242,23 @@ HRESULT CEffectManager::Generate_HealEffect(const _int iIndex, const _float4x4* 
 		pDesc->ParentMat = BindMat;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_HealEffect"), pDesc);
+	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Lazer(const _int iIndex, const _float4x4* BindMat)
+{
+	if (iIndex >= m_Lazers.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Desc = m_Lazers[iIndex].get();
+		Desc->ShooterMat = BindMat;
+		CGameInstance::GetInstance()->Add_CloneObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("LayerLazer"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
 	}
 	return S_OK;
 }
@@ -482,6 +504,31 @@ HRESULT CEffectManager::Load_Heals()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Lazers()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Lazer.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CAndrasLazer::ANDRAS_LAZER_TOTALDESC readFile{};
+		inFile.read((char*)&readFile, sizeof(CAndrasLazer::ANDRAS_LAZER_TOTALDESC));
+		readFile.ShooterMat = nullptr;
+		shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC> StockValue = make_shared<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>(readFile);
+		m_Lazers.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -549,6 +596,37 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CHeal_Line::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Andras_LazerBase"),
+		CAndrasLazerBase::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Andras_LazerCylinder"),
+		CAndrasLazerCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Andras_Screw"),
+		CAndrasScrew::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ElectricCylinder"),
+		CElectricCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_AndrasRain"),
+		CAndrasRain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_AndrasLazerSpawner"),
+		CAndrasLazer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_LazerCast"),
+		CLazerCast::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ShieldShpere"),
+		CShieldSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	return S_OK;
 }
 

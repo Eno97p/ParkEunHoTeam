@@ -1006,6 +1006,33 @@ void CRenderer::Render_Shadow_Result()
 
     if (FAILED(m_pGameInstance->End_MRT()))
         return;
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+
+    _uint iBlurNum = 0;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shadow_Result"), m_pShader, "g_EffectTexture");
+
+    m_pShader->Begin(12);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
+
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX"), m_pShader, "g_EffectTexture");
+
+    m_pShader->Begin(13);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();
 }
 
 void CRenderer::Render_DeferredResult()
@@ -1096,7 +1123,7 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
         return;
 
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shadow_Result"), m_pShader, "g_ShadowTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_ShadowTexture")))
         return;
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))

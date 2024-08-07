@@ -110,8 +110,8 @@ HRESULT CPhysXComponent_Character::Initialize(void* pArg)
 
 	m_OutDesc.pController = m_pController;
 #endif
-
-
+	
+	
 
 
 

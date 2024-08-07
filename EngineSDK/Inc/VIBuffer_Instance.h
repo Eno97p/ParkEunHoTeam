@@ -1,8 +1,7 @@
 #pragma once
-
 #include "VIBuffer.h"
-
 BEGIN(Engine)
+class CVIBuffer_Terrain;
 
 class ENGINE_DLL CVIBuffer_Instance abstract : public CVIBuffer
 {
@@ -75,8 +74,10 @@ public:
 	virtual void Blow(_float fTimeDelta);
 	
 
+	//For Grass
 	void Initial_RotateY();
-
+	vector<_float4x4*> Get_VtxMatrices();
+	//virtual void Setup_Onterrain(CVIBuffer_Terrain* pTerrain);
 	void Excute_Trail(_float fTimeDelta);
 
 

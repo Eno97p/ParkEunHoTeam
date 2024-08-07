@@ -506,9 +506,13 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			fAnimSpeed = 2.f;
 		}
+		else if (m_iPastAnimIndex == 151 && m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f))
+		{
+			fAnimSpeed = 1.f;
+		}
 		else
 		{
-			fAnimSpeed = 1.5f;
+			fAnimSpeed = 1.5f; // 1.5
 		}
 
 		m_pModelCom->Set_LerpTime(1.2);
@@ -521,7 +525,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK) // 고치는 중 <<<<<<<<<<<<<
+	else if (*m_pState == CPlayer::STATE_RCHARGEATTACK)
 	{
 		if (m_iPastAnimIndex < 131 || m_iPastAnimIndex > 136)
 		{
@@ -531,21 +535,14 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
 		if (m_iPastAnimIndex == 134)
 		{
-			/*if (m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f))
-			{
-				fAnimSpeed = 2.5f;
-			}
-			else*//* if (m_pModelCom->Get_Ratio_Betwin(0.3f, 1.f))
+			if (m_pModelCom->Get_Ratio_Betwin(0.3f, 0.5f))
 			{
 				fAnimSpeed = 1.f;
 			}
 			else
 			{
-				fAnimSpeed = 2.5f;
-			}*/
-
-			fAnimSpeed = 2.5f;
-
+				fAnimSpeed = 3.f; // 2.5 
+			}
 		}
 		else if (m_iPastAnimIndex == 131)
 		{
@@ -560,7 +557,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
-		else if (m_iPastAnimIndex > 131)
+		else if (m_iPastAnimIndex > 131) 
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}

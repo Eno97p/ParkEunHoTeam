@@ -54,7 +54,7 @@ void CBlastWall::Tick(_float fTimeDelta)
 		return;
 	//dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
 
-	PxController* pController = dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
+	PxController* pController = dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->Get_Controller();
 
 	PxCapsuleController* pCapsuleController = static_cast<PxCapsuleController*>(pController);
 	PxCapsuleGeometry capsuleGeom(pCapsuleController->getRadius(), pCapsuleController->getHeight() * 0.5f);

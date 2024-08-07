@@ -36,6 +36,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Body_LGGun.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Body_Malkhel.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Body_Player.cpp"
 
 
@@ -103,6 +106,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Ghost.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Grass.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Homonculus.cpp"
@@ -201,7 +207,25 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\AndrasLazer.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\AndrasLazer_Base.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\AndrasLazer_Cylinder.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\AndrasRain.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\ElectricCylinder.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Electronic.cpp"
@@ -220,6 +244,12 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\LazerCast.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\ShieldSphere.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\TornadoEffect.cpp"
@@ -559,6 +589,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Legionnaire.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Weapon_Malkhel.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\Weapon_Mantari.cpp"

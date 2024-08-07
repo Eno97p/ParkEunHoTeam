@@ -322,6 +322,9 @@
     <ClInclude Include="..\Public\Swing_Spiral.h">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LazerCast.h">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -506,6 +509,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Swing_Spiral.cpp">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LazerCast.cpp">
+      <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

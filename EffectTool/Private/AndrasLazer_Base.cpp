@@ -46,6 +46,8 @@ void CAndrasLazerBase::Priority_Tick(_float fTimeDelta)
 
 void CAndrasLazerBase::Tick(_float fTimeDelta)
 {
+	_matrix WorldMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
+
 	m_fCurLifeTime += fTimeDelta;
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
@@ -62,10 +64,8 @@ void CAndrasLazerBase::Tick(_float fTimeDelta)
 		CurSize = XMVectorLerp(CurSize, LerpSize, 0.5f);
 		XMStoreFloat3(&m_CurrentSize, CurSize);
 	}
-
-	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
 	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
-
+	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
 }
 
 void CAndrasLazerBase::Late_Tick(_float fTimeDelta)

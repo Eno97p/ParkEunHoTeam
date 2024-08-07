@@ -706,6 +706,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel">
       <UniqueIdentifier>{d0eaf09d-66ea-4aa9-956a-e8f4b61b7ad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lazer">
+      <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1463,6 +1466,30 @@
     <ClInclude Include="..\Public\Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2193,6 +2220,30 @@
     </ClCompile>
     <ClCompile Include="..\Private\Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

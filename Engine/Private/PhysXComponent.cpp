@@ -698,7 +698,7 @@ void CPhysXComponent::MakeFilterData(PxFilterData& filterData)
 		PxU32 numShapes = m_pActor->getNbShapes();
 		PxShape** shapes = new PxShape* [numShapes];
 		m_pActor->getShapes(shapes, numShapes);
-
+		
 		for (PxU32 i = 0; i < numShapes; i++)
 		{
 			shapes[i]->setSimulationFilterData(filterData);

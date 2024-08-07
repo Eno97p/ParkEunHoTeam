@@ -77,8 +77,17 @@ void CUserErrorCallBack::reportError(PxErrorCode::Enum code, const char* message
 		break;
 	}
 
+	std::wstring wideFile = std::wstring(file, file + strlen(file));
 
-	std::wstring output = errorType + L": " + wideMessage + L"\n";
+	std::wstring wideLine = std::to_wstring(line);
+
+	// 최종 출력 문자열 생성
+	std::wstring output = errorType + L": " + wideMessage + L"\n"
+		L"File: " + wideFile + L"\n"
+		L"Line: " + wideLine + L"\n";
+
+
+	//std::wstring output = errorType + L": " + wideMessage + L"\n";
 	OutputDebugString(output.c_str());
 
 }

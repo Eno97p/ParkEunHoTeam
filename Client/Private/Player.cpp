@@ -168,7 +168,7 @@ void CPlayer::Tick(_float fTimeDelta)
 		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		vParticlePos.y += 1.f;
 		EFFECTMGR->Generate_Particle(10, vParticlePos);
-	}
+	} 
 
 
 }
@@ -2166,7 +2166,7 @@ void CPlayer::OnShapeHit(const PxControllerShapeHit& hit)
 {
 	// 
 	const char* Test = hit.actor->getName();
-
+	hit.actor->userData;
 	PxFilterData hitObjectFilterData = hit.shape->getSimulationFilterData();
 	// 충돌한 객체가 무기(검)인 경우
 	if (hitObjectFilterData.word0 & CollisionGropuID::GROUP_WEAPON)
@@ -2202,7 +2202,7 @@ bool CPlayer::OnFilterCallback(const PxController& Caller, const PxController& O
 	void* Test = Caller.getUserData();
 	void* temp1 = Ohter.getUserData();
 	
-	return true;
+	return true;			//현재는 무조건 충돌 허용 특정 상황일 때 충돌을 안 시킬거면 false
 	
 }
 

@@ -333,10 +333,12 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 		{
 			PxVehicleCommandValueResponseTable responseTable;
 			responseTable.commandValue = 1.00f;
-			responseTable.speedResponses.addPair(1.0f, 1.00f);
+			responseTable.speedResponses.addPair(0.0f, 1.00f);
 			responseTable.speedResponses.addPair(20.0f, 1.00f);
 			responseTable.speedResponses.addPair(60.0f, 0.0f);
+			
 			nonLinearResponse.addResponse(responseTable);
+			
 		}
 
 	}
@@ -372,7 +374,7 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 	
 	m_pVehicleSimulationContext.gravity = m_pGameInstance->GetScene()->getGravity();
 	m_pVehicleSimulationContext.physxScene = m_pGameInstance->GetScene();
-	m_pVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_VELOCITY;
+	m_pVehicleSimulationContext.physxActorUpdateMode = PxVehiclePhysXActorUpdateMode::eAPPLY_ACCELERATION;
 	
 #ifdef _DEBUG
 	m_OutDesc.pPhysXActorVehicle = m_pPhysXActorVehicle;

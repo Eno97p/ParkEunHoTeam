@@ -36,6 +36,9 @@
 #include "C:\Real3DProject\Client\Private\Body_LGGun.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Body_Malkhel.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Body_Player.cpp"
 
 
@@ -103,6 +106,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\Ghost.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Grass.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\Homonculus.cpp"
@@ -201,7 +207,25 @@
 #include "C:\Real3DProject\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasLazer.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasLazer_Base.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasLazer_Cylinder.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasRain.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\ElectricCylinder.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Electronic.cpp"
@@ -220,6 +244,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Heal_Spiral.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\LazerCast.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\ShieldSphere.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\TornadoEffect.cpp"
@@ -559,6 +589,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\Weapon_Legionnaire.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\Weapon_Malkhel.cpp"
 
 
 #include "C:\Real3DProject\Client\private\Weapon_Mantari.cpp"

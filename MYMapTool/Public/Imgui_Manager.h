@@ -72,6 +72,8 @@ public:
 
 	_float3 Get_GrassTopCol() { return m_TopCol; }
 	_float3 Get_GrassBotCol() { return m_BotCol; }
+
+	_float Get_BillboardFactor() { return m_fBillboardFactor; }
 	_float3 Get_LeafCol() { return m_LeafCol; }
 	_bool Get_TreeBloom() { return m_bTreeBloom; }
 
@@ -206,6 +208,8 @@ private:
 private:
 	_float3				m_TopCol = { 0.f, 1.f, 0.f };
 	_float3				m_BotCol = { 0.f, 0.f, 0.f };
+	_float				m_fBillboardFactor = { 0.f};
+	_float				m_fElasticityFactor = { 0.f};
 	_float3				m_LeafCol = { 0.f, 0.f, 0.f };
 
 	_float3 m_GlobalWindDir = _float3(1.0f, 0.0f, 0.5f);

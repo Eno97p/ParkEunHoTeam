@@ -147,7 +147,7 @@ void CUIGroup_Weapon::Update_EquipSlot_Add(_uint iEquipSlotIdx)
 {
 	// 이미 ItemIcon이 있는 경우 해당 ItemIcon에 대한 값을 비활성화 하고 새로운 ItemIcon으로 갈아끼우는 예외 처리가 필요
 
-
+	
 
 
 

@@ -170,7 +170,13 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pDesc.eDropItemName = eItemType;
 			m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-			// UI 출력
+
+			CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
+
+			// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
+			CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
+
+			// UI DropItem 출력
 			CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
 			pUIDesc.eLevel = LEVEL_STATIC;
 
@@ -180,11 +186,6 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
-
-			CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
-
-			// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
-			CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
 		}
 	}
 
@@ -263,7 +264,7 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 	m_arrEquipWeapon[iEquipSlotIdx] = pItemData;
 
 	// Weapon Equip Slot UI에 출력
-	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx);
+	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx); // 여기서 지워지넹
 
 	// HUD
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName(), CUIGroup_WeaponSlot::SLOT_WEAPON);
@@ -339,7 +340,6 @@ HRESULT CInventory::Delete_Item(CItemData* pItemData)
 			// Quick에 장착 중이었다면 그 또한 제거해주어야 함
 			if ((*item)->Get_isEquip())
 			{
-				// i 가 현재 Inventory 슬롯 인덱스일랑가? 아니엇던 거 같음; 중간에 넣을 수 있도록 만들었던 듯.
 				map<_uint, CItemData*>::iterator quickItem = m_mapQuickAccess.begin();
 				for (size_t j = 0; j < m_mapQuickAccess.size(); ++j)
 				{
@@ -399,13 +399,26 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 		break;
 	}
 
+
+	// UI 출력
+	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+	pUIDesc.eLevel = LEVEL_STATIC;
+
 	vector<CItemData*>::iterator item = m_vecItem.begin();
+
 	for (size_t i = 0; i < m_vecItem.size(); ++i)
 	{
 		if (eItemName == (*item)->Get_ItemName()) // 이름이 일치하는 것이 있다면
 		{
 			// 여기서 해당 ItemData에 중복 처리를 해주는 것이?
 			(*item)->Set_Count(1);
+
+			// UI DropItem 출력
+			CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+			pUIDesc.eLevel = LEVEL_STATIC;
+			pUIDesc.eItemName = (*item)->Get_ItemName();
+			pUIDesc.wszTextureName = (*item)->Get_TextureName();
+			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 			return true;
 		}

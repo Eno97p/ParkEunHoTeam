@@ -45,7 +45,9 @@ void CSimulationCallBack::onContact(const PxContactPairHeader& pairHeader, const
 
 void CSimulationCallBack::OnCollisionEnter(const PxContactPairHeader& pairHeader, const PxContactPair& cp)
 {
+const char* Test = 	pairHeader.actors[0]->getName();
 
+int test = 0;
 }
 
 void CSimulationCallBack::OnCollisionStay(const PxContactPairHeader& pairHeader, const PxContactPair& cp)

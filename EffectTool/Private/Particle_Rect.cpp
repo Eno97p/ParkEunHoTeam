@@ -111,6 +111,9 @@ void CParticle_Rect::Tick(_float fTimeDelta)
 	case UP_TO_STOP:
 		m_pVIBufferCom->Up_To_Stop(fTimeDelta);
 		break;
+	case ONLY_UP:
+		m_pVIBufferCom->Only_Up(fTimeDelta);
+		break;
 	}
 }
 

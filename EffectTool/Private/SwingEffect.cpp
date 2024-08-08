@@ -31,8 +31,19 @@ HRESULT CSwingEffect::Initialize(void* pArg)
 	WorldMat.r[2] = XMVector4Normalize(WorldMat.r[2]);
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
 
-	if (FAILED(Add_Child_Effects()))
-		return E_FAIL;
+	m_OwnDesc->VaneDesc.ParentMatrix = m_OwnDesc->ParentMat;
+	m_OwnDesc->RibbonDesc.ParentMatrix = m_OwnDesc->ParentMat;
+
+	m_OwnDesc->RibbonDesc.fMaxLifeTime = m_OwnDesc->VaneDesc.fMaxLifeTime;
+	m_OwnDesc->RibbonDesc.fSlowStrength = m_OwnDesc->VaneDesc.fSlowStrength;
+	m_OwnDesc->RibbonDesc.fThreadRatio = m_OwnDesc->VaneDesc.fThreadRatio;
+	m_OwnDesc->RibbonDesc.vOffset = m_OwnDesc->VaneDesc.vOffset;
+
+	CGameObject* Vane = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Vane"), &m_OwnDesc->VaneDesc);
+	m_EffectClasses.emplace_back(Vane);
+
+	CGameObject* Ribbon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ChargeRibbon"), &m_OwnDesc->RibbonDesc);
+	m_EffectClasses.emplace_back(Ribbon);
 
 	return S_OK;
 }
@@ -54,6 +65,12 @@ void CSwingEffect::Tick(_float fTimeDelta)
 
 	for (auto& iter : m_EffectClasses)
 		iter->Tick(fTimeDelta);
+
+	if (static_cast<Charge_Vane*>(m_EffectClasses[0])->Get_Effect_Dead()&& !m_EffectGenerated)
+	{
+		Add_Child_Effects();
+		m_EffectGenerated = true;
+	}
 }
 
 void CSwingEffect::Late_Tick(_float fTimeDelta)
@@ -72,14 +89,8 @@ HRESULT CSwingEffect::Add_Child_Effects()
 	m_OwnDesc->SpiralDesc.ParentMatrix = m_OwnDesc->ParentMat;
 
 	CGameObject* StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Swing_Spiral"), &m_OwnDesc->SpiralDesc);
-	m_EffectClasses.emplace_back(StockValue);
+	m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"), StockValue);
 
-	//
-	//StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HealEffect_Spiral"), &m_OwnDesc->SpiralDesc);
-	//m_EffectClasses.emplace_back(StockValue);
-
-	//StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_HealEffect_Line"), &m_OwnDesc->LineDesc);
-	//m_EffectClasses.emplace_back(StockValue);
 	return S_OK;
 }
 

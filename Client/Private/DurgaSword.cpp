@@ -86,7 +86,7 @@ void CDurgaSword::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
-	Generate_Trail(0);
+	Generate_Trail(1);
 
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
 		*m_pState == CPlayer::STATE_SPECIALATTACK || *m_pState == CPlayer::STATE_SPECIALATTACK2 ||
@@ -314,6 +314,9 @@ HRESULT CDurgaSword::Bind_ShaderResources()
 	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
+	_float4 fDisolveColor = _float4(1.f, 0.f, 0.f, 1.f);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveColor", &fDisolveColor, sizeof(_float4))))
 		return E_FAIL;
 
 	return S_OK;

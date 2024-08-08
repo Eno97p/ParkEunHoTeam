@@ -530,6 +530,11 @@ void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
 	m_pRenderer->Set_FogOption(desc);
 }
 
+_vector CGameInstance::Get_FogColor()
+{
+	return m_pRenderer->Get_FogColor();
+}
+
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
 	return m_pPipeLine->Get_Transform_float4x4(eState);

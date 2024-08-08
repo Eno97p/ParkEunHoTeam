@@ -88,7 +88,7 @@ public:
 		m_vShadowFocus = vFocus;
 		m_fShadowThreshold = fThreshold;
 	}
-
+	_vector Get_FogColor() { return  XMLoadFloat4(&m_vFogColor); };
 	_vector Get_ShadowEye() { return m_vShadowEye; };
 	_vector Get_ShadowFocus() { return m_vShadowFocus; };
 

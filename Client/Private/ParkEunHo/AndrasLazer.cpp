@@ -1,5 +1,6 @@
 #include "AndrasLazer.h"
 #include "GameInstance.h"
+#include "EffectManager.h"
 CAndrasLazer::CAndrasLazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
@@ -29,7 +30,7 @@ HRESULT CAndrasLazer::Initialize(void* pArg)
 
 	m_OwnDesc->CastDesc.ParentMatrix = m_OwnDesc->ShooterMat;
 	LazerCast = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_LazerCast"), &m_OwnDesc->CastDesc);
-
+	EFFECTMGR->Generate_Particle(51, _float4(m_OwnDesc->ShooterMat->_41, m_OwnDesc->ShooterMat->_42 + 1.f, m_OwnDesc->ShooterMat->_43, 1.f));
 	return S_OK;
 }
 

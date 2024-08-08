@@ -32,7 +32,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 {
 	CLandObject::LANDOBJ_DESC* pDesc = (CLandObject::LANDOBJ_DESC*)pArg;
 
-	pDesc->fSpeedPerSec = MOVESPEED;
+	pDesc->fSpeedPerSec = MALKHELSPEED;
 	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
 
 	if (FAILED(__super::Initialize(pDesc)))
@@ -41,7 +41,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pPhysXCom->Set_Speed(MOVESPEED);
+	m_pPhysXCom->Set_Speed(MALKHELSPEED);
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;
@@ -173,7 +173,7 @@ void CMalkhel::Chase_Player(_float fTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
 	m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
-	m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
+	m_pPhysXCom->Go_Straight(fTimeDelta);
 }
 
 HRESULT CMalkhel::Add_Components()
@@ -268,12 +268,14 @@ HRESULT CMalkhel::Add_Nodes()
 	m_pBehaviorCom->Generate_Root(TEXT("Root"), CBehaviorTree::Sequence);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Root"), TEXT("Top_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Hit_Selector"), CBehaviorTree::Selector);
-	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Move_Selector"), CBehaviorTree::Selector);
+	m_pBehaviorCom->Add_Composit_Node(TEXT("Top_Selector"), TEXT("Attack_Selector"), CBehaviorTree::Selector);
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CMalkhel::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMalkhel::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMalkhel::Hit, this, std::placeholders::_1));
 
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CMalkhel::Move, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Chase"), bind(&CMalkhel::Chase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack1"), bind(&CMalkhel::Attack1, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack2"), bind(&CMalkhel::Attack2, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack3"), bind(&CMalkhel::Attack3, this, std::placeholders::_1));
@@ -344,6 +346,54 @@ NodeStates CMalkhel::Hit(_float fTimeDelta)
 	return FAILURE;
 }
 
+NodeStates CMalkhel::Move(_float fTimeDelta)
+{
+	if (m_iState == STATE_DASHBACK || m_iState == STATE_DASHRIGHT || m_iState == STATE_DASHLEFT)
+	{
+		if (m_fLengthFromPlayer > 8.f)
+		{
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			if (m_iState == STATE_DASHBACK)
+			{
+				m_pPhysXCom->Go_BackWard(fTimeDelta);
+			}
+			else if (m_iState == STATE_DASHRIGHT)
+			{
+				m_pPhysXCom->Go_Right(fTimeDelta);
+			}
+			else if (m_iState == STATE_DASHLEFT)
+			{
+				m_pPhysXCom->Go_Left(fTimeDelta);
+			}
+		}
+		return RUNNING;
+	}
+	return FAILURE;
+}
+
+NodeStates CMalkhel::Chase(_float fTimeDelta)
+{
+	if (m_iState == STATE_DASHFRONT)
+	{
+		if (m_fLengthFromPlayer < 3.f)
+		{
+			m_iState = STATE_IDLE;
+			return SUCCESS;
+		}
+		else
+		{
+			Chase_Player(fTimeDelta);
+		}
+		return RUNNING;
+	}
+	return FAILURE;
+}
+
 NodeStates CMalkhel::Attack1(_float fTimeDelta)
 {
 	if (m_iState == STATE_ATTACK1)
@@ -378,8 +428,36 @@ NodeStates CMalkhel::Attack3(_float fTimeDelta)
 {
 	if (m_iState == STATE_ATTACK3)
 	{
+		if (m_iTrippleAttackCount != 0)
+		{
+			m_fTrippleAttack -= fTimeDelta;
+		}
+		else
+		{
+			m_pPhysXCom->Set_Gravity(true);
+			m_fTrippleAttack = TRIPPLEATTACK + 1.f;
+		}
+
+		if (m_fTrippleAttack < 0.f && m_iTrippleAttackCount > 0)
+		{
+			m_fTrippleAttack = TRIPPLEATTACK;
+			m_iTrippleAttackCount--;
+		}
+		if (m_fTrippleAttack < TRIPPLEATTACK && m_fTrippleAttack > TRIPPLEATTACK * 0.5f)
+		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			m_pPhysXCom->Set_Gravity(false);
+			m_pPhysXCom->Set_JumpSpeed(UPSPEED);
+			m_pPhysXCom->Go_Up(fTimeDelta);
+		}
+		else if (m_fTrippleAttack < TRIPPLEATTACK * 0.5f && m_fTrippleAttack > 0.f)
+		{
+			m_pPhysXCom->Set_JumpSpeed(-DOWNSPEED);
+			m_pPhysXCom->Go_Up(fTimeDelta);
+		}
 		if (m_isAnimFinished)
 		{
+			m_iTrippleAttackCount = 3;
 			m_iState = STATE_IDLE;
 			m_bDashBack = false;
 			return SUCCESS;
@@ -408,8 +486,19 @@ NodeStates CMalkhel::Attack5(_float fTimeDelta)
 {
 	if (m_iState == STATE_ATTACK5)
 	{
+		m_fSpearAttack -= fTimeDelta;
+		if (m_fSpearAttack > 0.7f)
+		{
+			m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		}
+		else if(m_fSpearAttack > 0.f)
+		{
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+
 		if (m_isAnimFinished)
 		{
+			m_fSpearAttack = SPEARATTACK;
 			m_iState = STATE_IDLE;
 			m_bDashBack = false;
 			return SUCCESS;
@@ -451,34 +540,74 @@ NodeStates CMalkhel::Attack7(_float fTimeDelta)
 
 NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 {
-	if ((m_iState == STATE_DASHBACK && m_isAnimFinished) || !m_bDashBack)
+	if (!m_bDashBack)
 	{
 		m_fTurnDelay = 0.5f;
-		_uint i = RandomInt(0, 6);
 
-		switch (i)
+		if (m_fLengthFromPlayer > 10.f)
 		{
-		case 0:
-			m_iState = STATE_ATTACK1;
-			break;
-		case 1:
-			m_iState = STATE_ATTACK2;
-			break;
-		case 2:
-			m_iState = STATE_ATTACK3;
-			break;
-		case 3:
-			m_iState = STATE_ATTACK4;
-			break;
-		case 4:
-			m_iState = STATE_ATTACK5;
-			break;
-		case 5:
-			m_iState = STATE_ATTACK6;
-			break;
-		case 6:
-			m_iState = STATE_ATTACK7;
-			break;
+			m_iState = STATE_DASHFRONT;
+		}
+		else if (m_fLengthFromPlayer > 5.f)
+		{
+			_uint i = RandomInt(0, 4);
+
+			switch (i)
+			{
+			case 0:
+				m_iState = STATE_ATTACK1;
+				break;
+			case 1:
+				m_iState = STATE_ATTACK4;
+				break;
+			case 2:
+				m_iState = STATE_ATTACK5;
+				break;
+			case 3:
+				m_iState = STATE_ATTACK6;
+				break;
+			case 4:
+				m_iState = STATE_ATTACK7;
+				break;
+			}
+		}
+		else
+		{
+			_uint i = RandomInt(0, 9);
+
+			switch (i)
+			{
+			case 0:
+				m_iState = STATE_ATTACK1;
+				break;
+			case 1:
+				m_iState = STATE_ATTACK2;
+				break;
+			case 2:
+				m_iState = STATE_ATTACK3;
+				break;
+			case 3:
+				m_iState = STATE_ATTACK4;
+				break;
+			case 4:
+				m_iState = STATE_ATTACK5;
+				break;
+			case 5:
+				m_iState = STATE_ATTACK6;
+				break;
+			case 6:
+				m_iState = STATE_ATTACK7;
+				break;
+			case 7:
+				m_iState = STATE_DASHBACK;
+				break;
+			case 8:
+				m_iState = STATE_DASHLEFT;
+				break;
+			case 9:
+				m_iState = STATE_DASHRIGHT;
+				break;
+			}
 		}
 		return SUCCESS;
 	}

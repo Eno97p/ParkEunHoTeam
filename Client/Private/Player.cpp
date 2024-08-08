@@ -184,6 +184,10 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
+		_float4 vStartPosition;
+		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vStartPosition.y += 1.f;
+		EFFECTMGR->Generate_Particle(51, vStartPosition);
 		EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 	}
 }

@@ -145,6 +145,9 @@ void CParticleMesh::Tick(_float fTimeDelta)
 	case BLOW:
 		m_InstModelCom->Blow(fTimeDelta);
 		break;
+	case UP_TO_STOP:
+		m_InstModelCom->Up_To_Stop(fTimeDelta);
+		break;
 	}
 }
 

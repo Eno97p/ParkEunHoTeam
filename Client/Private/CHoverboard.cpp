@@ -5,6 +5,7 @@
 #include"GameInstance.h"
 
 #include"Camera.h"
+#include "EffectManager.h"
 
 CHoverboard::CHoverboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -57,6 +58,9 @@ HRESULT CHoverboard::Initialize(void* pArg)
 
 	m_fDisolveValue = 0.f;
 
+
+	HoverTrail = EFFECTMGR->Member_Trail(0, m_pTransformCom->Get_WorldFloat4x4());
+
 	return S_OK;
 }
 
@@ -82,6 +86,7 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 	default:
 		break;
 	}
+
 }
 
 void CHoverboard::Tick(_float fTimeDelta)
@@ -316,7 +321,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	//
 	m_pPhysXCom->Tick(fTimeDelta);
 
-	
+
 }
 
 void CHoverboard::Late_Tick(_float fTimeDelta)
@@ -338,6 +343,12 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 	_matrix worldMat = 	CPhysXComponent::Convert_PxTrans_To_DxMat(NewTransform);
 	m_pTransformCom->Set_WorldMatrix(worldMat);
 
+	if (HoverTrail != nullptr)
+		HoverTrail->Priority_Tick(fTimeDelta);
+	if (HoverTrail != nullptr)
+		HoverTrail->Tick(fTimeDelta);
+	if (HoverTrail != nullptr)
+		HoverTrail->Late_Tick(fTimeDelta);
 }
 
 HRESULT CHoverboard::Render()
@@ -498,4 +509,5 @@ void CHoverboard::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pDisolveTextureCom);
+	Safe_Release(HoverTrail);
 }

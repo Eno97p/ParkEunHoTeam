@@ -638,6 +638,11 @@ void CModel::Blow(_float fTimeDelta)
 	for (auto& iter : m_InstanseMesh)
 		iter->Blow(fTimeDelta);
 }
+void CModel::Up_To_Stop(_float fTimeDelta)
+{
+	for (auto& iter : m_InstanseMesh)
+		iter->Up_To_Stop(fTimeDelta);
+}
 #pragma endregion Effect
 
 _uint CModel::Get_Model_Vertices()

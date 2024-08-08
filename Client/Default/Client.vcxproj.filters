@@ -717,12 +717,15 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Broken">
       <UniqueIdentifier>{0c3900b6-4c0b-4f9a-a490-d97ebc0df39e}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
       <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
       <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Dash">
+      <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1516,10 +1519,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Broken.h">
       <Filter>02.GameObjects\07. UI\Broken</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Cloud.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClInclude>
@@ -2289,10 +2292,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Broken.cpp">
       <Filter>02.GameObjects\07. UI\Broken</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Cloud.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClCompile>

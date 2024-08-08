@@ -58,6 +58,7 @@ private:
 
 	map<string, CUIGroup*>	m_mapUIGroup;
 	class CUI_ScreenBlood*	m_pScreenBlood = { nullptr };
+	//vector<class CUI_Broken*>	m_vecBroken;
 	class CUI_Broken*		m_pBroken = { nullptr };
 
 private:

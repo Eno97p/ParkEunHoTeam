@@ -700,6 +700,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel">
       <UniqueIdentifier>{d0eaf09d-66ea-4aa9-956a-e8f4b61b7ad5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Lazer">
+      <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado">
       <UniqueIdentifier>{182b1577-a31a-4fd3-b2f8-b88ff8baa5eb}</UniqueIdentifier>
     </Filter>
@@ -1460,6 +1463,30 @@
     <ClInclude Include="..\Public\Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
+      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
     </ClInclude>
@@ -1480,6 +1507,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Grass.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
@@ -2244,6 +2274,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>

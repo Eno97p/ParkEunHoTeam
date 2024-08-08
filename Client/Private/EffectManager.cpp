@@ -25,11 +25,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("Failed_Ready_Prototype");
 		return E_FAIL;
 	}
-	//if (FAILED(Load_Trails()))
-	//{
-	//	MSG_BOX("FAILED_Load_Trail");
-	//	return E_FAIL;
-	//}
+	if (FAILED(Load_Trails()))
+	{
+		MSG_BOX("FAILED_Load_Trail");
+		return E_FAIL;
+	}
 	if (FAILED(Load_SwordTrails()))
 	{
 		MSG_BOX("FAILED_Load_SwordTrail");
@@ -78,10 +78,20 @@ HRESULT CEffectManager::Generate_Trail(const _int iIndex, const _float4x4* BindM
 
 	CParticle_Trail::TRAIL_DESC* traildesc = Trailes[iIndex].get();
 	traildesc->traildesc.ParentMat = BindMat;
-	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-		TEXT("Layer_Trail"), TEXT("Prototype_GameObject_Trail"), traildesc);
-
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Trail"), TEXT("Prototype_GameObject_Trail"), traildesc);
 	return S_OK;
+}
+
+CGameObject* CEffectManager::Member_Trail(const _int iIndex, const _float4x4* BindMat)
+{
+	if (iIndex >= Trailes.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	CParticle_Trail::TRAIL_DESC* traildesc = Trailes[iIndex].get();
+	traildesc->traildesc.ParentMat = BindMat;
+	return CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Trail"), traildesc);
 }
 
 HRESULT CEffectManager::Generate_SwordTrail(const _int iIndex, const _float4x4* Swordmat)
@@ -288,9 +298,8 @@ HRESULT CEffectManager::Load_Trails()
 		Load.read((char*)&readFile->fBloompower, sizeof(_float));
 		Load.read((char*)&readFile->Desolve, sizeof(_bool));
 		Load.read((char*)&readFile->Blur, sizeof(_bool));
-		Load.read((char*)&readFile->Alpha, sizeof(_bool));
+		Load.read((char*)&readFile->Bloom, sizeof(_bool));
 		Load.read((char*)&readFile->eFuncType, sizeof(TRAILFUNCTYPE));
-		Load.read((char*)&readFile->eUsage, sizeof(TRAIL_USAGE));
 		Load.read((char*)&readFile->DesolveNum, sizeof(_int));
 		readFile->Texture = load_wstring_from_stream(Load);
 		readFile->TexturePath = load_wstring_from_stream(Load);

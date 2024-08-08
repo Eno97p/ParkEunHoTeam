@@ -11,7 +11,7 @@
 #include "Andras.h"
 #include "ElectricCylinder.h"
 
-
+#include "HoverBoard.h"
 
 CImguiMgr::CImguiMgr()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
@@ -57,6 +57,8 @@ HRESULT CImguiMgr::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 
 	ModelName.emplace_back("Wander");
 	ModelName.emplace_back("Andras");
+	ModelName.emplace_back("HoverBoard");
+
 
 	return S_OK;
 }
@@ -126,6 +128,9 @@ void CImguiMgr::Model_Change()
 				break;
 			case 1:		//Andras
 				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_Andras"));
+				break;
+			case 2:		//HoverBoard
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_HoverBoard"));
 				break;
 			default:
 				break;
@@ -243,6 +248,12 @@ void CImguiMgr::Visible_Data()
 		{
 			CAndras* Andras = static_cast<CAndras*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
 			TrailMat = Andras->Get_WorldMat();
+			break;
+		}
+		case 2:
+		{
+			CHoverBoard* HoverBoard = static_cast<CHoverBoard*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy")));
+			TrailMat = HoverBoard->Get_WorldMat();
 			break;
 		}
 		default:
@@ -484,6 +495,11 @@ void CImguiMgr::EffectTool_Rework()
 	if (ImGui::RadioButton("Blow", parentsDesc.eType == BLOW))
 	{
 		parentsDesc.eType = BLOW;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Up_Slowly", parentsDesc.eType == UP_TO_STOP))
+	{
+		parentsDesc.eType = UP_TO_STOP;
 	}
 
 #pragma endregion FUNCTYPE
@@ -1013,6 +1029,9 @@ void CImguiMgr::Trail_Tool()
 	ImGui::SameLine();
 	if (ImGui::RadioButton("EternalTrail", classdesc.eFuncType == TRAIL_ETERNAL))
 		classdesc.eFuncType = TRAIL_ETERNAL;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("CatMulrom", classdesc.eFuncType == TRAIL_CATMULROM))
+		classdesc.eFuncType = TRAIL_CATMULROM;
 	
 	
 	ImGui::ColorEdit3("Start_Color", reinterpret_cast<float*>(&classdesc.vStartColor));
@@ -1195,6 +1214,7 @@ HRESULT CImguiMgr::Save_TrailList()
 		file.write((char*)&iter->fBloompower, sizeof(_float));
 		file.write((char*)&iter->Desolve, sizeof(_bool));
 		file.write((char*)&iter->Blur, sizeof(_bool));
+		file.write((char*)&iter->Bloom, sizeof(_bool));
 		file.write((char*)&iter->eFuncType, sizeof(TRAILFUNCTYPE));
 		file.write((char*)&iter->DesolveNum, sizeof(_int));
 		save_wstring_to_stream(iter->Texture, file);
@@ -1251,6 +1271,7 @@ HRESULT CImguiMgr::Load_TrailList()
 		inFile.read((char*)&readFile->fBloompower, sizeof(_float));
 		inFile.read((char*)&readFile->Desolve, sizeof(_bool));
 		inFile.read((char*)&readFile->Blur, sizeof(_bool));
+		inFile.read((char*)&readFile->Bloom, sizeof(_bool));
 		inFile.read((char*)&readFile->eFuncType, sizeof(TRAILFUNCTYPE));
 		inFile.read((char*)&readFile->DesolveNum, sizeof(_int));
 		readFile->Texture = load_wstring_from_stream(inFile);

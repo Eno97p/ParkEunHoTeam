@@ -287,7 +287,6 @@ CComponent* CVIBuffer_Instance_Point::Clone(void* pArg)
 
 void CVIBuffer_Instance_Point::Free()
 {
-
 	Safe_Delete_Array(m_pSpeeds);
 	Safe_Delete_Array(m_pOriginalSpeed);
 	Safe_Delete_Array(m_pOriginalPositions);

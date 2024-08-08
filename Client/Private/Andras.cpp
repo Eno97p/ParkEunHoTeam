@@ -287,6 +287,9 @@ HRESULT CAndras::Add_PartObjects()
 	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon4), 3);
 	dynamic_cast<CBody_Andras*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon5), 4);
 
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Andras-Head");
+	CGameObject* Head = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_AndrasHead"), &WeaponDesc);
+	m_PartObjects.emplace_back(Head);
 	return S_OK;
 }
 
@@ -743,7 +746,9 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			m_iState = STATE_SHOOTINGSTARATTACK;
 			break;
 		}
+
 		m_iState = STATE_LASERATTACK;
+
 		return SUCCESS;
 	}
 

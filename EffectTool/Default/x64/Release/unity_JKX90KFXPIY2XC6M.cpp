@@ -23,7 +23,22 @@
 #include "C:\NewRepo\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\AndrasHead.cpp"
+
+
+#include "C:\NewRepo\EffectTool\private\AndrasLazer.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\AndrasLazer_Base.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\AndrasLazer_Cylinder.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\AndrasRain.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\AndrasScrew.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\AndrasSword1.cpp"
@@ -47,13 +62,43 @@
 #include "C:\NewRepo\EffectTool\Private\Distortion_Effect.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\ElectricCylinder.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\Electronic.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\FireEffect.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\FirePillar.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\FirePillarEffect.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\FirePillar_Bottom.cpp"
+
+
+#include "C:\NewRepo\EffectTool\private\HealEffect.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Line.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Ribbon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Heal_Spiral.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\HoverBoard.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\LazerCast.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\Level_GamePlay.cpp"
@@ -110,7 +155,28 @@
 #include "C:\NewRepo\EffectTool\Private\QuarterCamera.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\ShieldSphere.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\SwingEffect.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Swing_Spiral.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\TextureFrame.cpp"
+
+
+#include "C:\NewRepo\EffectTool\private\TornadoEffect.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\TornadoWind.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Tornado_Ring.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Tornado_Root.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\Weapon.cpp"

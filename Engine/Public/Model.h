@@ -25,6 +25,7 @@ private:
 	CModel(const CModel& rhs);
 	virtual ~CModel() = default;
 
+#pragma region PARTICLE_FUNCTION
 public:														//파티클 함수들
 	void Spread(_float fTimeDelta);
 	void Drop(_float fTimeDelta);
@@ -44,6 +45,8 @@ public:														//파티클 함수들
 	void Spiral_Expansion(_float fTimeDelta);
 	void Lenz_Flare(_float fTimeDelta);
 	void Blow(_float fTimeDelta);
+	void Up_To_Stop(_float fTimeDelta);
+#pragma endregion PARTICLE_FUNCTION
 
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 

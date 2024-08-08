@@ -15,13 +15,13 @@ class CHoverboard final : public CGameObject
 {
 public:
 	enum DISOLVETYPE { TYPE_IDLE, TYPE_INCREASE, TYPE_DECREASE, TYPE_END };
-	struct HoverboardInfo
+	typedef	struct HoverboardInfo : public GAMEOBJECT_DESC
 	{
 		_float3 vRight =	{ 1.0f,0.0f,0.0f };
 		_float3 vUp =		{ 0.0f,1.0f,0.0f };
 		_float3 vLook =		{ 0.0f,0.0f,1.0f };
 		_float3 vPosition = { 0.0f,0.0f,0.0f };
-	};
+	}HoverboardInfo;
 private:
 	CHoverboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CHoverboard(const CHoverboard& rhs);

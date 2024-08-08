@@ -1002,7 +1002,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 #pragma endregion Npc
 
 
-	PreTransformMatrix = XMMatrixScaling(0.002f, 0.002f, 0.002f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fragile_Rock"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Fragile_Rock/Fragile_Rock.fbx", PreTransformMatrix))))
 		return E_FAIL;
@@ -2751,6 +2751,16 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 
 
 #pragma endregion DECAL
+
+
+	PreTransformMatrix = XMMatrixScaling(0.002f, 0.002f, 0.002f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Fragile_Rock"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Fragile_Rock/Fragile_Rock.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+
 
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Navigation"),

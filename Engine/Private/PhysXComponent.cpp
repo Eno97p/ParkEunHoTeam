@@ -65,7 +65,7 @@ HRESULT CPhysXComponent::Initialize(void * pArg)
 		PxFilterData filterData = pDesc->filterData;
 
 
-		PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix);
+		PxTransform pxTrans = Convert_DxMat_To_PxTrans(pDesc->fWorldMatrix,&m_fScale);
 		PxTransform pxOffsetTrans = Convert_DxMat_To_PxTrans(pDesc->fOffsetMatrix);
 
 		m_pMaterial = m_pGameInstance->GetPhysics()->createMaterial(pDesc->fMatterial.x, pDesc->fMatterial.y, pDesc->fMatterial.z);
@@ -718,7 +718,10 @@ tuple<vector<PxVec3>, vector<PxU32>> CPhysXComponent::CreateTriangleMeshDesc(voi
 	vector<PxVec3> vecVertices(pMesh->Get_NumVertex());
 	for(_uint i = 0; i < pMesh->Get_NumVertex(); ++i)
 	{
-		vecVertices[i] = PxVec3(pMesh->Get_Vertices()[i].vPosition.x, pMesh->Get_Vertices()[i].vPosition.y, pMesh->Get_Vertices()[i].vPosition.z);
+		vecVertices[i] = PxVec3(
+			pMesh->Get_Vertices()[i].vPosition.x * m_fScale.x,
+			pMesh->Get_Vertices()[i].vPosition.y * m_fScale.y,
+			pMesh->Get_Vertices()[i].vPosition.z * m_fScale.z);
 
 	}
 
@@ -789,7 +792,7 @@ __super::Free();
 
 }
 
-PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix)
+PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix, _float3* fSclae)
 {
 
 
@@ -797,6 +800,8 @@ PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMat
 	_vector vScale, vRotation, vPosition;
 	XMMatrixDecompose(&vScale, &vRotation, &vPosition, XMLoadFloat4x4(&pWorldMatrix));
 
+	if(fSclae!=nullptr)
+		XMStoreFloat3(fSclae, vScale);
 
 	_float4 fPos;
 	XMStoreFloat4(&fPos, vPosition);
@@ -805,8 +810,11 @@ PxTransform CPhysXComponent::Convert_DxMat_To_PxTrans(const _float4x4& pWorldMat
 	XMStoreFloat4(&fRotQuat, vRotation);
 	PxQuat fRot = PxQuat(fRotQuat.x, fRotQuat.y, fRotQuat.z, fRotQuat.w);
 
-	PxTransform pxTrans = PxTransform(PxVec3(fPos.x, fPos.y, fPos.z), fRot);
 
+
+
+	PxTransform pxTrans = PxTransform(PxVec3(fPos.x, fPos.y, fPos.z), fRot);
+	
 	return pxTrans;
 }
 

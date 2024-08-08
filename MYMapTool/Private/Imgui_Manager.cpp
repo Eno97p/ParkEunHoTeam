@@ -558,8 +558,18 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "UnderRoofFilling", 
             "RotateGate",
             "Fragile Rock",
-            "SkyDome test"
+            "SkyDome test",
 
+            "Cathedral",
+            "Espadon_Station",
+            "GrassLand_Ruins",
+            "Tower_Ruins",
+            "Bastion",
+            "MetalGrid2",
+            "Hoverboard_Track",
+            "Hoverboard_Track_Pillar",
+            "GrassLand_Arch",
+            "Meteore"
 
         };
         ImGui::ListBox("###Obj", &item_current, items_MapElement, IM_ARRAYSIZE(items_MapElement)); // item_current 변수에 선택 값 저장
@@ -1722,7 +1732,7 @@ void CImgui_Manager::Fog_Editor()
     }
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Fog Range");
-    if (ImGui::SliderFloat("##FogRange", &fogDesc.fFogRange, 0.0f, 3000.0f, "%.1f"))
+    if (ImGui::SliderFloat("##FogRange", &fogDesc.fFogRange, 0.0f, 30000.0f, "%.1f"))
     {
         if (autoUpdateFog)
             m_pGameInstance->Set_FogOption(fogDesc);

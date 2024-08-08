@@ -104,6 +104,7 @@ public:
 
 	//이민영 추가 240727 2106PM
 	void Set_FogOption(CRenderer::FOG_DESC desc);
+	_vector Get_FogColor();
 
 public: /* For.PipeLine */
 	const _float4x4* Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState);

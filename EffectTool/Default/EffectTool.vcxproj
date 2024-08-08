@@ -128,6 +128,10 @@
       <AdditionalDependencies>Engine.lib;DirectXTexd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>8388608</StackReserveSize>
     </Link>
+    <PreBuildEvent>
+      <Command>cd /d $(SolutionDir)
+call Copy_EffectTool.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -148,6 +152,10 @@
       <AdditionalLibraryDirectories>../../EngineSDK/Lib/;../Lib/;../../EngineSDK/Lib/Blast/Release/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;DirectXTex.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>cd /d $(SolutionDir)
+call Copy_EffectTool.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Backend\imgui_impl_dx11.h" />

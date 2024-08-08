@@ -931,7 +931,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Set_MotionBlur(true);
 	}
-	else
+	else if(*m_pState != CPlayer::STATE_SLIDE)
 	{
 		m_pGameInstance->Set_MotionBlur(false);
 	}
@@ -1090,7 +1090,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_DISTORTION, this);
-	}
+	}	
 	else
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);

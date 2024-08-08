@@ -20,7 +20,7 @@
 #include "Trap.h"
 #include "Item.h"
 
-
+#include "BlastWall.h"
 //
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -291,12 +291,80 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
 
 	CItem::ITEM_DESC desc;
-	for (int i = 0; i < arraySize; i++)
+	for (_uint i = 0; i < arraySize; i++)
 	{
 		desc.vPosition = fPosArray[i];
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
 			return E_FAIL;
 	}
+
+			 -63.043f, -0.08f, -1.715f 		;	
+			 -73.063f, -10.458f, -2.202f 	;
+			 -83.620f, 0.144f, -2.700f 		;
+			 -102.285f, 0.098f, -2.700f 	;
+			 -133.776f, -5.287f, -1.712f 	;
+			 -140.611f, -5.343f, -2.091f 	;
+			 -144.392f, -5.325f, -1.826f 	;
+			 -167.43f, 0.348f, -2.02f 		;
+			 -171.177f, 0.446f, -1.988f 	;
+	
+
+	//나중에 바이너리로 채워서 만들기
+	_float Average = -0.5f;
+	_matrix fWorldMatrixArray[] = {
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) * 
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) * 
+		XMMatrixTranslation(-63.1f  + Average , -0.06f, -1.715f) } ,				//1번째 Balst Wall
+
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-73.063f + Average, -10.458f, -2.202f) } ,		//2번째 Balst Wall
+
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-83.620f + Average, 0.144f, -2.700f) } ,		//3번째 Balst Wall
+
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-102.285f + Average, 0.098f, -2.700f) } ,		//4번째 Balst Wall
+
+			{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-133.776f + Average, 0.07f, -1.712f) } ,		//5번째 Balst Wall
+
+			{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-140.611f + Average, 0.043f, -2.091f) } ,		//6번째 Balst Wall
+
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f))*
+		XMMatrixTranslation(-144.392f + Average, -5.325f, -1.826f) } ,		//7번째 Balst Wall
+
+	
+
+		{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		XMMatrixTranslation(-167.43f + Average, 0.348f, -2.02f) } ,		//8번째 Balst Wall
+
+		//{ XMMatrixScaling(0.2f, 0.2f, 0.2f) *
+		//XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(0.f), XMConvertToRadians(0.f)) *
+		//XMMatrixTranslation(-171.177f + Average, 0.446f, -1.988f) } ,		//9번째 Balst Wall
+
+
+	};
+
+	arraySize = sizeof(fWorldMatrixArray) / sizeof(_matrix);
+
+	CBlastWall::CBlastWall_DESC BlastWallDesc;
+	for (_uint i = 0; i < arraySize; i++)
+	{
+		XMStoreFloat4x4(&BlastWallDesc.fWorldMatrix, fWorldMatrixArray[i]);
+		//BlastWallDesc.mWorldMatrix = fWorldMatrix[i];
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"), &BlastWallDesc)))
+			return E_FAIL;
+	}
+	
+
 
 
 

@@ -113,8 +113,6 @@ void CRushSword::Tick(_float fTimeDelta)
 			m_pPlayer->PlayerHit(10);
 		}
 	}
-
-	Generate_Trail(5);
 }
 
 void CRushSword::Late_Tick(_float fTimeDelta)

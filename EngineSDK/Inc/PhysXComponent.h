@@ -101,7 +101,7 @@ private:
 
 	_float3 m_fBoxProperty = { 0.f, 0.f, 0.f };
 	_float2 m_fCapsuleProperty = { 0.f, 0.f };
-
+	_float3 m_fScale = { 1.f, 1.f, 1.f };
 #ifdef _DEBUG
 
 	PhysX_Editable_Desc m_OutDesc;
@@ -115,7 +115,7 @@ public:
 
 
 public:
-	static PxTransform Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix);
+	static PxTransform Convert_DxMat_To_PxTrans(const _float4x4& pWorldMatrix, _float3* fSclae =nullptr);
 	static XMMATRIX Convert_PxTrans_To_DxMat(const PxTransform& pTrans);
 	static PxVec4 Convert_XMVec4_To_PxVec4(const _vector pXMVec4);
 	static XMVECTOR Convert_PxVec4_To_XMVec4(const PxVec4& pPxVec4);

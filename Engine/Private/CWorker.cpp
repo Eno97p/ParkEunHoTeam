@@ -5,29 +5,29 @@ CWorker::CWorker(size_t iNumThreadPool)
 	: m_ThreadCount(iNumThreadPool)
 	, m_bIsShutdown(false)
 {
-
+	
 }
 
 
-
-template<typename T, typename... Args>
-auto CWorker::Add_Job(T&& Func, Args&&...args) -> future<decltype(Func(args...))>
-{
-	using return_type = decltype(Func(args...));
-	auto job=make_shared<packaged_task<return_type()>>(bind(forward<T>(Func), forward<Args>(args)...));
-	future<return_type> result = job->get_future();
-
-	{
-		lock_guard<mutex> lock(m_JobMutex);
-		m_Jobs.push([job]() {(*job)(); });
-
-
-	}
-
-	m_condition.notify_one();
-
-	return result;
-}
+//
+//template<typename T, typename... Args>
+//auto CWorker::Add_Job(T&& Func, Args&&...args) -> future<decltype(Func(args...))>
+//{
+//	using return_type = decltype(Func(args...));
+//	auto job=make_shared<packaged_task<return_type()>>(bind(forward<T>(Func), forward<Args>(args)...));
+//	future<return_type> result = job->get_future();
+//
+//	{
+//		lock_guard<mutex> lock(m_JobMutex);
+//		m_Jobs.push([job]() {(*job)(); });
+//
+//
+//	}
+//
+//	m_condition.notify_one();
+//
+//	return result;
+//}
 
 
 void CWorker::Shutdown()

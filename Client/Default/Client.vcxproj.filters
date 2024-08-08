@@ -717,12 +717,15 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Broken">
       <UniqueIdentifier>{0c3900b6-4c0b-4f9a-a490-d97ebc0df39e}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
       <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
       <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.SavePoint">
+      <UniqueIdentifier>{4ed1a5b4-83e4-47e9-a85a-00875473acfa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1516,10 +1519,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Broken.h">
       <Filter>02.GameObjects\07. UI\Broken</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Cloud.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClInclude>
@@ -1546,6 +1549,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SavePoint.h">
+      <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2289,10 +2295,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Broken.cpp">
       <Filter>02.GameObjects\07. UI\Broken</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Cloud.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClCompile>
@@ -2319,6 +2325,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SavePoint.cpp">
+      <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

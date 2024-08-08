@@ -22,7 +22,25 @@ private:
 public:
 	//move()함수를 찾아 볼 것
 	template<typename T, typename... Args>
-	auto Add_Job(T&& Func, Args&&... args) -> future<decltype(Func(args...))>;	//후행 반환 타입 선언		//함수의 반환 타입을 함수 선언뒤에 명시 할 수 있게 해줌
+	auto Add_Job(T&& Func, Args&&... args) -> future<decltype(Func(args...))>	//후행 반환 타입 선언		//함수의 반환 타입을 함수 선언뒤에 명시 할 수 있게 해줌
+	{
+		using return_type = decltype(Func(args...));
+		auto job = make_shared<packaged_task<return_type()>>(bind(forward<T>(Func), forward<Args>(args)...));
+		future<return_type> result = job->get_future();
+
+		{
+			lock_guard<mutex> lock(m_JobMutex);
+			m_Jobs.push([job]() {(*job)(); });
+
+
+		}
+
+		m_condition.notify_one();
+
+		return result;
+	}
+
+
 	//우측값 참조 //완벽한 전달 패턴	
 	//future: 비동기 프로그래밍을 위한 템플릿 클래스
 	//스레드 풀이나 작업 큐애서 유용하게 사용

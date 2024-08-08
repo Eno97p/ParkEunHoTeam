@@ -279,6 +279,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\RushSword.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\SavePoint.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\SideViewCamera.cpp"
 
 

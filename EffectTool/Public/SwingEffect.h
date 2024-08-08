@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "Effect_Define.h"
 #include "Swing_Spiral.h"
+#include "Charge_Vane.h"
+#include "Charge_Ribbon.h"
 
 BEGIN(Effect)
 class CSwingEffect final : public CGameObject
@@ -12,6 +14,8 @@ public:
 		_float fLifeTime = 0.f;
 		const _float4x4* ParentMat = nullptr;
 		CSwing_Spiral::SWING_SPIRAL SpiralDesc{};
+		Charge_Vane::VANE_DESC		VaneDesc{};
+		Charge_Ribbon::LARGE_RIBBON RibbonDesc{};
 	};
 
 private:
@@ -32,6 +36,9 @@ private:
 private:
 	shared_ptr<SWINGEFFECT>			m_OwnDesc;
 	vector<CGameObject*>			m_EffectClasses;
+
+private:
+	_bool							m_EffectGenerated = false;
 
 public:
 	static CSwingEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

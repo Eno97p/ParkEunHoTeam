@@ -420,17 +420,17 @@ HRESULT CRenderer::Initialize()
         float currentX = startX;
         float currentY = startY;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Move"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+        //   return E_FAIL;
+        //currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Result"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
+        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+        //    return E_FAIL;
+        //currentX += targetWidth + gap;
 
 
 
@@ -1448,8 +1448,8 @@ void CRenderer::Render_Bloom()
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
 
     
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
-	//m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
+	//m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
+	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
 	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
 
     m_pShader->Begin(11);
@@ -1884,7 +1884,6 @@ void CRenderer::Render_Debug()
 
     m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
-
 
 
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);

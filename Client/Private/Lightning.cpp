@@ -59,7 +59,7 @@ void CLightning::Tick(_float fTimeDelta)
 	{
 		_float4 vPos;
 		XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		vPos.y -= 8.f;
+		vPos.y -= 10.f;
 		EFFECTMGR->Generate_Lightning(0, vPos);
 		m_pGameInstance->Erase(this);
 	}

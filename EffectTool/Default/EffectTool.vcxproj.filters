@@ -125,6 +125,9 @@
     <Filter Include="Objects\05. Monster\HoverBoard">
       <UniqueIdentifier>{489a8cb1-2389-49ad-a798-9df08a0c0edd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster\HoverBoard\Booster">
+      <UniqueIdentifier>{2c59ed9a-6809-4559-9679-1086b500a6ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -331,6 +334,12 @@
     <ClInclude Include="..\Public\HoverBoard.h">
       <Filter>Objects\05. Monster\HoverBoard</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Charge_Vane.h">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Charge_Ribbon.h">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -521,6 +530,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\HoverBoard.cpp">
       <Filter>Objects\05. Monster\HoverBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Charge_Vane.cpp">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Charge_Ribbon.cpp">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

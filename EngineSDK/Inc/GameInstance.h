@@ -8,7 +8,7 @@
 #include "PipeLine.h"
 
 BEGIN(Engine)
-
+class CWorker;
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)
@@ -193,7 +193,12 @@ public: // For OctTree
 
 public:	// For Worker
 	template<typename T, typename... Args>
-	void AddWork(T&& Func, Args&&... args);
+	auto  AddWork(T&& Func, Args&&... args) -> future<decltype(Func(args...))>
+	{
+		
+			return 	m_pWorker->Add_Job(Func, args...);
+		
+	}
 
 public:
 	_float4 Get_PlayerPos() { return m_fPlayerPos; }
@@ -234,7 +239,7 @@ private:
 
 	class COctTree*				m_pOctTree = { nullptr };
 
-	class CWorker*				m_pWorker = { nullptr };
+	 CWorker*				m_pWorker = { nullptr };
 	class CRenderWorker*		m_pRenderWorker = { nullptr };
 
 	_float4 m_fPlayerPos;

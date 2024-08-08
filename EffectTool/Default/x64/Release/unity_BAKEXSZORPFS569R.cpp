@@ -59,6 +59,12 @@
 #include "C:\NewRepo\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\Charge_Ribbon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Charge_Vane.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Distortion_Effect.cpp"
 
 

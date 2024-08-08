@@ -75,6 +75,9 @@
 #include "C:\NewRepo\Client\Private\Clone.cpp"
 
 
+#include "C:\NewRepo\Client\Private\Cloud.cpp"
+
+
 #include "C:\NewRepo\Client\Private\Decal.cpp"
 
 
@@ -328,6 +331,9 @@
 
 
 #include "C:\NewRepo\Client\Private\UI_Activate.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_Broken.cpp"
 
 
 #include "C:\NewRepo\Client\Private\UI_Ch_UpgradeBtn.cpp"

@@ -223,6 +223,23 @@ HRESULT CPhysXComponent_Character::Render()
 }
 #endif // _DEBUG
 
+HRESULT CPhysXComponent_Character::Go_Up(_float fTimeDelta)
+{
+	_vector vTransformUp = m_pTransform->Get_State(CTransform::STATE_UP);
+	_float3 fUp;
+	XMStoreFloat3(&fUp, vTransformUp);
+
+	PxVec3 moveVector = PxVec3(fUp.x, fUp.y, fUp.z) * m_fJumpSpeed * fTimeDelta;
+
+	PxControllerFilters filters;
+	filters.mCCTFilterCallback = m_pCCTFilerCallBack;
+	PxControllerCollisionFlags flags = m_pController->move(moveVector, 0.001f, fTimeDelta, filters, nullptr);
+
+
+
+	return S_OK;
+}
+
 HRESULT CPhysXComponent_Character::Go_Straight(_float fTimeDelta)
 {
 	_vector vTransformLook = m_pTransform->Get_State(CTransform::STATE_LOOK);

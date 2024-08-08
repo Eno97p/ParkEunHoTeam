@@ -4,6 +4,7 @@
 
 
 #include"GameInstance.h"
+#include "EffectManager.h"
 
 CBlastWall::CBlastWall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -112,6 +113,12 @@ void CBlastWall::Tick(_float fTimeDelta)
 
 				if (bIsHit)
 				{
+					//
+					_float4 ParticlePos;
+					XMStoreFloat4(&ParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+					EFFECTMGR->Generate_Particle(26, ParticlePos);
+					EFFECTMGR->Generate_Particle(56, ParticlePos, nullptr, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
+					EFFECTMGR->Generate_Particle(56, ParticlePos);
 					Broken_Wall();
 					m_bIsHit = true;
 
@@ -286,6 +293,7 @@ CBlastWall* CBlastWall::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	{
 		MSG_BOX("Failed To Created : CBlastWall");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 
 	return pInstance;
@@ -299,6 +307,7 @@ CGameObject* CBlastWall::Clone(void* pArg)
 	{
 		MSG_BOX("Failed To Cloned : CBlastWall");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 
 	return pInstance;

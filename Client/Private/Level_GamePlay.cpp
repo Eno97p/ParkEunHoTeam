@@ -20,7 +20,7 @@
 //#include "Grass.h"
 #include "Tree.h"
 #include "Decal.h"
-
+#include "SavePoint.h"
 #include "CHoverBoard.h"
 
 // test¿ë
@@ -308,8 +308,12 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	//	return E_FAIL;
 
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_TestPhysxCollider"))))
-	//	return E_FAIL;
+
+	CSavePoint::_tagSavePoint_Desc savePointDesc;
+	savePointDesc.vPosition = _float3(75.f, 523.f, 98.f);
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
+		return E_FAIL;
 	
 
 

@@ -408,21 +408,44 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK3)
 	{
-		if (m_iPastAnimIndex < 121 || m_iPastAnimIndex > 130)
+		//if (m_iPastAnimIndex < 121 || m_iPastAnimIndex > 130)
+		//{
+		//	m_iPastAnimIndex = 121;
+		//}
+		//AnimDesc.isLoop = false;
+		//AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		//if(m_iPastAnimIndex > 125 && m_iPastAnimIndex < 129)
+		//{
+		//	fAnimSpeed = 1.f;
+		//}
+		//else
+		//{
+		//	fAnimSpeed = 1.5f; // 2
+		//}
+		//if ((m_iPastAnimIndex > 122 && m_iPastAnimIndex < 126) || m_iPastAnimIndex > 128)
+		//{
+		//	m_pWeapon[*m_pCurWeapon]->Set_Active();
+		//}
+		//else
+		//{
+		//	m_pWeapon[*m_pCurWeapon]->Set_Active(false);
+		//}
+		if (m_iPastAnimIndex < 131 || m_iPastAnimIndex > 136)
 		{
-			m_iPastAnimIndex = 121;
+			m_iPastAnimIndex = 131;
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if(m_iPastAnimIndex > 125 && m_iPastAnimIndex < 129)
+		if (m_iPastAnimIndex == 134)
 		{
-			fAnimSpeed = 1.f;
+			fAnimSpeed = 3.f; // 2.5 
 		}
 		else
 		{
-			fAnimSpeed = 1.5f; // 2
+			fAnimSpeed = 1.5f; // 4
 		}
-		if ((m_iPastAnimIndex > 122 && m_iPastAnimIndex < 126) || m_iPastAnimIndex > 128)
+		m_pModelCom->Set_LerpTime(1.2);
+		if (m_iPastAnimIndex > 133)
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}
@@ -565,7 +588,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 		}
-
 	}
 	else if (*m_pState == CPlayer::STATE_LATTACK1)
 	{
@@ -984,11 +1006,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			m_iPastAnimIndex++;
 		}
-		// 스킬3
-		else if (*m_pState == CPlayer::STATE_SPECIALATTACK3 && AnimDesc.iAnimIndex == 124)
-		{
-			m_iPastAnimIndex += 2;
-		}
+		//// 스킬3
+		//else if (*m_pState == CPlayer::STATE_SPECIALATTACK3 && AnimDesc.iAnimIndex == 124)
+		//{
+		//	m_iPastAnimIndex += 2;
+		//}
 		// 우공격1
 		else if (AnimDesc.iAnimIndex >= 121 && AnimDesc.iAnimIndex < 125)
 		{

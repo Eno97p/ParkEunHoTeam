@@ -73,7 +73,7 @@ public:
 	virtual void Leaf_Fall(_float fTimeDelta);
 	virtual void Blow(_float fTimeDelta);
 	virtual void Up_To_Stop(_float fTimeDelta);
-	
+	virtual void Only_Up(_float fTimeDelta);
 
 	//For Grass
 	void Initial_RotateY();

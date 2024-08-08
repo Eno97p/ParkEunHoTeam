@@ -75,6 +75,9 @@
 #include "C:\3D_TeamProj\Client\Private\Clone.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\Cloud.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Decal.cpp"
 
 
@@ -207,6 +210,9 @@
 #include "C:\3D_TeamProj\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasHead.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasLazer.cpp"
 
 
@@ -325,6 +331,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Activate.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Broken.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Ch_UpgradeBtn.cpp"

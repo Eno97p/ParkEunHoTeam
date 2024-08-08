@@ -10,6 +10,7 @@ texture2D g_EmissiveTexture;
 texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
 texture2D g_DisolveTexture;
+float4 g_DisolveColor = float4(0.f, 1.f, 1.f, 1.f);
 
 float4 g_vCamPosition;
 
@@ -228,7 +229,7 @@ PS_OUT PS_WHISPERSWORD(PS_IN In)
 	}
 	else
 	{
-		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+		Out.vDiffuse = g_DisolveColor;
 	}
 
 	return Out;
@@ -401,7 +402,7 @@ PS_OUT PS_DISOLVE(PS_IN In)
 	}
 	else
 	{
-		Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+		Out.vDiffuse = g_DisolveColor;
 	}
 	
 
@@ -514,7 +515,7 @@ PS_OUT_COLOR PS_WHISPERSWORD_REFLECTION(PS_IN In)
 	}
 	else
 	{
-		Out.vColor.rgb = float3(0.f, 1.f, 1.f);
+		Out.vColor = g_DisolveColor;
 	}
 
 	return Out;

@@ -61,6 +61,11 @@ HRESULT CSky::Render()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
+	_float4 fogCol;
+	XMStoreFloat4(&fogCol, m_pGameInstance->Get_FogColor());
+	
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_FogColor", &fogCol, sizeof(_float4))))
+		return E_FAIL;
 
 	m_pShaderCom->Begin(0);
 

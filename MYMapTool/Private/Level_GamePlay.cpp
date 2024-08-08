@@ -39,8 +39,8 @@ HRESULT CLevel_GamePlay::Initialize()
     if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
         return E_FAIL;
 
-    /*if(FAILED(Ready_Layer_Terrain(TEXT("Layer_Terrain"))))
-        return E_FAIL;*/
+    if(FAILED(Ready_Layer_Terrain(TEXT("Layer_Terrain"))))
+        return E_FAIL;
 
     if (FAILED(Ready_LandObjects()))
         return E_FAIL;
@@ -227,7 +227,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pDesc.fFovy = XMConvertToRadians(60.f);
     pDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
     pDesc.fNear = 0.1f;
-    pDesc.fFar = 3000.f;
+    pDesc.fFar = 6000.f;
 
     pDesc.fSpeedPerSec = 40.f;
     pDesc.fRotationPerSec = XMConvertToRadians(90.f);

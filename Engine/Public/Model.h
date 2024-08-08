@@ -46,6 +46,7 @@ public:														//파티클 함수들
 	void Lenz_Flare(_float fTimeDelta);
 	void Blow(_float fTimeDelta);
 	void Up_To_Stop(_float fTimeDelta);
+	void Only_Up(_float fTimeDelta);
 #pragma endregion PARTICLE_FUNCTION
 
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환

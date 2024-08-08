@@ -71,6 +71,7 @@ private:
 	_bool m_bSprint = false;
 	_bool	m_bTrigger = false;
 	_bool m_bDashBack = false;
+	_bool m_bLaser = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fChasingDelay = 0.5f;

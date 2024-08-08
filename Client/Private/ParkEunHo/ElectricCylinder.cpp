@@ -1,13 +1,14 @@
 #include "ElectricCylinder.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CElectricCylinder::CElectricCylinder(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBlendObject(pDevice, pContext)
+	:CWeapon(pDevice, pContext)
 {
 }
 
 CElectricCylinder::CElectricCylinder(const CElectricCylinder& rhs)
-	:CBlendObject(rhs)
+	:CWeapon(rhs)
 {
 }
 
@@ -22,7 +23,7 @@ HRESULT CElectricCylinder::Initialize(void* pArg)
 		return E_FAIL;
 	m_OwnDesc = make_shared<ANDRAS_ELECTRIC_DESC>(*((ANDRAS_ELECTRIC_DESC*)pArg));
 
-	if (FAILED(__super::Initialize(nullptr)))
+	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -38,6 +39,12 @@ HRESULT CElectricCylinder::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(m_OwnDesc->vMaxSize.x, m_OwnDesc->vMaxSize.y, m_OwnDesc->vMaxSize.z);
 
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMConvertToRadians(RandomFloat(0.f, 360.f)));
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+
 	return S_OK;
 }
 
@@ -60,6 +67,40 @@ void CElectricCylinder::Tick(_float fTimeDelta)
 
 void CElectricCylinder::Late_Tick(_float fTimeDelta)
 {
+	m_fHitCoolTime -= fTimeDelta;
+	if (!m_bIsActive)
+	{
+		m_bIsActive = true;
+	}
+	if (m_fHitCoolTime < 0.f)
+	{
+		m_bIsActive = false;
+		m_fHitCoolTime = HITCOOLTIME;
+	}
+
+	_float4 fPos;
+	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	// 토네이도와 플레이어 충돌처리
+	if (m_bIsActive)
+	{
+		if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+	}
+	else
+	{
+		m_pColliderCom->Reset();
+	}
+
+#ifdef _DEBUG
+	if (m_bIsActive)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
+#endif
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -100,6 +141,17 @@ HRESULT CElectricCylinder::Render_Bloom()
 
 HRESULT CElectricCylinder::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_OBB;
+	ColliderDesc.vExtents = _float3(0.1f, 0.1f, 5.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Lazer_Lightning"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -183,4 +235,6 @@ void CElectricCylinder::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

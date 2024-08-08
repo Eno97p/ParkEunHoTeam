@@ -246,6 +246,21 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CElectronic::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Malkhel */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Malkhel"),
+		CMalkhel::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Malkhel */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Malkhel"),
+		CBody_Malkhel::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Weapon_Malkhel */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Malkhel"),
+		CWeapon_Malkhel::Create(pDevice, pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Mantari */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
 		CMantari::Create(pDevice, pContext))))
@@ -253,7 +268,7 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 
 	/* For.Prototype_GameObject_Body_Mantari */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Mantari"),
-		CBody_Mantari::Create(pDevice, pContext)))) // Á¶½ÉÇØ¶ó ±èº¸¹Î °¡¸¸¾ÈµÖ (±«µµ·çÆÎ)
+		CBody_Mantari::Create(pDevice, pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Weapon_Mantari */

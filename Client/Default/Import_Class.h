@@ -42,6 +42,10 @@
 #include "Electronic.h"
 #include "Sphere.h"
 
+#include "Malkhel.h"
+#include "Body_Malkhel.h"
+#include "Weapon_Malkhel.h"
+
 #include "Mantari.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"

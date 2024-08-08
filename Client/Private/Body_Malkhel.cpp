@@ -23,9 +23,6 @@ HRESULT CBody_Malkhel::Initialize_Prototype()
 
 HRESULT CBody_Malkhel::Initialize(void* pArg)
 {
-	BODY_Malkhel_DESC* pDesc = (BODY_Malkhel_DESC*)pArg;
-	m_bSprint = pDesc->bSprint;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -54,198 +51,154 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
-	*m_pCanCombo = false;
 	if (*m_pState == CMalkhel::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
-		AnimDesc.iAnimIndex = 33;
-		fAnimSpeed = 1.f;
+		AnimDesc.iAnimIndex = 12;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHLEFT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 36;
-		fAnimSpeed = 7.f;
+		AnimDesc.iAnimIndex = 15;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHRIGHT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 37;
-		fAnimSpeed = 7.f;
+		AnimDesc.iAnimIndex = 16;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHFRONT)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 35;
-		fAnimSpeed = 7.5f;
+		AnimDesc.iAnimIndex = 14;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHBACK)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 34;
-		fAnimSpeed = 7.5f;
+		AnimDesc.iAnimIndex = 13;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK1)
 	{
-		if (m_iPastAnimIndex < 10 || m_iPastAnimIndex > 13)
-		{
-			m_iPastAnimIndex = 10;
-		}
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 11 || m_iPastAnimIndex == 12)
+		AnimDesc.iAnimIndex = 0;
+		if (m_pModelCom->Check_CurDuration(0.4f))
 		{
-			m_pWeapon[2]->Set_Active();
-		}
-		else
-		{
-			m_pWeapon[2]->Set_Active(false);
+			_float4 fPos = _float4(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f);
+			EFFECTMGR->Generate_Particle(35, fPos);
 		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK2)
 	{
-		if (m_iPastAnimIndex < 0 || m_iPastAnimIndex > 4)
-		{
-			m_iPastAnimIndex = 0;
-		}
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 1)
+		AnimDesc.iAnimIndex = 1;
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f))
 		{
-			m_pWeapon[0]->Set_Active();
+			m_pWeapon->Set_Active();
 		}
 		else
 		{
-			m_pWeapon[0]->Set_Active(false);
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK3)
 	{
-		if (m_iPastAnimIndex < 10 || m_iPastAnimIndex > 13)
-		{
-			m_iPastAnimIndex = 10;
-		}
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 11 || m_iPastAnimIndex == 12)
+		AnimDesc.iAnimIndex = 2;
+		if (m_pModelCom->Get_Ratio_Betwin(0.25f, 0.35f))
 		{
-			m_pWeapon[2]->Set_Active();
+			m_pWeapon->Set_Active();
+		}
+		else if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.6f))
+		{
+			m_pWeapon->Set_Active();
+		}
+		else if (m_pModelCom->Get_Ratio_Betwin(0.75f, 0.85f))
+		{
+			m_pWeapon->Set_Active();
 		}
 		else
 		{
-			m_pWeapon[2]->Set_Active(false);
+			m_pWeapon->Set_Active(false);
 		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK4)
 	{
-		if (m_iPastAnimIndex < 0 || m_iPastAnimIndex > 4)
-		{
-			m_iPastAnimIndex = 0;
-		}
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 1)
+		AnimDesc.iAnimIndex = 3;
+		if (m_pModelCom->Get_Ratio_Betwin(0.4f, 0.7f))
 		{
-			m_pWeapon[0]->Set_Active();
+			m_pWeapon->Set_Active();
 		}
 		else
 		{
-			m_pWeapon[0]->Set_Active(false);
+			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CMalkhel::STATE_SPRINTATTACK)
+	else if (*m_pState == CMalkhel::STATE_ATTACK5)
 	{
-		if (m_iPastAnimIndex < 25 || m_iPastAnimIndex > 30)
-		{
-			m_iPastAnimIndex = 25;
-		}
-		if (m_iPastAnimIndex == 27 && m_pModelCom->Check_CurDuration(0.01f))
-		{
-			*m_bSprint = true;
-		}
-		// 애니메이션 속도가 빠르면 플레이어에 도달하기도 전에 칼을 휘두를 수 있기 때문에 주의
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 28 || m_iPastAnimIndex == 29)
+		AnimDesc.iAnimIndex = 4;
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f))
 		{
-			m_pWeapon[0]->Set_Active();
-			m_pWeapon[4]->Set_Active();
+			m_pWeapon->Set_Active();
 		}
 		else
 		{
-			m_pWeapon[0]->Set_Active(false);
-			m_pWeapon[4]->Set_Active(false);
+			m_pWeapon->Set_Active(false);
 		}
 	}
-	else if (*m_pState == CMalkhel::STATE_GROUNDATTACK)
+	else if (*m_pState == CMalkhel::STATE_ATTACK6)
 	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 23;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(1.2);
-	}
-	else if (*m_pState == CMalkhel::STATE_KICKATTACK)
-	{
-		if (m_iPastAnimIndex < 15 || m_iPastAnimIndex > 22)
-		{
-			m_iPastAnimIndex = 15;
-		}
-		if (m_iPastAnimIndex == 19 && m_pModelCom->Check_CurDuration(0.4f))
-		{
-			*m_bSprint = true;
-		}
-		fAnimSpeed = 1.f;
+		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = m_iPastAnimIndex;
+		AnimDesc.iAnimIndex = 5;
 	}
-	else if (*m_pState == CMalkhel::STATE_LASERATTACK)
+	else if (*m_pState == CMalkhel::STATE_ATTACK7)
 	{
+		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 24;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(1.2);
-	}
-	else if (*m_pState == CMalkhel::STATE_BABYLONATTACK)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 24;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(1.2);
-	}
-	else if (*m_pState == CMalkhel::STATE_SHOOTINGSTARATTACK)
-	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 23;
-		fAnimSpeed = 1.f;
-		m_pModelCom->Set_LerpTime(1.2);
+		AnimDesc.iAnimIndex = 6;
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f))
+		{
+			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_DEAD)
 	{
-		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 32;
-		fAnimSpeed = 1.5f;
+		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.3);
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 7;
 	}
+	
 
 	if (*m_pState == CMalkhel::STATE_DASHLEFT || *m_pState == CMalkhel::STATE_DASHRIGHT ||
-		*m_pState == CMalkhel::STATE_DASHFRONT || *m_pState == CMalkhel::STATE_DASHBACK ||
-		*m_pState == CMalkhel::STATE_SPRINTATTACK || *m_pState == CMalkhel::STATE_KICKATTACK)
+		*m_pState == CMalkhel::STATE_DASHFRONT || *m_pState == CMalkhel::STATE_DASHBACK)
 	{
 		m_bMotionBlur = true;
 	}
@@ -257,52 +210,13 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
 	_bool isLerp = true;
-	// 여러 애니메이션을 이어서 재생할 때는 보간하지 않음
-	if ((m_iPastAnimIndex >= 1 && m_iPastAnimIndex < 6) || (m_iPastAnimIndex >= 26 && m_iPastAnimIndex < 31) || (m_iPastAnimIndex >= 7 && m_iPastAnimIndex < 10) ||
-		(m_iPastAnimIndex >= 11 && m_iPastAnimIndex < 15) || (m_iPastAnimIndex >= 16 && m_iPastAnimIndex < 23))
-	{
-		isLerp = false;
-	}
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 
-	m_bAnimFinished = false;
-	_bool animFinished = m_pModelCom->Get_AnimFinished();
-	if (animFinished)
-	{
-		if (AnimDesc.iAnimIndex >= 0 && AnimDesc.iAnimIndex < 4)
-		{
-			m_iPastAnimIndex++;
-		}
-		else if (AnimDesc.iAnimIndex >= 6 && AnimDesc.iAnimIndex < 8)
-		{
-			m_iPastAnimIndex++;
-		}
-		else if (AnimDesc.iAnimIndex >= 10 && AnimDesc.iAnimIndex < 13)
-		{
-			m_iPastAnimIndex++;
-		}
-		else if (AnimDesc.iAnimIndex >= 15 && AnimDesc.iAnimIndex < 22)
-		{
-			m_iPastAnimIndex++;
-		}
-		else if (AnimDesc.iAnimIndex >= 25 && AnimDesc.iAnimIndex < 30)
-		{
-			m_iPastAnimIndex++;
-		}
-		else
-		{
-			m_iPastAnimIndex = 99999;
-			m_bAnimFinished = true;
-		}
-	}
+	m_bAnimFinished = m_pModelCom->Get_AnimFinished();
+
 	if (m_bAnimFinished)
 	{
-		m_pWeapon[0]->Set_Active(false);
-		m_pWeapon[1]->Set_Active(false);
-		m_pWeapon[2]->Set_Active(false);
-		m_pWeapon[3]->Set_Active(false);
-		m_pWeapon[4]->Set_Active(false);
-		m_fDamageTiming = 0.f;
+		m_pWeapon->Set_Active(false);
 	}
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
@@ -311,15 +225,12 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 void CBody_Malkhel::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
 	//}
-
-
 }
 
 HRESULT CBody_Malkhel::Render()
@@ -338,23 +249,8 @@ HRESULT CBody_Malkhel::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (i != 2)
+		if (i <= 1)
 		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-				return E_FAIL;
-		}
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-			return E_FAIL;
-
-		if (i > 0)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_OpacityTexture", i, aiTextureType_OPACITY)))
-				return E_FAIL;
-		}
-
-		if (i == 2)
-		{
-
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
 				return E_FAIL;
 		}
@@ -367,33 +263,6 @@ HRESULT CBody_Malkhel::Render()
 	m_PrevWorldMatrix = m_WorldMatrix;
 	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
 #pragma endregion 모션블러
-	return S_OK;
-}
-
-HRESULT CBody_Malkhel::Render_Bloom()
-{
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
-	{
-		m_pShaderCom->Unbind_SRVs();
-
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		if (i == 0)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
-				return E_FAIL;
-		}
-
-		m_pShaderCom->Begin(8);
-
-		m_pModelCom->Render(i);
-	}
-
 	return S_OK;
 }
 

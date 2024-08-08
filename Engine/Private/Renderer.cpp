@@ -420,17 +420,17 @@ HRESULT CRenderer::Initialize()
         float currentX = startX;
         float currentY = startY;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Move"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Move"), currentX, currentY, targetWidth, targetHeight)))
+           return E_FAIL;
+        currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Result"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_Result"), currentX, currentY, targetWidth, targetHeight)))
+            return E_FAIL;
+        currentX += targetWidth + gap;
 
 
 
@@ -916,8 +916,9 @@ void CRenderer::Render_Shadow_Move()
     XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
     XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
+    _float fShadowThreshold = 0.99f;
     //매직넘버 던져줌
-    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &m_fShadowThreshold, sizeof(_float))))
+    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
         return;
@@ -960,14 +961,18 @@ void CRenderer::Render_Shadow_NotMove()
     XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
     XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
+    _float fShadowThreshold = 0.5f;
     //매직넘버 던져줌
-    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &m_fShadowThreshold, sizeof(_float))))
+    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
         return;
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
 
+    //// 그림자 직접 렌더링
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
+    //    return;
     // 그림자맵 사용
     if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 1)))
         return;
@@ -1882,9 +1887,9 @@ void CRenderer::Render_Debug()
 
 
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
+	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
 
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);

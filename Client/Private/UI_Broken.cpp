@@ -27,7 +27,7 @@ HRESULT CUI_Broken::Initialize(void* pArg)
 
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX * 0.2f;
+	m_fSizeX = g_iWinSizeX * 0.2f; // * 0.2f
 	m_fSizeY = g_iWinSizeY * 0.2f;
 
 	Setting_Position();
@@ -44,15 +44,14 @@ void CUI_Broken::Tick(_float fTimeDelta)
 	if (m_isRend)
 	{
 		m_fDeadTimer += fTimeDelta;
-		m_fSizeX += 50.f;
-		m_fSizeY += 50.f;
 
+		m_fSizeX *= 1.09f;
+		m_fSizeY *= 1.1f;
 		Setting_Position();
 	}
 
-	if (1.f <= m_fDeadTimer)
+	if (0.5f <= m_fDeadTimer)
 	{
-		// Dead
 		m_isRend = false;
 		m_fDeadTimer = 0.f;
 		m_fSizeX = g_iWinSizeX * 0.2f;
@@ -62,8 +61,6 @@ void CUI_Broken::Tick(_float fTimeDelta)
 	{
 		if (!m_isRenderAnimFinished)
 			Render_Animation(fTimeDelta, 1.f);
-
-
 	}
 }
 
@@ -80,7 +77,7 @@ HRESULT CUI_Broken::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3); // Pass °í¹ÎÇØºÁ¾ß ÇÔ
+	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 

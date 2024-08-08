@@ -848,7 +848,6 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				}
 
-				// UI Broken 호출 위치 (한번만 불리도록 해야 함)
 				CUI_Manager::GetInstance()->Set_Broken(true);
 
 				m_pGameInstance->Set_BRIS(0.1f);

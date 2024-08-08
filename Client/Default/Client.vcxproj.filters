@@ -724,6 +724,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
       <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Dash">
+      <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\10.SavePoint">
       <UniqueIdentifier>{4ed1a5b4-83e4-47e9-a85a-00875473acfa}</UniqueIdentifier>
     </Filter>

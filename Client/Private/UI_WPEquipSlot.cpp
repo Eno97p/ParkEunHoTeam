@@ -120,15 +120,9 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 	// 이미 장착 중인 애를 또 장착하려고 하면 안 되도록 예외 처리 해야함~~~
 	// or 이미 있던 곳 변경되도록! 원래 있던 곳에서 제거해주고 새로 옮기기 
 
-
 	// 여기에서 뭔가 CInventory에 Arr Equip Weapon을 제거해버리는 코드가 있음
 	// 그거 찾아서 얘외처리를 하든 코드 추가를 하던 해야 함~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-	// 이거 해줘야하고...........................
-	// Player 벽력일섬에 넣어줄 유리창 깨진 느낌 필요함
-
-
-	
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.fX = m_fX - 3.f;
@@ -147,7 +141,7 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 				if (m_pItemIcon->Get_TextureName() == (*weapon)->Get_TextureName())
 				{
 					(*weapon)->Set_isEquip(false);
-					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
+					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum); // 여기서 없어짐 !!!!!!!!!!!
 
 					// Equip Sign 제거
 					dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, i);

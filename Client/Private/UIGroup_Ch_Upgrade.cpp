@@ -64,14 +64,14 @@ void CUIGroup_Ch_Upgrade::Tick(_float fTimeDelta)
 
         for (auto& pBtn : m_vecBtn)
         {
-            if (!m_isRenderOnAnim && !(pBtn->Get_RenderOnAnim()))
+            /*if (!m_isRenderOnAnim && !(pBtn->Get_RenderOnAnim()))
             {
                 pBtn->Resset_Animation(true);
             }
             else if (m_isRenderOnAnim && pBtn->Get_RenderOnAnim())
             {
                 pBtn->Resset_Animation(false);
-            }
+            }*/
 
             pBtn->Tick(fTimeDelta);
         }

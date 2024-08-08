@@ -93,7 +93,7 @@ void CUI_WPEquipSlot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pNoneFrame && !m_isSelect)
 		m_pNoneFrame->Late_Tick(fTimeDelta);
 
-	if (nullptr != m_pItemIcon)
+	if (nullptr != m_pItemIcon && Check_GroupRenderOnAnim())
 		m_pItemIcon->Late_Tick(fTimeDelta);
 }
 
@@ -119,6 +119,15 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 {
 	// 이미 장착 중인 애를 또 장착하려고 하면 안 되도록 예외 처리 해야함~~~
 	// or 이미 있던 곳 변경되도록! 원래 있던 곳에서 제거해주고 새로 옮기기 
+
+
+	// 여기에서 뭔가 CInventory에 Arr Equip Weapon을 제거해버리는 코드가 있음
+	// 그거 찾아서 얘외처리를 하든 코드 추가를 하던 해야 함~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	// 이거 해줘야하고...........................
+	// Player 벽력일섬에 넣어줄 유리창 깨진 느낌 필요함
+
+
 	
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
@@ -318,35 +327,93 @@ void CUI_WPEquipSlot::Click_Event()
 
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+
+
+
+
 	for (size_t i = 0; i < iCurSlotIdx; ++i)
 	{
-		if(CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
+		if (CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
 			++weapon;
 
-		if(CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
+		if (CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
 			++skill;
 	}
 
+
 	if (isAlphaBG_On) // 장착
 	{
-		// 이미 ItemIcon이 있는 경우 해당 Itemicon에 대한 장착 여부를 비활성화 하고 새로운 ItemIcon으로 변경해주는 로직 필요
-
-		
-
-
-		
-
+		_uint iCount = { 0 };
 
 		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
-			if (!(*weapon)->Get_isEquip())
+			if ((*weapon)->Get_isEquip()) // 이미 Equip Slot에 장착 중이었던 경우
 			{
-				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
+				// Inventory의 Equip Arr 에서 제거
+				for (size_t i = 0; i < 3; ++i)
+				{
+					if ((*weapon) == CInventory::GetInstance()->Get_EquipWeapon(i))
+					{
+						(*weapon)->Set_isEquip(false);
+						CInventory::GetInstance()->Delete_EquipWeapon(i);
+						break;
+					}
+				}
+				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
+			}
+
+		}
+		else if(CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		{
+			if ((*skill)->Get_isEquip())
+			{
+				for (size_t i = 0; i < 3; ++i)
+				{
+					if ((*skill) == CInventory::GetInstance()->Get_EquipSkill(i))
+					{
+						(*skill)->Set_isEquip(false);
+						CInventory::GetInstance()->Delete_EquipSkill(i);
+						break;
+					}
+				}
+				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
+			}
+		}
+
+		// 잘 나오는 거 같으넫 CInvneotry에는 왜 Null로 채워져있는 것 같지? 근데 왜 HUD는 멀쩡하지
+		// >>>>> 문제 있음 ㅇㅇ NULL이면 안 됨! 지금은 CInventory에 NULL로 들어가 있음
+
+
+		// Equip Slot에 장착 등록
+		weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+		skill = CInventory::GetInstance()->Get_Skills()->begin();
+
+		// 이 for문이 무엇을 위한 것인지 모르겠음 > 그냥 각 if문 안에 넣어도 될 거 같은디;
+		/*for (size_t i = 0; i < iCurSlotIdx; ++i)
+		{
+			if (CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
+				++weapon;
+
+			if (CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
+				++skill;
+		}*/
+
+		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
+		{
+			for (size_t i = 0; i < iCurSlotIdx; ++i)
+				++weapon;
+
+			if (!(*weapon)->Get_isEquip()) // 장착 중이 아닌 지에 대한 정보는 필요 없지 않을까 어차피 장착 중이어도 제거햇을 테니
+			{
+				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum); // !!!!!!여기 어케 들어갓을지
 				(*weapon)->Set_isEquip(true);
 			}
 		}
 		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
+			for (size_t i = 0; i < iCurSlotIdx; ++i)
+				++skill;
+			
 			if (!(*skill)->Get_isEquip())
 			{
 				CInventory::GetInstance()->Add_EquipSkill((*skill), m_eSlotNum);
@@ -401,6 +468,11 @@ void CUI_WPEquipSlot::Click_Event()
 		}
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
 	}
+}
+
+_bool CUI_WPEquipSlot::Check_GroupRenderOnAnim()
+{
+	return 	CUI_Manager::GetInstance()->Get_UIGroup("Weapon")->Get_RenderOnAnim();
 }
 
 CUI_WPEquipSlot* CUI_WPEquipSlot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

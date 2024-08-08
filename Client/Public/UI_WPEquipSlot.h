@@ -50,6 +50,7 @@ private:
 	void	Setting_XY();
 
 	void	Click_Event();
+	_bool	Check_GroupRenderOnAnim();
 
 public:
 	static CUI_WPEquipSlot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

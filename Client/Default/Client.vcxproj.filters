@@ -715,6 +715,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern">
       <UniqueIdentifier>{eff48dd8-a8e2-4f8b-ac18-ec5f896e3b85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Broken">
+      <UniqueIdentifier>{0c3900b6-4c0b-4f9a-a490-d97ebc0df39e}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
       <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
 	</Filter>
@@ -1511,6 +1514,9 @@
     <ClInclude Include="..\Public\Grass.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Broken.h">
+      <Filter>02.GameObjects\07. UI\Broken</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\Cloud.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
 	</ClInclude>
@@ -2281,6 +2287,9 @@
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_Broken.cpp">
+      <Filter>02.GameObjects\07. UI\Broken</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\Cloud.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
 	</ClCompile>

@@ -415,7 +415,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN_FLOW_VERTICAL();
 	}
 
-	pass DefaultPass_8
+	pass AlphaPass_8
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);
@@ -428,7 +428,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_ALPHA();
 	}
 
-	pass DefaultPass_9
+	pass ShopBG_FlowHorizontalPass_9
 	{
 		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DSS_Default, 0);

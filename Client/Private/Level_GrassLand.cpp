@@ -171,7 +171,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 5000.f;
 	CameraDesc.fSpeedPerSec = 20.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);	
 
@@ -224,6 +224,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Cloud"))))
+		return E_FAIL;
+
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
 	//	return E_FAIL;
 
@@ -270,9 +273,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	pLandObjDesc->mWorldMatrix._43 = -2.4f;
 	pLandObjDesc->mWorldMatrix._44 = 1.f;*/
 
-	pLandObjDesc->mWorldMatrix._41 = 75.f;
-	pLandObjDesc->mWorldMatrix._42 = 530.f;
-	pLandObjDesc->mWorldMatrix._43 = 98.f;
+	pLandObjDesc->mWorldMatrix._41 = 500.f;
+	pLandObjDesc->mWorldMatrix._42 = 346.995f;
+	pLandObjDesc->mWorldMatrix._43 = 500.f;
 	pLandObjDesc->mWorldMatrix._44 = 1.f;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
@@ -280,8 +283,8 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 
 
 	//Blast Wall Test Code
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
+	//	return E_FAIL;
 	
 
 
@@ -650,7 +653,7 @@ void CLevel_GrassLand::Load_Lights()
 		iter->LightOff();
 	}
 
-	wstring LightsDataPath = L"../Bin/MapData/LightsData/AndrasArena_Lights.dat";
+	wstring LightsDataPath = L"../Bin/MapData/LightsData/GrassLand_Lights.dat";
 
 	HANDLE hFile = CreateFile(LightsDataPath.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (nullptr == hFile)

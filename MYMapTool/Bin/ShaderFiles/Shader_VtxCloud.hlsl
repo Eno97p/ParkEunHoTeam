@@ -47,6 +47,18 @@ float g_fNoiseRemapUpper;
 //Noise 3D
 texture3D g_3DNoiseTexture;
 
+// 볼륨 바운딩 박스 구조체
+struct BoundingBox
+{
+    float3 min;
+    float3 max;
+};
+
+// 전역 변수로 볼륨의 바운딩 박스 정의
+float CLOUD_VOLUME_SIZE; // 구름 볼륨의 크기 (조정 가능)
+float3 CLOUD_VOLUME_OFFSET; // 구름 볼륨의 오프셋 (조정 가능)
+
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -402,16 +414,21 @@ float snoise(float3 v)
 
 float calculateCloudDensityFromTexture(float3 position, float time)
 {
-    // 스케일 조정 및 시간에 따른 이동
-    float3 samplePos = position * g_CloudScale + float3(time * g_CloudSpeed, 0, 0);
+    // 기본 구조를 위한 고정된 샘플링 위치
+    float3 basePos = position * g_CloudScale;
 
-    // 부드러운 타일링을 위한 노이즈 추가
+    // 시간에 따른 변화를 위한 오프셋
+    float3 timeOffset = float3(time * g_CloudSpeed * 0.1, time * g_CloudSpeed * 0.05, time * g_CloudSpeed * 0.07);
+
+    // 부드러운 타일링을 위한 노이즈 추가 (시간에 따라 천천히 변화)
     float3 noiseOffset = float3(
-        snoise(samplePos * 0.1),
-        snoise(samplePos * 0.1 + 100),
-        snoise(samplePos * 0.1 + 200)
-    ) * 10.0;
-    samplePos += noiseOffset;
+        snoise(basePos * 0.01 + timeOffset * 0.1),
+        snoise(basePos * 0.01 + timeOffset * 0.1 + 100),
+        snoise(basePos * 0.01 + timeOffset * 0.1 + 200)
+    ) * 5.0;
+
+    // 기본 구조와 시간 변화를 결합
+    float3 samplePos = basePos + noiseOffset;
 
     // 노이즈 데이터 샘플링
     float4 noiseData = g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos), 0);
@@ -419,17 +436,17 @@ float calculateCloudDensityFromTexture(float3 position, float time)
     float worley = noiseData.g;
     float detailNoise = noiseData.b;
 
-    // Perlin FBM 시뮬레이션
+    // Perlin FBM 시뮬레이션 (기본 구조 유지)
     float perlinFbm = perlin;
     for (int i = 1; i < g_iPerlinOctaves; ++i)
     {
         float freq = pow(g_fPerlinLacunarity, float(i));
         float amp = pow(g_fPerlinPersistence, float(i));
-        perlinFbm += g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * freq), 0).r * amp;
+        perlinFbm += g_3DNoiseTexture.SampleLevel(CloudSampler, frac(basePos * freq), 0).r * amp;
     }
     perlinFbm = saturate(perlinFbm);
 
-    // Worley FBM 시뮬레이션
+    // Worley FBM 시뮬레이션 (시간에 따른 세부 변화 추가)
     float worleyFbm = worley * 0.625 +
         g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * 2.0), 0).g * 0.25 +
         g_3DNoiseTexture.SampleLevel(CloudSampler, frac(samplePos * 4.0), 0).g * 0.125;
@@ -438,82 +455,179 @@ float calculateCloudDensityFromTexture(float3 position, float time)
     float baseCloud = lerp(perlinFbm, worleyFbm, g_fPerlinWorleyMix);
     baseCloud = remap(baseCloud, g_fNoiseRemapLower, g_fNoiseRemapUpper, 0.0, 1.0);
 
-    // 디테일 노이즈 적용
-    float detailModifier = lerp(detailNoise, 1 - detailNoise, saturate(baseCloud * 10));
+    // 시간에 따른 세부 변화 적용
+    float timeDetailNoise = snoise(samplePos * 0.1 + timeOffset);
+    float detailModifier = lerp(detailNoise, timeDetailNoise, 0.3);
     baseCloud = remap(baseCloud, detailModifier * 0.2, 1.0, 0.0, 1.0);
 
     // 구름 형태 조정
     float cloud = pow(baseCloud, g_CloudDensity);
 
     // 최종 밀도 계산 및 클램핑
-    return saturate(cloud) * g_CloudDensity * 2.0; // 밀도 증가
+    return saturate(cloud) * g_CloudDensity * 2.0;
 }
 
 PS_OUT PS_TEX(VS_OUT In)
 {
     PS_OUT Out = (PS_OUT)0;
 
-    float3 worldPos = In.vWorldPos;
-    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
+    float3 rayStart = In.vWorldPos;
+    float3 rayDir = normalize(In.vWorldPos - g_vCamPosition.xyz);
     float time = g_fAccTime;
-    const float MAX_DIST = 100.0;
-    float4 cloudColor = float4(0, 0, 0, 0);
 
-    // 대략적인 레이 마칭
-    float coarseT = 0.0;
-    float coarseDensity = 0.0;
-    for (int i = 0; i < g_iMaxCoarseSteps; i++)
+    const float MAX_DIST = 100.0;
+    const int NUM_STEPS = 128; // 레이캐스팅 스텝 수
+    const float STEP_SIZE = MAX_DIST / NUM_STEPS;
+
+    float4 accumulatedColor = float4(0, 0, 0, 0);
+    float transmittance = 1.0;
+
+    // 레이캐스팅 루프
+    for (int i = 0; i < NUM_STEPS; i++)
     {
-        float3 pos = worldPos + coarseT * viewDir;
-        coarseDensity = calculateCloudDensityFromTexture(pos, time);
-        if (coarseDensity > g_fDensityThreshold)
-            break;
-        coarseT += g_fCoarseStepSize;
-        if (coarseT > MAX_DIST)
+        float t = i * STEP_SIZE;
+        float3 currentPos = rayStart + rayDir * t;
+
+        // 구름 밀도 계산
+        float density = calculateCloudDensityFromTexture(currentPos, time);
+
+        if (density > 0.01) // 의미 있는 밀도일 경우에만 계산
         {
-            discard;
-            return Out;
+            // 광원 에너지 계산
+            float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, rayDir);
+
+            // 색상 계산
+            float3 cloudColor = g_CloudColor * lightEnergy * density;
+
+            // 투과율 계산
+            float stepTransmittance = exp(-density * STEP_SIZE);
+
+            // 색상 누적
+            accumulatedColor.rgb += cloudColor * transmittance * (1 - stepTransmittance);
+
+            // 전체 투과율 업데이트
+            transmittance *= stepTransmittance;
+
+            // 불투명도가 높아지면 조기 종료
+            if (transmittance < 0.01)
+                break;
         }
     }
 
-    // 정밀한 레이 마칭 (적응형 샘플링)
-    float t = max(0, coarseT - g_fCoarseStepSize);
-    float3 currentPos = worldPos + t * viewDir;
-    float totalDensity = 0.0;
-    float stepSize = (coarseDensity > g_fDensityThreshold) ? g_fFineStepSize : g_fCoarseStepSize;
-    int maxSteps = (coarseDensity > g_fDensityThreshold) ? g_iMaxFineSteps : g_iMaxCoarseSteps;
+    // 최종 색상 계산
+    accumulatedColor.a = 1 - transmittance;
 
-    [loop]
-        for (int j = 0; j < maxSteps; j++)
-        {
-            float density = calculateCloudDensityFromTexture(currentPos, time);
-            if (density > 0.01)
-            {
-                totalDensity += density * stepSize;
-                float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
-                float3 color = g_CloudColor * lightEnergy * density;
-                float transmittance = exp(-density * stepSize);
-                cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
-                cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
-                if (cloudColor.a > g_fAlphaThreshold) break;
-            }
-            currentPos += viewDir * stepSize;
-            t += stepSize;
-            if (t > MAX_DIST) break;
-        }
+    // 주변광 추가
+    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+    accumulatedColor.rgb += ambient * transmittance;
 
-    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
-    if (cloudColor.a < 0.01)
+    // 감마 보정
+    accumulatedColor.rgb = pow(accumulatedColor.rgb, 1.0 / 2.2);
+
+    // 알파 블렌딩을 위한 사전 곱셈 알파
+    accumulatedColor.rgb *= accumulatedColor.a;
+
+    if (accumulatedColor.a < 0.01)
         discard;
 
-    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
-    cloudColor.rgb += ambient * (1.0 - cloudColor.a);
-    cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2);
-
-    Out.vColor = cloudColor;
+    Out.vColor = accumulatedColor;
     return Out;
 }
 
+// 레이-박스 교차 함수
+bool IntersectRayBox(float3 rayOrigin, float3 rayDir, BoundingBox box, out float tMin, out float tMax)
+{
+    float3 invDir = 1.0 / rayDir;
+    float3 tBot = invDir * (box.min - rayOrigin);
+    float3 tTop = invDir * (box.max - rayOrigin);
+    float3 tNear = min(tTop, tBot);
+    float3 tFar = max(tTop, tBot);
+    tMin = max(max(tNear.x, tNear.y), tNear.z);
+    tMax = min(min(tFar.x, tFar.y), tFar.z);
+    return tMax > tMin && tMax > 0;
+}
+
+PS_OUT PS_VolumeCloud(VS_OUT In)
+{
+    PS_OUT Out = (PS_OUT)0;
+
+    float3 rayOrigin = g_vCamPosition.xyz;
+    float3 rayDir = normalize(In.vWorldPos - rayOrigin);
+    float time = g_fAccTime;
+
+    // g_WorldMatrix의 위치를 중심으로 하는 볼륨 정의
+    float3 cloudCenter = g_WorldMatrix._41_42_43 + CLOUD_VOLUME_OFFSET;
+    BoundingBox g_CloudVolume;
+    g_CloudVolume.min = cloudCenter - CLOUD_VOLUME_SIZE * 0.5;
+    g_CloudVolume.max = cloudCenter + CLOUD_VOLUME_SIZE * 0.5;
+
+    float tMin, tMax;
+    if (!IntersectRayBox(rayOrigin, rayDir, g_CloudVolume, tMin, tMax))
+    {
+        discard;
+        return Out;
+    }
+
+    tMin = max(0, tMin); // 카메라가 볼륨 내부에 있을 경우를 처리
+
+    const int NUM_STEPS = 128;
+    float stepSize = (tMax - tMin) / NUM_STEPS;
+
+    float4 accumulatedColor = float4(0, 0, 0, 0);
+    float transmittance = 1.0;
+
+    // 레이캐스팅 루프
+    for (int i = 0; i < NUM_STEPS; i++)
+    {
+        float t = tMin + i * stepSize;
+        float3 currentPos = rayOrigin + rayDir * t;
+
+        // 구름 밀도 계산 (로컬 좌표계로 변환)
+        float3 localPos = currentPos - cloudCenter;
+        float density = calculateCloudDensityFromTexture(localPos * g_CloudScale, time);
+
+        if (density > 0.01) // 의미 있는 밀도일 경우에만 계산
+        {
+            // 광원 에너지 계산
+            float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, rayDir);
+
+            // 색상 계산
+            float3 cloudColor = g_CloudColor * lightEnergy * density;
+
+            // 투과율 계산
+            float stepTransmittance = exp(-density * stepSize);
+
+            // 색상 누적
+            accumulatedColor.rgb += cloudColor * transmittance * (1 - stepTransmittance);
+
+            // 전체 투과율 업데이트
+            transmittance *= stepTransmittance;
+
+            // 불투명도가 높아지면 조기 종료
+            if (transmittance < 0.01)
+                break;
+        }
+    }
+
+    // 최종 색상 계산
+    accumulatedColor.a = 1 - transmittance;
+
+    // 주변광 추가
+    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+    accumulatedColor.rgb += ambient * transmittance;
+
+    // 감마 보정
+    accumulatedColor.rgb = pow(accumulatedColor.rgb, 1.0 / 2.2);
+
+    // 알파 블렌딩을 위한 사전 곱셈 알파
+    accumulatedColor.rgb *= accumulatedColor.a;
+
+    if (accumulatedColor.a < 0.01)
+        discard;
+
+    Out.vColor = accumulatedColor;
+    return Out;
+}
 technique11 DefaultTechnique
 {
     pass Cloud
@@ -541,4 +655,18 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_TEX();
     }
+
+        pass VolumeCloud
+    {
+        SetRasterizerState(RS_NoCull);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_VolumeCloud();
+    }
+
 }

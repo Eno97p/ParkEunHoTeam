@@ -708,7 +708,7 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Lazer">
       <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado">
       <UniqueIdentifier>{182b1577-a31a-4fd3-b2f8-b88ff8baa5eb}</UniqueIdentifier>
     </Filter>
@@ -720,6 +720,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern">
       <UniqueIdentifier>{eff48dd8-a8e2-4f8b-ac18-ec5f896e3b85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
+      <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1489,7 +1492,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
       <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
     </ClInclude>
@@ -1507,9 +1510,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Grass.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cloud.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2271,9 +2277,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cloud.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2368,6 +2377,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

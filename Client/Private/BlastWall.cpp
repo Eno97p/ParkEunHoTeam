@@ -286,6 +286,7 @@ CBlastWall* CBlastWall::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	{
 		MSG_BOX("Failed To Created : CBlastWall");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 
 	return pInstance;
@@ -299,6 +300,7 @@ CGameObject* CBlastWall::Clone(void* pArg)
 	{
 		MSG_BOX("Failed To Cloned : CBlastWall");
 		Safe_Release(pInstance);
+		return nullptr;
 	}
 
 	return pInstance;

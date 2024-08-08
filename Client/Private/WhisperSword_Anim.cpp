@@ -363,6 +363,9 @@ HRESULT CWhisperSword_Anim::Bind_ShaderResources()
 		return E_FAIL;
 	if(FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
+	_float4 fDisolveColor = _float4(0.5f, 0.5f, 1.f, 1.f);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveColor", &fDisolveColor, sizeof(_float4))))
+		return E_FAIL;
 
 	return S_OK;
 }

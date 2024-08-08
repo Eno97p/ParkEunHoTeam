@@ -14,8 +14,12 @@ BEGIN(Client)
 
 class CMalkhel final : public CMonster
 {
-#define MOVESPEED 50.f
+#define MALKHELSPEED 10.f
 #define SPAWNCOOLTIME 0.05f
+#define TRIPPLEATTACK 1.2f
+#define UPSPEED 5.f
+#define DOWNSPEED 20.f
+#define SPEARATTACK 1.7f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
@@ -49,6 +53,8 @@ private:
 private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
+	NodeStates Move(_float fTimeDelta);
+	NodeStates Chase(_float fTimeDelta);
 	NodeStates Attack1(_float fTimeDelta);
 	NodeStates Attack2(_float fTimeDelta);
 	NodeStates Attack3(_float fTimeDelta);
@@ -79,6 +85,9 @@ private:
 	_float										m_fTurnDelay = 0.5f;
 	_float m_fSpawnCoolTime = SPAWNCOOLTIME;
 	_float m_fSpawnDelay = 2.f;
+	_float m_fTrippleAttack = TRIPPLEATTACK + 1.f;
+	_float m_fSpearAttack = SPEARATTACK;
+	_uint m_iTrippleAttackCount = 3;
 
 public:
 	static CMalkhel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

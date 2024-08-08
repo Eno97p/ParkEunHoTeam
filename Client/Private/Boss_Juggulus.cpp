@@ -377,7 +377,7 @@ void CBoss_Juggulus::Spawn_Lightning(_float fTimeDelta)
 		CGameObject::GAMEOBJECT_DESC gameObjDesc;
 		gameObjDesc.fSpeedPerSec = 3.f;
 		gameObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
-		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 5.f;
+		gameObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 7.f;
 		gameObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 		if (m_fLightningSpawnTime < 8.f && m_iLightningCount == 0)
@@ -568,6 +568,7 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		m_iState = STATE_TORNADO_ATTACK;
 		break;
 	}
+	m_iState = STATE_THUNDER_ATTACK;
 	return SUCCESS;
 }
 

@@ -148,7 +148,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	if (KEY_HOLD(DIK_W))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eFORWARD;
-		command->throttle = m_bIsBoost ? 1.0f : 0.2f;
+		command->throttle = m_bIsBoost ? 1.0f : 0.4f;
 	
 
 		command->brake = 0.0f;
@@ -157,7 +157,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	else if (KEY_HOLD(DIK_S))
 	{
 		command->gear = PxVehicleDirectDriveTransmissionCommandState::eREVERSE;
-		command->throttle = 0.3f;
+		command->throttle = 0.2f;
 		command->brake = 0.0f;
 		command->handbrake = 0.0f;
 	}

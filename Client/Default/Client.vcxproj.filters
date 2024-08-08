@@ -726,6 +726,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Dash">
       <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\10.SavePoint">
+      <UniqueIdentifier>{4ed1a5b4-83e4-47e9-a85a-00875473acfa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1550,6 +1553,9 @@
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\SavePoint.h">
+      <Filter>02.GameObjects\10.SavePoint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2322,6 +2328,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SavePoint.cpp">
+      <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

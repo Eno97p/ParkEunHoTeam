@@ -318,11 +318,11 @@ void CPlayer::PlayerHit(_float fValue)
 	m_bIsRunAttack = false;
 	if (m_bRunning)
 	{
-		m_pTransformCom->Set_Speed(RUNSPEED);
+		m_pPhysXCom->Set_Speed(RUNSPEED);
 	}
 	else
 	{
-		m_pTransformCom->Set_Speed(WALKSPEED);
+		m_pPhysXCom->Set_Speed(WALKSPEED);
 	}
 	Add_Hp(-fValue);
 
@@ -658,7 +658,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
 
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		m_iState = STATE_JUMPATTACK;
@@ -747,11 +747,11 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 			m_iState = STATE_FIGHTIDLE;
 			if (m_bRunning)
 			{
-				m_pTransformCom->Set_Speed(RUNSPEED);
+				m_pPhysXCom->Set_Speed(RUNSPEED);
 			}
 			else
 			{
-				m_pTransformCom->Set_Speed(WALKSPEED);
+				m_pPhysXCom->Set_Speed(WALKSPEED);
 			}
 			return SUCCESS;
 		}
@@ -806,7 +806,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (m_iState != STATE_SPECIALATTACK)
@@ -903,7 +903,7 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (m_iState != STATE_SPECIALATTACK2)
@@ -969,7 +969,7 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (m_iState != STATE_SPECIALATTACK3)
@@ -1034,7 +1034,7 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (m_iState != STATE_SPECIALATTACK4)
@@ -1110,7 +1110,7 @@ NodeStates CPlayer::LChargeAttack(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (!m_bLAttacking)
@@ -1191,7 +1191,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 		}
 		if (m_fFightIdle == 0.f && !m_bDisolved_Weapon)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
 		if (!m_bRAttacking)
@@ -2090,7 +2090,7 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 		}
 		else if (m_fFightIdle > ATTACKPOSTDELAY - 0.2f)
 		{
-			static_cast<CPartObject*>(m_PartObjects[1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
+			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 		}
 
 	}

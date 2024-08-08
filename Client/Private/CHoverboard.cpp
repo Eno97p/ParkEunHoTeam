@@ -98,6 +98,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	PxRigidBody* rigidBody = m_pPhysXCom->GetRigidBody();
 
 	command->curSpeed = 	velocity.magnitude();
+	m_fCurHoverBoardSpeed = command->curSpeed;
 	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);

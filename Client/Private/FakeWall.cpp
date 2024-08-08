@@ -52,7 +52,7 @@ void CFakeWall::Tick(_float fTimeDelta)
 {
 	list<CGameObject*> ObjectLis;
 	ObjectLis= m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
-	if (!ObjectLis.empty())
+	if (!ObjectLis.empty())		//몬스터가 있을 때 만타리만 체크
 	{
 		for (auto& iter : ObjectLis)
 		{
@@ -69,6 +69,14 @@ void CFakeWall::Tick(_float fTimeDelta)
 		}
 
 	}
+	else //몬스터가 없을 때
+	{
+		m_pGameInstance->Erase(this);
+	}
+	
+	
+
+
 
 	int temp = 0;
 }

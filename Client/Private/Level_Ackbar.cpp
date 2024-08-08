@@ -22,6 +22,9 @@
 
 #include "Tree.h"
 
+#include"BlastWall.h"
+
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())

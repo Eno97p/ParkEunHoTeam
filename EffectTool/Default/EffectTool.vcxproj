@@ -179,6 +179,8 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\AndrasSword4.h" />
     <ClInclude Include="..\Public\AndrasSword5.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Charge_Ribbon.h" />
+    <ClInclude Include="..\Public\Charge_Vane.h" />
     <ClInclude Include="..\Public\Distortion_Effect.h" />
     <ClInclude Include="..\Public\Effect_Define.h" />
     <ClInclude Include="..\Public\ElectricCylinder.h" />
@@ -248,6 +250,8 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\AndrasSword4.cpp" />
     <ClCompile Include="..\Private\AndrasSword5.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Charge_Ribbon.cpp" />
+    <ClCompile Include="..\Private\Charge_Vane.cpp" />
     <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ElectricCylinder.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />

@@ -501,6 +501,11 @@ void CImguiMgr::EffectTool_Rework()
 	{
 		parentsDesc.eType = UP_TO_STOP;
 	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("OnlyUp", parentsDesc.eType == ONLY_UP))
+	{
+		parentsDesc.eType = ONLY_UP;
+	}
 
 #pragma endregion FUNCTYPE
 	
@@ -3260,9 +3265,27 @@ void CImguiMgr::SwingEffectTool()
 
 	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
 
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Vane");
+
+	ImGui::InputFloat3("VaneSize", reinterpret_cast<float*>(&Desc.VaneDesc.vSize));
+	ImGui::InputFloat3("VaneOffset", reinterpret_cast<float*>(&Desc.VaneDesc.vOffset));
+	ImGui::ColorEdit3("VaneColor", reinterpret_cast<float*>(&Desc.VaneDesc.fColor));
+	ImGui::ColorEdit3("VaneBloomColor", reinterpret_cast<float*>(&Desc.VaneDesc.BloomColor));
+	ImGui::InputFloat("VaneBloomPower", &Desc.VaneDesc.fBloomPower);
+	ImGui::InputFloat("VaneLifeTime", &Desc.VaneDesc.fMaxLifeTime);
+	ImGui::InputFloat2("VaneThreadRatio", reinterpret_cast<float*>(&Desc.VaneDesc.fThreadRatio));
+	ImGui::InputFloat("VaneSlowSpeed", &Desc.VaneDesc.fSlowStrength);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Ribbon");
+	ImGui::InputFloat3("Ribbon_Size", reinterpret_cast<float*>(&Desc.RibbonDesc.vSize));
+	ImGui::ColorEdit3("Ribbon_Color", reinterpret_cast<float*>(&Desc.RibbonDesc.fColor));
+	ImGui::ColorEdit3("Ribbon_BloomColor", reinterpret_cast<float*>(&Desc.RibbonDesc.BloomColor));
+	ImGui::InputFloat("Ribbon_BloomPower", &Desc.RibbonDesc.fBloomPower);
+
 	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Spiral");
 
-	ImGui::InputFloat3("SpiralSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vSize));
+	ImGui::InputFloat3("SpiralStartSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vSize));
+	ImGui::InputFloat3("SpiralMaxSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vMaxSize));
 	ImGui::ColorEdit3("SpiralColor", reinterpret_cast<float*>(&Desc.SpiralDesc.fColor));
 	ImGui::ColorEdit3("SpiralBloomColor", reinterpret_cast<float*>(&Desc.SpiralDesc.BloomColor));
 	ImGui::InputFloat("SpiralBloomPower", &Desc.SpiralDesc.fBloomPower);
@@ -3475,7 +3498,7 @@ CImguiMgr* CImguiMgr::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 	if (FAILED(pInstance->Initialize(pDevice, pContext)))
 	{
-		MSG_BOX("Failed To Created : CBackGround");
+		MSG_BOX("Failed To Created : ImguiMgr");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

@@ -54,3 +54,4 @@
 53. PlayerSkillCast2
 54. PlayerSkillExplosion
 55. PlayerSkillFinalEffect
+56. BlastWall

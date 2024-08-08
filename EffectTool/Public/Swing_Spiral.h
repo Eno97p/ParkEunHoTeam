@@ -13,8 +13,9 @@ public:
 	typedef struct SWING_SPIRAL
 	{
 		_float3 vSize = { 1.f,1.f,1.f };
+		_float3 vMaxSize = { 1.f,1.f,1.f };
 		_float3 fColor = { 1.f,1.f,1.f };
-		_float3 BloomColor = { 0.f,1.f,0.f };
+		_float3 BloomColor = { 1.f,1.f,1.f };
 		_float fBloomPower = 0.f;
 		_float fMaxLifeTime = 1.f;
 		const _float4x4* ParentMatrix = nullptr;
@@ -48,8 +49,6 @@ private:
 	_float							m_fCurLifeTime = 0.f;
 	_float							m_fLifeTimeRatio = 0.f;
 
-private:
-	_bool							EffectDead = false;
 
 public:
 	static CSwing_Spiral* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

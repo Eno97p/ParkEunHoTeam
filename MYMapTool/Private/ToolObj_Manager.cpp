@@ -298,7 +298,9 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_AckbarHouseRoofS"),
                         TEXT("Prototype_Component_Model_AqueducTowerRoof"),
                         TEXT("Prototype_Component_Model_UnderRoofFilling"),
-                        TEXT("Prototype_Component_Model_RotateGate")
+                        TEXT("Prototype_Component_Model_RotateGate"),
+                        TEXT("Prototype_Component_Model_Fragile_Rock"),
+                        TEXT("Prototype_Component_Model_CloudDome")
                  
     };
 

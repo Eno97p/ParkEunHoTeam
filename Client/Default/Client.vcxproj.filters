@@ -715,6 +715,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern">
       <UniqueIdentifier>{eff48dd8-a8e2-4f8b-ac18-ec5f896e3b85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
+      <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
       <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
     </Filter>
@@ -1508,6 +1511,9 @@
     <ClInclude Include="..\Public\Grass.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Cloud.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClInclude>
@@ -2275,6 +2281,9 @@
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Cloud.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClCompile>
@@ -2395,6 +2404,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

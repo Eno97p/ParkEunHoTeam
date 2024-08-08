@@ -107,6 +107,7 @@
 
 #include "Tree.h"
 #include "Grass.h"
+#include "Cloud.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

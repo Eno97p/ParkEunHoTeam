@@ -62,10 +62,10 @@ private:
 	_uint m_iShaderPath = 0;
 public:
 	// 구름 관련 변수들
-	float m_fCloudDensity = 0.8f;
-	float m_fCloudScale = 0.01f;
-	float m_fCloudSpeed = 0.1f;
-	float m_fCloudHeight = 0.1f;
+	float m_fCloudDensity = 1.007605f;
+	float m_fCloudScale = 0.000381f;
+	float m_fCloudSpeed = 0.017529f;
+	float m_fCloudHeight = 99.049f;
 	_float3 m_vCloudColor = _float3(0.6f, 0.6f, 0.6f);
 
 	// 조명 관련 변수
@@ -73,8 +73,8 @@ public:
 	_float4 m_vLightAmbient = _float4(0.2f, 0.2f, 0.3f, 1.0f);
 	_float4 m_vLightSpecular = _float4(1.0f, 1.0f, 1.0f, 1.0f);
 	_float4 m_vLightDir = _float4(-1.0f, -1.0f, -1.0f, 0.0f);
-	_float4 m_vLightPosition;
-	float m_fLightRange = 100.0f;
+	_float4 m_vLightPosition = {-761.797f, 3494.479f, 856.610, 1.f };
+	float m_fLightRange = 5000.0f;
 
 	// Sphere Tracing 관련 변수
 	float m_fSphereTracingThreshold = 0.01f;
@@ -85,30 +85,37 @@ public:
 	float m_fStepSize = 0.5f;
 
 	// 노이즈 관련 변수
-	int m_iPerlinOctaves = 7;
-	float m_fPerlinFrequency = 4.0f;
-	float m_fWorleyFrequency = 4.0f;
+	int m_iPerlinOctaves = 2;
+	float m_fPerlinFrequency = 0.630f;
+	float m_fWorleyFrequency = 1.0f;
 
 	// Perlin Noise 관련 새 변수들
-	float m_fPerlinPersistence = 0.5f;
-	float m_fPerlinLacunarity = 2.0f;
+	float m_fPerlinPersistence = 0.381f;
+	float m_fPerlinLacunarity = 1.0f;
 
 	// Worley Noise 관련 새 변수
-	float m_fWorleyJitter = 1.0f;
+	float m_fWorleyJitter = 0.0f;
 
 	// Noise 혼합 관련 새 변수들
-	float m_fPerlinWorleyMix = 0.5f;
-	float m_fNoiseRemapLower = 0.0f;
-	float m_fNoiseRemapUpper = 1.0f;
+	float m_fPerlinWorleyMix = 0.186f;
+	float m_fNoiseRemapLower = 0.650f;
+	float m_fNoiseRemapUpper = 1.000f;
 
 public:
-	float m_fCoarseStepSize = 2.0f;
-	float m_fFineStepSize = 0.5f;
-	int m_iMaxCoarseSteps = 50;
+	float m_fCoarseStepSize = 10.0f;
+	float m_fFineStepSize = 1.f;
+	int m_iMaxCoarseSteps = 10;
 	int m_iMaxFineSteps = 64;
-	float m_fDensityThreshold = 0.05f;
-	float m_fAlphaThreshold = 0.95f;
+	float m_fDensityThreshold = 0.1f;
+	float m_fAlphaThreshold = 0.944f;
 
+
+	void Set_CloudVolumeSize(float size) { m_fCloudVolumeSize = size; }
+	void Set_CloudVolumeOffset(const XMFLOAT3& offset) { m_vCloudVolumeOffset = offset; }
+
+private:
+	float m_fCloudVolumeSize = 100.0f;
+	XMFLOAT3 m_vCloudVolumeOffset = XMFLOAT3(0.0f, 50.0f, 0.0f);
 
 public:
 	static CCloud* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

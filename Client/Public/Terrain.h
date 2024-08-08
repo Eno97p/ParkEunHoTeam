@@ -41,8 +41,8 @@ private:
 
 
 private:
-	_float m_fSnowGroundHeight = 500;
-	_float m_fSnowGroundHeightOffset = 50;
+	_float m_fSnowGroundHeight = 650;
+	_float m_fSnowGroundHeightOffset = 150;
 
 public:
 	HRESULT Add_Components();

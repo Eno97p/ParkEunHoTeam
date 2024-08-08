@@ -48,10 +48,6 @@ void CUI_Manager::Set_ScreenBloodRend(_bool isRend)
 
 void CUI_Manager::Set_Broken(_bool isRend)
 {
-	/*if (!m_pBroken->Get_Rend())
-	{
-
-	}*/
 	m_pBroken->Set_Rend(isRend);
 	m_pBroken->Resset_Animation(true);
 }
@@ -254,7 +250,7 @@ HRESULT CUI_Manager::Create_UI()
 	m_pScreenBlood = dynamic_cast<CUI_ScreenBlood*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScreenBlood"), &pBloodDesc));
 
 	// Broken   
-	CUI::UI_Desc pBrokenDesc{};
+	CUI::UI_DESC pBrokenDesc{};
 	pBrokenDesc.eLevel = LEVEL_STATIC;
 	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pBrokenDesc));
 

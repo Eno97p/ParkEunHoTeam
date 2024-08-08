@@ -45,7 +45,7 @@ protected:
 	virtual HRESULT Initialize(void* pArg) override;
 public:
 	void Set_Target(CGameObject* Target);
-
+	void Set_Rotation(_float Radian, _vector Axis);
 protected:
 	CTexture* m_pDesolveTexture = { nullptr };
 	CShader*  m_pShaderCom = { nullptr };

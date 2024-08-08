@@ -487,25 +487,30 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_SPOTLIGHT(PS_IN In)
 
     return Out;
 }
-
-float hash(float2 p)
+float hash(float3 p)
 {
-    return frac(sin(dot(p, float2(12.9898, 78.233))) * 43758.5453);
+    p = frac(p * 0.3183099 + .1);
+    p *= 17.0;
+    return frac(p.x * p.y * p.z * (p.x + p.y + p.z));
 }
 
-float noise(float2 p)
+float noise(float3 x)
 {
-    float2 i = floor(p);
-    float2 f = frac(p);
-    float a = hash(i);
-    float b = hash(i + float2(1.0, 0.0));
-    float c = hash(i + float2(0.0, 1.0));
-    float d = hash(i + float2(1.0, 1.0));
-    float2 u = f * f * (3.0 - 2.0 * f);
-    return lerp(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+    float3 i = floor(x);
+    float3 f = frac(x);
+    f = f * f * (3.0 - 2.0 * f);
+
+    return lerp(lerp(lerp(hash(i + float3(0, 0, 0)),
+        hash(i + float3(1, 0, 0)), f.x),
+        lerp(hash(i + float3(0, 1, 0)),
+            hash(i + float3(1, 1, 0)), f.x), f.y),
+        lerp(lerp(hash(i + float3(0, 0, 1)),
+            hash(i + float3(1, 0, 1)), f.x),
+            lerp(hash(i + float3(0, 1, 1)),
+                hash(i + float3(1, 1, 1)), f.x), f.y), f.z);
 }
 
-float fbm(float2 p)
+float fbm(float3 p)
 {
     float value = 0.0;
     float amplitude = 0.5;
@@ -578,9 +583,6 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     float3 cameraToWorldPos = vWorldPos.xyz - g_vCamPosition.xyz;
     float distanceToCamera = length(cameraToWorldPos);
 
-
-
-
     // 안개 방향 계산
     float3 fogDirection = normalize(cameraToWorldPos);
 
@@ -588,45 +590,28 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     float noiseRange = g_fFogRange * 0.5f;
 
     // 첫 번째 안개 계산
-    float2 timeOffset1 = float2(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset);
-    float2 fbmCoord1 = vWorldPos.xz * g_fNoiseSize + timeOffset1;
-    float2 q1 = float2(fbm(fbmCoord1), fbm(fbmCoord1 + float2(5.2, 1.3)));
-    float2 r1 = float2(fbm(fbmCoord1 + 2.0 * q1 + float2(1.7, 9.2)), fbm(fbmCoord1 + 2.0 * q1 + float2(8.3, 2.8)));
-    float fbmValue1 = fbm(fbmCoord1 + 2.0 * r1);
+    float3 timeOffset1 = float3(g_Time * g_fFogTimeOffset * 1.2f, g_Time * g_fFogTimeOffset, g_Time * g_fFogTimeOffset * 0.7f);
+    float3 fbmCoord1 = vWorldPos.xyz * g_fNoiseSize + timeOffset1;
+    float fbmValue1 = fbm(fbmCoord1);
 
     // 두 번째 안개 계산
-    float2 timeOffset2 = float2(-g_Time * g_fFogTimeOffset2 * 0.8f, -g_Time * g_fFogTimeOffset2 * 0.6f);
-    float2 fbmCoord2 = vWorldPos.xz * g_fNoiseSize2 + timeOffset2;
-    float2 q2 = float2(fbm(fbmCoord2), fbm(fbmCoord2 + float2(4.3, 2.6)));
-    float2 r2 = float2(fbm(fbmCoord2 + 1.7 * q2 + float2(2.5, 8.4)), fbm(fbmCoord2 + 1.7 * q2 + float2(7.6, 3.1)));
-    float fbmValue2 = fbm(fbmCoord2 + 1.7 * r2);
+    float3 timeOffset2 = float3(-g_Time * g_fFogTimeOffset2 * 0.8f, -g_Time * g_fFogTimeOffset2 * 0.6f, -g_Time * g_fFogTimeOffset2 * 0.9f);
+    float3 fbmCoord2 = vWorldPos.xyz * g_fNoiseSize2 + timeOffset2;
+    float fbmValue2 = fbm(fbmCoord2);
 
     // 노이즈 샘플 계산 및 거리에 따른 보간
-    float noiseFade = saturate(1.0 - (distanceToCamera - noiseRange) / noiseRange);
+    float noiseFade = saturate(distanceToCamera / g_fFogRange);
     float noiseSample1 = lerp(1.0, 1.0 + (fbmValue1 - 0.5) * 2.0 * g_fNoiseIntensity, noiseFade);
     float noiseSample2 = lerp(1.0, 1.0 + (fbmValue2 - 0.5) * 2.0 * g_fNoiseIntensity2, noiseFade);
 
-    // 안개 깊이 계산 및 노이즈 적용
-    float fogDepth1 = distanceToCamera * noiseSample1 * g_fFogGlobalDensity;
-    float fogDepth2 = distanceToCamera * noiseSample2 * g_fFogGlobalDensity;
-
     // 거리 기반 안개 계산
-    float distanceFog1 = saturate(fogDepth1 / g_fFogRange);
-    float distanceFog2 = saturate(fogDepth2 / g_fFogRange);
-
-    // 높이 기반 안개 계산
-    float heightFactor = 0.05;
-    float fogFactor1 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
-        (1.0 - exp(-fogDepth1 * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
-    float fogFactor2 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
-        (1.0 - exp(-fogDepth2 * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
-
-    fogFactor1 = saturate(fogFactor1 * g_fFogGlobalDensity);
-    fogFactor2 = saturate(fogFactor2 * g_fFogGlobalDensity);
+    float baseFog = saturate(distanceToCamera / g_fFogRange);
+    float distanceFog1 = baseFog * noiseSample1 * g_fFogGlobalDensity;
+    float distanceFog2 = baseFog * noiseSample2 * g_fFogGlobalDensity;
 
     // 최종 안개 팩터 계산
-    float finalFogFactor1 = max(distanceFog1, fogFactor1);
-    float finalFogFactor2 = max(distanceFog2, fogFactor2);
+    float finalFogFactor1 = saturate(distanceFog1);
+    float finalFogFactor2 = saturate(distanceFog2);
 
     // 최종 색상 계산
     float4 finalColor = lerp(vColor, g_vFogColor, finalFogFactor1);

@@ -39,32 +39,31 @@ HRESULT CSwing_Spiral::Initialize(void* pArg)
 
 void CSwing_Spiral::Priority_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 }
 
 void CSwing_Spiral::Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
-
 	m_fCurLifeTime += fTimeDelta;
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
-		EffectDead = true;
+		m_pGameInstance->Erase(this);
 	}
 	m_fLifeTimeRatio = m_fCurLifeTime / m_OwnDesc->fMaxLifeTime;
 	m_fLifeTimeRatio = max(0.f, min(m_fLifeTimeRatio, 1.f));
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);
+
+	_vector CurSize = XMLoadFloat3(&m_OwnDesc->vSize);
+	_vector MaxSize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
+	_vector ResultSize = XMVectorLerp(CurSize, MaxSize, m_fLifeTimeRatio);
+	m_pTransformCom->Set_Scale(ResultSize.m128_f32[0], ResultSize.m128_f32[1], ResultSize.m128_f32[2]);
 }
 
 void CSwing_Spiral::Late_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);

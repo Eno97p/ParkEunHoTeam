@@ -280,7 +280,7 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 		//	desc.wheelDesc[i].dampingRate = 80.f;		//차량 바퀴 감쇠율		0~ Infinit //  높을 수록 더 빠르게 멈춤
 		//}
 
-		desc.directDrivetrainParamsDesc.directDriveThrottleResponseParams.maxResponse = 10000.0f;
+		desc.directDrivetrainParamsDesc.directDriveThrottleResponseParams.maxResponse = 20000.f;
 		for (int i = 0; i < wheelCount; ++i)
 		{
 			desc.directDrivetrainParamsDesc.directDriveThrottleResponseParams.wheelResponseMultipliers[i] = 1.0f;

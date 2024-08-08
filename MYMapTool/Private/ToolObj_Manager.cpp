@@ -300,7 +300,17 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_UnderRoofFilling"),
                         TEXT("Prototype_Component_Model_RotateGate"),
                         TEXT("Prototype_Component_Model_Fragile_Rock"),
-                        TEXT("Prototype_Component_Model_CloudDome")
+                        TEXT("Prototype_Component_Model_CloudDome"),
+                        TEXT("Prototype_Component_Model_Cathedral"),
+                        TEXT("Prototype_Component_Model_Espadon_Station"),
+                        TEXT("Prototype_Component_Model_GrassLand_Ruins"),
+                        TEXT("Prototype_Component_Model_Tower_Ruins"),
+                        TEXT("Prototype_Component_Model_Bastion"),
+                        TEXT("Prototype_Component_Model_MetalGrid2"),
+                        TEXT("Prototype_Component_Model_Hoverboard_Track"),
+                        TEXT("Prototype_Component_Model_Hoverboard_Track_Pillar"),
+                        TEXT("Prototype_Component_Model_GrassLand_Arch"),
+                        TEXT("Prototype_Component_Model_Meteore")
                  
     };
 

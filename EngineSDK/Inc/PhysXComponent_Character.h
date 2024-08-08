@@ -63,7 +63,7 @@ public:
 	virtual void Tick(_float fTimeDelta);
 	virtual void Late_Tick(_float fTimeDelta);
 
-
+	HRESULT Go_Up(_float fTimeDelta);
 	HRESULT Go_Straight(_float fTimeDelta);
 	HRESULT Go_BackWard(_float fTimeDelta);
 	HRESULT Go_Left(_float fTimeDelta);

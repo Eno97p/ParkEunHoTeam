@@ -163,13 +163,18 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	vector<future<void>> futures;
 
+	//AddWork([this, fTimeDelta]() {
+	//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
+	//});
 	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
 	//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 	//	}));
 	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
 	
-
+	//AddWork([this, fTimeDelta]() {
+	//	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
+	//});
 
 	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
 	//	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
@@ -207,9 +212,6 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 
 	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
-	
-	
-	//PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
 	
 
 #ifdef _DEBUG
@@ -526,6 +528,11 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
 {
 	m_pRenderer->Set_FogOption(desc);
+}
+
+_vector CGameInstance::Get_FogColor()
+{
+	return m_pRenderer->Get_FogColor();
 }
 
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
@@ -857,11 +864,11 @@ HRESULT CGameInstance::Add_UI(CGameObject* ui, UISORT_PRIORITY type)
 //	m_pOctTree->AddObject(obj, pActor);
 //}
 
-template<typename T, typename... Args>
-void CGameInstance::AddWork(T&& Func, Args&&... args)
-{
-	m_pWorker->Add_Job(Func, args...);
-}
+//template<typename T, typename... Args>
+//auto CGameInstance::AddWork(T&& Func, Args&&... args) -> future<decltype(Func(args...))>
+//{
+//	return 	m_pWorker->Add_Job(Func, args...);
+//}
 
 _uint CGameInstance::Get_CascadeNum(_fvector vPosition, _float fRange)
 {

@@ -31,6 +31,11 @@ void CParticle::Set_Target(CGameObject* Target)
 	m_pTarget = (CTransform*)Target->Get_Component(TEXT("Com_Transform"));
 }
 
+void CParticle::Set_Rotation(_float Radian, _vector Axis)
+{
+	m_pTransformCom->Rotation(Axis, XMConvertToRadians(Radian));
+}
+
 void CParticle::Free()
 {
 	__super::Free();

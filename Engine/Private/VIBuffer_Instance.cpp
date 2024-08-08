@@ -1410,6 +1410,44 @@ void CVIBuffer_Instance::Up_To_Stop(_float fTimeDelta)
 	m_bInstanceDead = allInstancesDead;
 }
 
+void CVIBuffer_Instance::Only_Up(_float fTimeDelta)
+{
+	bool allInstancesDead = true;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		pVertices[i].vGravity -= fTimeDelta;
+
+		pVertices[i].vTranslation.y += m_pSpeeds[i] * fTimeDelta;
+
+		_vector vDir = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+		_vector vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		_vector vUp = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+		XMStoreFloat4(&pVertices[i].vLook, vDir * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i]);
+
+		if (pVertices[i].vGravity < 0.f)
+		{
+			pVertices[i].vGravity = m_pOriginalGravity[i];
+			pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+		}
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+			pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+		else
+			allInstancesDead = false;
+
+	}
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	m_bInstanceDead = allInstancesDead;
+}
+
 
 
 

@@ -148,9 +148,9 @@ HRESULT CLoader::Loading_Map()
 	case LEVEL_GAMEPLAY:
 	{
 
-		//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static"),
-		//	CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", TEXT("../Bin/MapData/Stage_Tutorial.bin")))))
-		//	return hr = E_FAIL;
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_static_For_Well"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
+			return hr = E_FAIL;
 		
 
 		//PHYSX TUTORIAL MAP
@@ -204,6 +204,10 @@ HRESULT CLoader::Loading_Map()
 	break;
 	case LEVEL_ACKBAR: //JUGGLAS CASTLE
 	{
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Physx_static_For_Well"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
+			return hr = E_FAIL;
+
 
 		//PHYSX JUGGLAS MAP
 		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Ackbar_PhysX.bin";
@@ -254,6 +258,11 @@ HRESULT CLoader::Loading_Map()
 	case LEVEL_JUGGLAS: //JUGGLAS CASTLE
 	{
 
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Physx_static_For_Well"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
+			return hr = E_FAIL;
+
+
 		//PHYSX JUGGLAS MAP
 		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_Juggulas_PhysX.bin";
 		HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -302,6 +311,15 @@ HRESULT CLoader::Loading_Map()
 	case LEVEL_ANDRASARENA: //JUGGLAS CASTLE
 	{
 
+
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Physx_static_For_Well"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
+			return hr = E_FAIL;
+
+
+
+
+
 		//PHYSX JUGGLAS MAP
 		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_AndrasArena_PhysX.bin";
 		HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -349,6 +367,10 @@ HRESULT CLoader::Loading_Map()
 	break;
 	case LEVEL_GRASSLAND: //JUGGLAS CASTLE
 	{
+
+		if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Physx_static_For_Well"),
+			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
+			return hr = E_FAIL;
 
 		////PHYSX JUGGLAS MAP
 		//const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_GrassLand_PhysX.bin";
@@ -1016,6 +1038,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 
+	PreTransformMatrix = XMMatrixScaling(0.005f, 0.005f, 0.005f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Well"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
@@ -1045,358 +1073,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 
-	//lstrcpy(m_szLoadingText, TEXT("객체원형을 로딩 중 입니다."));
-
-	/* For.Prototype_GameObject_Terrain*/
-	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Terrain"),
-	//	CTerrain::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
-
-	
-
-//	/* For.Prototype_GameObject_FreeCamera*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FreeCamera"),
-//		CFreeCamera::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_ThirdPersonCamera*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ThirdPersonCamera"),
-//		CThirdPersonCamera::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_SideViewCamera*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SideViewCamera"),
-//		CSideViewCamera::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	///* For.Prototype_GameObject_Monster */
-//	//if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),
-//	//	CMonster ::Create(m_pDevice, m_pContext))))
-//	//	return E_FAIL;
-//
-//
-//	/* For.Prototype_GameObject_ForkLift */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ForkLift"),
-//		CForkLift::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Player */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Player"),
-//		CPlayer::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Player */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Player"),
-//		CBody_Player::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Player */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Distortion"),
-//		CDistortion::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Clone */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Clone"),
-//		CClone::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_WhisperSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhisperSword"),
-//		CWhisperSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_WhisperSword_Anim */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WhisperSword_Anim"),
-//		CWhisperSword_Anim::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Cendres */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cendres"),
-//		CCendres::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_CorruptedSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CorruptedSword"),
-//		CCorruptedSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Catharsis */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Catharsis"),
-//		CCatharsis::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_DurgaSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_DurgaSword"),
-//		CDurgaSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_IceBlade */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_IceBlade"),
-//		CIceBlade::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_NaruehSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_NaruehSword"),
-//		CNaruehSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_PretorianSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_PretorianSword"),
-//		CPretorianSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_RadamantheSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RadamantheSword"),
-//		CRadamantheSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_SitraSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_SitraSword"),
-//		CSitraSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_ValnirSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ValnirSword"),
-//		CValnirSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_VeilleurSword */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_VeilleurSword"),
-//		CVeilleurSword::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Sky */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sky"),
-//		CSky::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Passive_Element */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Passive_Element"),
-//		CPassive_Element::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Deco_Element */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Deco_Element"),
-//		CDeco_Element::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Active_Element */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Active_Element"),
-//		CActive_Element::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//
-//
-//#pragma region Active Element
-//
-//	// Prototype_GameObject_TutorialMapBridge
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TutorialMapBridge"),
-//		CTutorialMapBridge::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//
-//	// Prototype_GameObject_FakeWall
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FakeWall"),
-//		CFakeWall::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//	
-//	// Prototype_GameObject_Elevator
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Elevator"),
-//		CElevator::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	// Prototype_GameObject_RotateGate
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_RotateGate"),
-//		CRotateGate::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	//Prototype_GameObject_EventTrigger
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_EventTrigger"),
-//		CEventTrigger::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//
-//#pragma endregion Active Element
-//
-//#pragma region Monster
-//	/* For.Prototype_GameObject_Boss_Juggulus */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Boss_Juggulus"),
-//		CBoss_Juggulus::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Juggulus */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Juggulus"),
-//		CBody_Juggulus::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Juggulus_Hammer */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_Hammer"),
-//		CJuggulus_Hammer::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Juggulus_HandOne */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandOne"),
-//		CJuggulus_HandOne::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Juggulus_HandTwo */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandTwo"),
-//		CJuggulus_HandTwo::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Juggulus_HandThree */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Juggulus_HandThree"),
-//		CJuggulus_HandThree::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Aspiration */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Aspiration"),
-//		CAspiration::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Sphere */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Sphere"),
-//		CSphere::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_CircleSphere */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CircleSphere"),
-//		CCircleSphere::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Mantari */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mantari"),
-//		CMantari::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Mantari */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Mantari"),
-//		CBody_Mantari::Create(m_pDevice, m_pContext)))) // 조심해라 김보민 가만안둬 (괴도루팡)
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Mantari */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Mantari"),
-//		CWeapon_Mantari::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//
-//	/* For.Prototype_GameObject_Legionnaire */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire"),
-//		CLegionnaire::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Legionnaire */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Legionnaire"),
-//		CBody_Legionnaire::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Legionnaire */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Legionnaire"),
-//		CWeapon_Legionnaire::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Legionnaire_Gun */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire_Gun"),
-//		CLegionnaire_Gun::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_LGGun */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_LGGun"),
-//		CBody_LGGun::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Gun_LGGun */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Gun_LGGun"),
-//		CWeapon_Gun_LGGun::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Sword_LGGun */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Sword_LGGun"),
-//		CWeapon_Sword_LGGun::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Arrow_LGGun */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Arrow_LGGun"),
-//		CWeapon_Arrow_LGGun::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Ghost */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Ghost"),
-//		CGhost::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Ghost */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Ghost"),
-//		CBody_Ghost::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Ghost */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Ghost"),
-//		CWeapon_Ghost::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Homonculus */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Homonculus"),
-//		CHomonculus::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Homonculus */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Homonculus"),
-//		CBody_Homonculus::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Weapon_Homonculus */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Homonculus"),
-//		CWeapon_Homonculus::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_TargetLock */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_TargetLock"),
-//		CTargetLock::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//#pragma endregion Monster
-//
-//#pragma region ITEM
-//	/* For.Prototype_GameObject_Item*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Item"),
-//		CItem::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//#pragma endregion ITEM
-//
-//#pragma region DECAL
-//	/* For.Prototype_GameObject_Decal*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Decal"),
-//		CDecal::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//#pragma endregion DECAL
-//
-//#pragma region Npc
-//	/* For.Prototype_GameObject_Npc_Rlya*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Npc_Rlya"),
-//		CNPC_Rlya::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_GameObject_Body_Rlya*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Rlya"),
-//		CBody_Rlya::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//#pragma endregion Npc
-//
-//	/* For.Prototype_GameObject_HoverBoard */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
-//		CHoverboard::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-//
-//	/*For.Prototype_GameObject_Trap */
-//	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Trap"),
-//		CTrap::Create(m_pDevice, m_pContext))))
-//		return E_FAIL;
-
-
-
-
-	
 
 
 	return S_OK;
@@ -1621,9 +1297,9 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 #pragma region  STAGE 1 PASSIVE ELEMENTS
 
 	//STAGE 1 PASSIVE ELEMENTS
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Well"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Well"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_WellArea"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WellArea/WellArea.fbx", PreTransformMatrix))))
@@ -2081,6 +1757,13 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 		return E_FAIL;
 
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Well"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
 
 	//lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	//if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Navigation"),
@@ -2340,9 +2023,9 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 
 #pragma endregion  JUGGLAS PASSIVE ELEMENTS
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Well"),
+	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Well"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_WellArea"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WellArea/WellArea.fbx", PreTransformMatrix))))
@@ -2783,6 +2466,12 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		return E_FAIL;
 
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Well"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 
 
 
@@ -2993,9 +2682,9 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 
 #pragma endregion  ANDRAS ARENA PASSIVE ELEMENTS
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Well"),
+	/*if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Well"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
-		return E_FAIL;
+		return E_FAIL;*/
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_WellArea"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WellArea/WellArea.fbx", PreTransformMatrix))))
@@ -3295,6 +2984,16 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 		return E_FAIL;
 
 #pragma endregion DECAL
+
+
+
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Well"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 
 	lstrcpy(m_szLoadingText, TEXT("피직스(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Physx"),
@@ -3944,6 +3643,12 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	PreTransformMatrix = XMMatrixScaling(0.002f, 0.002f, 0.002f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Fragile_Rock"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Fragile_Rock/Fragile_Rock.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Well"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 

@@ -11,6 +11,7 @@ texture2D   g_RoughnessTexture;
 texture2D   g_MetalicTexture;
 texture2D   g_DisolveTexture;
 texture2D   g_BlurTexture;
+float4 g_DisolveColor = float4(0.f, 1.f, 1.f, 1.f);
 
 float4 g_vCamPosition;
 
@@ -237,7 +238,7 @@ PS_OUT PS_WEAPON(PS_IN In)
     {
         Out.vVelocity = In.vVelocity;
     }
-    if ((g_DisolveValue - disolveValue) > 0.05f)
+    if ((g_DisolveValue - disolveValue) > 0.1f)
     {
         return Out;
     }
@@ -247,7 +248,7 @@ PS_OUT PS_WEAPON(PS_IN In)
     }
     else
     {
-        Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+        Out.vDiffuse = g_DisolveColor;
     }
 
     return Out;
@@ -284,7 +285,7 @@ PS_OUT_COLOR PS_WEAPON_REFLECTION(PS_IN In)
 
     vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
     float disolveValue = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
-    if ((g_DisolveValue - disolveValue) > 0.05f)
+    if ((g_DisolveValue - disolveValue) > 0.1f)
     {
         return Out;
     }
@@ -294,7 +295,7 @@ PS_OUT_COLOR PS_WEAPON_REFLECTION(PS_IN In)
     }
     else
     {
-        Out.vColor.rgb = float3(0.f, 1.f, 1.f);
+        Out.vColor = g_DisolveColor;
     }
 
     return Out;
@@ -444,7 +445,7 @@ PS_OUT PS_DISOLVE(PS_IN In)
     {
         Out.vVelocity = In.vVelocity;
     }
-    if ((g_DisolveValue - disolveValue) > 0.05f)
+    if ((g_DisolveValue - disolveValue) > 0.1f)
     {
         return Out;
     }
@@ -454,7 +455,7 @@ PS_OUT PS_DISOLVE(PS_IN In)
     }
     else
     {
-        Out.vDiffuse.rgb = float3(0.f, 1.f, 1.f);
+        Out.vDiffuse = g_DisolveColor;
     }
 
     return Out;

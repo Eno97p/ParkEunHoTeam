@@ -60,6 +60,7 @@
 #include "Swing_Spiral.h"
 #pragma endregion SWING
 
+#include "HoverBoard.h"
 
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -395,6 +396,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/SwingEffect/Swing_Spiral.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_HoverBoard*/
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hoverboard"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Hoverboard/Hoverboard.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 #pragma region SHADER
@@ -631,6 +638,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CSwing_Spiral::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),
+		CHoverBoard::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

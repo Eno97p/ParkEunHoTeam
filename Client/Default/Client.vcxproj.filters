@@ -625,9 +625,6 @@
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Lightnings">
-      <UniqueIdentifier>{83821f7e-dd8d-4150-87ac-fab32a58f56f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed\BG">
       <UniqueIdentifier>{0f45e09d-06f0-489c-bbe4-a8110583038b}</UniqueIdentifier>
     </Filter>
@@ -679,9 +676,6 @@
     <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\Btn">
       <UniqueIdentifier>{d58146bd-636c-4d90-b24f-ac3e502c1dd0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Tornado">
-      <UniqueIdentifier>{30e9c3c3-18cb-42e0-837b-7a323a9f2494}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Ch_Upgrade\Btn\Select">
       <UniqueIdentifier>{f6b6b686-58ae-497c-ae08-577a25842ce6}</UniqueIdentifier>
     </Filter>
@@ -708,7 +702,7 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Lazer">
       <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado">
       <UniqueIdentifier>{182b1577-a31a-4fd3-b2f8-b88ff8baa5eb}</UniqueIdentifier>
     </Filter>
@@ -720,6 +714,15 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern">
       <UniqueIdentifier>{eff48dd8-a8e2-4f8b-ac18-ec5f896e3b85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Broken">
+      <UniqueIdentifier>{0c3900b6-4c0b-4f9a-a490-d97ebc0df39e}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
+      <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
+      <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1489,7 +1492,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
       <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
     </ClInclude>
@@ -1507,9 +1510,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\Body_Malkhel.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Grass.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Broken.h">
+      <Filter>02.GameObjects\07. UI\Broken</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Cloud.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2230,30 +2266,6 @@
     <ClCompile Include="..\Private\Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp">
-      <Filter>02.GameObjects\06.Effect\Lazer</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado</Filter>
     </ClCompile>
@@ -2271,9 +2283,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\Body_Malkhel.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Body</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Grass.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Broken.cpp">
+      <Filter>02.GameObjects\07. UI\Broken</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Cloud.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2368,6 +2413,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

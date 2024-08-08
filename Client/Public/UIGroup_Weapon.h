@@ -39,6 +39,8 @@ public:
 	void			Update_Skill_Add();
 	
 	void			Update_Slot_EquipSign(_bool isEquip, _uint iSlotIdx = 0);
+	// 기존의 EquipSlot에 있는 녀석을 지워주는 함수가 필요함
+	//void			
 
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부

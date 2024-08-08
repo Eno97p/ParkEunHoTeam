@@ -24,7 +24,9 @@ public:
 		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
+
 #ifdef _DEBUG
+
 public:
 	typedef struct  PhysX_Character_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
 	{

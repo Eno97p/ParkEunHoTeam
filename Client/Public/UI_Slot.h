@@ -97,8 +97,8 @@ private:
 
 	void	Click_BtnEvent();
 	void	Render_Font();
-
 	void	Rend_Count();
+	_bool	Check_GroupRenderOnAnim();
 
 public:
 	static CUI_Slot*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

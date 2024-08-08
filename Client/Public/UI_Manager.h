@@ -24,6 +24,7 @@ public:
 	CUIGroup*			Get_UIGroup(string strKey);
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 	void				Set_ScreenBloodRend(_bool isRend);
+	void				Set_Broken(_bool isRend);
 	_bool				Get_isMouseOn();
 	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
@@ -57,6 +58,7 @@ private:
 
 	map<string, CUIGroup*>	m_mapUIGroup;
 	class CUI_ScreenBlood*	m_pScreenBlood = { nullptr };
+	class CUI_Broken*		m_pBroken = { nullptr };
 
 private:
 	HRESULT		Create_UI();

@@ -216,6 +216,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Client_Function.hpp" />
     <ClInclude Include="..\Public\Client_Macro.h" />
     <ClInclude Include="..\Public\Clone.h" />
+    <ClInclude Include="..\Public\Cloud.h" />
     <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\Public\Deco_Element.h" />
     <ClInclude Include="..\Public\Distortion.h" />
@@ -261,6 +262,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\NPC_Rlya.h" />
     <ClInclude Include="..\Public\Npc_Valnir.h" />
     <ClInclude Include="..\Public\NPC_Yaak.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h" />
@@ -301,6 +303,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_Upgrade.h" />
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
+    <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
@@ -476,6 +479,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
+    <ClCompile Include="..\Private\Cloud.cpp" />
     <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\Private\Deco_Element.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />
@@ -520,6 +524,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
     <ClCompile Include="..\Private\Npc_Valnir.cpp" />
     <ClCompile Include="..\Private\NPC_Yaak.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp" />
@@ -560,6 +565,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_Upgrade.cpp" />
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
+    <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />
@@ -730,6 +736,7 @@ call Copy_Client.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SwordTrail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl" />

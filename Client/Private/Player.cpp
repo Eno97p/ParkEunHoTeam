@@ -181,11 +181,15 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 
-
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
+		_float4 vStartPosition;
+		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vStartPosition.y += 1.f;
+		EFFECTMGR->Generate_Particle(51, vStartPosition);
 		EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 	}
+
 }
 
 HRESULT CPlayer::Render()
@@ -843,6 +847,10 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 				{
 					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				}
+
+				// UI Broken 호출 위치 (한번만 불리도록 해야 함)
+				CUI_Manager::GetInstance()->Set_Broken(true);
+
 				m_pGameInstance->Set_BRIS(0.1f);
 				m_pGameInstance->Set_Mirror(m_fBRIS - 2.f);
 			}

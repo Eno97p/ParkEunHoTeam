@@ -49,10 +49,10 @@ void CUI_Ch_UpgradeBtn::Priority_Tick(_float fTimeDelta)
 
 void CUI_Ch_UpgradeBtn::Tick(_float fTimeDelta)
 {
-    if (!m_isRenderAnimFinished)
-        Render_Animation(fTimeDelta);
-
-    __super::Tick(fTimeDelta);
+    m_CollisionRect = { LONG(m_fX - m_fSizeX * 0.2f),
+                    LONG(m_fY - m_fSizeY * 0.2f),
+                    LONG(m_fX + m_fSizeX * 0.2f),
+                    LONG(m_fY + m_fSizeY * 0.2f) };
 
     m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
@@ -78,7 +78,7 @@ HRESULT CUI_Ch_UpgradeBtn::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    m_pShaderCom->Begin(3);
+    m_pShaderCom->Begin(3); // 3
     m_pVIBufferCom->Bind_Buffers();
     m_pVIBufferCom->Render();
 
@@ -195,7 +195,7 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
     case Client::CUI_Ch_UpgradeBtn::ABILITY_VITALITY:
     {
         if ((!m_isPlus && (0 == pPlayer->Get_VitalityLv())) ||
-            (m_isPlus && 5 == pPlayer->Get_VitalityLv())) // Level이나 State이 0이면
+            (m_isPlus && 5 == pPlayer->Get_VitalityLv()))
             return;
         pPlayer->Set_VitalityLv(iValue);
         pPlayer->Update_LvData();
@@ -204,7 +204,8 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_STAMINA:
     {
-        if (!m_isPlus && (0 == pPlayer->Get_StaminaLv())) // Level이나 State이 0이면
+        if ((!m_isPlus && (0 == pPlayer->Get_StaminaLv()))
+           || (m_isPlus && 5 == pPlayer->Get_StaminaLv()))
             return;
         pPlayer->Set_StaminaLv(iValue);
         pPlayer->Update_LvData();
@@ -213,7 +214,8 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_STRENGHT:
     {
-        if (!m_isPlus && (0 == pPlayer->Get_StrenghtLv())) // Level이나 State이 0이면
+        if ((!m_isPlus && (0 == pPlayer->Get_StrenghtLv()))
+            || (m_isPlus && 5 == pPlayer->Get_StrenghtLv()))
             return;
         pPlayer->Set_StrengthLv(iValue);
         pPlayer->Update_LvData();
@@ -222,14 +224,16 @@ void CUI_Ch_UpgradeBtn::Apply_BtnEvent()
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_MYSTICISM:
     {
-        if (!m_isPlus && (0 == pPlayer->Get_MysticismLv())) // Level이나 State이 0이면
+        if ((!m_isPlus && (0 == pPlayer->Get_MysticismLv()))
+            || (m_isPlus && 5 == pPlayer->Get_MysticismLv()))
             return;
         pPlayer->Set_MysticismLv(iValue);
         break;
     }
     case Client::CUI_Ch_UpgradeBtn::ABILITY_KNOWLEDGE:
     {
-        if (!m_isPlus && (0 == pPlayer->Get_KnowledgeLv())) // Level이나 State이 0이면
+        if ((!m_isPlus && (0 == pPlayer->Get_KnowledgeLv()))
+            || (m_isPlus && 5 == pPlayer->Get_KnowledgeLv()))
             return;
         pPlayer->Set_KnowledgeLv(iValue);
         break;

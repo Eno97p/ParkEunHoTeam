@@ -53,6 +53,9 @@ void CParticle_Trail::Tick(_float fTimeDelta)
 	case TRAIL_ETERNAL:
 		m_pVIBufferCom->EternalTrail(fTimeDelta);
 		break;
+	case TRAIL_CATMULROM:
+		m_pVIBufferCom->CatMullRomTrail(fTimeDelta);
+		break;
 	default:
 		break;
 	}
@@ -62,12 +65,13 @@ void CParticle_Trail::Late_Tick(_float fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	if(m_pTrailDesc->Blur)
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	if (m_pTrailDesc->Blur)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLUR, this);
+	else
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
-	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	if (m_pTrailDesc->Bloom)
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CParticle_Trail::Render()
@@ -98,6 +102,15 @@ HRESULT CParticle_Trail::Render_Bloom()
 	return S_OK;
 }
 
+HRESULT CParticle_Trail::Render_Blur()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+	m_pShaderCom->Begin(0);
+	m_pVIBufferCom->Bind_Buffers();
+	m_pVIBufferCom->Render();
+	return S_OK;
+}
 
 HRESULT CParticle_Trail::Add_Components()
 {
@@ -140,15 +153,12 @@ HRESULT CParticle_Trail::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_Desolve", &m_pTrailDesc->Desolve, sizeof(_bool))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_Alpha", &m_pTrailDesc->Alpha, sizeof(_bool))))
-		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartColor", &m_pTrailDesc->vStartColor, sizeof(_float3))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_EndColor", &m_pTrailDesc->vEndColor, sizeof(_float3))))
 		return E_FAIL;
 
-	
 	return S_OK;
 }
 

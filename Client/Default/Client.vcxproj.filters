@@ -1514,6 +1514,9 @@
     <ClInclude Include="..\Public\Cloud.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
 	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
     </ClInclude>
@@ -2281,6 +2284,9 @@
     <ClCompile Include="..\Private\Cloud.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\05. Cloud</Filter>
 	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasHead.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
     </ClCompile>

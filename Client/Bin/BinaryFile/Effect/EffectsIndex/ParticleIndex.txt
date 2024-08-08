@@ -50,3 +50,7 @@
 49. Tornado_Rock1
 50. HealingSubEffect
 51. AndrasLazerGather
+52. PlayerSkillCast
+53. PlayerSkillCast2
+54. PlayerSkillExplosion
+55. PlayerSkillFinalEffect

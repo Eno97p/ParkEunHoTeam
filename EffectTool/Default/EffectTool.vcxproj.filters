@@ -122,6 +122,9 @@
     <Filter Include="Objects\02. Effects\12. SwingEffect\Effects">
       <UniqueIdentifier>{eccc28df-c5c2-4e5d-9411-68c2a373dbc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster\HoverBoard">
+      <UniqueIdentifier>{489a8cb1-2389-49ad-a798-9df08a0c0edd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -325,6 +328,9 @@
     <ClInclude Include="..\Public\LazerCast.h">
       <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HoverBoard.h">
+      <Filter>Objects\05. Monster\HoverBoard</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -512,6 +518,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\LazerCast.cpp">
       <Filter>Objects\05. Monster\Andras\AndrasLazer\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HoverBoard.cpp">
+      <Filter>Objects\05. Monster\HoverBoard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

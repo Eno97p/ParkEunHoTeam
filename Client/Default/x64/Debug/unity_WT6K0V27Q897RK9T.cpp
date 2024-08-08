@@ -279,6 +279,9 @@
 #include "C:\Real3DProject\Client\Private\RushSword.cpp"
 
 
+#include "C:\Real3DProject\Client\private\SavePoint.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\SideViewCamera.cpp"
 
 

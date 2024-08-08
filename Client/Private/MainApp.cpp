@@ -1426,12 +1426,17 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_ScreenBlood */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ScreenBlood"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_ScreenBlood.png"), 1)))) // T_ScreenBlood  Dash
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_ScreenBlood.png"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Broken */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Broken"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Broken.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Dash */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dash"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 

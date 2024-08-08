@@ -150,9 +150,9 @@ HRESULT CToolObj::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		//if ( i != 29)
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-			return E_FAIL;
+		////if ( i != 29)
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+		//	return E_FAIL;
 		m_pContext->OMSetDepthStencilState(m_pDSS_MapObject_SecondPass, 1);
 
 	/*	_bool f = false;

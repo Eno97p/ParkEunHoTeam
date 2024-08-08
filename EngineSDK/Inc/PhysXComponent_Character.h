@@ -24,7 +24,7 @@ public:
 		CTransform* pTransform = nullptr;
 	}ControllerDesc;
 
-#ifdef _DEBUG
+
 public:
 	typedef struct  PhysX_Character_Editable_Desc : CPhysXComponent::PhysX_Editable_Desc
 	{
@@ -34,7 +34,7 @@ public:
 
 
 	}PhysX_Character_Editable_Desc;
-#endif // _DEBUG
+
 
 
 private:
@@ -54,8 +54,8 @@ public:
 #ifdef _DEBUG
 	virtual HRESULT  Init_Buffer() override;
 	virtual HRESULT Render() override;
-	virtual PhysX_Character_Editable_Desc* GetData() override { return &m_OutDesc; }
 #endif
+	virtual PhysX_Character_Editable_Desc* GetData() override { return &m_OutDesc; }
 
 public:
 	virtual void Tick(_float fTimeDelta);

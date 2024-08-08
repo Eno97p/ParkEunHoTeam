@@ -1,5 +1,5 @@
 #pragma once
-#include "BlendObject.h"
+#include "Weapon.h"
 #include "Client_Defines.h"
 BEGIN(Engine)
 class CShader;
@@ -7,8 +7,10 @@ class CModel;
 END
 
 BEGIN(Client)
-class CElectricCylinder final : public CBlendObject
+class CElectricCylinder final : public CWeapon
 {
+#define HITCOOLTIME 0.1f;
+
 public:
 	typedef struct ANDRAS_ELECTRIC_DESC
 	{
@@ -46,6 +48,11 @@ private:
 	CModel* m_pModelCom = { nullptr };
 private:
 	shared_ptr<ANDRAS_ELECTRIC_DESC> m_OwnDesc;
+
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
+	_float m_fHitCoolTime = HITCOOLTIME;
 
 private:
 	_float				m_fCurLifeTime = 0.f;

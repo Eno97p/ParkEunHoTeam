@@ -22,6 +22,9 @@
 
 #include "Tree.h"
 
+#include"BlastWall.h"
+
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -70,8 +73,8 @@ HRESULT CLevel_Ackbar::Initialize()
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
 	_vector vEye = { 0.f, 151.6f, -10.f, 1.f };
-	_vector vFocus = { 0.04f, 10.f, -0.1f, 1.f };
-	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.95f);
+	_vector vFocus = { 0.f, 0.f, 0.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 	return S_OK;
 }

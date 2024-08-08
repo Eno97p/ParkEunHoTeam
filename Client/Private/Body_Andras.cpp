@@ -218,7 +218,14 @@ void CBody_Andras::Tick(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 24;
-		fAnimSpeed = 1.f;
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 1.f))
+		{
+			fAnimSpeed = 0.5f;
+		}
+		else
+		{
+			fAnimSpeed = 1.f;
+		}
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CAndras::STATE_BABYLONATTACK)

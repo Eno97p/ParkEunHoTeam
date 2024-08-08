@@ -42,6 +42,10 @@
 #include "Electronic.h"
 #include "Sphere.h"
 
+#include "Malkhel.h"
+#include "Body_Malkhel.h"
+#include "Weapon_Malkhel.h"
+
 #include "Mantari.h"
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
@@ -103,6 +107,7 @@
 
 #include "Tree.h"
 #include "Grass.h"
+#include "Cloud.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"
@@ -112,7 +117,7 @@
 #include"TestPhysXCollider.h"
 
 
-
+#include "AndrasHead.h"
 
 
 

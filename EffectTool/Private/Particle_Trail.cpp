@@ -52,6 +52,9 @@ void CParticle_Trail::Tick(_float fTimeDelta)
 	case TRAIL_ETERNAL:
 		m_pVIBufferCom->EternalTrail(fTimeDelta);
 		break;
+	case TRAIL_CATMULROM:
+		m_pVIBufferCom->CatMullRomTrail(fTimeDelta);
+		break;
 	default:
 		break;
 	}

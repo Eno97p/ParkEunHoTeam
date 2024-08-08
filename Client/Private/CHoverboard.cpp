@@ -5,6 +5,7 @@
 #include"GameInstance.h"
 
 #include"Camera.h"
+#include "EffectManager.h"
 
 CHoverboard::CHoverboard(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -57,6 +58,9 @@ HRESULT CHoverboard::Initialize(void* pArg)
 
 	m_fDisolveValue = 0.f;
 
+
+	HoverTrail = EFFECTMGR->Member_Trail(0, m_pTransformCom->Get_WorldFloat4x4());
+
 	return S_OK;
 }
 
@@ -82,6 +86,7 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 	default:
 		break;
 	}
+
 }
 
 void CHoverboard::Tick(_float fTimeDelta)
@@ -98,6 +103,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	PxRigidBody* rigidBody = m_pPhysXCom->GetRigidBody();
 
 	command->curSpeed = 	velocity.magnitude();
+	m_fCurHoverBoardSpeed = command->curSpeed;
 	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);
@@ -128,10 +134,12 @@ void CHoverboard::Tick(_float fTimeDelta)
 	{
 		if (m_bIsBoost)
 		{
+			m_pGameInstance->Set_MotionBlur(false);
 			m_bIsBoost = false;
 		}
 		else
 		{
+			m_pGameInstance->Set_MotionBlur(true);
 			m_bIsBoost = true;
 		}
 	}
@@ -187,11 +195,11 @@ void CHoverboard::Tick(_float fTimeDelta)
 	//카메라 광각 설정
 	// 최소 및 최대 FOV 설정
 	const float minFOV = XMConvertToRadians(60.f);
-	const float maxFOV = XMConvertToRadians(90.f);
+	const float maxFOV = XMConvertToRadians(150.f);
 
 	// 최소 및 최대 속도 설정 (이 값들은 게임의 특성에 맞게 조정해야 합니다)
 	const float minSpeed = 0.f;
-	const float maxSpeed = 100.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
+	const float maxSpeed = 200.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
 
 	// 현재 속도에 따른 FOV 계산
 	float t = (m_fCurHoverBoardSpeed - minSpeed) / (maxSpeed - minSpeed);
@@ -316,7 +324,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	//
 	m_pPhysXCom->Tick(fTimeDelta);
 
-	
+
 }
 
 void CHoverboard::Late_Tick(_float fTimeDelta)
@@ -338,6 +346,12 @@ void CHoverboard::Late_Tick(_float fTimeDelta)
 	_matrix worldMat = 	CPhysXComponent::Convert_PxTrans_To_DxMat(NewTransform);
 	m_pTransformCom->Set_WorldMatrix(worldMat);
 
+	if (HoverTrail != nullptr)
+		HoverTrail->Priority_Tick(fTimeDelta);
+	if (HoverTrail != nullptr)
+		HoverTrail->Tick(fTimeDelta);
+	if (HoverTrail != nullptr)
+		HoverTrail->Late_Tick(fTimeDelta);
 }
 
 HRESULT CHoverboard::Render()
@@ -498,4 +512,5 @@ void CHoverboard::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pDisolveTextureCom);
+	Safe_Release(HoverTrail);
 }

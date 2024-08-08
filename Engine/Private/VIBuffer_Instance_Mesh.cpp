@@ -145,7 +145,6 @@ HRESULT CInstance_Mesh::Initialize_ProtoType(CMesh* m_Meshes, const INSTANCE_DES
 		m_pOriginalSpeed[i] = m_pSpeeds[i];
 		pInstanceVertices[i].vGravity = Gravity(m_RandomNumber);
 		m_pOriginalGravity[i] = pInstanceVertices[i].vGravity;
-
 	}
 	m_InitialData.pSysMem = pInstanceVertices;
 

@@ -207,5 +207,4 @@ void CVIBuffer_Instance_Rect::Free()
 	Safe_Delete_Array(m_pOriginalGravity);
 	Safe_Delete_Array(m_pSize);
 	Safe_Delete_Array(m_pOriginalSize);
-
 }

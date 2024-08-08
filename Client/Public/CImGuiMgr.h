@@ -65,7 +65,6 @@ private:
 	int m_iCurrentLayer = 0;
 	int m_iCurrentObject = 0;
 	int m_iCurrentComponent = 0;
-
 	int m_iCurrentComponentVehicleProperty = 0;
 	CGameObject* m_pSelectedObject=nullptr;
 	wstring m_wstrLayerTag;
@@ -76,7 +75,7 @@ public:
 	virtual void Free() override;
 
 
-
+	_bool m_bIsAllRender = true;
 	static _bool FrameLimit;
 };
 

@@ -20,8 +20,8 @@ class CMalkhel final : public CMonster
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_DASHLEFT, STATE_DASHRIGHT, STATE_DASHBACK, STATE_DASHFRONT, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_ATTACK4, STATE_SPRINTATTACK,
-		STATE_GROUNDATTACK, STATE_KICKATTACK, STATE_LASERATTACK, STATE_BABYLONATTACK, STATE_SHOOTINGSTARATTACK, STATE_DEAD, STATE_END
+		STATE_IDLE, STATE_DASHLEFT, STATE_DASHRIGHT, STATE_DASHBACK, STATE_DASHFRONT, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_ATTACK4,
+		STATE_ATTACK5, STATE_ATTACK6, STATE_ATTACK7, STATE_DEAD, STATE_END
 	};
 
 private:
@@ -49,15 +49,14 @@ private:
 private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
-	NodeStates Attack(_float fTimeDelta);
-	NodeStates SprintAttack(_float fTimeDelta);
-	NodeStates GroundAttack(_float fTimeDelta);
-	NodeStates KickAttack(_float fTimeDelta);
-	NodeStates LaserAttack(_float fTimeDelta);
-	NodeStates BabylonAttack(_float fTimeDelta);
-	NodeStates ShootingStarAttack(_float fTimeDelta);
+	NodeStates Attack1(_float fTimeDelta);
+	NodeStates Attack2(_float fTimeDelta);
+	NodeStates Attack3(_float fTimeDelta);
+	NodeStates Attack4(_float fTimeDelta);
+	NodeStates Attack5(_float fTimeDelta);
+	NodeStates Attack6(_float fTimeDelta);
+	NodeStates Attack7(_float fTimeDelta);
 	NodeStates Select_Pattern(_float fTimeDelta);
-	NodeStates Backstep(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
 
@@ -80,11 +79,6 @@ private:
 	_float										m_fTurnDelay = 0.5f;
 	_float m_fSpawnCoolTime = SPAWNCOOLTIME;
 	_float m_fSpawnDelay = 2.f;
-	_uint m_iZigzag = 0;
-
-	_uint m_iPhase = 1;
-
-
 
 public:
 	static CMalkhel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

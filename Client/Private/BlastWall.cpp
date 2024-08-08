@@ -23,13 +23,18 @@ HRESULT CBlastWall::Initialize_Prototype()
 
 HRESULT CBlastWall::Initialize(void* pArg)
 {
+	CBlastWall_DESC* Desc = static_cast<CBlastWall_DESC*>(pArg);
+
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if(Desc!=nullptr)
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&Desc->fWorldMatrix));
 
-
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 453.f, 98.f, 1.0f));
+	//m_pTransformCom->Set_WorldMatrix()
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 453.f, 98.f, 1.0f));
+	//m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -47,83 +52,89 @@ void CBlastWall::Tick(_float fTimeDelta)
 {
 	//for (size_t i = 0; i < m_iNumMeshes; i++)
 		//m_pPhysXCom[i]->Tick(m_pTransformCom->Get_WorldFloat4x4());//Update_Collider(m_pTransformCom->Get_WorldMatrix());
+	if(m_bIsHit)
+		m_fLifeTime += fTimeDelta;
+
+	if(m_fLifeTime > 3.0f)
+		m_pGameInstance->Erase(this);
 
 
-	CComponent* pPlayerCharacter = m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_PhysX"));
-	if(pPlayerCharacter == nullptr)
-		return;
-	//dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
+	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.0f))
+	{
+		CComponent* pPlayerCharacter = m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_PhysX"));
+		if(pPlayerCharacter == nullptr)
+			return;
+		//dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->GetData()->pController;
 
-	PxController* pController = dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->Get_Controller();
+		PxController* pController = dynamic_cast<CPhysXComponent_Character*>(pPlayerCharacter)->Get_Controller();
 
-	PxCapsuleController* pCapsuleController = static_cast<PxCapsuleController*>(pController);
-	PxCapsuleGeometry capsuleGeom(pCapsuleController->getRadius(), pCapsuleController->getHeight() * 0.5f);
-	PxVec3 vPlayerVec3(static_cast<_float>(pCapsuleController->getFootPosition().x), static_cast<_float>(pCapsuleController->getFootPosition().y), static_cast<_float>(pCapsuleController->getFootPosition().z));
+		PxCapsuleController* pCapsuleController = static_cast<PxCapsuleController*>(pController);
+		PxCapsuleGeometry capsuleGeom(pCapsuleController->getRadius(), pCapsuleController->getHeight() * 0.5f);
+		PxVec3 vPlayerVec3(static_cast<_float>(pCapsuleController->getFootPosition().x), static_cast<_float>(pCapsuleController->getFootPosition().y), static_cast<_float>(pCapsuleController->getFootPosition().z));
+		
+		PxTransform pPlayerTransform = PxTransform(vPlayerVec3);
+		
+		//pController.get
 	
-	PxTransform pPlayerTransform = PxTransform(vPlayerVec3);
-	
 
-	
-	
-		for (size_t i = 0; i < m_iNumMeshes; i++)
+
+		if (!m_bIsHit)
 		{
-
-			PxRigidDynamic* pActor = 	m_pPhysXCom[i]->Get_Actor()->is<PxRigidDynamic>();
-			PxShape* pShape;
-			pActor->getShapes(&pShape, 1);
-
-			
-			const PxGeometryHolder geometry = pShape->getGeometry();
-			const PxConvexMeshGeometry& convexGeom = geometry.convexMesh();
-
-			PxTransform wallPos = pActor->getGlobalPose();
-
-			PxVec3 vSweepDir = wallPos.p - pPlayerTransform.p;
-			vSweepDir.normalize();
-
-			PxReal maxDist = 0.01f;
-			PxGeomSweepHit sweepHit;
-			PxGeometryQuery;
-			//m_pGameInstance->GetScene()->sweep()
-			_bool  bIsHit = PxGeometryQuery::sweep(
-				vSweepDir,
-				maxDist,
-				capsuleGeom,
-				pPlayerTransform,
-				convexGeom,
-				wallPos,
-				sweepHit
-			);
-
-			if (bIsHit)
+			for (size_t i = 0; i < m_iNumMeshes; i++)
 			{
-				Broken_Wall();
-				int test = 0;
-				break;
+
+				PxRigidDynamic* pActor = m_pPhysXCom[i]->Get_Actor()->is<PxRigidDynamic>();
+				PxShape* pShape;
+				pActor->getShapes(&pShape, 1);
+
+
+				const PxGeometryHolder geometry = pShape->getGeometry();
+				const PxConvexMeshGeometry& convexGeom = geometry.convexMesh();
+
+				PxTransform wallPos = pActor->getGlobalPose();
+
+				PxVec3 vSweepDir = wallPos.p - pPlayerTransform.p;
+				vSweepDir.normalize();
+
+				PxReal maxDist = 0.01f;
+				PxGeomSweepHit sweepHit;
+				PxGeometryQuery;
+				//m_pGameInstance->GetScene()->sweep()
+				_bool  bIsHit = PxGeometryQuery::sweep(
+					vSweepDir,
+					maxDist,
+					capsuleGeom,
+					pPlayerTransform,
+					convexGeom,
+					wallPos,
+					sweepHit
+				);
+
+				if (bIsHit)
+				{
+					Broken_Wall();
+					m_bIsHit = true;
+
+					break;
+				}
+
 			}
-
-			//m_pGameInstance->GetControllerManager()->getController()
-
-
-			
-
-
-
-			//
-
 		}
-
-	
+	}
 
 	//PxSweep
 }
 
 void CBlastWall::Late_Tick(_float fTimeDelta)
 {
+	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.0f))
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		for (size_t i = 0; i < m_iNumMeshes; i++)
+			m_pPhysXCom[i]->Late_Tick(&m_vecMeshsTransforms[i]);
+	}
 
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-	for (size_t i = 0; i < m_iNumMeshes; i++)
-		m_pPhysXCom[i]->Late_Tick(&m_vecMeshsTransforms[i]);
+
 }
 
 HRESULT CBlastWall::Render()
@@ -184,7 +195,7 @@ HRESULT CBlastWall::Add_Components()
 	for(size_t i = 0; i < m_iNumMeshes; i++)
 	{
 		//m_vecMeshsTransforms.push_back(new _float4x4);
-		XMStoreFloat4x4(&m_vecMeshsTransforms[i], XMMatrixIdentity());
+		XMStoreFloat4x4(&m_vecMeshsTransforms[i], m_pTransformCom->Get_WorldMatrix());
 		wstring idxStr = to_wstring(i);
 
 		CPhysXComponent::PHYSX_DESC		PhysXDesc;
@@ -256,8 +267,9 @@ void CBlastWall::Broken_Wall()
 		m_pPhysXCom[i]->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
 		//m_pPhysXCom[i]->Get_Actor()
 		PxRigidDynamic* pRigidDynamic = m_pPhysXCom[i]->Get_Actor()->is<PxRigidDynamic>();
-		pRigidDynamic->setLinearVelocity(PxVec3(0.0f, 10.0f, 0.0f));
-		pRigidDynamic->setMass(3.0f);
+		pRigidDynamic->setMass(1.0f);
+		pRigidDynamic->addForce(PxVec3(0.0f, -9.8f, 0.0f));
+		//pRigidDynamic->setLinearVelocity(PxVec3(0.0f, 10.0f, 0.0f));
 
 
 		int test = 0;

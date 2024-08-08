@@ -279,9 +279,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 		return E_FAIL;
 
 
-	//Blast Wall Test Code
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
-		return E_FAIL;
+	////Blast Wall Test Code
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BlastWall"), TEXT("Prototype_GameObject_BlastWall"))))
+	//	return E_FAIL;
 	
 
 

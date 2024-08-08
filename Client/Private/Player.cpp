@@ -181,7 +181,6 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
 
-
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
 		_float4 vStartPosition;
@@ -190,6 +189,7 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(51, vStartPosition);
 		EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 	}
+
 }
 
 HRESULT CPlayer::Render()

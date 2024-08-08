@@ -53,8 +53,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
-	//나중에 주석풀기
-	//Create_BossUI(CUIGroup_BossHP::BOSSUI_Malkhel);
+	Create_BossUI(CUIGroup_BossHP::BOSSUI_MALKHEL);
 
 	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
@@ -64,6 +63,8 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	m_iState = STATE_IDLE;
 
 	m_bPlayerIsFront = true;
+	
+	m_pTransformCom->Set_Scale(1.5f, 1.5f, 1.5f);
 
 	return S_OK;
 }
@@ -220,13 +221,11 @@ HRESULT CMalkhel::Add_Components()
 HRESULT CMalkhel::Add_PartObjects()
 {
 	/* 바디객체를 복제해온다. */
-	CBody_Malkhel::BODY_Malkhel_DESC		BodyDesc{};
+	CPartObject::PARTOBJ_DESC		BodyDesc{};
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	BodyDesc.fSpeedPerSec = 0.f;
 	BodyDesc.fRotationPerSec = 0.f;
 	BodyDesc.pState = &m_iState;
-	BodyDesc.pCanCombo = &m_bCanCombo;
-	BodyDesc.bSprint = &m_bSprint;
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Malkhel"), &BodyDesc);
 	if (nullptr == pBody)
@@ -242,7 +241,7 @@ HRESULT CMalkhel::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_1");
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Malkhel-R-Hand");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;
 	CGameObject* pWeapon = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Malkhel"), &WeaponDesc);
@@ -250,43 +249,7 @@ HRESULT CMalkhel::Add_PartObjects()
 		return E_FAIL;
 	m_PartObjects.emplace_back(pWeapon);
 
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_2");
-	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
-		return E_FAIL;
-	CGameObject* pWeapon2 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Malkhel2"), &WeaponDesc);
-	if (nullptr == pWeapon2)
-		return E_FAIL;
-	m_PartObjects.emplace_back(pWeapon2);
-
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_3");
-	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
-		return E_FAIL;
-	CGameObject* pWeapon3 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Malkhel3"), &WeaponDesc);
-	if (nullptr == pWeapon3)
-		return E_FAIL;
-	m_PartObjects.emplace_back(pWeapon3);
-
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_4");
-	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
-		return E_FAIL;
-	CGameObject* pWeapon4 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Malkhel4"), &WeaponDesc);
-	if (nullptr == pWeapon4)
-		return E_FAIL;
-	m_PartObjects.emplace_back(pWeapon4);
-
-	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_5");
-	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
-		return E_FAIL;
-	CGameObject* pWeapon5 = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Weapon_Malkhel5"), &WeaponDesc);
-	if (nullptr == pWeapon5)
-		return E_FAIL;
-	m_PartObjects.emplace_back(pWeapon5);
-
-	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon), 0);
-	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon2), 1);
-	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon3), 2);
-	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon4), 3);
-	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon5), 4);
+	dynamic_cast<CBody_Malkhel*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
 
 	return S_OK;
 }
@@ -311,16 +274,15 @@ HRESULT CMalkhel::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMalkhel::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMalkhel::Hit, this, std::placeholders::_1));
 
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack"), bind(&CMalkhel::Attack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("SprintAttack"), bind(&CMalkhel::SprintAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("GroundAttack"), bind(&CMalkhel::GroundAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("KickAttack"), bind(&CMalkhel::KickAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("LaserAttack"), bind(&CMalkhel::LaserAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("BabylonAttack"), bind(&CMalkhel::BabylonAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("ShootingStarAttack"), bind(&CMalkhel::ShootingStarAttack, this, std::placeholders::_1));
-	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Select_Pattern"), bind(&CMalkhel::Select_Pattern, this, std::placeholders::_1));
-
-	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Backstep"), bind(&CMalkhel::Backstep, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack1"), bind(&CMalkhel::Attack1, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack2"), bind(&CMalkhel::Attack2, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack3"), bind(&CMalkhel::Attack3, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack4"), bind(&CMalkhel::Attack4, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack5"), bind(&CMalkhel::Attack5, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack6"), bind(&CMalkhel::Attack6, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack7"), bind(&CMalkhel::Attack7, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_CoolDown(TEXT("Attack_Selector"), TEXT("PatternCool"), 1.f);
+	m_pBehaviorCom->Add_Action_Node(TEXT("PatternCool"), TEXT("Select_Pattern"), bind(&CMalkhel::Select_Pattern, this, std::placeholders::_1));
 
 	return S_OK;
 }
@@ -382,153 +344,9 @@ NodeStates CMalkhel::Hit(_float fTimeDelta)
 	return FAILURE;
 }
 
-NodeStates CMalkhel::Attack(_float fTimeDelta)
+NodeStates CMalkhel::Attack1(_float fTimeDelta)
 {
-	if (m_iState == STATE_ATTACK1 || m_iState == STATE_ATTACK2 || m_iState == STATE_ATTACK3 || m_iState == STATE_ATTACK4)
-	{
-		if (m_isAnimFinished)
-		{
-			switch (m_iState)
-			{
-			case STATE_ATTACK1:
-				if (m_fLengthFromPlayer > 5.f)
-				{
-					m_iState = STATE_SPRINTATTACK;
-				}
-				else
-				{
-					m_iState = STATE_ATTACK2;
-				}
-				return RUNNING;
-				break;
-			case STATE_ATTACK2:
-				if (m_fLengthFromPlayer > 5.f)
-				{
-					m_iState = STATE_SPRINTATTACK;
-				}
-				else
-				{
-					m_iState = STATE_ATTACK3;
-				}
-				return RUNNING;
-				break;
-			case STATE_ATTACK3:
-				if (m_fLengthFromPlayer > 5.f)
-				{
-					m_iState = STATE_SPRINTATTACK;
-				}
-				else
-				{
-					m_iState = STATE_ATTACK4;
-				}
-				return RUNNING;
-				break;
-			case STATE_ATTACK4:
-				m_iState = STATE_IDLE;
-				m_bDashBack = true;
-				return SUCCESS;
-				break;
-			}
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-
-	if (m_iState == STATE_DASHRIGHT)
-	{
-		if (m_fLengthFromPlayer < 3.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_iState = STATE_ATTACK1;
-			return SUCCESS;
-		}
-		else if (m_fLengthFromPlayer < 5.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_pPhysXCom->Go_Straight(fTimeDelta);
-		}
-		else
-		{
-			m_pPhysXCom->Go_RightFront(fTimeDelta * 0.5f);
-		}
-
-		if (m_isAnimFinished)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_iState = STATE_DASHLEFT;
-		}
-		return RUNNING;
-	}
-	else if (m_iState == STATE_DASHLEFT)
-	{
-		if (m_fLengthFromPlayer < 3.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_iState = STATE_ATTACK1;
-			return SUCCESS;
-		}
-		else if (m_fLengthFromPlayer < 5.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_pPhysXCom->Go_Straight(fTimeDelta);
-		}
-		else
-		{
-			m_pPhysXCom->Go_LeftFront(fTimeDelta * 0.5f);
-		}
-
-		if (m_isAnimFinished)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			m_iState = STATE_DASHRIGHT;
-		}
-		return RUNNING;
-	}
-	else
-	{
-		return FAILURE;
-	}
-
-	return FAILURE;
-}
-
-NodeStates CMalkhel::SprintAttack(_float fTimeDelta)
-{
-	if (m_iState == STATE_SPRINTATTACK)
-	{
-		if (m_fLengthFromPlayer > 3.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			if (m_bSprint)
-			{
-				m_pPhysXCom->Go_Straight(fTimeDelta);
-			}
-		}
-		else if (m_fLengthFromPlayer <= 3.f)
-		{
-			m_bSprint = false;
-		}
-
-		if (m_isAnimFinished)
-		{
-			m_iState = STATE_IDLE;
-			m_bDashBack = true;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-
-	return FAILURE;
-}
-
-NodeStates CMalkhel::GroundAttack(_float fTimeDelta)
-{
-	if (m_iState == STATE_GROUNDATTACK)
+	if (m_iState == STATE_ATTACK1)
 	{
 		if (m_isAnimFinished)
 		{
@@ -541,40 +359,9 @@ NodeStates CMalkhel::GroundAttack(_float fTimeDelta)
 	return FAILURE;
 }
 
-NodeStates CMalkhel::KickAttack(_float fTimeDelta)
+NodeStates CMalkhel::Attack2(_float fTimeDelta)
 {
-	if (m_iState == STATE_KICKATTACK)
-	{
-		if (m_fLengthFromPlayer > 3.f)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-			if (m_bSprint)
-			{
-				m_pPhysXCom->Go_Straight(fTimeDelta);
-			}
-		}
-		else if (m_fLengthFromPlayer <= 3.f)
-		{
-			m_bSprint = false;
-		}
-
-		if (m_isAnimFinished)
-		{
-			m_iState = STATE_IDLE;
-			m_bDashBack = true;
-			return SUCCESS;
-		}
-		else
-		{
-			return RUNNING;
-		}
-	}
-	return FAILURE;
-}
-
-NodeStates CMalkhel::LaserAttack(_float fTimeDelta)
-{
-	if (m_iState == STATE_LASERATTACK)
+	if (m_iState == STATE_ATTACK2)
 	{
 		if (m_isAnimFinished)
 		{
@@ -587,106 +374,78 @@ NodeStates CMalkhel::LaserAttack(_float fTimeDelta)
 	return FAILURE;
 }
 
-NodeStates CMalkhel::BabylonAttack(_float fTimeDelta)
+NodeStates CMalkhel::Attack3(_float fTimeDelta)
 {
-	if (m_iState == STATE_BABYLONATTACK)
+	if (m_iState == STATE_ATTACK3)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_fSpawnCoolTime -= fTimeDelta;
-		m_fSpawnDelay -= fTimeDelta;
-		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
-		{
-			m_fSpawnCoolTime = SPAWNCOOLTIME;
-			_float fHeight = 3.f + RandomFloat(0.f, 10.f);
-			//칼 생성 위치(랜덤)
-			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_RIGHT)
-				* RandomFloat(-5.f, 5.f) + XMVectorSet(0.f, fHeight, 0.f, 0.f);
-
-			_vector vMalkhelPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-			vPlayerPos.m128_f32[1] = vMalkhelPos.m128_f32[1];
-			vMalkhelPos.m128_f32[1] += fHeight;
-
-			// 칼 Right
-			_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
-			// 칼 Up
-			_vector vUp = XMVector3Normalize(vPlayerPos - vMalkhelPos);
-			// 칼 Look
-			_vector vLook = -XMVector3Cross(vUp, vRight);
-
-			CRushSword::RUSH_DESC pDesc;
-			pDesc.eRushtype = CRushSword::TYPE_BABYLON;
-			pDesc.fHeight = vPlayerPos.m128_f32[1];
-			pDesc.meshNum = RandomInt(0, 17);
-			pDesc.mWorldMatrix._11 = vRight.m128_f32[0];
-			pDesc.mWorldMatrix._12 = vRight.m128_f32[1];
-			pDesc.mWorldMatrix._13 = vRight.m128_f32[2];
-			pDesc.mWorldMatrix._21 = vUp.m128_f32[0];
-			pDesc.mWorldMatrix._22 = vUp.m128_f32[1];
-			pDesc.mWorldMatrix._23 = vUp.m128_f32[2];
-			pDesc.mWorldMatrix._31 = vLook.m128_f32[0];
-			pDesc.mWorldMatrix._32 = vLook.m128_f32[1];
-			pDesc.mWorldMatrix._33 = vLook.m128_f32[2];
-			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
-			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
-			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
-		}
-
 		if (m_isAnimFinished)
 		{
-			m_fSpawnDelay = 2.f;
-			m_fSpawnCoolTime = SPAWNCOOLTIME;
 			m_iState = STATE_IDLE;
 			m_bDashBack = false;
 			return SUCCESS;
 		}
 		return RUNNING;
 	}
-
 	return FAILURE;
 }
 
-NodeStates CMalkhel::ShootingStarAttack(_float fTimeDelta)
+NodeStates CMalkhel::Attack4(_float fTimeDelta)
 {
-	if (m_iState == STATE_SHOOTINGSTARATTACK)
+	if (m_iState == STATE_ATTACK4)
 	{
-		m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_fSpawnCoolTime -= fTimeDelta;
-		m_fSpawnDelay -= fTimeDelta;
-		if (m_fSpawnCoolTime < 0.f && m_fSpawnDelay < 0.f)
-		{
-			m_fSpawnCoolTime = SPAWNCOOLTIME;
-			//칼 생성 위치(랜덤)
-			_vector vPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) + XMVectorSet(RandomFloat(-2.f, 2.f), 10.f, RandomFloat(-2.f, 2.f), 0.f);
-
-			CRushSword::RUSH_DESC pDesc;
-			pDesc.eRushtype = CRushSword::TYPE_SHOOTINGSTAR;
-			pDesc.fHeight = m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] + 0.5f;
-			pDesc.meshNum = RandomInt(0, 17);
-			pDesc.mWorldMatrix._11 = -1.f;
-			pDesc.mWorldMatrix._12 = 0.f;
-			pDesc.mWorldMatrix._13 = 0.f;
-			pDesc.mWorldMatrix._21 = 0.f;
-			pDesc.mWorldMatrix._22 = -1.f;
-			pDesc.mWorldMatrix._23 = 0.f;
-			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
-			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
-			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
-		}
-
 		if (m_isAnimFinished)
 		{
-			m_fSpawnCoolTime = SPAWNCOOLTIME;
 			m_iState = STATE_IDLE;
-			m_fSpawnDelay = 2.f;
 			m_bDashBack = false;
 			return SUCCESS;
 		}
 		return RUNNING;
 	}
+	return FAILURE;
+}
 
+NodeStates CMalkhel::Attack5(_float fTimeDelta)
+{
+	if (m_iState == STATE_ATTACK5)
+	{
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+	return FAILURE;
+}
+
+NodeStates CMalkhel::Attack6(_float fTimeDelta)
+{
+	if (m_iState == STATE_ATTACK6)
+	{
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
+	return FAILURE;
+}
+
+NodeStates CMalkhel::Attack7(_float fTimeDelta)
+{
+	if (m_iState == STATE_ATTACK7)
+	{
+		if (m_isAnimFinished)
+		{
+			m_iState = STATE_IDLE;
+			m_bDashBack = false;
+			return SUCCESS;
+		}
+		return RUNNING;
+	}
 	return FAILURE;
 }
 
@@ -695,82 +454,34 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 	if ((m_iState == STATE_DASHBACK && m_isAnimFinished) || !m_bDashBack)
 	{
 		m_fTurnDelay = 0.5f;
-		_uint i;
-		if (m_iPhase == 1)
-		{
-			i = RandomInt(0, 6);
-		}
-		else if (m_iPhase == 2)
-		{
-			i = RandomInt(0, 6);
-		}
+		_uint i = RandomInt(0, 6);
 
 		switch (i)
 		{
 		case 0:
-			//Attack
-			m_iState = STATE_DASHRIGHT;
+			m_iState = STATE_ATTACK1;
 			break;
 		case 1:
-			//SprintAttack
-			m_iState = STATE_SPRINTATTACK;
+			m_iState = STATE_ATTACK2;
 			break;
 		case 2:
-			//GroundAttack
-			m_iState = STATE_GROUNDATTACK;
+			m_iState = STATE_ATTACK3;
 			break;
 		case 3:
-			//KickAttack
-			m_iState = STATE_KICKATTACK;
+			m_iState = STATE_ATTACK4;
 			break;
 		case 4:
-			//LaserAttack
-			m_iState = STATE_LASERATTACK;
+			m_iState = STATE_ATTACK5;
 			break;
 		case 5:
-			//BabylonAttack
-			m_iState = STATE_BABYLONATTACK;
+			m_iState = STATE_ATTACK6;
 			break;
 		case 6:
-			//ShootingStarAttack
-			m_iState = STATE_SHOOTINGSTARATTACK;
+			m_iState = STATE_ATTACK7;
 			break;
 		}
 		return SUCCESS;
 	}
-
-	if (m_fTurnDelay > 0.f)
-	{
-		m_fTurnDelay -= fTimeDelta;
-		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		return RUNNING;
-	}
-	else if (m_iState != STATE_DASHLEFT && m_iState != STATE_DASHRIGHT)
-	{
-		m_iState = STATE_DASHBACK;
-		return COOLING;
-	}
-}
-
-NodeStates CMalkhel::Backstep(_float fTimeDelta)
-{
-	if (m_iState == STATE_DASHBACK)
-	{
-		if (m_isAnimFinished)
-		{
-			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		}
-		else
-		{
-			m_pPhysXCom->Go_BackWard(fTimeDelta);
-		}
-		return RUNNING;
-	}
-	else
-	{
-		return FAILURE;
-	}
-
 }
 
 NodeStates CMalkhel::Idle(_float fTimeDelta)

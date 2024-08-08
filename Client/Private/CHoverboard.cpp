@@ -103,6 +103,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	PxRigidBody* rigidBody = m_pPhysXCom->GetRigidBody();
 
 	command->curSpeed = 	velocity.magnitude();
+	m_fCurHoverBoardSpeed = command->curSpeed;
 	//PxVec3 velocity = m_pPhysXCom->Get_Actor()
 	PxVehicleSteerCommandResponseParams* steerResponse;
 	m_pPhysXCom->GetSteerRespon(steerResponse);
@@ -133,10 +134,12 @@ void CHoverboard::Tick(_float fTimeDelta)
 	{
 		if (m_bIsBoost)
 		{
+			m_pGameInstance->Set_MotionBlur(false);
 			m_bIsBoost = false;
 		}
 		else
 		{
+			m_pGameInstance->Set_MotionBlur(true);
 			m_bIsBoost = true;
 		}
 	}

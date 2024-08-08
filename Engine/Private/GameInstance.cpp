@@ -163,49 +163,47 @@ void CGameInstance::Tick_Engine(_float fTimeDelta)
 
 	vector<future<void>> futures;
 
-	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-		PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
-		}));
-	//PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
+	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
+	//	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
+	//	}));
+	PROFILE_CALL("Object Manager Priority Tick", m_pObject_Manager->Priority_Tick(fTimeDelta));
 
 	
 
-
-	futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-		PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
-		}));
-
-	//PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
-
-
-	futures.push_back(m_pWorker->Add_Job([this]() {
-		PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
-		}));
-	//PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
-	
 
 	//futures.push_back(m_pWorker->Add_Job([this, fTimeDelta]() {
-	//	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));
+	//	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
 	//	}));
 
-	futures.push_back(m_pWorker->Add_Job([this]() {
-		PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
-		}));
+	PROFILE_CALL("Object Manager Tick", m_pObject_Manager->Tick(fTimeDelta));
 
-	futures.push_back(m_pWorker->Add_Job([this]() {
-		PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
-		}));
-	//PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
 
-	futures.push_back(m_pWorker->Add_Job([this]() {
-		PROFILE_CALL("Cascade Tick", m_pCascade->Update());
-		}));
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
+	//	}));
+	PROFILE_CALL("PipeLine Tick", m_pPipeLine->Tick());
+	
 
-	for (auto& worker : futures)
-	{
-		worker.wait();
-	}
-	futures.clear();
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+	//	}));
+	PROFILE_CALL("Calculator Tick", m_pCalculator->Store_MouseRay(m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_PROJ), m_pPipeLine->Get_Transform_Matrix_Inverse(CPipeLine::D3DTRANSFORMSTATE::D3DTS_VIEW)));
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+	//	}));
+	PROFILE_CALL("Frustum Tick", m_pFrustum->Update());
+
+	//futures.push_back(m_pWorker->Add_Job([this]() {
+	//	PROFILE_CALL("Cascade Tick", m_pCascade->Update());
+	//	}));
+
+	//PROFILE_CALL("Cascade Tick", m_pCascade->Update());
+
+	//for (auto& worker : futures)
+	//{
+	//	worker.wait();
+	//}
+	//futures.clear();
 
 
 	PROFILE_CALL("PhysX Tick", m_pPhysX->Tick(fTimeDelta));

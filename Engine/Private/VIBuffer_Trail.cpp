@@ -241,15 +241,17 @@ void CVIBuffer_Trail::ExtinctTrail(_float fDelta)
 
 void CVIBuffer_Trail::EternalTrail(_float fDelta)
 {
+
 	XMMATRIX ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
+	_vector StockPos =  XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
+	m_bSpline.emplace_back(StockPos);
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-	bool allInstancesDead = true;
 	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
 		
-		if (i > 0)  // 첫 번째 인스턴스가 아니면 이전 인스턴스의 위치를 따라감
+		if (i > 0)  // 첫 번째 인스턴스가 아님
 		{
 			XMMATRIX thisMat, FrontMat;
 			thisMat.r[0] = XMLoadFloat4(&pVertices[i].vRight);
@@ -285,21 +287,95 @@ void CVIBuffer_Trail::EternalTrail(_float fDelta)
 			XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
 			XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
 		}
-
 	}
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
-XMVECTOR CVIBuffer_Trail::CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t)
+void CVIBuffer_Trail::CatMullRomTrail(_float fDelta)
 {
-	float t2 = t * t;
-	float t3 = t2 * t;
-	XMVECTOR a = v1;
-	XMVECTOR b = 0.5f * (-v0 + v2);
-	XMVECTOR c = 0.5f * (2.0f * v0 - 5.0f * v1 + 4.0f * v2 - v3);
-	XMVECTOR d = 0.5f * (-v0 + 3.0f * v1 - 3.0f * v2 + v3);
-	return a + b * t + c * t2 + d * t3;
+	XMMATRIX ParentMat = XMLoadFloat4x4(m_TrailDescription.ParentMat);
+	XMVECTOR StockPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
+	m_bSpline.push_front(StockPos);
+	if (m_bSpline.size() > m_pSpeeds[0])
+		m_bSpline.pop_back();
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		if (m_bSpline.size() > 4)
+		{
+			if (i == 0)  // 첫 번째 인스턴스는 고정된 위치
+			{
+				XMVECTOR vRight = XMVector4Normalize(ParentMat.r[0]);
+				XMVECTOR vUp = XMVector4Normalize(ParentMat.r[1]);
+				XMVECTOR vLook = XMVector4Normalize(ParentMat.r[2]);
+				pVertices[i].vLifeTime.y = 1.f;
+				XMVECTOR vPos = XMVector3TransformCoord(XMLoadFloat3(&m_TrailDescription.vPivotPos), ParentMat);
+
+				XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+				XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i].x);
+				XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i].y);
+				XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i].z);
+			}
+			else
+			{
+				float ratio = static_cast<float>(i) / static_cast<float>(m_iNumInstance - 1);
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x * ratio;
+				XMVECTOR vPos = CalculateSplinePoint(ratio);
+				XMVECTOR vDir = XMVector3Normalize(vPos - (i > 1 ? CalculateSplinePoint((i - 1.0f) / (m_iNumInstance - 1)) : StockPos));
+				XMVECTOR vRight = XMVector3Cross(XMVectorSet(0, 1, 0, 0), vDir);
+				XMVECTOR vUp = XMVector3Cross(vDir, vRight);
+				XMStoreFloat4(&pVertices[i].vTranslation, vPos);
+				XMStoreFloat4(&pVertices[i].vRight, XMVector3Normalize(vRight) * m_pSize[i].x);
+				XMStoreFloat4(&pVertices[i].vUp, XMVector3Normalize(vUp) * m_pSize[i].y);
+				XMStoreFloat4(&pVertices[i].vLook, vDir * m_pSize[i].z);
+			}
+		}
+	}
+	m_pContext->Unmap(m_pVBInstance, 0);
 }
+
+XMVECTOR CVIBuffer_Trail::CalculateSplinePoint(float t)
+{
+	size_t size = m_bSpline.size();
+
+	// 스플라인에 충분한 점이 없으면 첫 번째 점을 반환
+	if (size < 4)
+		return m_bSpline.front();
+
+	// t를 0과 1 사이의 값으로 제한
+	t = max(0.0f, min(1.0f, t));
+
+	// t를 스플라인 세그먼트의 인덱스로 변환
+	float f = t * (size - 3);
+	int i = (int)f;
+
+	// 경계 검사
+	if (i > size - 4)
+		i = size - 4;
+
+	f -= i;
+
+	// 네 개의 제어점 가져오기
+	XMVECTOR v0 = m_bSpline[i];
+	XMVECTOR v1 = m_bSpline[i + 1];
+	XMVECTOR v2 = m_bSpline[i + 2];
+	XMVECTOR v3 = m_bSpline[i + 3];
+
+	// Catmull-Rom 스플라인 보간
+	float f2 = f * f;
+	float f3 = f2 * f;
+
+	XMVECTOR p = 0.5f * ((2.0f * v1) +
+		(-v0 + v2) * f +
+		(2.0f * v0 - 5.0f * v1 + 4.0f * v2 - v3) * f2 +
+		(-v0 + 3.0f * v1 - 3.0f * v2 + v3) * f3);
+
+	return p;
+}
+
 
 
 

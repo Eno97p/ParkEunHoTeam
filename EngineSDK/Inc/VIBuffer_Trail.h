@@ -31,9 +31,10 @@ public:
 public:
 	void ExtinctTrail(_float fDelta);
 	void EternalTrail(_float fDelta);
+	void CatMullRomTrail(_float fDelta);
 
 private:
-	XMVECTOR CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t);
+	XMVECTOR CalculateSplinePoint(float t);
 private:
 	ID3D11Buffer*				m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC			m_InstanceBufferDesc = {};
@@ -50,6 +51,8 @@ private:
 	_float3 m_pPivotPos = {0.f,0.f,0.f};
 
 	_bool						m_bInstanceDead = false;
+
+	deque<XMVECTOR>				m_bSpline;
 
 public:
 	static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

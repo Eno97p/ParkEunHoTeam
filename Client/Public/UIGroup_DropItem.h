@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 
 #include "ItemData.h"
+#include "Item.h"
 
 BEGIN(Client)
 class CUI;
@@ -14,7 +15,7 @@ public:
 	typedef struct UIGroup_DropItem_Desc : public UIGROUP_DESC
 	{
 		CItemData::ITEM_NAME	eItemName;
-		wstring		wszTextureName;
+		wstring					wszTextureName;
 	}UIGROUP_DROPITEM_DESC;
 
 private:

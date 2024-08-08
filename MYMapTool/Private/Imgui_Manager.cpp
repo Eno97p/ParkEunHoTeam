@@ -557,6 +557,8 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "AqueducTowerRoof",
             "UnderRoofFilling", 
             "RotateGate",
+            "Fragile Rock",
+            "SkyDome test"
 
 
         };
@@ -1778,11 +1780,33 @@ void CImgui_Manager::Cloud_Editor()
             // ShaderPath 설정
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Shader Settings");
             static int currentShaderPath = 0;
-            const char* shaderPaths[] = { "For Tool", "Texture" }; // 예시 경로들
+            const char* shaderPaths[] = { "For Tool", "Texture", "Volumetric"}; // 예시 경로들
             if (ImGui::Combo("Shader Path", &currentShaderPath, shaderPaths, IM_ARRAYSIZE(shaderPaths)))
             {
                 cloud->Set_ShaderPath((_uint)currentShaderPath);
             }
+
+            // Volumetric 설정 (새로 추가된 부분)
+            if (currentShaderPath == 2) // Volumetric shader 선택 시
+            {
+                ImGui::Separator();
+                ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Volumetric Cloud Settings");
+
+                // 구름 볼륨 크기 조절
+                static float cloudVolumeSize = 100.0f; // 초기값 설정
+                if (ImGui::SliderFloat("Cloud Volume Size", &cloudVolumeSize, 10.0f, 500.0f))
+                {
+                    cloud->Set_CloudVolumeSize(cloudVolumeSize);
+                }
+
+                // 구름 볼륨 오프셋 조절
+                static float cloudVolumeOffset[3] = { 0.0f, 50.0f, 0.0f }; // 초기값 설정
+                if (ImGui::SliderFloat3("Cloud Volume Offset", cloudVolumeOffset, -100.0f, 100.0f))
+                {
+                    cloud->Set_CloudVolumeOffset(XMFLOAT3(cloudVolumeOffset[0], cloudVolumeOffset[1], cloudVolumeOffset[2]));
+                }
+            }
+
             // 기존 구름 설정
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Cloud Settings");
             ImGui::SliderFloat("Cloud Density", &cloud->m_fCloudDensity, 0.000001f, 5.0f, "%.6f");

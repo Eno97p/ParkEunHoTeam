@@ -66,6 +66,14 @@ HRESULT CCloud::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	_matrix mat = {
+		0.02, 0, 0.f, 0.f,
+		0, -0.02, 0.f, 0.f,
+		0.f, 0.f, 0.02, 0.f,
+		-71.919f, 426.108f, -49.122f, 1.f
+	};
+	m_pTransformCom->Set_WorldMatrix(mat);
+
 	return S_OK;
 }
 
@@ -175,6 +183,11 @@ HRESULT CCloud::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
 			return E_FAIL;
 
+
+		m_pShaderCom->Bind_RawValue("CLOUD_VOLUME_SIZE", &m_fCloudVolumeSize, sizeof(float));
+		m_pShaderCom->Bind_RawValue("CLOUD_VOLUME_OFFSET", &m_vCloudVolumeOffset, sizeof(XMFLOAT3));
+
+
 		m_pShaderCom->Begin(m_iShaderPath);
 		m_pModelCom->Render(i);
 	}
@@ -186,7 +199,7 @@ HRESULT CCloud::Add_Components(void* pArg)
 	wstring wstr = string_to_wstring(m_szModelName);
 
 	/* For.Com_Model */
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, /*wstr.c_str()*/TEXT("Prototype_Component_Model_BasicCube"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, /*wstr.c_str()*/TEXT("Prototype_Component_Model_CloudDome"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

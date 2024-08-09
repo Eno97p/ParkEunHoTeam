@@ -218,13 +218,49 @@ PS_OUT PS_FADE(PS_IN In)
 
 	float fAlpha = Out.vColor.a;
 
-	/*Out.vColor.r = 0.f;
-	Out.vColor.g = 0.f;
-	Out.vColor.b = 1.f;*/
+	if (g_bIsFadeIn)
+	{
+		if(fAlpha < (1.f - g_fAlphaTimer))
+			Out.vColor.a = fAlpha;
+		else
+			Out.vColor.a = 1.f - g_fAlphaTimer;
+
+		//Out.vColor.a = 1.f - g_fAlphaTimer;
+	}
+	else
+	{
+		float fResultAlpha = g_fAlphaTimer;
+
+		if (fAlpha < fResultAlpha)
+			fResultAlpha = fAlpha;
+
+		Out.vColor.a = fResultAlpha;
+	}
+
+	return Out;
+}
+
+PS_OUT PS_FADE_DASH(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	float fAlpha = Out.vColor.a;
+
+	Out.vColor.r = 0.1f;
+	Out.vColor.g = 0.1f;
+	Out.vColor.b = 0.2f;
 
 	if (g_bIsFadeIn)
 	{
-		Out.vColor.a = 1.f - g_fAlphaTimer;
+		if (fAlpha < (1.f - g_fAlphaTimer))
+			Out.vColor.a = fAlpha;
+		else
+			Out.vColor.a = 1.f - g_fAlphaTimer;
 	}
 	else
 	{
@@ -456,6 +492,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_NOT_FADE();
+	}
+
+	pass Fade_Dash_11
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_FADE_DASH();
 	}
 }
 

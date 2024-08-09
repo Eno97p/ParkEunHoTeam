@@ -348,6 +348,9 @@
 #include "C:\Real3DProject\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Dash.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
 
 

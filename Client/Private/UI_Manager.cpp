@@ -22,6 +22,7 @@
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
+#include "UI_Dash.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -50,6 +51,28 @@ void CUI_Manager::Set_Broken(_bool isRend)
 {
 	m_pBroken->Set_Rend(isRend);
 	m_pBroken->Resset_Animation(true);
+}
+
+_bool CUI_Manager::Get_Dash()
+{
+	vector<CUI_Dash*>::iterator dash = m_vecDash.begin();
+
+	return (*dash)->Get_Rend();
+}
+
+void CUI_Manager::Set_Dash(_bool isRend)
+{
+	vector<CUI_Dash*>::iterator dash = m_vecDash.begin();
+
+	(*dash)->Set_Rend(isRend);
+	(*dash)->Resset_Animation(true);
+
+	++dash;
+	(*dash)->Set_Rend(isRend);
+	(*dash)->Resset_Animation(false);
+
+	/*m_pDash->Set_Rend(isRend);
+	m_pDash->Resset_Animation(true);*/
 }
 
 _bool CUI_Manager::Get_isMouseOn()
@@ -91,8 +114,10 @@ void CUI_Manager::Tick(_float fTimeDelta)
 		pGroup.second->Tick(fTimeDelta);
 
 	m_pScreenBlood->Tick(fTimeDelta);
-
 	m_pBroken->Tick(fTimeDelta);
+	for (auto& pDash : m_vecDash)
+		pDash->Tick(fTimeDelta);
+	//m_pDash->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -107,8 +132,10 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 		pGroup.second->Late_Tick(fTimeDelta);
 
 	m_pScreenBlood->Late_Tick(fTimeDelta);
-
 	m_pBroken->Late_Tick(fTimeDelta);
+	for (auto& pDash : m_vecDash)
+		pDash->Late_Tick(fTimeDelta);
+	//m_pDash->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -253,6 +280,21 @@ HRESULT CUI_Manager::Create_UI()
 	CUI::UI_DESC pBrokenDesc{};
 	pBrokenDesc.eLevel = LEVEL_STATIC;
 	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pBrokenDesc));
+
+
+	// 여기서 두 개 생성해서 번갈가며 렌더되도록 하기?
+
+	// Dash
+	CUI_Dash::UI_DASH_DESC pDashDesc{};
+	pDashDesc.eLevel = LEVEL_STATIC;
+
+	for (size_t i = 0; i < 2; ++i)
+	{
+		pDashDesc.iDashIdx = i;
+		m_vecDash.emplace_back(dynamic_cast<CUI_Dash*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Dash"), &pDashDesc)));
+	}
+
+	//m_pDash = dynamic_cast<CUI_Dash*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Dash"), &pDashDesc));
 
 	return S_OK;
 }
@@ -417,6 +459,9 @@ void CUI_Manager::Free()
 	}
 	m_mapUIGroup.clear();
 
+	for (auto& pDash : m_vecDash)
+		Safe_Release(pDash);
+	//Safe_Release(m_pDash);
 	Safe_Release(m_pBroken);
 	Safe_Release(m_pScreenBlood);
 	Safe_Release(m_pGameInstance);

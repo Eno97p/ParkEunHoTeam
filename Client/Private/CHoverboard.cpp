@@ -3,6 +3,7 @@
 
 
 #include"GameInstance.h"
+#include "UI_Manager.h"
 
 #include"Camera.h"
 #include "EffectManager.h"
@@ -118,7 +119,8 @@ void CHoverboard::Tick(_float fTimeDelta)
 		steerResponse->wheelResponseMultipliers[2] = 0.0f;
 		steerResponse->wheelResponseMultipliers[3] = 0.0f;
 	
-
+		if(m_bIsBoost && !(CUI_Manager::GetInstance()->Get_Dash()))
+			CUI_Manager::GetInstance()->Set_Dash(true);
 	}
 	else
 	{
@@ -128,6 +130,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 		steerResponse->wheelResponseMultipliers[2] = 1.0f;
 		steerResponse->wheelResponseMultipliers[3] = 1.0f;
 
+		CUI_Manager::GetInstance()->Set_Dash(false);
 
 	}
 	if (KEY_TAP(DIK_LSHIFT))
@@ -136,11 +139,16 @@ void CHoverboard::Tick(_float fTimeDelta)
 		{
 			m_pGameInstance->Set_MotionBlur(false);
 			m_bIsBoost = false;
+
+			CUI_Manager::GetInstance()->Set_Dash(false);
 		}
 		else
 		{
 			m_pGameInstance->Set_MotionBlur(true);
 			m_bIsBoost = true;
+
+			// UI Dash On
+			CUI_Manager::GetInstance()->Set_Dash(true);
 		}
 	}
 

@@ -25,6 +25,8 @@ public:
 	void				Set_MenuPage(_bool isOpen, string PageKey);
 	void				Set_ScreenBloodRend(_bool isRend);
 	void				Set_Broken(_bool isRend);
+	_bool				Get_Dash();
+	void				Set_Dash(_bool isRend);
 	_bool				Get_isMouseOn();
 	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
@@ -39,7 +41,7 @@ public:
 
 	void				Update_Inventory_Add(_uint iSlotIdx);
 	void				Update_InvSub_Quick_Add(_uint iSlotIdx);
-	void				Update_Quick_Add(CItemData* pItemData, _int iInvenIdx);
+	void				Update_Quick_Add(class CItemData* pItemData, _int iInvenIdx);
 	void				Update_Quick_InvSlot_Add(_uint iSlotIdx);
 	void				Update_Weapon_Add();
 	void				Update_EquipWeapon_Add(_uint iEquipSlotIdx);
@@ -59,6 +61,8 @@ private:
 	map<string, CUIGroup*>	m_mapUIGroup;
 	class CUI_ScreenBlood*	m_pScreenBlood = { nullptr };
 	class CUI_Broken*		m_pBroken = { nullptr };
+	vector<class CUI_Dash*> m_vecDash;
+	//class CUI_Dash*			m_pDash = { nullptr };
 
 private:
 	HRESULT		Create_UI();

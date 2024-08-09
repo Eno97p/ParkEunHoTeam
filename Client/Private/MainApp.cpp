@@ -181,6 +181,7 @@
 #include "UI_Activate.h"
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
+#include "UI_Dash.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1436,7 +1437,7 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_Dash */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dash"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash_%d.png"), 2))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -2093,6 +2094,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Broken*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Broken"),
 		CUI_Broken::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Dash*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Dash"),
+		CUI_Dash::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

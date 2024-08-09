@@ -201,6 +201,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 	const float minSpeed = 0.f;
 	const float maxSpeed = 50.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
 
+
 	// 현재 속도에 따른 FOV 계산
 	float t = (m_fCurHoverBoardSpeed - minSpeed) / (maxSpeed - minSpeed);
 	t = clamp(t, 0.f, 1.f); // t를 0과 1 사이로 제한

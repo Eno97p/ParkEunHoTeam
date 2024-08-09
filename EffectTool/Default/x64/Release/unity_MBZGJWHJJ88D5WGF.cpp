@@ -164,6 +164,9 @@
 #include "C:\NewRepo\EffectTool\private\ShieldSphere.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\DefaultCylinder.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\SwingEffect.cpp"
 
 

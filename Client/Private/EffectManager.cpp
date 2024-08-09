@@ -65,6 +65,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Lazer");
 		return E_FAIL;
 	}
+	if (FAILED(Load_Swing()))
+	{
+		MSG_BOX("FAILED_Load_Swing");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -269,6 +274,23 @@ HRESULT CEffectManager::Generate_Lazer(const _int iIndex, const _float4x4* BindM
 		Desc->ShooterMat = BindMat;
 		CGameInstance::GetInstance()->Add_CloneObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("LayerLazer"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
+	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Swing(const _int iIndex, const _float4x4* BindMat)
+{
+	if (iIndex >= m_Swings.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CSwingEffect::SWINGEFFECT* Desc = m_Swings[iIndex].get();
+		Desc->ParentMat = BindMat;
+		CGameInstance::GetInstance()->Add_CloneObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Swing"), TEXT("Prototype_GameObject_SwingEffect"), Desc);
 	}
 	return S_OK;
 }
@@ -538,6 +560,32 @@ HRESULT CEffectManager::Load_Lazers()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Swing()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Swings.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CSwingEffect::SWINGEFFECT readFile{};
+		inFile.read((char*)&readFile, sizeof(CSwingEffect::SWINGEFFECT));
+		readFile.ParentMat = nullptr;
+		shared_ptr<CSwingEffect::SWINGEFFECT> StockValue = make_shared<CSwingEffect::SWINGEFFECT>(readFile);
+		m_Swings.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -636,6 +684,29 @@ HRESULT CEffectManager::Ready_GameObjects()
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ShieldShpere"),
 		CShieldSphere::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//Swing
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_SwingEffect"),
+		CSwingEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Swing_Spiral"),
+		CSwing_Spiral::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Vane"),
+		Charge_Vane::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ChargeRibbon"),
+		Charge_Ribbon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_DefaultCylinder"),
+		CDefaultCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 

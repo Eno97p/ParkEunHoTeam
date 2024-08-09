@@ -34,6 +34,8 @@ private:
 
 	vector<class CGameObject*>		m_PartObjects;
 
+	_bool										m_bParryFirstHit = true;
+
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();

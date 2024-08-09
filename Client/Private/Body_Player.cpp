@@ -970,6 +970,29 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		isLerp = true;
 	}
+	
+	if (*m_pState == CPlayer::STATE_RUNLATTACK1 || *m_pState == CPlayer::STATE_RUNLATTACK2 || *m_pState == CPlayer::STATE_ROLLATTACK ||
+		*m_pState == CPlayer::STATE_LCHARGEATTACK || *m_pState == CPlayer::STATE_BACKATTACK || *m_pState == CPlayer::STATE_LATTACK1 ||
+		*m_pState == CPlayer::STATE_LATTACK2 || *m_pState == CPlayer::STATE_LATTACK3 || *m_pState == CPlayer::STATE_RATTACK1 ||
+		*m_pState == CPlayer::STATE_RATTACK2 || *m_pState == CPlayer::STATE_COUNTER)
+	{
+		switch (*m_pCurWeapon)
+		{
+		case CPlayer::WEAPON_DURGASWORD:
+			fAnimSpeed *= 0.7f;
+			break;
+		case CPlayer::WEAPON_PRETORIANSWORD:
+			fAnimSpeed *= 0.8f;
+			break;
+		case CPlayer::WEAPON_RADAMANTHESWORD:
+			fAnimSpeed *= 1.f;
+			break;
+		case CPlayer::WEAPON_ELISH:
+			fAnimSpeed *= 0.9f;
+			break;
+		}
+	}
+
 	m_pModelCom->Play_Animation(fTimeDelta * fAnimSpeed, isLerp);
 
 	m_bAnimFinished = false;

@@ -12,6 +12,7 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+
 CMantari::CMantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {

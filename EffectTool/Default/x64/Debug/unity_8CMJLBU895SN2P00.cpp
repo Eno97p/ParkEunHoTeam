@@ -23,6 +23,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\AndrasHead.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\AndrasLazer.cpp"
 
 
@@ -56,6 +59,12 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Charge_Ribbon.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Charge_Vane.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Distortion_Effect.cpp"
 
 
@@ -68,7 +77,34 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\FireEffect.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\FirePillar.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\FirePillarEffect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\FirePillar_Bottom.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\HealEffect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Heal_Line.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Heal_Ribbon.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Heal_Spiral.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\HoverBoard.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\ImguiMgr.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\LazerCast.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Level_GamePlay.cpp"
@@ -125,6 +161,15 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\QuarterCamera.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\ShieldSphere.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\SwingEffect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Swing_Spiral.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\TextureFrame.cpp"
 
 
@@ -134,10 +179,10 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\TornadoWind.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Tornado_Ring.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Tornado_Root.cpp"
-
-
-#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Tornado_Spring.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Weapon.cpp"

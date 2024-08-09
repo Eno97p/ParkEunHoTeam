@@ -6,9 +6,10 @@
 #include "Renderer.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
+#include "CWorker.h"
+
 
 BEGIN(Engine)
-class CWorker;
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)
@@ -195,9 +196,7 @@ public:	// For Worker
 	template<typename T, typename... Args>
 	auto  AddWork(T&& Func, Args&&... args) -> future<decltype(Func(args...))>
 	{
-		
-			//return 	m_pWorker->Add_Job(Func, args...);
-		
+		return 	m_pWorker->Add_Job(Func, args...);	
 	}
 
 public:
@@ -239,7 +238,7 @@ private:
 
 	class COctTree*				m_pOctTree = { nullptr };
 
-	 CWorker*				m_pWorker = { nullptr };
+	class CWorker*				m_pWorker = { nullptr };
 	class CRenderWorker*		m_pRenderWorker = { nullptr };
 
 	_float4 m_fPlayerPos;

@@ -1573,6 +1573,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
+	</ClInclude>
+    <ClInclude Include="Client_Struct.h">
+      <Filter>99.Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

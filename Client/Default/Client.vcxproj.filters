@@ -1562,6 +1562,9 @@
     <ClInclude Include="..\public\SavePoint.h">
       <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Dash.h">
+      <Filter>02.GameObjects\07. UI\Dash</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\BackGround_Card.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
 	</ClInclude>
@@ -2359,6 +2362,9 @@
     <ClCompile Include="..\private\SavePoint.cpp">
       <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UI_Dash.cpp">
+      <Filter>02.GameObjects\07. UI\Dash</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\BackGround_Card.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
 	</ClCompile>

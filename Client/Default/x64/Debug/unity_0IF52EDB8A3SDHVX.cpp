@@ -279,6 +279,9 @@
 #include "C:\Real3DProject\Client\Private\RushSword.cpp"
 
 
+#include "C:\Real3DProject\Client\private\SavePoint.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\SideViewCamera.cpp"
 
 
@@ -343,6 +346,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Dash.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"

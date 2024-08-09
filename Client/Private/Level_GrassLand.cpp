@@ -68,7 +68,7 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-//	Load_LevelData(TEXT("../Bin/MapData/Stage_AndrasArena.bin"));
+	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
 
 	Load_Data_Effects();
 

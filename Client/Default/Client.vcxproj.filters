@@ -726,9 +726,12 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Dash">
       <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\10.SavePoint">
       <UniqueIdentifier>{4ed1a5b4-83e4-47e9-a85a-00875473acfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card">
+      <UniqueIdentifier>{a82678a3-b18a-495d-94f6-7e821e7a5179}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1556,6 +1559,9 @@
     <ClInclude Include="..\public\SavePoint.h">
       <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackGround_Card.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2331,6 +2337,9 @@
     </ClCompile>
     <ClCompile Include="..\private\SavePoint.cpp">
       <Filter>02.GameObjects\10.SavePoint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround_Card.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

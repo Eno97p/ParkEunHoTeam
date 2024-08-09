@@ -1479,6 +1479,11 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 			m_iState = STATE_SLIDE;
 			m_pPhysXCom->Set_Gravity(false);
 			m_pHoverBoard->On_Ride();
+
+			//카메라 fov 복구
+			CCamera* Camera = m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON];
+			Camera->Set_Fovy(XMConvertToRadians(60.f));
+
 		}
 		else
 		{

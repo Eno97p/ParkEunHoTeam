@@ -606,12 +606,26 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     // 거리 기반 안개 계산
     float baseFog = saturate(distanceToCamera / g_fFogRange);
-    float distanceFog1 = baseFog * noiseSample1 * g_fFogGlobalDensity;
-    float distanceFog2 = baseFog * noiseSample2 * g_fFogGlobalDensity;
+    float distanceFog1 = baseFog * noiseSample1;
+    float distanceFog2 = baseFog * noiseSample2;
+
+    // 높이 기반 안개 계산
+    float heightFactor = 0.05;
+    float fogFactor1 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
+        (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
+    float fogFactor2 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
+        (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
+
+    fogFactor1 = saturate(fogFactor1);
+    fogFactor2 = saturate(fogFactor2);
+
+    // 거리 기반 안개와 높이 기반 안개 결합
+    float combinedFog1 = max(distanceFog1, fogFactor1) * g_fFogGlobalDensity;
+    float combinedFog2 = max(distanceFog2, fogFactor2) * g_fFogGlobalDensity;
 
     // 최종 안개 팩터 계산
-    float finalFogFactor1 = saturate(distanceFog1);
-    float finalFogFactor2 = saturate(distanceFog2);
+    float finalFogFactor1 = saturate(combinedFog1);
+    float finalFogFactor2 = saturate(combinedFog2);
 
     // 최종 색상 계산
     float4 finalColor = lerp(vColor, g_vFogColor, finalFogFactor1);

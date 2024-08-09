@@ -192,6 +192,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\BackGround_Card.h" />
     <ClInclude Include="..\public\BlastWall.h" />
     <ClInclude Include="..\Public\Body_Andras.h" />
     <ClInclude Include="..\Public\Body_Choron.h" />
@@ -459,6 +460,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BackGround_Card.cpp" />
     <ClCompile Include="..\private\BlastWall.cpp" />
     <ClCompile Include="..\Private\Body_Andras.cpp" />
     <ClCompile Include="..\Private\Body_Choron.cpp" />

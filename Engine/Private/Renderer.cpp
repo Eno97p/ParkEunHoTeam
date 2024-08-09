@@ -895,49 +895,49 @@ void CRenderer::Render_LightAcc()
 
 void CRenderer::Render_Shadow_Move()
 {
-    m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Move"));
+    //m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Move"));
 
-    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-        return;
-    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-        return;
-    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-        return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+    //    return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+    //    return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+    //    return;
 
-    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
-        return;
-    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
-        return;
-    _float4x4      ViewMatrix, ProjMatrix;
+    //if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
+    //    return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
+    //    return;
+    //_float4x4      ViewMatrix, ProjMatrix;
 
-    _float4 fPos = m_pGameInstance->Get_PlayerPos();
+    //_float4 fPos = m_pGameInstance->Get_PlayerPos();
 
-    /* 광원 기준의 뷰 변환행렬. */
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
+    ///* 광원 기준의 뷰 변환행렬. */
+    //XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    //XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
-    _float fShadowThreshold = 0.99f;
-    //매직넘버 던져줌
-    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
-        return;
-    if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
-        return;
-    if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
-        return;
+    //_float fShadowThreshold = 0.99f;
+    ////매직넘버 던져줌
+    //if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
+    //    return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
+    //    return;
+    //if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
+    //    return;
 
-    // 그림자 직접 렌더링
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
-        return;
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-        return;
-    m_pShader->Begin(19);
+    //// 그림자 직접 렌더링
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
+    //    return;
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+    //    return;
+    //m_pShader->Begin(19);
 
-    m_pVIBuffer->Bind_Buffers();
+    //m_pVIBuffer->Bind_Buffers();
 
-    m_pVIBuffer->Render();
+    //m_pVIBuffer->Render();
 
-    if (FAILED(m_pGameInstance->End_MRT()))
-        return;
+    //if (FAILED(m_pGameInstance->End_MRT()))
+    //    return;
 }
 
 void CRenderer::Render_Shadow_NotMove()
@@ -970,12 +970,12 @@ void CRenderer::Render_Shadow_NotMove()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
 
-    //// 그림자 직접 렌더링
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
-    //    return;
-    // 그림자맵 사용
-    if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 1)))
+    // 그림자 직접 렌더링
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
         return;
+    //// 그림자맵 사용
+    //if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 1)))
+    //    return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
     m_pShader->Begin(19);

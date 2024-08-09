@@ -50,7 +50,11 @@ void CLazerCast::Tick(_float fTimeDelta)
 	if (EffectDead)
 		return;
 
-	m_fCurLifeTime += fTimeDelta;
+	if (m_fLifeTimeRatio > m_OwnDesc->fThreadRatio.x && m_fLifeTimeRatio < m_OwnDesc->fThreadRatio.y)
+		m_fCurLifeTime += fTimeDelta * m_OwnDesc->fSlowStrength;
+	else
+		m_fCurLifeTime += fTimeDelta;
+
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
@@ -88,7 +92,7 @@ HRESULT CLazerCast::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(23);
+		m_pShaderCom->Begin(18);
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
@@ -104,7 +108,7 @@ HRESULT CLazerCast::Render_Bloom()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(24);
+		m_pShaderCom->Begin(19);
 		m_pModelCom->Render(i);
 	}
 	return S_OK;

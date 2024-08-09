@@ -200,8 +200,8 @@ HRESULT CLevel_GamePlay::Ready_Light()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Terrain(const wstring& strLayerTag)
 {
-    if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
-        return E_FAIL;
+    //if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
+    //    return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
         return E_FAIL;
@@ -441,7 +441,7 @@ HRESULT CLevel_GamePlay::Save_Data()
 
 HRESULT CLevel_GamePlay::Save_Data_PhysX()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_AndrasArena_PhysX.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_GrassLand_PhysX.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -501,7 +501,7 @@ HRESULT CLevel_GamePlay::Save_Data_PhysX()
 
 HRESULT CLevel_GamePlay::Load_Data_PhysX()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_PhysX.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_GrassLand_PhysX.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == hFile)
         return E_FAIL;

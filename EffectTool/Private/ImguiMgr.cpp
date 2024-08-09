@@ -2312,6 +2312,8 @@ void CImguiMgr::Lazer_Tool()
 	ImGui::InputFloat3("Cast_Offset", reinterpret_cast<float*>(&TotalDesc.CastDesc.vOffset));
 	ImGui::InputFloat("Cast_BloomPower", &TotalDesc.CastDesc.fBloomPower);
 	ImGui::InputFloat("Cast_LifeTime", &TotalDesc.CastDesc.fMaxLifeTime);
+	ImGui::InputFloat2("Cast_ThreadRatio", reinterpret_cast<float*>(&TotalDesc.CastDesc.fThreadRatio));
+	ImGui::InputFloat("Cast_SlowStrength", &TotalDesc.CastDesc.fSlowStrength);
 	
 	if (ImGui::Button("Generate", ButtonSize))
 	{
@@ -3286,10 +3288,26 @@ void CImguiMgr::SwingEffectTool()
 
 	ImGui::InputFloat3("SpiralStartSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vSize));
 	ImGui::InputFloat3("SpiralMaxSize", reinterpret_cast<float*>(&Desc.SpiralDesc.vMaxSize));
+	ImGui::InputFloat3("SpiralOffset", reinterpret_cast<float*>(&Desc.SpiralDesc.vOffset));
 	ImGui::ColorEdit3("SpiralColor", reinterpret_cast<float*>(&Desc.SpiralDesc.fColor));
 	ImGui::ColorEdit3("SpiralBloomColor", reinterpret_cast<float*>(&Desc.SpiralDesc.BloomColor));
 	ImGui::InputFloat("SpiralBloomPower", &Desc.SpiralDesc.fBloomPower);
 	ImGui::InputFloat("SpiralLifeTime", &Desc.SpiralDesc.fMaxLifeTime);
+	ImGui::InputFloat2("SpiralThreadRatio", reinterpret_cast<float*>(&Desc.SpiralDesc.fThreadRatio));
+	ImGui::InputFloat("SpiralSlowSpeed", &Desc.SpiralDesc.fSlowStrength);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Cylinder");
+
+	ImGui::InputFloat3("CylinderStartSize", reinterpret_cast<float*>(&Desc.CylinderDesc.vSize));
+	ImGui::InputFloat3("CylinderMaxSize", reinterpret_cast<float*>(&Desc.CylinderDesc.vEndSized));
+	ImGui::InputFloat3("CylinderOffset", reinterpret_cast<float*>(&Desc.CylinderDesc.vOffset));
+	ImGui::ColorEdit3("CylinderColor", reinterpret_cast<float*>(&Desc.CylinderDesc.fColor));
+	ImGui::ColorEdit3("CylinderBloomColor", reinterpret_cast<float*>(&Desc.CylinderDesc.BloomColor));
+	ImGui::InputFloat("CylinderBloomPower", &Desc.CylinderDesc.fBloomPower);
+	ImGui::InputFloat("CylinderLifeTime", &Desc.CylinderDesc.fMaxLifeTime);
+	ImGui::InputFloat2("CylinderThreadRatio", reinterpret_cast<float*>(&Desc.CylinderDesc.fThreadRatio));
+	ImGui::InputFloat("CylinderSlowSpeed", &Desc.CylinderDesc.fSlowStrength);
+
 	Desc.ParentMat = TrailMat;
 
 	if (ImGui::Button("Generate", ButtonSize))
@@ -3307,7 +3325,210 @@ void CImguiMgr::SwingEffectTool()
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Swing"));
 	}
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_Swing(effectname, Desc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Swing()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Swing()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	Swing_ListBox(&Desc);
+
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_Swing(char* Name, CSwingEffect::SWINGEFFECT desc)
+{
+	string sName = Name;
+	shared_ptr<CSwingEffect::SWINGEFFECT> StockValue = make_shared<CSwingEffect::SWINGEFFECT>(desc);
+	m_Swings.emplace_back(StockValue);
+	SwingNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Swing_ListBox(CSwingEffect::SWINGEFFECT* Swing)
+{
+#pragma region exception
+	if (m_Swings.size() < 1)
+		return;
+
+	if (m_Swings.size() != SwingNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Swing_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("Swing_List", list_box_size))
+	{
+		for (int i = 0; i < SwingNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(SwingNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+	if (current_item >= 0 && current_item < SwingNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CSwingEffect::SWINGEFFECT* Desc = m_Swings[current_item].get();
+			Desc->ParentMat = TrailMat;
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Swing"), TEXT("Prototype_GameObject_SwingEffect"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Swing = *m_Swings[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_Swings[current_item] = make_shared<CSwingEffect::SWINGEFFECT>(*Swing);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_Swings[current_item].reset();
+			m_Swings.erase(m_Swings.begin() + current_item);
+			SwingNames.erase(SwingNames.begin() + current_item);
+
+			if (current_item >= m_Swings.size())
+				current_item = m_Swings.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_Swings)
+				iter.reset();
+			m_Swings.clear();
+			SwingNames.clear();
+			current_item = 0;
+		}
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Swing()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Swings.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_Swings.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_Swings)
+	{
+		file.write((char*)iter.get(), sizeof(CSwingEffect::SWINGEFFECT));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Swings.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : SwingNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Swing.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < SwingNames.size(); ++i)
+	{
+		NumberFile << i << ". " << SwingNames[i] << std::endl;
+	}
+	NumberFile.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Swing()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Swings.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_Swings)
+		iter.reset();
+	m_Swings.clear();
+	SwingNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CSwingEffect::SWINGEFFECT readFile{};
+		inFile.read((char*)&readFile, sizeof(CSwingEffect::SWINGEFFECT));
+		readFile.ParentMat = nullptr;
+		shared_ptr<CSwingEffect::SWINGEFFECT> StockValue = make_shared<CSwingEffect::SWINGEFFECT>(readFile);
+		m_Swings.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/Swings.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		SwingNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::FrameTextureTool()

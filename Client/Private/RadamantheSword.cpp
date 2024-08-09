@@ -86,7 +86,7 @@ void CRadamantheSword::Tick(_float fTimeDelta)
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
-	Generate_Trail(0);
+	Generate_Trail(6);
 
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
 		*m_pState == CPlayer::STATE_SPECIALATTACK || *m_pState == CPlayer::STATE_SPECIALATTACK2 ||

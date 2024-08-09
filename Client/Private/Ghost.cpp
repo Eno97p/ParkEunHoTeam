@@ -9,6 +9,7 @@
 #include "UIGroup_MonsterHP.h"
 #include "TargetLock.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
 
 CGhost::CGhost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -286,6 +287,28 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
+		{
+			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+			pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		}
+
+
+		if (m_pPlayer->Get_m_bParry())
+		{
+			if (m_bParryFirstHit)
+			{
+				pThirdPersonCamera->StartTilt(18.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+			else
+			{
+				pThirdPersonCamera->StartTilt(-25.344f, 0.24f, 0.44f);
+				m_bParryFirstHit = !m_bParryFirstHit;
+			}
+		}
+
 		m_bPlayerIsFront = true;
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };

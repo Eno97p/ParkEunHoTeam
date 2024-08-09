@@ -372,45 +372,45 @@ HRESULT CLoader::Loading_Map()
 			CPhysXComponent_static::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", TEXT("")))))
 			return hr = E_FAIL;
 
-		////PHYSX JUGGLAS MAP
-		//const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_GrassLand_PhysX.bin";
-		//HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		//if (INVALID_HANDLE_VALUE == hFile)
-		//	return E_FAIL;
+		//PHYSX TUTORIAL MAP
+		const wchar_t* wszFileName = L"../Bin/MapData/PhysXData/Stage_GrassLand_PhysX.bin";
+		HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (INVALID_HANDLE_VALUE == hFile)
+			return E_FAIL;
 
-		//DWORD dwByte(0);
+		DWORD dwByte(0);
 
-		//// 먼저 map의 크기(고유한 모델의 수)를 읽습니다.
-		//size_t mapSize = 0;
-		//ReadFile(hFile, &mapSize, sizeof(size_t), &dwByte, nullptr);
-		//if (0 == dwByte)
-		//{
-		//	CloseHandle(hFile);
-		//	return S_OK; // 파일이 비어있는 경우
-		//}
+		// 먼저 map의 크기(고유한 모델의 수)를 읽습니다.
+		size_t mapSize = 0;
+		ReadFile(hFile, &mapSize, sizeof(size_t), &dwByte, nullptr);
+		if (0 == dwByte)
+		{
+			CloseHandle(hFile);
+			return S_OK; // 파일이 비어있는 경우
+		}
 
-		//// 각 모델에 대한 정보를 읽습니다.
-		//for (size_t i = 0; i < mapSize; ++i)
-		//{
-		//	char szModelName[MAX_PATH] = "";
-		//	char szModelPath[MAX_PATH] = "";
+		// 각 모델에 대한 정보를 읽습니다.
+		for (size_t i = 0; i < mapSize; ++i)
+		{
+			char szModelName[MAX_PATH] = "";
+			char szModelPath[MAX_PATH] = "";
 
-		//	ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		//	if (0 == dwByte)
-		//		break;
+			ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
 
-		//	ReadFile(hFile, szModelPath, sizeof(char) * MAX_PATH, &dwByte, nullptr);
-		//	if (0 == dwByte)
-		//		break;
+			ReadFile(hFile, szModelPath, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+			if (0 == dwByte)
+				break;
 
 
-		//	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, const_char_to_wstring(szModelName),
-		//		CPhysXComponent_static::Create(m_pDevice, m_pContext, szModelPath, TEXT("../Bin/MapData/Stage_GrassLand.bin")))))
-		//		return hr = E_FAIL;
+			if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, const_char_to_wstring(szModelName),
+				CPhysXComponent_static::Create(m_pDevice, m_pContext, szModelPath, TEXT("../Bin/MapData/Stage_GrassLand.bin")))))
+				return hr = E_FAIL;
 
-		//}
+		}
 
-		//CloseHandle(hFile);
+		CloseHandle(hFile);
 
 #ifdef _DEBUG
 		//MSG_BOX("AndrasArena PhysX Data Loaded");
@@ -3232,33 +3232,83 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	//TUTORIAL MAP ELEMENTS @@
 	//TUTORIAL MAP ELEMENTS @@
 	//TUTORIAL MAP ELEMENTS @@
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_TutorialMap"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialMap.fbx", PreTransformMatrix))))
+//GrassLand PASSIVE ELEMENTS
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Cathedral"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Cathedral/Cathedral.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_TutorialMapBridge"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialMapBridge.fbx", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Espadon_Station"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Espadon_Station/Espadon_Station.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_GrassLand_Ruins"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/GrassLand_Ruins/GrassLand_Ruins.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Tower_Ruins"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Tower_Ruins/Tower_Ruins.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Bastion"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Bastion/Bastion.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_MetalGrid2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/MetalGrid2/MetalGrid2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Hoverboard_Track"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Hoverboard_Track/Hoverboard_Track.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Hoverboard_Track_Pillar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Hoverboard_Track_Pillar/Hoverboard_Track_Pillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_GrassLand_Arch"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/GrassLand_Arch/GrassLand_Arch.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Meteore"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Meteore/Meteore.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_TutorialDecoStructure"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialDecoStructure.fbx", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Mountain_Card"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Mountain_Card/Mountain_Card.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_TutorialDecoCubes"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialDecoCubes.fbx", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Mountain_BackGround"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Mountain_BackGround/Mountain_BackGround.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_TutorialDecoMaze"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialDecoMaze.fbx", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_AckbarCastle"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/AckbarCastle/AckbarCastle.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_MetalGrid"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/MetalGrid/MetalGrid.fbx", PreTransformMatrix))))
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_BigRocks"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/BigRocks.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_BigRocks4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/BigRocks4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Rock1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/Rock1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Rock2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/Rock2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Rock3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/Rock3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Rock4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigRocks/Rock4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 
 	//LIGHT PROPS@@@@@@@@@@

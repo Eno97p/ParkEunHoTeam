@@ -29,7 +29,7 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\MYMapTool\Private\Decal.cpp"
 
 
-#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\MYMapTool\private\DecalBox.cpp"
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\MYMapTool\private\Cloud.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\MYMapTool\Private\Default_Camera.cpp"

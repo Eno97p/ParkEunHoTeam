@@ -447,6 +447,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Weapon_Sword_LGGun.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="CMouse.h" />
     <ClInclude Include="Import_Class.h" />
     <ClInclude Include="Import_Object_.hpp" />

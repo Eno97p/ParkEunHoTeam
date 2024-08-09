@@ -726,7 +726,7 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Dash">
       <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\10.SavePoint">
       <UniqueIdentifier>{4ed1a5b4-83e4-47e9-a85a-00875473acfa}</UniqueIdentifier>
     </Filter>
@@ -1555,6 +1555,9 @@
     </ClInclude>
     <ClInclude Include="..\public\SavePoint.h">
       <Filter>02.GameObjects\10.SavePoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Client_Struct.h">
+      <Filter>99.Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

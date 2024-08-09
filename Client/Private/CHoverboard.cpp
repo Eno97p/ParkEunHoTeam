@@ -199,7 +199,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 
 	// 최소 및 최대 속도 설정 (이 값들은 게임의 특성에 맞게 조정해야 합니다)
 	const float minSpeed = 0.f;
-	const float maxSpeed = 200.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
+	const float maxSpeed = 2000.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
 
 	// 현재 속도에 따른 FOV 계산
 	float t = (m_fCurHoverBoardSpeed - minSpeed) / (maxSpeed - minSpeed);

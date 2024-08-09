@@ -5,7 +5,7 @@
 #include "SavePoint.h"
 
 #include "UI_Activate.h"
-
+#include "UI_FadeInOut.h"
 
 CSavePoint::CSavePoint(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice, pContext)
@@ -110,9 +110,32 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 		m_pActivateUI->Late_Tick(fTimeDelta);
 		if (KEY_TAP(DIK_F))
 		{
-			//Save
+			CUI_FadeInOut::UI_FADEINOUT_DESC pDesc = {};
+			pDesc.isFadeIn = true;
+			pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+				return;
+			
+
+			//vector<future<void>> vecfutures;
+			//비동기 적으로 현재 비석의 위치 저장
+
+			auto futures = m_pGameInstance->AddWork([this]() {
+				Engine::Save_Data(L"../Bin/DataFiles/SavePoint.dat", true, m_pTransformCom->Get_WorldMatrix());
+			});
+			
+			if (futures.wait_for(chrono::milliseconds(1000)) == future_status::ready)
+			{
+
+				int tes = 0;
+				//저장 완료
+			}
+			
+
+
 		}
-		int test = 0;
+		
 	}
 
 

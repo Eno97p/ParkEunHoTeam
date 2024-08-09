@@ -15,11 +15,11 @@ public:
 		_float3 vSize = { 1.f,1.f,1.f };
 		_float3 vOffset = { 0.f,1.f,0.f };
 		_float3 fColor = { 1.f,1.f,1.f };
-		_float3 BloomColor = { 0.f,1.f,0.f };
-		_float fBloomPower = 0.f;
-		_float fMaxLifeTime = 1.f;
-		_float2 fThreadRatio = { 0.f,0.f };
-		_float fSlowStrength = 0.5f;
+		_float3 BloomColor = { 1.f,1.f,1.f };
+		_float fBloomPower = 1.f;
+		_float fMaxLifeTime = 0.5f;
+		_float2 fThreadRatio = { 0.f,0.2f };
+		_float fSlowStrength = 0.1f;
 		const _float4x4* ParentMatrix = nullptr;
 	};
 

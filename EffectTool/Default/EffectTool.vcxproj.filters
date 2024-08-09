@@ -340,6 +340,9 @@
     <ClInclude Include="..\Public\Charge_Ribbon.h">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\DefaultCylinder.h">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -535,6 +538,9 @@
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Charge_Ribbon.cpp">
+      <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DefaultCylinder.cpp">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClCompile>
   </ItemGroup>

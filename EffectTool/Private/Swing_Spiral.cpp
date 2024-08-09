@@ -29,6 +29,7 @@ HRESULT CSwing_Spiral::Initialize(void* pArg)
 		return E_FAIL;
 
 	_matrix WorldMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
+	WorldMat.r[3] = XMVector3TransformCoord(XMLoadFloat3(&m_OwnDesc->vOffset), WorldMat);
 	WorldMat.r[0] = XMVector4Normalize(WorldMat.r[0]);
 	WorldMat.r[1] = XMVector4Normalize(WorldMat.r[1]);
 	WorldMat.r[2] = XMVector4Normalize(WorldMat.r[2]);
@@ -44,7 +45,11 @@ void CSwing_Spiral::Priority_Tick(_float fTimeDelta)
 
 void CSwing_Spiral::Tick(_float fTimeDelta)
 {
-	m_fCurLifeTime += fTimeDelta;
+	if (m_fLifeTimeRatio > m_OwnDesc->fThreadRatio.x && m_fLifeTimeRatio < m_OwnDesc->fThreadRatio.y)
+		m_fCurLifeTime += fTimeDelta * m_OwnDesc->fSlowStrength;
+	else
+		m_fCurLifeTime += fTimeDelta;
+
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
@@ -54,8 +59,6 @@ void CSwing_Spiral::Tick(_float fTimeDelta)
 	m_fLifeTimeRatio = max(0.f, min(m_fLifeTimeRatio, 1.f));
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);
-
 	_vector CurSize = XMLoadFloat3(&m_OwnDesc->vSize);
 	_vector MaxSize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
 	_vector ResultSize = XMVectorLerp(CurSize, MaxSize, m_fLifeTimeRatio);

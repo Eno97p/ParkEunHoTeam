@@ -89,7 +89,7 @@ void CUI_WPEquipSlot::Tick(_float fTimeDelta)
 void CUI_WPEquipSlot::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, ELEVENTH);
-
+	 
 	if (nullptr != m_pNoneFrame && !m_isSelect)
 		m_pNoneFrame->Late_Tick(fTimeDelta);
 
@@ -117,11 +117,9 @@ HRESULT CUI_WPEquipSlot::Render()
 
 HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 {
-	// 이미 장착 중인 애를 또 장착하려고 하면 안 되도록 예외 처리 해야함~~~
-	// or 이미 있던 곳 변경되도록! 원래 있던 곳에서 제거해주고 새로 옮기기 
+	// 이미 장착 중인 Weapon을 다른 Weapon이 장착되어있는 Slot에 장착 시 NULL로 변경되는 오류 있음
 
-	// 여기에서 뭔가 CInventory에 Arr Equip Weapon을 제거해버리는 코드가 있음
-	// 그거 찾아서 얘외처리를 하든 코드 추가를 하던 해야 함~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// 기존에 있던 ItemIcon에 대한 정보를 Equip 비활성화로 돌리고 / 새로 들어온 녀석은 넣어주어야 하는데 < 넣고 나서 없어지는 문제
 
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;

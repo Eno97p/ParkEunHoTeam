@@ -192,6 +192,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Andras.h" />
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
+    <ClInclude Include="..\Public\BackGround_Card.h" />
     <ClInclude Include="..\public\BlastWall.h" />
     <ClInclude Include="..\Public\Body_Andras.h" />
     <ClInclude Include="..\Public\Body_Choron.h" />
@@ -268,6 +269,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Charge_Ribbon.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Charge_Vane.h" />
+    <ClInclude Include="..\Public\ParkEunHo\DefaultCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
@@ -278,6 +282,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
+    <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\TornadoEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h" />
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h" />
@@ -308,6 +314,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
+    <ClInclude Include="..\Public\UI_Dash.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
@@ -447,6 +454,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Weapon_Sword_LGGun.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="CMouse.h" />
     <ClInclude Include="Import_Class.h" />
     <ClInclude Include="Import_Object_.hpp" />
@@ -459,6 +467,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Andras.cpp" />
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BackGround_Card.cpp" />
     <ClCompile Include="..\private\BlastWall.cpp" />
     <ClCompile Include="..\Private\Body_Andras.cpp" />
     <ClCompile Include="..\Private\Body_Choron.cpp" />
@@ -531,6 +540,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Charge_Ribbon.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Charge_Vane.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\DefaultCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
@@ -541,6 +553,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\TornadoEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp" />
@@ -571,6 +585,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />
+    <ClCompile Include="..\Private\UI_Dash.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />

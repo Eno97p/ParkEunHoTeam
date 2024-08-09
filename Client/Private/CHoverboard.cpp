@@ -3,6 +3,7 @@
 
 
 #include"GameInstance.h"
+#include "UI_Manager.h"
 
 #include"Camera.h"
 #include "EffectManager.h"
@@ -118,7 +119,8 @@ void CHoverboard::Tick(_float fTimeDelta)
 		steerResponse->wheelResponseMultipliers[2] = 0.0f;
 		steerResponse->wheelResponseMultipliers[3] = 0.0f;
 	
-
+		if(m_bIsBoost && !(CUI_Manager::GetInstance()->Get_Dash()))
+			CUI_Manager::GetInstance()->Set_Dash(true);
 	}
 	else
 	{
@@ -128,6 +130,7 @@ void CHoverboard::Tick(_float fTimeDelta)
 		steerResponse->wheelResponseMultipliers[2] = 1.0f;
 		steerResponse->wheelResponseMultipliers[3] = 1.0f;
 
+		CUI_Manager::GetInstance()->Set_Dash(false);
 
 	}
 	if (KEY_TAP(DIK_LSHIFT))
@@ -136,11 +139,16 @@ void CHoverboard::Tick(_float fTimeDelta)
 		{
 			m_pGameInstance->Set_MotionBlur(false);
 			m_bIsBoost = false;
+
+			CUI_Manager::GetInstance()->Set_Dash(false);
 		}
 		else
 		{
 			m_pGameInstance->Set_MotionBlur(true);
 			m_bIsBoost = true;
+
+			// UI Dash On
+			CUI_Manager::GetInstance()->Set_Dash(true);
 		}
 	}
 
@@ -195,11 +203,12 @@ void CHoverboard::Tick(_float fTimeDelta)
 	//카메라 광각 설정
 	// 최소 및 최대 FOV 설정
 	const float minFOV = XMConvertToRadians(60.f);
-	const float maxFOV = XMConvertToRadians(150.f);
+	const float maxFOV = XMConvertToRadians(100.f);
 
 	// 최소 및 최대 속도 설정 (이 값들은 게임의 특성에 맞게 조정해야 합니다)
 	const float minSpeed = 0.f;
-	const float maxSpeed = 200.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
+	const float maxSpeed = 50.f; // 예시 값, 실제 최대 속도에 맞게 조정하세요
+
 
 	// 현재 속도에 따른 FOV 계산
 	float t = (m_fCurHoverBoardSpeed - minSpeed) / (maxSpeed - minSpeed);

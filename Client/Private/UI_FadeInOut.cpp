@@ -55,7 +55,7 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 
 			if (!m_isFadeIn) // Fade Out
 			{
-				m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
+				//m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
 				/*	if (FAILED(Create_FadeIn()))
 					return;*/
 				//// 씬 초기화 필요

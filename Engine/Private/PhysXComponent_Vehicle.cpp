@@ -335,7 +335,9 @@ HRESULT CPhysXComponent_Vehicle::Initialize(void * pArg)
 			responseTable.commandValue = 1.00f;
 			responseTable.speedResponses.addPair(0.0f, 1.00f);
 			responseTable.speedResponses.addPair(20.0f, 1.00f);
-			responseTable.speedResponses.addPair(60.0f, 0.0f);
+			responseTable.speedResponses.addPair(60.0f, 1.00f);
+			responseTable.speedResponses.addPair(80.0f, 1.00f);
+			responseTable.speedResponses.addPair(100.0f, 1.00f);
 			
 			nonLinearResponse.addResponse(responseTable);
 			

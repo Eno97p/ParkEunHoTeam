@@ -117,10 +117,6 @@ HRESULT CUI_WPEquipSlot::Render()
 
 HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 {
-	// 이미 장착 중인 Weapon을 다른 Weapon이 장착되어있는 Slot에 장착 시 NULL로 변경되는 오류 있음
-
-	// 기존에 있던 ItemIcon에 대한 정보를 Equip 비활성화로 돌리고 / 새로 들어온 녀석은 넣어주어야 하는데 < 넣고 나서 없어지는 문제
-
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.fX = m_fX - 3.f;
@@ -139,7 +135,6 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 				if (m_pItemIcon->Get_TextureName() == (*weapon)->Get_TextureName())
 				{
 					(*weapon)->Set_isEquip(false);
-					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum); // 여기서 없어짐 !!!!!!!!!!!
 
 					// Equip Sign 제거
 					dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, i);
@@ -169,7 +164,6 @@ HRESULT CUI_WPEquipSlot::Create_ItemIcon(_bool isWeapon)
 				if (m_pItemIcon->Get_TextureName() == (*skill)->Get_TextureName())
 				{
 					(*skill)->Set_isEquip(false);
-					CInventory::GetInstance()->Delete_EquipWeapon(m_eSlotNum);
 
 					// Equip Sign 제거
 					dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, i);
@@ -320,9 +314,7 @@ void CUI_WPEquipSlot::Click_Event()
 	vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
 
-
-
-
+	// Inventory의 WeaponList에 있는 Weapon(or Skill)을 Index 활용하여 접근
 	for (size_t i = 0; i < iCurSlotIdx; ++i)
 	{
 		if (CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
@@ -331,7 +323,6 @@ void CUI_WPEquipSlot::Click_Event()
 		if (CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
 			++skill;
 	}
-
 
 	if (isAlphaBG_On) // 장착
 	{
@@ -353,7 +344,6 @@ void CUI_WPEquipSlot::Click_Event()
 				}
 				dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(false, iCount);
 			}
-
 		}
 		else if(CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
@@ -372,23 +362,9 @@ void CUI_WPEquipSlot::Click_Event()
 			}
 		}
 
-		// 잘 나오는 거 같으넫 CInvneotry에는 왜 Null로 채워져있는 것 같지? 근데 왜 HUD는 멀쩡하지
-		// >>>>> 문제 있음 ㅇㅇ NULL이면 안 됨! 지금은 CInventory에 NULL로 들어가 있음
-
-
 		// Equip Slot에 장착 등록
 		weapon = CInventory::GetInstance()->Get_Weapons()->begin();
 		skill = CInventory::GetInstance()->Get_Skills()->begin();
-
-		// 이 for문이 무엇을 위한 것인지 모르겠음 > 그냥 각 if문 안에 넣어도 될 거 같은디;
-		/*for (size_t i = 0; i < iCurSlotIdx; ++i)
-		{
-			if (CInventory::GetInstance()->Get_WeaponSize() > iCurSlotIdx)
-				++weapon;
-
-			if (CInventory::GetInstance()->Get_SkillSize() > iCurSlotIdx)
-				++skill;
-		}*/
 
 		if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 		{
@@ -397,7 +373,7 @@ void CUI_WPEquipSlot::Click_Event()
 
 			if (!(*weapon)->Get_isEquip()) // 장착 중이 아닌 지에 대한 정보는 필요 없지 않을까 어차피 장착 중이어도 제거햇을 테니
 			{
-				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum); // !!!!!!여기 어케 들어갓을지
+				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 				(*weapon)->Set_isEquip(true);
 			}
 		}
@@ -413,7 +389,7 @@ void CUI_WPEquipSlot::Click_Event()
 			}
 		}
 
-		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true); // Equip Sign 비활성화
+		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true); // Equip Sign 활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false); // AlphaBG 비활성화
 	}
 	else // 장착 해제

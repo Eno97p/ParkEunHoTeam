@@ -261,7 +261,7 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 {
 	// Weapon의 Slot에서 현재 선택한 아이템을 EquipWeapon에 넣어주기
-	m_arrEquipWeapon[iEquipSlotIdx] = pItemData;
+	m_arrEquipWeapon[iEquipSlotIdx] = pItemData; // >>>>>>>>>>>>> 여기서 넣어주어야 하는 거 아님?
 
 	// Weapon Equip Slot UI에 출력
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx); // 여기서 지워지넹

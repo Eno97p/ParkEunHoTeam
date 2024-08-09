@@ -58,19 +58,16 @@ void CSwingEffect::Tick(_float fTimeDelta)
 {
 	m_OwnDesc->fLifeTime -= fTimeDelta;
 	if (m_OwnDesc->fLifeTime < 0.f)
+	{
+		Add_Child_Effects();
 		m_pGameInstance->Erase(this);
+	}
 
 	_matrix WorldMat = XMLoadFloat4x4(m_OwnDesc->ParentMat);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, WorldMat.r[3]);
 
 	for (auto& iter : m_EffectClasses)
 		iter->Tick(fTimeDelta);
-
-	if (static_cast<Charge_Vane*>(m_EffectClasses[0])->Get_Effect_Dead()&& !m_EffectGenerated)
-	{
-		Add_Child_Effects();
-		m_EffectGenerated = true;
-	}
 }
 
 void CSwingEffect::Late_Tick(_float fTimeDelta)
@@ -87,9 +84,13 @@ HRESULT CSwingEffect::Add_Components()
 HRESULT CSwingEffect::Add_Child_Effects()
 {
 	m_OwnDesc->SpiralDesc.ParentMatrix = m_OwnDesc->ParentMat;
+	m_OwnDesc->CylinderDesc.ParentMatrix = m_OwnDesc->ParentMat;
 
-	CGameObject* StockValue = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Swing_Spiral"), &m_OwnDesc->SpiralDesc);
-	m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"), StockValue);
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"),
+		TEXT("Prototype_GameObject_Swing_Spiral"), &m_OwnDesc->SpiralDesc);
+
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"),
+		TEXT("Prototype_GameObject_DefaultCylinder"), &m_OwnDesc->CylinderDesc);
 
 	return S_OK;
 }

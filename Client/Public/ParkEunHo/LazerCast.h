@@ -18,6 +18,8 @@ public:
 		_float3 vOffset = { 0.f,0.f,1.f };
 		_float fBloomPower = 0.f;
 		_float fMaxLifeTime = 1.f;
+		_float2 fThreadRatio = { 0.f,0.f };
+		_float fSlowStrength = 0.5f;
 		const _float4x4* ParentMatrix = nullptr;
 	};
 

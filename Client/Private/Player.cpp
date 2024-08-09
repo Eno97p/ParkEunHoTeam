@@ -961,9 +961,15 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 {
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
 	{
+
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
+			_float4 vParticlepos;
+			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
+			EFFECTMGR->Generate_Particle(53, vParticlepos, this);
+			EFFECTMGR->Generate_Swing(0, m_pTransformCom->Get_WorldFloat4x4());
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}

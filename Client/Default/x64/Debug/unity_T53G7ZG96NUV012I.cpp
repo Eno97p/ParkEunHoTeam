@@ -12,6 +12,9 @@
 #include "C:\Real3DProject\Client\private\BackGround.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\BackGround_Card.cpp"
+
+
 #include "C:\Real3DProject\Client\private\BlastWall.cpp"
 
 
@@ -228,6 +231,15 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasScrew.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Charge_Ribbon.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Charge_Vane.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\DefaultCylinder.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Distortion_Effect.cpp"
 
 
@@ -256,6 +268,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\ShieldSphere.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\SwingEffect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Swing_Spiral.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\TornadoEffect.cpp"

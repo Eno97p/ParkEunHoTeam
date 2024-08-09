@@ -6,9 +6,9 @@
 #include "Renderer.h"
 #include "Component_Manager.h"
 #include "PipeLine.h"
+#include "CWorker.h"
 
 BEGIN(Engine)
-class CWorker;
 class ENGINE_DLL CGameInstance final : public CBase
 {
 	DECLARE_SINGLETON(CGameInstance)

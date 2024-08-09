@@ -44,6 +44,8 @@ private:
 	vector<class CGameObject*>		m_PartObjects;
 	_float m_fBackStepTime = 1.1f;
 
+	_bool										m_bParryFirstHit = true;
+
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();

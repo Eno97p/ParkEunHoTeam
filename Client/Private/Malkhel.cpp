@@ -12,6 +12,7 @@
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
+#include "ThirdPersonCamera.h"
 
 CMalkhel::CMalkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -321,6 +322,13 @@ NodeStates CMalkhel::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
+		{
+			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+			pThirdPersonCamera->Zoom(50.f, 0.16f, 0.336);
+		}
+
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };
 		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);

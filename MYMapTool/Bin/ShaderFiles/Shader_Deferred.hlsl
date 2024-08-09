@@ -683,14 +683,6 @@ PS_OUT PS_SHADOW_RESULT(PS_IN In)
     vector vShadow_Move = g_Shadow_MoveTexture.Sample(LinearSampler, In.vTexcoord);
     vector vShadow_NotMove = g_Shadow_NotMoveTexture.Sample(LinearSampler, In.vTexcoord);
 
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-
-        }
-    }
-
     Out.vColor = vShadow_Move + vShadow_NotMove;
 
     return Out;

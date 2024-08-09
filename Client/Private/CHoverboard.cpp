@@ -465,6 +465,9 @@ HRESULT CHoverboard::Bind_ShaderResources()
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
+	_float4 fDisolveColor = _float4(0.f, 1.f, 0.1f, 1.f);
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveColor", &fDisolveColor, sizeof(_float4))))
+		return E_FAIL;
 
 	return S_OK;
 }

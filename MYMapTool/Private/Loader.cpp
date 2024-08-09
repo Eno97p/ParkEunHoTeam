@@ -21,6 +21,7 @@
 #include "FakeWall.h"
 #include "Elevator.h"
 #include "TutorialMapBridge.h"
+#include "BackGround_Card.h"
 
 #include "EventTrigger.h"
 #include "Trap.h"
@@ -672,6 +673,15 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Meteore/Meteore.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f))  * XMMatrixRotationX(XMConvertToRadians(90.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mountain_Card"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Mountain_Card/Mountain_Card.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mountain_BackGround"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Mountain_BackGround/Mountain_BackGround.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma region  DECO ELEMENTS
 	//STAGE 1 DECO ELEMENTS
@@ -1058,6 +1068,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cloud"), CCloud::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround_Card"), CBackGround_Card::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Decal"), CDecal::Create(m_pDevice, m_pContext))))

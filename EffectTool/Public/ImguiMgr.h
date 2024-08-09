@@ -142,7 +142,10 @@ private:
 
 private:
 	void SwingEffectTool();
-
+	HRESULT Store_Swing(char* Name, CSwingEffect::SWINGEFFECT desc);
+	void Swing_ListBox(CSwingEffect::SWINGEFFECT* Swing);
+	HRESULT Save_Swing();
+	HRESULT Load_Swing();
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -178,6 +181,7 @@ private:
 	vector<shared_ptr<CTornadoEffect::TORNADODESC>>			m_Tornados;
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>				m_Heals;
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
+	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>			m_Swings;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -188,6 +192,7 @@ private:
 	vector<string> TornadoNames;
 	vector<string> HealNames;
 	vector<string> LazerNames;
+	vector<string> SwingNames;
 
 
 private:

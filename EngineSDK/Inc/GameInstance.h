@@ -196,7 +196,7 @@ public:	// For Worker
 	auto  AddWork(T&& Func, Args&&... args) -> future<decltype(Func(args...))>
 	{
 		
-			return 	m_pWorker->Add_Job(Func, args...);
+			//return 	m_pWorker->Add_Job(Func, args...);
 		
 	}
 

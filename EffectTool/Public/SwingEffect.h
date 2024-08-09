@@ -4,6 +4,7 @@
 #include "Swing_Spiral.h"
 #include "Charge_Vane.h"
 #include "Charge_Ribbon.h"
+#include "DefaultCylinder.h"
 
 BEGIN(Effect)
 class CSwingEffect final : public CGameObject
@@ -16,6 +17,7 @@ public:
 		CSwing_Spiral::SWING_SPIRAL SpiralDesc{};
 		Charge_Vane::VANE_DESC		VaneDesc{};
 		Charge_Ribbon::LARGE_RIBBON RibbonDesc{};
+		CDefaultCylinder::DEFAULTCYLINDER CylinderDesc{};
 	};
 
 private:
@@ -37,8 +39,6 @@ private:
 	shared_ptr<SWINGEFFECT>			m_OwnDesc;
 	vector<CGameObject*>			m_EffectClasses;
 
-private:
-	_bool							m_EffectGenerated = false;
 
 public:
 	static CSwingEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -93,7 +93,7 @@ void CPretorianSword::Tick(_float fTimeDelta)
 	}
 	else
 	{
-		Generate_Trail(0);
+		Generate_Trail(7);
 	}
 
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||

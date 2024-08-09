@@ -310,7 +310,9 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Hoverboard_Track"),
                         TEXT("Prototype_Component_Model_Hoverboard_Track_Pillar"),
                         TEXT("Prototype_Component_Model_GrassLand_Arch"),
-                        TEXT("Prototype_Component_Model_Meteore")
+                        TEXT("Prototype_Component_Model_Meteore"),
+                        TEXT("Prototype_Component_Model_Mountain_Card"),
+                        TEXT("Prototype_Component_Model_Mountain_BackGround")
                  
     };
 
@@ -330,8 +332,8 @@ void CToolObj_Manager::Initialize()
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_TreasureChest"),
-        TEXT("Prototype_Component_Model_BasicCube") // 구름
-
+        TEXT("Prototype_Component_Model_BasicCube"), // 구름
+         TEXT("Prototype_Component_Model_Mountain_Card")
     };
 }
 
@@ -535,6 +537,8 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_TreasureChest";
         case 11:
             return "Prototype_GameObject_Cloud";
+        case 12:
+            return "Prototype_GameObject_BackGround_Card";
         default:
             break;
         }

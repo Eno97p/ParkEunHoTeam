@@ -60,6 +60,7 @@
 #include "Swing_Spiral.h"
 #include "Charge_Vane.h"
 #include "Charge_Ribbon.h"
+#include "DefaultCylinder.h"
 #pragma endregion SWING
 
 #include "HoverBoard.h"
@@ -321,7 +322,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f)* XMMatrixRotationX(XMConvertToRadians(90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_LazerCast"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/HelixCast/LazerCast.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/HelixCast/NewLazerCast.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
@@ -404,6 +405,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	//Large_Ribbon
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Large_Ribbon"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HealingEffect/Large_Ribbon.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//DefaultCylinder
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_DefaultCylinder"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/DefaultCylinder.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_HoverBoard*/
@@ -654,6 +660,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_ChargeRibbon"),
 		Charge_Ribbon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_DefaultCylinder"),
+		CDefaultCylinder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HoverBoard"),

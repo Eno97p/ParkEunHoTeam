@@ -31,8 +31,6 @@ public:
 	_uint Get_ShaderPath() { return m_iShaderPath; }
 	void Set_ShaderPath(_uint iIdx) {  m_iShaderPath = iIdx; }
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CTexture3D* m_pNoise3DCom = { nullptr };

@@ -133,7 +133,7 @@ namespace Engine
 	template<typename T>
 	void Save_Data_Extraction(std::ofstream& outFile, const T& data)
 	{
-		//만약 문자열이 들어온 경우 
+		//만약 wstring이 들어온 경우 
 		if constexpr (is_same_v<T, wstring>)
 		{
 			//길이를 먼저 저장 하고 그 다음 문자를 저장
@@ -231,7 +231,7 @@ namespace Engine
 	// 파일에서 데이터를 읽어오는 함수 (타입 지정) 명시적으로 어떤 타입인지 지정해줘야 함
 	template<typename... Types>	//타입이 지정이 되었다면, 
 	//튜플의 반환값을 지정된 타입으로 반환시킨다
-	std::optional<tuple<Types...>> Load_Data(const wstring& FilePath)
+	std::optional<tuple<Types...>> Load_Data(const wstring& FilePath)	//optional 파일이 유효한지 확인하기위함
 	{
 		std::wstring filePathWithoutExtension = RemoveExtension(FilePath);
 		wstring fullPath = filePathWithoutExtension + L".bin";

@@ -2,7 +2,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_PrevWorldMatrix, g_PrevViewMatrix;
 
 texture2D	g_BrushTexture;
 texture2D	g_MaskTexture;
@@ -18,6 +18,9 @@ float g_fWorldSize = 3075.f;
 float g_fSnowGroundHeight;
 float g_fSnowGroundHeightOffset;
 
+bool g_MotionBlur = false;
+
+
 struct VS_IN
 {
     float3		vPosition : POSITION;
@@ -32,22 +35,29 @@ struct VS_OUT
     float2		vTexcoord : TEXCOORD0;
     float4		vProjPos : TEXCOORD1;
     float4		vWorldPos : TEXCOORD2;
+    float2		vVelocity : TEXCOORD3;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT		Out = (VS_OUT)0;
 
-    matrix		matWV, matWVP;
+    matrix		matWV, matWVP, matPrevWV, matPrevWVP;
 
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
+    matPrevWV = mul(g_PrevWorldMatrix, g_PrevViewMatrix);
+    matPrevWVP = mul(matPrevWV, g_ProjMatrix);
 
     Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
     Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+
+    vector vPrevPos = mul(float4(In.vPosition, 1.f), matPrevWVP);
+    Out.vVelocity = (Out.vPosition.xy / Out.vPosition.w) - (vPrevPos.xy / vPrevPos.w);
+    Out.vVelocity *= -0.3f;
 
     return Out;
 }
@@ -60,6 +70,7 @@ struct PS_IN
     float2      vTexcoord : TEXCOORD0;
     float4      vProjPos : TEXCOORD1;
     float4      vWorldPos : TEXCOORD2;
+    float2		vVelocity : TEXCOORD3;
 };
 
 struct PS_OUT
@@ -175,6 +186,12 @@ PS_OUT PS_MAIN(PS_IN In)
     // 깊이 정보
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
     Out.vRoughness = vector(finalRoughness, 0.f, 0.f, 1.f);
+
+
+    if (g_MotionBlur)
+    {
+        Out.vVelocity = In.vVelocity;
+    }
 
     return Out;
 }

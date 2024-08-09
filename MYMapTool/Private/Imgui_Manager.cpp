@@ -569,7 +569,11 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "Hoverboard_Track",
             "Hoverboard_Track_Pillar",
             "GrassLand_Arch",
-            "Meteore"
+            "Meteore",
+            "Mountain Card",
+            "Mountain BackGround",
+
+
 
         };
         ImGui::ListBox("###Obj", &item_current, items_MapElement, IM_ARRAYSIZE(items_MapElement)); // item_current 변수에 선택 값 저장
@@ -579,7 +583,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud"  };
+                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }

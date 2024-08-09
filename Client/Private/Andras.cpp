@@ -581,6 +581,10 @@ NodeStates CAndras::LaserAttack(_float fTimeDelta)
 	{
 		if (!m_bLaser)
 		{
+			_float4 vStartPosition;
+			XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			vStartPosition.y += 1.f;
+			EFFECTMGR->Generate_Particle(51, vStartPosition);
 			EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 			m_bLaser = true;
 		}

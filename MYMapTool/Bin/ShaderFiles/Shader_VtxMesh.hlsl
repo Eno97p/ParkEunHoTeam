@@ -55,6 +55,10 @@ float3 g_vWindDirection;
 float g_fWindStrength;
 float3 g_LeafCol;
 
+
+//for Card
+uint g_TextureNum;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -511,6 +515,47 @@ PS_OUT_BLOOM PS_TRUNK_BLOOM(PS_IN In)
 	return Out;
 }
 
+PS_OUT_BLOOM PS_CARD(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	// 텍스처 좌표 조정
+	float2 adjustedTexcoord = In.vTexcoord;
+
+	// g_TextureNum에 따라 텍스처의 다른 부분 선택
+	float startY, endY;
+	if (g_TextureNum == 0)
+	{
+		startY = 0.0f;
+		endY = 0.37f;
+	}
+	else if (g_TextureNum == 1)
+	{
+		startY = 0.37f;
+		endY = 0.68f;
+	}
+	else // g_TextureNum == 2 또는 그 외의 경우
+	{
+		startY = 0.68f;
+		endY = 1.0f;
+	}
+
+	// 선택된 범위 내에서 텍스처 좌표 조정
+	adjustedTexcoord.y = startY + (endY - startY) * adjustedTexcoord.y;
+
+	vector vColor = g_DiffuseTexture.Sample(PointSampler, adjustedTexcoord);
+
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse)
+	{
+		Out.vColor = vColor;
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass_0
@@ -646,6 +691,18 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_TRUNK_BLOOM();
 	}
 
+	pass Card_10
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_CARD();
+	}
 
 }
 

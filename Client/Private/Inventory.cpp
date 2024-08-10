@@ -138,13 +138,18 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF2);
+	Add_DropItem(CItem::ITEM_BUFF3);
+	Add_DropItem(CItem::ITEM_BUFF4);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_ETHER);
 	Add_DropItem(CItem::ITEM_UPGRADE2);
 
-	Add_Item(CItemData::ITEMNAME_CATALYST);
+	//Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }

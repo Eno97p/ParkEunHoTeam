@@ -12,6 +12,7 @@ public:
 	typedef struct UI_BuffTimer_Desc : public UI_DESC
 	{
 		_uint		iBuffTimerIdx;
+		wstring		wstrTextureName;
 	}UI_BUFFTIMER_DESC;
 
 private:
@@ -21,6 +22,7 @@ private:
 
 public:
 	void			Set_Index(_uint iBuffTimerIdx) { m_iBuffTimerIdx = iBuffTimerIdx; }
+	wstring			Get_TextureName() { return m_wstrTextureName; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -32,11 +34,12 @@ public:
 
 private:
 	_uint				m_iBuffTimerIdx = { 0 };
+	wstring				m_wstrTextureName;
 
 	vector<class CUI*>	m_vecUI;
 
 private:
-	HRESULT	Create_UI();
+	HRESULT	Create_UI(wstring wstrTextureName);
 
 	void	Setting_UIPosition();
 

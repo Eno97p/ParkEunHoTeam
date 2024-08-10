@@ -27,8 +27,8 @@ HRESULT CUIGroup_BuffTimer::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_BuffTimer())) // Test용 (추후 동적으로 생성되도록 변경할 것임. 위치 확인 위해 테스트용으로 호출)
-		return E_FAIL;
+	//if (FAILED(Create_BuffTimer())) // Test용 (추후 동적으로 생성되도록 변경할 것임. 위치 확인 위해 테스트용으로 호출)
+	//	return E_FAIL;
 
 	//m_isRend = true; // 항상 그려지도록 하기 (요소가 없으면 알아서 안 그려질 것) >> 이 값 자체가 필요 없지 않을까?
 
@@ -56,20 +56,30 @@ HRESULT CUIGroup_BuffTimer::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_BuffTimer::Create_BuffTimer()
+HRESULT CUIGroup_BuffTimer::Create_BuffTimer(wstring wstrTextureName)
 {
+	// 여기에서 분기 처리 해도 될 거 같음 > 중복인 경우 타이머를 초기화하는 식으로!
+
+	vector<CUI_BuffTimer*>::iterator timer = m_vecUI.begin();
+	for (size_t i = 0; i < m_vecUI.size(); ++i)
+	{
+		if ((*timer)->Get_TextureName() == wstrTextureName) // 중복되는 값이 있다면
+		{
+			// 타이머를 초기화
+			return S_OK;
+		}
+		else
+			++timer;
+	}
+
+
+
+
 	CUI_BuffTimer::UI_BUFFTIMER_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.iBuffTimerIdx = m_vecUI.size();
-	m_vecUI.emplace_back(dynamic_cast<CUI_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BuffTimer"), &pDesc)));
-
-	pDesc.iBuffTimerIdx = m_vecUI.size();
-	m_vecUI.emplace_back(dynamic_cast<CUI_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BuffTimer"), &pDesc)));
-
-	pDesc.iBuffTimerIdx = m_vecUI.size();
-	m_vecUI.emplace_back(dynamic_cast<CUI_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BuffTimer"), &pDesc)));
-
-	pDesc.iBuffTimerIdx = m_vecUI.size();
+	// 어떤 Buff에 대한 타이머인지에 대한 정보도 넣어주어야 함
+	pDesc.wstrTextureName = wstrTextureName;
 	m_vecUI.emplace_back(dynamic_cast<CUI_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BuffTimer"), &pDesc)));
 
 	return S_OK;

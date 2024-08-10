@@ -1,6 +1,7 @@
 #include "UI_BuffTimer.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 #include "UI_BuffTimer_Bar.h"
 #include "UI_BuffTimer_Timer.h"
@@ -41,6 +42,13 @@ void CUI_BuffTimer::Priority_Tick(_float fTimeDelta)
 void CUI_BuffTimer::Tick(_float fTimeDelta)
 {
     // 여기서 생성된 지 몇초인지 시간을 재고 그 시간이 끝나면 해당 객체 없애버리는 식으로 > BuffTimer UI는 이 값을 받아와서 매번 비율을 갱신해주는 식으로 하는 것이 좋을 듯함
+
+    m_fBuffTimer += fTimeDelta;
+    if (5.f <= m_fBuffTimer)
+    {
+        // 삭제해주어야 함
+        m_isBuffEnd = true;
+    }
 
     Setting_UIPosition();
 

@@ -24,6 +24,8 @@ public:
 	void			Set_Index(_uint iBuffTimerIdx) { m_iBuffTimerIdx = iBuffTimerIdx; }
 	wstring			Get_TextureName() { return m_wstrTextureName; }
 
+	_bool			Get_isBuffEnd() { return m_isBuffEnd; }
+
 public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
@@ -33,7 +35,9 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool				m_isBuffEnd = { false };
 	_uint				m_iBuffTimerIdx = { 0 };
+	_float				m_fBuffTimer = { 0.f };
 	wstring				m_wstrTextureName;
 
 	vector<class CUI*>	m_vecUI;

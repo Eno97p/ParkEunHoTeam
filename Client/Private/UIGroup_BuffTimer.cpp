@@ -58,8 +58,6 @@ HRESULT CUIGroup_BuffTimer::Render()
 
 HRESULT CUIGroup_BuffTimer::Create_BuffTimer(wstring wstrTextureName)
 {
-	// 여기에서 분기 처리 해도 될 거 같음 > 중복인 경우 타이머를 초기화하는 식으로!
-
 	vector<CUI_BuffTimer*>::iterator timer = m_vecUI.begin();
 	for (size_t i = 0; i < m_vecUI.size(); ++i)
 	{
@@ -72,17 +70,37 @@ HRESULT CUIGroup_BuffTimer::Create_BuffTimer(wstring wstrTextureName)
 			++timer;
 	}
 
-
-
-
 	CUI_BuffTimer::UI_BUFFTIMER_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.iBuffTimerIdx = m_vecUI.size();
-	// 어떤 Buff에 대한 타이머인지에 대한 정보도 넣어주어야 함
 	pDesc.wstrTextureName = wstrTextureName;
 	m_vecUI.emplace_back(dynamic_cast<CUI_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BuffTimer"), &pDesc)));
 
 	return S_OK;
+}
+
+void CUIGroup_BuffTimer::Check_BuffEnd()
+{
+	// BuffEnd가 된 녀석들을 제거해주어야 함
+	vector<CUI_BuffTimer*>::iterator timer = m_vecUI.begin();
+	for (size_t i = 0; i < m_vecUI.size(); ++i)
+	{
+		if ((*timer)->Get_isBuffEnd())
+		{
+			timer = m_vecUI.erase(timer);
+			
+			// 그리고 뒤에 값이 더 있다면 한칸씩 앞으로 땡겨와야 함
+
+			if ((timer != m_vecUI.end())) // 이렇게 하는 게 맞을지..? 끝이 아니라면 한칸씩 땡겨오기
+			{
+				// 한칸씩 당겨오는 로직 필요 <<<<<<<<<<<<<<<<
+
+
+			}
+		}
+		else
+			++timer;
+	}
 }
 
 CUIGroup_BuffTimer* CUIGroup_BuffTimer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

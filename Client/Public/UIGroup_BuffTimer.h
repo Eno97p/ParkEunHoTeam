@@ -35,6 +35,9 @@ private:
 
 	vector<class CUI_BuffTimer*>		m_vecUI;
 
+private:
+	void			Check_BuffEnd();
+
 public:
 	static CUIGroup_BuffTimer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*		Clone(void* pArg) override;

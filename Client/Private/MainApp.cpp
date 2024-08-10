@@ -168,6 +168,14 @@
 #include "QTE.h"
 #pragma endregion QTE
 
+#pragma region BuffTimer
+#include "UI_BuffTimer_Bar.h"
+#include "UI_BuffTimer_Timer.h"
+
+#include "UI_BuffTimer.h"
+#include "UIGroup_BuffTimer.h"
+#pragma endregion BuffTimer
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -1460,6 +1468,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dash"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash_%d.png"), 2))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_BuffTimer */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BuffTimer"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2080,6 +2093,31 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CQTE::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion QTE
+
+#pragma region BuffTimer
+	/* For.Prototype_GameObject_UI_BuffTimer_Bar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer_Bar"),
+		CUI_BuffTimer_Bar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BuffTimer_Timer*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer_Timer"),
+		CUI_BuffTimer_Timer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+
+	/* For.Prototype_GameObject_UI_BuffTimer*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer"),
+		CUI_BuffTimer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_BuffTimer*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_BuffTimer"),
+		CUIGroup_BuffTimer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion BuffTimer
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

@@ -324,6 +324,9 @@
 #include "C:\Real3DProject\Client\Private\Tree.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_BuffTimer.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Ch_Upgrade.cpp"
 
 
@@ -355,6 +358,15 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Broken.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BuffTimer.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BuffTimer_Bar.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BuffTimer_Timer.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Ch_UpgradeBtn.cpp"

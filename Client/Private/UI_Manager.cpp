@@ -19,6 +19,7 @@
 #include "UIGroup_Map.h"
 #include "UIGroup_Setting.h"
 #include "UIGroup_Ch_Upgrade.h"
+#include "UIGroup_BuffTimer.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -271,6 +272,9 @@ HRESULT CUI_Manager::Create_UI()
 	// Ch_Upgrade
 	m_mapUIGroup.emplace("Ch_Upgrade", dynamic_cast<CUIGroup_Ch_Upgrade*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade"), &pDesc)));
 
+	// BuffTimer
+	m_mapUIGroup.emplace("BuffTimer", dynamic_cast<CUIGroup_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_BuffTimer"), &pDesc)));
+
 	// ScreenBlood
 	CUI::UI_DESC pBloodDesc{};
 	pBloodDesc.eLevel = LEVEL_STATIC;
@@ -281,20 +285,14 @@ HRESULT CUI_Manager::Create_UI()
 	pBrokenDesc.eLevel = LEVEL_STATIC;
 	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pBrokenDesc));
 
-
-	// 여기서 두 개 생성해서 번갈가며 렌더되도록 하기?
-
 	// Dash
 	CUI_Dash::UI_DASH_DESC pDashDesc{};
 	pDashDesc.eLevel = LEVEL_STATIC;
-
 	for (size_t i = 0; i < 2; ++i)
 	{
 		pDashDesc.iDashIdx = i;
 		m_vecDash.emplace_back(dynamic_cast<CUI_Dash*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Dash"), &pDashDesc)));
 	}
-
-	//m_pDash = dynamic_cast<CUI_Dash*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Dash"), &pDashDesc));
 
 	return S_OK;
 }

@@ -55,4 +55,8 @@
 54. PlayerSkillExplosion
 55. PlayerSkillFinalEffect
 56. BlastWall
-57. PlayerSkillSpread
+57. BaldoNew0
+58. BaldoNewFog
+59. BaldoNewFog2
+60. JugglusGenerateHammer0
+61. MetheoTale

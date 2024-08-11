@@ -895,6 +895,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_SampleHZB.hlsl">
       <Filter>98.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Spread.hlsl">
+      <Filter>98.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">

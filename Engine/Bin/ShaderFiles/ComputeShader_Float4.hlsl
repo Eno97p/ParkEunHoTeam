@@ -1,6 +1,11 @@
 // ComputeShader.hlsl
 
 // 입력 배열과 출력 배열을 정의합니다.
+
+
+
+
+
 Buffer<float4> inputArrayA : register(t0);
 Buffer<float4> inputArrayB : register(t1);
 RWBuffer<float4> outputArray : register(u0);

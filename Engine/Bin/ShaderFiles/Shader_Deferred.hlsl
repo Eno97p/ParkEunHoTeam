@@ -717,36 +717,47 @@ PS_OUT PS_SHADOW(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
+    // 깊이 텍스처에서 샘플링
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
 
+    // 클립 공간 좌표 계산
     vector vWorldPos;
-
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
     vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.z = vDepthDesc.x; // 깊이 값 (0 ~ 1)
     vWorldPos.w = 1.f;
 
+    // 깊이 값을 월드 공간으로 변환
     vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
 
-    /* 뷰스페이스 상의 위치를 구한다. */
+    // 뷰 공간으로 변환
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
-    /* 월드스페이스 상의 위치를 구한다. */
+    // 월드 공간으로 변환
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
+
+    // 그림자 맵 공간으로 변환
     vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
     vLightPos = mul(vLightPos, g_LightProjMatrix);
 
+    //float2 vTexcoord;
+    //vTexcoord.x = vLightPos.x / vLightPos.w * 0.5f + 0.5f;
+    //vTexcoord.y = vLightPos.y / vLightPos.w * -0.5f + 0.5f;
     float2 vTexcoord;
-    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-
+    vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
+    vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
+     
     float lightDepthDesc = g_LightDepthTexture.Sample(LinearSampler, vTexcoord).r;
 
-    float fLightOldDepth = lightDepthDesc * 3000.f;
+    float fLightOldDepth = lightDepthDesc;
+    //float fLightOldDepth = lightDepthDesc * 3000.f;
 
-    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    //Out.vColor = vector(fLightOldDepth + 0.001f, 0.f, vLightPos.z / vLightPos.w, 1.f);
+    if (fLightOldDepth + 0.001f < vLightPos.z)
         Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    /*if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f); */
 
     return Out;
 }
@@ -898,6 +909,18 @@ PS_OUT PS_FINAL2(PS_IN In)
     Out.vColor.rgb /= (Out.vColor.rgb + 1.f);
     Out.vColor = pow(Out.vColor, 1 / g_Value);
 
+    if (g_fMirror != 0.f)
+    {
+        Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
+    }
+    else if (g_fBRIS > 0.09f)
+    {
+        Out.vColor = float4(lerp(Out.vColor.r, 1.f - Out.vColor.r, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.g, 1.f - Out.vColor.g, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.b, 1.f - Out.vColor.b, (g_fBRIS - 0.09f) * 18.f),
+            1.f);
+    }
+
     return Out;
 }
 
@@ -963,6 +986,18 @@ PS_OUT PS_FINAL3(PS_IN In)
     Out.vColor = saturate((Out.vColor * (a * Out.vColor + b)) / (Out.vColor * (c * Out.vColor + d) + e));
     Out.vColor = pow(Out.vColor, 1 / g_Value);
     Out.vColor.a = 1.f;
+
+    if (g_fMirror != 0.f)
+    {
+        Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
+    }
+    else if (g_fBRIS > 0.09f)
+    {
+        Out.vColor = float4(lerp(Out.vColor.r, 1.f - Out.vColor.r, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.g, 1.f - Out.vColor.g, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.b, 1.f - Out.vColor.b, (g_fBRIS - 0.09f) * 18.f),
+            1.f);
+    }
 
     return Out;
 }

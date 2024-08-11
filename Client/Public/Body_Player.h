@@ -52,6 +52,9 @@ private:
 	_float m_fDamageTiming = 0.f;
 
 public:
+	_bool m_fGoStraight = false;
+
+public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 

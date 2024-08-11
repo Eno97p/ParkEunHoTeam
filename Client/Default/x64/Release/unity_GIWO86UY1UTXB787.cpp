@@ -12,6 +12,9 @@
 #include "C:\3D_TeamProj\Client\private\BackGround.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\BackGround_Card.cpp"
+
+
 #include "C:\3D_TeamProj\Client\private\BlastWall.cpp"
 
 
@@ -228,6 +231,15 @@
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasScrew.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Charge_Ribbon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Charge_Vane.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\DefaultCylinder.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Distortion_Effect.cpp"
 
 
@@ -256,6 +268,12 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\ShieldSphere.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\SwingEffect.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\Swing_Spiral.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\TornadoEffect.cpp"
@@ -346,6 +364,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_Dash.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_DropItemBG.cpp"

@@ -42,6 +42,7 @@ public:
 	void Set_Dir(_vector vDir) { m_vDir = vDir; }
 	_float Get_Damage() { return m_fDamage; }
 	void Set_Damage(_float fDamage) { m_fDamage = fDamage; }
+	void Add_Damage(_float fDamage) { m_fDamage += fDamage; }
 
 protected:
 	CShader*						m_pShaderCom = { nullptr };

@@ -7,6 +7,9 @@
 #include "UI_BuffTimer_Timer.h"
 #include "UI_ItemIcon.h"
 
+#include "Player.h"
+#include "Weapon.h"
+
 CUI_BuffTimer::CUI_BuffTimer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{ pDevice, pContext }
 {
@@ -32,6 +35,9 @@ HRESULT CUI_BuffTimer::Initialize(void* pArg)
     if (FAILED(Create_UI(m_wstrTextureName)))
         return E_FAIL;
 
+    Setting_BuffType();
+    Setting_BuffFunction(true);
+
     return S_OK;
 }
 
@@ -45,6 +51,8 @@ void CUI_BuffTimer::Tick(_float fTimeDelta)
     if (60.f <= m_fBuffTimer)
     {
         m_isBuffEnd = true;
+
+        Setting_BuffFunction(false);
     }
 
     Setting_UIPosition();
@@ -88,6 +96,62 @@ HRESULT CUI_BuffTimer::Create_UI(wstring wstrTextureName)
     m_vecUI.emplace_back(dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc)));
 
     return S_OK;
+}
+
+void CUI_BuffTimer::Setting_BuffType()
+{
+    if (m_wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Item_Buff0"))
+    {
+        m_eBuffType = BUFFTYPE_DAMAGE;
+    }
+    else if(m_wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Item_Buff1"))
+    {
+        m_eBuffType = BUFFTYPE_SHIELD;
+    }
+    else if (m_wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Item_Buff2"))
+    {
+        m_eBuffType = BUFFTYPE_HP;
+    }
+    else if (m_wstrTextureName == TEXT("Prototype_Component_Texture_Icon_Item_Buff3"))
+    {
+        m_eBuffType = BUFFTYPE_STAMINA;
+    }
+}
+
+void CUI_BuffTimer::Setting_BuffFunction(_bool isOn)
+{
+    list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+    CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+    switch (m_eBuffType)
+    {
+    case Client::CUI_BuffTimer::BUFFTYPE_DAMAGE:
+        if(isOn)
+            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(10);
+        else
+            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(-10);
+        break;
+    case Client::CUI_BuffTimer::BUFFTYPE_SHIELD:
+        if (isOn)
+            pPlayer->Set_Shield(true);
+        else
+            pPlayer->Set_Shield(false);
+        break;
+    case Client::CUI_BuffTimer::BUFFTYPE_HP:
+        if (isOn)
+            pPlayer->Set_HPBuff(true);
+        else
+            pPlayer->Set_HPBuff(false);
+        break;
+    case Client::CUI_BuffTimer::BUFFTYPE_STAMINA:
+        break;
+    case Client::CUI_BuffTimer::BUFFTYPE_END:
+        if (isOn)
+            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(10);
+        else
+            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(-10);
+        break;
+    }
 }
 
 void CUI_BuffTimer::Setting_UIPosition()

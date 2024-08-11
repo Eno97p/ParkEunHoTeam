@@ -62,7 +62,7 @@ HRESULT CUI_BuffTimer_Bar::Render()
 
 void CUI_BuffTimer_Bar::Update_Position(_float fX)
 {
-	m_fX = fX;
+	m_fX = fX - 1.f;
 	Setting_Position();
 }
 

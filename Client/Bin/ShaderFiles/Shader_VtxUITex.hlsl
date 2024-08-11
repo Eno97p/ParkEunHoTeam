@@ -37,7 +37,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
 
-	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);		
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexcoord = In.vTexcoord;
 
 	return Out;
@@ -145,7 +145,7 @@ PS_OUT PS_MAIN_FLOW_HORIZONTAL_SHOPBG(PS_IN In)
 	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
 
 	Out.vColor = vDestDiffuse;
-	 
+
 	return Out;
 }
 
@@ -207,7 +207,7 @@ PS_OUT PS_HUD(PS_IN In)
 	return Out;
 }
 
-PS_OUT PS_BUFFTIMER(PS_IN In) 
+PS_OUT PS_BUFFTIMER(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
@@ -215,20 +215,8 @@ PS_OUT PS_BUFFTIMER(PS_IN In)
 	if (Out.vColor.a < 0.1f)
 		discard;
 
-	// 우측에서부터 깎이도록 수정 필요
-	if (In.vTexcoord.x > g_CurrentRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) // g_PastRatio
+	if (In.vTexcoord.x > (1.f - g_CurrentRatio) * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
 		discard;
-
-	/*if (g_PastRatio > g_CurrentRatio)
-	{
-		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
-			discard;
-	}
-	else
-	{
-		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
-			discard;
-	}*/
 
 	return Out;
 }
@@ -246,7 +234,7 @@ PS_OUT PS_FADE(PS_IN In)
 
 	if (g_bIsFadeIn)
 	{
-		if(fAlpha < (1.f - g_fAlphaTimer))
+		if (fAlpha < (1.f - g_fAlphaTimer))
 			Out.vColor.a = fAlpha;
 		else
 			Out.vColor.a = 1.f - g_fAlphaTimer;
@@ -370,7 +358,7 @@ PS_OUT PS_ALPHA(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-	 // >> discard 안 해도 그대로?
+	// >> discard 안 해도 그대로?
 
 	return Out;
 }

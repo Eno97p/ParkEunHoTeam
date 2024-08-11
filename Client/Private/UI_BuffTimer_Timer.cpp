@@ -44,16 +44,6 @@ void CUI_BuffTimer_Timer::Tick(_float fTimeDelta)
 	m_fBuffTimer += fTimeDelta;
 
 	m_fCurrentRatio = m_fBuffTimer / 60.f;
-
-	// 시간에 따라 점점 줄어들게
-	/*if (m_fCurrentRatio < m_fPastRatio)
-	{
-		m_fPastRatio -= fTimeDelta * 0.2f;
-		if (m_fCurrentRatio > m_fPastRatio)
-		{
-			m_fPastRatio = m_fCurrentRatio;
-		}
-	}*/
 }
 
 void CUI_BuffTimer_Timer::Late_Tick(_float fTimeDelta)
@@ -69,8 +59,6 @@ HRESULT CUI_BuffTimer_Timer::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
-		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
 		return E_FAIL;
 

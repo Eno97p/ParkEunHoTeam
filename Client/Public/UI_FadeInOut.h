@@ -15,6 +15,7 @@ public:
 	typedef struct UI_FadeInOut_Desc : public UI_DESC
 	{
 		_bool		isFadeIn;
+		_bool		isLevelChange;
 		FADE_TYPE	eFadeType;
 	}UI_FADEINOUT_DESC;
 
@@ -33,8 +34,10 @@ public:
 
 private:
 	_bool			m_isFadeIn = { false };
+	_bool			m_isLevelChange = { false };
 	_float			m_fAlphaTimer = { 0.f };
 	_float			m_fDisolveValue = { 0.f };
+	_float			m_fAlphaTimerMul = { 0.f };
 
 	FADE_TYPE		m_eFadeType = { TYPE_END };
 
@@ -45,6 +48,7 @@ private:
 	HRESULT Bind_ShaderResources();
 
 	HRESULT	Create_FadeIn();
+	LEVEL	Check_NextLevel();
 
 public:
 	static CUI_FadeInOut*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

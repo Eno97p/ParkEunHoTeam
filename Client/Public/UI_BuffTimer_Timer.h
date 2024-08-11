@@ -13,6 +13,7 @@ private:
 
 public:
 	void			Set_Ratio(_float fRatio) { m_fCurrentRatio = fRatio; }
+	void			Set_BuffTime(_float fBuffTime) { m_fBuffTimer = fBuffTime; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;

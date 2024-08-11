@@ -49,6 +49,8 @@ void CUI_BuffTimer::Tick(_float fTimeDelta)
 
     Setting_UIPosition();
 
+    Update_BuffTime();
+
     for (auto& pUI : m_vecUI)
         pUI->Tick(fTimeDelta);
 }
@@ -101,6 +103,15 @@ void CUI_BuffTimer::Setting_UIPosition()
 
     ++ui;
     dynamic_cast<CUI_ItemIcon*>(*ui)->Update_Pos(fX, (g_iWinSizeY >> 1) + 100.f);
+}
+
+void CUI_BuffTimer::Update_BuffTime()
+{
+    vector<CUI*>::iterator timer = m_vecUI.begin();
+    ++timer;
+
+    dynamic_cast<CUI_BuffTimer_Timer*>(*timer)->Set_BuffTime(m_fBuffTimer);
+
 }
 
 CUI_BuffTimer* CUI_BuffTimer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

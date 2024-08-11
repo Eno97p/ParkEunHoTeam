@@ -22,6 +22,7 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 	UI_FADEINOUT_DESC* pDesc = static_cast<UI_FADEINOUT_DESC*>(pArg);
 
 	m_isFadeIn = pDesc->isFadeIn;
+	m_isLevelChange = pDesc->isLevelChange;
 	m_eFadeType = pDesc->eFadeType;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -37,6 +38,11 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 
 	Setting_Position();
 
+	if (m_isLevelChange)
+		m_fAlphaTimerMul = 0.7f;
+	else
+		m_fAlphaTimerMul = 0.2f;
+
 	return S_OK;
 }
 
@@ -48,13 +54,23 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
 	if (TYPE_ALPHA == m_eFadeType)
 	{
-		m_fAlphaTimer += fTimeDelta * 0.7f;
+		m_fAlphaTimer += fTimeDelta * m_fAlphaTimerMul;
 		if (m_fAlphaTimer >= 1.f)
 		{
 			m_fAlphaTimer = 1.f;
 
 			if (!m_isFadeIn) // Fade Out
 			{
+				if (m_isLevelChange) // Level Change
+				{
+					// 다음 Level로 넘어감
+					m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, Check_NextLevel()));
+				}
+				else
+				{
+
+				}
+
 				//m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
 				/*	if (FAILED(Create_FadeIn()))
 					return;*/
@@ -201,6 +217,23 @@ HRESULT CUI_FadeInOut::Create_FadeIn()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+LEVEL CUI_FadeInOut::Check_NextLevel()
+{
+	switch (m_pGameInstance->Get_CurrentLevel())
+	{
+	case LEVEL_GAMEPLAY:
+		return LEVEL_ACKBAR;
+	case LEVEL_ACKBAR:
+		return LEVEL_JUGGLAS;
+	case LEVEL_JUGGLAS:
+		return LEVEL_ANDRASARENA;
+	case LEVEL_ANDRASARENA:
+		return LEVEL_GRASSLAND;
+	default:
+		return LEVEL_END;
+	}
 }
 
 CUI_FadeInOut* CUI_FadeInOut::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

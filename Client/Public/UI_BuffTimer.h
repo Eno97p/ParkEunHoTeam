@@ -25,6 +25,7 @@ public:
 	wstring			Get_TextureName() { return m_wstrTextureName; }
 
 	_bool			Get_isBuffEnd() { return m_isBuffEnd; }
+	void			Reset_BuffTime() { m_fBuffTimer = 0.f; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -46,6 +47,7 @@ private:
 	HRESULT	Create_UI(wstring wstrTextureName);
 
 	void	Setting_UIPosition();
+	void	Update_BuffTime();
 
 public:
 	static CUI_BuffTimer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -478,6 +478,14 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 			}
+			if (m_pModelCom->Get_Ratio_Betwin(0.1f, 0.6f))
+			{
+				m_fGoStraight = true;
+			}
+			else
+			{
+				m_fGoStraight = false;
+			}
 			fAnimSpeed = 1.f;
 		}
 		else if (m_iPastAnimIndex == 143)
@@ -491,7 +499,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 			}
-			fAnimSpeed = 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.1f, 1.f))
+			{
+				m_fGoStraight = true;
+			}
+			else
+			{
+				m_fGoStraight = false;
+			}
+			fAnimSpeed = 1.5f;
 		}
 		else if (m_iPastAnimIndex == 358)
 		{
@@ -504,7 +520,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(false);
 			}
-			fAnimSpeed = 1.f;
+			if (m_pModelCom->Get_Ratio_Betwin(0.1f, 1.f))
+			{
+				m_fGoStraight = true;
+			}
+			else
+			{
+				m_fGoStraight = false;
+			}
+			fAnimSpeed = 1.5f;
 		}
 
 		if (m_iPastAnimIndex >= 300)
@@ -1143,7 +1167,7 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 		_uint iCascadeNum = m_pGameInstance->Get_CascadeNum(XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f), 1.f);
  		if (iCascadeNum == FRUSTUM_NEAR)
 		{
-			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+			//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 		}
 	}
 }

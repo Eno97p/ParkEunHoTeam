@@ -1057,6 +1057,12 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 
 	if (m_fSpecialAttack != 0.f)
 	{
+		if (dynamic_cast<CBody_Player*>(m_PartObjects[0])->m_fGoStraight)
+		{
+			m_pPhysXCom->Set_Speed(2.f);
+			m_pPhysXCom->Go_Straight(fTimeDelta);
+		}
+
 		if (m_iState == STATE_SPECIALATTACK4)
 		{
 			m_fSpecialAttack += fTimeDelta;
@@ -1064,6 +1070,7 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		m_iState = STATE_SPECIALATTACK4;
 		if (m_fSpecialAttack >= 0.1f)
 		{
+			
 			fSlowValue = 1.f;
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);

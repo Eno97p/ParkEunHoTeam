@@ -2,12 +2,12 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-texture2D	g_Texture , g_DesolveTexture, g_ElectricTex , g_OpacityTex;
+texture2D	g_Texture , g_DesolveTexture, g_ElectricTex , g_OpacityTex, g_NormalTexture;
 float		g_Ratio;
 
 //레이져
 float		g_CurTime, g_Speed;
-float3		g_Color, g_Color2;
+float3		g_Color, g_Color2, g_Color3;
 float		g_FrameRatio;
 
 //블룸 파워
@@ -16,6 +16,9 @@ bool		g_Opacity = false;
 
 float		g_RadialStrength;
 float		g_OpacityPower;
+
+//Fresnel
+float		g_FresnelPower;
 
 
 //vector vOpacity = g_OpacityTex.Sample(LinearSampler, Texcoord);
@@ -35,10 +38,14 @@ struct VS_OUT
 	float2		vTexcoord : TEXCOORD0;
 };
 
+struct VS_OUT_NORMAL
+{
+	float4		vPosition : SV_POSITION;
+	float4      vNormal : NORMAL;
+	float2		vTexcoord : TEXCOORD0;
+	float4      vProjPos : TEXCOORD1;
+};
 
-/* 정점 셰이더 :  /* 
-/* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
-/* 2. 정점의 구성정보를 변경한다. */
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT		Out = (VS_OUT)0;
@@ -94,6 +101,28 @@ VS_OUT VS_CYLINDER(VS_IN In)
 	return Out;
 }
 
+VS_OUT_NORMAL VS_METEOR(VS_IN In)
+{
+	VS_OUT_NORMAL		Out = (VS_OUT_NORMAL)0;
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize
+	(mul
+	(float4
+	(In.vNormal.xyz, 0.f),
+		g_WorldMatrix));
+	Out.vProjPos = Out.vPosition;
+	Out.vTexcoord = In.vTexcoord;
+
+	return Out;
+}
+
+
 
 struct PS_IN
 {
@@ -105,6 +134,14 @@ struct PS_IN
 struct PS_OUT
 {
 	vector		vColor : SV_TARGET0;
+};
+
+struct PS_IN_NORMAL
+{
+	float4		vPosition : SV_POSITION;
+	float4      vNormal : NORMAL;
+	float2		vTexcoord : TEXCOORD0;
+	float4      vProjPos : TEXCOORD1;
 };
 
 
@@ -815,6 +852,36 @@ PS_OUT PS_Main_Bloom(PS_IN In)
 	Out.vColor = Color;
 	return Out;
 }
+
+
+PS_OUT PS_Meteor(PS_IN_NORMAL In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
+
+	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
+	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
+
+	if (Color.a < 0.1f)
+		discard;
+	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
+	Color.rgb = lerp(g_Color2, g_Color, luminance);
+
+	float3 viewDir = normalize(float3(In.vProjPos.xyz) - g_ViewMatrix[3].xyz);
+	float3 normal = normalize(In.vNormal.xyz);
+
+	Color.rgb = CalculateFresnel(normal, viewDir, g_FresnelPower, Color.rgb, g_Color3);
+
+	Out.vColor = Color;
+	return Out;
+}
+
+
 
 technique11 DefaultTechnique
 {

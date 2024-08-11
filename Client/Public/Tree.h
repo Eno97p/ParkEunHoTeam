@@ -27,6 +27,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
+	virtual HRESULT Render_LightDepth() override;
 
 	_float3 Get_LeafCol() { return m_LeafCol; }
 	_bool Get_Bloom() { return m_bBloom; }

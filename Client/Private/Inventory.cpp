@@ -138,13 +138,18 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF1);
+	Add_DropItem(CItem::ITEM_BUFF2);
+	Add_DropItem(CItem::ITEM_BUFF3);
+	Add_DropItem(CItem::ITEM_BUFF4);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_UPGRADE1);
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_ETHER);
 	Add_DropItem(CItem::ITEM_UPGRADE2);
 
-	Add_Item(CItemData::ITEMNAME_CATALYST);
+	//Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }
@@ -261,7 +266,7 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 {
 	// Weapon의 Slot에서 현재 선택한 아이템을 EquipWeapon에 넣어주기
-	m_arrEquipWeapon[iEquipSlotIdx] = pItemData;
+	m_arrEquipWeapon[iEquipSlotIdx] = pItemData; // >>>>>>>>>>>>> 여기서 넣어주어야 하는 거 아님?
 
 	// Weapon Equip Slot UI에 출력
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx); // 여기서 지워지넹

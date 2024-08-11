@@ -2,6 +2,7 @@
 #include "VIBuffer.h"
 BEGIN(Engine)
 class CVIBuffer_Terrain;
+class CComputeShader_Buffer;
 
 class ENGINE_DLL CVIBuffer_Instance abstract : public CVIBuffer
 {
@@ -17,9 +18,6 @@ public:
 		_float2			vLifeTime;
 		_float2			vGravity;
 		_bool			isLoop;
-
-		//For Map Elements
-		//vector<_float4x4*>		WorldMats;
 	}INSTANCE_DESC;
 
 	typedef struct INSTANCE_MAP_DESC
@@ -37,6 +35,8 @@ public:
 		//For Map Elements
 		vector<_float4x4*>		WorldMats;
 	}INSTANCE_MAP_DESC;
+
+
 
 protected:
 	CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -84,7 +84,7 @@ public:
 	_bool Check_Instance_Dead() { return m_bInstanceDead; }	//IsLoop가 false일 경우 완전히 끝났는지 확인해주는 함수
 
 protected:
-	ID3D11Buffer* m_pVBInstance = { nullptr };
+	ID3D11Buffer*				m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC			m_InstanceBufferDesc = {};
 	_uint						m_iNumInstance = { 0 };
 	_uint						m_iInstanceStride = { 0 };
@@ -100,7 +100,10 @@ protected:
 
 	_bool						m_bInstanceDead = false;
 	INSTANCE_DESC				m_InstanceDesc = {};
-	INSTANCE_MAP_DESC				m_InstanceMapDesc = {};
+	INSTANCE_MAP_DESC			m_InstanceMapDesc = {};
+
+
+	CComputeShader_Buffer*		m_pComputeShader = nullptr;
 
 
 protected:

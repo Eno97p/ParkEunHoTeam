@@ -29,6 +29,9 @@ HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDe
 
 	m_RandomNumber = mt19937_64(m_RandomDevice());
 
+
+
+
 	return S_OK;
 }
 
@@ -83,24 +86,20 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 			m_pSize[i] = 0.f;
 		
 		pVertices[i].vGravity = m_pOriginalGravity[i] * (pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x);
-		_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc.vOffsetPos), 0.f);
+		XMVECTOR			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc.vOffsetPos), 0.f);
 		vDir -= XMVectorSet(0.f, pVertices[i].vGravity, 0.f, 0.f);
-
-	/*	pVertices[i].vTranslation.y -= pVertices[i].vGravity * fTimeDelta;*/
-	
 	
 		XMVECTOR vLook = XMVector3Normalize(vDir);
 		XMVECTOR vRight = XMVector3Normalize(XMVector3Cross(vLook, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
 		XMVECTOR vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight));
 	
-		_matrix		RotationMatrix = XMMatrixRotationAxis(vRight, XMConvertToRadians(360) * fTimeDelta);
+		XMMATRIX		RotationMatrix = XMMatrixRotationAxis(vRight, XMConvertToRadians(360) * fTimeDelta);
 		vRight = XMVector3TransformNormal(vRight, RotationMatrix);
 		vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 		vLook = XMVector3TransformNormal(vLook, RotationMatrix);
 		XMStoreFloat4(&pVertices[i].vRight, vRight * m_pSize[i]);
 		XMStoreFloat4(&pVertices[i].vUp, vUp * m_pSize[i]);
 		XMStoreFloat4(&pVertices[i].vLook, vLook * m_pSize[i]);
-	
 	
 		XMStoreFloat4(&pVertices[i].vTranslation, XMLoadFloat4(&pVertices[i].vTranslation) + XMVector3Normalize(vDir) * m_pSpeeds[i] * fTimeDelta);
 		
@@ -109,7 +108,7 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 		{
 			if (true == m_InstanceDesc.isLoop)
 			{
-				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vTranslation = XMFLOAT4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
 				pVertices[i].vLifeTime.y = 0.f;
 				pVertices[i].vGravity = m_pOriginalGravity[i];
 				m_pSize[i] = m_pOriginalSize[i];

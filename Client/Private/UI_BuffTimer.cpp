@@ -41,12 +41,9 @@ void CUI_BuffTimer::Priority_Tick(_float fTimeDelta)
 
 void CUI_BuffTimer::Tick(_float fTimeDelta)
 {
-    // 여기서 생성된 지 몇초인지 시간을 재고 그 시간이 끝나면 해당 객체 없애버리는 식으로 > BuffTimer UI는 이 값을 받아와서 매번 비율을 갱신해주는 식으로 하는 것이 좋을 듯함
-
     m_fBuffTimer += fTimeDelta;
-    if (5.f <= m_fBuffTimer)
+    if (60.f <= m_fBuffTimer)
     {
-        // 삭제해주어야 함
         m_isBuffEnd = true;
     }
 
@@ -85,8 +82,7 @@ HRESULT CUI_BuffTimer::Create_UI(wstring wstrTextureName)
     pIconDesc.fY = 0.f;
     pIconDesc.fSizeX = 60.f;
     pIconDesc.fSizeY = 60.f;
-    pIconDesc.wszTexture = wstrTextureName; // 여기에는 방금 사용한 아이템의 정보를 넣어주어야 함 >> 일단 위치 Test를 위해 임의로 넣기
-    // 아이템 사용 시 해당 객체를 생성할 것이므로 그때 인자로 값을 넣어주는 식으로 하면 될 거 같움
+    pIconDesc.wszTexture = wstrTextureName;
     m_vecUI.emplace_back(dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pIconDesc)));
 
     return S_OK;

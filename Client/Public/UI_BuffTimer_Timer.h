@@ -12,6 +12,9 @@ private:
 	virtual ~CUI_BuffTimer_Timer() = default;
 
 public:
+	void			Set_Ratio(_float fRatio) { m_fCurrentRatio = fRatio; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -20,6 +23,12 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Update_Position(_float fX);
+
+private:
+	_float			m_fCurrentRatio = 1.f;
+	_float			m_fPastRatio = 1.f;
+	_float			m_fHudRatio = 1.f;
+	_float			m_fBuffTimer = { 0.f };
 
 private:
 	HRESULT	Add_Components();

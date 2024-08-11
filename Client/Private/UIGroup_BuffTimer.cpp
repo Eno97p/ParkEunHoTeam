@@ -41,6 +41,8 @@ void CUIGroup_BuffTimer::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_BuffTimer::Tick(_float fTimeDelta)
 {
+	Check_BuffEnd();
+
 	for (auto& pUI : m_vecUI)
 		pUI->Tick(fTimeDelta);
 }
@@ -87,15 +89,18 @@ void CUIGroup_BuffTimer::Check_BuffEnd()
 	{
 		if ((*timer)->Get_isBuffEnd())
 		{
+			Safe_Release(*timer);
 			timer = m_vecUI.erase(timer);
-			
-			// 그리고 뒤에 값이 더 있다면 한칸씩 앞으로 땡겨와야 함
 
-			if ((timer != m_vecUI.end())) // 이렇게 하는 게 맞을지..? 끝이 아니라면 한칸씩 땡겨오기
+			while (true)
 			{
-				// 한칸씩 당겨오는 로직 필요 <<<<<<<<<<<<<<<<
+				if (timer == m_vecUI.end())
+					return;
 
+				(*timer)->Set_Index(i);
 
+				++i;
+				++timer;
 			}
 		}
 		else

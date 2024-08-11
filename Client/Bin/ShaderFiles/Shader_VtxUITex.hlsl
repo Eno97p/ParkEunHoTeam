@@ -145,7 +145,7 @@ PS_OUT PS_MAIN_FLOW_HORIZONTAL_SHOPBG(PS_IN In)
 	vector		vDestDiffuse = g_Texture.Sample(LinearSampler, vDetailUV);
 
 	Out.vColor = vDestDiffuse;
-
+	 
 	return Out;
 }
 
@@ -203,6 +203,32 @@ PS_OUT PS_HUD(PS_IN In)
 		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) discard;
 	}
 
+
+	return Out;
+}
+
+PS_OUT PS_BUFFTIMER(PS_IN In) 
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	// 우측에서부터 깎이도록 수정 필요
+	if (In.vTexcoord.x > g_CurrentRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f) // g_PastRatio
+		discard;
+
+	/*if (g_PastRatio > g_CurrentRatio)
+	{
+		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
+			discard;
+	}
+	else
+	{
+		if (In.vTexcoord.x > g_PastRatio * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
+			discard;
+	}*/
 
 	return Out;
 }
@@ -505,6 +531,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_FADE_DASH();
+	}
+
+	pass HUD_12
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BUFFTIMER();
 	}
 }
 

@@ -1110,6 +1110,24 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))
         return;
 
+  //  _float4 vLightPos= _float4(100.0f, 70.0f, 5.0f, 1.0f);
+  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightPos", &vLightPos, sizeof(_float4))))
+  //      return;
+  //  _float4 vLightDir = _float4(0.0f, -1.0f, 0.0f, 0.0f);
+  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDir", &vLightDir, sizeof(_float4))))
+		//return;
+  //  _float4 vLightColor = _float4(1.0f, 1.0f, 1.0f, 1.0f);
+  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDiffuse", &vLightColor, sizeof(_float4))))
+  //      return;
+
+
+  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+  //      return;
+
+  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+  //      return;
+
+
     m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 
     if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))

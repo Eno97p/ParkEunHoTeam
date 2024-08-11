@@ -685,6 +685,7 @@ void CLevel_Ackbar::Load_Lights()
 		ReadFile(hFile, &desc.vAmbient, sizeof(XMFLOAT4), &dwByte, nullptr);
 		ReadFile(hFile, &desc.vSpecular, sizeof(XMFLOAT4), &dwByte, nullptr);
 
+		//desc.vDiffuse = _float4(1.0f,0.0f,0.0f,1.0f);
 		switch (desc.eType)
 		{
 		case LIGHT_DESC::TYPE_DIRECTIONAL:

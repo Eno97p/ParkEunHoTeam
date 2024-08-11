@@ -129,7 +129,7 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 			{
 
 				int tes = 0;
-				//저장 완료
+				//작업이 끝났을 때 불림
 			}
 			
 

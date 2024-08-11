@@ -111,8 +111,9 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 		if (KEY_TAP(DIK_F))
 		{
 			CUI_FadeInOut::UI_FADEINOUT_DESC pDesc = {};
-			pDesc.isFadeIn = true;
+			pDesc.isFadeIn = false; // true
 			pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+			pDesc.isLevelChange = false;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 				return;

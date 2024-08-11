@@ -328,6 +328,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_MapIcon.h" />
     <ClInclude Include="..\Public\UI_MapPosIcon.h" />
     <ClInclude Include="..\Public\UI_MapUser.h" />
+    <ClInclude Include="..\Public\UI_Memento.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
@@ -603,6 +604,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_MapIcon.cpp" />
     <ClCompile Include="..\Private\UI_MapPosIcon.cpp" />
     <ClCompile Include="..\Private\UI_MapUser.cpp" />
+    <ClCompile Include="..\Private\UI_Memento.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />

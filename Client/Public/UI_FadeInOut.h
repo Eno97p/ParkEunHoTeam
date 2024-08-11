@@ -33,21 +33,23 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_bool			m_isFadeIn = { false };
-	_bool			m_isLevelChange = { false };
-	_float			m_fAlphaTimer = { 0.f };
-	_float			m_fDisolveValue = { 0.f };
-	_float			m_fAlphaTimerMul = { 0.f };
+	_bool				m_isFadeIn = { false };
+	_bool				m_isLevelChange = { false };
+	_float				m_fAlphaTimer = { 0.f };
+	_float				m_fDisolveValue = { 0.f };
+	_float				m_fAlphaTimerMul = { 0.f };
 
-	FADE_TYPE		m_eFadeType = { TYPE_END };
+	FADE_TYPE			m_eFadeType = { TYPE_END };
 
-	CTexture*		m_pDisolveTextureCom = nullptr;
+	CTexture*			m_pDisolveTextureCom = nullptr;
+	class CUI_Memento*	m_pMemento = { nullptr };
 
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 
 	HRESULT	Create_FadeIn();
+	HRESULT	Create_Memento();
 	LEVEL	Check_NextLevel();
 
 public:

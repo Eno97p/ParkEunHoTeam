@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_Activate final : public CUI
+class CUI_Memento final : public CUI
 {
 private:
-	CUI_Activate(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_Activate(const CUI_Activate& rhs);
-	virtual ~CUI_Activate() = default;
+	CUI_Memento(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_Memento(const CUI_Memento& rhs);
+	virtual ~CUI_Memento() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -20,11 +20,16 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool			m_isRend = { true };
+	_bool			m_isRendOn = { true };
+	_float			m_fColor = { 0.f };
+
+private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_Activate*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_Memento*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

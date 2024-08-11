@@ -190,6 +190,7 @@
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
 #include "UI_Dash.h"
+#include "UI_Memento.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1473,6 +1474,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BuffTimer"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Memento */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Memento"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2105,9 +2111,6 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_BuffTimer_Timer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
-
-
 	/* For.Prototype_GameObject_UI_BuffTimer*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer"),
 		CUI_BuffTimer::Create(m_pDevice, m_pContext))))
@@ -2158,6 +2161,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Dash*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Dash"),
 		CUI_Dash::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Memento*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Memento"),
+		CUI_Memento::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

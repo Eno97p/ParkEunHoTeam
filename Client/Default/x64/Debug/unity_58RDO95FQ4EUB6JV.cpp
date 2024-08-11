@@ -408,6 +408,9 @@
 #include "C:\Real3DProject\Client\Private\UI_MapUser.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Memento.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_MenuAlphaBG.cpp"
 
 

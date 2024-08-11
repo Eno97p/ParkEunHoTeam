@@ -151,6 +151,7 @@ HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 	pDesc.isFadeIn = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+	pDesc.isLevelChange = true;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_LOADING, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;

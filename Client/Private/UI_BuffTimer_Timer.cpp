@@ -46,14 +46,14 @@ void CUI_BuffTimer_Timer::Tick(_float fTimeDelta)
 	m_fCurrentRatio = m_fBuffTimer / 60.f;
 
 	// 시간에 따라 점점 줄어들게
-	if (m_fCurrentRatio < m_fPastRatio)
+	/*if (m_fCurrentRatio < m_fPastRatio)
 	{
 		m_fPastRatio -= fTimeDelta * 0.2f;
 		if (m_fCurrentRatio > m_fPastRatio)
 		{
 			m_fPastRatio = m_fCurrentRatio;
 		}
-	}
+	}*/
 }
 
 void CUI_BuffTimer_Timer::Late_Tick(_float fTimeDelta)

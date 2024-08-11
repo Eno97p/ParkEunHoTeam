@@ -300,6 +300,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\Tree.h" />
+    <ClInclude Include="..\Public\UIGroup_BuffTimer.h" />
     <ClInclude Include="..\Public\UIGroup_Ch_Upgrade.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Map.h" />
@@ -311,6 +312,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_Broken.h" />
+    <ClInclude Include="..\Public\UI_BuffTimer.h" />
+    <ClInclude Include="..\Public\UI_BuffTimer_Bar.h" />
+    <ClInclude Include="..\Public\UI_BuffTimer_Timer.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
@@ -571,6 +575,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\Tree.cpp" />
+    <ClCompile Include="..\Private\UIGroup_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UIGroup_Ch_Upgrade.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Map.cpp" />
@@ -582,6 +587,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_Broken.cpp" />
+    <ClCompile Include="..\Private\UI_BuffTimer.cpp" />
+    <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp" />
+    <ClCompile Include="..\Private\UI_BuffTimer_Timer.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />

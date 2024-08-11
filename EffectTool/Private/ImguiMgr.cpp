@@ -75,7 +75,10 @@ void CImguiMgr::Render()
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
+
+	
 	Visible_Data();
+
 	//ÄÚµå
 	//EffectTool();
 
@@ -143,11 +146,123 @@ void CImguiMgr::Model_Change()
 	ImGui::End();
 }
 
+void CImguiMgr::Sound_Tool(_bool* Open)
+{
+	ImGui::SetNextWindowSize(ImVec2(800.f, 600.f));
+	ImGui::Begin("Sound_Tool", Open, ImGuiWindowFlags_NoResize);
+	ImVec2 ButtonSize = { 100,30 };
+
+	static _bool  reverb = false;
+	static _bool  Pause = false;
+	static _bool  Echo = false;
+	static _float fVolume = 0.5f;
+	static _float fRoomsize = 0.f;
+	static _float fDecayTime = 0.f;
+	static _float wetMix = 0.f;
+	static _float fPosition = 0.f;
+	static _float fPitch = 1.f;
+
+	static _float Echodelay = 0.f;
+	static _float EchoWetLevel = 0.f;
+
+
+
+	static string currentPath = "../../Client/Bin/Resources/Sound/";
+	static string selectedFile = "";
+	static string fullPath = "";
+	static string curFileName = "";
+
+	vector<std::string> files = GetFilesInDirectory(currentPath);
+	if (ImGui::Button("..", ImVec2(50, 30))) {
+		currentPath = std::filesystem::path(currentPath).parent_path().string();
+	}
+
+	if (ImGui::BeginListBox("##file_list", ImVec2(-FLT_MIN, 10 * ImGui::GetTextLineHeightWithSpacing()))) {
+		for (const auto& file : files) {
+			std::string fileFullPath = currentPath + "/" + file;
+
+			// Check if it's a directory
+			if (std::filesystem::is_directory(fileFullPath)) {
+				if (ImGui::Selectable((file + "/").c_str(), selectedFile == file + "/")) {
+					currentPath = fileFullPath;
+					selectedFile = file + "/";
+				}
+			}
+			else {
+				if (ImGui::Selectable(file.c_str(), selectedFile == file)) {
+					selectedFile = file;
+					fullPath = fileFullPath;
+				}
+			}
+
+			// Set focus on the selected item
+			if (selectedFile == file || selectedFile == file + "/") {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (!selectedFile.empty() && Is_SoundFile(selectedFile)) 
+	{
+		if (ImGui::Button("Play", ButtonSize))
+		{
+			wstring wstr(selectedFile.begin(), selectedFile.end());
+			const TCHAR* tchar_str = wstr.c_str();
+			m_pGameInstance->Play_Effect_Sound(tchar_str, SOUND_EFFECT, fPosition, fPitch);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause", ButtonSize))
+		{
+			Pause = !Pause;
+			m_pGameInstance->Sound_Pause(SOUND_EFFECT, Pause);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Stop", ButtonSize))
+		{
+			m_pGameInstance->StopAll();
+		}
+	}
+	
+	ImGui::SliderFloat("Volume", &fVolume, 0.0f, 1.0f, "Volume = %.3f");
+	ImGui::SliderFloat("Position", &fPosition, 0.0f, 280.f, "Position = %.3f");
+	ImGui::SliderFloat("Pitch", &fPitch, 0.f, 2.0f, "Pitch = %.3f");
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Reverb");
+
+	ImGui::SliderFloat("Room Size", &fRoomsize, 0.0f, 10.f, "Room Size = %.3f");
+	ImGui::SliderFloat("Decay Time", &fDecayTime, 0.0f, 10.f, "Decay Time = %.3f");
+	ImGui::SliderFloat("Wet Mix", &wetMix, -10.f, 10.f, "Wet Mix = %.3f");
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Echo");
+
+	ImGui::SliderFloat("Echo_Delay", &Echodelay, 0.0f, 2000.f, "Echo_Delay = %.3f");
+	ImGui::SliderFloat("Echo Wet Level", &EchoWetLevel, -10.f, 10.f, "Echo Wet Level = %.3f");
+
+	m_pGameInstance->Set_Echo_Param(Echodelay, EchoWetLevel);
+	m_pGameInstance->Set_Reverb_Param(fRoomsize, fDecayTime, wetMix);
+	m_pGameInstance->Set_Effect_Volume(fVolume);
+
+	ImGui::Checkbox("Reverb", &reverb);
+	if (reverb)
+		m_pGameInstance->Enable_Reverb();
+	else
+		m_pGameInstance->Disable_Reverb();
+
+	ImGui::Checkbox("Echo", &Echo);
+	if (Echo)
+		m_pGameInstance->Enable_Echo();
+	else
+		m_pGameInstance->Disable_Echo();
+
+	ImGui::End();
+}
+
 void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[14] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+	static _bool bShow[15] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -214,6 +329,11 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("Model_Change", &bShow[13]);
 	if (bShow[13] == true)
 		Model_Change();
+
+	ImGui::Checkbox("SoundTool", &bShow[14]);
+	if (bShow[14] == true)
+		Sound_Tool(&bShow[14]);
+	
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -378,6 +498,10 @@ void CImguiMgr::EffectTool_Rework()
 
 		if (ImGui::RadioButton("Needle", MeshDesc.eModelType == EFFECTMODELTYPE::NEEDLE))
 			MeshDesc.eModelType = EFFECTMODELTYPE::NEEDLE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Bubble", MeshDesc.eModelType == EFFECTMODELTYPE::BUBBLE))
+			MeshDesc.eModelType = EFFECTMODELTYPE::BUBBLE;
+
 	}
 
 	ImGui::Checkbox("Bloom", &parentsDesc.IsBloom);
@@ -997,7 +1121,6 @@ void CImguiMgr::Load_Texture()
 				m_pTextureFilePath = wPath;
 			}
 		}
-
 	}
 
 	if (ImGui::Button("Convert_To_DDS_Here", ImVec2(200.f, 30.f)))

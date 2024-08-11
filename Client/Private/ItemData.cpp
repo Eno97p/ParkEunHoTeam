@@ -8,6 +8,7 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Quick.h"
 #include "UIGroup_WeaponSlot.h"
+#include "UIGroup_BuffTimer.h"
 
 CItemData::CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{pDevice, pContext}
@@ -91,21 +92,26 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	case Client::CItemData::ITEMNAME_BUFF1:
 	{
 		Apply_UseCount(iInvenIdx);
+		// 중복인 경우 새로 생성하는 게 아니라 타이머를 초기화하는 분기 처리 필요!!!!!!!!!!!!!!!!!!
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff0"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF2:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff1"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF3:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff2"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF4:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff3"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_ESSENCE:

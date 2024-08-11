@@ -72,12 +72,9 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
-	_vector vEye = { 103.f, 50.f, -147.f, 1.f };
-	_vector vFocus = { 0.f, 0.f, 0.f, 1.f };
+	_vector vEye = { 86.f, 50.f, -163.f, 1.f };
+	_vector vFocus = { 86.f, 0.f, 0.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
-	//_vector vEye = { 42.f, 50.f, -10.f, 1.f };
-	//_vector vFocus = { 42.f, 0.f, -9.f, 1.f };
-	//m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 	return S_OK;
 }
@@ -685,6 +682,7 @@ void CLevel_Ackbar::Load_Lights()
 		ReadFile(hFile, &desc.vAmbient, sizeof(XMFLOAT4), &dwByte, nullptr);
 		ReadFile(hFile, &desc.vSpecular, sizeof(XMFLOAT4), &dwByte, nullptr);
 
+		//desc.vDiffuse = _float4(1.0f,0.0f,0.0f,1.0f);
 		switch (desc.eType)
 		{
 		case LIGHT_DESC::TYPE_DIRECTIONAL:

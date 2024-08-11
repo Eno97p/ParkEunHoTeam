@@ -1,6 +1,6 @@
 #include "..\Public\VIBuffer_Instance_Point.h"
 #include "VIBuffer_Terrain.h"
-
+#include "ComputeShader_Buffer.h"
 CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
 {
@@ -13,6 +13,9 @@ CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(const CVIBuffer_Instance_Poin
 
 HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 {
+
+
+
 	return S_OK;
 }
 

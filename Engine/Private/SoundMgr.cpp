@@ -23,15 +23,23 @@ HRESULT CSoundMgr::Initialize()
 		MSG_BOX("Failed Sound Initialize");
 		return E_FAIL;
 	}
+	if (FAILED(Reverb_Setting()))
+		return E_FAIL;
+	if (FAILED(Echo_Setting()))
+		return E_FAIL;
 
+	if (FMOD_System_CreateChannelGroup(m_pSystem, "BGMGroup", &m_pBGMGroup) != FMOD_OK)
+		return E_FAIL;
+
+	for (auto& iter : m_fVolume)
+		iter = 0.5f;
 	//LoadSoundFile();
 	return S_OK;
 }
 
-void CSoundMgr::PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+void CSoundMgr::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
-	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
 	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
 		[&](auto& iter)->bool
 		{
@@ -42,22 +50,19 @@ void CSoundMgr::PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume
 		return;
 
 	FMOD_BOOL bPlay = FALSE;
-
-	//if (FMOD_Channel_IsPlaying(m_pChannelArr[eID], &bPlay))
-	//{
-	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
-	//}
-
-	FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
-
+	_uint StartPosition = static_cast<_uint>(fPosition * 1000);
+	FMOD_System_PlaySound(m_pSystem, iter->second, m_pMasterGroup, TRUE, &m_pChannelArr[eID]);
+	FMOD_Channel_SetPitch(m_pChannelArr[eID], fPitch);
+	FMOD_Channel_SetVolume(m_pChannelArr[eID], m_fVolume[eID]);
+	FMOD_Channel_SetPosition(m_pChannelArr[eID], StartPosition, FMOD_TIMEUNIT_MS);
+	FMOD_Channel_SetPaused(m_pChannelArr[eID], FALSE);
 	FMOD_System_Update(m_pSystem);
 }
 
-void CSoundMgr::PlayBGM(const TCHAR* pSoundKey, float fVolume)
+
+void CSoundMgr::PlayBGM(const TCHAR* pSoundKey)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
-
-	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
 	iter = find_if(m_mapSound.begin(), m_mapSound.end(), [&](auto& iter)->bool
 		{
 			return !lstrcmp(pSoundKey, iter.first);
@@ -66,19 +71,17 @@ void CSoundMgr::PlayBGM(const TCHAR* pSoundKey, float fVolume)
 	if (iter == m_mapSound.end())
 		return;
 
-	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[SOUND_BGM]);
+	FMOD_System_PlaySound(m_pSystem, iter->second, m_pBGMGroup, FALSE, &m_pChannelArr[SOUND_BGM]);
 	FMOD_Channel_SetMode(m_pChannelArr[SOUND_BGM], FMOD_LOOP_NORMAL);
 
 	FMOD_Channel_SetPriority(m_pChannelArr[SOUND_BGM], 255);
-	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], fVolume);
+	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], m_fVolume[SOUND_BGM]);
 	FMOD_System_Update(m_pSystem);
 }
 
-void CSoundMgr::PlaySubBGM(const TCHAR* pSoundKey, float fVolume)
+void CSoundMgr::PlaySubBGM(const TCHAR* pSoundKey)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
-
-	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
 	iter = find_if(m_mapSound.begin(), m_mapSound.end(), [&](auto& iter)->bool
 		{
 			return !lstrcmp(pSoundKey, iter.first);
@@ -87,24 +90,31 @@ void CSoundMgr::PlaySubBGM(const TCHAR* pSoundKey, float fVolume)
 	if (iter == m_mapSound.end())
 		return;
 
-	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[SOUND_SUBBGM]);
+	FMOD_System_PlaySound(m_pSystem, iter->second, m_pBGMGroup, FALSE, &m_pChannelArr[SOUND_SUBBGM]);
 	FMOD_Channel_SetMode(m_pChannelArr[SOUND_SUBBGM], FMOD_LOOP_NORMAL);
 
 	FMOD_Channel_SetPriority(m_pChannelArr[SOUND_SUBBGM], 254);
-	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_SUBBGM], fVolume);
+	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_SUBBGM], m_fVolume[SOUND_SUBBGM]);
 	FMOD_System_Update(m_pSystem);
 }
 
 void CSoundMgr::StopAll()
 {
-	for (int i = 0; i < MAXCHANNEL; ++i)
-		FMOD_Channel_Stop(m_pChannelArr[i]);
+	FMOD_ChannelGroup_Stop(m_pMasterGroup);
+	FMOD_ChannelGroup_Stop(m_pBGMGroup);
+	FMOD_System_Update(m_pSystem);
 }
 
 void CSoundMgr::StopSound(CHANNELID eID)
 {
 	FMOD_Channel_Stop(m_pChannelArr[eID]);
 }
+
+void CSoundMgr::Sound_Pause(CHANNELID eID, _bool bPause)
+{
+	FMOD_Channel_SetPaused(m_pChannelArr[eID], bPause);
+}
+
 
 void CSoundMgr::SetChannelVolume(CHANNELID eID, float fVolume)
 {
@@ -113,40 +123,47 @@ void CSoundMgr::SetChannelVolume(CHANNELID eID, float fVolume)
 	FMOD_System_Update(m_pSystem);
 }
 
-void CSoundMgr::LoadSoundFile()
+void CSoundMgr::Set_Effect_Volume(_float fVolume)
 {
-	_wfinddata64_t fd;
-	__int64 handle = _wfindfirst64(L"../../Client/Bin/Resources/Sound/*.*", &fd);
-	if (handle == -1 || handle == 0)
-		return;
+	FMOD_ChannelGroup_SetVolume(m_pMasterGroup, fVolume);
+}
 
-	int iResult = 0;
+void CSoundMgr::Set_BGM_Volume(_float fVolume)
+{
+	FMOD_ChannelGroup_SetVolume(m_pBGMGroup, fVolume);
+}
 
-	char szCurPath[128] = "../../Client/Bin/Resources/Sound/";
-	char szFullPath[128] = "";
-	char szFilename[MAX_PATH];
-	while (iResult != -1)
-	{
-		WideCharToMultiByte(CP_UTF8, 0, fd.name, -1, szFilename, sizeof(szFilename), NULL, NULL);
-		strcpy_s(szFullPath, szCurPath);
-		strcat_s(szFullPath, szFilename);
-		FMOD_SOUND* pSound = nullptr;
+void CSoundMgr::Set_Reverb_Param(_float roomSize, _float decayTime, _float wetMix)
+{
+	FMOD_DSP_SetParameterFloat(reverbDSP, FMOD_DSP_SFXREVERB_DENSITY, roomSize);
+	FMOD_DSP_SetParameterFloat(reverbDSP, FMOD_DSP_SFXREVERB_DECAYTIME, decayTime);
+	FMOD_DSP_SetParameterFloat(reverbDSP, FMOD_DSP_SFXREVERB_WETLEVEL, wetMix);
+}
 
-		FMOD_RESULT eRes = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_3D | 0x00000020, 0, &pSound);
-		if (eRes == FMOD_OK)
-		{
-			int iLength = strlen(szFilename) + 1;
+void CSoundMgr::Enable_Reverb()
+{
+	FMOD_DSP_SetBypass(reverbDSP, false);
+}
 
-			TCHAR* pSoundKey = new TCHAR[iLength];
-			ZeroMemory(pSoundKey, sizeof(TCHAR) * iLength);
-			MultiByteToWideChar(CP_ACP, 0, szFilename, iLength, pSoundKey, iLength);
+void CSoundMgr::Disable_Reverb()
+{
+	FMOD_DSP_SetBypass(reverbDSP, true);
+}
 
-			m_mapSound.emplace(pSoundKey, pSound);
-		}
-		iResult = _wfindnext64(handle, &fd);
-	}
-	FMOD_System_Update(m_pSystem);
-	_findclose(handle);
+void CSoundMgr::Enable_Echo()
+{
+	FMOD_DSP_SetBypass(echoDSP, false);
+}
+
+void CSoundMgr::Disable_Echo()
+{
+	FMOD_DSP_SetBypass(echoDSP, true);
+}
+
+void CSoundMgr::Set_Echo_Param(_float delay, _float wetLevel)
+{
+	FMOD_DSP_SetParameterFloat(echoDSP, FMOD_DSP_ECHO_DELAY, delay);
+	FMOD_DSP_SetParameterFloat(echoDSP, FMOD_DSP_ECHO_WETLEVEL, wetLevel);
 }
 
 FMOD_RESULT CSoundMgr::Load_SoundFile()
@@ -213,6 +230,41 @@ FMOD_RESULT CSoundMgr::Load_SoundFile()
 	return result;
 }
 
+HRESULT CSoundMgr::Reverb_Setting()
+{
+	if (FMOD_OK != FMOD_System_GetMasterChannelGroup(m_pSystem, &m_pMasterGroup))
+	{
+		MSG_BOX("Failed_Get_ChannelGroup");
+		return E_FAIL;
+	}
+	if(FMOD_OK != FMOD_System_CreateDSPByType(m_pSystem, FMOD_DSP_TYPE_SFXREVERB, &reverbDSP))
+	{
+		MSG_BOX("Failed_Create_DSP");
+		return E_FAIL;
+	}
+	if (FMOD_OK != FMOD_ChannelGroup_AddDSP(m_pMasterGroup, 0, reverbDSP))
+	{
+		MSG_BOX("Failed_Add_DSP");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CSoundMgr::Echo_Setting()
+{
+	if (FMOD_OK != FMOD_System_CreateDSPByType(m_pSystem, FMOD_DSP_TYPE_ECHO, &echoDSP))
+	{
+		MSG_BOX("Failed_Create_Echo_DSP");
+		return E_FAIL;
+	}
+	if (FMOD_OK != FMOD_ChannelGroup_AddDSP(m_pMasterGroup, 0, echoDSP))
+	{
+		MSG_BOX("Failed_Add_Echo_DSP");
+		return E_FAIL;
+	}
+	return S_OK;
+}
+
 CSoundMgr* CSoundMgr::Create()
 {
 	CSoundMgr* pInstance = new CSoundMgr();
@@ -237,4 +289,8 @@ void CSoundMgr::Free()
 
 	FMOD_System_Release(m_pSystem);
 	FMOD_System_Close(m_pSystem);
+	FMOD_DSP_Release(reverbDSP);
+	FMOD_DSP_Release(echoDSP);
+	FMOD_ChannelGroup_Release(m_pMasterGroup);
+	FMOD_ChannelGroup_Release(m_pBGMGroup);
 }

@@ -50,7 +50,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
 
-	//Out.vColor = lerp(Out.vColor, g_FogColor, 0.5f);
+	Out.vColor = lerp(Out.vColor, g_FogColor, 0.3f);
 
 
 	return Out;

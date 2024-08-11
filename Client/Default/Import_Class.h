@@ -108,6 +108,7 @@
 #include "Tree.h"
 #include "Grass.h"
 #include "Cloud.h"
+#include "Lagoon.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

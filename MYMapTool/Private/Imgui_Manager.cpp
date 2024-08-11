@@ -19,6 +19,7 @@
 
 #include "ThirdPersonCamera.h"
 #include "Cloud.h"
+#include "Lagoon.h"
 
 #include <DirectXTex.h>
 #include <vector>
@@ -583,7 +584,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" };
+                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" ,"Lagoon" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -2214,6 +2215,22 @@ void CImgui_Manager::Setting_CreateObj_ListBox()
                     ImGui::SetItemDefaultFocus();
             }
             ImGui::EndListBox();
+        }
+    }
+}
+
+
+void CImgui_Manager::Water_Editor()
+{
+    list<CGameObject*> waters = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Lagoon"));
+    if (!waters.empty())
+    {
+        CLagoon* lagoon = dynamic_cast<CLagoon*>(waters.front());
+        if (lagoon)
+        {
+            ImGui::Begin("Water Editor");
+
+            ImGui::End();
         }
     }
 }

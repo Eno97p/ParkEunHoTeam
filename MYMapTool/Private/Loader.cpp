@@ -18,6 +18,7 @@
 #include "Grass.h"
 #include "Tree.h"
 #include "Cloud.h"
+#include "Lagoon.h"
 #include "FakeWall.h"
 #include "Elevator.h"
 #include "TutorialMapBridge.h"
@@ -281,7 +282,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/CloudDome/CloudDome.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Lagoon"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GrassLand/Lagoon/Lagoon.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 	//// Prototype_Component_Model_Fiona
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(0.0f));
@@ -1068,6 +1072,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Cloud"), CCloud::Create(m_pDevice, m_pContext))))
+		return E_FAIL;	
+	
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Lagoon"), CLagoon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround_Card"), CBackGround_Card::Create(m_pDevice, m_pContext))))

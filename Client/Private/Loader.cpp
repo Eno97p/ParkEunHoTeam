@@ -3159,6 +3159,24 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		return E_FAIL;
 
 
+	/* Prototype_Component_Texture_WindGust*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_WindGust"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Lagoon/wind_gusts.dds"), 1))))
+		return E_FAIL;
+
+
+	/* Prototype_Component_Texture_Foam_Intensity*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Foam_Intensity"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Lagoon/foam_intensity.dds"), 1))))
+		return E_FAIL;
+
+
+	/* Prototype_Component_Texture_Foam_Bubbles*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Foam_Bubbles"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Lagoon/foam_bubbles.dds"), 1))))
+		return E_FAIL;
+
+
 #pragma region  Environmental Element Model Load
 
 	lstrcpy(m_szLoadingText, TEXT("환경 Element 로딩 중"));
@@ -3753,6 +3771,11 @@ HRESULT CLoader::Loading_For_GrassLandLevel_For_Shader()
 	/* For.Prototype_Component_Shader_VtxMesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Shader_VtxMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxLagoon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Shader_VtxLagoon"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxLagoon.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxAnimMesh */

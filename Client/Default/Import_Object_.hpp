@@ -159,6 +159,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CCloud::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	//Prototype_GameObject_Lagoon
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Lagoon"),
+		CLagoon::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 #pragma endregion Active Element
 

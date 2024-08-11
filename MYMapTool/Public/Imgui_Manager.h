@@ -123,6 +123,7 @@ private:
 	void GlobalWind_Editor();
 	void Fog_Editor();
 	void Cloud_Editor();
+	void Water_Editor();
 
 
 

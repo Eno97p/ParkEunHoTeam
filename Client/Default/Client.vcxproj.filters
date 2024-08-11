@@ -732,9 +732,12 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card">
       <UniqueIdentifier>{a82678a3-b18a-495d-94f6-7e821e7a5179}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Skill">
       <UniqueIdentifier>{1d3764cb-b074-40bc-a083-acf3568e4ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. Lagoon">
+      <UniqueIdentifier>{bb93ee94-d4fb-47a2-84cf-ccc20c40d4d5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1564,10 +1567,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Dash.h">
       <Filter>02.GameObjects\07. UI\Dash</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\BackGround_Card.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
     </ClInclude>
@@ -1582,9 +1585,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Client_Struct.h">
       <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Lagoon.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. Lagoon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2364,10 +2370,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Dash.cpp">
       <Filter>02.GameObjects\07. UI\Dash</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\BackGround_Card.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
     </ClCompile>
@@ -2382,6 +2388,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lagoon.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. Lagoon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2479,6 +2488,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxLagoon.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

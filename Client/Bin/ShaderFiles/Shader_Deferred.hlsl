@@ -17,6 +17,13 @@ vector      g_vLightDiffuse;
 vector      g_vLightAmbient;
 vector      g_vLightSpecular;
 
+
+float g_fGodraysDestiny = 0.5f;     //빛의 밀도
+float g_fGodraysWeight = 0.5f;      //빛의 밝기
+float g_fGodraysDecay = 0.95f;      //빛의 감쇠
+float g_fGodraysExposure = 0.5f;      //빛의 노출
+texture2D g_SunTexture;
+
 //이민영 추가 240621 1638
 float      g_fShadowThreshold = 0.8f;
 
@@ -183,6 +190,28 @@ struct PS_OUT_LIGHT
     vector      vSpecular : SV_TARGET1;
 };
 
+
+//상수버퍼
+cbuffer LightData : register(b0)
+{
+    float2 screenSpacePosition; // 광원의 화면 공간 위치
+    float godraysDensity;       // GodRays 밀도
+    float godraysWeight;        // GodRays 가중치
+    float godraysDecay;         // GodRays 감쇠
+    float godraysExposure;      // GodRays 노출
+
+}
+
+
+float4 GodRays(float2 texCoord, float depth) :SV_TARGET
+{
+    float2 lightPosition = screenSpacePosition;
+
+
+}
+
+
+
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
     PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
@@ -200,6 +229,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
     float3 lightDiffuse = g_vLightDiffuse * saturate(max(dot(-lightDir, normal), 0.f));
     Out.vShade = float4(lightDiffuse + lightAmbient, 1.f);
+
+
+
 
     // 깊이 텍스처 샘플링
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);

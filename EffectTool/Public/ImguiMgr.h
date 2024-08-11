@@ -36,6 +36,8 @@ public:
 	void Tick(_float fTimiedelta);
 private:
 	void Model_Change();
+private:
+	void Sound_Tool(_bool* Open);
 
 private:	//for FileSystem
 	void Load_Texture();
@@ -59,6 +61,13 @@ private:	//for FileSystem
 		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".jpg") ||
 			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".JPG") ||
 			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".bmp");
+	}
+	bool Is_SoundFile(const string& filename)
+	{
+		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".mp3") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".OGG") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".wav") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".ogg");
 	}
 
 

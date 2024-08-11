@@ -466,13 +466,23 @@ void CBody_Player::Tick(_float fTimeDelta)
 		_matrix World = XMLoadFloat4x4(&m_WorldMatrix);
 		_float4 ParticlePos;
 		XMStoreFloat4(&ParticlePos, World.r[3]);
-
+		_float4 AdjustPos = ParticlePos;
+		AdjustPos.y += 1.f;
 		if (m_iPastAnimIndex == 58)
 		{
-			ParticlePos.y += 1.f;
+			if (m_pModelCom->Check_CurDuration(0.15))
+			{
+				EFFECTMGR->Generate_Particle(57, ParticlePos);
+				EFFECTMGR->Generate_Particle(59, ParticlePos);
+			}
+
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active(true);
+				if (m_pModelCom->Check_CurDuration(0.21))
+				{
+					EFFECTMGR->Generate_Particle(58, AdjustPos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 180.f);
+				}
 			}
 			else
 			{
@@ -490,10 +500,18 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		else if (m_iPastAnimIndex == 143)
 		{
-			ParticlePos.y += 1.f;
+			if (m_pModelCom->Check_CurDuration(0.15))
+			{
+				EFFECTMGR->Generate_Particle(57, ParticlePos);
+				EFFECTMGR->Generate_Particle(59, ParticlePos);
+			}
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active();
+				if (m_pModelCom->Check_CurDuration(0.21))
+				{
+					EFFECTMGR->Generate_Particle(58, AdjustPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 180.f);
+				}
 			}
 			else
 			{
@@ -511,10 +529,19 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 		else if (m_iPastAnimIndex == 358)
 		{
-			ParticlePos.y += 1.f;
+			if (m_pModelCom->Check_CurDuration(0.15))
+			{
+				EFFECTMGR->Generate_Particle(57, ParticlePos);
+				EFFECTMGR->Generate_Particle(59, ParticlePos);
+			}
+
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
 				m_pWeapon[*m_pCurWeapon]->Set_Active();
+				if (m_pModelCom->Check_CurDuration(0.21))
+				{
+					EFFECTMGR->Generate_Particle(58, AdjustPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 180.f);
+				}
 			}
 			else
 			{

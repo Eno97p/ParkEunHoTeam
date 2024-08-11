@@ -178,11 +178,23 @@ public: /* For PhysX */
 	PxControllerManager* GetControllerManager();
 	
 public: // Sound Mgr
-	void PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume);
-	void PlayBGM(const TCHAR* pSoundKey, float fVolume);
+	void Play_Effect_Sound(const TCHAR* pSoundKey,/*사운드파일이름*/
+		CHANNELID eID, /*채널*/
+		_float fPosition = 0.f, /*재생 시작 지점( 초 단위 넣으면 됨, 1초부터 시작하고싶으면 1.f*/ 
+		_float fPitch = 1.f  /*소리의 높낮이 조정(0.1f 바뀔때마다 도레미파솔라시도)*/); 
+	void PlayBGM(const TCHAR* pSoundKey);
 	void StopAll();
 	void StopSound(CHANNELID eID);
-
+	void Sound_Pause(CHANNELID eID, _bool bPause); //채널 사운드 일시정지
+	void SetChannelVolume(CHANNELID eID, float fVolume);
+	void Set_Effect_Volume(_float fVolume);
+	void Set_BGM_Volume(_float fVolume);
+	void Set_Reverb_Param(_float roomSize, _float decayTime, _float wetMix); //리버브 수치 조절
+	void Enable_Reverb(); //리버브 활성화
+	void Disable_Reverb();	//리버브 비활성화
+	void Enable_Echo();	//에코 활성화
+	void Disable_Echo();	//에코 비활성화
+	void Set_Echo_Param(_float delay, _float wetLevel); //에코 딜레이(밀리초 단위), 메아리소리 볼륨
 public:	//for UISorter 박은호
 	HRESULT Add_UI(class CGameObject* ui, UISORT_PRIORITY type);
 

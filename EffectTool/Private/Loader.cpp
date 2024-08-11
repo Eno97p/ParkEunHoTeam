@@ -241,6 +241,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/RockParticle1.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Bubble
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Bubble_Mesh"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/Bubble_Mesh.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 	//LightningProp
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_InstanceLightning"),

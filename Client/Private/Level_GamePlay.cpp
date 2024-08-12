@@ -90,6 +90,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	m_iCamSize = m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
 #endif
 
+
+	_tagMonsterInit_Property MonsterInitProperty = {};
 	return S_OK;
 }
 
@@ -312,10 +314,12 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	CSavePoint::_tagSavePoint_Desc savePointDesc;
 	savePointDesc.vPosition = _float3(75.f, 523.f, 98.f);
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Test"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
 		return E_FAIL;
 	
-
+	savePointDesc.vPosition = _float3(93.f, 521.f, 98.f);
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+		return E_FAIL;
 
 
 
@@ -394,7 +398,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	//// Npc Yaak
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Yaak"), &landObjDesc)))
 	//	return E_FAIL;
-
+	
 	return S_OK;
 }
 

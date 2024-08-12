@@ -114,15 +114,17 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 			pDesc.isFadeIn = true;
 			pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
-			if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+			LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
+			if (FAILED(m_pGameInstance->Add_CloneObject(eCurLevel, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 				return;
 			
 
 			//vector<future<void>> vecfutures;
 			//비동기 적으로 현재 비석의 위치 저장
 
-			auto futures = m_pGameInstance->AddWork([this]() {
-				Engine::Save_Data(L"../Bin/DataFiles/SavePoint.dat", true, m_pTransformCom->Get_WorldMatrix());
+			
+			auto futures = m_pGameInstance->AddWork([this, eCurLevel]() {
+				Engine::Save_Data(L"../Bin/DataFiles/SavePoint.dat", true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), eCurLevel);
 			});
 			
 			if (futures.wait_for(chrono::milliseconds(1000)) == future_status::ready)

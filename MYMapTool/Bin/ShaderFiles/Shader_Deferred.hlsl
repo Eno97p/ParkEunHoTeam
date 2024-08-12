@@ -4,6 +4,7 @@
 matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
+matrix      Test_g_LightViewMatrix, Test_g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
 float      g_fBRIS;
@@ -16,6 +17,13 @@ float      g_fOuterAngle;
 vector      g_vLightDiffuse;
 vector      g_vLightAmbient;
 vector      g_vLightSpecular;
+
+
+float g_fGodraysDestiny = 0.5f;     //빛의 밀도
+float g_fGodraysWeight = 0.5f;      //빛의 밝기
+float g_fGodraysDecay = 0.95f;      //빛의 감쇠
+float g_fGodraysExposure = 0.5f;      //빛의 노출
+texture2D g_SunTexture;
 
 //이민영 추가 240621 1638
 float      g_fShadowThreshold = 0.8f;
@@ -183,6 +191,21 @@ struct PS_OUT_LIGHT
     vector      vSpecular : SV_TARGET1;
 };
 
+
+//상수버퍼
+cbuffer LightData : register(b0)
+{
+    float2 screenSpacePosition; // 광원의 화면 공간 위치
+    float godraysDensity;       // GodRays 밀도
+    float godraysWeight;        // GodRays 가중치
+    float godraysDecay;         // GodRays 감쇠
+    float godraysExposure;      // GodRays 노출
+
+}
+
+
+
+
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
     PS_OUT_LIGHT Out = (PS_OUT_LIGHT)0;
@@ -200,6 +223,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
     float3 lightDiffuse = g_vLightDiffuse * saturate(max(dot(-lightDir, normal), 0.f));
     Out.vShade = float4(lightDiffuse + lightAmbient, 1.f);
+
+
+
 
     // 깊이 텍스처 샘플링
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
@@ -524,6 +550,58 @@ float fbm(float3 p)
     return value;
 }
 
+
+
+float2 CalculateScreenSpacePosition(float3 worldPosition, matrix viewProjMatrix)
+{
+	// 월드 좌표를 스크린 좌표로 변환
+	float4 screenPosition = mul(float4(worldPosition, 1.0f), viewProjMatrix);
+	screenPosition /= screenPosition.w;
+
+	// 스크린 좌표를 0 ~ 1 사이로 정규화
+	float2 screenSpacePosition = screenPosition.xy * 0.5f + 0.5f;
+
+	return screenSpacePosition;
+}
+
+float4 RayMarchingGodRays(float2 texCoord, float2 lightScreenPos, float3 lightColor, Texture2D depthTex, SamplerState linearSampler)
+{
+    const int NUM_SAMPLES = 64;
+    const float DECAY = 0.95;
+    const float DENSITY = 0.9;
+    const float WEIGHT = 0.6;
+    const float EXPOSURE = 0.3;
+
+    float2 deltaTexCoord = normalize(lightScreenPos - texCoord) * DENSITY / NUM_SAMPLES;
+    float3 color = float3(0, 0, 0);
+    float illuminationDecay = 1.0;
+
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        texCoord += deltaTexCoord;
+
+        // 텍스처 좌표가 0~1 범위를 벗어나면 탈출
+        if (texCoord.x < 0.0 || texCoord.x > 1.0 || texCoord.y < 0.0 || texCoord.y > 1.0)
+            break;
+
+        float samplDepth = depthTex.Sample(linearSampler, texCoord).r;
+
+        // 깊이 조건을 완화하여 더 많은 샘플을 처리
+        if (samplDepth < 1.0 && samplDepth > 0.0)
+        {
+            float3 sampleColor = lightColor;
+            sampleColor *= illuminationDecay * WEIGHT;
+            color += sampleColor;
+            illuminationDecay *= DECAY;
+        }
+    }
+
+
+    return float4(color * EXPOSURE, 1.0);
+
+}
+
+
 PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -574,8 +652,6 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
         vColor = lerp(vColor, (vShadow + vColor) * 0.5f, vShadow.a);
     }
     Out.vColor = vColor;
-
-
 
 
 
@@ -635,6 +711,17 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     finalColor.rgb += vEmissiveDesc.rgb;
 
     Out.vColor = finalColor;
+
+
+
+      //float2 lightScreenPos = CalculateScreenSpacePosition(g_vLightPos.xyz, Test_g_LightViewMatrix * Test_g_LightProjMatrix);
+
+      //float3 lightColor = g_vLightDiffuse.xyz;
+      //float4 godrays = RayMarchingGodRays(In.vTexcoord, lightScreenPos, lightColor, g_DepthTexture, LinearSampler);
+
+      //Out.vColor.rgb += godrays.rgb;
+
+
     return Out;
 }
 
@@ -642,36 +729,46 @@ PS_OUT PS_SHADOW(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
 
+    // 깊이 텍스처에서 샘플링
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
 
+    // 클립 공간 좌표 계산
     vector vWorldPos;
-
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
     vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.z = vDepthDesc.x; // 깊이 값 (0 ~ 1)
     vWorldPos.w = 1.f;
 
+    // 깊이 값을 월드 공간으로 변환
     vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
 
-    /* 뷰스페이스 상의 위치를 구한다. */
+    // 뷰 공간으로 변환
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
-    /* 월드스페이스 상의 위치를 구한다. */
+    // 월드 공간으로 변환
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
+
+    // 그림자 맵 공간으로 변환
     vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
     vLightPos = mul(vLightPos, g_LightProjMatrix);
 
+    //float2 vTexcoord;
+    //vTexcoord.x = vLightPos.x / vLightPos.w * 0.5f + 0.5f;
+    //vTexcoord.y = vLightPos.y / vLightPos.w * -0.5f + 0.5f;
     float2 vTexcoord;
-    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-
+    vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
+    vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
+     
     float lightDepthDesc = g_LightDepthTexture.Sample(LinearSampler, vTexcoord).r;
 
-    float fLightOldDepth = lightDepthDesc * 3000.f;
+    float fLightOldDepth = lightDepthDesc;
+    //float fLightOldDepth = lightDepthDesc * 3000.f;
 
-    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    if (fLightOldDepth + 0.001f < vLightPos.z)
         Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    /*if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f); */
 
     return Out;
 }
@@ -823,6 +920,18 @@ PS_OUT PS_FINAL2(PS_IN In)
     Out.vColor.rgb /= (Out.vColor.rgb + 1.f);
     Out.vColor = pow(Out.vColor, 1 / g_Value);
 
+    if (g_fMirror != 0.f)
+    {
+        Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
+    }
+    else if (g_fBRIS > 0.09f)
+    {
+        Out.vColor = float4(lerp(Out.vColor.r, 1.f - Out.vColor.r, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.g, 1.f - Out.vColor.g, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.b, 1.f - Out.vColor.b, (g_fBRIS - 0.09f) * 18.f),
+            1.f);
+    }
+
     return Out;
 }
 
@@ -888,6 +997,18 @@ PS_OUT PS_FINAL3(PS_IN In)
     Out.vColor = saturate((Out.vColor * (a * Out.vColor + b)) / (Out.vColor * (c * Out.vColor + d) + e));
     Out.vColor = pow(Out.vColor, 1 / g_Value);
     Out.vColor.a = 1.f;
+
+    if (g_fMirror != 0.f)
+    {
+        Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
+    }
+    else if (g_fBRIS > 0.09f)
+    {
+        Out.vColor = float4(lerp(Out.vColor.r, 1.f - Out.vColor.r, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.g, 1.f - Out.vColor.g, (g_fBRIS - 0.09f) * 18.f),
+            lerp(Out.vColor.b, 1.f - Out.vColor.b, (g_fBRIS - 0.09f) * 18.f),
+            1.f);
+    }
 
     return Out;
 }

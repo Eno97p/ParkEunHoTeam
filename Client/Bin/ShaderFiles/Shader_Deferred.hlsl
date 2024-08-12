@@ -4,6 +4,7 @@
 matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
+matrix      Test_g_LightViewMatrix, Test_g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
 float      g_fBRIS;
@@ -202,13 +203,6 @@ cbuffer LightData : register(b0)
 
 }
 
-
-float4 GodRays(float2 texCoord, float depth) :SV_TARGET
-{
-    float2 lightPosition = screenSpacePosition;
-
-
-}
 
 
 
@@ -556,6 +550,58 @@ float fbm(float3 p)
     return value;
 }
 
+
+
+float2 CalculateScreenSpacePosition(float3 worldPosition, matrix viewProjMatrix)
+{
+	// 월드 좌표를 스크린 좌표로 변환
+	float4 screenPosition = mul(float4(worldPosition, 1.0f), viewProjMatrix);
+	screenPosition /= screenPosition.w;
+
+	// 스크린 좌표를 0 ~ 1 사이로 정규화
+	float2 screenSpacePosition = screenPosition.xy * 0.5f + 0.5f;
+
+	return screenSpacePosition;
+}
+
+float4 RayMarchingGodRays(float2 texCoord, float2 lightScreenPos, float3 lightColor, Texture2D depthTex, SamplerState linearSampler)
+{
+    const int NUM_SAMPLES = 64;
+    const float DECAY = 0.95;
+    const float DENSITY = 0.9;
+    const float WEIGHT = 0.6;
+    const float EXPOSURE = 0.3;
+
+    float2 deltaTexCoord = normalize(lightScreenPos - texCoord) * DENSITY / NUM_SAMPLES;
+    float3 color = float3(0, 0, 0);
+    float illuminationDecay = 1.0;
+
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        texCoord += deltaTexCoord;
+
+        // 텍스처 좌표가 0~1 범위를 벗어나면 탈출
+        if (texCoord.x < 0.0 || texCoord.x > 1.0 || texCoord.y < 0.0 || texCoord.y > 1.0)
+            break;
+
+        float samplDepth = depthTex.Sample(linearSampler, texCoord).r;
+
+        // 깊이 조건을 완화하여 더 많은 샘플을 처리
+        if (samplDepth < 1.0 && samplDepth > 0.0)
+        {
+            float3 sampleColor = lightColor;
+            sampleColor *= illuminationDecay * WEIGHT;
+            color += sampleColor;
+            illuminationDecay *= DECAY;
+        }
+    }
+
+
+    return float4(color * EXPOSURE, 1.0);
+
+}
+
+
 PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -606,8 +652,6 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
         vColor = lerp(vColor, (vShadow + vColor) * 0.5f, vShadow.a);
     }
     Out.vColor = vColor;
-
-
 
 
 
@@ -667,6 +711,17 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     finalColor.rgb += vEmissiveDesc.rgb;
 
     Out.vColor = finalColor;
+
+
+
+      //float2 lightScreenPos = CalculateScreenSpacePosition(g_vLightPos.xyz, Test_g_LightViewMatrix * Test_g_LightProjMatrix);
+
+      //float3 lightColor = g_vLightDiffuse.xyz;
+      //float4 godrays = RayMarchingGodRays(In.vTexcoord, lightScreenPos, lightColor, g_DepthTexture, LinearSampler);
+
+      //Out.vColor.rgb += godrays.rgb;
+
+
     return Out;
 }
 
@@ -710,7 +765,6 @@ PS_OUT PS_SHADOW(PS_IN In)
     float fLightOldDepth = lightDepthDesc;
     //float fLightOldDepth = lightDepthDesc * 3000.f;
 
-    //Out.vColor = vector(fLightOldDepth + 0.001f, 0.f, vLightPos.z / vLightPos.w, 1.f);
     if (fLightOldDepth + 0.001f < vLightPos.z)
         Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
     /*if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)

@@ -1114,15 +1114,17 @@ void CRenderer::Render_DeferredResult()
   //  _float4 vLightDir = _float4(0.0f, -1.0f, 0.0f, 0.0f);
   //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDir", &vLightDir, sizeof(_float4))))
 		//return;
-  //  _float4 vLightColor = _float4(1.0f, 1.0f, 1.0f, 1.0f);
+  //  _float4 vLightColor = _float4(1.0f, 1.0f, 1.0f, 0.5f);
   //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDiffuse", &vLightColor, sizeof(_float4))))
   //      return;
 
-
-  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+  //  _float4x4      ViewMatrix, ProjMatrix;
+  //  XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(vLightPos.x, vLightPos.y, vLightPos.z, vLightPos.w), XMVectorSet(vLightPos.x, vLightPos.y-10, vLightPos.z, vLightPos.w), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+  //  XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)1280 / 720, 0.1f, 3000.f));
+  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightViewMatrix", &ViewMatrix)))
   //      return;
 
-  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightProjMatrix", &ProjMatrix)))
   //      return;
 
 

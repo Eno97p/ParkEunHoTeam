@@ -345,7 +345,8 @@ CGameObject* CLagoon::Clone(void* pArg)
 void CLagoon::Free()
 {
 	__super::Free();
-
+	for (auto& texture : m_pTexture)
+		Safe_Release(texture);
 	//Safe_Release(m_pModelCom);
 	//Safe_Release(m_pShaderCom);
 }

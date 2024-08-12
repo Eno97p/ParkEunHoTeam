@@ -60,8 +60,6 @@ public:
 
 
 private:
-private:
-	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };
 	CTexture* m_pTexture[TEX_END] = { nullptr };
 	//CPhysXComponent_static* m_pPhysXCom = { nullptr };

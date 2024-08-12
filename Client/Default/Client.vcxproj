@@ -281,6 +281,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
@@ -556,6 +559,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp" />

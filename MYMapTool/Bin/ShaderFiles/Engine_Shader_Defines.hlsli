@@ -202,3 +202,18 @@ float2 RadialShear(float2 texCoord, float2 center, float strength, float offset)
         return texCoord;
     }
 }
+
+float3 CalculateFresnel(float3 normal, float3 viewDir, float fresnelPower, float3 baseColor, float3 fresnelColor)
+{
+    // 노멀과 뷰 방향 벡터를 정규화합니다.
+    normal = normalize(normal);
+    viewDir = normalize(viewDir);
+
+    // Fresnel 계수를 계산합니다.
+    float fresnelFactor = pow(1.0 - dot(viewDir, normal), fresnelPower);
+
+    // Fresnel 계수를 사용하여 색상을 혼합합니다.
+    float3 finalColor = lerp(baseColor, fresnelColor, fresnelFactor);
+
+    return finalColor;
+}

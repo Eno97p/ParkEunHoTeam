@@ -131,6 +131,15 @@
 #include "C:\NewRepo\EffectTool\Private\Map_Flat.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\Meteor.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Meteor_Core.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Meteor_Wind.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\Particle.cpp"
 
 

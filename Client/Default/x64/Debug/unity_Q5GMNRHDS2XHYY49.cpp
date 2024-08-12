@@ -267,6 +267,15 @@
 #include "C:\NewRepo\Client\Private\ParkEunHo\LazerCast.cpp"
 
 
+#include "C:\NewRepo\Client\Private\ParkEunHo\Meteor.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Meteor_Core.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Meteor_Wind.cpp"
+
+
 #include "C:\NewRepo\Client\Private\ParkEunHo\ShieldSphere.cpp"
 
 
@@ -324,6 +333,9 @@
 #include "C:\NewRepo\Client\Private\Tree.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UIGroup_BuffTimer.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UIGroup_Ch_Upgrade.cpp"
 
 
@@ -355,6 +367,15 @@
 
 
 #include "C:\NewRepo\Client\Private\UI_Broken.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_BuffTimer.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_BuffTimer_Bar.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_BuffTimer_Timer.cpp"
 
 
 #include "C:\NewRepo\Client\Private\UI_Ch_UpgradeBtn.cpp"

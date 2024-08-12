@@ -324,6 +324,9 @@
 #include "C:\3D_TeamProj\Client\Private\Tree.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\UIGroup_BuffTimer.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UIGroup_Ch_Upgrade.cpp"
 
 
@@ -355,6 +358,15 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Broken.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_BuffTimer.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_BuffTimer_Bar.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_BuffTimer_Timer.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Ch_UpgradeBtn.cpp"

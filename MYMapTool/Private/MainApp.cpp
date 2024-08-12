@@ -86,9 +86,8 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(0.7f, 1.f, 1.f, 1.f));
 
-
+	
 	m_pImgui_Manager->Render();
-
 
 
 	m_pGameInstance->Present();

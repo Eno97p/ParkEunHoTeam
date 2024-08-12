@@ -84,6 +84,13 @@ HRESULT CToolObj_Manager::Add_CloneObj(_int iLayerIdx, _int iSelectIdx, _vector 
             if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"), wst.c_str(), &pDesc)))
                 return E_FAIL;
         }
+        else if (iSelectIdx == 13)
+        {
+            wstring wst = L"";
+            wst = CharToWstring(pDesc.szObjName);
+            if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Lagoon"), wst.c_str(), &pDesc)))
+                return E_FAIL;
+        }
         else
         {
             wstring wst = L"";
@@ -539,6 +546,8 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_Cloud";
         case 12:
             return "Prototype_GameObject_BackGround_Card";
+        case 13:
+            return "Prototype_GameObject_Lagoon";
         default:
             break;
         }

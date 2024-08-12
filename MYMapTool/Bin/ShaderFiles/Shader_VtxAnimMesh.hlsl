@@ -241,6 +241,21 @@ PS_OUT_BLOOM PS_EPIC_BLOOM(PS_IN In)
 
 	return Out;
 }
+
+PS_OUT_BLOOM PS_MAIN_REFLECTION(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse) Out.vColor = vColor;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -313,5 +328,20 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_EPIC_BLOOM();
 	}
+
+		pass Reflection_5
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_None_Test_None_Write, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_REFLECTION();
+	}
+
 }
 

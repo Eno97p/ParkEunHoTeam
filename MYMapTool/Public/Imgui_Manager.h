@@ -123,6 +123,7 @@ private:
 	void GlobalWind_Editor();
 	void Fog_Editor();
 	void Cloud_Editor();
+	void Water_Editor();
 
 
 
@@ -142,6 +143,7 @@ private:
 	_bool	m_bGlobalWindWindow = false;
 	_bool	m_bFogWindow = false;
 	_bool	m_bCloudWindow = false;
+	_bool	m_bWaterWindow = false;
 	
 	_bool	m_bShowDecalTextureWindow = false;
 

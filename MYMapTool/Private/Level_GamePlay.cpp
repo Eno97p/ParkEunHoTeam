@@ -23,6 +23,7 @@
 #include "TransitionCamera.h"
 #include "Trap.h"
 #include "Decal.h"
+#include "BackGround_Card.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{pDevice, pContext}
@@ -31,6 +32,22 @@ CLevel_GamePlay::CLevel_GamePlay(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+    CRenderer::FOG_DESC fogDesc{};
+    fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
+    fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
+    fogDesc.fFogRange = 7788.5;
+    fogDesc.fFogHeightFalloff = 0.0f;
+    fogDesc.fFogGlobalDensity = 1.0f;
+    fogDesc.fFogTimeOffset = 1.154f;
+    fogDesc.fFogTimeOffset2 = 3.462f;
+    fogDesc.fNoiseIntensity = 1.731f;
+    fogDesc.fNoiseIntensity2 = 1.923f;
+    fogDesc.fNoiseSize = 0.000481f;
+    fogDesc.fNoiseSize2 = 0.000481f;
+    fogDesc.fFogBlendFactor = 0.284f;
+    m_pGameInstance->Set_FogOption(fogDesc);
+
+
     if (FAILED(Ready_Light()))
         return E_FAIL;
 
@@ -200,13 +217,55 @@ HRESULT CLevel_GamePlay::Ready_Light()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Terrain(const wstring& strLayerTag)
 {
-    //if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
-    //    return E_FAIL;
+    if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
+        return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
         return E_FAIL;
 
 
+    CBackGround_Card::CARD_DESC desc{};
+    desc.mWorldMatrix = {};
+
+    _matrix vMat = { 1427.475f, 0.f, -2009.57, 0.f,
+    0.f, 1000.f, 0.f, 0.f,
+    815.468f, 0.f, 579.258f, 0.f,
+    -3342.f, 695.f, -1722.f, 1.f };
+
+    XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
+    desc.iTexNum = 0;
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &desc)))
+        return E_FAIL;
+
+    ZeroMemory(&desc, sizeof(desc));
+    vMat = { -1977.f, 0.f, -3478.f, 0.f,
+   0.f, 2000.f, 0.f, 0.f,
+   1739.f, 0.f, -988.f, 0.f,
+  -3304.f, 1157.f, 2678.f, 1.f };
+    XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
+    desc.iTexNum = 1;
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &desc)))
+        return E_FAIL;
+
+    desc.mWorldMatrix = {};
+     vMat = { 1143.863f, 0.f, 2773.897f, 0.f,
+        0.f, 1500.f, 0.f, 0.f,
+        -1386.976f, 0.f, 571.943f, 0.f,
+        3609.f, 783.378f, -706.441f, 1.f };
+    XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
+    desc.iTexNum = 2;
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &desc)))
+        return E_FAIL;
+
+    ZeroMemory(&desc, sizeof(desc));
+    vMat = { 3495.291f, 0.f, -188.991f, 0.f,
+        0.f, 2000.f, 0.f, 0.f,
+        161.997f, 0.f, 2996.f, 0.f,
+        1349.754f, 1881.764f, 4170.497f, 1.f };
+    XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
+    desc.iTexNum = 0;
+    if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &desc)))
+        return E_FAIL;
 
     //CGrass::GRASS_DESC desc{};
     //if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Grass"), &desc)))
@@ -227,7 +286,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pDesc.fFovy = XMConvertToRadians(60.f);
     pDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
     pDesc.fNear = 0.1f;
-    pDesc.fFar = 6000.f;
+    pDesc.fFar = 10000.f;
 
     pDesc.fSpeedPerSec = 40.f;
     pDesc.fRotationPerSec = XMConvertToRadians(90.f);

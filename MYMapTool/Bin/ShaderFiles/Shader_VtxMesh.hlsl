@@ -515,9 +515,9 @@ PS_OUT_BLOOM PS_TRUNK_BLOOM(PS_IN In)
 	return Out;
 }
 
-PS_OUT_BLOOM PS_CARD(PS_IN In)
+PS_OUT PS_CARD(PS_IN In)
 {
-	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+	PS_OUT Out = (PS_OUT)0;
 
 	// 텍스처 좌표 조정
 	float2 adjustedTexcoord = In.vTexcoord;
@@ -550,8 +550,16 @@ PS_OUT_BLOOM PS_CARD(PS_IN In)
 
 	if (g_bDiffuse)
 	{
-		Out.vColor = vColor;
+		Out.vDiffuse = vColor;
 	}
+
+	float3 vNormal;
+	vNormal = In.vNormal.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
 
 	return Out;
 }

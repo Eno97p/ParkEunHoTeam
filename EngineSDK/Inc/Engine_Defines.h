@@ -2,7 +2,7 @@
 
 #pragma warning (disable : 4251)
 
-#include <vld.h>
+//#include <vld.h>
 #include<malloc.h>
 #include <d3d11_4.h>
 

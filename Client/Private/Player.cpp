@@ -420,10 +420,58 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 	if (m_iState == STATE_DEAD)
 	{
+		
+		
+		//죽었을 때 한 번만 비동기 실행
+		if (!m_bIsLoadStart)
+		{
+			m_bIsLoadStart = true;
+			
+			auto futures = m_pGameInstance->AddWork([this]() {
+				return Engine::Load_Data<_vector,LEVEL>(L"../Bin/DataFiles/SavePoint.bin");
+			});
+
+			if (futures.wait_for(chrono::milliseconds(10)) == future_status::ready)	//비동기 작업이 끝났을 때
+			{
+				decltype(auto) Load_data = futures.get();
+				if (Load_data)		//불러온 데이터가 있을 때
+				{
+					m_vDest = get<0>(*Load_data);		//초기 위치 값으로 설정		//값복사로 //초기에 값참조로 인해서 문제
+					m_eCurLevel = get<1>(*Load_data);	//불러온 레벨 값으로 설정
+				}
+				//else	//불러온 데이터가 없을 때는 아래서 처리
+			}
+			
+			
+		}
+
+
+
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
-			m_iState = STATE_IDLE;
+			//페이드인 시작(	한 번만 생성 또는 시작되게 해야 함)
+
+
+			
+			//if ()//페이드인 끝났으면 아래 코드 실행
+			{
+				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
+				if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
+				{
+					m_pPhysXCom->Set_Position(m_vDest);	//플레이어 위치 이동
+				}
+				else	//불러온 데이터가 없을 때`
+				{
+
+					m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
+				}
+
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+				m_iState = STATE_REVIVE;
+				m_bIsLoadStart = false;
+			}
+			
 			return SUCCESS;
 		}
 		return RUNNING;

@@ -41,8 +41,9 @@ HRESULT CBackGround_Card::Initialize(void* pArg)
 
 		CToolObj::TOOLOBJ_DESC* pDesc = (CToolObj::TOOLOBJ_DESC*)pArg;
 
-		_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
+		//_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 	}
 
@@ -73,7 +74,7 @@ void CBackGround_Card::Late_Tick(_float fTimeDelta)
 	//{
 	//	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//	m_pTransformCom->BillBoard();
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	//}
 }

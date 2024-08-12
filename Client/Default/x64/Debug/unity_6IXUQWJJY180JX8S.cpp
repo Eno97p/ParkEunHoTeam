@@ -447,6 +447,12 @@
 #include "C:\Real3DProject\Client\Private\UI_Setting_Overlay.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_Setting_Sound.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Setting_SoundBar.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Setting_Star.cpp"
 
 

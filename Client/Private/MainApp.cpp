@@ -160,6 +160,8 @@
 #include "UI_Setting_Overlay.h"
 #include "UI_Setting_Btn.h"
 #include "UI_Setting_BackBtn.h"
+#include "UI_Setting_Sound.h"
+#include "UI_Setting_SoundBar.h"
 #include "UIGroup_Setting.h"
 #pragma endregion Setting
 
@@ -1405,6 +1407,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_Sound */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Sound"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_SoundBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_SoundBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBar.png"), 1))))
+		return E_FAIL;
 #pragma endregion Setting
 
 #pragma region QTE
@@ -2076,6 +2088,16 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Setting_BackBtn*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_BackBtn"),
 		CUI_Setting_BackBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_Sound*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Sound"),
+		CUI_Setting_Sound::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_SoundBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_SoundBar"),
+		CUI_Setting_SoundBar::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Setting*/

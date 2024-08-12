@@ -30,7 +30,7 @@ HRESULT CUI_Setting_BackBtn::Initialize(void* pArg)
         return E_FAIL;
 
     m_fX = (g_iWinSizeX >> 1);
-    m_fY = g_iWinSizeY - 150.f;
+    m_fY = g_iWinSizeY - 120.f; // - 150
     m_fSizeX = 400.f; // 512
     m_fSizeY = 64.f; // 64
 

@@ -56,17 +56,9 @@ HRESULT CUI_BuffTimer_Timer::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
-		return E_FAIL;
-
 	m_pShaderCom->Begin(12);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
-
-
 
 	return S_OK;
 }
@@ -108,6 +100,12 @@ HRESULT CUI_BuffTimer_Timer::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

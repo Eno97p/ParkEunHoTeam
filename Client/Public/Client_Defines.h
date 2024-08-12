@@ -54,6 +54,7 @@ namespace Client
 }
 
 #include "Client_Function.hpp"
+#include "Client_Struct.h"
 
 extern HINSTANCE g_hInst;
 extern HWND g_hWnd;

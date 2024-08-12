@@ -31,8 +31,8 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 		MSG_BOX("Failed to Create Multithread");
 		return E_FAIL;
 	}
-
-
+	
+	
 	D3D11_FEATURE_DATA_THREADING ThreadingCaps;
 	m_pDevice->CheckFeatureSupport(D3D11_FEATURE_THREADING, &ThreadingCaps, sizeof(ThreadingCaps));
 	if (ThreadingCaps.DriverCommandLists == FALSE)
@@ -41,7 +41,8 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 		return E_FAIL;
 	}
 
-
+	
+	
 
 	/* SwapChain 전면과 후면버퍼를 번갈아가며 화면에 보여준다.(Present) */
 

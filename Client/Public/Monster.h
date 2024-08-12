@@ -30,7 +30,7 @@ protected:
 
 public:
 	_float			Get_Ratio() { return m_fCurHp / m_fMaxHp; }
-
+	_float4			Get_InitPos() { return m_vInitialPos; }
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;

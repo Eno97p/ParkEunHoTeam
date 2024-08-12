@@ -18,7 +18,7 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONDECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
-	
+
 	typedef struct FOG_DESC
 	{
 		_float4 vFogColor;
@@ -166,13 +166,13 @@ private:
 	_float m_fBRIS = 0.f;
 	_float m_fMirror = 0.f;
 
-	
+
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
 	_vector								m_vShadowFocus = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	_float								m_fShadowThreshold = 0.5f;
-	
+
 	//Fog
 private:
 	_float4 m_vFogColor = { 0.235f, 0.260f, 0.329f, 1.f };
@@ -207,6 +207,7 @@ private:
 	void Render_Blur();
 	void Render_Bloom();
 	void Render_Distortion();
+	void Render_GodRay();
 	void Render_Final();
 	void Compute_HDR();
 

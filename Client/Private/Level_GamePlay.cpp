@@ -90,6 +90,10 @@ HRESULT CLevel_GamePlay::Initialize()
 	m_iCamSize = m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GAMEPLAY, TEXT("Layer_Camera")).size();
 #endif
 
+	_vector vEye = { 140.f, 600.f, 97.f, 1.f };
+	_vector vFocus = { 151.f, 521.f, 97.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
+
 	return S_OK;
 }
 

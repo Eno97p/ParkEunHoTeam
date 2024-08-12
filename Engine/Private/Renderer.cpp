@@ -185,6 +185,12 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
 
 
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GodRay"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GodRay"), TEXT("Target_GodRay"))))
+        return E_FAIL;
+
+
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Distortion"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_Distortion"))))
@@ -337,228 +343,233 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pHZBComputeShader)
         return E_FAIL;*/
 
-    //D3D11_TEXTURE2D_DESC texDesc;
-    //ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-    //texDesc.Width = ViewportDesc.Width;
-    //texDesc.Height = ViewportDesc.Height;
-    //texDesc.MipLevels = 1;
-    //texDesc.ArraySize = 1;
-    //texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //기존 깊이버퍼랑 맞춰야하나
-    //texDesc.SampleDesc.Quality = 0;
-    //texDesc.SampleDesc.Count = 1;
-    //texDesc.Usage = D3D11_USAGE_DEFAULT;  // GPU 읽기/쓰기 가능
-    //texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;  // SRV 생성 가능
-    //texDesc.CPUAccessFlags = 0;  // CPU 액세스 없음
-    //texDesc.MiscFlags = 0;
+        //D3D11_TEXTURE2D_DESC texDesc;
+        //ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+        //texDesc.Width = ViewportDesc.Width;
+        //texDesc.Height = ViewportDesc.Height;
+        //texDesc.MipLevels = 1;
+        //texDesc.ArraySize = 1;
+        //texDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;  //기존 깊이버퍼랑 맞춰야하나
+        //texDesc.SampleDesc.Quality = 0;
+        //texDesc.SampleDesc.Count = 1;
+        //texDesc.Usage = D3D11_USAGE_DEFAULT;  // GPU 읽기/쓰기 가능
+        //texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;  // SRV 생성 가능
+        //texDesc.CPUAccessFlags = 0;  // CPU 액세스 없음
+        //texDesc.MiscFlags = 0;
 
-    //if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pPrevDepthTexture)))
-    //    return E_FAIL;
+        //if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pPrevDepthTexture)))
+        //    return E_FAIL;
 
-    // m_pPrevDepthTexture에 대한 SRV 생성
-    //D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    //ZeroMemory(&srvDesc, sizeof(srvDesc));
-    //srvDesc.Format = texDesc.Format;
-    //srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    //srvDesc.Texture2D.MipLevels = 1;
-    //srvDesc.Texture2D.MostDetailedMip = 0;
-    //if (FAILED(m_pDevice->CreateShaderResourceView(m_pPrevDepthTexture, nullptr, &m_pPrevDepthSRV)))
-    //    return E_FAIL;
+        // m_pPrevDepthTexture에 대한 SRV 생성
+        //D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+        //ZeroMemory(&srvDesc, sizeof(srvDesc));
+        //srvDesc.Format = texDesc.Format;
+        //srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        //srvDesc.Texture2D.MipLevels = 1;
+        //srvDesc.Texture2D.MostDetailedMip = 0;
+        //if (FAILED(m_pDevice->CreateShaderResourceView(m_pPrevDepthTexture, nullptr, &m_pPrevDepthSRV)))
+        //    return E_FAIL;
 
 
-   /* ZeroMemory(&texDesc, sizeof(texDesc));
-    texDesc.Width = ViewportDesc.Width;
-    texDesc.Height = ViewportDesc.Height;
-    texDesc.MipLevels = 1;
-    texDesc.ArraySize = 1;
-    texDesc.Format = DXGI_FORMAT_R32_FLOAT;
-    texDesc.SampleDesc.Count = 1;
-    texDesc.Usage = D3D11_USAGE_DEFAULT;
-    texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-    texDesc.CPUAccessFlags = 0;
-    texDesc.MiscFlags = 0;*/
+       /* ZeroMemory(&texDesc, sizeof(texDesc));
+        texDesc.Width = ViewportDesc.Width;
+        texDesc.Height = ViewportDesc.Height;
+        texDesc.MipLevels = 1;
+        texDesc.ArraySize = 1;
+        texDesc.Format = DXGI_FORMAT_R32_FLOAT;
+        texDesc.SampleDesc.Count = 1;
+        texDesc.Usage = D3D11_USAGE_DEFAULT;
+        texDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+        texDesc.CPUAccessFlags = 0;
+        texDesc.MiscFlags = 0;*/
 
-    //for (UINT i = 0; i < MAX_MIP_LEVELS; ++i)
-    //{
-    //    if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pHZBTexture[i])))
-    //        return E_FAIL;
+        //for (UINT i = 0; i < MAX_MIP_LEVELS; ++i)
+        //{
+        //    if (FAILED(m_pDevice->CreateTexture2D(&texDesc, nullptr, &m_pHZBTexture[i])))
+        //        return E_FAIL;
 
-    //    // SRV 생성
-    //    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-    //    ZeroMemory(&srvDesc, sizeof(srvDesc));
-    //    srvDesc.Format = texDesc.Format;
-    //    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    //    srvDesc.Texture2D.MipLevels = 1;
-    //    srvDesc.Texture2D.MostDetailedMip = 0;
+        //    // SRV 생성
+        //    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+        //    ZeroMemory(&srvDesc, sizeof(srvDesc));
+        //    srvDesc.Format = texDesc.Format;
+        //    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        //    srvDesc.Texture2D.MipLevels = 1;
+        //    srvDesc.Texture2D.MostDetailedMip = 0;
 
-    //    if (FAILED(m_pDevice->CreateShaderResourceView(m_pHZBTexture[i], /*&srvDesc*/nullptr, &m_pHZBSRV[i])))
-    //        return E_FAIL;
+        //    if (FAILED(m_pDevice->CreateShaderResourceView(m_pHZBTexture[i], /*&srvDesc*/nullptr, &m_pHZBSRV[i])))
+        //        return E_FAIL;
 
-    //    // UAV 생성
-    //    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-    //    ZeroMemory(&uavDesc, sizeof(uavDesc));
-    //    uavDesc.Format = texDesc.Format;
-    //    uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-    //    uavDesc.Texture2D.MipSlice = 0;
+        //    // UAV 생성
+        //    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+        //    ZeroMemory(&uavDesc, sizeof(uavDesc));
+        //    uavDesc.Format = texDesc.Format;
+        //    uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+        //    uavDesc.Texture2D.MipSlice = 0;
 
-    //    if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pHZBTexture[i], &uavDesc, &m_pHZBUAV[i])))
-    //        return E_FAIL;
+        //    if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pHZBTexture[i], &uavDesc, &m_pHZBUAV[i])))
+        //        return E_FAIL;
 
-    //    // 다음 밉맵 레벨을 위해 크기 조정
-    //    texDesc.Width = max(texDesc.Width / 2, 1);
-    //    texDesc.Height = max(texDesc.Height / 2, 1);
-    //}
+        //    // 다음 밉맵 레벨을 위해 크기 조정
+        //    texDesc.Width = max(texDesc.Width / 2, 1);
+        //    texDesc.Height = max(texDesc.Height / 2, 1);
+        //}
 
 #pragma endregion 계층적 Z 버퍼 끝
 
 #ifdef _DEBUG
-        const float startX = 100.0f;
-        const float startY = 100.0f;
-        const float targetWidth = 200.0f;
-        const float targetHeight = 200.0f;
-        const float gap = 0.0f;
+    const float startX = 100.0f;
+    const float startY = 100.0f;
+    const float targetWidth = 200.0f;
+    const float targetHeight = 200.0f;
+    const float gap = 0.0f;
 
-        float currentX = startX;
-        float currentY = startY;
+    float currentX = startX;
+    float currentY = startY;
 
-        
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
-
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
-
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
-
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
-
-
-
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_GodRay"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
     //currentX += targetWidth + gap;
 
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
     //currentX += targetWidth + gap;
+
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
+
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
 
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Decal"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample4x4"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+//if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
+//   return E_FAIL;
+//currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample4x4_2"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+//if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+//   return E_FAIL;
+//currentX += targetWidth + gap;
+//if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+//    return E_FAIL;
+//currentX += targetWidth + gap;
+//if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+//    return E_FAIL;
+//currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample5x5"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_BlurY1"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Decal"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample4x4"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom3"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LUT"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample4x4_2"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DownSample5x5"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_BlurY1"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
+
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
+
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Bloom3"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LUT"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Diffuse"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_SpecularMap"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Normal"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Emissive"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+//if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
+//    return E_FAIL;
+//currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Roughness"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_SpecularMap"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Metalic"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Emissive"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
+
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Roughness"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
+
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Metalic"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
 
 
-        /*if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
-            return E_FAIL;
-        currentX += targetWidth + gap;*/
+    /*if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shade"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;*/
 
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Specular"), currentX, currentY, targetWidth, targetHeight)))
-        //    return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Specular"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DeferredResult"), currentX, currentY, targetWidth, targetHeight)))
-        //   return E_FAIL;
-        //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_DeferredResult"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-        /*if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Blur"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
+    /*if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Blur"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Brightness"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Brightness"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Glow"), currentX, currentY, targetWidth, targetHeight)))
-           return E_FAIL;
-        currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Glow"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
 
-        if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Final"), currentX, currentY, targetWidth, targetHeight)))
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Final"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;*/
+
+
+       /* if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
            return E_FAIL;*/
-
-
-          /* if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
-              return E_FAIL;*/
 
 #endif	
 
-        //m_dwThreadCount = (DWORD)PxThread::getNbPhysicalCores();
-        //
-        //if(FAILED(InitRenderThreadPool(m_dwThreadCount)))
-		//	return E_FAIL;
+           //m_dwThreadCount = (DWORD)PxThread::getNbPhysicalCores();
+           //
+           //if(FAILED(InitRenderThreadPool(m_dwThreadCount)))
+           //	return E_FAIL;
 
 
 
 
-        return S_OK;
-    
+    return S_OK;
+
 }
 
 HRESULT CRenderer::Add_RenderObject(RENDERGROUP eRenderGroup, CGameObject* pRenderObject)
@@ -611,40 +622,41 @@ void CRenderer::Draw()
 
 
 
-	PROFILE_CALL("Render Priority", Render_Priority());
-    
-    
+    PROFILE_CALL("Render Priority", Render_Priority());
 
-	PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
- 
 
-	PROFILE_CALL("Render NonBlend", Render_NonBlend());
- 
+    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
 
-	PROFILE_CALL("Render Decal", Render_Decal());
+
+
+    PROFILE_CALL("Render NonBlend", Render_NonBlend());
+
+
+    PROFILE_CALL("Render Decal", Render_Decal());
 
     PROFILE_CALL("Render NonDecal", Render_NonDecal());
 
-	PROFILE_CALL("Render LightAcc", Render_LightAcc());
+    PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
-	PROFILE_CALL("Render Shadow_Move", Render_Shadow_Move());
-	PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
-	PROFILE_CALL("Render Shadow_Result", Render_Shadow_Result());
-	PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
+    PROFILE_CALL("Render Shadow_Move", Render_Shadow_Move());
+    PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
+    PROFILE_CALL("Render Shadow_Result", Render_Shadow_Result());
+    PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 
-	PROFILE_CALL("Render Render_NonLight", Render_NonLight());
-	PROFILE_CALL("Render Blend", Render_Blend());
-	PROFILE_CALL("Render Reflection", Render_Reflection());
-	PROFILE_CALL("Render Blur", Render_Blur());
-	PROFILE_CALL("Render Bloom", Render_Bloom());
-	PROFILE_CALL("Render Distortion", Render_Distortion());
+    PROFILE_CALL("Render Render_NonLight", Render_NonLight());
+    PROFILE_CALL("Render Blend", Render_Blend());
+    PROFILE_CALL("Render Reflection", Render_Reflection());
+    PROFILE_CALL("Render Blur", Render_Blur());
+    PROFILE_CALL("Render Bloom", Render_Bloom());
+    PROFILE_CALL("Render Distortion", Render_Distortion());
+    PROFILE_CALL("Render GodRay", Render_GodRay());
 
-	PROFILE_CALL("Render Final", Render_Final());
-	PROFILE_CALL("Render UI", Render_UI());
+    PROFILE_CALL("Render Final", Render_Final());
+    PROFILE_CALL("Render UI", Render_UI());
 
 #ifdef _DEBUG
-	PROFILE_CALL("Render Debug", Render_Debug());
+    PROFILE_CALL("Render Debug", Render_Debug());
 #endif
 
     //////FOR OCCULUSION CULLING
@@ -653,10 +665,10 @@ void CRenderer::Draw()
 
     //PROFILE_CALL("Render HZB", Update_HZB());
 
-   
+
 
     int tmep = 0;
-    
+
 
 }
 
@@ -709,18 +721,18 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 void CRenderer::Render_Priority()
 {
     m_pGameInstance->Begin_MRT(TEXT("MRT_Result"));
-    
+
     for (auto& pGameObject : m_RenderGroup[RENDER_PRIORITY])
     {
         if (nullptr != pGameObject)
             pGameObject->Render();
-    
+
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_PRIORITY].clear();
-    
+
     m_pGameInstance->End_MRT();
-   
+
 
     m_pGameInstance->Begin_MRT(TEXT("MRT_Reflection"));
 
@@ -785,16 +797,16 @@ void  CRenderer::Render_NonBlend()
     /* Diffuse + Normal */
     if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"))))
         return;
-    
+
     for (auto& pGameObject : m_RenderGroup[RENDER_NONBLEND])
     {
         if (nullptr != pGameObject)
             pGameObject->Render();
-    
+
         Safe_Release(pGameObject);
     }
     m_RenderGroup[RENDER_NONBLEND].clear();
-    
+
     if (FAILED(m_pGameInstance->End_MRT()))
         return;
 }
@@ -827,7 +839,7 @@ void CRenderer::Render_Decal()
                 return;
 
             m_pDecalTex->Bind_ShaderResource(m_pShader, "g_EffectTexture", decalPair.first);
-            
+
             m_pShader->Begin(17);
 
             m_pVIBuffer->Bind_Buffers();
@@ -967,8 +979,8 @@ void CRenderer::Render_Shadow_NotMove()
 
     /* 광원 기준의 뷰 변환행렬. */
     XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH((_float)g_iSizeX, (_float)g_iSizeY, 0.1f, 3000.f));
-    //XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
+    //XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH((_float)g_iSizeX, (_float)g_iSizeY, 0.1f, 3000.f));
+    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
     _float fShadowThreshold = 0.5f;
     //매직넘버 던져줌
@@ -1087,8 +1099,8 @@ void CRenderer::Render_DeferredResult()
 
     //노이즈 사이즈
     if (FAILED(m_pShader->Bind_RawValue("g_fNoiseSize", &m_fNoiseSize, sizeof(_float))))
-        return;   
-    
+        return;
+
     //타임 오프셋
     if (FAILED(m_pShader->Bind_RawValue("g_fFogTimeOffset", &m_fFogTimeOffset, sizeof(_float))))
         return;
@@ -1105,31 +1117,29 @@ void CRenderer::Render_DeferredResult()
     if (FAILED(m_pShader->Bind_RawValue("g_fNoiseIntensity2", &m_fNoiseIntensity2, sizeof(_float))))
         return;
 
-    if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))  
+    if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))
         return;
 
-  //  _float4 vLightPos= _float4(100.0f, 70.0f, 5.0f, 1.0f);
-  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightPos", &vLightPos, sizeof(_float4))))
-  //      return;
-  //  _float4 vLightDir = _float4(0.0f, -1.0f, 0.0f, 0.0f);
-  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDir", &vLightDir, sizeof(_float4))))
-		//return;
-  //  _float4 vLightColor = _float4(1.0f, 1.0f, 1.0f, 0.5f);
-  //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDiffuse", &vLightColor, sizeof(_float4))))
-  //      return;
+    //  _float4 vLightPos= _float4(100.0f, 70.0f, 5.0f, 1.0f);
+    //  if (FAILED(m_pShader->Bind_RawValue("g_vLightPos", &vLightPos, sizeof(_float4))))
+    //      return;
+    //  _float4 vLightDir = _float4(0.0f, -1.0f, 0.0f, 0.0f);
+    //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDir", &vLightDir, sizeof(_float4))))
+          //return;
+    //  _float4 vLightColor = _float4(1.0f, 1.0f, 1.0f, 1.0f);
+    //  if (FAILED(m_pShader->Bind_RawValue("g_vLightDiffuse", &vLightColor, sizeof(_float4))))
+    //      return;
 
-  //  _float4x4      ViewMatrix, ProjMatrix;
-  //  XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(vLightPos.x, vLightPos.y, vLightPos.z, vLightPos.w), XMVectorSet(vLightPos.x, vLightPos.y-10, vLightPos.z, vLightPos.w), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-  //  XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)1280 / 720, 0.1f, 3000.f));
-  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightViewMatrix", &ViewMatrix)))
-  //      return;
 
-  //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightProjMatrix", &ProjMatrix)))
-  //      return;
+    //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+    //      return;
+
+    //  if (FAILED(m_pShader->Bind_Matrix("Test_g_LightProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+    //      return;
 
 
     m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
-    
+
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_EffectTexture")))
@@ -1337,39 +1347,39 @@ void CRenderer::Render_Bloom()
 
 
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX1"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX1"));
 
-	_uint iBlurNum = 3;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
+    _uint iBlurNum = 3;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample5x5"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(12);
+    m_pShader->Begin(12);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY1"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY1"));
 
-	iBlurNum = 3;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX1"), m_pShader, "g_EffectTexture");
+    iBlurNum = 3;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX1"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(13);
+    m_pShader->Begin(13);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	// 업샘플링
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"), false);
+    // 업샘플링
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom"), false);
 
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4_2"), m_pShader, "g_DiffuseTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY1"), m_pShader, "g_EffectTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4_2"), m_pShader, "g_DiffuseTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY1"), m_pShader, "g_EffectTexture");
 
 
 
@@ -1384,39 +1394,39 @@ void CRenderer::Render_Bloom()
 
 
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX2"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX2"));
 
-	iBlurNum = 2;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_EffectTexture");
+    iBlurNum = 2;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(12);
+    m_pShader->Begin(12);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY2"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY2"));
 
-	iBlurNum = 2;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX2"), m_pShader, "g_EffectTexture");
+    iBlurNum = 2;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX2"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(13);
+    m_pShader->Begin(13);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	// 업샘플링
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom2"));
+    // 업샘플링
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom2"));
 
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4"), m_pShader, "g_DiffuseTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY2"), m_pShader, "g_EffectTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DownSample4x4"), m_pShader, "g_DiffuseTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY2"), m_pShader, "g_EffectTexture");
 
 
     m_pShader->Begin(11);
@@ -1429,41 +1439,41 @@ void CRenderer::Render_Bloom()
 
 
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX3"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX3"));
 
-	iBlurNum = 1;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom2"), m_pShader, "g_EffectTexture");
+    iBlurNum = 1;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom2"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(12);
+    m_pShader->Begin(12);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY3"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY3"));
 
-	iBlurNum = 1;
-	m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX3"), m_pShader, "g_EffectTexture");
+    iBlurNum = 1;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX3"), m_pShader, "g_EffectTexture");
 
-	m_pShader->Begin(13);
+    m_pShader->Begin(13);
 
-	m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-	m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-	m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT();
 
-	// 업샘플링
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
+    // 업샘플링
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Bloom3"));
 
-    
-	//m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
+
+    //m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Result"), m_pShader, "g_DiffuseTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ReflectionResult"), m_pShader, "g_DiffuseTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY3"), m_pShader, "g_EffectTexture");
 
     m_pShader->Begin(11);
 
@@ -1490,15 +1500,15 @@ void CRenderer::Render_Distortion()
     m_pGameInstance->End_MRT();
 
 
-	m_pGameInstance->Begin_MRT(TEXT("MRT_Distortion"));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_DiffuseTexture");
-	m_pDistortionTex->Bind_ShaderResource(m_pShader, "g_DistortionTexture", 3);
-	m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
-	//if (m_pGameInstance->Get_DIKeyState(DIK_Y))
-	//{
-	m_fTime += 0.001f;
-	//}
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Distortion"));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture");
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_DiffuseTexture");
+    m_pDistortionTex->Bind_ShaderResource(m_pShader, "g_DistortionTexture", 3);
+    m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
+    //if (m_pGameInstance->Get_DIKeyState(DIK_Y))
+    //{
+    m_fTime += 0.001f;
+    //}
 
 
     m_pVIBuffer->Bind_Buffers();
@@ -1510,13 +1520,72 @@ void CRenderer::Render_Distortion()
     m_pGameInstance->End_MRT();
 }
 
+void CRenderer::Render_GodRay()
+{
+    m_pGameInstance->Begin_MRT(TEXT("MRT_GodRay"));
+
+    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+        return;
+
+    if (FAILED(m_pShader->Bind_Matrix("g_GodRayViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_GodRayProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+        return;
+
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+        return;
+
+    m_pShader->Begin(21);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();
+
+    /*m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
+
+    _uint iBlurNum = 0;
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GodRay"), m_pShader, "g_EffectTexture");
+
+    m_pShader->Begin(12);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();
+
+    m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"));
+
+    m_pShader->Bind_RawValue("g_BlurNum", &iBlurNum, sizeof(_uint));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurX"), m_pShader, "g_EffectTexture");
+
+    m_pShader->Begin(13);
+
+    m_pVIBuffer->Bind_Buffers();
+
+    m_pVIBuffer->Render();
+
+    m_pGameInstance->End_MRT();*/
+}
+
 void CRenderer::Render_Final()
 {
-	m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
-	m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
-    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_BlurTexture");
-	m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 0);
+    m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
+    if (m_pGameInstance->Get_CurrentLevel() == 5)
+    {
+        m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GodRay"), m_pShader, "g_GodRayTexture");
+    }
+    m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
+    //m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_BlurTexture");
+    m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 0);
 
 
     m_pVIBuffer->Bind_Buffers();
@@ -1702,7 +1771,7 @@ float CRenderer::Sample_HZB(_float2 uv, UINT mipLevel)
 UINT WINAPI RenderThread(void* pArg)
 {
 
-    
+
     CRenderer::RENDER_THREAD_DESC* pDesc = (CRenderer::RENDER_THREAD_DESC*)pArg;
     CRenderer* pRenderer = pDesc->pRenderer;
     DWORD dwThreadIndex = pDesc->dwThreadIndex;
@@ -1733,7 +1802,7 @@ HRESULT CRenderer::InitRenderThreadPool(DWORD dwThreadCount)
     m_pThreadDescList = new RENDER_THREAD_DESC[dwThreadCount];
     memset(m_pThreadDescList, 0, sizeof(RENDER_THREAD_DESC) * dwThreadCount);
     if (nullptr == m_pThreadDescList)
-		return E_FAIL;
+        return E_FAIL;
 
     m_hCompleteEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     m_DeferredContexts.resize(dwThreadCount);
@@ -1761,20 +1830,20 @@ void CRenderer::ClearRenderThreadPool()
     if (m_pThreadDescList)
     {
         for (DWORD i = 0; i < m_dwThreadCount; i++)
-		{
-			SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_DESTROY]);
+        {
+            SetEvent(m_pThreadDescList[i].hEventList[RENDER_THREAD_EVENT_TYPE_DESTROY]);
 
-			WaitForSingleObject(m_pThreadDescList[i].hThread, INFINITE);
-			CloseHandle(m_pThreadDescList[i].hThread);
+            WaitForSingleObject(m_pThreadDescList[i].hThread, INFINITE);
+            CloseHandle(m_pThreadDescList[i].hThread);
             m_pThreadDescList[i].hThread = nullptr;
-			for (DWORD j = 0; j < RENDER_THREAD_EVENT_TYPE_COUNT; j++)
-			{
-				CloseHandle(m_pThreadDescList[i].hEventList[j]);
+            for (DWORD j = 0; j < RENDER_THREAD_EVENT_TYPE_COUNT; j++)
+            {
+                CloseHandle(m_pThreadDescList[i].hEventList[j]);
                 m_pThreadDescList[i].hEventList[j] = nullptr;
 
-			}
-		}
-		delete[] m_pThreadDescList;
+            }
+        }
+        delete[] m_pThreadDescList;
         m_pThreadDescList = nullptr;
 
     }
@@ -1788,10 +1857,10 @@ void CRenderer::ClearRenderThreadPool()
 void CRenderer::ProcessByThread(DWORD dwThreadIndex)
 {
     ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
-    PROFILE_CALL("Render Priority",  ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY, TEXT("MRT_Result")));
+    PROFILE_CALL("Render Priority", ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_PRIORITY, TEXT("MRT_Result")));
     ProcessRenderQueue(dwThreadIndex, pDeferredContext, RENDER_REFLECTION, TEXT("MRT_Reflection"));
 
-  
+
 
     pDeferredContext->FinishCommandList(FALSE, &m_CommandLists[dwThreadIndex]);
 
@@ -1899,21 +1968,21 @@ void CRenderer::Render_Debug()
     m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
 
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_GodRay"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
-	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }
 
@@ -1958,10 +2027,10 @@ void CRenderer::Free()
     }
 
     ClearRenderThreadPool();
-    for(auto& pDeferredContext : m_DeferredContexts)
-	{
-		Safe_Release(pDeferredContext);
-	}
+    for (auto& pDeferredContext : m_DeferredContexts)
+    {
+        Safe_Release(pDeferredContext);
+    }
     m_DeferredContexts.clear();
 
     for (auto& pCommandList : m_CommandLists)
@@ -1972,11 +2041,11 @@ void CRenderer::Free()
 
 
 
-	Safe_Release(m_pShader);
-	//Safe_Release(m_pBloomComputeShader);
-	Safe_Release(m_pVIBuffer);
+    Safe_Release(m_pShader);
+    //Safe_Release(m_pBloomComputeShader);
+    Safe_Release(m_pVIBuffer);
 
-    
+
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
     Safe_Release(m_pLUTTex);

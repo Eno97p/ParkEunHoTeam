@@ -18,6 +18,9 @@ private:
 	virtual ~CUIGroup_BuffTimer() = default;
 
 public:
+	_uint			Get_vecUISize() { return m_vecUI.size(); }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;

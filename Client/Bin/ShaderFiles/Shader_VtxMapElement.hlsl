@@ -32,6 +32,9 @@ unsigned int g_Red;
 unsigned int g_Test;
 
 
+//for Card
+uint g_TextureNum;
+
 bool g_bDiffuse = false;
 bool g_bNormal = false;
 bool g_bSpecular = false;
@@ -346,7 +349,54 @@ PS_OUT_BLOOM PS_BLOOM(PS_IN In)
 }
 
 
+PS_OUT PS_CARD(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
 
+	// 텍스처 좌표 조정
+	float2 adjustedTexcoord = In.vTexcoord;
+
+	// g_TextureNum에 따라 텍스처의 다른 부분 선택
+	float startY, endY;
+	if (g_TextureNum == 0)
+	{
+		startY = 0.0f;
+		endY = 0.37f;
+	}
+	else if (g_TextureNum == 1)
+	{
+		startY = 0.37f;
+		endY = 0.68f;
+	}
+	else // g_TextureNum == 2 또는 그 외의 경우
+	{
+		startY = 0.68f;
+		endY = 1.0f;
+	}
+
+	// 선택된 범위 내에서 텍스처 좌표 조정
+	adjustedTexcoord.y = startY + (endY - startY) * adjustedTexcoord.y;
+
+	vector vColor = g_DiffuseTexture.Sample(PointSampler, adjustedTexcoord);
+
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse)
+	{
+		Out.vDiffuse = vColor;
+	}
+
+	float3 vNormal;
+	vNormal = In.vNormal.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -441,6 +491,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_BLOOM();
+	}
+		pass Card_7
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_CARD();
 	}
 
 }

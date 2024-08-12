@@ -5,8 +5,10 @@
 #include "UI_Manager.h"
 #include "CMouse.h"
 #include "UI_WPEquipNone.h"
-#include "UIGroup_Weapon.h"
 #include "UI_ItemIcon.h"
+
+#include "UIGroup_Weapon.h"
+#include "UIGroup_WeaponSlot.h"
 
 CUI_WPEquipSlot::CUI_WPEquipSlot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -375,6 +377,9 @@ void CUI_WPEquipSlot::Click_Event()
 			{
 				CInventory::GetInstance()->Add_EquipWeapon((*weapon), m_eSlotNum);
 				(*weapon)->Set_isEquip(true);
+
+				// Quick에 Weapon을 추가한 순간 size에 맞게 m_iWeaponIdx 초기화
+				dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotIdx(CUIGroup_WeaponSlot::SLOT_WEAPON);
 			}
 		}
 		else if (CUIGroup_Weapon::TAB_R == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
@@ -386,6 +391,9 @@ void CUI_WPEquipSlot::Click_Event()
 			{
 				CInventory::GetInstance()->Add_EquipSkill((*skill), m_eSlotNum);
 				(*skill)->Set_isEquip(true);
+
+				// Quick에 Skill을 추가한 순간 size에 맞게 m_iSkillIdx 초기화
+				dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotIdx(CUIGroup_WeaponSlot::SLOT_SKILL);
 			}
 		}
 

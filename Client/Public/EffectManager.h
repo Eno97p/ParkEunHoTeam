@@ -9,6 +9,7 @@
 #include "HealEffect.h"
 #include "AndrasLazer.h"
 #include "SwingEffect.h"
+#include "Meteor.h"
 
 BEGIN(Client)
 class CEffectManager final : public CBase
@@ -34,6 +35,7 @@ public:
 	HRESULT Generate_HealEffect(const _int iIndex , const _float4x4* BindMat);
 	HRESULT Generate_Lazer(const _int iIndex, const _float4x4* BindMat);
 	HRESULT Generate_Swing(const _int iIndex, const _float4x4* BindMat);
+	HRESULT Generate_Meteor(const _float4 vStartPos);
 private:		//Load Values
 	HRESULT Load_Trails();
 	HRESULT Load_SwordTrails();
@@ -44,6 +46,7 @@ private:		//Load Values
 	HRESULT Load_Heals();
 	HRESULT Load_Lazers();
 	HRESULT Load_Swing();
+	HRESULT Load_Meteor();
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
 private:		//Free
@@ -59,6 +62,8 @@ private:
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>					m_Heals;
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>>	m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>				m_Swings;
+
+	shared_ptr<CMeteor::METEOR_DESC>							m_Meteor;
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

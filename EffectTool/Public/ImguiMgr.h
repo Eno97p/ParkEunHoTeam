@@ -16,6 +16,7 @@
 #include "HealEffect.h"
 #include "SwingEffect.h"
 #include "AndrasLazer.h"
+#include "Meteor.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -155,6 +156,11 @@ private:
 	void Swing_ListBox(CSwingEffect::SWINGEFFECT* Swing);
 	HRESULT Save_Swing();
 	HRESULT Load_Swing();
+
+private:
+	void Meteor_Tool(_bool* Open);
+	HRESULT Save_Meteor(CMeteor::METEOR_DESC* pMeteor);
+	HRESULT Load_Meteor(CMeteor::METEOR_DESC* pMeteor);
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -208,6 +214,7 @@ private:
 	vector<string> ModelName;
 	_int CurModel = 0;
 
+	_bool bShow[20];
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -160,6 +160,8 @@
 #include "UI_Setting_Overlay.h"
 #include "UI_Setting_Btn.h"
 #include "UI_Setting_BackBtn.h"
+#include "UI_Setting_Sound.h"
+#include "UI_Setting_SoundBar.h"
 #include "UIGroup_Setting.h"
 #pragma endregion Setting
 
@@ -190,6 +192,7 @@
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
 #include "UI_Dash.h"
+#include "UI_Memento.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -337,8 +340,8 @@ HRESULT CMainApp::Render()
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);		//프로파일링 하기 위해 Draw다음으로 옮김
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
+	//	return E_FAIL;
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->End_ImGui())) return E_FAIL;);
 
@@ -534,7 +537,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 #pragma endregion SHADER
-
 #pragma region TEXTURE
 	/* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"),
@@ -586,8 +588,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 
 #pragma endregion TEXTURE
-
-
 #pragma region Component
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -610,8 +610,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
 		return E_FAIL;
 #pragma endregion Component
-
-
 #pragma region MODEL
 	_matrix		PreTransformMatrix;
 	//Slash
@@ -647,6 +645,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	//Rock2
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RockParticle2"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/RockParticle1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//Bubble
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bubble_Mesh"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Bubble_Mesh.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	//LightningProp
@@ -758,6 +761,22 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/DefaultCylinder.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Meteor
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Core"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Meteor.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Crater1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Rock_Impact/R_Impact0.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Crater2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Rock_Impact/R_Impact1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Wind"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/MeteorWind.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion MODEL
 
@@ -1404,6 +1423,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_Sound */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Sound"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_SoundBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_SoundBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBar.png"), 1))))
+		return E_FAIL;
 #pragma endregion Setting
 
 #pragma region QTE
@@ -1472,6 +1501,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_UI_BuffTimer */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BuffTimer"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Memento */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Memento"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -2072,6 +2106,16 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_Setting_BackBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_Setting_Sound*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Sound"),
+		CUI_Setting_Sound::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_SoundBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_SoundBar"),
+		CUI_Setting_SoundBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_Setting*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Setting"),
 		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
@@ -2104,9 +2148,6 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer_Timer"),
 		CUI_BuffTimer_Timer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-
 
 	/* For.Prototype_GameObject_UI_BuffTimer*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer"),
@@ -2158,6 +2199,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Dash*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Dash"),
 		CUI_Dash::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Memento*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Memento"),
+		CUI_Memento::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

@@ -65,7 +65,7 @@ HRESULT CUIGroup_BuffTimer::Create_BuffTimer(wstring wstrTextureName)
 	{
 		if ((*timer)->Get_TextureName() == wstrTextureName) // 중복되는 값이 있다면
 		{
-			// 타이머를 초기화
+			(*timer)->Reset_BuffTime(); // 타이머를 초기화
 			return S_OK;
 		}
 		else

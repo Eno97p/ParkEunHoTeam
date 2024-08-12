@@ -69,6 +69,8 @@ public:
 	_bool Get_Cloaking() { return m_bIsCloaking; }
 	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
 
+	void			Add_Hp(_float iValue);
+
 	// UI에 출력하기 위한 함수
 	_float			Get_MaxHP() { return m_fMaxHp; }
 	_float			Get_MaxStamina() { return m_fMaxStamina; }
@@ -94,6 +96,11 @@ public:
 	void			Pull_Status(); // HP / Stamina / MP 를 Pull
 	void			Update_LvData();
 	void			Update_Weapon(wstring wstrTextureName);
+
+	// Buff 관련 함수
+	void			Set_Shield(_bool isOn) { if (isOn) m_fShield = 0.4f; else m_fShield = 1.f; }
+	void			Set_HPBuff(_bool isOn) { if (isOn) m_fHPBuff = 1.5f; else m_fHPBuff = 1.f; }
+	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
 
 private:
 	HRESULT Add_Nodes();
@@ -126,7 +133,7 @@ private:
 	NodeStates Buff(_float fTimeDelta);
 	NodeStates Move(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
-	void Add_Hp(_float iValue);
+
 	void Add_Stamina(_float iValue);
 	void Add_Mp(_float iValue);
 	_uint* Get_CurWeapon() { return &m_iCurWeapon; }
@@ -184,7 +191,7 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	_float m_fMaxHp = 300.f; // 1000
+	_float m_fMaxHp = 15.f; // 1000
 #else
 	_float m_fMaxHp = 300.f;
 #endif // _DEBUG
@@ -219,6 +226,21 @@ private:
 	_uint		m_iPhysicalDmg = { 80 };
 	_uint		m_iEtherDmg = { 60 };
 #pragma endregion UI관련 Data
+
+
+#pragma region Buff 관련 Data
+	_float		m_fShield = { 1.f }; // 쉴드 값
+	_float		m_fHPBuff = { 1.f }; // HP 회복 값
+	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값
+#pragma endregion Buff 관련 Data
+#pragma region 비동기 로드 Data
+	_bool m_bIsLoadStart = false;
+	_vector m_vDest = {};
+	LEVEL m_eCurLevel = LEVEL_END;
+
+
+#pragma endregion 비동기 로드 Data
+
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

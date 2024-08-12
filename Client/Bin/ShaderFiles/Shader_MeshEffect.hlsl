@@ -854,33 +854,62 @@ PS_OUT PS_Main_Bloom(PS_IN In)
 }
 
 
-PS_OUT PS_Meteor(PS_IN_NORMAL In)
+PS_OUT PS_MeteorWind(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	float2 Center = float2(0.5f, 0.5f);
-	float2 uv = In.vTexcoord;
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x + 1, In.vTexcoord.x - 1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
 
-	uv.x += g_CurTime * g_Speed;
-	uv.y += g_CurTime * g_Speed;
+		if (In.vTexcoord.x >= 0.5) {
+			Color.a *= (1.0 - (In.vTexcoord.x - 0.5) * 2.0);
+		}
 
-	float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
-	vector Color = g_Texture.Sample(LinearSampler, MovedUV);
-
-	if (Color.a < 0.1f)
-		discard;
-	float luminance = dot(Color.rgb, float3(0.299, 0.587, 0.114));
-	Color.rgb = lerp(g_Color2, g_Color, luminance);
-
-	float3 viewDir = normalize(float3(In.vProjPos.xyz) - g_ViewMatrix[3].xyz);
-	float3 normal = normalize(In.vNormal.xyz);
-
-	Color.rgb = CalculateFresnel(normal, viewDir, g_FresnelPower, Color.rgb, g_Color3);
+		Color.rgb = g_Color;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
 
 	Out.vColor = Color;
 	return Out;
 }
 
+PS_OUT PS_MeteorWind_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 adjustedUV = In.vTexcoord;
+	vector Color;
+	adjustedUV.x = lerp(In.vTexcoord.x + 1, In.vTexcoord.x - 1, g_Ratio);
+	if (adjustedUV.x >= 0.0 && adjustedUV.x <= 1.0)
+	{
+		Color = g_Texture.Sample(LinearSampler, adjustedUV);
+		Color.a = Color.r;
+		if (Color.a < 0.1f)
+			discard;
+		if (In.vTexcoord.x >= 0.5) {
+			Color.a *= (1.0 - (In.vTexcoord.x - 0.5) * 2.0);
+		}
+		Color.a *= g_BloomPower;
+		Color.rgb = g_Color;
+	}
+	else
+	{
+		Color = float4(0, 0, 0, 0);
+	}
+
+	Out.vColor = Color;
+	return Out;
+}
 
 
 technique11 DefaultTechnique
@@ -1254,5 +1283,30 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Main_Bloom();
 	}
 		
+	pass MeteorWind	//27Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MeteorWind();
+	}
+
+	pass MeteorWind_bloom	//28Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MeteorWind_Bloom();
+	}
 }
 

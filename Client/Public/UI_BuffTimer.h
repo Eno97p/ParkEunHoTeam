@@ -9,6 +9,7 @@ BEGIN(Client)
 class CUI_BuffTimer final : public CUI
 {
 public:
+	enum BUFFTYPE { BUFFTYPE_DAMAGE, BUFFTYPE_SHIELD, BUFFTYPE_HP, BUFFTYPE_STAMINA, BUFFTYPE_END };
 	typedef struct UI_BuffTimer_Desc : public UI_DESC
 	{
 		_uint		iBuffTimerIdx;
@@ -25,6 +26,7 @@ public:
 	wstring			Get_TextureName() { return m_wstrTextureName; }
 
 	_bool			Get_isBuffEnd() { return m_isBuffEnd; }
+	void			Reset_BuffTime() { m_fBuffTimer = 0.f; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -42,10 +44,16 @@ private:
 
 	vector<class CUI*>	m_vecUI;
 
+	BUFFTYPE			m_eBuffType = { BUFFTYPE_END };
+
 private:
 	HRESULT	Create_UI(wstring wstrTextureName);
 
+	void	Setting_BuffType();
+	void	Setting_BuffFunction(_bool isOn);
 	void	Setting_UIPosition();
+	wstring	Setting_BuffText();
+	void	Update_BuffTime();
 
 public:
 	static CUI_BuffTimer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

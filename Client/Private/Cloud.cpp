@@ -64,6 +64,7 @@ void CCloud::Tick(_float fTimeDelta)
 void CCloud::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_PRIORITY, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 }
 
 HRESULT CCloud::Render()
@@ -159,6 +160,152 @@ HRESULT CCloud::Render()
 
 	return S_OK;
 }
+
+HRESULT CCloud::Render_Reflection()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix;
+	const _float4x4* matCam = m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+
+	// 원래 뷰 행렬 로드
+	XMMATRIX mOriginalView = XMLoadFloat4x4(matCam);
+
+	// 카메라 위치 추출
+	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
+
+	// 바닥 평면의 높이 (물 표면 높이)
+	float floorHeight = 272.f; // 적절한 값으로 조정 필요
+
+	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
+	XMVECTOR vReflectedCamPos = vCamPos;
+	vReflectedCamPos = XMVectorSetY(vReflectedCamPos, 2 * floorHeight - XMVectorGetY(vCamPos));
+
+	// 카메라 방향 벡터 추출
+	XMVECTOR vCamLook = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 0, 1, 0), mOriginalView) - vCamPos);
+	XMVECTOR vCamUp = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 1, 0, 0), mOriginalView) - vCamPos);
+
+	// 반사된 카메라 방향 벡터 계산
+	XMVECTOR vReflectedCamLook = XMVectorSetY(vCamLook, -XMVectorGetY(vCamLook));
+	XMVECTOR vReflectedCamUp = XMVectorSetY(vCamUp, -XMVectorGetY(vCamUp));
+
+	// 반사된 뷰 행렬 생성
+	XMMATRIX mReflectedView = XMMatrixLookToLH(vReflectedCamPos, vReflectedCamLook, vReflectedCamUp);
+
+	// 변환된 행렬 저장
+	XMStoreFloat4x4(&ViewMatrix, mReflectedView);
+
+	// 반사된 뷰 행렬을 셰이더에 바인딩
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+
+	// 물 표면 높이를 셰이더에 전달
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fReflectionPlaneHeight", &floorHeight, sizeof(_float))))
+		return E_FAIL;
+
+
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudDensity", &m_fCloudDensity, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudScale", &m_fCloudScale, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudSpeed", &m_fCloudSpeed, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudHeight", &m_fCloudHeight, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_CloudColor", &m_vCloudColor, sizeof(_float3))))
+			return E_FAIL;
+		/*if (FAILED(m_pShaderCom->Bind_RawValue("g_SphereTracingThreshold", &m_fSphereTracingThreshold, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_MaxRayDistance", &m_fMaxRayDistance, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_MaxSteps", &m_iMaxSteps, sizeof(int))))*/
+		//	return E_FAIL;
+
+		 // 새로운 최적화 관련 값들 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fCoarseStepSize", &m_fCoarseStepSize, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFineStepSize", &m_fFineStepSize, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iMaxCoarseSteps", &m_iMaxCoarseSteps, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iMaxFineSteps", &m_iMaxFineSteps, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fDensityThreshold", &m_fDensityThreshold, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaThreshold", &m_fAlphaThreshold, sizeof(float))))
+			return E_FAIL;
+
+		// 새로운 노이즈 관련 값들 바인딩
+		   // 펄린 노이즈 옥타브 및 주파수 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_iPerlinOctaves", &m_iPerlinOctaves, sizeof(int))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinFrequency", &m_fPerlinFrequency, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinPersistence", &m_fPerlinPersistence, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinLacunarity", &m_fPerlinLacunarity, sizeof(float))))
+			return E_FAIL;
+
+		// Worley 노이즈 주파수 바인딩
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWorleyFrequency", &m_fWorleyFrequency, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWorleyJitter", &m_fWorleyJitter, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fPerlinWorleyMix", &m_fPerlinWorleyMix, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNoiseRemapLower", &m_fNoiseRemapLower, sizeof(float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNoiseRemapUpper", &m_fNoiseRemapUpper, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_vector))))
+			return E_FAIL;
+
+		//_float4 lightPos;
+		//XMStoreFloat4(&lightPos, dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION));
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &m_vLightPosition, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange", &m_fLightRange, sizeof(float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &m_vLightDiffuse, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &m_vLightAmbient, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &m_vLightSpecular, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
+			return E_FAIL;
+
+		//리플렉션 최적화
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fReflectionQuality", &m_fReflectionQuality, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fReflectionOpacity", &m_fReflectionOpacity, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fReflectionDensityScale", &m_fReflectionDensityScale, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vBaseSkyColor", &m_vBaseSkyColor, sizeof(_float4))))
+			return E_FAIL;
+
+
+		m_pShaderCom->Begin(2);
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 HRESULT CCloud::Add_Components(void* pArg)
 {
 	//wstring wstr = string_to_wstring(m_szModelName);

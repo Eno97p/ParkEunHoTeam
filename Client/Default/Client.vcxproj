@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>../Public/;../../EngineSDK/Inc/PhysX/;../../EngineSDK/Inc/;../Public/ImGUi/;.\;../Public/ParkEunHo/;../../EngineSDK/Inc/Blast/globals/;../../EngineSDK/Inc/Blast/lowlevel/;../../EngineSDK/Inc/Blast/shared/NvFoundation/;../../EngineSDK/Inc/Blast/toolkit/;../../EngineSDK/Inc/Blast/extensions/assetutils/;../../EngineSDK/Inc/Blast/extensions/authoring/;../../EngineSDK/Inc/Blast/extensions/authoringCommon/;../../EngineSDK/Inc/Blast/extensions/serialization/;../../EngineSDK/Inc/Blast/extensions/shaders/;../../EngineSDK/Inc/Blast/extensions/stress/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Public/;../../EngineSDK/Inc/PhysX/;../../EngineSDK/Inc/;../../EngineSDK/Inc/WaveWorks/;../Public/ImGUi/;.\;../Public/ParkEunHo/;../../EngineSDK/Inc/Blast/globals/;../../EngineSDK/Inc/Blast/lowlevel/;../../EngineSDK/Inc/Blast/shared/NvFoundation/;../../EngineSDK/Inc/Blast/toolkit/;../../EngineSDK/Inc/Blast/extensions/assetutils/;../../EngineSDK/Inc/Blast/extensions/authoring/;../../EngineSDK/Inc/Blast/extensions/authoringCommon/;../../EngineSDK/Inc/Blast/extensions/serialization/;../../EngineSDK/Inc/Blast/extensions/shaders/;../../EngineSDK/Inc/Blast/extensions/stress/</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AdditionalOptions> /bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -246,6 +246,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
+    <ClInclude Include="..\Public\Lagoon.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Legionnaire.h" />
     <ClInclude Include="..\Public\Legionnaire_Gun.h" />
@@ -281,6 +282,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
@@ -524,6 +528,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
+    <ClCompile Include="..\Private\Lagoon.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Legionnaire.cpp" />
     <ClCompile Include="..\Private\Legionnaire_Gun.cpp" />
@@ -559,6 +564,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp" />
@@ -775,6 +783,7 @@ call Copy_Client.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Rect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Tree.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxLagoon.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMapElement.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />

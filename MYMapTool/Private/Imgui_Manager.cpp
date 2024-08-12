@@ -19,6 +19,7 @@
 
 #include "ThirdPersonCamera.h"
 #include "Cloud.h"
+#include "Lagoon.h"
 
 #include <DirectXTex.h>
 #include <vector>
@@ -257,6 +258,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Checkbox("Cloud Edit", &m_bCloudWindow);
         ImGui::Spacing();
 
+        ImGui::Separator();
+        ImGui::Checkbox("Water Edit", &m_bWaterWindow);
+        ImGui::Spacing();
         ImGui::End();
     }
 
@@ -335,6 +339,12 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     {
         Cloud_Editor();
     }
+
+    if (m_bWaterWindow)
+    {
+        Water_Editor();
+    }
+
     if (m_bShowDecalTextureWindow)
     {
         ImGui::Begin("Decal Texture Preview", &m_bShowDecalTextureWindow);
@@ -583,7 +593,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" };
+                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" ,"Lagoon" };
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -1861,6 +1871,18 @@ void CImgui_Manager::Cloud_Editor()
             ImGui::SliderFloat("Density Threshold", &cloud->m_fDensityThreshold, 0.001f, 0.1f);
             ImGui::SliderFloat("Alpha Threshold", &cloud->m_fAlphaThreshold, 0.9f, 0.999f);
 
+            //리플렉션 최적화
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Reflection Optimization");
+            ImGui::SliderFloat("Reflection Quality", &cloud->m_fReflectionQuality, 0.1f, 3.0f);
+            ImGui::SliderFloat("Reflection Opacity", &cloud->m_fReflectionOpacity, 0.0f, 1.0f);
+            ImGui::SliderFloat("Reflection Density Scale", &cloud->m_fReflectionDensityScale, 0.1f, 3.0f);
+
+            // 반사 색상 (하늘색) 조절
+            if (ImGui::ColorEdit4("Base Sky Color", (float*)&cloud->m_vBaseSkyColor))
+            {
+            }
+
             // 조명 설정
             ImGui::Separator();
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Light Settings");
@@ -2214,6 +2236,173 @@ void CImgui_Manager::Setting_CreateObj_ListBox()
                     ImGui::SetItemDefaultFocus();
             }
             ImGui::EndListBox();
+        }
+    }
+}
+
+
+void CImgui_Manager::Water_Editor()
+{
+    list<CGameObject*> waters = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Lagoon"));
+    if (!waters.empty())
+    {
+        CLagoon* lagoon = dynamic_cast<CLagoon*>(waters.front());
+        if (lagoon)
+        {
+            ImGui::Begin("Water Editor");
+
+            // 조명 설정
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Light Settings");
+
+            // Gizmo 세팅
+            float cameraView[16];
+            float cameraProjection[16];
+            memcpy(cameraView, CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW), sizeof(float) * 16);
+            memcpy(cameraProjection, CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ), sizeof(float) * 16);
+            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+            ImGuiIO& io = ImGui::GetIO();
+            ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+            ImGuizmo::SetRect(0, 0, displaySize.x, displaySize.y);
+
+            // 조명 위치를 나타내는 행렬 생성
+            XMFLOAT4X4 lightMatrix;
+            XMStoreFloat4x4(&lightMatrix, XMMatrixTranslation(
+                lagoon->m_vLightPosition.x,
+                lagoon->m_vLightPosition.y,
+                lagoon->m_vLightPosition.z
+            ));
+
+            // Gizmo 조작
+            if (ImGuizmo::Manipulate(cameraView, cameraProjection, ImGuizmo::TRANSLATE, ImGuizmo::WORLD, (float*)&lightMatrix, NULL, NULL))
+            {
+                // 조작된 행렬에서 위치 추출
+                XMFLOAT4 newPosition;
+                XMStoreFloat4(&newPosition, XMLoadFloat4((XMFLOAT4*)&lightMatrix._41));
+                lagoon->m_vLightPosition = XMFLOAT4(newPosition.x, newPosition.y, newPosition.z, 1.0f);
+            }
+
+            // 조명 위치 수동 입력
+            ImGui::InputFloat3("Light Position", (float*)&lagoon->m_vLightPosition);
+
+            if (ImGui::SliderFloat("Light Range", &lagoon->m_fLightRange, 100.f, 1000.f))
+            {
+                // Range가 변경됨
+            }
+
+            // 조명 방향 설정 (정규화된 방향 벡터)
+            static float lightDirection[3] = { -1.0f, -1.0f, -1.0f };
+            if (ImGui::SliderFloat3("Light Direction", lightDirection, -1.0f, 1.0f))
+            {
+                // 정규화
+                XMVECTOR vDir = XMVector3Normalize(XMLoadFloat3((XMFLOAT3*)lightDirection));
+                XMStoreFloat4(&lagoon->m_vLightDir, vDir);
+            }
+
+            // 조명 색상 설정
+            ImGui::ColorEdit3("Light Diffuse Color", (float*)&lagoon->m_vLightDiffuse);
+            ImGui::ColorEdit3("Light Ambient Color", (float*)&lagoon->m_vLightAmbient);
+            ImGui::ColorEdit3("Light Specular Color", (float*)&lagoon->m_vLightSpecular);
+            ImGui::ColorEdit3("Mtrl Specular Color", (float*)&lagoon->m_vMtrlSpecular);
+
+            ImGui::Separator();
+            if (ImGui::SliderFloat("Bloom Threshold", &lagoon->m_fBloomThreshold, 0.01f, 1.f))
+            {
+            }
+            if (ImGui::SliderFloat("Bloom Intensity", &lagoon->m_fBloomIntensity, 0.1f, 10.f, "%.6f"))
+            {
+            }
+
+            // 물 표면 설정
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Water Surface Settings");
+
+            // FlowSpeed 조절
+            ImGui::SliderFloat("Flow Speed", &lagoon->m_fFlowSpeed, 0.01f, 1.0f);
+
+            if (ImGui::SliderFloat("Normal Strength 0", &lagoon->m_fNormalStrength0, 0.0f, 1.0f))
+            {
+                // 값이 직접 lagoon 객체의 멤버 변수에 저장됩니다.
+            }
+            if (ImGui::SliderFloat("Normal Strength 1", &lagoon->m_fNormalStrength1, 0.0f, 1.0f))
+            {
+                // 값이 직접 lagoon 객체의 멤버 변수에 저장됩니다.
+            }
+            if (ImGui::SliderFloat("Normal Strength 2", &lagoon->m_fNormalStrength2, 0.0f, 1.0f))
+            {
+                // 값이 직접 lagoon 객체의 멤버 변수에 저장됩니다.
+            }
+            // 프레넬 효과 강도 조절
+            if (ImGui::SliderFloat("Fresnel Strength", &lagoon->m_fFresnelStrength, 0.0f, 1.0f))
+            {
+                // 값이 직접 lagoon 객체의 멤버 변수에 저장됩니다.
+            }
+
+            if (ImGui::SliderFloat("Roughness", &lagoon->m_fRoughness, 0.0f, 1.0f))
+            {
+            }
+
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Alpha Settings");
+
+            if (ImGui::SliderFloat("Water Alpha", &lagoon->m_fWaterAlpha, 0.0f, 1.0f))
+            {
+                // 알파값이 변경됨
+            }
+
+            if (ImGui::SliderFloat("Water Depth", &lagoon->m_fWaterDepth, 0.1f, 10.0f))
+            {
+                // 물 깊이가 변경됨
+                // Caustic 강도와 알파값을 자동으로 조절
+                lagoon->m_fCausticStrength = std::max(0.0f, 1.0f - lagoon->m_fWaterDepth / 5.0f);
+                lagoon->m_fWaterAlpha = std::min(1.0f, lagoon->m_fWaterAlpha + lagoon->m_fWaterDepth / 10.0f);
+            }
+
+            // Caustic 강도는 읽기 전용으로 표시 (자동 조절되므로)
+
+            ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Reflection Wave Settings");
+
+            if (ImGui::SliderFloat("Caustic Strength", &lagoon->m_fCausticStrength, 0.0f, 1.0f))
+            {
+                // 값이 직접 lagoon 객체의 멤버 변수에 저장됩니다.
+            }
+            ImGui::Text("Caustic Strength: %.2f", lagoon->m_fCausticStrength);
+       
+
+            // 파동 강도 조절
+            static float waveStrength = 0.02f; // 초기값, CLagoon에서 가져오는 것이 좋습니다
+            static float waveFrequency = 5.0f; // 초기값, CLagoon에서 가져오는 것이 좋습니다
+            static float waveTimeOffset = 1.0f; // 초기값, CLagoon에서 가져오는 것이 좋습니다
+            static float fresnelPower = 5.0f; // 초기값, CLagoon에서 가져오는 것이 좋습니다
+            static _uint CausticIdx = 0; // 초기값, CLagoon에서 가져오는 것이 좋습니다
+
+            ImGui::SliderFloat("Wave Strength", &waveStrength, 0.0f, 30.f);
+            // 파동 주파수 조절
+            ImGui::SliderFloat("Wave Frequency", &waveFrequency, 0.0f, 0.1f, "%.6f");
+            ImGui::SliderFloat("Wave Time OFfset", &waveTimeOffset, 1.f, 100.f, "%.3f");
+            ImGui::SliderFloat("Fresnel Power", &fresnelPower, 0.1f, 30.0f);
+ 
+            static int causticIdx = 0;
+
+            if (ImGui::InputInt("Caustic Texture Index", &causticIdx))
+            {
+                // 입력 값을 0-6 범위로 제한
+                causticIdx = max(0, min(causticIdx, 5));
+                // lagoon 객체의 멤버 변수를 즉시 업데이트
+                CausticIdx = causticIdx;
+            }
+
+
+            static bool autoUpdateWave = false;
+            ImGui::Checkbox("Auto Update Wave", &autoUpdateWave);
+
+            if (ImGui::Button("Wave Update") || autoUpdateWave)
+            {
+                m_pGameInstance->Set_ReflectionWave(waveStrength, waveFrequency, waveTimeOffset, fresnelPower, CausticIdx);
+            }
+
+            ImGui::End();
         }
     }
 }

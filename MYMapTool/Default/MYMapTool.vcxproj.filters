@@ -31,6 +31,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\ComputeShader_Cloud.hlsl">
       <Filter>97. ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxLagoon.hlsl">
+      <Filter>97. ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\MainApp.cpp">
@@ -175,6 +178,9 @@
       <Filter>02. GameObjects\08. Cloud</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BackGround_Card.cpp">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Lagoon.cpp">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClCompile>
   </ItemGroup>
@@ -339,6 +345,9 @@
       <Filter>02. GameObjects\08. Cloud</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BackGround_Card.h">
+      <Filter>02. GameObjects\05. Active_Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Lagoon.h">
       <Filter>02. GameObjects\05. Active_Elements</Filter>
     </ClInclude>
   </ItemGroup>

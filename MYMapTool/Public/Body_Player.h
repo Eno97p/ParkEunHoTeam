@@ -28,6 +28,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Distortion();
 	virtual HRESULT Render_LightDepth() override;
+	virtual HRESULT Render_Reflection() override;
+
 	virtual bool Get_AnimFinished() { return m_bAnimFinished; }
 
 private:

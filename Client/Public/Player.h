@@ -191,7 +191,7 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	_float m_fMaxHp = 300.f; // 1000
+	_float m_fMaxHp = 15.f; // 1000
 #else
 	_float m_fMaxHp = 300.f;
 #endif // _DEBUG
@@ -227,11 +227,20 @@ private:
 	_uint		m_iEtherDmg = { 60 };
 #pragma endregion UI관련 Data
 
+
 #pragma region Buff 관련 Data
 	_float		m_fShield = { 1.f }; // 쉴드 값
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값
 #pragma endregion Buff 관련 Data
+#pragma region 비동기 로드 Data
+	_bool m_bIsLoadStart = false;
+	_vector m_vDest = {};
+	LEVEL m_eCurLevel = LEVEL_END;
+
+
+#pragma endregion 비동기 로드 Data
+
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

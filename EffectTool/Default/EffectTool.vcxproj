@@ -204,6 +204,9 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Main.h" />
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\Map_Flat.h" />
+    <ClInclude Include="..\Public\Meteor.h" />
+    <ClInclude Include="..\Public\Meteor_Core.h" />
+    <ClInclude Include="..\Public\Meteor_Wind.h" />
     <ClInclude Include="..\public\Particle.h" />
     <ClInclude Include="..\Public\ParticleMesh.h" />
     <ClInclude Include="..\Public\Particle_Point.h" />
@@ -275,6 +278,9 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Main.cpp" />
     <ClCompile Include="..\Private\Map.cpp" />
     <ClCompile Include="..\Private\Map_Flat.cpp" />
+    <ClCompile Include="..\Private\Meteor.cpp" />
+    <ClCompile Include="..\Private\Meteor_Core.cpp" />
+    <ClCompile Include="..\Private\Meteor_Wind.cpp" />
     <ClCompile Include="..\private\Particle.cpp" />
     <ClCompile Include="..\Private\ParticleMesh.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp" />

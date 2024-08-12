@@ -205,6 +205,7 @@ call Copy_MapTool.bat</Command>
     <ClInclude Include="..\public\FakeWall.h" />
     <ClInclude Include="..\Public\FireEffect.h" />
     <ClInclude Include="..\public\Grass.h" />
+    <ClInclude Include="..\Public\Lagoon.h" />
     <ClInclude Include="..\Public\LandObject.h" />
     <ClInclude Include="..\Public\MYMapTool_Defines.h" />
     <ClInclude Include="..\Public\Default_Camera.h" />
@@ -269,6 +270,7 @@ call Copy_MapTool.bat</Command>
     <ClCompile Include="..\Private\Imgui_Manager.cpp" />
     <ClCompile Include="..\Private\imgui_tables.cpp" />
     <ClCompile Include="..\Private\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Lagoon.cpp" />
     <ClCompile Include="..\Private\LandObject.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -307,6 +309,7 @@ call Copy_MapTool.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Grass.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_MapElement.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxLagoon.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

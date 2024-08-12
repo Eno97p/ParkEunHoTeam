@@ -43,6 +43,7 @@ void CSky::Late_Tick(_float fTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pGameInstance->Get_CamPosition());
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_PRIORITY, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 }
 
 HRESULT CSky::Render()
@@ -73,6 +74,69 @@ HRESULT CSky::Render()
 
 	m_pVIBufferCom->Render();
 
+
+	return S_OK;
+}
+
+
+HRESULT CSky::Render_Reflection()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_float4x4 ViewMatrix;
+	const _float4x4* matCam = m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+
+	// 원래 뷰 행렬 로드
+	XMMATRIX mOriginalView = XMLoadFloat4x4(matCam);
+
+	// 카메라 위치 추출
+	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
+
+	// 바닥 평면의 높이 (예: Y = 0)
+	float floorHeight = -30.f;
+
+	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
+	XMVECTOR vReflectedCamPos = vCamPos;
+	vReflectedCamPos = XMVectorSetY(vReflectedCamPos, 2 * floorHeight - XMVectorGetY(vCamPos));
+
+	// 카메라 방향 벡터 추출
+	XMVECTOR vCamLook = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 0, 1, 0), mOriginalView) - vCamPos);
+	XMVECTOR vCamUp = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 1, 0, 0), mOriginalView) - vCamPos);
+
+	// 반사된 카메라 방향 벡터 계산
+	XMVECTOR vReflectedCamLook = XMVectorSetY(vCamLook, -XMVectorGetY(vCamLook));
+	XMVECTOR vReflectedCamUp = XMVectorSetY(vCamUp, -XMVectorGetY(vCamUp));
+
+	// 반사된 뷰 행렬 생성
+	XMMATRIX mReflectedView = XMMatrixLookToLH(vReflectedCamPos, vReflectedCamLook, vReflectedCamUp);
+
+	// 변환된 행렬 저장
+	XMStoreFloat4x4(&ViewMatrix, mReflectedView);
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+
+
+	m_pShaderCom->Unbind_SRVs();
+
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	_float4 fogCol;
+	XMStoreFloat4(&fogCol, m_pGameInstance->Get_FogColor());
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_FogColor", &fogCol, sizeof(_float4))))
+		return E_FAIL;
+	_bool t = true;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bDiffuse", &t, sizeof(_bool))))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(0);
+
+	m_pVIBufferCom->Bind_Buffers();
+
+	m_pVIBufferCom->Render();
 
 	return S_OK;
 }

@@ -5,6 +5,15 @@ matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 textureCUBE	g_Texture;
 float4 g_FogColor;
 
+
+bool g_bDiffuse = false;
+bool g_bNormal = false;
+bool g_bSpecular = false;
+bool g_bOpacity = false;
+bool g_bEmissive = false;
+bool g_bRoughness = false;
+
+bool g_bMetalic = false;
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -50,7 +59,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
 
-	//Out.vColor = lerp(Out.vColor, g_FogColor, 0.5f);
+	Out.vColor = lerp(Out.vColor, g_FogColor, 0.3f);
 
 
 	return Out;

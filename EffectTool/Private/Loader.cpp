@@ -65,6 +65,11 @@
 
 #include "HoverBoard.h"
 
+#pragma region METEOR
+#include "Meteor.h"
+#include "Meteor_Core.h"
+#include "Meteor_Wind.h"
+#pragma endregion METEOR
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -417,11 +422,33 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/InstanceModel/DefaultCylinder.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Meteor
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Meteor_Core"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Meteor/Meteor.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Meteor_Crater1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Meteor/Rock_Impact/R_Impact0.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Meteor_Crater2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Meteor/Rock_Impact/R_Impact1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Meteor_Wind"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Meteor/MeteorWind.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 	/* For.Prototype_Component_Model_HoverBoard*/
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Hoverboard"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Hoverboard/Hoverboard.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+
+
+
 
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -675,6 +702,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CHoverBoard::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Meteor"),
+		CMeteor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Core"),
+		CMeteor_Core::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Wind"),
+		CMeteor_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 	m_isFinished = true;

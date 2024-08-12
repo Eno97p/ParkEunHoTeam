@@ -535,6 +535,11 @@ _vector CGameInstance::Get_FogColor()
 	return m_pRenderer->Get_FogColor();
 }
 
+void CGameInstance::Set_ReflectionWave(_float strength, _float frequency, _float fWaveTimeOffset, _float fresnelPower, _uint CausticIdx)
+{
+	m_pRenderer->Set_ReflectionWave(strength, frequency, fWaveTimeOffset, fresnelPower, CausticIdx);
+}
+
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
 	return m_pPipeLine->Get_Transform_float4x4(eState);

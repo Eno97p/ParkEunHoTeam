@@ -76,6 +76,17 @@ HRESULT CLevel_Ackbar::Initialize()
 	_vector vFocus = { 86.f, 0.f, 0.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
+
+	//초기값 몬스터 저장
+	_tagMonsterInit_Property MonsterInitProperty = {};
+	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, L"layer_Monster");
+	for (auto& pMonster : pList)
+	{
+		MonsterInitProperty.vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+
+	}
+
+
 	return S_OK;
 }
 

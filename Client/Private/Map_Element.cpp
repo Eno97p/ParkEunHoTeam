@@ -5,12 +5,12 @@
 
 
 CMap_Element::CMap_Element(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CBlendObject{ pDevice, pContext }
 {
 }
 
 CMap_Element::CMap_Element(const CMap_Element& rhs)
-	: CGameObject{ rhs }
+	: CBlendObject{ rhs }
 {
 }
 

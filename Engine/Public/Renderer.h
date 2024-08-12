@@ -111,6 +111,14 @@ public:
 		m_fFogBlendFactor = fogDesc.fFogBlendFactor;
 	}
 
+	void Set_ReflectionWave(_float strength, _float frequency, _float fWaveTimeOffset, _float fresnelPower, _uint CausticIdx)
+	{
+		m_fWaveStrength = strength;
+		m_fWaveFrequency = frequency;
+		m_fWaveTimeOffset = fWaveTimeOffset;
+		m_fFresnelPower = fresnelPower;
+		m_iCausticIdx = CausticIdx;
+	}
 	//ÀÌ¹Î¿µ Ãß°¡ 240711 2002PM
 private:
 	ID3D11Texture2D* m_pPrevDepthTexture = nullptr;
@@ -189,6 +197,14 @@ private:
 	_float m_fNoiseSize2 = 0.1f;
 	_float m_fFogBlendFactor = 0.6;
 
+	//Reflection Wave
+	_float m_fWaveStrength = 0.6f;
+	_float m_fWaveFrequency = 0.6f;
+	_float m_fWaveTimeOffset = 1.f;
+	_float m_fFresnelPower = 5.f;
+	class CTexture* m_pCausticTex = { nullptr };
+	_uint m_iCausticIdx = 0;
+	
 private:
 	void Render_Priority();
 	void Render_ShadowObjects();

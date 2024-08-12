@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "Distortion.h"
 #include "Sky.h"
-
+#include "BackGround_Card.h"
 #pragma region Monster
 #include "Andras.h"
 #include "Body_Andras.h"
@@ -108,6 +108,7 @@
 #include "Tree.h"
 #include "Grass.h"
 #include "Cloud.h"
+#include "Lagoon.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

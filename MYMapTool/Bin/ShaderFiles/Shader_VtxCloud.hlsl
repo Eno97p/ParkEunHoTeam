@@ -47,6 +47,13 @@ float g_fNoiseRemapUpper;
 //Noise 3D
 texture3D g_3DNoiseTexture;
 
+//FOR REFLECTION
+float g_fReflectionPlaneHeight; 
+float g_fReflectionQuality; 
+float g_fReflectionOpacity; 
+float g_fReflectionDensityScale;
+float4 g_vBaseSkyColor;
+
 // 볼륨 바운딩 박스 구조체
 struct BoundingBox
 {
@@ -628,6 +635,79 @@ PS_OUT PS_VolumeCloud(VS_OUT In)
     Out.vColor = accumulatedColor;
     return Out;
 }
+
+PS_OUT PS_REFLECTION(VS_OUT In)
+{
+    PS_OUT Out = (PS_OUT)0;
+    float3 rayStart = In.vWorldPos;
+    float3 rayDir = normalize(In.vWorldPos - g_vCamPosition.xyz);
+    float time = g_fAccTime;
+
+    const float MAX_DIST = 100.0;
+    const int BASE_NUM_STEPS = 128;
+    int NUM_STEPS = int(float(BASE_NUM_STEPS) * g_fReflectionQuality);
+    const float STEP_SIZE = MAX_DIST / float(NUM_STEPS);
+
+    float4 accumulatedColor = float4(0, 0, 0, 0);
+    float transmittance = 1.0;
+
+    // 레이캐스팅 루프
+    for (int i = 0; i < NUM_STEPS; i++)
+    {
+        float t = i * STEP_SIZE;
+        float3 currentPos = rayStart + rayDir * t;
+
+        // 구름 밀도 계산 (밀도 스케일 적용)
+        float density = calculateCloudDensityFromTexture(currentPos, time) * g_fReflectionDensityScale;
+
+        if (density > 0.01) // 의미 있는 밀도일 경우에만 계산
+        {
+            // 광원 에너지 계산
+            float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, rayDir);
+
+            // 색상 계산
+            float3 cloudColor = g_CloudColor * lightEnergy * density;
+
+            // 투과율 계산
+            float stepTransmittance = exp(-density * STEP_SIZE);
+
+            // 색상 누적
+            accumulatedColor.rgb += cloudColor * transmittance * (1 - stepTransmittance);
+
+            // 전체 투과율 업데이트
+            transmittance *= stepTransmittance;
+
+            // 불투명도가 높아지면 조기 종료
+            if (transmittance < 0.01)
+                break;
+        }
+    }
+
+    // 최종 색상 계산
+    accumulatedColor.a = (1 - transmittance) * g_fReflectionOpacity;
+
+    // 주변광 추가
+    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+    accumulatedColor.rgb += ambient * transmittance;
+
+    // 감마 보정
+    accumulatedColor.rgb = pow(accumulatedColor.rgb, 1.0 / 2.2);
+
+    // 알파 블렌딩을 위한 사전 곱셈 알파
+    accumulatedColor.rgb *= accumulatedColor.a;
+
+    if (accumulatedColor.a < 0.3f)
+    {
+        Out.vColor = float4(g_vBaseSkyColor.rgb, 0.5f);
+    }
+    else
+    {
+        Out.vColor = accumulatedColor;
+    }
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Cloud
@@ -646,7 +726,7 @@ technique11 DefaultTechnique
         pass Cloud_Tex
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_None_Test_None_Write, 0); // 깊이 쓰기 비활성화
+        SetDepthStencilState(DSS_Default, 0); // 깊이 쓰기 비활성화
         SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -668,5 +748,19 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_VolumeCloud();
     }
+
+        pass CloudReflection
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0); // 깊이 테스트 활성화
+        SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_REFLECTION();
+    }
+
 
 }

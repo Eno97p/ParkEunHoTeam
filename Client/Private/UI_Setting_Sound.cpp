@@ -29,7 +29,7 @@ HRESULT CUI_Setting_Sound::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = (g_iWinSizeX >> 1) + 100.f;
+	m_fX = (g_iWinSizeX >> 1) + fRANGE; // MAX로 시작
 	m_fY = (g_iWinSizeY >> 1) + 170.f;
 	m_fSizeX = 60.f; // 800
 	m_fSizeY = 31.f; // 32
@@ -47,17 +47,16 @@ void CUI_Setting_Sound::Priority_Tick(_float fTimeDelta)
 
 void CUI_Setting_Sound::Tick(_float fTimeDelta)
 {
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
+
 	__super::Tick(fTimeDelta);
 
 	m_isSelect = IsCollisionRect(m_pMouse->Get_CollisionRect());
 
 	if (m_isSelect && m_pGameInstance->Mouse_Pressing(DIM_LB))
 	{
-		// 꾹 누르고 있을 때 위치 옮길 수 있어야 함
-		// 마우스의 위치를 받아와서 해당 위치에 위치하도록 설정?
 		Update_Position();
-
-
 	}
 
 	if (nullptr != m_pBar)

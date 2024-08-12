@@ -6,6 +6,7 @@
 #include "UI_BuffTimer_Bar.h"
 #include "UI_BuffTimer_Timer.h"
 #include "UI_ItemIcon.h"
+#include "UIGroup_BuffTimer.h"
 
 #include "Player.h"
 #include "Weapon.h"
@@ -67,10 +68,32 @@ void CUI_BuffTimer::Late_Tick(_float fTimeDelta)
 {
     for (auto& pUI : m_vecUI)
         pUI->Late_Tick(fTimeDelta);
+
+    CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
 
 HRESULT CUI_BuffTimer::Render()
 {
+    if (5.f >= m_fBuffTimer)
+    {
+        _float fY = 0.f;
+        _uint iBuffTimerSize = dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Get_vecUISize();
+
+        fY = 30.f * (iBuffTimerSize - m_iBuffTimerIdx - 1);
+
+        if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), Setting_BuffText(),
+            _float2(40.f, (g_iWinSizeY >> 1) + 30.f - fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+            return S_OK;
+
+        if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), Setting_BuffText(),
+            _float2(40.f, (g_iWinSizeY >> 1) + 30.f - fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+            return S_OK;
+
+        if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), Setting_BuffText(),
+            _float2(40.f, (g_iWinSizeY >> 1) + 30.f - fY), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+            return S_OK;
+    }
+
     return S_OK;
 }
 
@@ -144,12 +167,12 @@ void CUI_BuffTimer::Setting_BuffFunction(_bool isOn)
             pPlayer->Set_HPBuff(false);
         break;
     case Client::CUI_BuffTimer::BUFFTYPE_STAMINA:
+        if (isOn)
+            pPlayer->Set_StaminaBuff(true);
+        else
+            pPlayer->Set_StaminaBuff(false);
         break;
     case Client::CUI_BuffTimer::BUFFTYPE_END:
-        if (isOn)
-            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(10);
-        else
-            dynamic_cast<CWeapon*>(pPlayer->Get_Weapon())->Add_Damage(-10);
         break;
     }
 }
@@ -167,6 +190,23 @@ void CUI_BuffTimer::Setting_UIPosition()
 
     ++ui;
     dynamic_cast<CUI_ItemIcon*>(*ui)->Update_Pos(fX, (g_iWinSizeY >> 1) + 100.f);
+}
+
+wstring CUI_BuffTimer::Setting_BuffText()
+{
+    switch (m_eBuffType)
+    {
+    case Client::CUI_BuffTimer::BUFFTYPE_DAMAGE:
+        return TEXT("공격력 증가");
+    case Client::CUI_BuffTimer::BUFFTYPE_SHIELD:
+        return TEXT("방어력 증가");
+    case Client::CUI_BuffTimer::BUFFTYPE_HP:
+        return TEXT("체력 회복 증가");
+    case Client::CUI_BuffTimer::BUFFTYPE_STAMINA:
+        return TEXT("스태미나 소모 감소");
+    default:
+        return TEXT("");
+    }
 }
 
 void CUI_BuffTimer::Update_BuffTime()

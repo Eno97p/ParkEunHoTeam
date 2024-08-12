@@ -28,6 +28,7 @@ public:
 	void			Update_WeaponSlot(wstring wstrTextureName, SLOT_TYPE eSlotType);
 
 	void			Reset_SlotTexture(SLOT_TYPE eSlotType);
+	void			Reset_SlotIdx(SLOT_TYPE eSlotType);
 
 private:
 	_uint					m_iQuickIdx = { 0 }; // Quick Access¿« Index

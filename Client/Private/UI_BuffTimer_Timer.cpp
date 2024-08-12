@@ -66,6 +66,8 @@ HRESULT CUI_BuffTimer_Timer::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
+
+
 	return S_OK;
 }
 

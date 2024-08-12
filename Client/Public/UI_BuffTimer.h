@@ -52,6 +52,7 @@ private:
 	void	Setting_BuffType();
 	void	Setting_BuffFunction(_bool isOn);
 	void	Setting_UIPosition();
+	wstring	Setting_BuffText();
 	void	Update_BuffTime();
 
 public:

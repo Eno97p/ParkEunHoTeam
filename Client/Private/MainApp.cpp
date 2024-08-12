@@ -160,6 +160,8 @@
 #include "UI_Setting_Overlay.h"
 #include "UI_Setting_Btn.h"
 #include "UI_Setting_BackBtn.h"
+#include "UI_Setting_Sound.h"
+#include "UI_Setting_SoundBar.h"
 #include "UIGroup_Setting.h"
 #pragma endregion Setting
 
@@ -190,6 +192,7 @@
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
 #include "UI_Dash.h"
+#include "UI_Memento.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1420,6 +1423,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_Sound */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Sound"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBtn.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Setting_SoundBar */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_SoundBar"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBar.png"), 1))))
+		return E_FAIL;
 #pragma endregion Setting
 
 #pragma region QTE
@@ -1488,6 +1501,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_UI_BuffTimer */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BuffTimer"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Memento */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Memento"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -2088,6 +2106,16 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_Setting_BackBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_Setting_Sound*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_Sound"),
+		CUI_Setting_Sound::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Setting_SoundBar*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Setting_SoundBar"),
+		CUI_Setting_SoundBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIGroup_Setting*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Setting"),
 		CUIGroup_Setting::Create(m_pDevice, m_pContext))))
@@ -2120,9 +2148,6 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer_Timer"),
 		CUI_BuffTimer_Timer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-
 
 	/* For.Prototype_GameObject_UI_BuffTimer*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BuffTimer"),
@@ -2174,6 +2199,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Dash*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Dash"),
 		CUI_Dash::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Memento*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Memento"),
+		CUI_Memento::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

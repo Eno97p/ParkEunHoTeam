@@ -1,23 +1,23 @@
-#include "UI_BuffTimer_Bar.h"
+#include "UI_Setting_SoundBar.h"
 
 #include "GameInstance.h"
 
-CUI_BuffTimer_Bar::CUI_BuffTimer_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CUI{ pDevice, pContext }
+CUI_Setting_SoundBar::CUI_Setting_SoundBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_BuffTimer_Bar::CUI_BuffTimer_Bar(const CUI_BuffTimer_Bar& rhs)
-    : CUI{ rhs }
+CUI_Setting_SoundBar::CUI_Setting_SoundBar(const CUI_Setting_SoundBar& rhs)
+	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_BuffTimer_Bar::Initialize_Prototype()
+HRESULT CUI_Setting_SoundBar::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CUI_BuffTimer_Bar::Initialize(void* pArg)
+HRESULT CUI_Setting_SoundBar::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -25,30 +25,30 @@ HRESULT CUI_BuffTimer_Bar::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = 80.f;
-	m_fY = (g_iWinSizeY >> 1) + 130.f;
-	m_fSizeX = 70.f; // 512
-	m_fSizeY = 70.f;
+	//m_fX = (g_iWinSizeX >> 1);
+	//m_fY = (g_iWinSizeY >> 1 ) + 100.f;
+	//m_fSizeX = 800.f; // 800
+	//m_fSizeY = 31.f; // 31
 
 	Setting_Position();
 
 	return S_OK;
 }
 
-void CUI_BuffTimer_Bar::Priority_Tick(_float fTimeDelta)
+void CUI_Setting_SoundBar::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_BuffTimer_Bar::Tick(_float fTimeDelta)
+void CUI_Setting_SoundBar::Tick(_float fTimeDelta)
 {
 }
 
-void CUI_BuffTimer_Bar::Late_Tick(_float fTimeDelta)
+void CUI_Setting_SoundBar::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_UI(this, TENTH);
 }
 
-HRESULT CUI_BuffTimer_Bar::Render()
+HRESULT CUI_Setting_SoundBar::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -60,13 +60,7 @@ HRESULT CUI_BuffTimer_Bar::Render()
 	return S_OK;
 }
 
-void CUI_BuffTimer_Bar::Update_Position(_float fX)
-{
-	m_fX = fX - 1.f;
-	Setting_Position();
-}
-
-HRESULT CUI_BuffTimer_Bar::Add_Components()
+HRESULT CUI_Setting_SoundBar::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -79,14 +73,14 @@ HRESULT CUI_BuffTimer_Bar::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHPBar"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_SoundBar"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_BuffTimer_Bar::Bind_ShaderResources()
+HRESULT CUI_Setting_SoundBar::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -102,33 +96,33 @@ HRESULT CUI_BuffTimer_Bar::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_BuffTimer_Bar* CUI_BuffTimer_Bar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_Setting_SoundBar* CUI_Setting_SoundBar::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_BuffTimer_Bar* pInstance = new CUI_BuffTimer_Bar(pDevice, pContext);
+	CUI_Setting_SoundBar* pInstance = new CUI_Setting_SoundBar(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_BuffTimer_Bar");
+		MSG_BOX("Failed To Created : CUI_Setting_SoundBar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_BuffTimer_Bar::Clone(void* pArg)
+CGameObject* CUI_Setting_SoundBar::Clone(void* pArg)
 {
-	CUI_BuffTimer_Bar* pInstance = new CUI_BuffTimer_Bar(*this);
+	CUI_Setting_SoundBar* pInstance = new CUI_Setting_SoundBar(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_BuffTimer_Bar");
+		MSG_BOX("Failed To Cloned : CUI_Setting_SoundBar");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_BuffTimer_Bar::Free()
+void CUI_Setting_SoundBar::Free()
 {
 	__super::Free();
 }

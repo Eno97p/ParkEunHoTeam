@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 #include "Level_Loading.h"
+
+#include "UI_Memento.h"
+
 CUI_FadeInOut::CUI_FadeInOut(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
 {
@@ -22,6 +25,7 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 	UI_FADEINOUT_DESC* pDesc = static_cast<UI_FADEINOUT_DESC*>(pArg);
 
 	m_isFadeIn = pDesc->isFadeIn;
+	m_isLevelChange = pDesc->isLevelChange;
 	m_eFadeType = pDesc->eFadeType;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -37,6 +41,19 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 
 	Setting_Position();
 
+	if (m_isLevelChange)
+		m_fAlphaTimerMul = 0.7f;
+	else
+	{
+		if(m_isFadeIn)
+			m_fAlphaTimerMul = 0.2f;
+		else
+			m_fAlphaTimerMul = 0.4f;
+	}
+
+	if (!m_isLevelChange && m_isFadeIn)
+		Create_Memento();
+
 	return S_OK;
 }
 
@@ -48,13 +65,31 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 {
 	if (TYPE_ALPHA == m_eFadeType)
 	{
-		m_fAlphaTimer += fTimeDelta * 0.7f;
+		m_fAlphaTimer += fTimeDelta * m_fAlphaTimerMul;
 		if (m_fAlphaTimer >= 1.f)
 		{
 			m_fAlphaTimer = 1.f;
 
 			if (!m_isFadeIn) // Fade Out
 			{
+				if (m_isLevelChange) // Level Change
+				{
+					// 다음 Level로 넘어감
+					m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, Check_NextLevel()));
+				}
+				else // Memeto
+				{
+					UI_FADEINOUT_DESC pDesc{};
+					pDesc.isFadeIn = true;
+					pDesc.eFadeType = TYPE_ALPHA;
+					pDesc.isLevelChange = false;
+
+					if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+						return;
+
+					m_pGameInstance->Erase(this);
+				}
+
 				//m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
 				/*	if (FAILED(Create_FadeIn()))
 					return;*/
@@ -64,9 +99,6 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 				//	MSG_BOX("Failed to Open Level JUGGLAS");
 				//	return;
 				//}
-
-
-				
 			}else
 				m_pGameInstance->Erase(this);
 
@@ -91,11 +123,17 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 			m_pGameInstance->Erase(this);
 		}
 	}
+
+	if (nullptr != m_pMemento)
+		m_pMemento->Tick(fTimeDelta);
 }
 
 void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, TWELFTH); // 더 추가될 수 있음
+	CGameInstance::GetInstance()->Add_UI(this, SIXTEENTH); // 더 추가될 수 있음
+
+	if (nullptr != m_pMemento)
+		m_pMemento->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_FadeInOut::Render()
@@ -203,6 +241,33 @@ HRESULT CUI_FadeInOut::Create_FadeIn()
 	return S_OK;
 }
 
+HRESULT CUI_FadeInOut::Create_Memento()
+{
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_pMemento = dynamic_cast<CUI_Memento*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Memento"), &pDesc));
+
+	return S_OK;
+}
+
+LEVEL CUI_FadeInOut::Check_NextLevel()
+{
+	switch (m_pGameInstance->Get_CurrentLevel())
+	{
+	case LEVEL_GAMEPLAY:
+		return LEVEL_ACKBAR;
+	case LEVEL_ACKBAR:
+		return LEVEL_JUGGLAS;
+	case LEVEL_JUGGLAS:
+		return LEVEL_ANDRASARENA;
+	case LEVEL_ANDRASARENA:
+		return LEVEL_GRASSLAND;
+	default:
+		return LEVEL_END;
+	}
+}
+
 CUI_FadeInOut* CUI_FadeInOut::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_FadeInOut* pInstance = new CUI_FadeInOut(pDevice, pContext);
@@ -233,6 +298,7 @@ void CUI_FadeInOut::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMemento);
 	Safe_Release(m_pDisolveTextureCom);
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);

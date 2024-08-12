@@ -4,12 +4,12 @@
 
 BEGIN(Client)
 
-class CUI_Activate final : public CUI
+class CUI_Setting_SoundBar : public CUI
 {
 private:
-	CUI_Activate(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_Activate(const CUI_Activate& rhs);
-	virtual ~CUI_Activate() = default;
+	CUI_Setting_SoundBar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_Setting_SoundBar(const CUI_Setting_SoundBar& rhs);
+	virtual ~CUI_Setting_SoundBar() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -24,9 +24,9 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 public:
-	static CUI_Activate*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject*	Clone(void* pArg) override;
-	virtual void			Free() override;
+	static CUI_Setting_SoundBar*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject*			Clone(void* pArg) override;
+	virtual void					Free() override;
 };
 
 END

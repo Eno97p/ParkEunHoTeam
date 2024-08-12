@@ -7,6 +7,7 @@
 #include "UI_Setting_Overlay.h"
 #include "UI_Setting_Btn.h"
 #include "UI_Setting_BackBtn.h"
+#include "UI_Setting_Sound.h"
 
 CUIGroup_Setting::CUIGroup_Setting(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -113,6 +114,9 @@ HRESULT CUIGroup_Setting::Create_UI()
 
 	// BackBtn 
 	m_vecUI.emplace_back(dynamic_cast<CUI_Setting_BackBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Setting_BackBtn"), &pDesc)));
+
+	// Sound
+	m_vecUI.emplace_back(dynamic_cast<CUI_Setting_Sound*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Setting_Sound"), &pDesc)));
 
 	return S_OK;
 }

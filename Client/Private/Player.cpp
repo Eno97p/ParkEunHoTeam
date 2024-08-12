@@ -322,7 +322,7 @@ void CPlayer::PlayerHit(_float fValue)
 	{
 		m_pPhysXCom->Set_Speed(WALKSPEED);
 	}
-	Add_Hp(-fValue);
+	Add_Hp(-fValue * m_fShield);
 
 	CUI_Manager::GetInstance()->Set_ScreenBloodRend(true);
 }
@@ -2173,7 +2173,7 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 
 void CPlayer::Add_Hp(_float iValue)
 {
-	m_fCurHp = min(m_fMaxHp, max(0.f, m_fCurHp + iValue));
+	m_fCurHp = min(m_fMaxHp, max(0.f, m_fCurHp + (iValue * m_fHPBuff)));
 	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
@@ -2184,12 +2184,12 @@ void CPlayer::Add_Stamina(_float iValue)
 {
 	if (iValue > 0.f)
 	{
-		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue));
+		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue * m_fStaminaBuff));
 	}
 	else if (m_bStaminaCanDecrease)
 	{
 		m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
-		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue));
+		m_fCurStamina = min(m_fMaxStamina, max(0.f, m_fCurStamina + iValue * m_fStaminaBuff));
 		m_bStaminaCanDecrease = false;
 	}
 }

@@ -748,6 +748,15 @@
     <Filter Include="02.GameObjects\07. UI\BuffTimer\BuffTimer\Bar">
       <UniqueIdentifier>{7284ece3-a41f-40b4-83e9-6ba2d72cf736}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\Memento">
+      <UniqueIdentifier>{f12ec35e-4d9b-4d05-a8a3-5f51afb71870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Sound">
+      <UniqueIdentifier>{650291b6-48a6-4b07-855e-27eb80fe49b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar">
+      <UniqueIdentifier>{1d5ac9d6-58ee-4094-8aa6-1fe27c435555}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Meteor">
       <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
 	</Filter>
@@ -1616,6 +1625,15 @@
     <ClInclude Include="..\Public\UI_BuffTimer_Timer.h">
       <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Memento.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\Memento</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Sound.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_SoundBar.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
     </ClInclude>
@@ -2436,6 +2454,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_BuffTimer_Timer.cpp">
       <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Memento.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\Memento</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Sound.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_SoundBar.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>

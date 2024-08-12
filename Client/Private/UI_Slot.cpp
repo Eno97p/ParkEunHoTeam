@@ -13,6 +13,7 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Weapon.h"
 #include "UIGroup_Quick.h"
+#include "UIGroup_WeaponSlot.h"
 
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
@@ -556,6 +557,9 @@ void CUI_Slot::Click_BtnEvent()
 
 				// Quick Acess의 InvSlot도 Equip Sign 활성화
 				dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_InvSlot_EquipSign(m_iSlotIdx, true);
+
+				// Quick에 Item을 추가한 순간 Quick~ size에 맞게 m_iQuickIdx 초기화 (Skill에도 필요할 거 같음)
+				dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotIdx(CUIGroup_WeaponSlot::SLOT_QUICK);
 			}
 		}
 	}

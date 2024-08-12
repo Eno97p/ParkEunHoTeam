@@ -332,6 +332,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_MapIcon.h" />
     <ClInclude Include="..\Public\UI_MapPosIcon.h" />
     <ClInclude Include="..\Public\UI_MapUser.h" />
+    <ClInclude Include="..\Public\UI_Memento.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
@@ -344,6 +345,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Setting_BackBtn.h" />
     <ClInclude Include="..\Public\UI_Setting_Btn.h" />
     <ClInclude Include="..\Public\UI_Setting_Overlay.h" />
+    <ClInclude Include="..\Public\UI_Setting_Sound.h" />
+    <ClInclude Include="..\Public\UI_Setting_SoundBar.h" />
     <ClInclude Include="..\Public\UI_Setting_Star.h" />
     <ClInclude Include="..\Public\UI_ShopBG.h" />
     <ClInclude Include="..\Public\UI_ShopSelect.h" />
@@ -611,6 +614,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_MapIcon.cpp" />
     <ClCompile Include="..\Private\UI_MapPosIcon.cpp" />
     <ClCompile Include="..\Private\UI_MapUser.cpp" />
+    <ClCompile Include="..\Private\UI_Memento.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />
@@ -623,6 +627,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Setting_BackBtn.cpp" />
     <ClCompile Include="..\Private\UI_Setting_Btn.cpp" />
     <ClCompile Include="..\Private\UI_Setting_Overlay.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_Sound.cpp" />
+    <ClCompile Include="..\Private\UI_Setting_SoundBar.cpp" />
     <ClCompile Include="..\Private\UI_Setting_Star.cpp" />
     <ClCompile Include="..\Private\UI_ShopBG.cpp" />
     <ClCompile Include="..\Private\UI_ShopSelect.cpp" />

@@ -59,6 +59,8 @@ HRESULT CImguiMgr::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	ModelName.emplace_back("Andras");
 	ModelName.emplace_back("HoverBoard");
 
+	for (auto& iter : bShow)
+		iter = false;
 
 	return S_OK;
 }
@@ -262,7 +264,7 @@ void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
 	ImGui::Text("Frame : %f", ImGui::GetIO().Framerate);
-	static _bool bShow[15] = { false,false,false,false,false,false,false,false,false,false,false,false,false,false,false};
+
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
@@ -334,6 +336,11 @@ void CImguiMgr::Visible_Data()
 	if (bShow[14] == true)
 		Sound_Tool(&bShow[14]);
 	
+	ImGui::Checkbox("MeteorTool", &bShow[15]);
+	if (bShow[15] == true)
+		Meteor_Tool(&bShow[15]);
+
+
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -3706,6 +3713,96 @@ void CImguiMgr::FrameTextureTool()
 		}
 	}
 	ImGui::End();
+}
+
+void CImguiMgr::Meteor_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Meteor_Editor", Open);
+
+	static CMeteor::METEOR_DESC Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat3("StartOffset", reinterpret_cast<float*>(&Desc.fStartOffset));
+	ImGui::InputFloat4("TargetPos", reinterpret_cast<float*>(&Desc.vTargetPos));
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Core");
+
+	ImGui::InputFloat3("Core_Size", reinterpret_cast<float*>(&Desc.CoreDesc.vMaxSize));
+	ImGui::InputFloat("Core_LifeTime", &Desc.CoreDesc.fMaxLifeTime);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Wind");
+	ImGui::InputFloat("Interval", &Desc.fWindInterval);
+	ImGui::InputFloat("Wind_LifeTime", &Desc.WindDesc.fMaxLifeTime);
+	ImGui::InputFloat3("Wind_Size", reinterpret_cast<float*>(&Desc.WindDesc.vSize));
+	ImGui::ColorEdit3("Wind_Color", reinterpret_cast<float*>(&Desc.WindDesc.fColor));
+	ImGui::ColorEdit3("Wind_B_Color", reinterpret_cast<float*>(&Desc.WindDesc.BloomColor));
+	ImGui::InputFloat("Wind_B_Power", &Desc.WindDesc.fBloomPower);
+
+	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Cylinder");
+
+	ImGui::InputFloat3("CylinderStartSize", reinterpret_cast<float*>(&Desc.CylinderDesc.vSize));
+	ImGui::InputFloat3("CylinderMaxSize", reinterpret_cast<float*>(&Desc.CylinderDesc.vEndSized));
+	ImGui::InputFloat3("CylinderOffset", reinterpret_cast<float*>(&Desc.CylinderDesc.vOffset));
+	ImGui::ColorEdit3("CylinderColor", reinterpret_cast<float*>(&Desc.CylinderDesc.fColor));
+	ImGui::ColorEdit3("CylinderBloomColor", reinterpret_cast<float*>(&Desc.CylinderDesc.BloomColor));
+	ImGui::InputFloat("CylinderBloomPower", &Desc.CylinderDesc.fBloomPower);
+	ImGui::InputFloat("CylinderLifeTime", &Desc.CylinderDesc.fMaxLifeTime);
+	ImGui::InputFloat2("CylinderThreadRatio", reinterpret_cast<float*>(&Desc.CylinderDesc.fThreadRatio));
+	ImGui::InputFloat("CylinderSlowSpeed", &Desc.CylinderDesc.fSlowStrength);
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Meteor"), TEXT("Prototype_GameObject_Meteor"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Meteor"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Meteor(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Meteor(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Meteor(CMeteor::METEOR_DESC* pMeteor)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Meteor.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pMeteor, sizeof(CMeteor::METEOR_DESC));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Meteor(CMeteor::METEOR_DESC* pMeteor)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/Meteor.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pMeteor, sizeof(CMeteor::METEOR_DESC));
+	inFile.close();
+	return S_OK;
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

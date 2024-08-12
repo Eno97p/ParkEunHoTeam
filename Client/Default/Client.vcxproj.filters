@@ -748,6 +748,9 @@
     <Filter Include="02.GameObjects\07. UI\BuffTimer\BuffTimer\Bar">
       <UniqueIdentifier>{7284ece3-a41f-40b4-83e9-6ba2d72cf736}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Meteor">
+      <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
@@ -1613,6 +1616,15 @@
     <ClInclude Include="..\Public\UI_BuffTimer_Timer.h">
       <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
     </ClInclude>
@@ -2425,6 +2437,15 @@
     <ClCompile Include="..\Private\UI_BuffTimer_Timer.cpp">
       <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
     </ClCompile>

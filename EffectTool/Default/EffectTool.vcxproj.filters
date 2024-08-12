@@ -128,6 +128,12 @@
     <Filter Include="Objects\05. Monster\HoverBoard\Booster">
       <UniqueIdentifier>{2c59ed9a-6809-4559-9679-1086b500a6ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\13. Meteor">
+      <UniqueIdentifier>{8ac1e993-31f8-47b7-8627-1a4d6bf445ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\13. Meteor\Effects">
+      <UniqueIdentifier>{d318e34a-09e2-463e-8166-3da95b3730f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -343,6 +349,15 @@
     <ClInclude Include="..\Public\DefaultCylinder.h">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Meteor.h">
+      <Filter>Objects\02. Effects\13. Meteor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Meteor_Core.h">
+      <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Meteor_Wind.h">
+      <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -542,6 +557,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\DefaultCylinder.cpp">
       <Filter>Objects\02. Effects\12. SwingEffect\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Meteor.cpp">
+      <Filter>Objects\02. Effects\13. Meteor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Meteor_Core.cpp">
+      <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Meteor_Wind.cpp">
+      <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

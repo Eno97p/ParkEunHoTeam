@@ -534,7 +534,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 #pragma endregion SHADER
-
 #pragma region TEXTURE
 	/* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Sky"),
@@ -586,8 +585,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 
 #pragma endregion TEXTURE
-
-
 #pragma region Component
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -610,8 +607,6 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/ShaderFiles/Shader_SwordTrail.hlsl"), SwordTrailVertex::Elements, SwordTrailVertex::iNumElements))))
 		return E_FAIL;
 #pragma endregion Component
-
-
 #pragma region MODEL
 	_matrix		PreTransformMatrix;
 	//Slash
@@ -647,6 +642,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 	//Rock2
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_RockParticle2"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/RockParticle1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//Bubble
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Bubble_Mesh"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/Bubble_Mesh.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	//LightningProp
@@ -758,6 +758,22 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/InstanceModel/DefaultCylinder.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//Meteor
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Core"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Meteor.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Crater1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Rock_Impact/R_Impact0.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Crater2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Rock_Impact/R_Impact1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Meteor_Wind"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/MeteorWind.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion MODEL
 

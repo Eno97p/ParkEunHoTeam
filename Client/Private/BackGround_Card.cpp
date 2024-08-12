@@ -52,7 +52,7 @@ void CBackGround_Card::Late_Tick(_float fTimeDelta)
 	//{
 	//	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	//	m_pTransformCom->BillBoard();
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	//}
 }
@@ -75,7 +75,7 @@ HRESULT CBackGround_Card::Render()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_TextureNum", &m_iTexNum, sizeof(_uint))))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(10); //COLOR
+		m_pShaderCom->Begin(7); //COLOR
 
 		m_pModelCom->Render(i);
 	}
@@ -84,13 +84,13 @@ HRESULT CBackGround_Card::Render()
 
 HRESULT CBackGround_Card::Add_Components()
 {
-	/* For.Com_VIBuffer */
+	/* For.Com_Model */
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mountain_Card"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

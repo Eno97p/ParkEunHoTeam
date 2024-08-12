@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "Distortion.h"
 #include "Sky.h"
-
+#include "BackGround_Card.h"
 #pragma region Monster
 #include "Andras.h"
 #include "Body_Andras.h"

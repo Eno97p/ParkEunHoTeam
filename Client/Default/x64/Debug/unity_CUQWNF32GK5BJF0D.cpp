@@ -327,6 +327,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\Tree.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\UIGroup_BuffTimer.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UIGroup_Ch_Upgrade.cpp"
 
 
@@ -358,6 +361,15 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_Broken.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_BuffTimer.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_BuffTimer_Bar.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_BuffTimer_Timer.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_Ch_UpgradeBtn.cpp"

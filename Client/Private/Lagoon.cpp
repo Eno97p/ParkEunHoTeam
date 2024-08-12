@@ -1,12 +1,13 @@
 #include "Lagoon.h"
 #include "GameInstance.h"
+
 CLagoon::CLagoon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CMap_Element(pDevice, pContext)
+	: CMap_Element(pDevice, pContext)
 {
 }
 
 CLagoon::CLagoon(const CLagoon& rhs)
-	:CMap_Element(rhs)
+	: CMap_Element(rhs)
 {
 }
 
@@ -17,122 +18,327 @@ HRESULT CLagoon::Initialize_Prototype()
 
 HRESULT CLagoon::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
+
+
+	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
 
-    CMap_Element::MAP_ELEMENT_DESC* desc = (CMap_Element::MAP_ELEMENT_DESC*)(pArg);
-    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
+
+
+	if (nullptr != pArg)
+	{
+
+		CMap_Element::MAP_ELEMENT_DESC * pDesc = (CMap_Element::MAP_ELEMENT_DESC*)(pArg);
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
+
+		//TRIGGER STATE SET
+	}
+
+	if (FAILED(Add_Components(pArg)))
+		return E_FAIL;
 
 	return S_OK;
 }
 
 void CLagoon::Priority_Tick(_float fTimeDelta)
 {
+
 }
 
 void CLagoon::Tick(_float fTimeDelta)
 {
-
+	m_fAccTime += fTimeDelta;
+	if (m_fAccTime > 100000.f)
+	{
+		m_fAccTime = 0;
+	}
 }
 
 void CLagoon::Late_Tick(_float fTimeDelta)
 {
+	//DECAL
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
 
-	// WaveWorks 시뮬레이션 업데이트
-	//Update_WaveWorks_Simulation(fTimeDelta);
-
-	//if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_OwnDesc->vStartScale.y))
-	//{
-	//	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	//	m_pTransformCom->BillBoard();
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_PRIORITY, this);
-	//	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	//}
-        m_fTimeDelta = fTimeDelta;
+	//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CLagoon::Render()
 {
-    HRESULT hr = S_OK;
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
 
-    // 셰이더 리소스 바인딩
-    if (FAILED(hr = Bind_ShaderResources()))
-        return hr;
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    // 카메라 위치 바인딩
-    if (FAILED(hr = m_pShaderCom->Bind_RawValue("g_eyePos", m_pGameInstance->Get_CamPosition_float4(), sizeof(XMFLOAT4))))
-        return hr;
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pShaderCom->Unbind_SRVs();
 
-  
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
 
-    return S_OK;
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_CAUSTIC]->Bind_ShaderResource(m_pShaderCom, "g_CausticTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_NORMAL1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture1", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_NORMAL2]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture2", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength0", &m_fNormalStrength0, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength1", &m_fNormalStrength1, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength2", &m_fNormalStrength2, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWaterAlpha", &m_fWaterAlpha, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWaterDepth", &m_fWaterDepth, sizeof(_float))))
+			return E_FAIL;
+
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &m_vLightPosition, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &m_vLightDiffuse, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &m_vLightAmbient, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &m_vLightSpecular, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vMtrlSpecular", &m_vMtrlSpecular, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange", &m_fLightRange, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowSpeed", &m_fFlowSpeed, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fCausticStrength", &m_fCausticStrength, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFresnelStrength", &m_fFresnelStrength, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vSkyColor", &m_vSkyColor, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRoughness", &m_fRoughness, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(7);  // Lagoon_7 패스 사용
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
 }
-HRESULT CLagoon::Add_Components()
+
+HRESULT CLagoon::Render_Bloom()
 {
-    ///* For.Com_VIBuffer */
-    //if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY,/* wstr.c_str()*/TEXT("Prototype_Component_Model_Elevator"),
-    //    TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-    //    return E_FAIL;
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
 
-    /* For.Com_Shader */
-    if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxLagoon"),
-        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-        return E_FAIL;
+	_uint iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    /* For.Com_WindGust */
-    if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_WindGust"),
-        TEXT("Com_WindGust"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_WINDGUST]))))
-        return E_FAIL;
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_CAUSTIC]->Bind_ShaderResource(m_pShaderCom, "g_CausticTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_NORMAL1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture1", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_NORMAL2]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture2", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength0", &m_fNormalStrength0, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength1", &m_fNormalStrength1, sizeof(_float))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength2", &m_fNormalStrength2, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWaterAlpha", &m_fWaterAlpha, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWaterDepth", &m_fWaterDepth, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fBloomIntensity", &m_fBloomIntensity, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fBloomThreshold", &m_fBloomThreshold, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightPosition", &m_vLightPosition, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDir", &m_vLightDir, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &m_vLightDiffuse, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &m_vLightAmbient, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &m_vLightSpecular, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vMtrlSpecular", &m_vMtrlSpecular, sizeof(_float4))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fLightRange", &m_fLightRange, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowSpeed", &m_fFlowSpeed, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fCausticStrength", &m_fCausticStrength, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFresnelStrength", &m_fFresnelStrength, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vSkyColor", &m_vSkyColor, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRoughness", &m_fRoughness, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(5);  // Lagoon_7 패스 사용
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
 
 
-    /* For.Com_Foam_Intensity */
-    if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Foam_Intensity"),
-        TEXT("Com_Foam_Intensity"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_FOAM_INTENSITY]))))
-        return E_FAIL;
+HRESULT CLagoon::Render_Mirror()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
 
+	_uint   iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    /* For.Com_Foam_Intensity */
-    if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Foam_Bubbles"),
-        TEXT("Com_Foam_Bubbles"), reinterpret_cast<CComponent**>(&m_pTextureCom[TEX_FOAM_BUBBLES]))))
-        return E_FAIL;
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pShaderCom->Unbind_SRVs();
 
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
 
-    return S_OK;
+		m_pShaderCom->Begin(8);
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+	return S_OK;
+}
+
+HRESULT CLagoon::Add_Components(void* pArg)
+{
+	/* For.Com_Model */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Lagoon"),
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	/* For.Com_Shader */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxLagoon"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	/* For.Com_Normal1 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_WaterNormal1"),
+		TEXT("Com_Normal1"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_NORMAL1]))))
+		return E_FAIL;
+
+	/* For.Com_Normal2 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_WaterNormal2"),
+		TEXT("Com_Normal2"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_NORMAL2]))))
+		return E_FAIL;
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_WaterCaustic"),
+		TEXT("Com_Caustic"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_CAUSTIC]))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CLagoon::Bind_ShaderResources()
 {
-    if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-        return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
-        return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
-        return E_FAIL;
-    return S_OK;
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))
+		return E_FAIL;*/
+
+	return S_OK;
 }
 
 CLagoon* CLagoon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CLagoon* pInstance = new CLagoon(pDevice, pContext);
+
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed To Created : CLagoon");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
 CGameObject* CLagoon::Clone(void* pArg)
 {
 	CLagoon* pInstance = new CLagoon(*this);
+
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed To Cloned : CLagoon");
 		Safe_Release(pInstance);
 	}
+
 	return pInstance;
 }
 
@@ -140,10 +346,6 @@ void CLagoon::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pOceanVB);
-	Safe_Release(m_pOceanIB);
-	Safe_Release(m_pOceanVSHSDSCB);
-	Safe_Release(m_pOceanPSCB);
-	Safe_Release(m_pOceanPerInstanceCB);
-
+	//Safe_Release(m_pModelCom);
+	//Safe_Release(m_pShaderCom);
 }

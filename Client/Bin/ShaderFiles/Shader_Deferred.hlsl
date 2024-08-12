@@ -4,6 +4,7 @@
 matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix      g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix      g_LightViewMatrix, g_LightProjMatrix;
+matrix      Test_g_LightViewMatrix, Test_g_LightProjMatrix;
 vector      g_vLightDir;
 vector      g_vLightPos;
 float      g_fBRIS;
@@ -46,6 +47,13 @@ float      g_fFogBlendFactor;
 float      g_fFogTimeOffset2;
 float      g_fNoiseSize2;
 float      g_fNoiseIntensity2;
+
+//이민영 추가 240811 2121PM
+texture2D g_CausticTexture;
+float g_fWaveStrength = 0.02f;  // 리플렉션 파동 강도
+float g_fWaveFrequency = 5.0f;  // 리플렉션 파동 주파수
+float g_fWaveTimeOffset = 1.0f;
+float g_fFresnelPower = 5.0f;  // 리플렉션 파동 주파수
 
 texture2D   g_Texture;
 texture2D   g_MaskTexture;
@@ -202,13 +210,6 @@ cbuffer LightData : register(b0)
 
 }
 
-
-float4 GodRays(float2 texCoord, float depth) :SV_TARGET
-{
-    float2 lightPosition = screenSpacePosition;
-
-
-}
 
 
 
@@ -556,6 +557,51 @@ float fbm(float3 p)
     return value;
 }
 
+
+
+float2 CalculateScreenSpacePosition(float3 worldPosition, matrix viewProjMatrix)
+{
+	// 월드 좌표를 스크린 좌표로 변환
+	float4 screenPosition = mul(float4(worldPosition, 1.0f), viewProjMatrix);
+	screenPosition /= screenPosition.w;
+
+	// 스크린 좌표를 0 ~ 1 사이로 정규화
+	float2 screenSpacePosition = screenPosition.xy * 0.5f + 0.5f;
+
+	return screenSpacePosition;
+}
+
+float4 RayMarchingGodRays(float2 texCoord, float2 lightScreenPos, float3 lightColor, Texture2D depthTex, SamplerState linearSampler)
+{
+    const int NUM_SAMPLES = 32;
+    const float DECAY = 0.95;
+    const float DENSITY = 0.8;
+    const float WEIGHT = 0.5;
+    const float EXPOSURE = 0.3;
+
+    float2 deltaTexCoord = normalize(lightScreenPos - texCoord) * DENSITY / NUM_SAMPLES;
+    float3 color = float3(0, 0, 0);
+    float illuminationDecay = 1.0;
+
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        texCoord += deltaTexCoord;
+        float samplDepth = depthTex.Sample(linearSampler, texCoord).r;
+        if (samplDepth < 1.0)
+        {
+            float3 sampleColor = lightColor;
+            sampleColor *= illuminationDecay * WEIGHT;
+            color += sampleColor;
+            illuminationDecay *= DECAY;
+        }
+
+    }
+
+    return float4(color * EXPOSURE, 1.0);
+
+}
+
+
 PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT)0;
@@ -607,8 +653,12 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     }
     Out.vColor = vColor;
 
+  /*  float2 lightScreenPos = CalculateScreenSpacePosition(g_vLightPos.xyz, Test_g_LightViewMatrix * Test_g_LightProjMatrix);
 
+    float3 lightColor = g_vLightDiffuse.xyz;
+    float4 godrays = RayMarchingGodRays(In.vTexcoord, lightScreenPos, lightColor, g_DepthTexture, LinearSampler);
 
+    Out.vColor.rgb += godrays.rgb;*/
 
 
     //안개
@@ -1275,20 +1325,54 @@ PS_OUT_DECAL PS_DECAL(PS_IN In)
 
 PS_OUT PS_REFLECTION(PS_IN In)
 {
-    PS_OUT		Out = (PS_OUT)0;
+    PS_OUT Out = (PS_OUT)0;
+    vector vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-    vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector		vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
-    vector      vReflection = g_EffectTexture.Sample(LinearSampler, float2((1.f - In.vTexcoord.x), In.vTexcoord.y));
-
-    if (vReflection.a != 0.f && vMirror.a != 0.f)
-    {
-        Out.vColor = vReflection;
-    }
-    else
+    if (vMirror.a < 0.1f)
     {
         Out.vColor = vDiffuse;
+        return Out;
     }
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    // 월드 좌표 계산
+    vector vWorldPos;
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x;
+    vWorldPos.w = 1.f;
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    // 노말 벡터 계산
+    float3 normal = normalize(vNormalDesc.xyz * 2.f - 1.f);
+
+    // 뷰 벡터 계산
+    float3 viewDir = normalize(g_vCamPosition.xyz - vWorldPos.xyz);
+
+    // 수정된 프레넬 효과 계산
+    float NdotV = saturate(dot(normal, viewDir));
+    float fresnel = pow(max(0, NdotV), g_fFresnelPower);
+
+    // Caustic 노이즈를 이용한 파동 효과 계산
+    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * 0.5 * g_fWaveTimeOffset, g_Time * 0.7 * g_fWaveTimeOffset);
+    vector vCausticNoise = g_CausticTexture.Sample(LinearSampler, causticCoord);
+
+    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength + 0.3f;
+
+    // 노말 맵을 사용하여 파동 강도 조절
+    waveOffset *= length(normal.xy);
+
+    // 왜곡된 좌표로 리플렉션 텍스처 샘플링
+    float2 distortedCoord = float2((1.f - In.vTexcoord.x), In.vTexcoord.y) + waveOffset;
+    vector vReflection = g_EffectTexture.Sample(LinearSampler, distortedCoord);
+
+    // 프레넬 효과를 적용한 색상 블렌딩
+    Out.vColor = lerp(vDiffuse, vReflection, fresnel * vMirror.a);
 
     return Out;
 }

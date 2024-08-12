@@ -1,543 +1,673 @@
 #include "Engine_Shader_Defines.hlsli"
 
-// ---------------------------------------------------------------------------
-// Global structs
-// ---------------------------------------------------------------------------
+/* 컨스턴트 테이블(상수테이블) */
+matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+texture2D	g_DiffuseTexture;
+texture2D	g_NormalTexture;
+texture2D	g_NormalTexture1;
+texture2D	g_NormalTexture2;
+texture2D	g_CausticTexture;
+texture2D	g_SpecularTexture;
+
+texture2D g_RoughnessTexture;
+texture2D g_MetalicTexture;
+texture2D g_EmissiveTexture;
+//FOR DISSOLVE
+texture2D	g_NoiseTexture;
+float		g_fAccTime;
+float		g_fRoughness;
+float		g_fFresnelStrength;
+float		g_fNormalStrength0;
+float		g_fNormalStrength1;
+float		g_fNormalStrength2;
+float		g_fCausticStrength;
+float4		g_vSkyColor;
+vector		g_vCamPosition;
+
+TextureCube g_ReflectionTexture; // 반사 텍스처 큐브맵
+
+float4		g_vLightDiffuse = float4(0.5f, 0.f, 1.f, 1.f);
+float4		g_vLightAmbient = float4(1.f, 1.f, 1.f, 1.f);
+float4		g_vLightSpecular = float4(1.f, 1.f, 1.f, 1.f);
+float4		g_vLightDir;
+float4		g_vLightPosition;
+float		 g_fLightRange;
+float		 g_fWaterDepth;
+float		 g_fWaterAlpha;
+float4		g_vMtrlAmbient = float4(0.4f, 0.4f, 0.4f, 1.f); /* 객체당 엠비언트(모든 픽셀이 같은 엠비언트로 연산한다.) */
+float4		g_vMtrlSpecular = float4(1.f, 1.f, 1.f, 1.f);
+//bloom
+float g_fBloomThreshold;
+float g_fBloomIntensity;
+unsigned int g_Red;
+unsigned int g_Test;
+
+
+bool g_bDiffuse = false;
+bool g_bNormal = false;
+bool g_bSpecular = false;
+bool g_bOpacity = false;
+bool g_bEmissive = false;
+bool g_bRoughness = false;
+bool g_bMetalic = false;
+
+float g_fFlowSpeed = 10.f;
+
+
+//바람 시뮬레이션용
+float g_fTime;
+float3 g_vWindDirection;
+float g_fWindStrength;
+float3 g_LeafCol;
+
+
+//for Card
+uint g_TextureNum;
+
 struct VS_IN
 {
-    float2 vPosition : POSITION;
-    uint instanceID : SV_InstanceID;
+	float3		vPosition : POSITION;
+	float3		vNormal : NORMAL;
+	float2		vTexcoord : TEXCOORD0;
+	float3		vTangent : TANGENT;
 };
 
 struct VS_OUT
 {
-    float4 worldspacePosition : VSO;
+	float4		vPosition : SV_POSITION;
+	float4		vNormal : NORMAL;
+	float2		vTexcoord : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
+	float4		vLocalPos : TEXCOORD2;
+	float4		vTangent : TANGENT;
+	float4		vBinormal : BINORMAL;
+	float4		vWorldPos : TEXCOORD3;
+
 };
 
-struct HS_CONSTANTOUTPUT
+/* 정점 셰이더 :  /*
+/* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
+/* 2. 정점의 구성정보를 변경한다. */
+VS_OUT VS_MAIN(VS_IN In)
 {
-    float edgeTessFactors[3] : SV_TessFactor;
-    float insideTessFactor : SV_InsideTessFactor;
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize(mul(vector(In.vNormal.xyz, 0.f), g_WorldMatrix));
+	Out.vTexcoord = In.vTexcoord;
+	Out.vProjPos = Out.vPosition;
+	Out.vLocalPos = float4(In.vPosition, 1.f);
+	Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+	Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
+	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+
+	return Out;
+}
+
+
+struct VS_OUT_LIGHTDEPTH
+{
+	float4		vPosition : SV_POSITION;
+	float2		vTexcoord : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
 };
 
-struct HS_OUTPUT
+VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 {
-    float4 worldspacePosition : HSO;
+	VS_OUT_LIGHTDEPTH		Out = (VS_OUT_LIGHTDEPTH)0;
+
+	//float		fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+
+	//matrix		BoneMatrix = g_BoneMatrices[In.vBlendIndices.x] * In.vBlendWeights.x +
+	//	g_BoneMatrices[In.vBlendIndices.y] * In.vBlendWeights.y +
+	//	g_BoneMatrices[In.vBlendIndices.z] * In.vBlendWeights.z +
+	//	g_BoneMatrices[In.vBlendIndices.w] * fWeightW;
+
+
+
+	matrix		matWV, matWVP;
+
+	matWV = mul(g_WorldMatrix, g_ViewMatrix);
+	matWVP = mul(matWV, g_ProjMatrix);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vTexcoord = In.vTexcoord;
+	Out.vProjPos = Out.vPosition;
+
+	return Out;
+
+}
+
+
+struct PS_IN
+{
+	float4		vPosition : SV_POSITION;
+	float4		vNormal : NORMAL;
+	float2		vTexcoord : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
+	float4		vLocalPos : TEXCOORD2;
+	float4		vTangent : TANGENT;
+	float4		vBinormal : BINORMAL;
+	float4		vWorldPos : TEXCOORD3;
 };
 
-struct DS_OUTPUT
-{
-    float4 clipSpacePosition : SV_Position;
-    centroid float4 UVForCascade01 : TEXCOORD0;
-    centroid float4 UVForCascade23 : TEXCOORD1;
-    centroid float2 UVForLocalWaves : TEXCOORD2;
-    centroid float4 cascadeBlendingFactors : TEXCOORD3;
-    float3 worldspacePositionDisplaced : TEXCOORD4;
-    float3 worldspacePositionUndisplaced : TEXCOORD5;
-};
-
-struct SURFACE_PARAMETERS
-{
-    float3 normal;
-    float foamSurfaceFolding;
-    float foamEnergy;
-    float foamWaveHats;
-    float2 firstOrderMoments;
-    float2 secondOrderMomentsLowestLOD;
-    float3 secondOrderMoments;
-};
-
-// ---------------------------------------------------------------------------
-// Global variables
-// ---------------------------------------------------------------------------
-struct PerInstanceElement
-{
-    float2 patchWorldspaceOrigin;
-    float  patchWorldspaceScale;
-    float  patchMorphConstantAndSign;
-};
-
-cbuffer OCEAN_VS_CBUFFER_PERINSTANCE : register(b0)
-{
-    PerInstanceElement g_perInstanceData[4096];
-};
-
-cbuffer OCEAN_VS_HS_DS_CBUFFER : register(b1)
-{
-    float4x4 g_WorldMatrix;
-    float4x4 g_ViewMatrix;
-    float4x4 g_ProjMatrix;
-    float4 g_eyePos;
-    float g_meanOceanLevel;
-    float g_useDiamondPattern;
-    float g_dynamicTesselationAmount;
-    float g_staticTesselationOffset;
-    float g_cascade0UVScale;
-    float g_cascade1UVScale;
-    float g_cascade2UVScale;
-    float g_cascade3UVScale;
-    float g_cascade0UVOffset;
-    float g_cascade1UVOffset;
-    float g_cascade2UVOffset;
-    float g_cascade3UVOffset;
-    float g_UVWarpingAmplitude;
-    float g_UVWarpingFrequency;
-    float g_localWavesSimulationDomainWorldspaceSize;
-    float2 g_localWavesSimulationDomainWorldspaceCenter;
-};
-
-cbuffer OCEAN_PS_CBUFFER : register(b2)
-{
-    float g_cascadeToCascadeScale;
-    float g_windWavesTextureSizeInTexels;
-    float g_windWavesFoamWhitecapsThreshold;
-    float g_localWavesTextureSizeInTexels;
-    float g_localWavesFoamWhitecapsThreshold;
-    float g_SimulationDomainSize;
-    float2 g_SimulationDomainCenter;
-    float g_beckmannRoughness;
-    float g_showCascades;
-    float3 g_sunDirection;
-    float g_sunIntensity;
-    float g_useMicrofacetFresnel;
-    float g_useMicrofacetSpecular;
-    float g_useMicrofacetReflection;
-    float pad0;
-    float pad1;
-};
-
-Texture2DArray g_displacementTextureArrayWindWaves : register(t0);
-Texture2DArray g_gradientsTextureArrayWindWaves : register(t1);
-Texture2DArray g_momentsTextureArrayWindWaves : register(t2);
-Texture2D g_displacementTextureLocalWaves : register(t3);
-Texture2D g_gradientsTextureLocalWaves : register(t4);
-Texture2D g_textureFoam : register(t5);
-Texture2D g_textureBubbles : register(t6);
-Texture2D g_textureWindGusts : register(t7);
-Texture2D g_textureDynamicSkyDome : register(t8);
-
-// ---------------------------------------------------------------------------
-// Helper functions
-// ---------------------------------------------------------------------------
-float GFSDK_WaveWorks_GetEdgeTessellationFactor(float4 vertex1, float4 vertex2)
-{
-    float3 edgeCenter = 0.5 * (vertex1.xyz + vertex2.xyz);
-    float4 worldEdgeCenter = mul(float4(edgeCenter, 1.0), g_WorldMatrix);
-    float  edgeLength = length(vertex1.xyz - vertex2.xyz);
-    float  distanceToEdge = length(g_eyePos.xyz - worldEdgeCenter.xyz);
-    return g_staticTesselationOffset + g_dynamicTesselationAmount * edgeLength / distanceToEdge;
-}
-
-float3 GFSDK_WaveWorks_GetUndisplacedVertexWorldPosition(VS_IN input)
-{
-    float2 vertexPos2D = input.vPosition;
-    PerInstanceElement instanceData = g_perInstanceData[input.instanceID];
-
-    // Use geo-morphing in 2D on the plane to smooth away LOD boundaries.
-    float geomorphConstant = abs(instanceData.patchMorphConstantAndSign);
-    float geomorphSign = -sign(instanceData.patchMorphConstantAndSign);
-    if (geomorphSign == 0.0) geomorphSign = 1.0;
-    float2 geomorphOffset = geomorphSign.xx;
-
-    // Calculating origin and target positions for geomorphing iteratively, 
-    // as the geomorphing can morph vertices multiple (up to 4) levels down
-    float geomorphScale = 1.0;
-    float2 vertexPos2DSrc = vertexPos2D;
-    float2 vertexPos2DTarget = vertexPos2D;
-    float geomorphAmount = 0.0;
-
-    for (int geomorphCurrentLevel = 0; geomorphCurrentLevel < 4; geomorphCurrentLevel++)
-    {
-        if (g_useDiamondPattern == 0)
-        {
-            float2 intpart;
-            float2 rempart = modf(0.5 * geomorphScale * vertexPos2DSrc, intpart);
-
-            if (rempart.x == 0.5) vertexPos2DTarget.x = vertexPos2DSrc.x + geomorphOffset.x;
-            if (rempart.y == 0.5) vertexPos2DTarget.y = vertexPos2DSrc.y + geomorphOffset.y;
-        }
-        else
-        {
-            // Calculating target vertex positions is more complicated for diamond pattern
-            float2 intpart;
-            float2 rempart = modf(0.25 * geomorphScale * vertexPos2DSrc, intpart);
-            float2 mirror = float2(1.0, 1.0);
-
-            if (rempart.x > 0.5)
-            {
-                rempart.x = 1.0 - rempart.x;
-                mirror.x = -mirror.x;
-            }
-            if (rempart.y > 0.5)
-            {
-                rempart.y = 1.0 - rempart.y;
-                mirror.y = -mirror.y;
-            }
-
-            if (rempart.x == 0.25 && rempart.y == 0.25) vertexPos2DTarget.xy = vertexPos2DSrc.xy - geomorphOffset * mirror;
-            else if (rempart.x == 0.25)                 vertexPos2DTarget.x = vertexPos2DSrc.x + geomorphOffset.x * mirror.x;
-            else if (rempart.y == 0.25)                 vertexPos2DTarget.y = vertexPos2DSrc.y + geomorphOffset.y * mirror.y;
-        }
-
-        // Calculating target geomorphing LOD
-        float3 worldspacePos = float3(vertexPos2DTarget * instanceData.patchWorldspaceScale + instanceData.patchWorldspaceOrigin, g_meanOceanLevel);
-        float3 eyeVec = worldspacePos - g_eyePos.xyz;
-        float d = length(eyeVec);
-        float geomorphTargetLevel = log2(d * geomorphConstant) + 1.0;
-
-        geomorphAmount = saturate(2.0 * (geomorphTargetLevel - float(geomorphCurrentLevel)));
-
-        if (geomorphAmount < 1.0)
-        {
-            break;
-        }
-        else
-        {
-            vertexPos2DSrc = vertexPos2DTarget;
-            geomorphScale *= 0.5;
-
-            if (g_useDiamondPattern > 0)
-            {
-                geomorphOffset *= -2.0;
-            }
-            else
-            {
-                geomorphOffset *= 2.0;
-            }
-        }
-    }
-
-    // Lerping 
-    vertexPos2D = lerp(vertexPos2DSrc, vertexPos2DTarget, geomorphAmount);
-
-    // Transforming the patch vertices to worldspace
-    return float3(vertexPos2D.xy * instanceData.patchWorldspaceScale + instanceData.patchWorldspaceOrigin, g_meanOceanLevel);
-}
-
-
-
-DS_OUTPUT GFSDK_WaveWorks_GetDisplacedVertexAfterTessellation(float4 In0, float4 In1, float4 In2, float3 BarycentricCoords)
-{
-    // Get starting position
-    precise float3 tessellatedWorldspacePosition = In0.xyz * BarycentricCoords.x + In1.xyz * BarycentricCoords.y + In2.xyz * BarycentricCoords.z;
-    float3 worldspacePositionUndisplaced = tessellatedWorldspacePosition;
-
-    // Blending factors for cascades    
-    float distance = length(g_eyePos.xyz - worldspacePositionUndisplaced);
-    float4 cascadeWordldspaceSizes = float4(1.0 / g_cascade0UVScale, 1.0 / g_cascade1UVScale, 1.0 / g_cascade2UVScale, 1.0 / g_cascade3UVScale);
-    float4 cascadeBlendingFactors = float4(1.0, cascadeBlendingFactors.yzw = saturate(0.033 * (cascadeWordldspaceSizes.yzw * 30.0 - distance) / cascadeWordldspaceSizes.yzw));
-
-    // UVs
-    float2 UVForCascade0 = worldspacePositionUndisplaced.xy * g_cascade0UVScale + g_cascade0UVOffset.xx;
-    float2 UVForCascade1 = worldspacePositionUndisplaced.xy * g_cascade1UVScale + g_cascade1UVOffset.xx;
-    float2 UVForCascade2 = worldspacePositionUndisplaced.xy * g_cascade2UVScale + g_cascade2UVOffset.xx;
-    float2 UVForCascade3 = worldspacePositionUndisplaced.xy * g_cascade3UVScale + g_cascade3UVOffset.xx;
-    float2 UVForLocalWaves = float2(0.5, 0.5) + (worldspacePositionUndisplaced.xy - g_localWavesSimulationDomainWorldspaceCenter) / g_localWavesSimulationDomainWorldspaceSize;
-
-    UVForCascade0 += float2(g_UVWarpingAmplitude * cos(UVForCascade0.y * g_UVWarpingFrequency), g_UVWarpingAmplitude * sin(UVForCascade0.x * g_UVWarpingFrequency));
-    UVForCascade1 += float2(g_UVWarpingAmplitude * cos(UVForCascade1.y * g_UVWarpingFrequency), g_UVWarpingAmplitude * sin(UVForCascade1.x * g_UVWarpingFrequency));
-    UVForCascade2 += float2(g_UVWarpingAmplitude * cos(UVForCascade2.y * g_UVWarpingFrequency), g_UVWarpingAmplitude * sin(UVForCascade2.x * g_UVWarpingFrequency));
-    UVForCascade3 += float2(g_UVWarpingAmplitude * cos(UVForCascade3.y * g_UVWarpingFrequency), g_UVWarpingAmplitude * sin(UVForCascade3.x * g_UVWarpingFrequency));
-
-    // displacements
-    float3 displacement;
-    displacement = cascadeBlendingFactors.x * g_displacementTextureArrayWindWaves.SampleLevel(LinearSampler, float3(UVForCascade0, 0.0), 0.0).xyz;
-    displacement += cascadeBlendingFactors.y == 0 ? float3(0, 0, 0) : cascadeBlendingFactors.y * g_displacementTextureArrayWindWaves.SampleLevel(LinearSampler, float3(UVForCascade1, 1.0), 0.0).xyz;
-    displacement += cascadeBlendingFactors.z == 0 ? float3(0, 0, 0) : cascadeBlendingFactors.z * g_displacementTextureArrayWindWaves.SampleLevel(LinearSampler, float3(UVForCascade2, 2.0), 0.0).xyz;
-    displacement += cascadeBlendingFactors.w == 0 ? float3(0, 0, 0) : cascadeBlendingFactors.w * g_displacementTextureArrayWindWaves.SampleLevel(LinearSampler, float3(UVForCascade3, 3.0), 0.0).xyz;
-    displacement += g_displacementTextureLocalWaves.SampleLevel(LinearSampler, UVForLocalWaves, 0.0).xyz;
-    float3 worldspacePositionDisplaced = worldspacePositionUndisplaced + displacement;
-
-    // Output
-    DS_OUTPUT Output;
-    Output.UVForCascade01.xy = UVForCascade0;
-    Output.UVForCascade01.zw = UVForCascade1;
-    Output.UVForCascade23.xy = UVForCascade2;
-    Output.UVForCascade23.zw = UVForCascade3;
-    Output.UVForLocalWaves = UVForLocalWaves;
-    Output.cascadeBlendingFactors = cascadeBlendingFactors;
-    Output.worldspacePositionDisplaced = worldspacePositionDisplaced;
-    Output.worldspacePositionUndisplaced = worldspacePositionUndisplaced;
-
-    return Output;
-}
-
-float3 CombineMoments(float2 FirstOrderMomentsA, float2 FirstOrderMomentsB, float3 SecondOrderMomentsA, float3 SecondOrderMomentsB)
-{
-    return float3(
-        SecondOrderMomentsA.x + SecondOrderMomentsB.x + 2.0 * FirstOrderMomentsA.x * FirstOrderMomentsB.x,
-        SecondOrderMomentsA.y + SecondOrderMomentsB.y + 2.0 * FirstOrderMomentsA.y * FirstOrderMomentsB.y,
-        SecondOrderMomentsA.z + SecondOrderMomentsB.z + FirstOrderMomentsA.x * FirstOrderMomentsB.y + FirstOrderMomentsA.y * FirstOrderMomentsB.x);
-}
-
-SURFACE_PARAMETERS GFSDK_WaveWorks_GetSurfaceParameters(DS_OUTPUT In)
-{
-    // Reading the gradient/surface folding data from texture array for wind simulation and from texture for local waves
-    float4 gradFold0 = g_gradientsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade01.xy, 0.0));
-    float4 gradFold1 = g_gradientsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade01.zw, 1.0));
-    float4 gradFold2 = g_gradientsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade23.xy, 2.0));
-    float4 gradFold3 = g_gradientsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade23.zw, 3.0));
-    float4 localWavesGradFold = g_gradientsTextureLocalWaves.Sample(LinearSampler, In.UVForLocalWaves);
-
-    // Reading the second order moments from texture array
-    float3 secondOrderMoments0 = g_momentsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade01.xy, 0.0)).xyz;
-    float3 secondOrderMoments1 = g_momentsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade01.zw, 1.0)).xyz;
-    float3 secondOrderMoments2 = g_momentsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade23.xy, 2.0)).xyz;
-    float3 secondOrderMoments3 = g_momentsTextureArrayWindWaves.Sample(LinearSampler, float3(In.UVForCascade23.zw, 3.0)).xyz;
-
-    // Read the lowest LOD second order moments from texture array
-    float3 secondOrderMomentsLowestLOD0 = g_momentsTextureArrayWindWaves.SampleLevel(LinearSampler, float3(0.0, 0.0, 0.0), 20.0).xyz;
-    float3 secondOrderMomentsLowestLOD1 = g_momentsTextureArrayWindWaves.SampleLevel(LinearSampler, float3(0.0, 0.0, 1.0), 20.0).xyz;
-    float3 secondOrderMomentsLowestLOD2 = g_momentsTextureArrayWindWaves.SampleLevel(LinearSampler, float3(0.0, 0.0, 2.0), 20.0).xyz;
-    float3 secondOrderMomentsLowestLOD3 = g_momentsTextureArrayWindWaves.SampleLevel(LinearSampler, float3(0.0, 0.0, 3.0), 20.0).xyz;
-
-    // Splitting data from textures to meaningfully named variables
-    float2 firstOrderMoments0 = gradFold0.xy;
-    float2 firstOrderMoments1 = gradFold1.xy;
-    float2 firstOrderMoments2 = gradFold2.xy;
-    float2 firstOrderMoments3 = gradFold3.xy;
-    float2 localWavesGradients = localWavesGradFold.xy;
-
-    float surfaceFolding0 = gradFold0.z;
-    float surfaceFolding1 = gradFold1.z;
-    float surfaceFolding2 = gradFold2.z;
-    float surfaceFolding3 = gradFold3.z;
-    float localWavesSurfaceFolding = localWavesGradFold.z;
-
-    float foamEnergy0 = gradFold0.w;
-    float foamEnergy1 = gradFold1.w;
-    float foamEnergy2 = gradFold2.w;
-    float foamEnergy3 = gradFold3.w;
-    float localWavesFoamEnergy = localWavesGradFold.w;
-
-    // Combining gradients (first order moments) from all the cascades and the local waves to calculate normal
-    float2 gradients =
-        firstOrderMoments0 * In.cascadeBlendingFactors.x +
-        firstOrderMoments1 * In.cascadeBlendingFactors.y +
-        firstOrderMoments2 * In.cascadeBlendingFactors.z +
-        firstOrderMoments3 * In.cascadeBlendingFactors.w +
-        localWavesGradients;
-    float3 normal = normalize(float3(gradients, 1.0));
-
-    // Calculating foam energy
-    float energyC2CScale = 0.7 / sqrt(g_cascadeToCascadeScale);
-    float foamEnergy =
-        100.0 * foamEnergy0 *
-        lerp(energyC2CScale, foamEnergy1, In.cascadeBlendingFactors.y) *
-        lerp(energyC2CScale, foamEnergy2, In.cascadeBlendingFactors.z) *
-        lerp(energyC2CScale, foamEnergy3, In.cascadeBlendingFactors.w) +
-        localWavesFoamEnergy;
-
-    // Calculating surface folding and wave hats
-    float surfaceFolding =
-        max(-100.0,
-            (1.0 - surfaceFolding0) +
-            (1.0 - surfaceFolding1) +
-            (1.0 - surfaceFolding2) +
-            (1.0 - surfaceFolding3) +
-            (1.0 - localWavesSurfaceFolding));
-
-    float waveHatsC2CScale = 0.5;
-    float foamWaveHats =
-        10.0 * (-g_windWavesFoamWhitecapsThreshold +
-            (1.0 - surfaceFolding0) +
-            (1.0 - surfaceFolding1) * waveHatsC2CScale +
-            (1.0 - surfaceFolding2) * waveHatsC2CScale * waveHatsC2CScale +
-            (1.0 - surfaceFolding3) * waveHatsC2CScale * waveHatsC2CScale * waveHatsC2CScale +
-            (1.0 - localWavesSurfaceFolding - g_localWavesFoamWhitecapsThreshold));
-
-    float4 cascadeBlendingFactorsSquared = In.cascadeBlendingFactors * In.cascadeBlendingFactors;
-
-    // Fading second order moments to lowest LOD (single values) where cascades fade out
-    secondOrderMoments0 = cascadeBlendingFactorsSquared.x * secondOrderMoments0 + (1.0 - cascadeBlendingFactorsSquared.x) * secondOrderMomentsLowestLOD0;
-    secondOrderMoments1 = cascadeBlendingFactorsSquared.y * secondOrderMoments1 + (1.0 - cascadeBlendingFactorsSquared.y) * secondOrderMomentsLowestLOD1;
-    secondOrderMoments2 = cascadeBlendingFactorsSquared.z * secondOrderMoments2 + (1.0 - cascadeBlendingFactorsSquared.z) * secondOrderMomentsLowestLOD2;
-    secondOrderMoments3 = cascadeBlendingFactorsSquared.w * secondOrderMoments3 + (1.0 - cascadeBlendingFactorsSquared.w) * secondOrderMomentsLowestLOD3;
-
-    // Fading first order moments to zero where cascades fade out
-    firstOrderMoments0 *= In.cascadeBlendingFactors.x;
-    firstOrderMoments1 *= In.cascadeBlendingFactors.y;
-    firstOrderMoments2 *= In.cascadeBlendingFactors.z;
-    firstOrderMoments3 *= In.cascadeBlendingFactors.w;
-
-    // Combining first and second order moments from all 4 cascades, step by step
-    float2 firstOrderMoments01 = firstOrderMoments0 + firstOrderMoments1;
-    float3 secondOrderMoments01 = CombineMoments(firstOrderMoments0, firstOrderMoments1, secondOrderMoments0, secondOrderMoments1);
-
-    float2 firstOrderMoments012 = firstOrderMoments01 + firstOrderMoments2;
-    float3 secondOrderMoments012 = CombineMoments(firstOrderMoments01, firstOrderMoments2, secondOrderMoments01, secondOrderMoments2);
-
-    float2 firstOrderMoments0123 = firstOrderMoments012 + firstOrderMoments3;
-    float3 secondOrderMoments0123 = CombineMoments(firstOrderMoments012, firstOrderMoments3, secondOrderMoments012, secondOrderMoments3);
-
-    // Combining with first order moments of local waves
-    float2 firstOrderMoments0123L = firstOrderMoments0123 + localWavesGradients;
-    float3 secondOrderMoments0123L = CombineMoments(firstOrderMoments0123, localWavesGradients, secondOrderMoments0123, float3(localWavesGradients.xy * localWavesGradients.xy, localWavesGradients.x * localWavesGradients.y));
-
-    // Combining lowest LOD second order moments, fading in where simulation cascades fade out
-    float2 secondOrderMomentsLowestLOD =
-        secondOrderMomentsLowestLOD0.xy * (1.0 - cascadeBlendingFactorsSquared.x) +
-        secondOrderMomentsLowestLOD1.xy * (1.0 - cascadeBlendingFactorsSquared.y) +
-        secondOrderMomentsLowestLOD2.xy * (1.0 - cascadeBlendingFactorsSquared.z) +
-        secondOrderMomentsLowestLOD3.xy * (1.0 - cascadeBlendingFactorsSquared.w) +
-        localWavesGradients * localWavesGradients;
-
-    // Output
-    SURFACE_PARAMETERS Output;
-    Output.normal = normal;
-    Output.foamSurfaceFolding = surfaceFolding;
-    Output.foamEnergy = foamEnergy;
-    Output.foamWaveHats = foamWaveHats;
-    Output.firstOrderMoments = firstOrderMoments0123L;
-    Output.secondOrderMomentsLowestLOD = secondOrderMomentsLowestLOD;
-    Output.secondOrderMoments = secondOrderMoments0123L;
-    return Output;
-}
-
-// ... [여기에 GetFoam 및 기타 필요한 헬퍼 함수들을 추가]
-
-float GetFoam(float3 worldspacePosition, SURFACE_PARAMETERS surfParams)
-{
-    float foamDensityMapLowFrequency = g_textureFoam.Sample(LinearSampler, worldspacePosition.xy * 0.04).x - 1.0;
-    float foamDensityMapHighFrequency = g_textureFoam.Sample(LinearSampler, worldspacePosition.xy * 0.15).x - 1.0;
-
-    float foamDensity = saturate(foamDensityMapHighFrequency + min(3.5, 1.0 * surfParams.foamEnergy - 0.2));
-    foamDensity += (foamDensityMapLowFrequency + min(1.5, 1.0 * surfParams.foamEnergy));
-
-    foamDensity -= 0.1 * saturate(-surfParams.foamSurfaceFolding);
-    foamDensity = max(0, foamDensity);
-    foamDensity *= 1.0 + 0.8 * saturate(surfParams.foamSurfaceFolding);
-
-    return saturate(foamDensity);
-}
-// ---------------------------------------------------------------------------
-// Vertex Shader
-// ---------------------------------------------------------------------------
-VS_OUT VS_MAIN(VS_IN input)
-{
-    VS_OUT output = (VS_OUT)0;
-
-    float3 worldPosition = GFSDK_WaveWorks_GetUndisplacedVertexWorldPosition(input);
-    float4 worldPos = mul(float4(worldPosition, 1.0), g_WorldMatrix);
-    float4 viewPos = mul(worldPos, g_ViewMatrix);
-
-    output.worldspacePosition = worldPos;
-
-    return output;
-}
-
-// ---------------------------------------------------------------------------
-// Hull Shader
-// ---------------------------------------------------------------------------
-HS_CONSTANTOUTPUT HS_Constant(InputPatch<VS_OUT, 3> input)
-{
-    HS_CONSTANTOUTPUT output;
-    output.edgeTessFactors[0] = GFSDK_WaveWorks_GetEdgeTessellationFactor(input[1].worldspacePosition, input[2].worldspacePosition);
-    output.edgeTessFactors[1] = GFSDK_WaveWorks_GetEdgeTessellationFactor(input[2].worldspacePosition, input[0].worldspacePosition);
-    output.edgeTessFactors[2] = GFSDK_WaveWorks_GetEdgeTessellationFactor(input[0].worldspacePosition, input[1].worldspacePosition);
-    output.insideTessFactor = (output.edgeTessFactors[0] + output.edgeTessFactors[1] + output.edgeTessFactors[2]) / 3.0;
-    return output;
-}
-
-[domain("tri")]
-[partitioning("fractional_odd")]
-[outputtopology("triangle_cw")]
-[patchconstantfunc("HS_Constant")]
-[outputcontrolpoints(3)]
-HS_OUTPUT HS_MAIN(InputPatch<VS_OUT, 3> input, uint uCPID : SV_OutputControlPointID)
-{
-    HS_OUTPUT output;
-    output.worldspacePosition = input[uCPID].worldspacePosition;
-    return output;
-}
-
-// ---------------------------------------------------------------------------
-// Domain Shader
-// ---------------------------------------------------------------------------
-[domain("tri")]
-DS_OUTPUT DS_MAIN(HS_CONSTANTOUTPUT HSConstantData, const OutputPatch<HS_OUTPUT, 3> input, float3 barycentricCoords : SV_DomainLocation)
-{
-    DS_OUTPUT output = GFSDK_WaveWorks_GetDisplacedVertexAfterTessellation(input[0].worldspacePosition, input[1].worldspacePosition, input[2].worldspacePosition, barycentricCoords);
-
-    float4 worldPos = float4(output.worldspacePositionDisplaced, 1.0);
-    float4 viewPos = mul(worldPos, g_ViewMatrix);
-    output.clipSpacePosition = mul(viewPos, g_ProjMatrix);
-
-    return output;
-}
-
-// ---------------------------------------------------------------------------
-// Pixel Shader
-// ---------------------------------------------------------------------------
 
 struct PS_OUT
 {
-    vector vColor : SV_TARGET0;
-    //vector vNormal : SV_TARGET1;
-    //vector vDepth : SV_TARGET2;
-    //vector vSpecular : SV_TARGET3;
-    //vector vEmissive : SV_TARGET4;
-    //vector vRoughness : SV_TARGET5;
-    //vector vMetalic : SV_TARGET6;
-    //float2 vVelocity : SV_TARGET7;
+	vector		vDiffuse : SV_TARGET0;
+	vector		vNormal : SV_TARGET1;
+	vector		vDepth : SV_TARGET2;
+	vector		vSpecular : SV_TARGET3;
+	vector		vEmissive : SV_TARGET4;
+	vector		vRoughness : SV_TARGET5;
+	vector		vMetalic : SV_TARGET6;
+
 };
 
 
-PS_OUT PS_MAIN(DS_OUTPUT input)
+PS_OUT PS_MAIN(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT)0;
+	PS_OUT Out = (PS_OUT)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+	vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
 
-    SURFACE_PARAMETERS surfaceParameters = GFSDK_WaveWorks_GetSurfaceParameters(input);
-    float foamIntensity = GetFoam(input.worldspacePositionUndisplaced, surfaceParameters);
+	float3 vNormal;
+	if (g_bNormal)
+	{
+		vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+	}
+	else
+	{
+		vNormal = In.vNormal.xyz * 2.f - 1.f;
+	}
 
-    float3 worldSpaceEyePos = mul(g_eyePos, g_WorldMatrix).xyz;
-    float3 viewDir = normalize(worldSpaceEyePos - input.worldspacePositionDisplaced);
-    float3 lightDir = normalize(g_sunDirection);
-    float3 halfVec = normalize(viewDir + lightDir);
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	if (g_bSpecular) Out.vSpecular = vSpecular;
 
-    float3 normal = surfaceParameters.normal;
+	// 디퓨즈 맵을 사용하여 러프니스 계산
+	float intensity = dot(vDiffuse.rgb, float3(0.299, 0.587, 0.114));
+	float calculatedRoughness = 1.0 - intensity;
 
-    // 기본 물 색상
-    float3 waterColor = float3(0.0, 0.3, 0.5);
+	// 아티스트 조정 가능한 파라미터 (셰이더 상수로 설정 가능)
+	float baseRoughness = 0.8;
+	float roughnessContrast = 2.0;
 
-    // 프레넬 효과
-    float fresnel = pow(1.0 - saturate(dot(viewDir, normal)), 5.0);
+	// 최종 러프니스 계산
+	float finalRoughness = saturate(baseRoughness + (calculatedRoughness - 0.5) * roughnessContrast);
 
-    // 반사
-    float3 reflection = g_textureDynamicSkyDome.Sample(LinearSampler, reflect(-viewDir, normal).xy * 0.5 + 0.5).rgb;
+	vector vMetalic = g_MetalicTexture.Sample(LinearSampler, In.vTexcoord);
+	vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
 
-    // 스페큘러
-    float specular = pow(max(dot(normal, halfVec), 0.0), 100.0);
+	if (g_bEmissive) Out.vEmissive = vEmissive;
+	if (g_bRoughness) Out.vRoughness = 0.01f/*vector(finalRoughness, finalRoughness, finalRoughness, 1.0)*/;
+	if (g_bMetalic) Out.vMetalic = 1.f - vMetalic;
 
-    // 최종 색상 조합
-    float3 finalColor = lerp(waterColor, reflection, fresnel);
-    finalColor += g_sunIntensity * specular * float3(1.0, 0.9, 0.7);
-    finalColor = lerp(finalColor, float3(1.0, 1.0, 1.0), foamIntensity);
+	//if (g_Red == g_Test)
+	//{
+	//	Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	//}
 
-    Out.vColor = float4(1.f, 0.f, 1.f, 1.0);
-    //Out.vNormal = vector(0.f, 1.f, 0.f, 1.f);
-    //Out.vDepth = vector(1, 1, 0.0f, 1.f);
 
-    return Out;
+	return Out;
 }
-// ---------------------------------------------------------------------------
-// Techniques
-// ---------------------------------------------------------------------------
+
+
+
+struct PS_IN_LIGHTDEPTH
+{
+	float4		vPosition : SV_POSITION;
+	float2		vTexcoord : TEXCOORD0;
+	float4		vProjPos : TEXCOORD1;
+};
+
+struct PS_OUT_LIGHTDEPTH
+{
+	vector		vLightDepth : SV_TARGET0;
+};
+
+PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
+{
+	PS_OUT_LIGHTDEPTH		Out = (PS_OUT_LIGHTDEPTH)0;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.0f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT PS_DISSOLVE(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector vNoise = g_NoiseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vNoise.r < g_fAccTime)
+	{
+		discard;
+	}
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	vector		vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+	vector		vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+	float3		vNormal = vNormalDesc.xyz * 2.f - 1.f;
+
+	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+
+	vNormal = mul(vNormal, WorldMatrix);
+
+
+
+	Out.vDiffuse = vDiffuse/* * 0.9f*/;
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	Out.vSpecular = g_vMtrlSpecular;
+
+	//Out.vEmissive = 0.5f;
+	/*if (g_Red == 0 || g_Red == 29)
+	{
+		Out.vDiffuse = vector(1.f, 0.f, 0.f, 1.f);
+	}*/
+	return Out;
+}
+
+
+PS_OUT PS_WIREFRAME(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vDiffuse = vector(0.f, 0.f, 1.f, 1.f);
+
+	return Out;
+}
+
+struct PS_OUT_AB
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_AB PS_ALPHABLEND(PS_IN In)
+{
+	PS_OUT_AB Out = (PS_OUT_AB)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	Out.vColor = vDiffuse;
+	Out.vColor.a = 0.2f;
+
+	return Out;
+
+}
+
+struct PS_OUT_BLOOM
+{
+	vector		vColor : SV_TARGET0;
+
+};
+
+PS_OUT_BLOOM PS_BLOOM(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	// 노멀 맵 샘플링 및 블렌딩
+	float3 vNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord).xyz * 2.0f - 1.0f;
+	float3x3 TBN = float3x3(normalize(In.vTangent.xyz), normalize(In.vBinormal.xyz), normalize(In.vNormal.xyz));
+	vNormal = mul(vNormal, TBN);
+
+	// 포인트 라이트 계산
+	float3 lightDir = g_vLightPosition.xyz - In.vWorldPos.xyz;
+	float fDistance = length(lightDir);
+	lightDir = normalize(lightDir);
+	float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
+
+	// 뷰 방향 계산
+	float3 viewDir = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
+
+	// PBR 계산을 위한 변수들
+	float roughness = g_fRoughness;
+	float metallic = 0.02;
+	float3 halfVec = normalize(lightDir + viewDir);
+	float NdotV = max(dot(vNormal, viewDir), 0.001);
+	float NdotL = max(dot(vNormal, lightDir), 0.001);
+	float NdotH = max(dot(vNormal, halfVec), 0.001);
+	float HdotV = max(dot(halfVec, viewDir), 0.001);
+
+	// PBR 스페큘러 계산
+	float a = roughness * roughness;
+	float D = a / (3.141592 * pow(NdotH * NdotH * (a - 1.0) + 1.0, 2.0));
+	float F0 = lerp(0.04, 1.0, metallic);
+	float F = F0 + (1.0 - F0) * pow(1.0 - HdotV, 5.0);
+	float specular = D * F * fAtt;
+
+	// 물의 특성을 고려한 추가적인 스페큘러
+	float waterSpecular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 256.0) * 0.5;
+
+	// 프레넬 효과
+	float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 5.0);
+	fresnel = saturate(fresnel * g_fFresnelStrength);
+
+	// 스페큘러 블룸 계산
+	float3 specularBloom = (specular + waterSpecular) * g_vLightSpecular.rgb * g_fBloomIntensity * 5.0; // 스페큘러 강조
+
+	// 나머지 부분의 블룸 계산
+	float3 otherBloom = fresnel * g_vLightSpecular.rgb * g_fBloomIntensity;
+
+	// 최종 블룸 색상 계산
+	float3 bloomColor = specularBloom + otherBloom;
+
+	// 스페큘러 강도에 따른 알파값 계산
+	float specularIntensity = specular + waterSpecular;
+	float specularAlpha = saturate(specularIntensity * 10.0); // 스페큘러에 대한 알파값 강조
+
+	// 전체적인 휘도에 따른 알파값 계산
+	float luminance = dot(bloomColor, float3(0.299, 0.587, 0.114));
+	float overallAlpha = saturate(luminance);
+
+	// 최종 알파값 (스페큘러 알파와 전체 알파 중 큰 값 선택)
+	float finalAlpha = max(specularAlpha, overallAlpha);
+
+	// 스페큘러 값에 따라 RGB 2배 증가
+	if (specularIntensity > g_fBloomThreshold)
+	{
+		bloomColor *= 2.0;
+	}
+
+	// 최종 출력
+	Out.vColor = float4(bloomColor, finalAlpha);
+	return Out;
+}
+PS_OUT PS_CARD(PS_IN In)
+{
+	PS_OUT Out = (PS_OUT)0;
+
+	// 텍스처 좌표 조정
+	float2 adjustedTexcoord = In.vTexcoord;
+
+	// g_TextureNum에 따라 텍스처의 다른 부분 선택
+	float startY, endY;
+	if (g_TextureNum == 0)
+	{
+		startY = 0.0f;
+		endY = 0.37f;
+	}
+	else if (g_TextureNum == 1)
+	{
+		startY = 0.37f;
+		endY = 0.68f;
+	}
+	else // g_TextureNum == 2 또는 그 외의 경우
+	{
+		startY = 0.68f;
+		endY = 1.0f;
+	}
+
+	// 선택된 범위 내에서 텍스처 좌표 조정
+	adjustedTexcoord.y = startY + (endY - startY) * adjustedTexcoord.y;
+
+	vector vColor = g_DiffuseTexture.Sample(PointSampler, adjustedTexcoord);
+
+	if (vColor.a < 0.1f)
+		discard;
+
+	if (g_bDiffuse)
+	{
+		Out.vDiffuse = vColor;
+	}
+
+	float3 vNormal;
+	vNormal = In.vNormal.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+
+	return Out;
+}
+
+PS_OUT_BLOOM PS_MIRROR(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	Out.vColor = vColor;
+
+	return Out;
+}
+
+PS_OUT_BLOOM PS_LAGOON(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	// 노멀 맵 샘플링 및 블렌딩 (기존 코드 유지)
+	float2 flowTexCoord0 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.05, g_fAccTime * g_fFlowSpeed * 0.07);
+	float2 flowTexCoord1 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.03, -g_fAccTime * g_fFlowSpeed * 0.06);
+	float2 flowTexCoord2 = In.vTexcoord + float2(-g_fAccTime * g_fFlowSpeed * 0.04, g_fAccTime * g_fFlowSpeed * 0.08);
+	float3 vNormal0 = g_NormalTexture.Sample(LinearSampler, flowTexCoord0).xyz * 2.0f - 1.0f;
+	float3 vNormal1 = g_NormalTexture1.Sample(LinearSampler, flowTexCoord1).xyz * 2.0f - 1.0f;
+	float3 vNormal2 = g_NormalTexture2.Sample(LinearSampler, flowTexCoord2).xyz * 2.0f - 1.0f;
+	vNormal0 *= g_fNormalStrength0;
+	vNormal1 *= g_fNormalStrength1;
+	vNormal2 *= g_fNormalStrength2;
+	float3 vNormal = normalize(vNormal0 + vNormal1 + vNormal2);
+	float3x3 TBN = float3x3(normalize(In.vTangent.xyz), normalize(In.vBinormal.xyz), normalize(In.vNormal.xyz));
+	vNormal = mul(vNormal, TBN);
+
+	// 디퓨즈 텍스처 샘플링
+	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	// Caustic 효과 적용
+	float2 causticTexCoord = In.vTexcoord * 0.5 + float2(g_fAccTime * 0.03, g_fAccTime * 0.02);
+	float3 caustic = g_CausticTexture.Sample(LinearSampler, causticTexCoord).rgb;
+
+	// 포인트 라이트 계산
+	float3 lightDir = g_vLightPosition.xyz - In.vWorldPos.xyz;
+	float fDistance = length(lightDir);
+	lightDir = normalize(lightDir);
+	float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
+
+	// 뷰 방향 계산
+	float3 viewDir = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
+
+	// PBR 계산을 위한 변수들
+	float roughness = g_fRoughness;
+	float metallic = 0.02; // 물은 약간의 금속성을 가질 수 있습니다.
+
+	float3 halfVec = normalize(lightDir + viewDir);
+	float NdotV = max(dot(vNormal, viewDir), 0.001);
+	float NdotL = max(dot(vNormal, lightDir), 0.001);
+	float NdotH = max(dot(vNormal, halfVec), 0.001);
+	float HdotV = max(dot(halfVec, viewDir), 0.001);
+
+	// PBR 공식 적용
+	float a = roughness * roughness;
+	float a2 = a * a;
+	float D = a2 / (3.141592 * pow(NdotH * NdotH * (a2 - 1.0) + 1.0, 2.0));
+
+	float G1 = 2.0 * NdotH / (NdotH + sqrt(a2 + (1.0 - a2) * NdotH * NdotH));
+	float G = G1 * G1;
+
+	float F0 = lerp(0.04, 1.0, metallic);
+	float F = F0 + (1.0 - F0) * pow(1.0 - HdotV, 5.0);
+
+	float specular = (D * F * G) / (4.0 * NdotV * NdotL + 0.001);
+
+	// 최종 라이팅 계산
+	float3 ambientLight = g_vLightAmbient.rgb * g_vMtrlAmbient.rgb;
+	float3 diffuseLight = g_vLightDiffuse.rgb * NdotL * (1.0 - metallic);
+	float3 specularLight = g_vLightSpecular.rgb * specular;
+
+	float3 finalLight = (ambientLight + (diffuseLight + specularLight) * fAtt);
+	float3 finalColor = vMtrlDiffuse.rgb * finalLight;
+
+	// 물의 특성을 고려한 추가적인 스페큘러
+	float waterSpecular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 256.0) * 0.5;
+	finalColor += waterSpecular * g_vLightSpecular.rgb;
+
+	// 깊이에 따른 색상 변화
+	float depthFactor = saturate(g_fWaterDepth / 5.0f);
+	float3 deepColor = float3(0.0f, 0.2f, 0.3f);  // 깊은 물의 색상
+	finalColor = lerp(finalColor, deepColor, depthFactor);
+
+	// Caustic 효과를 최종 색상에 적용
+	finalColor *= (1 + caustic * g_fCausticStrength);
+
+	// 프레넬 효과 (선택적)
+	float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 5.0);
+	fresnel = saturate(fresnel * g_fFresnelStrength);
+	finalColor = lerp(finalColor, g_vLightSpecular.rgb, fresnel);
+
+	// 최종 색상을 Out.vColor에 저장
+	Out.vColor = float4(finalColor, g_fWaterAlpha);
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
-      pass WaterPass
-    {
-       SetRasterizerState(RS_Wireframe);
-       SetDepthStencilState(DSS_None_Test_None_Write, 0);
-       SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+	pass DefaultPass_0
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-       /* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-       VertexShader = compile vs_5_0 VS_MAIN();
-       GeometryShader = NULL;
-       HullShader = compile hs_5_0 HS_MAIN();
-       DomainShader = compile ds_5_0 DS_MAIN();
-       PixelShader = compile ps_5_0 PS_MAIN();
-    }
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
 
+	pass LightDepth_1
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
+		VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
+	}
+
+		pass Dissolve_2
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_DISSOLVE();
+	}
+
+		pass WireFrame_3
+	{
+		SetRasterizerState(RS_Wireframe);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_WIREFRAME();
+	}
+
+		pass AlphaBlend_4
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ALPHABLEND();
+
+	}
+
+		pass Bloom_5
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BLOOM();
+	}
+
+	pass Card_6
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_CARD();
+	}
+
+	pass Lagoon_7
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_LAGOON();
+	}
+
+		pass Mirror
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MIRROR();
+	}
 }
+

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "GameObject.h"
+#include "BlendObject.h"
 
 BEGIN(Engine)
 class CShader;
@@ -10,7 +10,7 @@ END
 
 BEGIN(Client)
 
-class CMap_Element : public CGameObject
+class CMap_Element : public CBlendObject
 {
 public:
 	

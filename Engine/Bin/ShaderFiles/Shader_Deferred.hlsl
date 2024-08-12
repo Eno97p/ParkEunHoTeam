@@ -48,6 +48,13 @@ float      g_fFogTimeOffset2;
 float      g_fNoiseSize2;
 float      g_fNoiseIntensity2;
 
+//이민영 추가 240811 2121PM
+texture2D g_CausticTexture;
+float g_fWaveStrength = 0.02f;  // 리플렉션 파동 강도
+float g_fWaveFrequency = 5.0f;  // 리플렉션 파동 주파수
+float g_fWaveTimeOffset = 1.0f;
+float g_fFresnelPower = 5.0f;  // 리플렉션 파동 주파수
+
 texture2D   g_Texture;
 texture2D   g_MaskTexture;
 texture2D   g_NormalTexture;
@@ -1318,20 +1325,54 @@ PS_OUT_DECAL PS_DECAL(PS_IN In)
 
 PS_OUT PS_REFLECTION(PS_IN In)
 {
-    PS_OUT		Out = (PS_OUT)0;
+    PS_OUT Out = (PS_OUT)0;
+    vector vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-    vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector		vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
-    vector      vReflection = g_EffectTexture.Sample(LinearSampler, float2((1.f - In.vTexcoord.x), In.vTexcoord.y));
-
-    if (vReflection.a != 0.f && vMirror.a != 0.f)
-    {
-        Out.vColor = vReflection;
-    }
-    else
+    if (vMirror.a < 0.1f)
     {
         Out.vColor = vDiffuse;
+        return Out;
     }
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+
+    // 월드 좌표 계산
+    vector vWorldPos;
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x;
+    vWorldPos.w = 1.f;
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    // 노말 벡터 계산
+    float3 normal = normalize(vNormalDesc.xyz * 2.f - 1.f);
+
+    // 뷰 벡터 계산
+    float3 viewDir = normalize(g_vCamPosition.xyz - vWorldPos.xyz);
+
+    // 수정된 프레넬 효과 계산
+    float NdotV = saturate(dot(normal, viewDir));
+    float fresnel = pow(max(0, NdotV), g_fFresnelPower);
+
+    // Caustic 노이즈를 이용한 파동 효과 계산
+    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * 0.5 * g_fWaveTimeOffset, g_Time * 0.7 * g_fWaveTimeOffset);
+    vector vCausticNoise = g_CausticTexture.Sample(LinearSampler, causticCoord);
+
+    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength + 0.3f;
+
+    // 노말 맵을 사용하여 파동 강도 조절
+    waveOffset *= length(normal.xy);
+
+    // 왜곡된 좌표로 리플렉션 텍스처 샘플링
+    float2 distortedCoord = float2((1.f - In.vTexcoord.x), In.vTexcoord.y) + waveOffset;
+    vector vReflection = g_EffectTexture.Sample(LinearSampler, distortedCoord);
+
+    // 프레넬 효과를 적용한 색상 블렌딩
+    Out.vColor = lerp(vDiffuse, vReflection, fresnel * vMirror.a);
 
     return Out;
 }

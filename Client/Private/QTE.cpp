@@ -41,9 +41,12 @@ void CQTE::Tick(_float fTimeDelta)
 		pBtn->Tick(fTimeDelta);
 
 	// Btn의 m_isScore가 전부 true일 때 모든 Btn의 score 값을 받아와서 Bad가 하나라도 있으면 실패 처리? 그리고 없애버리기!
+	// 체크하고 없애는 코드 필요 > 추후 Andras와 연결 필요
 
-
-
+	if (Check_End())
+	{
+		Check_ResultScore();
+	}
 }
 
 void CQTE::Late_Tick(_float fTimeDelta)
@@ -97,6 +100,37 @@ void CQTE::Start_BtnEvent()
 		else
 			++btn;
 	}
+}
+
+_bool CQTE::Check_End()
+{
+	// 마지막 녀석이 End 되었으면 true 반환
+	vector<CUI_QTE_Btn*>::iterator btn = m_vecBtn.begin();
+	for (size_t i = 0; i < m_vecBtn.size() - 1; ++i)
+		++btn;
+
+	if ((*btn)->Get_isScore()) // 마지막 Btn의 점수가 났다면
+		return true;
+	else
+		return false;
+}
+
+void CQTE::Check_ResultScore()
+{
+	// Btn을 순회하며 Score를 체크하고 하나라도 Bad가 있으면 ~ / 통과했으면 ~ 기믹 처리 필요(Andras와 연결)
+	for (auto& pBtn : m_vecBtn)
+	{
+		if (pBtn->Get_ScoreType() == CUI_QTE_Btn::SCORE_BAD) // Bad가 하나라도 있으면 ~~~ 처리
+		{
+			// 두번째 녀석이 계속 Bad가 되는데???? >>> 진짜 얘만 자꾸 Bad가 됨 다른 애들은 괜찮은디
+
+
+			return; 
+		}
+	}
+
+	// 없으면 ~~~ 처리
+
 }
 
 CQTE* CQTE::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

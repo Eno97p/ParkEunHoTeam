@@ -27,6 +27,8 @@ private:
 	HRESULT Create_QteBtn();
 
 	void	Start_BtnEvent();
+	_bool	Check_End();
+	void	Check_ResultScore();
 
 public:
 	static CQTE*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

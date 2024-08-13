@@ -121,7 +121,6 @@ void CUIGroup_WeaponSlot::Reset_SlotTexture(SLOT_TYPE eSlotType)
 void CUIGroup_WeaponSlot::Reset_SlotIdx(SLOT_TYPE eSlotType)
 {
     // 인자로 들어온 SlotIdx를 size에 맞게 초기화해주기
-
     switch (eSlotType)
     {
     case Client::CUIGroup_WeaponSlot::SLOT_QUICK:

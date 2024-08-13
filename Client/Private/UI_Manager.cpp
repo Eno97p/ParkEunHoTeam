@@ -458,8 +458,16 @@ void CUI_Manager::Key_Input()
 			// QTE 생성 Prototype_GameObject_QTE
 
 			CQTE::GAMEOBJECT_DESC pQteDesc{};
-			
+
+			if (nullptr != m_pQTE)
+			{
+				Safe_Release(m_pQTE);
+				m_pQTE = nullptr;
+			}
+
 			m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
+
+			// 일정 시간 지나면 지가 알아서 지워지든가.. 아무튼 없애는 로직도 필요함(누수!)
 		}
 	}
 }
@@ -474,7 +482,8 @@ void CUI_Manager::Free()
 
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
-	//Safe_Release(m_pDash);
+	
+	Safe_Release(m_pQTE);
 	Safe_Release(m_pBroken);
 	Safe_Release(m_pScreenBlood);
 	Safe_Release(m_pGameInstance);

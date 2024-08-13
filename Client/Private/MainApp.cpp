@@ -167,6 +167,10 @@
 
 #pragma region QTE
 #include "UI_QTE_Btn.h"
+#include "UI_QTE_Ring.h"
+
+
+
 #include "QTE.h"
 #pragma endregion QTE
 
@@ -2128,6 +2132,10 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_QTE_Btn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_QTE_Ring*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Ring"),
+		CUI_QTE_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 

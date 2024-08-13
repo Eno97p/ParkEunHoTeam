@@ -35,10 +35,14 @@ void CQTE::Priority_Tick(_float fTimeDelta)
 
 void CQTE::Tick(_float fTimeDelta)
 {
+	for (auto& pBtn : m_vecBtn)
+		pBtn->Tick(fTimeDelta);
 }
 
 void CQTE::Late_Tick(_float fTimeDelta)
 {
+	for (auto& pBtn : m_vecBtn)
+		pBtn->Late_Tick(fTimeDelta);
 }
 
 HRESULT CQTE::Render()
@@ -48,11 +52,20 @@ HRESULT CQTE::Render()
 
 HRESULT CQTE::Create_QteBtn()
 {
-	CUI_QTE_Btn::UI_DESC{};
+	_uint iRand = (rand() % 3) + 1; // 1 ~ 3
 
-
-
-
+	CUI_QTE_Btn::UI_QTE_BTN_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	
+	for (size_t i = 0; i < iRand; ++i)
+	{
+		pDesc.iBtnIndex = i;
+		pDesc.fX = (_float)((rand() % (g_iWinSizeX >> 2)) + (g_iWinSizeX >> 1) * 0.5f) + i * 100.f;
+		pDesc.fY = (_float)((rand() % (g_iWinSizeY >> 2)) + (g_iWinSizeY >> 1) * 0.5f) + i * 100.f;
+		pDesc.fSizeX = 140.f; // 256
+		pDesc.fSizeY = 140.f;
+		m_vecBtn.emplace_back(dynamic_cast<CUI_QTE_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Btn"), &pDesc)));
+	}
 
 	return S_OK;
 }

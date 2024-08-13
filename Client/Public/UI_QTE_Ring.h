@@ -4,18 +4,19 @@
 
 BEGIN(Client)
 
-class CUI_QTE_Btn final : public CUI
+class CUI_QTE_Ring final : public CUI
 {
 public:
-	typedef struct UI_Qte_Btn_Desc : public UI_DESC
+	enum RING_TYPE { RING_RED = 0, RING_PINK, RING_BLUE, RING_GREEN, RING_END };
+	typedef struct UI_Ring_Desc : public UI_DESC
 	{
-		_uint iBtnIndex;
-	}UI_QTE_BTN_DESC;
+		RING_TYPE	eRingType;
+	}UI_RING_DESC;
 
 private:
-	CUI_QTE_Btn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CUI_QTE_Btn(const CUI_QTE_Btn& rhs);
-	virtual ~CUI_QTE_Btn() = default;
+	CUI_QTE_Ring(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CUI_QTE_Ring(const CUI_QTE_Ring& rhs);
+	virtual ~CUI_QTE_Ring() = default;
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -26,17 +27,14 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	_uint					m_iBtnNum = { 0 };
-	class CUI_QTE_Ring*		m_pRing = { nullptr };
+	RING_TYPE		m_eRingType = { RING_END };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
-	HRESULT	Create_Ring();
-
 public:
-	static CUI_QTE_Btn*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CUI_QTE_Ring*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject*	Clone(void* pArg) override;
 	virtual void			Free() override;
 };

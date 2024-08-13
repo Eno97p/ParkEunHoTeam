@@ -432,6 +432,9 @@
 #include "C:\Real3DProject\Client\Private\UI_QTE_Btn.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_QTE_Ring.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_ScreenBlood.cpp"
 
 

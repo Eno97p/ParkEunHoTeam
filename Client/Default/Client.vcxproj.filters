@@ -759,7 +759,7 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Meteor">
       <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
@@ -1642,9 +1642,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Ring.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2472,9 +2475,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Ring.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

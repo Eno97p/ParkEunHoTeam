@@ -21,7 +21,7 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	vector<class CUI_QTE_Btn*> m_vecBtn; // >>> Btn ¸é µÉµí?
+	vector<class CUI_QTE_Btn*> m_vecBtn;
 
 private:
 	HRESULT Create_QteBtn();

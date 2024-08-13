@@ -152,9 +152,6 @@ HRESULT CUI_QTE_Btn::Create_Ring()
 
 HRESULT CUI_QTE_Btn::Create_Score()
 {
-	// >>>>> 두 번째 Btn만 자꾸 Bad로 저장되는 오류 (여기서 m_eScoreType은 멀쩡히 저장됨. 다른 곳에서 뭔가 값이 이상하게 들어가는 듯)
-	// 분명 두 번째 Btn에 m_pScore를 만들어줄 때는 제대로 된 값이 있었는데 세 번째 Btn의 Score를 만들어주고 확인해보니 Bad로 변해잇는?
-	
 	CUI_QTE_Score::UI_SCORE_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.eScoreType = static_cast<CUI_QTE_Score::SCORE_TYPE>((_uint)m_eScoreType);

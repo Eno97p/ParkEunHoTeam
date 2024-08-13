@@ -94,8 +94,9 @@ void CQTE::Start_BtnEvent()
 			++btn;
 			if (btn == m_vecBtn.end())
 				return;
-
-			(*btn)->Set_Start(true);
+			
+			if(!(*btn)->Get_isScore())
+				(*btn)->Set_Start(true);
 		}
 		else
 			++btn;
@@ -122,7 +123,6 @@ void CQTE::Check_ResultScore()
 	{
 		if (pBtn->Get_ScoreType() == CUI_QTE_Btn::SCORE_BAD) // Bad가 하나라도 있으면 ~~~ 처리
 		{
-			// 두번째 녀석이 계속 Bad가 되는데???? >>> 진짜 얘만 자꾸 Bad가 됨 다른 애들은 괜찮은디
 
 
 			return; 

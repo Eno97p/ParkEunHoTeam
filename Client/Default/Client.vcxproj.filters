@@ -688,9 +688,6 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn">
       <UniqueIdentifier>{4ad03b4c-a384-4103-b3a8-f14df4213172}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
-      <UniqueIdentifier>{927f20e7-ac6f-419d-b35f-191ef3582a9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Ring">
       <UniqueIdentifier>{c99645d8-4ef8-4ae1-9c92-f523d21b7107}</UniqueIdentifier>
     </Filter>
@@ -762,6 +759,9 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
+      <UniqueIdentifier>{072a4605-069c-48c7-9c83-0e7243e45ef5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1649,6 +1649,9 @@
     <ClInclude Include="..\Public\UI_QTE_Ring.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Score.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2481,6 +2484,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Ring.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Score.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

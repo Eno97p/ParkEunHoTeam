@@ -40,6 +40,33 @@ void CUI_QTE_Ring::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Ring::Tick(_float fTimeDelta)
 {
+	// 점점 작아짐
+	m_fSizeX -= 10.f; // 10
+	m_fSizeY -= 10.f;
+	Setting_Position();
+
+	// Good보다 크면 : Bad
+	// Good ~ Perfect 사이면 Good
+	// Perfect ~ End 사이면 Perfect
+	// End보다 작으면 Bad > 이때는 애초에 사라질 것
+
+	if (m_fSizeX >= fGOOD)
+	{
+		m_eRingState = RS_BAD;
+	}
+	else if (m_fSizeX >= fPERFECT)
+	{
+		m_eRingState = RS_GOOD;
+	}
+	else if (m_fSizeX >= fEND)
+	{
+		m_eRingState = RS_PERFECT;
+	}
+	else
+	{
+		m_eRingState = RS_BAD;
+		m_isEnd = true;
+	}
 }
 
 void CUI_QTE_Ring::Late_Tick(_float fTimeDelta)
@@ -52,7 +79,7 @@ HRESULT CUI_QTE_Ring::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(8); // >>> 블룸 넣을 수 있으면 좋을 듯함
+	m_pShaderCom->Begin(8);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 

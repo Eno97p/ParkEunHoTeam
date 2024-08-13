@@ -7,6 +7,7 @@ BEGIN(Client)
 class CUI_QTE_Btn final : public CUI
 {
 public:
+	enum SCORE_TYPE { SCORE_PERFECT = 0, SCORE_GOOD, SCORE_BAD, SCORE_END };
 	typedef struct UI_Qte_Btn_Desc : public UI_DESC
 	{
 		_uint iBtnIndex;
@@ -18,6 +19,13 @@ private:
 	virtual ~CUI_QTE_Btn() = default;
 
 public:
+	_bool			Get_Start() { return m_isStart; }
+	void			Set_Start(_bool isStart) { m_isStart = isStart; }
+
+	_bool			Get_isScore() { return m_isScore; }
+	SCORE_TYPE		Get_ScoreType() { return m_eScoreType; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -26,14 +34,23 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool					m_isStart = { false };
+	_bool					m_isScore = { false }; // 끝나고 점수 매겨졌는지
 	_uint					m_iBtnNum = { 0 };
+
 	class CUI_QTE_Ring*		m_pRing = { nullptr };
+	class CUI_QTE_Score*	m_pScore = { nullptr };
+
+	SCORE_TYPE				m_eScoreType = { SCORE_END };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Ring();
+	HRESULT	Create_Score();
+	
+	void	Setting_ScoreType();
 
 public:
 	static CUI_QTE_Btn*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

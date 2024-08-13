@@ -35,8 +35,15 @@ void CQTE::Priority_Tick(_float fTimeDelta)
 
 void CQTE::Tick(_float fTimeDelta)
 {
+	Start_BtnEvent();
+
 	for (auto& pBtn : m_vecBtn)
 		pBtn->Tick(fTimeDelta);
+
+	// Btn의 m_isScore가 전부 true일 때 모든 Btn의 score 값을 받아와서 Bad가 하나라도 있으면 실패 처리? 그리고 없애버리기!
+
+
+
 }
 
 void CQTE::Late_Tick(_float fTimeDelta)
@@ -62,12 +69,34 @@ HRESULT CQTE::Create_QteBtn()
 		pDesc.iBtnIndex = i;
 		pDesc.fX = (_float)((rand() % (g_iWinSizeX >> 2)) + (g_iWinSizeX >> 1) * 0.5f) + i * 100.f;
 		pDesc.fY = (_float)((rand() % (g_iWinSizeY >> 2)) + (g_iWinSizeY >> 1) * 0.5f) + i * 100.f;
-		pDesc.fSizeX = 140.f; // 256
-		pDesc.fSizeY = 140.f;
+		pDesc.fSizeX = 256.f; // 512
+		pDesc.fSizeY = 256.f;
 		m_vecBtn.emplace_back(dynamic_cast<CUI_QTE_Btn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Btn"), &pDesc)));
 	}
 
 	return S_OK;
+}
+
+void CQTE::Start_BtnEvent()
+{
+	vector<CUI_QTE_Btn*>::iterator btn = m_vecBtn.begin();
+
+	while (true)
+	{
+		if (btn == m_vecBtn.end())
+			return;
+
+		if ((*btn)->Get_isScore())
+		{
+			++btn;
+			if (btn == m_vecBtn.end())
+				return;
+
+			(*btn)->Set_Start(true);
+		}
+		else
+			++btn;
+	}
 }
 
 CQTE* CQTE::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

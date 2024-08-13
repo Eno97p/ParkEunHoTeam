@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "UI_QTE_Ring.h"
+#include "UI_QTE_Score.h"
 
 CUI_QTE_Btn::CUI_QTE_Btn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
@@ -36,6 +37,9 @@ HRESULT CUI_QTE_Btn::Initialize(void* pArg)
 	if (FAILED(Create_Ring()))
 		return E_FAIL;
 
+	if (m_iBtnNum == 0)
+		m_isStart = true;
+
 	return S_OK;
 }
 
@@ -45,16 +49,42 @@ void CUI_QTE_Btn::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Btn::Tick(_float fTimeDelta)
 {
-	if (nullptr != m_pRing)
-		m_pRing->Tick(fTimeDelta);
+	if (m_isStart)
+	{
+		if (nullptr != m_pRing)
+		{
+			if (m_pGameInstance->Key_Down(DIK_RETURN) || m_pRing->Get_End())
+			{
+				Setting_ScoreType();
+
+				// Score UI 생성
+				if(nullptr == m_pScore)
+					Create_Score();
+
+				m_isStart = false;
+				m_isScore = true;
+			}
+
+			m_pRing->Tick(fTimeDelta);
+		}
+	}
+
+	if (nullptr != m_pScore)
+		m_pScore->Tick(fTimeDelta);
+
 }
 
 void CUI_QTE_Btn::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, SECOND);
 
-	if (nullptr != m_pRing)
-		m_pRing->Late_Tick(fTimeDelta);
+	if (nullptr != m_pRing && m_isStart) // 분기처리를 이걸로 하는게 아니고 m_isScore
+	{
+		m_pRing->Late_Tick(fTimeDelta); // >>> 얘도 그 첨부터 출력이 아니고 그~
+	}
+
+	if (nullptr != m_pScore)
+		m_pScore->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_QTE_Btn::Render()
@@ -107,18 +137,37 @@ HRESULT CUI_QTE_Btn::Bind_ShaderResources()
 
 HRESULT CUI_QTE_Btn::Create_Ring()
 {
-	// 
 	CUI_QTE_Ring::UI_RING_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.eRingType = static_cast<CUI_QTE_Ring::RING_TYPE>(m_iBtnNum);
 	pDesc.fX = m_fX;
 	pDesc.fY = m_fY;
-	pDesc.fSizeX = 512.f; // 512;
-	pDesc.fSizeY = 512.f;
+	pDesc.fSizeX = 800.f; // 512;
+	pDesc.fSizeY = 800.f;
 
 	m_pRing = dynamic_cast<CUI_QTE_Ring*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Ring"), &pDesc));
 
 	return S_OK;
+}
+
+HRESULT CUI_QTE_Btn::Create_Score()
+{
+	CUI_QTE_Score::UI_SCORE_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eScoreType = static_cast<CUI_QTE_Score::SCORE_TYPE>((_uint)m_eScoreType);
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY;
+	pDesc.fSizeX = 256.f; // 512
+	pDesc.fSizeY = 256.f;
+
+	m_pScore = dynamic_cast<CUI_QTE_Score*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Score"), &pDesc));
+
+	return S_OK;
+}
+
+void CUI_QTE_Btn::Setting_ScoreType()
+{
+	m_eScoreType = static_cast<SCORE_TYPE>((_uint)(m_pRing->Get_RingState()));
 }
 
 CUI_QTE_Btn* CUI_QTE_Btn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -152,4 +201,5 @@ void CUI_QTE_Btn::Free()
 	__super::Free();
 
 	Safe_Release(m_pRing);
+	Safe_Release(m_pScore);
 }

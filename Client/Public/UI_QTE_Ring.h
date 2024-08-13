@@ -6,8 +6,14 @@ BEGIN(Client)
 
 class CUI_QTE_Ring final : public CUI
 {
+	// 판정 좀 더 널널히 주고 속도 올리는 게 나을 거 같음
+	const _float fGOOD = 270.f; // 250
+	const _float fPERFECT = 200.f; // 180
+	const _float fEND = 140.f;
+
 public:
 	enum RING_TYPE { RING_RED = 0, RING_PINK, RING_BLUE, RING_GREEN, RING_END };
+	enum RING_STATE { RS_PERFECT = 0, RS_GOOD, RS_BAD, RS_END };
 	typedef struct UI_Ring_Desc : public UI_DESC
 	{
 		RING_TYPE	eRingType;
@@ -19,6 +25,11 @@ private:
 	virtual ~CUI_QTE_Ring() = default;
 
 public:
+	_bool			Get_End() { return m_isEnd; }
+	void			Set_End(_bool isEnd) { m_isEnd = isEnd; }
+	RING_STATE		Get_RingState() { return m_eRingState; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -27,7 +38,10 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool			m_isEnd = { false };
+
 	RING_TYPE		m_eRingType = { RING_END };
+	RING_STATE		m_eRingState = { RS_END };
 
 private:
 	HRESULT	Add_Components();

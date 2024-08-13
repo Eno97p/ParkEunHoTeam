@@ -26,6 +26,7 @@ public:
 	virtual void Tick(_float fTimeDelta) override;
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_Reflection() override;
 
 public:
 	_uint Get_ShaderPath() { return m_iShaderPath; }
@@ -90,13 +91,19 @@ public:
 	float m_fNoiseRemapLower = 0.650f;
 	float m_fNoiseRemapUpper = 1.000f;
 
-public:
+private:
 	float m_fCoarseStepSize = 10.0f;
 	float m_fFineStepSize = 1.f;
 	int m_iMaxCoarseSteps = 10;
 	int m_iMaxFineSteps = 64;
 	float m_fDensityThreshold = 0.1f;
 	float m_fAlphaThreshold = 0.98f;
+
+	//Reflection 최적화
+	_float m_fReflectionQuality = 0.01f; // 0.1 (낮음) ~ 1.0 (높음)
+	_float m_fReflectionOpacity = 1.f; // 0.0 (완전 투명) ~ 1.0 (불투명)
+	_float m_fReflectionDensityScale = 3.f; // 0.1 (엷음) ~ 1.0 (진함)
+	_float4 m_vBaseSkyColor = { 226.f / 255.f, 243.f / 255.f, 1.f, 1.f };
 
 
 public:

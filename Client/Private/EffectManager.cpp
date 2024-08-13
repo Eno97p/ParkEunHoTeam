@@ -70,6 +70,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Swing");
 		return E_FAIL;
 	}
+	if (FAILED(Load_Meteor()))
+	{
+		MSG_BOX("FAILED_Load_Meteor");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -272,7 +277,7 @@ HRESULT CEffectManager::Generate_Lazer(const _int iIndex, const _float4x4* BindM
 	{
 		CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Desc = m_Lazers[iIndex].get();
 		Desc->ShooterMat = BindMat;
-		CGameInstance::GetInstance()->Add_CloneObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("LayerLazer"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
 	}
 	return S_OK;
@@ -289,9 +294,18 @@ HRESULT CEffectManager::Generate_Swing(const _int iIndex, const _float4x4* BindM
 	{
 		CSwingEffect::SWINGEFFECT* Desc = m_Swings[iIndex].get();
 		Desc->ParentMat = BindMat;
-		CGameInstance::GetInstance()->Add_CloneObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Swing"), TEXT("Prototype_GameObject_SwingEffect"), Desc);
 	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Meteor(const _float4 vStartPos)
+{
+	CMeteor::METEOR_DESC* Desc = m_Meteor.get();
+	Desc->vTargetPos = vStartPos;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_Meteor"), TEXT("Prototype_GameObject_Meteor"), Desc);
 	return S_OK;
 }
 
@@ -586,6 +600,24 @@ HRESULT CEffectManager::Load_Swing()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_Meteor()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/Meteor.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_Meteor = make_shared<CMeteor::METEOR_DESC>();
+	inFile.read((char*)m_Meteor.get(), sizeof(CMeteor::METEOR_DESC));
+	inFile.close();
+
+	m_Meteor->vTargetPos = { 0.f,0.f,0.f,1.f };
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -706,6 +738,17 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CDefaultCylinder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Meteor"),
+		CMeteor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Core"),
+		CMeteor_Core::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Wind"),
+		CMeteor_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

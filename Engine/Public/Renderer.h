@@ -18,7 +18,7 @@ class CRenderer final : public CBase
 {
 public:
 	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLEND, RENDER_DECAL, RENDER_NONDECAL, RENDER_NONLIGHT, RENDER_BLEND, RENDER_MIRROR, RENDER_REFLECTION, RENDER_BLUR, RENDER_BLOOM, RENDER_DISTORTION, RENDER_UI, RENDER_END };
-	
+
 	typedef struct FOG_DESC
 	{
 		_float4 vFogColor;
@@ -111,6 +111,14 @@ public:
 		m_fFogBlendFactor = fogDesc.fFogBlendFactor;
 	}
 
+	void Set_ReflectionWave(_float strength, _float frequency, _float fWaveTimeOffset, _float fresnelPower, _uint CausticIdx)
+	{
+		m_fWaveStrength = strength;
+		m_fWaveFrequency = frequency;
+		m_fWaveTimeOffset = fWaveTimeOffset;
+		m_fFresnelPower = fresnelPower;
+		m_iCausticIdx = CausticIdx;
+	}
 	//ÀÌ¹Î¿µ Ãß°¡ 240711 2002PM
 private:
 	ID3D11Texture2D* m_pPrevDepthTexture = nullptr;
@@ -166,13 +174,13 @@ private:
 	_float m_fBRIS = 0.f;
 	_float m_fMirror = 0.f;
 
-	
+
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
 	_vector								m_vShadowFocus = XMVectorSet(0.f, 0.f, 0.f, 1.f);
 	_float								m_fShadowThreshold = 0.5f;
-	
+
 	//Fog
 private:
 	_float4 m_vFogColor = { 0.235f, 0.260f, 0.329f, 1.f };
@@ -189,6 +197,14 @@ private:
 	_float m_fNoiseSize2 = 0.1f;
 	_float m_fFogBlendFactor = 0.6;
 
+	//Reflection Wave
+	_float m_fWaveStrength = 0.6f;
+	_float m_fWaveFrequency = 0.6f;
+	_float m_fWaveTimeOffset = 1.f;
+	_float m_fFresnelPower = 5.f;
+	class CTexture* m_pCausticTex = { nullptr };
+	_uint m_iCausticIdx = 0;
+	
 private:
 	void Render_Priority();
 	void Render_ShadowObjects();
@@ -207,6 +223,7 @@ private:
 	void Render_Blur();
 	void Render_Bloom();
 	void Render_Distortion();
+	void Render_GodRay();
 	void Render_Final();
 	void Compute_HDR();
 

@@ -62,6 +62,9 @@ HRESULT CParticleMesh::Initialize(void* pArg)
 	case NEEDLE:
 		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Needle");
 		break;
+	case BUBBLE:
+		m_ModelPrototypeTag = TEXT("Prototype_Component_Model_Bubble_Mesh");
+		break;
 	}
 
 	if (FAILED(Add_Components(m_ModelPrototypeTag)))

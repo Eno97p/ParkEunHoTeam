@@ -16,6 +16,7 @@
 #include "HealEffect.h"
 #include "SwingEffect.h"
 #include "AndrasLazer.h"
+#include "Meteor.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -36,6 +37,8 @@ public:
 	void Tick(_float fTimiedelta);
 private:
 	void Model_Change();
+private:
+	void Sound_Tool(_bool* Open);
 
 private:	//for FileSystem
 	void Load_Texture();
@@ -59,6 +62,13 @@ private:	//for FileSystem
 		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".jpg") ||
 			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".JPG") ||
 			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".bmp");
+	}
+	bool Is_SoundFile(const string& filename)
+	{
+		return (filename.size() >= 4 && filename.substr(filename.size() - 4) == ".mp3") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".OGG") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".wav") ||
+			(filename.size() >= 4 && filename.substr(filename.size() - 4) == ".ogg");
 	}
 
 
@@ -146,6 +156,11 @@ private:
 	void Swing_ListBox(CSwingEffect::SWINGEFFECT* Swing);
 	HRESULT Save_Swing();
 	HRESULT Load_Swing();
+
+private:
+	void Meteor_Tool(_bool* Open);
+	HRESULT Save_Meteor(CMeteor::METEOR_DESC* pMeteor);
+	HRESULT Load_Meteor(CMeteor::METEOR_DESC* pMeteor);
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -199,6 +214,7 @@ private:
 	vector<string> ModelName;
 	_int CurModel = 0;
 
+	_bool bShow[20];
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

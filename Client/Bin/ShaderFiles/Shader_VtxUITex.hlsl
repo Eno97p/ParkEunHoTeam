@@ -37,7 +37,7 @@ VS_OUT VS_MAIN(VS_IN In)
 	matWV = mul(g_WorldMatrix, g_ViewMatrix);
 	matWVP = mul(matWV, g_ProjMatrix);
 
-	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);		
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexcoord = In.vTexcoord;
 
 	return Out;
@@ -207,6 +207,20 @@ PS_OUT PS_HUD(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_BUFFTIMER(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	if (Out.vColor.a < 0.1f)
+		discard;
+
+	if (In.vTexcoord.x > (1.f - g_CurrentRatio) * g_HudRatio + (1.f - g_HudRatio) * 0.5f)
+		discard;
+
+	return Out;
+}
+
 PS_OUT PS_FADE(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -220,7 +234,7 @@ PS_OUT PS_FADE(PS_IN In)
 
 	if (g_bIsFadeIn)
 	{
-		if(fAlpha < (1.f - g_fAlphaTimer))
+		if (fAlpha < (1.f - g_fAlphaTimer))
 			Out.vColor.a = fAlpha;
 		else
 			Out.vColor.a = 1.f - g_fAlphaTimer;
@@ -344,7 +358,7 @@ PS_OUT PS_ALPHA(PS_IN In)
 	PS_OUT		Out = (PS_OUT)0;
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-	 // >> discard 안 해도 그대로?
+	// >> discard 안 해도 그대로?
 
 	return Out;
 }
@@ -505,6 +519,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_FADE_DASH();
+	}
+
+	pass HUD_12
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BUFFTIMER();
 	}
 }
 

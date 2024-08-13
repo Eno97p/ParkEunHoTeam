@@ -8,6 +8,9 @@
 #include "UIGroup_InvSub.h"
 #include "UIGroup_Quick.h"
 #include "UIGroup_WeaponSlot.h"
+#include "UIGroup_BuffTimer.h"
+
+#include "Player.h"
 
 CItemData::CItemData(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{pDevice, pContext}
@@ -72,13 +75,16 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	{
 	case Client::CItemData::ITEMNAME_CATALYST:
 	{
-		//Apply_UseCount(iInvenIdx);
 		// 얘는 0이 되어도 사라지지 않기
 		if (m_iCount > 0)
 		{
 			m_iCount -= 1;
-
 		}
+
+		// 체력 회복
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+		pPlayer->Add_Hp(100.f);
 
 		break;
 	}
@@ -91,21 +97,25 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	case Client::CItemData::ITEMNAME_BUFF1:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff0"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF2:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff1"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF3:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff2"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF4:
 	{
 		Apply_UseCount(iInvenIdx);
+		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff3"));
 		break;
 	}
 	case Client::CItemData::ITEMNAME_ESSENCE:
@@ -197,8 +207,8 @@ void CItemData::Set_DropItem_Data(CItem::ITEM_NAME eItemName)
 		m_eItemType = ITEMTYPE_USABLE;
 		m_eItemName = ITEMNAME_BUFF4;
 		m_wszItemName = TEXT("SIGIL OF ETHER");
-		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n저항력을 일시적으로 강화");
-		m_wszItemExplain_quick = TEXT("희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n저항력을 일시정으로 강화");
+		m_wszItemExplain = TEXT("희미한 빛의 수정 조각에 장착된\n수수께끼의 봉인구\n지구력을 일시적으로 강화");
+		m_wszItemExplain_quick = TEXT("희미한 빛의 수정 조각에 장착된 수수께끼의 봉인구\n지구력을 일시정으로 강화");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Item_Buff3");
 		break;
 	}
@@ -319,7 +329,7 @@ void CItemData::Set_Item_Data()
 	{
 		m_eItemType = ITEMTYPE_USABLE;
 		m_wszItemName = TEXT("Catalyst");
-		m_wszItemExplain = TEXT("체력템");
+		m_wszItemExplain = TEXT("왕의 축복이 깃든\n힘의 원천\n체력을 회복할\n수 있다.");
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Catalyst");
 		break;
 	}

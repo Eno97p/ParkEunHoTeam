@@ -535,6 +535,11 @@ _vector CGameInstance::Get_FogColor()
 	return m_pRenderer->Get_FogColor();
 }
 
+void CGameInstance::Set_ReflectionWave(_float strength, _float frequency, _float fWaveTimeOffset, _float fresnelPower, _uint CausticIdx)
+{
+	m_pRenderer->Set_ReflectionWave(strength, frequency, fWaveTimeOffset, fresnelPower, CausticIdx);
+}
+
 const _float4x4 * CGameInstance::Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
 	return m_pPipeLine->Get_Transform_float4x4(eState);
@@ -829,14 +834,16 @@ PxControllerManager* CGameInstance::GetControllerManager()
 	return m_pPhysX->GetControllerManager();
 }
 
-void CGameInstance::PlaySound_Z(const TCHAR* pSoundKey, CHANNELID eID, float fVolume)
+
+
+void CGameInstance::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch)
 {
-	m_pSound_Manager->PlaySound_Z(pSoundKey, eID, fVolume);
+	m_pSound_Manager->Play_Effect_Sound(pSoundKey, eID, fPosition, fPitch);
 }
 
-void CGameInstance::PlayBGM(const TCHAR* pSoundKey, float fVolume)
+void CGameInstance::PlayBGM(const TCHAR* pSoundKey)
 {
-	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
+	m_pSound_Manager->PlayBGM(pSoundKey);
 }
 
 void CGameInstance::StopAll()
@@ -847,6 +854,56 @@ void CGameInstance::StopAll()
 void CGameInstance::StopSound(CHANNELID eID)
 {
 	m_pSound_Manager->StopSound(eID);
+}
+
+void CGameInstance::Sound_Pause(CHANNELID eID, _bool bPause)
+{
+	m_pSound_Manager->Sound_Pause(eID, bPause);
+}
+
+void CGameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
+{
+	m_pSound_Manager->SetChannelVolume(eID, fVolume);
+}
+
+void CGameInstance::Set_Effect_Volume(_float fVolume)
+{
+	m_pSound_Manager->Set_Effect_Volume(fVolume);
+}
+
+void CGameInstance::Set_BGM_Volume(_float fVolume)
+{
+	m_pSound_Manager->Set_BGM_Volume(fVolume);
+}
+
+void CGameInstance::Set_Reverb_Param(_float roomSize, _float decayTime, _float wetMix)
+{
+	m_pSound_Manager->Set_Reverb_Param(roomSize, decayTime, wetMix);
+}
+
+void CGameInstance::Enable_Reverb()
+{
+	m_pSound_Manager->Enable_Reverb();
+}
+
+void CGameInstance::Disable_Reverb()
+{
+	m_pSound_Manager->Disable_Reverb();
+}
+
+void CGameInstance::Enable_Echo()
+{
+	m_pSound_Manager->Enable_Echo();
+}
+
+void CGameInstance::Disable_Echo()
+{
+	m_pSound_Manager->Disable_Echo();
+}
+
+void CGameInstance::Set_Echo_Param(_float delay,  _float wetLevel)
+{
+	m_pSound_Manager->Set_Echo_Param(delay, wetLevel);
 }
 
 HRESULT CGameInstance::Add_UI(CGameObject* ui, UISORT_PRIORITY type)

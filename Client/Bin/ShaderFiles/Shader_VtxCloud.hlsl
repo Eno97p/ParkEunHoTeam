@@ -47,6 +47,13 @@ float g_fNoiseRemapUpper;
 //Noise 3D
 texture3D g_3DNoiseTexture;
 
+//FOR REFLECTION
+float g_fReflectionPlaneHeight;
+float g_fReflectionQuality;
+float g_fReflectionOpacity;
+float g_fReflectionDensityScale;
+float4 g_vBaseSkyColor;
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -532,17 +539,116 @@ PS_OUT PS_TEX(VS_OUT In)
     cloudColor.a *= fadeFactor;
 
     // 알파값이 0이면 discard
-    if (cloudColor.a == 0.0)
+    if (cloudColor.a < 0.1f )
     {
         discard;
-        return Out;
     }
 
     float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
     cloudColor.rgb += ambient * (1.0 - cloudColor.a);
     cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2);
 
+    if (cloudColor.r < 0.5f)
+    {
+        discard;
+    }
     Out.vColor = cloudColor;
+    return Out;
+}
+
+PS_OUT PS_REFLECTION(VS_OUT In)
+{
+    PS_OUT Out = (PS_OUT)0;
+    float3 worldPos = In.vWorldPos;
+    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
+    float time = g_fAccTime;
+    const float MAX_DIST = 100.0;
+    float4 cloudColor = float4(0, 0, 0, 0);
+
+    // 구름의 중심점 정의 (x와 z만 사용)
+    float2 cloudCenter = float2(-71.919f, -49.122f);
+
+    // 현재 위치와 구름 중심 사이의 XZ 평면상의 거리 계산
+    float distFromCenter = length(worldPos.xz - cloudCenter);
+
+    // 최대 페이드 거리 (이 값은 돔의 크기에 따라 조정 필요)
+    float maxFadeDistance = 2800.f;
+
+    // XZ 평면상의 거리에 따른 페이드 팩터 계산 (0: 완전 투명, 1: 완전 불투명)
+    float fadeFactor = saturate(1.0 - (distFromCenter / maxFadeDistance));
+
+    // fadeFactor가 0이면 early out
+    if (fadeFactor == 0.0)
+    {
+        discard;
+        return Out;
+    }
+
+    // 대략적인 레이 마칭
+    float coarseT = 0.0;
+    float coarseDensity = 0.0;
+    for (int i = 0; i < g_iMaxCoarseSteps; i++)
+    {
+        float3 pos = worldPos + coarseT * viewDir;
+        coarseDensity = calculateCloudDensityFromTexture(pos, time) * g_fReflectionDensityScale;
+        if (coarseDensity > g_fDensityThreshold)
+            break;
+        coarseT += g_fCoarseStepSize;
+        if (coarseT > MAX_DIST)
+        {
+            discard;
+            return Out;
+        }
+    }
+
+    // 정밀한 레이 마칭 (적응형 샘플링)
+    float t = max(0, coarseT - g_fCoarseStepSize);
+    float3 currentPos = worldPos + t * viewDir;
+    float totalDensity = 0.0;
+    float stepSize = (coarseDensity > g_fDensityThreshold) ? g_fFineStepSize : g_fCoarseStepSize;
+    int maxSteps = (coarseDensity > g_fDensityThreshold) ? g_iMaxFineSteps : g_iMaxCoarseSteps;
+
+    [loop]
+        for (int j = 0; j < maxSteps; j++)
+        {
+            float density = calculateCloudDensityFromTexture(currentPos, time) * g_fReflectionDensityScale;
+            if (density > 0.01)
+            {
+                totalDensity += density * stepSize;
+                float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
+                float3 color = g_CloudColor * lightEnergy * density;
+                float transmittance = exp(-density * stepSize);
+                cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
+                cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
+                if (cloudColor.a > g_fAlphaThreshold) break;
+            }
+            currentPos += viewDir * stepSize;
+            t += stepSize;
+            if (t > MAX_DIST) break;
+        }
+
+    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
+
+    // 페이드 팩터 적용
+    cloudColor.a *= fadeFactor;
+
+    // 알파값이 낮으면 기본 하늘색 반환
+    if (cloudColor.a < 0.1f)
+    {
+        Out.vColor = float4(g_vBaseSkyColor.rgb, 0.5f);
+    }
+    else
+    {
+        float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+        cloudColor.rgb += ambient * (1.0 - cloudColor.a);
+        cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2) * 2.f;
+
+        // 반사에 대한 불투명도 조정
+        cloudColor.a *= g_fReflectionOpacity;
+
+        Out.vColor = cloudColor;
+    }
+
     return Out;
 }
 
@@ -564,7 +670,7 @@ technique11 DefaultTechnique
         pass Cloud_Tex
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0); // 깊이 쓰기 비활성화
+        SetDepthStencilState(DSS_None_Test_None_Write, 0); // 깊이 쓰기 비활성화
         SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -573,4 +679,18 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_TEX();
     }
+
+            pass CloudReflection
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0); // 깊이 테스트 활성화
+        SetBlendState(CloudBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_REFLECTION();
+    }
+
 }

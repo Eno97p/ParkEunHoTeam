@@ -90,16 +90,17 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
 
 				pDesc.isFadeIn = false;
-					pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+				pDesc.isLevelChange = true;
+				pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
-					list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
-					if (objs.empty())
+				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+				if (objs.empty())
+				{
 					{
-						{
-							if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-								return;
-						}
+						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+							return;
 					}
+				}
 			}
 			else
 			{

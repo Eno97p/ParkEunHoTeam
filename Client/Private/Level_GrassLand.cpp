@@ -24,7 +24,7 @@
 
 #include "Tree.h"
 #include "Grass.h"
-
+#include "BackGround_Card.h"
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -39,21 +39,21 @@ HRESULT CLevel_GrassLand::Initialize()
 		return E_FAIL;
 
 	CRenderer::FOG_DESC fogDesc{};
-	fogDesc.vFogColor = { 37.f / 255.f, 36.f / 255.f, 54.f / 255.f, 1.f };
-	fogDesc.vFogColor2 = { 1.f, 1.f, 1.f, 1.f };
-	fogDesc.fFogRange = 100000000.f;
-	fogDesc.fFogHeightFalloff = 0.05f;
+	fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
+	fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
+	fogDesc.fFogRange = 7788.5;
+	fogDesc.fFogHeightFalloff = 0.0f;
 	fogDesc.fFogGlobalDensity = 1.0f;
-	fogDesc.fFogTimeOffset = 2.89f;
-	fogDesc.fFogTimeOffset2 = 8.22f;
-	fogDesc.fNoiseIntensity = 0.0f;
-	fogDesc.fNoiseIntensity2 = 1.3f;
-	fogDesc.fNoiseSize = 0.1f;
-	fogDesc.fNoiseSize2 = 0.068f;
-	fogDesc.fFogBlendFactor = 0.106f;
+	fogDesc.fFogTimeOffset = 1.154f;
+	fogDesc.fFogTimeOffset2 = 3.462f;
+	fogDesc.fNoiseIntensity = 1.731f;
+	fogDesc.fNoiseIntensity2 = 1.923f;
+	fogDesc.fNoiseSize = 0.000481f;
+	fogDesc.fNoiseSize2 = 0.000481f;
+	fogDesc.fFogBlendFactor = 0.284f;
 	m_pGameInstance->Set_FogOption(fogDesc);
 
-
+	m_pGameInstance->Set_ReflectionWave(0.693f, 0.1f, 13.743f, 7.5f, 0);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -70,7 +70,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
 
-	Load_Data_Effects();
+	//Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -171,7 +171,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 5000.f;
+	CameraDesc.fFar = 10000.f;
 	CameraDesc.fSpeedPerSec = 20.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);	
 
@@ -188,7 +188,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
 	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pTPCDesc.fNear = 0.1f;
-	 pTPCDesc.fFar = 3000.f;
+	 pTPCDesc.fFar = 10000.f;
 
 	 pTPCDesc.fSpeedPerSec = 40.f;
 	 pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -226,6 +226,72 @@ HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Cloud"))))
 		return E_FAIL;
+
+	CMap_Element::MAP_ELEMENT_DESC desc{};
+	desc.mWorldMatrix = {};
+
+	_matrix vMat = {500.f, 0.f, 0.f, 0.f,
+	0.f, 1.f, 0.f, 0.f,
+	0.f, 0.f, 500.f, 0.f,
+	-41.f, 271.f, -80.565f, 1.f };
+
+	XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Lagoon"), &desc)))
+		return E_FAIL;
+
+
+	CBackGround_Card::CARD_DESC CardDesc{};
+	CardDesc.mWorldMatrix = {};
+
+	vMat = { 1427.475f, 0.f, -2009.57, 0.f,
+	0.f, 1000.f, 0.f, 0.f,
+	815.468f, 0.f, 579.258f, 0.f,
+	-3342.f, 695.f, -1722.f, 1.f };
+
+	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
+	CardDesc.iTexNum = 0;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&CardDesc, sizeof(CardDesc));
+	vMat = { -1977.f, 0.f, -3478.f, 0.f,
+   0.f, 2000.f, 0.f, 0.f,
+   1739.f, 0.f, -988.f, 0.f,
+  -3304.f, 1157.f, 2678.f, 1.f };
+	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
+	CardDesc.iTexNum = 1;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
+		return E_FAIL;
+
+	CardDesc.mWorldMatrix = {};
+	vMat = { 1143.863f, 0.f, 2773.897f, 0.f,
+	   0.f, 1500.f, 0.f, 0.f,
+	   -1386.976f, 0.f, 571.943f, 0.f,
+	   3609.f, 783.378f, -706.441f, 1.f };
+	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
+	CardDesc.iTexNum = 2;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&CardDesc, sizeof(CardDesc));
+	vMat = { 3495.291f, 0.f, -188.991f, 0.f,
+		0.f, 2000.f, 0.f, 0.f,
+		161.997f, 0.f, 2996.f, 0.f,
+		1349.754f, 1881.764f, 4170.497f, 1.f };
+	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
+	CardDesc.iTexNum = 0;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
+		return E_FAIL;
+	//CMap_Element::MAP_ELEMENT_DESC desc{};
+	//XMStoreFloat4x4(&desc.mWorldMatrix,  XMMatrixIdentity());
+	//desc.mWorldMatrix.m[3][1] = 100.f;
+	//desc.mWorldMatrix.m[0][0] = 300.f;
+	//desc.mWorldMatrix.m[1][1] = 300.f;
+	//desc.mWorldMatrix.m[2][2] = 300.f;
+
+
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Lagoon"), &desc)))
+	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
 	//	return E_FAIL;

@@ -732,9 +732,36 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card">
       <UniqueIdentifier>{a82678a3-b18a-495d-94f6-7e821e7a5179}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Skill">
       <UniqueIdentifier>{1d3764cb-b074-40bc-a083-acf3568e4ebb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\BuffTimer">
+      <UniqueIdentifier>{1b207385-5668-46a1-8025-df89076f9b99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\BuffTimer\BuffTimer">
+      <UniqueIdentifier>{01f292b3-b585-40af-819e-d50d278d26f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer">
+      <UniqueIdentifier>{9d3135de-5241-4e70-b1bc-a685ae95844a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\BuffTimer\BuffTimer\Bar">
+      <UniqueIdentifier>{7284ece3-a41f-40b4-83e9-6ba2d72cf736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\Memento">
+      <UniqueIdentifier>{f12ec35e-4d9b-4d05-a8a3-5f51afb71870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Sound">
+      <UniqueIdentifier>{650291b6-48a6-4b07-855e-27eb80fe49b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar">
+      <UniqueIdentifier>{1d5ac9d6-58ee-4094-8aa6-1fe27c435555}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Meteor">
+      <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
+      <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1564,10 +1591,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Dash.h">
       <Filter>02.GameObjects\07. UI\Dash</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\BackGround_Card.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
     </ClInclude>
@@ -1582,9 +1609,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="Client_Struct.h">
       <Filter>99.Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_BuffTimer.h">
+      <Filter>02.GameObjects\07. UI\BuffTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BuffTimer_Bar.h">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BuffTimer.h">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BuffTimer_Timer.h">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Memento.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\Memento</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_Sound.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Setting_SoundBar.h">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Lagoon.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2364,10 +2424,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Dash.cpp">
       <Filter>02.GameObjects\07. UI\Dash</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\BackGround_Card.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\08. BackGround_Card</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
     </ClCompile>
@@ -2382,6 +2442,39 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp">
       <Filter>02.GameObjects\06.Effect\Skill</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_BuffTimer.cpp">
+      <Filter>02.GameObjects\07. UI\BuffTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BuffTimer.cpp">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BuffTimer_Timer.cpp">
+      <Filter>02.GameObjects\07. UI\BuffTimer\BuffTimer\Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Memento.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\Memento</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_Sound.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Setting_SoundBar.cpp">
+      <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
+      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Lagoon.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2479,6 +2572,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCloud.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxLagoon.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -6,9 +6,6 @@ BEGIN(Client)
 
 class CUI_Activate final : public CUI
 {
-public:
-	enum ACTIVATE_TYPE{ ACTIVATE_NPC_RLYA, ACTIVATE_END };
-
 private:
 	CUI_Activate(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_Activate(const CUI_Activate& rhs);

@@ -261,7 +261,8 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
     if (vDiffuse.a < 0.1f)
         discard;
 
-    Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.0f, 0.f, 0.f);
+    Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.f, 0.f, 0.f);
+    //Out.vLightDepth = vector(In.vProjPos.z, 0.f, 0.f, 0.f);
 
     return Out;
 }

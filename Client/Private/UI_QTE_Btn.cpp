@@ -19,6 +19,10 @@ HRESULT CUI_QTE_Btn::Initialize_Prototype()
 
 HRESULT CUI_QTE_Btn::Initialize(void* pArg)
 {
+	UI_QTE_BTN_DESC* pDesc = static_cast<UI_QTE_BTN_DESC*>(pArg);
+
+	m_iBtnNum = pDesc->iBtnIndex;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 

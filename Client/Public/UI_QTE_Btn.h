@@ -6,6 +6,11 @@ BEGIN(Client)
 
 class CUI_QTE_Btn final : public CUI
 {
+public:
+	typedef struct UI_Qte_Btn_Desc : public UI_DESC
+	{
+		_uint iBtnIndex;
+	}UI_QTE_BTN_DESC;
 private:
 	CUI_QTE_Btn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_QTE_Btn(const CUI_QTE_Btn& rhs);

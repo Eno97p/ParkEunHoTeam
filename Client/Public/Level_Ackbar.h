@@ -41,6 +41,7 @@ private:
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;
 
+
 //#ifdef _DEBUG
 	_uint m_iMainCameraIdx = 0;
 	_uint m_iCamSize = 0;

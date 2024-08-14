@@ -25,6 +25,7 @@
 #include "Tree.h"
 #include "Grass.h"
 #include "BackGround_Card.h"
+#include "Passive_Element.h"
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -70,7 +71,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
 
-	//Load_Data_Effects();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -138,7 +139,23 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 	//	return;
 	//}
 
-	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+		list<CGameObject*> pes = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Passive_Element"));
+
+		for (auto pe : pes)
+		{
+			CPassive_Element* pPassiveElement = dynamic_cast<CPassive_Element*>(pe);
+			if (pPassiveElement == nullptr)
+				continue;
+
+			if (pPassiveElement->Get_isHiddenObject())
+			{
+				pPassiveElement->Discover_HiddenObject();
+			}
+		}
+	}
+	SetWindowText(g_hWnd, TEXT("GrassLand 레벨임"));
 //#endif
 }
 

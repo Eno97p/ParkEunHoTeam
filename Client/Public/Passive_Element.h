@@ -24,6 +24,9 @@ public:
 	HRESULT Add_Components(MAP_ELEMENT_DESC* desc);
 	HRESULT Bind_ShaderResources();
 
+public:
+	_bool Get_isHiddenObject() { return m_bHiddenObject; }
+	void Discover_HiddenObject() { m_bHiddenObject = false; }
 
 private:
 	vector<CPhysXComponent*> m_pPhysXCom = { nullptr };
@@ -33,6 +36,9 @@ private:
 	_uint			m_iInstanceCount = 0;
 
 	_uint			m_iShaderPath = 0;
+
+private:
+	_bool			m_bHiddenObject = false;
 private:
 	_float4x4 m_PrevViewMatrix;
 

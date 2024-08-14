@@ -32,6 +32,20 @@ CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 
 HRESULT CLevel_Jugglas::Initialize()
 {
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 0.137f, 0.211f, 0.115f, 1.f };
+	fogDesc.vFogColor2 = { 0.814f, 0.814f, 0.814f, 1.f };
+	fogDesc.fFogRange = 577.f;
+	fogDesc.fFogHeightFalloff = 0.096f;
+	fogDesc.fFogGlobalDensity = 0.346f;
+	fogDesc.fFogTimeOffset = 0.577f;
+	fogDesc.fFogTimeOffset2 = 2.019f;
+	fogDesc.fNoiseIntensity = 1.010f;
+	fogDesc.fNoiseIntensity2 = 3.125f;
+	fogDesc.fNoiseSize = 0.008654f;
+	fogDesc.fNoiseSize2 = 0.003365f;
+
+	fogDesc.fFogBlendFactor = 0.4190f;
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 

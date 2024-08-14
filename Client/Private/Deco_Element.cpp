@@ -247,6 +247,4 @@ void CDeco_Element::Free()
 {
     __super::Free();
 
-    Safe_Release(m_pShaderCom);
-    Safe_Release(m_pModelCom);
 }

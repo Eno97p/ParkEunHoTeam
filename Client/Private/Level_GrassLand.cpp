@@ -25,6 +25,11 @@
 #include "Tree.h"
 #include "Grass.h"
 #include "BackGround_Card.h"
+#include "Passive_Element.h"
+#include"CInitLoader.h"
+
+
+
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -70,7 +75,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
 
-	//Load_Data_Effects();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -85,6 +90,35 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
+
+
+
+
+
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]() {
+	//	//초기값 몬스터 저장
+	//	vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, L"Layer_Monster");
+	//	vecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		vecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		//wcscpy_s(vecMonsterInitProperty[iIndex].strName, MAX_PATH, pMonster->Get_ProtoTypeTag().c_str());
+	//		iIndex++;
+
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	//const char* Test = Client::LevelNames[m_pGameInstance->Get_CurrentLevel()];
+	//	Engine::Save_Data(wstrFilePath.c_str(), false, vecMonsterInitProperty.size(), vecMonsterInitProperty.data());
+	//});
+
+
+
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
 
 	return S_OK;
 }
@@ -138,7 +172,23 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 	//	return;
 	//}
 
-	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+		list<CGameObject*> pes = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Passive_Element"));
+
+		for (auto pe : pes)
+		{
+			CPassive_Element* pPassiveElement = dynamic_cast<CPassive_Element*>(pe);
+			if (pPassiveElement == nullptr)
+				continue;
+
+			if (pPassiveElement->Get_isHiddenObject())
+			{
+				pPassiveElement->Discover_HiddenObject();
+			}
+		}
+	}
+	SetWindowText(g_hWnd, TEXT("GrassLand 레벨임"));
 //#endif
 }
 

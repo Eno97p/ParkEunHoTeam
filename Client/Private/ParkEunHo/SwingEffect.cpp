@@ -1,6 +1,8 @@
 #include "SwingEffect.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
+
 CSwingEffect::CSwingEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
@@ -100,6 +102,10 @@ HRESULT CSwingEffect::Add_Child_Effects()
 
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"),
 		TEXT("Prototype_GameObject_DefaultCylinder"), &m_OwnDesc->CylinderDesc);
+
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+
+	pThirdPersonCamera->Shake_Camera(0.529f, 0.089f, 0.092f, 55.229f);
 
 	return S_OK;
 }

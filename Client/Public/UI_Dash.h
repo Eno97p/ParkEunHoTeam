@@ -33,7 +33,9 @@ private:
 
 private:
 	_bool			m_isRend = { false };
+	_bool			m_isAnimUp = { false };
 	_float			m_fAlphaTimer = { 0.f };
+	_float			m_fAnimTimer = { 0.f };
 
 private:
 	HRESULT	Add_Components();

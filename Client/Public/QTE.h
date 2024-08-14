@@ -21,10 +21,14 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	vector<class CUI_QTE_Btn*> m_vecBtn; // >>> Btn ¸é µÉµí?
+	vector<class CUI_QTE_Btn*> m_vecBtn;
 
 private:
 	HRESULT Create_QteBtn();
+
+	void	Start_BtnEvent();
+	_bool	Check_End();
+	void	Check_ResultScore();
 
 public:
 	static CQTE*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

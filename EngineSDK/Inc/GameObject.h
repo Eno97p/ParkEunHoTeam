@@ -50,6 +50,8 @@ public:
 	_bool Get_Dead() { return IsDead; }
 	// 오브젝트마다 다르게 작성해야할 수도 있음
 	virtual _float Get_LengthFromCamera();
+	void Set_ProtoTypeTag(const wstring& wstrPrototypeTag) {m_wstrPrototypeTag = wstrPrototypeTag;}
+	const wstring& Get_ProtoTypeTag() { return m_wstrPrototypeTag; }
 
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
@@ -66,7 +68,7 @@ protected:
 	class CGameInstance*		m_pGameInstance = { nullptr };
 	class CTransform*			m_pTransformCom = { nullptr };
 	static const _tchar*		m_pTransformTag;
-
+	wstring						m_wstrPrototypeTag = L"";
 protected:
 	map<const wstring, class CComponent*>		m_Components;		//복사된 컴포넌트를 들고 있음
 	_bool IsCloned = false;				//복사된 객체인지 확인용

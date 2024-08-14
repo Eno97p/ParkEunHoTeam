@@ -212,6 +212,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\public\CHoverboard.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
+    <ClInclude Include="..\public\CInitLoader.h" />
     <ClInclude Include="..\Public\CircleSphere.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Function.hpp" />
@@ -498,6 +499,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\private\CHoverboard.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
+    <ClCompile Include="..\private\CInitLoader.cpp" />
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\Cloud.cpp" />

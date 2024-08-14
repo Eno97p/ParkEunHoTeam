@@ -31,5 +31,14 @@ namespace Client
 		
 	}
 
+	inline std::wstring Get_CurLevelName(unsigned int iLevelIndex)
+	{
+		const char* Name = Client::LevelNames[iLevelIndex];
+		std::wstring wstrname(Name, Name + strlen(Name));
+
+		return wstrname;
+		
+
+	}
 
 }

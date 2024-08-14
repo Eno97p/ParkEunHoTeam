@@ -163,6 +163,7 @@ namespace Engine
 		if(IsCover)
 			mode |= ios::trunc;
 	
+	
 
 
 		std::ofstream outFile(fullPath, mode/*| std::ios::app*/);

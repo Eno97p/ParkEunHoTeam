@@ -242,6 +242,9 @@ private:
 
 #pragma endregion 비동기 로드 Data
 
+	//벽력일섬 셰이킹
+	_bool m_bSpecialAttackShake = false;
+	_bool m_bSpecialAttackZoom = false;
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

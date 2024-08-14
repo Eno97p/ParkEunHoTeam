@@ -1,7 +1,7 @@
 #include "Meteor.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
-
+#include "ThirdPersonCamera.h"
 CMeteor::CMeteor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
@@ -67,6 +67,10 @@ void CMeteor::Tick(_float fTimeDelta)
 		_float4 vShockPos = m_OwnDesc->vTargetPos;
 		vShockPos.y += 1.f;
 		EFFECTMGR->Generate_Particle(70, vShockPos);
+
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+		pThirdPersonCamera->Shake_Camera(0.548f, 0.048f, 0.058f, 65.949f);
+
 		m_pGameInstance->Erase(this);
 	}
 

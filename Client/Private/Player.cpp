@@ -888,6 +888,9 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(80.f, 3.f, 0.602f);
+
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
@@ -926,6 +929,12 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 			else if (m_fSpecialAttack > 2.f)
 			{
 				fSlowValue = 0.05f;
+				if (!m_bSpecialAttackZoom)
+				{
+					CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+					pThirdPersonCamera->Zoom(32.f, 0.0177f, 1.401f);
+					m_bSpecialAttackZoom = true;
+				}
 			}
 
 			if (m_fSpecialAttack >= 2.f + BRISDELAY)
@@ -935,7 +944,14 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 					m_fBRIS += fTimeDelta * 2.f / BRISDELAY;
 				}
 
+				if (!m_bSpecialAttackShake)
+				{
+					CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+					pThirdPersonCamera->Shake_Camera(0.05f, 0.366f, 0.058f, 3.166f);
+					m_bSpecialAttackShake = true;
+				}
 				CUI_Manager::GetInstance()->Set_Broken(true);
+
 
 				m_pGameInstance->Set_BRIS(0.1f);
 				m_pGameInstance->Set_Mirror(m_fBRIS - 2.f);
@@ -948,6 +964,8 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
+			m_bSpecialAttackShake = false;
+			m_bSpecialAttackZoom = false;
 			fSlowValue = 1.f;
 			m_fBRIS = 0.f;
 			m_pGameInstance->Set_BRIS(m_fBRIS);
@@ -985,6 +1003,9 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(75.f, 2.6f, 0.602f);
+
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
@@ -1014,6 +1035,8 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 		if (m_fSpecialAttack >= 1.f)
 		{
 			// 스테미나 조절할 것
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(45.f, 0.1f, 0.251f);
 			Add_Stamina(-10.f);
 		}
 		if (m_bAnimFinished)
@@ -1052,6 +1075,9 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(90.f, 2.5f, 0.602f);
+
 			_float4 vParticlepos;
 			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
@@ -1085,6 +1111,8 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		m_iState = STATE_SPECIALATTACK3;
 		if (m_fSpecialAttack >= 0.5f)
 		{
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(90.f, 0.6f, 0.602f);
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
 		}
@@ -1119,6 +1147,9 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 {
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+		pThirdPersonCamera->Zoom(90.f, 0.13f, 0.602f);
+
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1580,9 +1611,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 			m_pPhysXCom->Set_Gravity(false);
 			m_pHoverBoard->On_Ride();
 
-			//카메라 fov 복구
-			CCamera* Camera = m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON];
-			Camera->Set_Fovy(XMConvertToRadians(60.f));
+	
 
 		}
 		else

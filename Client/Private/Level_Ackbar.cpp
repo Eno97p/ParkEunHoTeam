@@ -36,6 +36,21 @@ CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pCont
 HRESULT CLevel_Ackbar::Initialize()
 {
 
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 0.134f, 0.177f, 0.216f, 1.f };
+	fogDesc.vFogColor2 = { 0.740f, 0.740f, 0.740f, 1.f };
+	fogDesc.fFogRange = 150.5f;
+	fogDesc.fFogHeightFalloff = 0.5f;
+	fogDesc.fFogGlobalDensity = 0.928f;
+	fogDesc.fFogTimeOffset = 4.326f;
+	fogDesc.fFogTimeOffset2 = 2.596f;
+	fogDesc.fNoiseIntensity = 1.154f;
+	fogDesc.fNoiseIntensity2 = 1.923f;
+	fogDesc.fNoiseSize = 0.037019f;
+	fogDesc.fNoiseSize2 = 0.003365f;
+	fogDesc.fFogBlendFactor = 0.269f;
+
+	m_pGameInstance->Set_FogOption(fogDesc);
 	//m_pGameInstance->Set_FogOption({ 0.235f, 0.260f, 0.329f, 1.f }, 230.f, 0.87f, 1.f, 10.f, 0.2f, 0.1f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))

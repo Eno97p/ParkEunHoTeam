@@ -766,6 +766,9 @@
     <Filter Include="02.GameObjects\06.Effect\FirePillar">
       <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\999.InitLoader">
+      <UniqueIdentifier>{49ea12b8-be93-4169-94e0-6c804e5c797f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1664,6 +1667,9 @@
     <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h">
       <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CInitLoader.h">
+      <Filter>01.Levels\999.InitLoader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2508,6 +2514,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp">
       <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CInitLoader.cpp">
+      <Filter>01.Levels\999.InitLoader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -688,9 +688,6 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn">
       <UniqueIdentifier>{4ad03b4c-a384-4103-b3a8-f14df4213172}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
-      <UniqueIdentifier>{927f20e7-ac6f-419d-b35f-191ef3582a9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Ring">
       <UniqueIdentifier>{c99645d8-4ef8-4ae1-9c92-f523d21b7107}</UniqueIdentifier>
     </Filter>
@@ -762,6 +759,18 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
+      <UniqueIdentifier>{072a4605-069c-48c7-9c83-0e7243e45ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score\Particle">
+      <UniqueIdentifier>{bd16358b-4685-4f24-8547-a7a7e594fa6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\RedDot">
+      <UniqueIdentifier>{1c3f8585-f0bc-42fe-95f2-80b42fb102f5}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\06.Effect\FirePillar">
+      <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\999.InitLoader">
       <UniqueIdentifier>{49ea12b8-be93-4169-94e0-6c804e5c797f}</UniqueIdentifier>
@@ -1646,8 +1655,35 @@
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Mask_Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Ring.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Score.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Particle.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CInitLoader.h">
       <Filter>01.Levels\999.InitLoader</Filter>
@@ -2479,8 +2515,35 @@
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Mask_Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Ring.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Score.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Particle.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CInitLoader.cpp">
       <Filter>01.Levels\999.InitLoader</Filter>

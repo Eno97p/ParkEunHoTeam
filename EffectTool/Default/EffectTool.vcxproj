@@ -189,6 +189,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\public\FirePillar.h" />
     <ClInclude Include="..\Public\FirePillarEffect.h" />
     <ClInclude Include="..\Public\FirePillar_Bottom.h" />
+    <ClInclude Include="..\Public\FirePillar_Charge.h" />
     <ClInclude Include="..\public\HealEffect.h" />
     <ClInclude Include="..\Public\Heal_Line.h" />
     <ClInclude Include="..\Public\Heal_Ribbon.h" />
@@ -217,6 +218,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerHead.h" />
     <ClInclude Include="..\Public\QuarterCamera.h" />
+    <ClInclude Include="..\Public\Rock_Ground.h" />
     <ClInclude Include="..\public\ShieldSphere.h" />
     <ClInclude Include="..\Public\DefaultCylinder.h" />
     <ClInclude Include="..\Public\SwingEffect.h" />
@@ -263,6 +265,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\private\FirePillar.cpp" />
     <ClCompile Include="..\Private\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\FirePillar_Bottom.cpp" />
+    <ClCompile Include="..\Private\FirePillar_Charge.cpp" />
     <ClCompile Include="..\private\HealEffect.cpp" />
     <ClCompile Include="..\Private\Heal_Line.cpp" />
     <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
@@ -291,6 +294,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerHead.cpp" />
     <ClCompile Include="..\Private\QuarterCamera.cpp" />
+    <ClCompile Include="..\Private\Rock_Ground.cpp" />
     <ClCompile Include="..\private\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\DefaultCylinder.cpp" />
     <ClCompile Include="..\Private\SwingEffect.cpp" />

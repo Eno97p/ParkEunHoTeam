@@ -39,20 +39,18 @@ HRESULT CFirePillar_Bottom::Initialize(void* pArg)
 
 void CFirePillar_Bottom::Priority_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 }
 
 void CFirePillar_Bottom::Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 
 	m_fCurLifeTime += fTimeDelta;
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
-		EffectDead = true;
+		m_pGameInstance->Erase(this);
 	}
 	m_fLifeTimeRatio = m_fCurLifeTime / m_OwnDesc->fMaxLifeTime;
 	m_fLifeTimeRatio = max(0.f, min(m_fLifeTimeRatio, 1.f));
@@ -77,8 +75,7 @@ void CFirePillar_Bottom::Tick(_float fTimeDelta)
 
 void CFirePillar_Bottom::Late_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);

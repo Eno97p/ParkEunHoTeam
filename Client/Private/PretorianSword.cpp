@@ -117,7 +117,10 @@ void CPretorianSword::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 #ifdef _DEBUG
 	if (m_bIsActive)
 	{
@@ -338,6 +341,7 @@ HRESULT CPretorianSword::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
 		return E_FAIL;
 #pragma endregion 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))

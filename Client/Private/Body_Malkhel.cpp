@@ -225,7 +225,10 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 void CBody_Malkhel::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);

@@ -56,7 +56,10 @@ void CBody_Homonculus::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 
 	if (m_isAnimFinished)
 	{

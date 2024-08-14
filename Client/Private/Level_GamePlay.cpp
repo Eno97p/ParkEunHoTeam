@@ -43,18 +43,18 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	CRenderer::FOG_DESC fogDesc{};
-	fogDesc.vFogColor = { 37.f / 255.f, 36.f / 255.f, 54.f / 255.f, 1.f };
-	fogDesc.vFogColor2 = { 1.f, 1.f, 1.f, 1.f };
-	fogDesc.fFogRange = 200.f;
-	fogDesc.fFogHeightFalloff = 0.05f;
-	fogDesc.fFogGlobalDensity = 1.0f;
-	fogDesc.fFogTimeOffset = 2.89f;
-	fogDesc.fFogTimeOffset2 = 8.22f;
+	fogDesc.vFogColor = { 0.095f, 0.130f, 0.255f, 1.f };
+	fogDesc.vFogColor2 = { 0.299f, 0.299f, 0.299f, 1.f };
+	fogDesc.fFogRange = 576.9f;
+	fogDesc.fFogHeightFalloff = 3.341f;
+	fogDesc.fFogGlobalDensity = 0.913f;
+	fogDesc.fFogTimeOffset = 2.019f;
+	fogDesc.fFogTimeOffset2 = 2.308f;
 	fogDesc.fNoiseIntensity = 0.0f;
-	fogDesc.fNoiseIntensity2 = 1.3f;
-	fogDesc.fNoiseSize = 0.1f;
-	fogDesc.fNoiseSize2 = 0.068f;
-	fogDesc.fFogBlendFactor = 0.106f;
+	fogDesc.fNoiseIntensity2 = 0.00f;
+	fogDesc.fNoiseSize = 0.030769f;
+	fogDesc.fNoiseSize2 = 0.020192f;
+	fogDesc.fFogBlendFactor = 0.553f;
 	m_pGameInstance->Set_FogOption(fogDesc);
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -427,7 +427,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };

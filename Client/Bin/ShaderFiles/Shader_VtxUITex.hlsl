@@ -264,10 +264,11 @@ PS_OUT PS_FADE_DASH(PS_IN In)
 		discard;
 
 	float fAlpha = Out.vColor.a;
+	fAlpha = 0.8f;
 
-	Out.vColor.r = 0.1f;
-	Out.vColor.g = 0.1f;
-	Out.vColor.b = 0.2f;
+	Out.vColor.r = 0.8f;   //0.1f;
+	Out.vColor.g = 0.8f;   // 0.1f;
+	Out.vColor.b = 0.8f;   //0.2f;
 
 	if (g_bIsFadeIn)
 	{

@@ -1191,10 +1191,9 @@ void CBody_Player::Late_Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
-		_uint iCascadeNum = m_pGameInstance->Get_CascadeNum(XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f), 1.f);
- 		if (iCascadeNum == FRUSTUM_NEAR)
+		if (m_pGameInstance->Get_MoveShadow())
 		{
-			//m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 		}
 	}
 }

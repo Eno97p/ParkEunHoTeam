@@ -854,6 +854,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Andras_0724/Andras.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	/* For.Prototype_Component_Model_Mask_Andras */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Mask_Andras"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Mask/AndrasMask.fbx", PreTransformMatrix))))
+		return E_FAIL;
 	/* For.Prototype_Component_Model_Weapon_Andras */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Andras"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword1.fbx", PreTransformMatrix))))
@@ -3447,6 +3451,130 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 #pragma endregion   VEGETATION
 
 
+#pragma region  GRASSLAND Passive Element Models
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_WellArea"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WellArea/WellArea.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_AqueducTower"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/AqueducTower/AqueducTower.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_BigStairSides"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/BigStairSides/BigStairSides.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_WoodStair"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WoodStairs/WoodStair.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_WoodPlatform"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/WoodStairs/WoodPlatform.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_WoodPlank"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/WoodenPlank.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_RuinsPilar"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/RuinsPilar/RuinsPilar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	//STAGE 1 DECO ELEMENTS
+	//Box, Crate
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_BoxA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Crates_CrateA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_BoxB"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Crates_CrateB.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_AckbarWell"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/AckbarWell.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Remparts_CrenauxA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Remparts_CrenauxA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Remparts_CrenauxB"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Remparts_CrenauxB.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Remparts_HourdA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Remparts_HourdA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Remparts_WallMotifA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Remparts_WallMotifA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Remparts_WallRenfortA"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/Remparts_WallRenfortA.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_RichStairs_Rambarde"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/DecoObjects/RichStairs_Rambarde.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_AqueducTowerRoof"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/AqueducTowerRoof/AqueducTowerRoof.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_CharetteBroke"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Charette/CharetteBroke.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//FACADE
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade1.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade3"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade4"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade4.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade5"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade5.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade6"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade6.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade7"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade7.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade8"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade8.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade9"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade9.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Facade10"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade10.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
+
+#pragma endregion
+
 #pragma region  Active Element Model Load
 	lstrcpy(m_szLoadingText, TEXT("Active Element ¸ðµ¨ ·Îµù Áß"));
 
@@ -3565,6 +3693,10 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Andras"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Andras_0724/Andras.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	/* For.Prototype_Component_Model_Mask_Andras */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Mask_Andras"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Mask/AndrasMask.fbx", PreTransformMatrix))))
+		return E_FAIL;
 	/* For.Prototype_Component_Model_Weapon_Andras */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Weapon_Andras"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/Swords/Sword1.fbx", PreTransformMatrix))))
@@ -3587,31 +3719,6 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	// Juggulus
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Juggulus"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Juggulus.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// JuggulusHammer
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_JuggulusHammer"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Juggulus/Hammer.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// JuggulusHandOne
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_JuggulusHandOne"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_1.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// JuggulusHandTwo
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_JuggulusHandTwo"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_2.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// JuggulusHandThree
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f)/* * XMMatrixRotationY(XMConvertToRadians(180.0f))*/;
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_JuggulusHandThree"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Juggulus/Hand_3.fbx", PreTransformMatrix))))
-		return E_FAIL;
 
 	// Aspiration
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
@@ -3828,6 +3935,12 @@ HRESULT CLoader::Loading_For_GrassLandLevel_For_Shader()
 	/* For.Prototype_Component_Shader_VtxInstance_Rect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Shader_VtxInstance_MapElement"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_MapElement.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Shader_VtxInstance_Tree */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Shader_VtxInstance_Tree"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Tree.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxPassiveElement */

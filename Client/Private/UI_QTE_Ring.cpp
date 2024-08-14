@@ -50,6 +50,8 @@ void CUI_QTE_Ring::Tick(_float fTimeDelta)
 	// Perfect ~ End 사이면 Perfect
 	// End보다 작으면 Bad > 이때는 애초에 사라질 것
 
+	// 서서히 사라지게 만들기!
+
 	if (m_fSizeX >= fGOOD)
 	{
 		m_eRingState = RS_BAD;

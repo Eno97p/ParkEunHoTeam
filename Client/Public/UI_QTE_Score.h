@@ -27,11 +27,14 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	SCORE_TYPE		m_eScoreType = { SCORE_END };
+	class CUI_QTE_Particle*		m_pParticle = { nullptr };
+	SCORE_TYPE					m_eScoreType = { SCORE_END };
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+
+	HRESULT	Create_Particle();
 
 public:
 	static CUI_QTE_Score*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

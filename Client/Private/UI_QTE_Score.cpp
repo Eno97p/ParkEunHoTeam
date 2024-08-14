@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "UI_QTE_Particle.h"
+
 CUI_QTE_Score::CUI_QTE_Score(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{ pDevice, pContext }
 {
@@ -31,6 +33,9 @@ HRESULT CUI_QTE_Score::Initialize(void* pArg)
 
     Setting_Position();
 
+    if (SCORE_PERFECT == m_eScoreType)
+        Create_Particle();
+
     return S_OK;
 }
 
@@ -40,11 +45,26 @@ void CUI_QTE_Score::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Score::Tick(_float fTimeDelta)
 {
+    // ¾ê »ý¼ºµÉ ¶§ ¹º°¡ ÆÅ Æ¢´Â ¸®¼Ò½º Ãß°¡ÇØÁÖ±â
+
+    if (nullptr != m_pParticle)
+    {
+        if (m_pParticle->Get_isDead())
+        {
+            Safe_Release(m_pParticle);
+            m_pParticle = nullptr;
+        }
+        else
+            m_pParticle->Tick(fTimeDelta);
+    }
 }
 
 void CUI_QTE_Score::Late_Tick(_float fTimeDelta)
 {
     CGameInstance::GetInstance()->Add_UI(this, FIRST);
+
+    if (nullptr != m_pParticle)
+        m_pParticle->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_QTE_Score::Render()
@@ -111,6 +131,20 @@ HRESULT CUI_QTE_Score::Bind_ShaderResources()
     return S_OK;
 }
 
+HRESULT CUI_QTE_Score::Create_Particle()
+{
+    CUI::UI_DESC pDesc{};
+    pDesc.eLevel = LEVEL_STATIC;
+    pDesc.fX = m_fX;
+    pDesc.fY = m_fY;
+    pDesc.fSizeX = 512.f * 0.4f; // 512
+    pDesc.fSizeY = 512.f * 0.4f;
+
+    m_pParticle = dynamic_cast<CUI_QTE_Particle*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Particle"), &pDesc));
+
+    return S_OK;
+}
+
 CUI_QTE_Score* CUI_QTE_Score::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     CUI_QTE_Score* pInstance = new CUI_QTE_Score(pDevice, pContext);
@@ -140,4 +174,6 @@ CGameObject* CUI_QTE_Score::Clone(void* pArg)
 void CUI_QTE_Score::Free()
 {
     __super::Free();
+
+    Safe_Release(m_pParticle);
 }

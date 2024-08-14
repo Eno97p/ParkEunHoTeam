@@ -336,6 +336,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
+    <ClInclude Include="..\Public\UI_QTE_Particle.h" />
     <ClInclude Include="..\Public\UI_QTE_Ring.h" />
     <ClInclude Include="..\Public\UI_QTE_Score.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
@@ -620,6 +621,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Particle.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Ring.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Score.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />

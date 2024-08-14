@@ -763,6 +763,9 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score">
       <UniqueIdentifier>{072a4605-069c-48c7-9c83-0e7243e45ef5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score\Particle">
+      <UniqueIdentifier>{bd16358b-4685-4f24-8547-a7a7e594fa6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1652,6 +1655,9 @@
     <ClInclude Include="..\Public\UI_QTE_Score.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Particle.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2487,6 +2493,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Score.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Particle.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

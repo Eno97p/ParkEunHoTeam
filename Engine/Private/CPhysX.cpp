@@ -93,7 +93,7 @@ HRESULT CPhysX::Initialize()
 		waitForWorkMode,
 		yieldProcessorCount
 	);
-
+	
 	
 	//m_pCPUDispatcher = PxDefaultCpuDispatcherCreate(0);
 	if(!m_pCPUDispatcher)
@@ -164,6 +164,9 @@ HRESULT CPhysX::Initialize()
 	}
 
 	PxInitVehicleExtension(*m_pFoundation);
+
+
+	//PxParticleRigidBuffer
 
 
 	/*m_pParticleSystem = m_pPhysics->createPBDParticleSystem(*m_pCudaContextManager, 48, 0.5f);

@@ -15,6 +15,8 @@
 #include "CHoverBoard.h"
 #include "Monster.h"
 
+#include"CInitLoader.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -472,14 +474,18 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				}
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");		//지워야할 Layer
 				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
 				
 
 
 
+				CInitLoader<LEVEL, wstring>* InitLoader = new CInitLoader<LEVEL, wstring>(&InitLoader);
+				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
 
 
-				wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+
+			/*	wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
 				wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName+ L"_"+ L"Layer_Monster" + L".bin";
 
 				decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(wstrFilePath);
@@ -494,11 +500,11 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 						landObjDesc.mWorldMatrix._41 = vecMonsterInit[i].vPos.x;
 						landObjDesc.mWorldMatrix._42 = vecMonsterInit[i].vPos.y;
 						landObjDesc.mWorldMatrix._43 = vecMonsterInit[i].vPos.z;
-						landObjDesc.mWorldMatrix._11 = 1.f;
+						landObjDesc.mWorldMatrix._44 = 1.f;
 						m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster", vecMonsterInit[i].strMonsterTag, &landObjDesc);
 					}
 
-				}
+				}*/
 
 
 

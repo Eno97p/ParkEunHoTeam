@@ -759,7 +759,7 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Meteor">
       <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
@@ -1642,9 +1642,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClInclude>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mask_Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2472,9 +2475,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClCompile>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mask_Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -73,6 +73,10 @@ void CTree::Late_Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	}
+	if (m_pGameInstance->Get_NotMoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 }
 
 HRESULT CTree::Render()

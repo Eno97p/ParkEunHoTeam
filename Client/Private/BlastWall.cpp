@@ -139,6 +139,10 @@ void CBlastWall::Late_Tick(_float fTimeDelta)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 		for (size_t i = 0; i < m_iNumMeshes; i++)
 			m_pPhysXCom[i]->Late_Tick(&m_vecMeshsTransforms[i]);
+		if (m_pGameInstance->Get_MoveShadow())
+		{
+			m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+		}
 	}
 
 

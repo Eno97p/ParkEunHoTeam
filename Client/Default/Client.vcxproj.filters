@@ -759,9 +759,12 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Meteor">
       <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FirePillar">
+      <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1642,9 +1645,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2472,9 +2490,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

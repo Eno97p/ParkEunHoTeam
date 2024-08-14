@@ -75,6 +75,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Meteor");
 		return E_FAIL;
 	}
+	if (FAILED(Load_FirePillar()))
+	{
+		MSG_BOX("FAILED_FirePillar");
+		return E_FAIL;
+	}
 	return S_OK;
 }
 
@@ -306,6 +311,15 @@ HRESULT CEffectManager::Generate_Meteor(const _float4 vStartPos)
 	Desc->vTargetPos = vStartPos;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 		TEXT("Layer_Meteor"), TEXT("Prototype_GameObject_Meteor"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_FirePillar(const _float4 vStartPos)
+{
+	CFirePillar::FIREPILLAR* Desc = m_FirePillar.get();
+	Desc->vStartPos = vStartPos;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_FirePillar"), TEXT("Prototype_GameObject_FirePillar"), Desc);
 	return S_OK;
 }
 
@@ -618,6 +632,24 @@ HRESULT CEffectManager::Load_Meteor()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_FirePillar()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/FirePillar.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_FirePillar = make_shared<CFirePillar::FIREPILLAR>();
+	inFile.read((char*)m_FirePillar.get(), sizeof(CFirePillar::FIREPILLAR));
+	inFile.close();
+
+	m_FirePillar->vStartPos = { 0.f,0.f,0.f,1.f };
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -748,6 +780,26 @@ HRESULT CEffectManager::Ready_GameObjects()
 
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Wind"),
 		CMeteor_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FirePillar"),
+		CFirePillar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Effect"),
+		CFirePillarEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Bottom"),
+		CFirePillar_Bottom::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Charge"),
+		CFirePillar_Charge::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Rock_Ground"),
+		CRock_Ground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

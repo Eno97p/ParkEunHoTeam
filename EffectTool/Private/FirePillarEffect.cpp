@@ -32,9 +32,6 @@ HRESULT CFirePillarEffect::Initialize(void* pArg)
 	case F_2:
 		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar2");
 		break;
-	case F_3:
-		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar3");
-		break;
 	case F_4:
 		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar4");
 		break;
@@ -57,20 +54,17 @@ HRESULT CFirePillarEffect::Initialize(void* pArg)
 
 void CFirePillarEffect::Priority_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 }
 
 void CFirePillarEffect::Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
 
 	m_fCurLifeTime += fTimeDelta;
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
-		EffectDead = true;
+		m_pGameInstance->Erase(this);
 	}
 	m_fLifeTimeRatio = m_fCurLifeTime / m_OwnDesc->fMaxLifeTime;
 	m_fLifeTimeRatio = max(0.f, min(m_fLifeTimeRatio, 1.f));
@@ -123,8 +117,7 @@ void CFirePillarEffect::Tick(_float fTimeDelta)
 
 void CFirePillarEffect::Late_Tick(_float fTimeDelta)
 {
-	if (EffectDead)
-		return;
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);

@@ -62,6 +62,8 @@ void CMeteor::Tick(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(66, m_OwnDesc->vTargetPos, nullptr, XMVectorZero(), 0.f, vLook);
 		EFFECTMGR->Generate_Particle(67, m_OwnDesc->vTargetPos);
 		EFFECTMGR->Generate_Particle(72, m_OwnDesc->vTargetPos);
+		EFFECTMGR->Generate_Particle(73, m_OwnDesc->vTargetPos);
+		EFFECTMGR->Generate_Particle(73, m_OwnDesc->vTargetPos, nullptr, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
 		_float4 vShockPos = m_OwnDesc->vTargetPos;
 		vShockPos.y += 1.f;
 		EFFECTMGR->Generate_Particle(70, vShockPos);

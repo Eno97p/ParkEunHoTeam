@@ -6,7 +6,6 @@ BEGIN(Client)
 
 class CUI_QTE_Ring final : public CUI
 {
-	// 판정 좀 더 널널히 주고 속도 올리는 게 나을 거 같음
 	const _float fGOOD = 270.f; // 250
 	const _float fPERFECT = 200.f; // 180
 	const _float fEND = 140.f;

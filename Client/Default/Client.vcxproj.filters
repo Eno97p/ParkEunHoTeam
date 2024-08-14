@@ -766,6 +766,9 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score\Particle">
       <UniqueIdentifier>{bd16358b-4685-4f24-8547-a7a7e594fa6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\RedDot">
+      <UniqueIdentifier>{1c3f8585-f0bc-42fe-95f2-80b42fb102f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

@@ -57,16 +57,11 @@ void CUI_QTE_Btn::Tick(_float fTimeDelta)
 			{
 				Setting_ScoreType();
 
-				// Score UI 생성
 				if(nullptr == m_pScore)
 					Create_Score();
 
-				// 얘도 나중에 false로 해줘야 할 거 같우~ or Score의 렌더를 끄는 게 아니라 제거하는 식으로 하는 게 좋아 보임
-				//m_isStart = false;
 				m_pRing->Set_isAnimOn(true);
 				m_isScore = true;
-
-				// 엔터 누르자마자 바로 뭔가 되는 게 아니고 Ring 안에서 점점 사라지는 처리를 해주기~
 			}
 
 			m_pRing->Tick(fTimeDelta);

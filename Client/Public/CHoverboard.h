@@ -71,6 +71,7 @@ private:
 
 	_float m_fCurHoverBoardSpeed = 0.f;
 
+	_bool m_bDead = false;
 private:
 	CGameObject* HoverTrail = nullptr;
 public:

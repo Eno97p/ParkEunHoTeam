@@ -181,6 +181,10 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Andras"),
 		CBody_Andras::Create(pDevice, pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_Mask_Andras */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mask_Andras"),
+		CMask_Andras::Create(pDevice, pContext))))
+		return E_FAIL;
 	/* For.Prototype_GameObject_Weapon_Andras */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Andras"),
 		CWeapon_Andras::Create(pDevice, pContext))))

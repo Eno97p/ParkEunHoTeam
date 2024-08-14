@@ -54,8 +54,8 @@ void CUI_Broken::Tick(_float fTimeDelta)
 	{
 		m_isRend = false;
 		m_fDeadTimer = 0.f;
-		m_fSizeX = g_iWinSizeX * 0.2f;
-		m_fSizeY = g_iWinSizeY * 0.2f;
+		m_fSizeX = g_iWinSizeX * 0.1f;
+		m_fSizeY = g_iWinSizeY * 0.1f;
 	}
 	else
 	{

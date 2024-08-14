@@ -2,7 +2,7 @@
 
 #pragma warning (disable : 4251)
 
-//#include <vld.h>
+#include <vld.h>
 #include<malloc.h>
 #include <d3d11_4.h>
 
@@ -118,6 +118,7 @@ using namespace Nv::Blast;
 
 namespace Engine
 {
+	enum LEVEL_ENGINE { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_ACKBAR, LEVEL_JUGGLAS, LEVEL_ANDRASARENA, LEVEL_GRASSLAND, LEVEL_END };
 	enum MOUSEKEYSTATE { DIM_LB, DIM_RB, DIM_MB, DIM_END };
 	enum MOUSEMOVESTATE { DIMS_X, DIMS_Y, DIMS_Z, DIMS_END };
 	enum NodeStates { SUCCESS, FAILURE, RUNNING, COOLING, NONE };		//비헤이비어 노드 반환값

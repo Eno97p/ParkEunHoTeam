@@ -23,7 +23,7 @@
 #include "Tree.h"
 
 #include"BlastWall.h"
-
+#include"CInitLoader.h"
 
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -36,6 +36,21 @@ CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pCont
 HRESULT CLevel_Ackbar::Initialize()
 {
 
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 0.134f, 0.177f, 0.216f, 1.f };
+	fogDesc.vFogColor2 = { 0.740f, 0.740f, 0.740f, 1.f };
+	fogDesc.fFogRange = 150.5f;
+	fogDesc.fFogHeightFalloff = 0.5f;
+	fogDesc.fFogGlobalDensity = 0.928f;
+	fogDesc.fFogTimeOffset = 4.326f;
+	fogDesc.fFogTimeOffset2 = 2.596f;
+	fogDesc.fNoiseIntensity = 1.154f;
+	fogDesc.fNoiseIntensity2 = 1.923f;
+	fogDesc.fNoiseSize = 0.037019f;
+	fogDesc.fNoiseSize2 = 0.003365f;
+	fogDesc.fFogBlendFactor = 0.269f;
+
+	m_pGameInstance->Set_FogOption(fogDesc);
 	//m_pGameInstance->Set_FogOption({ 0.235f, 0.260f, 0.329f, 1.f }, 230.f, 0.87f, 1.f, 10.f, 0.2f, 0.1f);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
@@ -72,21 +87,32 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
-	_vector vEye = { 86.f, 50.f, -163.f, 1.f };
-	_vector vFocus = { 86.f, 0.f, 0.f, 1.f };
+	_vector vEye = { 86.f, 300.f, -163.f, 1.f };
+	_vector vFocus = { 86.f, 0.f, -113.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 
-	//초기값 몬스터 저장
-	_tagMonsterInit_Property MonsterInitProperty = {};
-	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, L"layer_Monster");
-	for (auto& pMonster : pList)
-	{
-		MonsterInitProperty.vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]() {
+	//	//초기값 몬스터 저장
+	//	vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, L"Layer_Monster");
+	//	m_pvecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		m_pvecMonsterInitProperty[iIndex].strMonsterTag = pMonster->Get_ProtoTypeTag();
+	//		iIndex++;
 
-	}
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	Engine::Save_Data(wstrFilePath.c_str(), false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
+	//});
 
-
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
 	return S_OK;
 }
 

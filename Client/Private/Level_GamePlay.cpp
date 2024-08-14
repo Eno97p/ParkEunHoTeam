@@ -29,7 +29,7 @@
 #include "NPC_Yaak.h"
 
 #include "EffectManager.h"
-
+#include"CInitLoader.h"
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -43,18 +43,18 @@ HRESULT CLevel_GamePlay::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 	CRenderer::FOG_DESC fogDesc{};
-	fogDesc.vFogColor = { 37.f / 255.f, 36.f / 255.f, 54.f / 255.f, 1.f };
-	fogDesc.vFogColor2 = { 1.f, 1.f, 1.f, 1.f };
-	fogDesc.fFogRange = 200.f;
-	fogDesc.fFogHeightFalloff = 0.05f;
-	fogDesc.fFogGlobalDensity = 1.0f;
-	fogDesc.fFogTimeOffset = 2.89f;
-	fogDesc.fFogTimeOffset2 = 8.22f;
+	fogDesc.vFogColor = { 0.095f, 0.130f, 0.255f, 1.f };
+	fogDesc.vFogColor2 = { 0.299f, 0.299f, 0.299f, 1.f };
+	fogDesc.fFogRange = 576.9f;
+	fogDesc.fFogHeightFalloff = 3.341f;
+	fogDesc.fFogGlobalDensity = 0.913f;
+	fogDesc.fFogTimeOffset = 2.019f;
+	fogDesc.fFogTimeOffset2 = 2.308f;
 	fogDesc.fNoiseIntensity = 0.0f;
-	fogDesc.fNoiseIntensity2 = 1.3f;
-	fogDesc.fNoiseSize = 0.1f;
-	fogDesc.fNoiseSize2 = 0.068f;
-	fogDesc.fFogBlendFactor = 0.106f;
+	fogDesc.fNoiseIntensity2 = 0.00f;
+	fogDesc.fNoiseSize = 0.030769f;
+	fogDesc.fNoiseSize2 = 0.020192f;
+	fogDesc.fFogBlendFactor = 0.553f;
 	m_pGameInstance->Set_FogOption(fogDesc);
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -95,7 +95,48 @@ HRESULT CLevel_GamePlay::Initialize()
 	_vector vFocus = { 151.f, 521.f, 97.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
-	_tagMonsterInit_Property MonsterInitProperty = {};
+	
+
+
+	
+
+	//initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
+	
+	
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]()
+	//{
+	//	//초기값 몬스터 저장
+	//	//vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, L"Layer_Monster");
+	//	//vecMonsterInitProperty.resize(pList.size());
+	//	m_pvecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		m_pvecMonsterInitProperty[iIndex].strMonsterTag = pMonster->Get_ProtoTypeTag();
+	//		iIndex++;
+
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	Engine::Save_Data(wstrFilePath, false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
+
+	//});
+	//if (futures.wait_for(chrono::milliseconds(10)) == future_status::ready)	//비동기 작업이 끝났을 때
+	//{
+	//	decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(L"../Bin/DataFiles/LevelInit_GamePlay.dat");
+	//	int test = 0;
+	//}
+
+
+	//위에 코드를 아래 코드로 대체 (지역적으로 있는 값을 저장할 떄 문제를 해결)
+	//힙영역에 데이터를 할당하고 프로그램이 꺼지면 해당 힙 데이터 삭제 (스스로 지움)
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
+
+	
 
 	return S_OK;
 }
@@ -386,7 +427,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 98.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };
@@ -807,6 +848,66 @@ void CLevel_GamePlay::Load_Lights()
 	//MSG_BOX("Lights Data Load");
 #endif
 	return;
+}
+
+HRESULT CLevel_GamePlay::ReLoad_Monster(const _tchar* pFilePath)
+{
+	//CLandObject::LANDOBJ_DESC landObjDesc;
+	//landObjDesc.mWorldMatrix._41 = 167.f;
+	//landObjDesc.mWorldMatrix._42 = 528.f;
+	//landObjDesc.mWorldMatrix._43 = 98.f;
+	//landObjDesc.mWorldMatrix._44 = 1.f;
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+	//	return E_FAIL;
+
+	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (nullptr == hFile)
+		return E_FAIL;
+
+	char szName[MAX_PATH] = "";
+	char szLayer[MAX_PATH] = "";
+	char szModelName[MAX_PATH] = "";
+	_float4x4 WorldMatrix;
+	CModel::MODELTYPE eModelType = CModel::TYPE_END;
+	DWORD dwByte(0);
+	_tchar wszName[MAX_PATH] = TEXT("");
+	_tchar wszLayer[MAX_PATH] = TEXT("");
+	_tchar wszModelName[MAX_PATH] = TEXT("");
+	_uint   iTriggerType = 0;
+	_double dStartTime = 0;
+
+	// 생성된 객체 로드
+	while (true)
+	{
+		ZeroMemory(wszName, sizeof(_tchar) * MAX_PATH);
+		ZeroMemory(wszLayer, sizeof(_tchar) * MAX_PATH);
+		ZeroMemory(wszModelName, sizeof(_tchar) * MAX_PATH);
+
+		ReadFile(hFile, szName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szModelName, sizeof(char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+
+		MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+		MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+		if (0 == dwByte)
+			break;
+
+
+			if (wstring(wszLayer) == TEXT("Layer_Monster"))
+			{
+				CLandObject::LANDOBJ_DESC pDesc{};
+				pDesc.mWorldMatrix = WorldMatrix;
+
+				if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), wszLayer, wszName, &pDesc)))
+					return E_FAIL;
+			}
+		}
+
+	return S_OK;
 }
 
 HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)

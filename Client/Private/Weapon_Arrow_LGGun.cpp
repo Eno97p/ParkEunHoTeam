@@ -113,7 +113,10 @@ void CWeapon_Arrow_LGGun::Tick(_float fTimeDelta)
 void CWeapon_Arrow_LGGun::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif

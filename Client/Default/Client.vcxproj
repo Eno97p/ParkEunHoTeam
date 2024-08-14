@@ -212,6 +212,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\public\CHoverboard.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
+    <ClInclude Include="..\public\CInitLoader.h" />
     <ClInclude Include="..\Public\CircleSphere.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Function.hpp" />
@@ -259,6 +260,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Lightning.h" />
     <ClInclude Include="..\Public\Malkhel.h" />
+    <ClInclude Include="..\Public\Mask_Andras.h" />
     <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\NPC_Choron.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
@@ -277,6 +279,10 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h" />
     <ClInclude Include="..\Public\ParkEunHo\HealEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
@@ -285,6 +291,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
@@ -336,6 +343,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
+    <ClInclude Include="..\Public\UI_QTE_Particle.h" />
+    <ClInclude Include="..\Public\UI_QTE_Ring.h" />
+    <ClInclude Include="..\Public\UI_QTE_Score.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Aura.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Npc.h" />
@@ -498,6 +508,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\private\CHoverboard.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
+    <ClCompile Include="..\private\CInitLoader.cpp" />
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\Cloud.cpp" />
@@ -541,6 +552,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Lightning.cpp" />
     <ClCompile Include="..\Private\Malkhel.cpp" />
+    <ClCompile Include="..\Private\Mask_Andras.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\NPC_Choron.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />
@@ -559,6 +571,10 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
@@ -567,6 +583,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp" />
@@ -618,6 +635,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Particle.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Ring.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Score.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Npc.cpp" />

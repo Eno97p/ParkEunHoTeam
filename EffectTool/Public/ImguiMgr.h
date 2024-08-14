@@ -142,6 +142,8 @@ private:
 
 private:
 	void FirePillarTool();
+	HRESULT Save_FirePillar(CFirePillar::FIREPILLAR* FirePillar);
+	HRESULT Load_FirePillar(CFirePillar::FIREPILLAR* FirePillar);
 
 private:
 	void HealEffectTool();

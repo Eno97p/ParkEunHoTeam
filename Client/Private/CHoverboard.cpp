@@ -81,7 +81,13 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 		m_fDisolveValue -= fTimeDelta * 5.f;
 		if (m_fDisolveValue < 0.f)
 		{
+			//카메라 fov 복구
+			CCamera* Camera = m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON];
+			Camera->Set_Fovy(XMConvertToRadians(60.f));
+			CUI_Manager::GetInstance()->Set_Dash(false);
+
 			m_pGameInstance->Erase(this);
+			m_bDead = true;
 		}
 		break;
 	default:
@@ -92,8 +98,9 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 
 void CHoverboard::Tick(_float fTimeDelta)
 {
-	if (!m_bOnRide)
+	if (!m_bOnRide || m_bDead)
 	{
+		
 		return;
 	}
 	
@@ -339,7 +346,10 @@ void CHoverboard::Tick(_float fTimeDelta)
 void CHoverboard::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 	
 	
 

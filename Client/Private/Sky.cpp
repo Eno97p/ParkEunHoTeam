@@ -31,6 +31,9 @@ HRESULT CSky::Initialize(void* pArg)
 	{
 		m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(60.f));
 	}
+
+	XMStoreFloat4(&m_vFogColor, m_pGameInstance->Get_FogColor());
+
 	return S_OK;
 }
 
@@ -56,11 +59,12 @@ HRESULT CSky::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(Bind_ShaderResources()))
-		return E_FAIL;
-
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iSkyTex)))
 		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_FogColor", &m_vFogColor, sizeof(_float4))))
+		return E_FAIL;
+
 
 
 	m_pShaderCom->Begin(0);
@@ -90,6 +94,10 @@ HRESULT CSky::Render(ID3D11DeviceContext* pDeferredContext)
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_FogColor", &m_vFogColor, sizeof(_float4))))
+
+		return E_FAIL;
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iSkyTex)))
 		return E_FAIL;
 

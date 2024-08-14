@@ -21,7 +21,7 @@
 #include "Item.h"
 
 #include "BlastWall.h"
-//
+#include"CInitLoader.h"
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -32,6 +32,20 @@ CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pCo
 
 HRESULT CLevel_Jugglas::Initialize()
 {
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 0.137f, 0.211f, 0.115f, 1.f };
+	fogDesc.vFogColor2 = { 0.814f, 0.814f, 0.814f, 1.f };
+	fogDesc.fFogRange = 577.f;
+	fogDesc.fFogHeightFalloff = 0.096f;
+	fogDesc.fFogGlobalDensity = 0.346f;
+	fogDesc.fFogTimeOffset = 0.577f;
+	fogDesc.fFogTimeOffset2 = 2.019f;
+	fogDesc.fNoiseIntensity = 1.010f;
+	fogDesc.fNoiseIntensity2 = 3.125f;
+	fogDesc.fNoiseSize = 0.008654f;
+	fogDesc.fNoiseSize2 = 0.003365f;
+
+	fogDesc.fFogBlendFactor = 0.4190f;
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -74,6 +88,37 @@ HRESULT CLevel_Jugglas::Initialize()
 	
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_TreasureChest"))))
 		return E_FAIL;
+
+
+
+
+
+
+
+
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]() {
+	//	//초기값 몬스터 저장
+	//	vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_JUGGLAS, L"Layer_Monster");
+	//	m_pvecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		//wcscpy_s(vecMonsterInitProperty[iIndex].strName, MAX_PATH, pMonster->Get_ProtoTypeTag().c_str());
+	//		iIndex++;
+
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	//const char* Test = Client::LevelNames[m_pGameInstance->Get_CurrentLevel()];
+	//	Engine::Save_Data(wstrFilePath.c_str(), false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
+	//});
+
+
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
 
 	return S_OK;
 }

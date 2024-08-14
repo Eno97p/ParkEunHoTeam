@@ -51,6 +51,26 @@ void CUI_Dash::Tick(_float fTimeDelta)
 			Render_Animation(fTimeDelta, 0.8f); // 1.f
 		else
 			Resset_Animation(!Get_RenderOnAnim());
+
+		m_fAnimTimer += fTimeDelta;
+		if (0.6f <= m_fAnimTimer)
+		{
+			m_fAnimTimer = 0.f;
+			m_isAnimUp = !m_isAnimUp;
+		}
+
+		if (m_isAnimUp)
+		{
+			m_fSizeX -= 5.f;
+			m_fSizeY -= 5.f;
+		}
+		else
+		{
+			m_fSizeX += 5.f;
+			m_fSizeY += 5.f;
+		}
+		Setting_Position();
+
 	}
 }
 

@@ -358,6 +358,12 @@
     <ClInclude Include="..\Public\Meteor_Wind.h">
       <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FirePillar_Charge.h">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Rock_Ground.h">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -566,6 +572,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Meteor_Wind.cpp">
       <Filter>Objects\02. Effects\13. Meteor\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FirePillar_Charge.cpp">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Rock_Ground.cpp">
+      <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

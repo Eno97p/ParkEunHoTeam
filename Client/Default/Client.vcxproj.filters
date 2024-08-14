@@ -1655,8 +1655,11 @@
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Mask_Andras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Lagoon.h">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_QTE_Ring.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>
@@ -2512,8 +2515,11 @@
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
       <Filter>02.GameObjects\06.Effect\Meteor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Mask_Andras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
-      <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+      <Filter>02.GameObjects\01.Terrain\Map_Element\06. Lagoon</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Ring.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Ring</Filter>

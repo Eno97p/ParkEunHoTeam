@@ -363,7 +363,6 @@ PS_OUT PS_SPHERE(PS_IN In)
 
 PS_OUT_COLOR PS_DECAL(PS_IN In)
 {
-
     PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
     Out.vColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
     return Out;

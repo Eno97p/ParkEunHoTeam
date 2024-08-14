@@ -90,8 +90,12 @@ public: /* For.Renderer */
 	// 화면 전체 모션블러 여부
 	void Set_MotionBlur(_bool bMotionBlur) { m_bMotionBlur = bMotionBlur; }
 	_bool Get_MotionBlur() { return m_bMotionBlur; }
+	_bool Get_NotMoveShadow(){ return m_bNotMoveShadow; }
+	_bool Get_MoveShadow(){ return m_bMoveShadow; }
 private:
 	_bool m_bMotionBlur = false;
+	_bool m_bNotMoveShadow = true;
+	_bool m_bMoveShadow = true;
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pComponent);

@@ -73,7 +73,10 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
         m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
         if (m_iShaderPath != 3)
         {
-            m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+            if (m_pGameInstance->Get_NotMoveShadow())
+            {
+                m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+            }
         }
     }
 
@@ -147,9 +150,27 @@ HRESULT CPassive_Element::Render_LightDepth()
 
     _float4x4      ViewMatrix, ProjMatrix;
 
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_pGameInstance->Get_ShadowEye(), m_pGameInstance->Get_ShadowFocus(), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    //XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.1f, 3000.f));
-    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
+    // 카메라 위치
+    XMVECTOR EyePosition = m_pGameInstance->Get_ShadowEye();
+    // 목표 지점
+    XMVECTOR FocusPoint = m_pGameInstance->Get_ShadowFocus();
+
+    // 방향 벡터 계산
+    XMVECTOR Direction = XMVector3Normalize(FocusPoint - EyePosition);
+
+    // 기본 위쪽 방향 벡터
+    XMVECTOR DefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+    // 새로운 위쪽 방향 벡터 계산
+    XMVECTOR Right = XMVector3Normalize(XMVector3Cross(DefaultUp, Direction));
+    XMVECTOR UpDirection = XMVector3Cross(Direction, Right);
+
+    // 뷰 행렬 생성
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(EyePosition, FocusPoint, UpDirection));
+
+    //XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_pGameInstance->Get_ShadowEye(), m_pGameInstance->Get_ShadowFocus(), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(16384, 9216, 0.1f, 3000.f));
+    //XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
 
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
         return E_FAIL;

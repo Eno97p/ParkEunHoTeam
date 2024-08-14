@@ -82,7 +82,10 @@ void CWeapon_Andras::Tick(_float fTimeDelta)
 void CWeapon_Andras::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 #ifdef _DEBUG
 	if (m_bIsActive)
 	{

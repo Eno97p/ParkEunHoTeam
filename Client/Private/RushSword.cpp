@@ -118,7 +118,6 @@ void CRushSword::Tick(_float fTimeDelta)
 void CRushSword::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
 #ifdef _DEBUG
 	if (m_bIsActive)
 	{

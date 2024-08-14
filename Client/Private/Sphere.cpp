@@ -71,7 +71,10 @@ void CSphere::Late_Tick(_float fTimeDelta)
 {
 	_float4 fPos;
 	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
+	if (m_pGameInstance->Get_MoveShadow())
+	{
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	if (!m_bIsParried)

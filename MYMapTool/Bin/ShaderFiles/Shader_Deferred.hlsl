@@ -761,11 +761,10 @@ PS_OUT PS_SHADOW(PS_IN In)
     //float fLightOldDepth = lightDepthDesc;
     float fLightOldDepth = lightDepthDesc * 3000.f;
 
-    //Out.vColor = vector(fLightOldDepth + 0.001f, 0.f, vLightPos.z /  vLightPos.w, 1.f);
-    //if (fLightOldDepth + 0.001f < vLightPos.z)
-        //Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
-    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    if (fLightOldDepth + 0.001f < vLightPos.z)
         Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    //if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    //    Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
 
     return Out;
 }
@@ -1384,21 +1383,55 @@ PS_OUT PS_GODRAY(PS_IN In)
 
     //float4 lightworldPos = float4(86.f, 50.f, -86.f, 1.f);
     float4 lightworldPos = float4(-500.f, 200.f, 0.f, 1.f);
+    float4 floorWorldPos = float4(-407.f, 70.f, 0.f, 1.f);
+
     matrix      matVP = mul(g_GodRayViewMatrix, g_GodRayProjMatrix);
 
-    lightworldPos = mul(lightworldPos, matVP);
+    // 깊이 텍스처에서 샘플링
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
 
+    // 클립 공간 좌표 계산
+    vector vWorldPos;
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; // 깊이 값 (0 ~ 1)
+    vWorldPos.w = 1.f;
+
+    // 깊이 값을 월드 공간으로 변환
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
+
+    // 뷰 공간으로 변환
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+    // 월드 공간으로 변환
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+    if (vWorldPos.x > -360.f)
+    {
+        return Out;
+    }
+
+    lightworldPos = mul(lightworldPos, matVP);
     lightworldPos.x = lightworldPos.x / lightworldPos.w * 0.5f + 0.5f;
     lightworldPos.y = lightworldPos.y / lightworldPos.w * -0.5f + 0.5f;
-
     float2 lightPosition = float2(lightworldPos.x, lightworldPos.y);
-    float exposure = 0.5f;       // 노출 값
+    floorWorldPos = mul(floorWorldPos, matVP);
+    floorWorldPos.x = floorWorldPos.x / floorWorldPos.w * 0.5f + 0.5f;
+    floorWorldPos.y = floorWorldPos.y / floorWorldPos.w * -0.5f + 0.5f;
+    float2 FloorPosition = float2(floorWorldPos.x, floorWorldPos.y);
+
+    float exposure = 0.3f;       // 노출 값
     float decay = 0.98f;          // 감쇠 값
     float density = 0.001f;        // 밀도 값
-    float weight = 0.01f;         // 가중치 값
+    float weight = 0.02f;         // 가중치 값
+
+    //특정 방향으로만 빛을 내보내기 위한 방향 벡터
+    float2 desiredDirection = normalize(float2(FloorPosition.x - lightPosition.x, FloorPosition.y - lightPosition.y));
 
     // 광원으로부터의 방향 벡터 계산
     float2 deltaTexCoord = (In.vTexcoord - lightPosition) * density;
+    float fDot = dot(normalize(deltaTexCoord), desiredDirection);
+    float fDegree = degrees(acos(fDot));
+    
     float2 currentTexCoord = In.vTexcoord;
     float illuminationDecay = 1.0f;
     float4 color = float4(0, 0, 0, 1);
@@ -1425,6 +1458,8 @@ PS_OUT PS_GODRAY(PS_IN In)
         illuminationDecay *= decay;
     }
     Out.vColor = color * exposure;
+    Out.vColor *= saturate(1.f - fDegree / 20.f);
+  
     return Out;
 }
 

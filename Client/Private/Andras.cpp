@@ -242,6 +242,14 @@ HRESULT CAndras::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Andras-Head");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+	CGameObject* pMask = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Mask_Andras"), &WeaponDesc);
+	if (nullptr == pMask)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pMask);
+
 	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Bone_Sword_1");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;

@@ -72,6 +72,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\CImGuiMgr.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\CInitLoader.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\CircleSphere.cpp"
 
 
@@ -160,6 +163,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Juggulus_HandTwo.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\Lagoon.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\LandObject.cpp"
@@ -265,6 +271,15 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\LazerCast.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Meteor.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Meteor_Core.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\Meteor_Wind.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\ParkEunHo\ShieldSphere.cpp"
@@ -408,6 +423,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MapUser.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Memento.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_MenuAlphaBG.cpp"
 
 
@@ -442,6 +460,12 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Setting_Overlay.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Setting_Sound.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Setting_SoundBar.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Setting_Star.cpp"

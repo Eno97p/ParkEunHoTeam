@@ -3,7 +3,8 @@
 #include "Effect_Define.h"
 #include "FirePillarEffect.h"
 #include "FirePillar_Bottom.h"
-
+#include "FirePillar_Charge.h"
+#include "Rock_Ground.h"
 BEGIN(Effect)
 class CFirePillar : public CGameObject
 {
@@ -16,9 +17,10 @@ public:
 		_float Interval = 0.1f;
 		CFirePillarEffect::FIREPILLAREFFECTDESC pillar1{};
 		CFirePillarEffect::FIREPILLAREFFECTDESC pillar2{};
-		CFirePillarEffect::FIREPILLAREFFECTDESC pillar3{};
 		CFirePillarEffect::FIREPILLAREFFECTDESC pillar4{};
 		CFirePillar_Bottom::FIREPILLAR_BOTTOM	Bottom{};
+		CFirePillar_Charge::FIREPILLAR_CHARGE	Charge{};
+		CRock_Ground::ROCK_GROUND				Ground{};
 	};
 
 private:
@@ -42,6 +44,7 @@ private:
 
 private:
 	vector<CGameObject*>	m_ChildEffects;
+	_bool					m_bEffectOn = false;
 
 public:
 	static CFirePillar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -185,7 +185,8 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	{
 		_float4 vStartPosition;
 		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		EFFECTMGR->Generate_Meteor(vStartPosition);
+		//EFFECTMGR->Generate_Meteor(vStartPosition);
+		EFFECTMGR->Generate_FirePillar(vStartPosition);
 	}
 
 }
@@ -391,6 +392,9 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_L))
 	{
+		
+
+
 		m_iState = STATE_REVIVE;
 	}
 
@@ -453,7 +457,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 			//페이드인 시작(	한 번만 생성 또는 시작되게 해야 함)
 
 
-			
+			if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code
 			//if ()//페이드인 끝났으면 아래 코드 실행
 			{
 				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
@@ -467,7 +471,44 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 					m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
 				}
 
-				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
+				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
+				
+
+
+
+
+
+				wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+				wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName+ L"_"+ L"Layer_Monster" + L".bin";
+
+				decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(wstrFilePath);
+				if (pLoad_Data)
+				{
+					size_t  iVecSize = get<0>(*pLoad_Data);
+					_tagMonsterInit_Property* pMonsterInit = get<1>(*pLoad_Data);
+					vector<_tagMonsterInit_Property> vecMonsterInit(pMonsterInit, pMonsterInit + iVecSize);
+					for (_uint i = 0; i < iVecSize; ++i)
+					{
+						CLandObject::LANDOBJ_DESC landObjDesc;
+						landObjDesc.mWorldMatrix._41 = vecMonsterInit[i].vPos.x;
+						landObjDesc.mWorldMatrix._42 = vecMonsterInit[i].vPos.y;
+						landObjDesc.mWorldMatrix._43 = vecMonsterInit[i].vPos.z;
+						landObjDesc.mWorldMatrix._11 = 1.f;
+						m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster", vecMonsterInit[i].strMonsterTag, &landObjDesc);
+					}
+
+				}
+
+
+
+
+
+
+
+
+
+
 				m_iState = STATE_REVIVE;
 				m_bIsLoadStart = false;
 			}

@@ -162,6 +162,9 @@
 #include "C:\NewRepo\Client\Private\Juggulus_HandTwo.cpp"
 
 
+#include "C:\NewRepo\Client\Private\Lagoon.cpp"
+
+
 #include "C:\NewRepo\Client\private\LandObject.cpp"
 
 
@@ -252,6 +255,18 @@
 #include "C:\NewRepo\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\NewRepo\Client\Private\ParkEunHo\FirePillar.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\FirePillarEffect.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\FirePillar_Bottom.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\FirePillar_Charge.cpp"
+
+
 #include "C:\NewRepo\Client\Private\ParkEunHo\HealEffect.cpp"
 
 
@@ -274,6 +289,9 @@
 
 
 #include "C:\NewRepo\Client\Private\ParkEunHo\Meteor_Wind.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\Rock_Ground.cpp"
 
 
 #include "C:\NewRepo\Client\Private\ParkEunHo\ShieldSphere.cpp"
@@ -417,6 +435,9 @@
 #include "C:\NewRepo\Client\Private\UI_MapUser.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UI_Memento.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UI_MenuAlphaBG.cpp"
 
 
@@ -451,6 +472,12 @@
 
 
 #include "C:\NewRepo\Client\Private\UI_Setting_Overlay.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_Setting_Sound.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_Setting_SoundBar.cpp"
 
 
 #include "C:\NewRepo\Client\Private\UI_Setting_Star.cpp"

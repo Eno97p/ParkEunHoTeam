@@ -86,6 +86,9 @@
 #include "C:\NewRepo\EffectTool\Private\FirePillar_Bottom.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\FirePillar_Charge.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\HealEffect.cpp"
 
 
@@ -168,6 +171,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\QuarterCamera.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\Rock_Ground.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\ShieldSphere.cpp"

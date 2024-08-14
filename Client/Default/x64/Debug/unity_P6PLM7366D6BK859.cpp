@@ -72,6 +72,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\CImGuiMgr.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\private\CInitLoader.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\CircleSphere.cpp"
 
 

@@ -23,7 +23,7 @@
 #include "Tree.h"
 
 #include"BlastWall.h"
-
+#include"CInitLoader.h"
 
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -92,16 +92,27 @@ HRESULT CLevel_Ackbar::Initialize()
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 
-	//초기값 몬스터 저장
-	_tagMonsterInit_Property MonsterInitProperty = {};
-	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, L"layer_Monster");
-	for (auto& pMonster : pList)
-	{
-		MonsterInitProperty.vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]() {
+	//	//초기값 몬스터 저장
+	//	vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ACKBAR, L"Layer_Monster");
+	//	m_pvecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		m_pvecMonsterInitProperty[iIndex].strMonsterTag = pMonster->Get_ProtoTypeTag();
+	//		iIndex++;
 
-	}
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	Engine::Save_Data(wstrFilePath.c_str(), false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
+	//});
 
-
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
 	return S_OK;
 }
 

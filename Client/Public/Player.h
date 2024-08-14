@@ -193,7 +193,8 @@ private:
 #ifdef _DEBUG
 	_float m_fMaxHp = 15.f; // 1000
 #else
-	_float m_fMaxHp = 300.f;
+	//_float m_fMaxHp = 300.f;
+	_float m_fMaxHp = 10.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;

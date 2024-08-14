@@ -10,11 +10,8 @@ namespace Client
 
 	struct _tagMonsterInit_Property
 	{
-		std::wstring strMonsterTag;
-		_float4 vPos;
-
-
-
+		_float4 vPos = { 0.f,0.f,0.f,0.f };
+		wstring strMonsterTag = TEXT("");
 	};
 
 

@@ -71,3 +71,6 @@
 70. MeteorShockWave
 71. MeteorMark
 72. MeteorExplosionFog
+73. MeteorExplosionFog2
+74. FirePillarSpawnRock
+75. FirePillarNeedle

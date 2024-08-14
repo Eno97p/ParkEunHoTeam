@@ -59,7 +59,6 @@ private:
 	_float3						m_CurrentSize{};
 
 private:
-	_bool						EffectDead = false;
 	_bool						SizeUpDone = { false };
 public:
 	static CFirePillar_Bottom* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

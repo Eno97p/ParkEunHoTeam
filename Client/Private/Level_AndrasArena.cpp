@@ -19,6 +19,8 @@
 #include "Trap.h"
 #include "Item.h"
 
+#include"CInitLoader.h"
+
 CLevel_AndrasArena::CLevel_AndrasArena(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -67,6 +69,35 @@ HRESULT CLevel_AndrasArena::Initialize()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
 	
+
+
+
+
+
+	////비동기 저장
+	//auto futures = m_pGameInstance->AddWork([this]() {
+	//	//초기값 몬스터 저장
+	//	vector<_tagMonsterInit_Property> vecMonsterInitProperty;
+	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, L"Layer_Monster");
+	//	m_pvecMonsterInitProperty.resize(pList.size());
+	//	_uint iIndex = 0;
+	//	for (auto& pMonster : pList)
+	//	{
+	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
+	//		//wcscpy_s(vecMonsterInitProperty[iIndex].strName, MAX_PATH, pMonster->Get_ProtoTypeTag().c_str());
+	//		iIndex++;
+
+	//	}
+	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
+	//	//const char* Test = Client::LevelNames[m_pGameInstance->Get_CurrentLevel()];
+	//	Engine::Save_Data(wstrFilePath.c_str(), false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
+	//});
+
+
+	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
+
 	return S_OK;
 }
 

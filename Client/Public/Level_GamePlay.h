@@ -36,6 +36,7 @@ private:
 	
 	void Load_Lights();
 
+	HRESULT ReLoad_Monster(const _tchar* pFilePath);
 	HRESULT	Add_FadeInOut(_bool isDissolve);
 
 private:

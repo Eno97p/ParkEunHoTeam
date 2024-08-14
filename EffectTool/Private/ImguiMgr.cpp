@@ -3033,92 +3033,98 @@ void CImguiMgr::FirePillarTool()
 	ImGui::InputFloat4("vStartPos", reinterpret_cast<float*>(&Desc.vStartPos));
 	ImGui::InputFloat3("vParentScale", reinterpret_cast<float*>(&Desc.vScale));
 
-	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar1");
+	if (ImGui::CollapsingHeader("Charge"))
+	{
+		ImGui::InputFloat3("Charge_Size", reinterpret_cast<float*>(&Desc.Charge.vSize));
+		ImGui::ColorEdit3("Charge_Color", reinterpret_cast<float*>(&Desc.Charge.fColor));
+		ImGui::ColorEdit3("Charge_BloomColor", reinterpret_cast<float*>(&Desc.Charge.BloomColor));
+		ImGui::InputFloat("Charge_BloomPower", &Desc.Charge.fBloomPower);
+		ImGui::InputFloat("Charge_LifeTime", &Desc.Charge.fMaxLifeTime);
+		ImGui::InputFloat2("Charge_ThreadRatio", reinterpret_cast<float*>(&Desc.Charge.fThreadRatio));
+		ImGui::InputFloat("Charge_SlowStrength", &Desc.Charge.fSlowStrength);
+	}
 
-	ImGui::InputFloat3("P1_vMaxSize", reinterpret_cast<float*>(&Desc.pillar1.vMaxSize));
-	ImGui::InputFloat("P1_BloomPower", &Desc.pillar1.fBloomPower);
-	ImGui::InputFloat("P1_UVSpeed", &Desc.pillar1.fUVSpeed);
-	ImGui::InputFloat("P1_RadicalStrength", &Desc.pillar1.RadicalStrength);
-	ImGui::InputFloat("P1_GrowSpeed", &Desc.pillar1.fGrowSpeed);
-	ImGui::Checkbox("P1_Distortion", &Desc.pillar1.IsDistortion);
-	ImGui::Checkbox("P1_Opacity", &Desc.pillar1.Opacity);
-	if(Desc.pillar1.Opacity == true)
-		ImGui::InputFloat("P1_OpPower", &Desc.pillar1.OpacityPower);
+	if (ImGui::CollapsingHeader("Pillar1"))
+	{
+		ImGui::InputFloat3("P1_vMaxSize", reinterpret_cast<float*>(&Desc.pillar1.vMaxSize));
+		ImGui::InputFloat("P1_BloomPower", &Desc.pillar1.fBloomPower);
+		ImGui::InputFloat("P1_UVSpeed", &Desc.pillar1.fUVSpeed);
+		ImGui::InputFloat("P1_RadicalStrength", &Desc.pillar1.RadicalStrength);
+		ImGui::InputFloat("P1_GrowSpeed", &Desc.pillar1.fGrowSpeed);
+		ImGui::Checkbox("P1_Distortion", &Desc.pillar1.IsDistortion);
+		ImGui::Checkbox("P1_Opacity", &Desc.pillar1.Opacity);
+		if (Desc.pillar1.Opacity == true)
+			ImGui::InputFloat("P1_OpPower", &Desc.pillar1.OpacityPower);
 
-	ImGui::InputInt("P1_NumDesolve", &Desc.pillar1.NumDesolve);
+		ImGui::InputInt("P1_NumDesolve", &Desc.pillar1.NumDesolve);
 
-	ImGui::ColorEdit3("P1_Color1", reinterpret_cast<float*>(&Desc.pillar1.fColor));
-	ImGui::ColorEdit3("P1_Color2", reinterpret_cast<float*>(&Desc.pillar1.fColor2));
-
-
-	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar2");
-
-	ImGui::InputFloat3("P2_vMaxSize", reinterpret_cast<float*>(&Desc.pillar2.vMaxSize));
-	ImGui::InputFloat("P2_BloomPower", &Desc.pillar2.fBloomPower);
-	ImGui::InputFloat("P2_UVSpeed", &Desc.pillar2.fUVSpeed);
-	ImGui::InputFloat("P2_RadicalStrength", &Desc.pillar2.RadicalStrength);
-	ImGui::InputFloat("P2_GrowSpeed", &Desc.pillar2.fGrowSpeed);
-	ImGui::Checkbox("P2_Distortion", &Desc.pillar2.IsDistortion);
-	ImGui::Checkbox("P2_Opacity", &Desc.pillar2.Opacity);
-	if (Desc.pillar2.Opacity == true)
-		ImGui::InputFloat("P2_OpPower", &Desc.pillar2.OpacityPower);
-
-	ImGui::InputInt("P2_NumDesolve", &Desc.pillar2.NumDesolve);
-
-	ImGui::ColorEdit3("P2_Color1", reinterpret_cast<float*>(&Desc.pillar2.fColor));
-	ImGui::ColorEdit3("P2_Color2", reinterpret_cast<float*>(&Desc.pillar2.fColor2));
-
-	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar3");
-
-	ImGui::InputFloat3("P3_vMaxSize", reinterpret_cast<float*>(&Desc.pillar3.vMaxSize));
-	ImGui::InputFloat("P3_BloomPower", &Desc.pillar3.fBloomPower);
-	ImGui::InputFloat("P3_UVSpeed", &Desc.pillar3.fUVSpeed);
-	ImGui::InputFloat("P3_RadicalStrength", &Desc.pillar3.RadicalStrength);
-	ImGui::InputFloat("P3_GrowSpeed", &Desc.pillar3.fGrowSpeed);
-	ImGui::Checkbox("P3_Distortion", &Desc.pillar3.IsDistortion);
-	ImGui::Checkbox("P3_Opacity", &Desc.pillar3.Opacity);
-	if (Desc.pillar3.Opacity == true)
-		ImGui::InputFloat("P3_OpPower", &Desc.pillar3.OpacityPower);
-
-	ImGui::InputInt("P3_NumDesolve", &Desc.pillar3.NumDesolve);
-
-	ImGui::ColorEdit3("P3_Color1", reinterpret_cast<float*>(&Desc.pillar3.fColor));
-	ImGui::ColorEdit3("P3_Color2", reinterpret_cast<float*>(&Desc.pillar3.fColor2));
-
-	CenteredTextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "Pillar4");
-
-	ImGui::InputFloat3("P4_vMaxSize", reinterpret_cast<float*>(&Desc.pillar4.vMaxSize));
-	ImGui::InputFloat("P4_BloomPower", &Desc.pillar4.fBloomPower);
-	ImGui::InputFloat("P4_UVSpeed", &Desc.pillar4.fUVSpeed);
-	ImGui::InputFloat("P4_RadicalStrength", &Desc.pillar4.RadicalStrength);
-	ImGui::InputFloat("P4_GrowSpeed", &Desc.pillar4.fGrowSpeed);
-	ImGui::Checkbox("P4_Opacity", &Desc.pillar4.Opacity);
-	if (Desc.pillar4.Opacity == true)
-		ImGui::InputFloat("P4_OpPower", &Desc.pillar4.OpacityPower);
-
-	ImGui::InputInt("P4_NumDesolve", &Desc.pillar4.NumDesolve);
-
-	ImGui::ColorEdit3("P4_Color1", reinterpret_cast<float*>(&Desc.pillar4.fColor));
-	ImGui::ColorEdit3("P4_Color2", reinterpret_cast<float*>(&Desc.pillar4.fColor2));
+		ImGui::ColorEdit3("P1_Color1", reinterpret_cast<float*>(&Desc.pillar1.fColor));
+		ImGui::ColorEdit3("P1_Color2", reinterpret_cast<float*>(&Desc.pillar1.fColor2));
+	}
 
 
-	CenteredTextColored(ImVec4(1.f, 0.f, 0.f, 1.f), "Bottom");
+	if (ImGui::CollapsingHeader("Pillar2"))
+	{
+		ImGui::InputFloat3("P2_vMaxSize", reinterpret_cast<float*>(&Desc.pillar2.vMaxSize));
+		ImGui::InputFloat("P2_BloomPower", &Desc.pillar2.fBloomPower);
+		ImGui::InputFloat("P2_UVSpeed", &Desc.pillar2.fUVSpeed);
+		ImGui::InputFloat("P2_RadicalStrength", &Desc.pillar2.RadicalStrength);
+		ImGui::InputFloat("P2_GrowSpeed", &Desc.pillar2.fGrowSpeed);
+		ImGui::Checkbox("P2_Distortion", &Desc.pillar2.IsDistortion);
+		ImGui::Checkbox("P2_Opacity", &Desc.pillar2.Opacity);
+		if (Desc.pillar2.Opacity == true)
+			ImGui::InputFloat("P2_OpPower", &Desc.pillar2.OpacityPower);
 
-	ImGui::InputFloat3("Bottom_Size", reinterpret_cast<float*>(&Desc.Bottom.vMaxSize));
-	ImGui::InputFloat("Bottom_BloomPower", &Desc.Bottom.fBloomPower);
+		ImGui::InputInt("P2_NumDesolve", &Desc.pillar2.NumDesolve);
 
-	ImGui::InputFloat("Bottom_UVSpeed", &Desc.Bottom.fUVSpeed);
-	ImGui::InputFloat("Bottom_RadicalStrength", &Desc.Bottom.RadicalStrength);
-	ImGui::InputFloat("Bottom_GrowSpeed", &Desc.Bottom.fGrowSpeed);
-	ImGui::Checkbox("Bottom_Distortion", &Desc.Bottom.IsDistortion);
-	ImGui::Checkbox("Bottom_Opacity", &Desc.Bottom.Opacity);
-	if (Desc.Bottom.Opacity == true)
-		ImGui::InputFloat("Bottom_OpPower", &Desc.Bottom.OpacityPower);
+		ImGui::ColorEdit3("P2_Color1", reinterpret_cast<float*>(&Desc.pillar2.fColor));
+		ImGui::ColorEdit3("P2_Color2", reinterpret_cast<float*>(&Desc.pillar2.fColor2));
+	}
 
-	ImGui::InputInt("Bottom_NumDesolve", &Desc.Bottom.NumDesolve);
+	if (ImGui::CollapsingHeader("Pillar4"))
+	{
+		ImGui::InputFloat3("P4_vMaxSize", reinterpret_cast<float*>(&Desc.pillar4.vMaxSize));
+		ImGui::InputFloat("P4_BloomPower", &Desc.pillar4.fBloomPower);
+		ImGui::InputFloat("P4_UVSpeed", &Desc.pillar4.fUVSpeed);
+		ImGui::InputFloat("P4_RadicalStrength", &Desc.pillar4.RadicalStrength);
+		ImGui::InputFloat("P4_GrowSpeed", &Desc.pillar4.fGrowSpeed);
+		ImGui::Checkbox("P4_Opacity", &Desc.pillar4.Opacity);
+		if (Desc.pillar4.Opacity == true)
+			ImGui::InputFloat("P4_OpPower", &Desc.pillar4.OpacityPower);
 
-	ImGui::ColorEdit3("Bottom_Color1", reinterpret_cast<float*>(&Desc.Bottom.fColor));
-	ImGui::ColorEdit3("Bottom_Color2", reinterpret_cast<float*>(&Desc.Bottom.fColor2));
+		ImGui::InputInt("P4_NumDesolve", &Desc.pillar4.NumDesolve);
+
+		ImGui::ColorEdit3("P4_Color1", reinterpret_cast<float*>(&Desc.pillar4.fColor));
+		ImGui::ColorEdit3("P4_Color2", reinterpret_cast<float*>(&Desc.pillar4.fColor2));
+	}
+
+	if (ImGui::CollapsingHeader("Bottom"))
+	{
+		ImGui::InputFloat3("Bottom_Size", reinterpret_cast<float*>(&Desc.Bottom.vMaxSize));
+		ImGui::InputFloat("Bottom_BloomPower", &Desc.Bottom.fBloomPower);
+
+		ImGui::InputFloat("Bottom_UVSpeed", &Desc.Bottom.fUVSpeed);
+		ImGui::InputFloat("Bottom_RadicalStrength", &Desc.Bottom.RadicalStrength);
+		ImGui::InputFloat("Bottom_GrowSpeed", &Desc.Bottom.fGrowSpeed);
+		ImGui::Checkbox("Bottom_Distortion", &Desc.Bottom.IsDistortion);
+		ImGui::Checkbox("Bottom_Opacity", &Desc.Bottom.Opacity);
+		if (Desc.Bottom.Opacity == true)
+			ImGui::InputFloat("Bottom_OpPower", &Desc.Bottom.OpacityPower);
+
+		ImGui::InputInt("Bottom_NumDesolve", &Desc.Bottom.NumDesolve);
+
+		ImGui::ColorEdit3("Bottom_Color1", reinterpret_cast<float*>(&Desc.Bottom.fColor));
+		ImGui::ColorEdit3("Bottom_Color2", reinterpret_cast<float*>(&Desc.Bottom.fColor2));
+	}
+
+	if (ImGui::CollapsingHeader("Rock"))
+	{
+		ImGui::InputFloat3("Rock_MinSize", reinterpret_cast<float*>(&Desc.Ground.vMinSize));
+		ImGui::InputFloat3("Rock_MaxSize", reinterpret_cast<float*>(&Desc.Ground.vMaxSize));
+		ImGui::InputFloat("Rock_LifeTime", &Desc.Ground.fMaxLifeTime);
+		ImGui::InputFloat("Rock_MinRatio", &Desc.Ground.MinRatio);
+		ImGui::InputFloat("Rock_MaxRatio", &Desc.Ground.MaxRatio);
+	}
 
 	if (ImGui::Button("Generate", ButtonSize))
 	{
@@ -3131,7 +3137,46 @@ void CImguiMgr::FirePillarTool()
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"));
 	}
 
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_FirePillar(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_FirePillar(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_FirePillar(CFirePillar::FIREPILLAR* FirePillar)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/FirePillar.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)FirePillar, sizeof(CFirePillar::FIREPILLAR));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_FirePillar(CFirePillar::FIREPILLAR* FirePillar)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/FirePillar.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)FirePillar, sizeof(CFirePillar::FIREPILLAR));
+	inFile.close();
+	return S_OK;
 }
 
 void CImguiMgr::HealEffectTool()

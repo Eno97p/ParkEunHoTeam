@@ -72,6 +72,9 @@
 #include "C:\Real3DProject\Client\Private\CImGuiMgr.cpp"
 
 
+#include "C:\Real3DProject\Client\private\CInitLoader.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\CircleSphere.cpp"
 
 
@@ -201,6 +204,9 @@
 #include "C:\Real3DProject\Client\Private\Malkhel.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Mask_Andras.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Npc.cpp"
 
 
@@ -255,6 +261,18 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\FirePillar.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\FirePillarEffect.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\FirePillar_Bottom.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\FirePillar_Charge.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\HealEffect.cpp"
 
 
@@ -277,6 +295,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Meteor_Wind.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\Rock_Ground.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\ShieldSphere.cpp"

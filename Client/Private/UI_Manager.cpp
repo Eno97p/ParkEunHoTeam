@@ -24,6 +24,7 @@
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
 #include "UI_Dash.h"
+#include "QTE.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -116,9 +117,13 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 	m_pScreenBlood->Tick(fTimeDelta);
 	m_pBroken->Tick(fTimeDelta);
+
 	for (auto& pDash : m_vecDash)
 		pDash->Tick(fTimeDelta);
-	//m_pDash->Tick(fTimeDelta);
+
+	if (nullptr != m_pQTE)
+		m_pQTE->Tick(fTimeDelta);
+
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -136,7 +141,9 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 	m_pBroken->Late_Tick(fTimeDelta);
 	for (auto& pDash : m_vecDash)
 		pDash->Late_Tick(fTimeDelta);
-	//m_pDash->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pQTE)
+		m_pQTE->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -446,6 +453,22 @@ void CUI_Manager::Key_Input()
 
 			m_pGameInstance->Get_MainCamera()->Inactivate();
 		}
+		else if (m_pGameInstance->Key_Down(DIK_L)) // <<<<< Test용 (QTE)
+		{
+			// QTE 생성 Prototype_GameObject_QTE
+
+			CQTE::GAMEOBJECT_DESC pQteDesc{};
+
+			if (nullptr != m_pQTE)
+			{
+				Safe_Release(m_pQTE);
+				m_pQTE = nullptr;
+			}
+
+			m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
+
+			// 일정 시간 지나면 지가 알아서 지워지든가.. 아무튼 없애는 로직도 필요함(누수!)
+		}
 	}
 }
 
@@ -459,7 +482,8 @@ void CUI_Manager::Free()
 
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
-	//Safe_Release(m_pDash);
+	
+	Safe_Release(m_pQTE);
 	Safe_Release(m_pBroken);
 	Safe_Release(m_pScreenBlood);
 	Safe_Release(m_pGameInstance);

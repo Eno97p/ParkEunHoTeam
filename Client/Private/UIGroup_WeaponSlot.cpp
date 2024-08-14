@@ -121,7 +121,6 @@ void CUIGroup_WeaponSlot::Reset_SlotTexture(SLOT_TYPE eSlotType)
 void CUIGroup_WeaponSlot::Reset_SlotIdx(SLOT_TYPE eSlotType)
 {
     // 인자로 들어온 SlotIdx를 size에 맞게 초기화해주기
-
     switch (eSlotType)
     {
     case Client::CUIGroup_WeaponSlot::SLOT_QUICK:
@@ -266,25 +265,14 @@ void CUIGroup_WeaponSlot::Key_Input()
     }
     else if (m_pGameInstance->Key_Down(DIK_G))
     {
-        if (!CInventory::GetInstance()->Get_isQuickEmpty())
+        if (!CInventory::GetInstance()->Get_isQuickEmpty() && m_pQuickSlot->Get_TextureName() != TEXT("Prototype_Component_Texture_ItemIcon_None"))
         {
             map<_uint, CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickMap()->begin();
 
-            // m_iQuickIdx를 기주능로 하면 안되것는디 아닌가..
-            // Weapon은 몰라도 Skill도 사용하려고 하면 오류 있을 거 같은데 ㅇㅇ
             for (size_t i = 0; i < m_iQuickIdx; ++i)
                 ++quickaccess;
 
             (*quickaccess).second->Use_Item((*quickaccess).first); // 해당 아이템 사용
-
-            // +++ 아이템 개수도 출력해주어야 함
-
-            // 장착을 딱 했을 때 HUD에 떠 있는 ItemIcon은 마지막으로 장착한 녀석.
-            // 그러나 G를 눌렀을 때 제일 처음 먹어지는 녀석은 가장 처음에 장착한 녀석. > 여기서 오류 발생
-            // >>>> m_iQuickIdx에 대한 이슈라고 보임. 장착했을 때 m_iQuickIdx 가 변하지는 않나봄!
-            // > 장착은 QuickAccess에서 InvSlot을 누르거나 / Inv의 BubInv에서 Quick 장착 Btn을 누르기
-
-            // Quick에 뭔가 등록되었을 때 m_iQuickIdx가 여전히 그대로여서 문제인 거잖아
         }
     }
 }

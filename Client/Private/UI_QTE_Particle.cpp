@@ -1,23 +1,23 @@
-#include "UI_Broken.h"
+#include "UI_QTE_Particle.h"
 
 #include "GameInstance.h"
 
-CUI_Broken::CUI_Broken(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_QTE_Particle::CUI_QTE_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_Broken::CUI_Broken(const CUI_Broken& rhs)
+CUI_QTE_Particle::CUI_QTE_Particle(const CUI_QTE_Particle& rhs)
 	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_Broken::Initialize_Prototype()
+HRESULT CUI_QTE_Particle::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUI_Broken::Initialize(void* pArg)
+HRESULT CUI_QTE_Particle::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -25,54 +25,37 @@ HRESULT CUI_Broken::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX * 0.2f; // * 0.2f
-	m_fSizeY = g_iWinSizeY * 0.2f;
-
 	Setting_Position();
+
+	Resset_Animation(true); // Test
 
 	return S_OK;
 }
 
-void CUI_Broken::Priority_Tick(_float fTimeDelta)
+void CUI_QTE_Particle::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_Broken::Tick(_float fTimeDelta)
+void CUI_QTE_Particle::Tick(_float fTimeDelta)
 {
-	if (m_isRend)
-	{
-		m_fDeadTimer += fTimeDelta;
+	m_fDeadTimer += fTimeDelta;
 
-		m_fSizeX *= 1.09f;
-		m_fSizeY *= 1.1f;
-		Setting_Position();
-	}
+	m_fSizeX *= 1.1f;
+	m_fSizeY *= 1.1f;
+	Setting_Position();
 
-	if (0.5f <= m_fDeadTimer)
-	{
-		m_isRend = false;
-		m_fDeadTimer = 0.f;
-		m_fSizeX = g_iWinSizeX * 0.1f;
-		m_fSizeY = g_iWinSizeY * 0.1f;
-	}
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta, 6.f);
 	else
-	{
-		if (!m_isRenderAnimFinished)
-			Render_Animation(fTimeDelta, 1.f);
-	}
+		m_isDead = true;
 }
 
-void CUI_Broken::Late_Tick(_float fTimeDelta)
+void CUI_QTE_Particle::Late_Tick(_float fTimeDelta)
 {
-	if (m_isRend)
-	{
-		CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH);
-	}
+	CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
 
-HRESULT CUI_Broken::Render()
+HRESULT CUI_QTE_Particle::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -84,7 +67,7 @@ HRESULT CUI_Broken::Render()
 	return S_OK;
 }
 
-HRESULT CUI_Broken::Add_Components()
+HRESULT CUI_QTE_Particle::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -97,14 +80,14 @@ HRESULT CUI_Broken::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Broken"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Particle"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_Broken::Bind_ShaderResources()
+HRESULT CUI_QTE_Particle::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -126,33 +109,33 @@ HRESULT CUI_Broken::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_Broken* CUI_Broken::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_QTE_Particle* CUI_QTE_Particle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_Broken* pInstance = new CUI_Broken(pDevice, pContext);
+	CUI_QTE_Particle* pInstance = new CUI_QTE_Particle(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_Broken");
+		MSG_BOX("Failed To Created : CUI_QTE_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_Broken::Clone(void* pArg)
+CGameObject* CUI_QTE_Particle::Clone(void* pArg)
 {
-	CUI_Broken* pInstance = new CUI_Broken(*this);
+	CUI_QTE_Particle* pInstance = new CUI_QTE_Particle(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_Broken");
+		MSG_BOX("Failed To Cloned : CUI_QTE_Particle");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_Broken::Free()
+void CUI_QTE_Particle::Free()
 {
 	__super::Free();
 }

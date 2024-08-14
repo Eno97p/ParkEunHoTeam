@@ -167,6 +167,9 @@
 
 #pragma region QTE
 #include "UI_QTE_Btn.h"
+#include "UI_QTE_Ring.h"
+#include "UI_QTE_Score.h"
+#include "UI_QTE_Particle.h"
 #include "QTE.h"
 #pragma endregion QTE
 
@@ -1485,6 +1488,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Ring"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Ring_%d.png"), 4))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Particle */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Particle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Particle.png"), 1))))
+		return E_FAIL;
 #pragma endregion QTE
 
 #pragma region ETC
@@ -2033,8 +2041,6 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_Ch_Upgrade_OkBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
-
 	/* For.Prototype_GameObject_UIGroup_Ch_Upgrade*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Ch_Upgrade"),
 		CUIGroup_Ch_Upgrade::Create(m_pDevice, m_pContext))))
@@ -2153,9 +2159,20 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_QTE_Btn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_QTE_Ring*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Ring"),
+		CUI_QTE_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_QTE_Score*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Score"),
+		CUI_QTE_Score::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-
+	/* For.Prototype_GameObject_UI_QTE_Particle*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Particle"),
+		CUI_QTE_Particle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_QTE*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_QTE"),

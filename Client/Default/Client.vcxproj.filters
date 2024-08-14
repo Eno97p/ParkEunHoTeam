@@ -763,6 +763,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FirePillar">
+      <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Levels\999.InitLoader">
       <UniqueIdentifier>{49ea12b8-be93-4169-94e0-6c804e5c797f}</UniqueIdentifier>
     </Filter>
@@ -1649,6 +1652,21 @@
     <ClInclude Include="..\Public\Lagoon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\CInitLoader.h">
       <Filter>01.Levels\999.InitLoader</Filter>
     </ClInclude>
@@ -2481,6 +2499,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Lagoon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CInitLoader.cpp">
       <Filter>01.Levels\999.InitLoader</Filter>

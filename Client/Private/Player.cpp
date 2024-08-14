@@ -185,7 +185,8 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	{
 		_float4 vStartPosition;
 		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		EFFECTMGR->Generate_Meteor(vStartPosition);
+		//EFFECTMGR->Generate_Meteor(vStartPosition);
+		EFFECTMGR->Generate_FirePillar(vStartPosition);
 	}
 
 }

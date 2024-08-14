@@ -46,6 +46,8 @@
 #include "FirePillar.h"
 #include "FirePillarEffect.h"
 #include "FirePillar_Bottom.h"
+#include "FirePillar_Charge.h"
+#include "Rock_Ground.h"
 #pragma endregion FIREPILLAR
 
 #pragma region HEAL
@@ -380,9 +382,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar2"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar2.fbx", PreTransformMatrix))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar3"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar3.fbx", PreTransformMatrix))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar4"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar_Core.fbx", PreTransformMatrix))))
 		return E_FAIL;
@@ -390,6 +389,15 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar_Bottom"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/FirePillar/FirePillar_Bottom.fbx", PreTransformMatrix))))
 		return E_FAIL;
+	//FirePillarCharge
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_FirePillar_Charge"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HealingEffect/PillarBottom.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	//RockGround
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Rock_Ground"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Meteor/Rock_Impact/R_Impact2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 
 	//Heal Effect
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Ribbon"),
@@ -654,6 +662,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Bottom"),
 		CFirePillar_Bottom::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FirePillar_Charge"),
+		CFirePillar_Charge::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Rock_Ground"),
+		CRock_Ground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasHead"),

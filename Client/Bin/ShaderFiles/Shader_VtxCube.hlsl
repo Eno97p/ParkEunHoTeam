@@ -4,6 +4,7 @@
 /* 컨스턴트 테이블(상수테이블) */
 matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 textureCUBE	g_Texture;
+float4 g_FogColor;
 
 struct VS_IN
 {
@@ -57,6 +58,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 //	Out.vColor = 1.f;
+	Out.vColor = lerp(Out.vColor, g_FogColor, 0.3f);
 
 	return Out;
 }

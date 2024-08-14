@@ -67,7 +67,6 @@ private:
 
 private:
 	_float						m_Interval = 0.f;
-	_bool						EffectDead = false;
 	_bool						SizeDirectionChange = false; //false 일때 작아지게
 	_bool						SizeUpDone[2] = {false,false};
 

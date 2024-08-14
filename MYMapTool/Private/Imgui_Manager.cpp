@@ -1753,7 +1753,7 @@ void CImgui_Manager::Fog_Editor()
     }
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Height Falloff");
-    ImGui::SliderFloat("##HeightFalloff", &fogDesc.fFogHeightFalloff, 0.0f, 5.0f, "%.3f");
+    ImGui::SliderFloat("##HeightFalloff", &fogDesc.fFogHeightFalloff, 0.0f, 30.0f, "%.3f");
 
     ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Global Density");
     ImGui::SliderFloat("##GlobalDensity", &fogDesc.fFogGlobalDensity, 0.0f, 1.0f, "%.3f");

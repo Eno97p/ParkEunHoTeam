@@ -80,6 +80,9 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 	if (nullptr == pCloneObject)
 		return E_FAIL;
 
+	
+	pCloneObject->Set_ProtoTypeTag(strPrototypeTag);
+
 	CLayer*				pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
 	/* 아직 추가할려고하는 레이어가 없었따?!! */

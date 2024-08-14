@@ -193,7 +193,8 @@ private:
 #ifdef _DEBUG
 	_float m_fMaxHp = 15.f; // 1000
 #else
-	_float m_fMaxHp = 300.f;
+	//_float m_fMaxHp = 300.f;
+	_float m_fMaxHp = 10.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;
@@ -241,6 +242,9 @@ private:
 
 #pragma endregion 비동기 로드 Data
 
+	//벽력일섬 셰이킹
+	_bool m_bSpecialAttackShake = false;
+	_bool m_bSpecialAttackZoom = false;
 
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

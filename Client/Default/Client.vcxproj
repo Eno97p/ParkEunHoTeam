@@ -212,6 +212,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Body_Mantari.h" />
     <ClInclude Include="..\public\CHoverboard.h" />
     <ClInclude Include="..\Public\CImGuiMgr.h" />
+    <ClInclude Include="..\public\CInitLoader.h" />
     <ClInclude Include="..\Public\CircleSphere.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Client_Function.hpp" />
@@ -277,6 +278,10 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h" />
     <ClInclude Include="..\Public\ParkEunHo\HealEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
@@ -285,6 +290,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
@@ -501,6 +507,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Body_Mantari.cpp" />
     <ClCompile Include="..\private\CHoverboard.cpp" />
     <ClCompile Include="..\Private\CImGuiMgr.cpp" />
+    <ClCompile Include="..\private\CInitLoader.cpp" />
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\Cloud.cpp" />
@@ -562,6 +569,10 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
@@ -570,6 +581,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Swing_Spiral.cpp" />

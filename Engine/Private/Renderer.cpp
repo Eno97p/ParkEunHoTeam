@@ -640,7 +640,7 @@ void CRenderer::Draw()
     PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
     PROFILE_CALL("Render Shadow_Move", Render_Shadow_Move());
-    PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
+    //PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
     PROFILE_CALL("Render Shadow_Result", Render_Shadow_Result());
     PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 

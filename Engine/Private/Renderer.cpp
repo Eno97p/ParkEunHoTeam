@@ -2090,6 +2090,7 @@ void CRenderer::Free()
     Safe_Release(m_pLUTTex);
     Safe_Release(m_pMaskTex);
     Safe_Release(m_pDistortionTex);
+    Safe_Release(m_pCausticTex);
     Safe_Release(m_pDecalTex);
     Safe_Release(m_pShadowTex);
     Safe_Release(m_pReflectionDepthStencilView);

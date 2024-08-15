@@ -52,7 +52,7 @@ public:
 	virtual _float Get_LengthFromCamera();
 	void Set_ProtoTypeTag(const wstring& wstrPrototypeTag) {m_wstrPrototypeTag = wstrPrototypeTag;}
 	const wstring& Get_ProtoTypeTag() { return m_wstrPrototypeTag; }
-
+	virtual _float4	Get_InitPos() { return m_vInitialPos; }
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
@@ -69,6 +69,8 @@ protected:
 	class CTransform*			m_pTransformCom = { nullptr };
 	static const _tchar*		m_pTransformTag;
 	wstring						m_wstrPrototypeTag = L"";
+
+	_float4 m_vInitialPos = { 0.f, 0.f, 0.f, 1.f };
 protected:
 	map<const wstring, class CComponent*>		m_Components;		//복사된 컴포넌트를 들고 있음
 	_bool IsCloned = false;				//복사된 객체인지 확인용

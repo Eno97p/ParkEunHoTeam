@@ -28,6 +28,8 @@
 #include "Passive_Element.h"
 #include"CInitLoader.h"
 
+#include "EffectManager.h"
+
 
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -92,7 +94,9 @@ HRESULT CLevel_GrassLand::Initialize()
 		return E_FAIL;
 
 
-
+	//_float4 vPos = { -502.f, 347.8f, -474.1, 1 };
+	_float4 vPos = { -598.f, 468.f, -403.f, 1.f };
+	EFFECTMGR->Generate_Particle(27, vPos);
 
 
 	////비동기 저장

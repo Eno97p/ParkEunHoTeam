@@ -120,6 +120,8 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
+	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_BlastWall");
+
 
 	return S_OK;
 }

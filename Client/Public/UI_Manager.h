@@ -71,9 +71,15 @@ private:
 	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
 
 	// Red Dot 로직의 추가
-	// 일단 Red Dot은 Menu의 Btn과 Slot에다가 출력할 것이기 때문에 해당 객체가 가지고 있는 게 맞지 않을까 싶음
-	// 해당 객체가 가진 본인의 Red Dot을 출력할지 말지에 대한 판단을 UI Manager가 가진 함수로 하는 것은?
-	// Inventory에 새로운 아이템이 들어왔다 하면 뭔가 데이터를 넘겨주는 식
+
+	// Inventory에서 새로운 아이템이 들어오면 RedDot을 활성화
+	// >> Item의 경우, Weapon의 경우, Skill의 경우를 나누어서 구현
+	// >> Item의 경우 Inv와 Quick Inv 등의 Slot에 적용 + Menu의 Btn에 적용
+	// >> Weapon의 경우 Weapon의 Slot + Menu의 Btn에 적용
+	// >> Skill의 경우 Skill의 Slot(인데 처음에 나오면 안 되고 Tab의 상태에 따라) + Menu의 Btn에 적용
+	// Inventory에 무언가 들어오면 UI Manager의 함수를 호출 > Red Dot을 활성화 하는 함수
+	// 그러면 UI Manager에서 해당 로직에 맞는 녀석을 타고 들어가 RedDot을 생성하는 식! 으로 진행하면 될듯
+
 
 
 private:

@@ -221,8 +221,12 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pMaskTex)
         return E_FAIL;
 
-    m_pShadowTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Shadow/Shadow%d.dds"), 2);
+    m_pShadowTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Shadow/Shadow%d.dds"), 3);
     if (nullptr == m_pMaskTex)
+        return E_FAIL;
+
+    m_pCausticTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/water%d.png"), 6);
+    if (nullptr == m_pCausticTex)
         return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Mirror"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -640,7 +644,7 @@ void CRenderer::Draw()
     PROFILE_CALL("Render LightAcc", Render_LightAcc());
 
     PROFILE_CALL("Render Shadow_Move", Render_Shadow_Move());
-    //PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
+    PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
     PROFILE_CALL("Render Shadow_Result", Render_Shadow_Result());
     PROFILE_CALL("Render DeferredResult", Render_DeferredResult());
 
@@ -915,49 +919,49 @@ void CRenderer::Render_LightAcc()
 
 void CRenderer::Render_Shadow_Move()
 {
-    //m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Move"));
+    m_pGameInstance->Begin_MRT(TEXT("MRT_Shadow_Move"));
 
-    //if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-    //    return;
+    if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+        return;
 
-    //if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
-    //    return;
-    //_float4x4      ViewMatrix, ProjMatrix;
+    if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW))))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_PROJ))))
+        return;
+    _float4x4      ViewMatrix, ProjMatrix;
 
-    //_float4 fPos = m_pGameInstance->Get_PlayerPos();
+    _float4 fPos = m_pGameInstance->Get_PlayerPos();
 
-    ///* 광원 기준의 뷰 변환행렬. */
-    //XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    //XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
+    /* 광원 기준의 뷰 변환행렬. */
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
-    //_float fShadowThreshold = 0.99f;
-    ////매직넘버 던져줌
-    //if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
-    //    return;
-    //if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
-    //    return;
+    _float fShadowThreshold = 0.99f;
+    //매직넘버 던져줌
+    if (FAILED(m_pShader->Bind_RawValue("g_fShadowThreshold", &fShadowThreshold, sizeof(_float))))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_LightViewMatrix", &ViewMatrix)))
+        return;
+    if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
+        return;
 
-    //// 그림자 직접 렌더링
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
-    //    return;
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-    //    return;
-    //m_pShader->Begin(19);
+    // 그림자 직접 렌더링
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
+        return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+        return;
+    m_pShader->Begin(19);
 
-    //m_pVIBuffer->Bind_Buffers();
+    m_pVIBuffer->Bind_Buffers();
 
-    //m_pVIBuffer->Render();
+    m_pVIBuffer->Render();
 
-    //if (FAILED(m_pGameInstance->End_MRT()))
-    //    return;
+    if (FAILED(m_pGameInstance->End_MRT()))
+        return;
 }
 
 void CRenderer::Render_Shadow_NotMove()
@@ -977,28 +981,10 @@ void CRenderer::Render_Shadow_NotMove()
         return;
     _float4x4      ViewMatrix, ProjMatrix;
 
-    // 카메라 위치
-    XMVECTOR EyePosition = m_pGameInstance->Get_ShadowEye();
-    // 목표 지점
-    XMVECTOR FocusPoint = m_pGameInstance->Get_ShadowFocus();
-
-    // 방향 벡터 계산
-    XMVECTOR Direction = XMVector3Normalize(FocusPoint - EyePosition);
-
-    // 기본 위쪽 방향 벡터
-    XMVECTOR DefaultUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
-
-    // 새로운 위쪽 방향 벡터 계산
-    XMVECTOR Right = XMVector3Normalize(XMVector3Cross(DefaultUp, Direction));
-    XMVECTOR UpDirection = XMVector3Cross(Direction, Right);
-
-    // 뷰 행렬 생성
-    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(EyePosition, FocusPoint, UpDirection));
-
     /* 광원 기준의 뷰 변환행렬. */
-    //XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-    XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH((_float)g_iSizeX, (_float)g_iSizeY, 0.1f, 3000.f));
-    //XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
+    XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(m_vShadowEye, m_vShadowFocus, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+    //XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH((_float)g_iSizeX, (_float)g_iSizeY, 0.1f, 3000.f));
+    XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iSizeX / g_iSizeY, 0.1f, 3000.f));
 
     _float fShadowThreshold = 0.5f;
     //매직넘버 던져줌
@@ -1009,21 +995,25 @@ void CRenderer::Render_Shadow_NotMove()
     if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
         return;
 
-    //그림자 직접 렌더링
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
-        return;
-    //// 그림자맵 사용
-    //switch (m_pGameInstance->Get_CurrentLevel())
-    //{
-    //case LEVEL_GAMEPLAY:
-    //    if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 0)))
-    //        return;
-    //    break;
-    //case LEVEL_ACKBAR:
-    //    if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 1)))
-    //        return;
-    //    break;
-    //}
+    ////그림자 직접 렌더링
+    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
+    //    return;
+    //그림자맵 사용
+    switch (m_pGameInstance->Get_CurrentLevel())
+    {
+    case ENGINE_GAMEPLAY:
+        if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 0)))
+            return;
+        break;
+    case ENGINE_ACKBAR:
+        if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 1)))
+            return;
+        break;
+    case ENGINE_JUGGLAS:
+        if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 2)))
+            return;
+        break;
+    }
     
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
@@ -1261,7 +1251,21 @@ void CRenderer::Render_Reflection()
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Mirror"), m_pShader, "g_MirrorTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Reflection"), m_pShader, "g_EffectTexture")))
+        return;   
+    
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
+
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+        return;
+
+    m_pCausticTex->Bind_ShaderResource(m_pShader, "g_CausticTexture", m_iCausticIdx);
+
+
+    m_pShader->Bind_RawValue("g_fWaveStrength", &m_fWaveStrength, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fWaveFrequency", &m_fWaveFrequency, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fWaveTimeOffset", &m_fWaveTimeOffset, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fFresnelPower", &m_fFresnelPower, sizeof(_float));
 
     m_pShader->Begin(18);
 
@@ -2086,6 +2090,7 @@ void CRenderer::Free()
     Safe_Release(m_pLUTTex);
     Safe_Release(m_pMaskTex);
     Safe_Release(m_pDistortionTex);
+    Safe_Release(m_pCausticTex);
     Safe_Release(m_pDecalTex);
     Safe_Release(m_pShadowTex);
     Safe_Release(m_pReflectionDepthStencilView);

@@ -41,6 +41,7 @@ void CUI_Shop_AnimBG::Priority_Tick(_float fTimeDelta)
 
 void CUI_Shop_AnimBG::Tick(_float fTimeDelta)
 {
+	// 이걸 흘러가게 하지 말고 커졌다가 작아지는 식으로 바꾸기 >>> AckBar에 추가하고 나면!
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 

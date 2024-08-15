@@ -768,12 +768,24 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\RedDot">
       <UniqueIdentifier>{1c3f8585-f0bc-42fe-95f2-80b42fb102f5}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\FirePillar">
       <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\999.InitLoader">
       <UniqueIdentifier>{49ea12b8-be93-4169-94e0-6c804e5c797f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari">
+      <UniqueIdentifier>{f4dd844b-59ca-44d6-8d83-990e1d78e8ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body">
+      <UniqueIdentifier>{12baab93-2196-481c-9803-efd65021caff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\YantariSword">
+      <UniqueIdentifier>{1e529997-c700-4c80-9f26-10649c80c077}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\AeonsLost">
+      <UniqueIdentifier>{1b875788-8b7c-4f33-a55c-1368976a6cad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1669,7 +1681,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_QTE_Particle.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h">
       <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClInclude>
@@ -1687,6 +1699,21 @@
     </ClInclude>
     <ClInclude Include="..\public\CInitLoader.h">
       <Filter>01.Levels\999.InitLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Body_Yantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Yantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\YantariSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Yantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\UI_AeonsLost.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_RedDot.h">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2529,7 +2556,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Particle.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Particle</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp">
       <Filter>02.GameObjects\06.Effect\FirePillar</Filter>
     </ClCompile>
@@ -2547,6 +2574,21 @@
     </ClCompile>
     <ClCompile Include="..\private\CInitLoader.cpp">
       <Filter>01.Levels\999.InitLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Body_Yantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Yantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\YantariSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Yantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\UI_AeonsLost.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_RedDot.cpp">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

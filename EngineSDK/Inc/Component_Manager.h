@@ -33,6 +33,7 @@
 #include"PhysXComponent_Vehicle.h"
 #include"PhysXComponent_Character.h"
 #include"PhysXComponent_HeightField.h"
+#include "PhysXParticle.h"
 #pragma endregion
 
 

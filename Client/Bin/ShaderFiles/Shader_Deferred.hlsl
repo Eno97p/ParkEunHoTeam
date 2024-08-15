@@ -753,18 +753,15 @@ PS_OUT PS_SHADOW(PS_IN In)
     float2 vTexcoord;
     vTexcoord.x = vLightPos.x / vLightPos.w * 0.5f + 0.5f;
     vTexcoord.y = vLightPos.y / vLightPos.w * -0.5f + 0.5f;
-    //vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
-    //vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
 
     float lightDepthDesc = g_LightDepthTexture.Sample(LinearSampler, vTexcoord).r;
 
-    //float fLightOldDepth = lightDepthDesc;
     float fLightOldDepth = lightDepthDesc * 3000.f;
 
-    if (fLightOldDepth + 0.001f < vLightPos.z)
-        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
-    //if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+    //if (fLightOldDepth + 0.001f < vLightPos.z)
     //    Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    if (fLightOldDepth + g_fShadowThreshold < vLightPos.w)
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
 
     return Out;
 }

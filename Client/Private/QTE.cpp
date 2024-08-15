@@ -40,7 +40,6 @@ void CQTE::Tick(_float fTimeDelta)
 	for (auto& pBtn : m_vecBtn)
 		pBtn->Tick(fTimeDelta);
 
-	// Btn의 m_isScore가 전부 true일 때 모든 Btn의 score 값을 받아와서 Bad가 하나라도 있으면 실패 처리? 그리고 없애버리기!
 	// 체크하고 없애는 코드 필요 > 추후 Andras와 연결 필요
 
 	if (Check_End())

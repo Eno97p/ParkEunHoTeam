@@ -51,6 +51,10 @@
 #include "Body_Mantari.h"
 #include "Weapon_Mantari.h"
 
+#include "Yantari.h"
+#include "Body_Yantari.h"
+#include "Weapon_Yantari.h"
+
 #include "Legionnaire.h"
 #include "Body_Legionnaire.h"
 #include "Weapon_Legionnaire.h"

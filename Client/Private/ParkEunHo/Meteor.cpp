@@ -122,7 +122,7 @@ HRESULT CMeteor::Add_Child_Effects()
 	CGameObject* Core =  m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Meteor_Core"), &m_OwnDesc->CoreDesc);
 	m_EffectClasses.emplace_back(Core);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Meteor"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_DefaultCylinder"), &m_OwnDesc->CylinderDesc);
 
 	return S_OK;

@@ -135,56 +135,66 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 void CVIBuffer_Instance_Point::Setup_Onterrain(CVIBuffer_Terrain* pTerrain)
 {
-	D3D11_MAPPED_SUBRESOURCE SubResource{};
-	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
-	VTXPOINT* pPoints = (VTXPOINT*)SubResource.pData;
+    D3D11_MAPPED_SUBRESOURCE SubResource{};
+    m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+    VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
 
-	for (size_t i = 0; i < m_iNumInstance; i++)
-	{
-		_float3 vWorldPos = _float3(pVertices[i].vTranslation.x,
-			pVertices[i].vTranslation.y,
-			pVertices[i].vTranslation.z);
+    const vector<_float3>& validPositions = pTerrain->GetValidGrassPositions();
+    
+    if (validPositions.empty())
+    {
+        // 유효한 위치가 없으면 모든 잔디를 숨김
+        for (size_t i = 0; i < m_iNumInstance; i++)
+        {
+            pVertices[i].vTranslation = _float4(0.f, -1000.f, 0.f, 1.f);
+        }
+        m_pContext->Unmap(m_pVBInstance, 0);
+        return;
+    }
 
-		// 높이 계산
-		_float fTerrainHeight = pTerrain->Compute_Height(vWorldPos);
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(0, validPositions.size() - 1);
+    uniform_real_distribution<float> offsetDis(-1.0f, 1.0f);
 
-		// 노멀 계산
-		_float3 vNormal = pTerrain->Compute_Normal(vWorldPos);
+    for (size_t i = 0; i < m_iNumInstance; i++)
+    {
+        _float3 vWorldPos = validPositions[dis(gen)];
+        
+        // 약간의 오프셋 추가하여 자연스러운 분포 생성
+        vWorldPos.x += offsetDis(gen);
+        vWorldPos.z += offsetDis(gen);
 
-		// 높이 적용
-		pVertices[i].vTranslation.y = fTerrainHeight + 1.f;
+        // 높이 계산 (오프셋으로 인한 높이 변화 반영)
+        float fTerrainHeight = pTerrain->Compute_Height(vWorldPos);
+        
+        // 노멀 계산
+        _float3 vNormal = pTerrain->Compute_Normal(vWorldPos);
 
-		// 회전 적용
-		_vector vUp = { 0, 1, 0, 0.f };
-		_vector vTerrainNormal = XMLoadFloat3(&vNormal);
+        // 위치 적용
+        pVertices[i].vTranslation = _float4(vWorldPos.x, fTerrainHeight + 1.f, vWorldPos.z, 1.f);
 
-		// 노멀이 (0,1,0)과 거의 같은 경우 회전을 적용하지 않음
-		if (!XMVector3NearEqual(vUp, vTerrainNormal, XMVectorReplicate(0.0001f)))
-		{
-			_vector vRotationAxis = XMVector3Normalize(XMVector3Cross(vUp, vTerrainNormal));
-			float fRotationAngle = XMScalarACos(XMVector3Dot(vUp, vTerrainNormal).m128_f32[0]);
+        // 회전 적용
+        _vector vUp = { 0, 1, 0, 0.f };
+        _vector vTerrainNormal = XMLoadFloat3(&vNormal);
+        
+        if (!XMVector3NearEqual(vUp, vTerrainNormal, XMVectorReplicate(0.0001f)))
+        {
+            _vector vRotationAxis = XMVector3Normalize(XMVector3Cross(vUp, vTerrainNormal));
+            float fRotationAngle = XMScalarACos(XMVector3Dot(vUp, vTerrainNormal).m128_f32[0]);
+            _matrix rotationMatrix = XMMatrixRotationAxis(vRotationAxis, fRotationAngle);
+            _matrix currentRotation = XMMatrixIdentity();
+            currentRotation.r[0] = XMLoadFloat4(&pVertices[i].vRight);
+            currentRotation.r[1] = XMLoadFloat4(&pVertices[i].vUp);
+            currentRotation.r[2] = XMLoadFloat4(&pVertices[i].vLook);
+            _matrix newRotation = XMMatrixMultiply(currentRotation, rotationMatrix);
+            XMStoreFloat4(&pVertices[i].vRight, newRotation.r[0]);
+            XMStoreFloat4(&pVertices[i].vUp, newRotation.r[1]);
+            XMStoreFloat4(&pVertices[i].vLook, newRotation.r[2]);
+        }
+    }
 
-			// 회전 행렬 생성
-			_matrix rotationMatrix = XMMatrixRotationAxis(vRotationAxis, fRotationAngle);
-
-			// 현재 회전 행렬 추출
-			_matrix currentRotation = XMMatrixIdentity();
-			currentRotation.r[0] = XMLoadFloat4(&pVertices[i].vRight);
-			currentRotation.r[1] = XMLoadFloat4(&pVertices[i].vUp);
-			currentRotation.r[2] = XMLoadFloat4(&pVertices[i].vLook);
-
-			// 새로운 회전 적용
-			_matrix newRotation = XMMatrixMultiply(currentRotation, rotationMatrix);
-
-			// 회전 결과를 VTXMATRIX에 저장
-			XMStoreFloat4(&pVertices[i].vRight, newRotation.r[0]);
-			XMStoreFloat4(&pVertices[i].vUp, newRotation.r[1]);
-			XMStoreFloat4(&pVertices[i].vLook, newRotation.r[2]);
-		}
-	}
-
-	m_pContext->Unmap(m_pVBInstance, 0);
+    m_pContext->Unmap(m_pVBInstance, 0);
 }
 
 HRESULT CVIBuffer_Instance_Point::Ready_Instance_ForGrass(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc)

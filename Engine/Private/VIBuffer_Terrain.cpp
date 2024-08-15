@@ -19,6 +19,7 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain & rhs)
 	, m_iNumVerticesZ{ rhs.m_iNumVerticesZ }
 	, m_pOctTree { rhs.m_pOctTree }
 	, m_pQuadTree { rhs.m_pQuadTree }
+	, m_validGrassPositions {rhs.m_validGrassPositions }
 {
 	Safe_AddRef(m_pOctTree);
 	Safe_AddRef(m_pQuadTree);
@@ -141,6 +142,22 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring& strHeightMapFileP
 			pVertices[iIndex].vTexcoord = _float2(j / (m_iNumVerticesX - 1.f), i / (m_iNumVerticesZ - 1.f));
 		}
 	}
+	// 여기에 새로운 코드 추가
+	m_validGrassPositions.clear();
+	for (size_t i = 0; i < m_iNumVerticesZ; i++)
+	{
+		for (size_t j = 0; j < m_iNumVerticesX; j++)
+		{
+			_uint iIndex = i * m_iNumVerticesX + j;
+			float height = pVertices[iIndex].vPosition.y;
+
+			if (height >= 348.f && height <= 395.f)
+			{
+				m_validGrassPositions.push_back(_float3(pVertices[iIndex].vPosition.x, height, pVertices[iIndex].vPosition.z));
+			}
+		}
+	}
+
 #pragma endregion
 
 #pragma region INDEX_BUFFER 
@@ -847,3 +864,4 @@ void CVIBuffer_Terrain::Free()
 	Safe_Release(m_pOctTree);
 	Safe_Release(m_pQuadTree);
 }
+

@@ -95,7 +95,7 @@ public: /* For.Renderer */
 private:
 	_bool m_bMotionBlur = false;
 	_bool m_bNotMoveShadow = false;
-	_bool m_bMoveShadow = false;
+	_bool m_bMoveShadow = true;
 #ifdef _DEBUG
 public:
 	HRESULT Add_DebugComponent(class CComponent* pComponent);

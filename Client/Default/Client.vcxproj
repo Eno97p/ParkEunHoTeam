@@ -206,6 +206,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Body_Rlya.h" />
     <ClInclude Include="..\Public\Body_Valnir.h" />
     <ClInclude Include="..\Public\Body_Yaak.h" />
+    <ClInclude Include="..\Public\Body_Yantari.h" />
     <ClInclude Include="..\Public\BossDeco.h" />
     <ClInclude Include="..\Public\BossStatue.h" />
     <ClInclude Include="..\Public\Boss_Juggulus.h" />
@@ -475,7 +476,9 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_WPFontaine.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="..\Public\Weapon_Sword_LGGun.h" />
+    <ClInclude Include="..\Public\Weapon_Yantari.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
+    <ClInclude Include="..\Public\Yantari.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Client_Struct.h" />
     <ClInclude Include="CMouse.h" />
@@ -504,6 +507,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Body_Rlya.cpp" />
     <ClCompile Include="..\Private\Body_Valnir.cpp" />
     <ClCompile Include="..\Private\Body_Yaak.cpp" />
+    <ClCompile Include="..\Private\Body_Yantari.cpp" />
     <ClCompile Include="..\Private\BossDeco.cpp" />
     <ClCompile Include="..\Private\BossStatue.cpp" />
     <ClCompile Include="..\Private\Boss_Juggulus.cpp" />
@@ -769,7 +773,9 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_WPFontaine.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="..\Private\Weapon_Sword_LGGun.cpp" />
+    <ClCompile Include="..\Private\Weapon_Yantari.cpp" />
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
+    <ClCompile Include="..\Private\Yantari.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="CMouse.cpp" />
     <ClCompile Include="stdafx.cpp">

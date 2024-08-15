@@ -1597,7 +1597,7 @@ void CPlayer::Generate_HoverBoard()
 		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
+		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f + 5.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
 		hoverboardInfo.vRight = _float3(vRight.m128_f32[0], vRight.m128_f32[1], vRight.m128_f32[2]);

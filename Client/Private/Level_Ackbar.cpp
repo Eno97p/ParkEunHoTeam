@@ -87,8 +87,8 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ACKBAR, TEXT("Layer_Camera")).size();
 
-	_vector vEye = { 86.f, 300.f, -163.f, 1.f };
-	_vector vFocus = { 86.f, 0.f, -113.f, 1.f };
+	_vector vEye = { 86.f, 100.f, -163.f, 1.f };
+	_vector vFocus = { 86.f, 0.f, 0.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 

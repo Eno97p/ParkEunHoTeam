@@ -24,7 +24,7 @@ public:
 	HRESULT Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
 	void Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
 	_uint* Get_Mesh_Indices() { return pNewIndices; }
-	_bool Picking(class CTransform* pTransform, _float3* pOut);
+
 
 private:
 	_char				m_szName[MAX_PATH] = "";

@@ -83,51 +83,6 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 	}
 }
 
-_bool CMesh::Picking(CTransform* pTransform, _float3* pOut)
-{
-	_matrix		WorldMatrixInv = pTransform->Get_WorldMatrixInverse();
-	_float3			vTempRayDir, vTempRayPos;
-	XMVECTOR		vRayDir, vRayPos;
-
-	m_pGameInstance->Compute_LocalRayInfo(&vTempRayDir, &vTempRayPos, pTransform);
-
-	vRayPos = XMLoadFloat3(&vTempRayPos);
-	vRayPos = XMVectorSetW(vRayPos, 1.f);
-	vRayDir = XMLoadFloat3(&vTempRayDir);
-	vRayDir = XMVector3Normalize(vRayDir);
-
-	_matrix	WorldMatrix = pTransform->Get_WorldMatrix();
-	_uint		iNumIndices = { 0 };
-	for (_uint i = 0; i < m_iNumPrimitive; ++i)
-	{
-		_float3 vPosition0 = _float3(0.f, 0.f, 0.f);
-		_float3 vPosition1 = _float3(0.f, 0.f, 0.f);
-		_float3 vPosition2 = _float3(0.f, 0.f, 0.f);
-
-		memcpy(&vPosition0, &m_nonAnimpVertices[pNewIndices[iNumIndices++]].vPosition, sizeof(_float3));
-		_vector vTemp_1 = XMLoadFloat3(&vPosition0);
-		vTemp_1 = XMVectorSetW(vTemp_1, 1.f);
-		memcpy(&vPosition1, &m_nonAnimpVertices[pNewIndices[iNumIndices++]].vPosition, sizeof(_float3));
-		_vector vTemp_2 = XMLoadFloat3(&vPosition1);
-		vTemp_2 = XMVectorSetW(vTemp_2, 1.f);
-		memcpy(&vPosition2, &m_nonAnimpVertices[pNewIndices[iNumIndices++]].vPosition, sizeof(_float3));
-		_vector vTemp_3 = XMLoadFloat3(&vPosition2);
-		vTemp_3 = XMVectorSetW(vTemp_3, 1.f);
-
-		_float fDist = 0;
-
-		if (true == TriangleTests::Intersects((FXMVECTOR)vRayPos, (FXMVECTOR)vRayDir, (FXMVECTOR)vTemp_1, (GXMVECTOR)vTemp_2, (HXMVECTOR)vTemp_3, fDist))
-		{
-			_vector	vPickPos = vRayPos + vRayDir * fDist;
-
-			XMStoreFloat3(pOut, XMVector3TransformCoord(vPickPos, WorldMatrix));
-
-			return true;
-		}
-	}
-	return false;
-}
-
 
 HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix)
 {
@@ -180,8 +135,6 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 	XMVECTOR vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR vRight = XMVector3Cross(vUp, XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f));
 	XMVECTOR vLook = XMVector3Cross(vRight, vUp);
-
-
 
 	/*memcpy(m_nonAnimpVertices, pNonAnimVT, sizeof(VTXMESH) * m_iNumVertices);*/
 

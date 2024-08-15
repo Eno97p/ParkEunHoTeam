@@ -73,6 +73,8 @@
 #include "Meteor_Wind.h"
 #pragma endregion METEOR
 
+#include "Particle_PhysX.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -187,6 +189,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 #pragma endregion TEXTURE
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트를 로딩 중 입니다."));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
+		CPhysXComponent::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
 #pragma region COMPONENT
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -728,6 +737,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Meteor_Wind"),
 		CMeteor_Wind::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Particle_PhsyX"),
+		CParticle_PhysX::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

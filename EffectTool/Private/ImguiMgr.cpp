@@ -340,7 +340,11 @@ void CImguiMgr::Visible_Data()
 	if (bShow[15] == true)
 		Meteor_Tool(&bShow[15]);
 
+	ImGui::Checkbox("PhysXTool", &bShow[16]);
+	if (bShow[16] == true)
+		PhysX_Particle_Tool(&bShow[16]);
 
+	
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -3848,6 +3852,117 @@ HRESULT CImguiMgr::Load_Meteor(CMeteor::METEOR_DESC* pMeteor)
 	inFile.read((char*)pMeteor, sizeof(CMeteor::METEOR_DESC));
 	inFile.close();
 	return S_OK;
+}
+
+void CImguiMgr::PhysX_Particle_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("PhysX_Particle", Open);
+
+	static CParticle_PhysX::PARTICLE_PHYSXDESC Desc{};
+#pragma region MODELTYPE
+	if (ImGui::CollapsingHeader("Model_Type"))
+	{
+		if (ImGui::RadioButton("Cube", Desc.eModelType == EFFECTMODELTYPE::CUBE))
+			Desc.eModelType = EFFECTMODELTYPE::CUBE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Circle", Desc.eModelType == EFFECTMODELTYPE::CIRCLE))
+			Desc.eModelType = EFFECTMODELTYPE::CIRCLE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Slash", Desc.eModelType == EFFECTMODELTYPE::SLASH))
+			Desc.eModelType = EFFECTMODELTYPE::SLASH;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Leaf0", Desc.eModelType == EFFECTMODELTYPE::LEAF0))
+			Desc.eModelType = EFFECTMODELTYPE::LEAF0;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Leaf1", Desc.eModelType == EFFECTMODELTYPE::LEAF1))
+			Desc.eModelType = EFFECTMODELTYPE::LEAF1;
+
+		if (ImGui::RadioButton("Blade", Desc.eModelType == EFFECTMODELTYPE::BLADE_SLASH))
+			Desc.eModelType = EFFECTMODELTYPE::BLADE_SLASH;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Blade_Long", Desc.eModelType == EFFECTMODELTYPE::BLADE_SLASH_LONG))
+			Desc.eModelType = EFFECTMODELTYPE::BLADE_SLASH_LONG;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Grass", Desc.eModelType == EFFECTMODELTYPE::GRASS))
+			Desc.eModelType = EFFECTMODELTYPE::GRASS;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rock1", Desc.eModelType == EFFECTMODELTYPE::ROCK0))
+			Desc.eModelType = EFFECTMODELTYPE::ROCK0;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rock2", Desc.eModelType == EFFECTMODELTYPE::ROCK1))
+			Desc.eModelType = EFFECTMODELTYPE::ROCK1;
+
+		if (ImGui::RadioButton("Needle", Desc.eModelType == EFFECTMODELTYPE::NEEDLE))
+			Desc.eModelType = EFFECTMODELTYPE::NEEDLE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Bubble", Desc.eModelType == EFFECTMODELTYPE::BUBBLE))
+			Desc.eModelType = EFFECTMODELTYPE::BUBBLE;
+	}
+#pragma endregion MODELTYPE
+#pragma region DEFAULTVALUE
+	if (ImGui::CollapsingHeader("DefaultValue"))
+	{
+		ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+		ImGui::Checkbox("Alpha", &Desc.bValues[0]);
+		ImGui::Checkbox("ColorMap", &Desc.bValues[1]);
+		if (Desc.bValues[1] == true)
+		{
+			ImGui::ColorEdit3("StartColor", reinterpret_cast<float*>(&Desc.vStartColor));
+			ImGui::ColorEdit3("EndColor", reinterpret_cast<float*>(&Desc.vEndColor));
+		}
+		ImGui::Checkbox("Bloom", &Desc.bValues[2]);
+		if (Desc.bValues[2] == true)
+		{
+			ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.vBloomColor));
+			ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+		}
+		ImGui::Checkbox("Desolve", &Desc.bValues[3]);
+		if (Desc.bValues[3] == true)
+		{
+			ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&Desc.vDesolveColor));
+			ImGui::InputFloat("DesolveLength", &Desc.fDesolveLength);
+			ImGui::InputInt("NumDesolve", &Desc.NumDesolve);
+		}
+	}
+#pragma endregion DEFAULTVALUE
+#pragma region PhysX
+	if (ImGui::CollapsingHeader("PhysX"))
+	{
+		ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &Desc.PhysXDesc.iNumInstance, NULL, NULL, "%u");
+
+		ImGui::InputFloat3("Range", reinterpret_cast<float*>(&Desc.PhysXDesc.Range));
+		ImGui::InputFloat3("Pivot", reinterpret_cast<float*>(&Desc.PhysXDesc.Pivot));
+		ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.PhysXDesc.Offset));
+		ImGui::InputFloat2("Size", reinterpret_cast<float*>(&Desc.PhysXDesc.Size));
+		ImGui::InputFloat2("Velocity", reinterpret_cast<float*>(&Desc.PhysXDesc.Velocity));
+		ImGui::InputFloat2("LifeTime", reinterpret_cast<float*>(&Desc.PhysXDesc.LifeTime));
+		static _bool Detail = false;
+		ImGui::Checkbox("Detail", &Detail);
+		if (Detail)
+		{
+			ImGui::InputFloat("Energy", &Desc.PhysXDesc.Energy);
+			ImGui::InputFloat("AirDrag", &Desc.PhysXDesc.AirDrag);
+			ImGui::InputFloat("Threshold", &Desc.PhysXDesc.Threshold);
+			ImGui::InputFloat("BubbleDrag", &Desc.PhysXDesc.BubbleDrag);
+			ImGui::InputFloat("Buoyancy", &Desc.PhysXDesc.Buoyancy);
+			ImGui::InputFloat("PressureWeight", &Desc.PhysXDesc.PressureWeight);
+			ImGui::InputFloat("DivergenceWeight", &Desc.PhysXDesc.DivergenceWeight);
+		}
+	}
+#pragma endregion PhysX
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Particle_PhsyX"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+	ImGui::End();
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

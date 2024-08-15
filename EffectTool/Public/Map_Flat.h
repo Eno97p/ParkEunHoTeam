@@ -2,7 +2,9 @@
 
 #include "Effect_Define.h"
 #include "Map.h"
-
+BEGIN(Engine)
+class CPhysXComponent;
+END
 
 BEGIN(Effect)
 
@@ -27,6 +29,8 @@ public:
 	virtual HRESULT Add_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
 
+private:
+	 CPhysXComponent* m_Test = nullptr;
 
 public:
 	static CFlatMap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

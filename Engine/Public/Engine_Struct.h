@@ -200,6 +200,16 @@ namespace Engine
 	}VTXMATRIX;
 
 
+	typedef struct ENGINE_DLL VTXPARTICLE
+	{
+		XMFLOAT4			vRight;
+		XMFLOAT4			vUp;
+		XMFLOAT4			vLook;
+		XMFLOAT4			vTranslation;
+		XMFLOAT2			vLifeTime;
+	};
+
+
 
 
 
@@ -615,7 +625,7 @@ namespace Engine
 
 	}
 
-	struct ENGINE_DLL PxParticleBufferDesc
+	struct PxParticleBufferDesc
 	{
 		PxVec4* positions;               // 파티클의 위치와 반질량(1/mass)
 		PxVec4* velocities;              // 파티클의 속도
@@ -639,7 +649,13 @@ namespace Engine
 	};
 
 
-
+	struct ENGINE_DLL PxParticleAndDiffuseBufferDesc : public PxParticleBufferDesc
+	{
+		PxDiffuseParticleParams diffuseParams;
+		PxU32 maxDiffuseParticles;
+		PxU32 maxActiveDiffuseParticles;
+		PxParticleAndDiffuseBufferDesc() : PxParticleBufferDesc() { }
+	};
 
 	
 }

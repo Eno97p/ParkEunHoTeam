@@ -103,19 +103,19 @@ HRESULT CFirePillar::Add_Child_Effects()
 	m_OwnDesc->pillar4.SizeInterval = m_OwnDesc->Interval;
 
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_FirePillar_Effect"), &m_OwnDesc->pillar1);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_FirePillar_Effect"), &m_OwnDesc->pillar2);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_FirePillar_Effect"), &m_OwnDesc->pillar4);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_FirePillar_Bottom"), &m_OwnDesc->Bottom);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FirePillar"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_Rock_Ground"), &m_OwnDesc->Ground);
 
 	return S_OK;

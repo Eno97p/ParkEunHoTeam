@@ -97,10 +97,10 @@ HRESULT CSwingEffect::Add_Child_Effects()
 	EFFECTMGR->Generate_Particle(54, vParticlePos);
 	EFFECTMGR->Generate_Particle(55, vParticlePos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), -90.f);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_Swing_Spiral"), &m_OwnDesc->SpiralDesc);
 
-	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_SwingEffect"),
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_DefaultCylinder"), &m_OwnDesc->CylinderDesc);
 
 	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);

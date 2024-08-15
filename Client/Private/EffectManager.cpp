@@ -93,7 +93,7 @@ HRESULT CEffectManager::Generate_Trail(const _int iIndex, const _float4x4* BindM
 
 	CParticle_Trail::TRAIL_DESC* traildesc = Trailes[iIndex].get();
 	traildesc->traildesc.ParentMat = BindMat;
-	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Trail"), TEXT("Prototype_GameObject_Trail"), traildesc);
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Trail"), traildesc);
 	return S_OK;
 }
 
@@ -121,7 +121,7 @@ HRESULT CEffectManager::Generate_SwordTrail(const _int iIndex, const _float4x4* 
 		CSTrail::STRAIL_DESC* SwordTrail = m_pSwordTrailes[iIndex].get();
 		SwordTrail->traildesc.ParentMat = Swordmat;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_SwordTrail"), TEXT("Prototype_GameObject_SwordTrail"), SwordTrail);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_SwordTrail"), SwordTrail);
 	}
 	return S_OK;
 }
@@ -157,7 +157,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pPoint->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Particle"), pPoint);
+			TEXT("Layer_Effect"), pPoint);
 		break;
 	}
 	case Client::PART_MESH:
@@ -173,7 +173,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pMesh->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Particle"), pMesh);
+			TEXT("Layer_Effect"), pMesh);
 		break;
 	}
 	case Client::PART_RECT:
@@ -189,7 +189,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pRect->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Particle"), pRect);
+			TEXT("Layer_Effect"), pRect);
 		break;
 	}
 	case Client::PART_END:
@@ -213,7 +213,7 @@ HRESULT CEffectManager::Generate_Distortion(const _int iIndex, const _float4 vSt
 		CDistortionEffect::DISTORTIONEFFECT* Distortion = m_pDistortions[iIndex].get();
 		Distortion->vStartpos = vStartpos;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Distortion"), TEXT("Prototype_GameObject_Distortion_Effect"), Distortion);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Distortion_Effect"), Distortion);
 	}
 	return S_OK;
 }
@@ -230,7 +230,7 @@ HRESULT CEffectManager::Generate_Lightning(const _int iIndex, const _float4 vSta
 		CElectronic::ELECTRONICDESC* Lightning = m_pLightnings[iIndex].get();
 		Lightning->vStartPos = vStartpos;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Electronic_Effect"), Lightning);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Electronic_Effect"), Lightning);
 	}
 	return S_OK;
 }
@@ -248,7 +248,7 @@ HRESULT CEffectManager::Generate_Tornado(const _int iIndex, const _float4 vStart
 		pDesc->vStartPos = vStartpos;
 		pDesc->pTarget = pTarget;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_Tornado"), pDesc);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Tornado"), pDesc);
 
 	}
 	return S_OK;
@@ -266,7 +266,7 @@ HRESULT CEffectManager::Generate_HealEffect(const _int iIndex, const _float4x4* 
 		CHealEffect::HEALEFFECT* pDesc = m_Heals[iIndex].get();
 		pDesc->ParentMat = BindMat;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Effects"), TEXT("Prototype_GameObject_HealEffect"), pDesc);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_HealEffect"), pDesc);
 	}
 	return S_OK;
 }
@@ -283,7 +283,7 @@ HRESULT CEffectManager::Generate_Lazer(const _int iIndex, const _float4x4* BindM
 		CAndrasLazer::ANDRAS_LAZER_TOTALDESC* Desc = m_Lazers[iIndex].get();
 		Desc->ShooterMat = BindMat;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("LayerLazer"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_AndrasLazerSpawner"), Desc);
 	}
 	return S_OK;
 }
@@ -300,7 +300,7 @@ HRESULT CEffectManager::Generate_Swing(const _int iIndex, const _float4x4* BindM
 		CSwingEffect::SWINGEFFECT* Desc = m_Swings[iIndex].get();
 		Desc->ParentMat = BindMat;
 		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Swing"), TEXT("Prototype_GameObject_SwingEffect"), Desc);
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_SwingEffect"), Desc);
 	}
 	return S_OK;
 }
@@ -310,7 +310,7 @@ HRESULT CEffectManager::Generate_Meteor(const _float4 vStartPos)
 	CMeteor::METEOR_DESC* Desc = m_Meteor.get();
 	Desc->vTargetPos = vStartPos;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-		TEXT("Layer_Meteor"), TEXT("Prototype_GameObject_Meteor"), Desc);
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Meteor"), Desc);
 	return S_OK;
 }
 
@@ -319,7 +319,7 @@ HRESULT CEffectManager::Generate_FirePillar(const _float4 vStartPos)
 	CFirePillar::FIREPILLAR* Desc = m_FirePillar.get();
 	Desc->vStartPos = vStartPos;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-		TEXT("Layer_FirePillar"), TEXT("Prototype_GameObject_FirePillar"), Desc);
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_FirePillar"), Desc);
 	return S_OK;
 }
 

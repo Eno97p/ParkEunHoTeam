@@ -134,6 +134,9 @@
     <Filter Include="Objects\02. Effects\13. Meteor\Effects">
       <UniqueIdentifier>{d318e34a-09e2-463e-8166-3da95b3730f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\14. PhysXParticle">
+      <UniqueIdentifier>{73ae0830-e6d8-4558-a75d-9f8dbee3712d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -364,6 +367,9 @@
     <ClInclude Include="..\Public\Rock_Ground.h">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_PhysX.h">
+      <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -578,6 +584,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Rock_Ground.cpp">
       <Filter>Objects\02. Effects\10. FirePillar\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_PhysX.cpp">
+      <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

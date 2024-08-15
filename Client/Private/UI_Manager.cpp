@@ -370,7 +370,10 @@ void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
 
 _bool CUI_Manager::Get_isFadeOutEnd()
 {
-	return m_pFadeOut->Get_isFadeOutEnd();
+	if (nullptr == m_pFadeOut)
+		return false;
+	else
+		return m_pFadeOut->Get_isFadeOutEnd();
 }
 
 void CUI_Manager::Key_Input()

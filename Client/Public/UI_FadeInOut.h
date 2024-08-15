@@ -45,15 +45,16 @@ private:
 
 	FADE_TYPE			m_eFadeType = { TYPE_END };
 
-	CTexture*			m_pDisolveTextureCom = nullptr;
-	class CUI_Memento*	m_pMemento = { nullptr };
+	CTexture*				m_pDisolveTextureCom = nullptr;
+	class CUI_Memento*		m_pMemento = { nullptr };
+	class CUI_AeonsLost*	m_pAeonsLost = { nullptr };
 
 private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 
-	HRESULT	Create_FadeIn(); // 필요 없을 듯
 	HRESULT	Create_Memento();
+	HRESULT	Create_AeonsLost();
 	LEVEL	Check_NextLevel();
 
 public:

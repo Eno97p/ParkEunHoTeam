@@ -493,7 +493,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 					}
 				}
 
-				CUI_Manager::GetInstance()->Delete_FadeInOut(false );
+				CUI_Manager::GetInstance()->Delete_FadeInOut(false);
 
 				m_iState = STATE_REVIVE;
 				m_bIsLoadStart = false;

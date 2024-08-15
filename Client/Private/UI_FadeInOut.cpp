@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 
 #include "UI_Memento.h"
+#include "UI_AeonsLost.h"
 
 CUI_FadeInOut::CUI_FadeInOut(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
@@ -54,8 +55,9 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 
 	if (!m_isLevelChange && m_isFadeIn && m_eFadeType == TYPE_ALPHA)
 		Create_Memento();
-
-	// 현재 레벨 넘어가기만 해도 Memento가 뜨는 오류 있음 > Memento 생성 시점 분기 처리의 오류라고 보이는데
+	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE)
+		Create_AeonsLost(); // 여기서 생성하지 말구 > 아니 걍 생성하구
+	
 
 	return S_OK;
 }
@@ -99,23 +101,32 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
 	{
-		m_fDisolveValue += fTimeDelta * 0.3f;
+		if (!m_isFadeIn || (m_isFadeIn && m_pAeonsLost->Get_isEnd()))
+		{
+			m_fDisolveValue += fTimeDelta * 0.3f;
+		}
 
 		if (m_fDisolveValue >= 1.f)
 		{
-			m_fDisolveValue = 1.f;
-
 			if (!m_isFadeIn)
 			{
+				m_isFadeOutEnd = true;
+
 				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(true);
 			}
-
-			m_isFadeOutEnd = true;
+			else
+			{
+				CUI_Manager::GetInstance()->Delete_FadeInOut(true);
+				return;
+			}
 		}
 	}
 
 	if (nullptr != m_pMemento)
 		m_pMemento->Tick(fTimeDelta);
+
+	if (nullptr != m_pAeonsLost)
+		m_pAeonsLost->Tick(fTimeDelta);
 }
 
 void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
@@ -124,6 +135,9 @@ void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pMemento)
 		m_pMemento->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pAeonsLost)
+		m_pAeonsLost->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_FadeInOut::Render()
@@ -210,27 +224,27 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CUI_FadeInOut::Create_FadeIn()
-{
-	UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = true;
-	pDesc.isLevelChange = false;
-
-	if (TYPE_DISSOLVE == m_eFadeType)
-	{
-		pDesc.eFadeType = TYPE_DISSOLVE;
-	}
-	else
-	{
-		pDesc.eFadeType = TYPE_ALPHA;
-	}
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
+//HRESULT CUI_FadeInOut::Create_FadeIn()
+//{
+//	UI_FADEINOUT_DESC pDesc{};
+//
+//	pDesc.isFadeIn = true;
+//	pDesc.isLevelChange = false;
+//
+//	if (TYPE_DISSOLVE == m_eFadeType)
+//	{
+//		pDesc.eFadeType = TYPE_DISSOLVE;
+//	}
+//	else
+//	{
+//		pDesc.eFadeType = TYPE_ALPHA;
+//	}
+//
+//	if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+//		return E_FAIL;
+//
+//	return S_OK;
+//}
 
 HRESULT CUI_FadeInOut::Create_Memento()
 {
@@ -238,6 +252,16 @@ HRESULT CUI_FadeInOut::Create_Memento()
 	pDesc.eLevel = LEVEL_STATIC;
 
 	m_pMemento = dynamic_cast<CUI_Memento*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Memento"), &pDesc));
+
+	return S_OK;
+}
+
+HRESULT CUI_FadeInOut::Create_AeonsLost()
+{
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel - LEVEL_STATIC;
+
+	m_pAeonsLost = dynamic_cast<CUI_AeonsLost*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_AeonsLost"), &pDesc));
 
 	return S_OK;
 }
@@ -289,6 +313,7 @@ void CUI_FadeInOut::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pAeonsLost);
 	Safe_Release(m_pMemento);
 	Safe_Release(m_pDisolveTextureCom);
 	Safe_Release(m_pVIBufferCom);

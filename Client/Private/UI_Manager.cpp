@@ -25,6 +25,7 @@
 #include "UI_Broken.h"
 #include "UI_Dash.h"
 #include "QTE.h"
+#include "UI_FadeInOut.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -124,6 +125,16 @@ void CUI_Manager::Tick(_float fTimeDelta)
 	if (nullptr != m_pQTE)
 		m_pQTE->Tick(fTimeDelta);
 
+	if (nullptr != m_pFadeOut)
+		m_pFadeOut->Tick(fTimeDelta);
+
+	if (nullptr != m_pFadeIn)
+	{
+		if (m_pFadeIn->Get_isFadeOutEnd())
+			Delete_FadeInOut(true);
+		else
+			m_pFadeIn->Tick(fTimeDelta);
+	}
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -139,11 +150,18 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	m_pScreenBlood->Late_Tick(fTimeDelta);
 	m_pBroken->Late_Tick(fTimeDelta);
+
 	for (auto& pDash : m_vecDash)
 		pDash->Late_Tick(fTimeDelta);
 
 	if (nullptr != m_pQTE)
 		m_pQTE->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pFadeOut)
+		m_pFadeOut->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pFadeIn)
+		m_pFadeIn->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -302,6 +320,60 @@ HRESULT CUI_Manager::Create_UI()
 	}
 
 	return S_OK;
+}
+
+HRESULT CUI_Manager::Create_FadeInOut_Dissolve(_bool isFadeIn)
+{
+	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+	pDesc.isLevelChange = false;
+	pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
+
+	if (isFadeIn)
+	{
+		if (nullptr != m_pFadeIn)
+			return S_OK;
+
+		pDesc.isFadeIn = true;
+
+		m_pFadeIn = dynamic_cast<CUI_FadeInOut*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc));
+		if (nullptr == m_pFadeIn)
+			return E_FAIL;
+	}
+	else
+	{
+		if (nullptr != m_pFadeOut)
+			return S_OK;
+
+		pDesc.isFadeIn = false;
+
+		m_pFadeOut = dynamic_cast<CUI_FadeInOut*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc));
+		if (nullptr == m_pFadeOut)
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
+{
+	if (isFadeIn)
+	{
+		Safe_Release(m_pFadeIn);
+		m_pFadeIn = nullptr;
+	}
+	else
+	{
+		Safe_Release(m_pFadeOut);
+		m_pFadeOut = nullptr;
+	}
+}
+
+_bool CUI_Manager::Get_isFadeOutEnd()
+{
+	if (nullptr == m_pFadeOut)
+		return false;
+	else
+		return m_pFadeOut->Get_isFadeOutEnd();
 }
 
 void CUI_Manager::Key_Input()
@@ -483,6 +555,8 @@ void CUI_Manager::Free()
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
 	
+	Safe_Release(m_pFadeIn);
+	Safe_Release(m_pFadeOut);
 	Safe_Release(m_pQTE);
 	Safe_Release(m_pBroken);
 	Safe_Release(m_pScreenBlood);

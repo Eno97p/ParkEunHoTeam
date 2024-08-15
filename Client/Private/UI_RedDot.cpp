@@ -1,24 +1,28 @@
-#include "UI_QTE_Particle.h"
+#include "UI_RedDot.h"
 
 #include "GameInstance.h"
 
-CUI_QTE_Particle::CUI_QTE_Particle(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_RedDot::CUI_RedDot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_QTE_Particle::CUI_QTE_Particle(const CUI_QTE_Particle& rhs)
+CUI_RedDot::CUI_RedDot(const CUI_RedDot& rhs)
 	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_QTE_Particle::Initialize_Prototype()
+HRESULT CUI_RedDot::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUI_QTE_Particle::Initialize(void* pArg)
+HRESULT CUI_RedDot::Initialize(void* pArg)
 {
+	UI_REDDOT_DESC* pDesc = static_cast<UI_REDDOT_DESC*>(pArg);
+
+	m_eUISort = pDesc->eUISort;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -27,38 +31,26 @@ HRESULT CUI_QTE_Particle::Initialize(void* pArg)
 
 	Setting_Position();
 
-	Resset_Animation(true); // Test
-
 	return S_OK;
 }
 
-void CUI_QTE_Particle::Priority_Tick(_float fTimeDelta)
+void CUI_RedDot::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_QTE_Particle::Tick(_float fTimeDelta)
+void CUI_RedDot::Tick(_float fTimeDelta)
 {
-	m_fDeadTimer += fTimeDelta;
-
-	m_fSizeX *= 1.03f; // 1.1f > 1.09
-	m_fSizeY *= 1.03f;
-	Setting_Position();
-
-	if (0.1f <= m_fDeadTimer)
-	{
-		if (!m_isRenderAnimFinished)
-			Render_Animation(fTimeDelta, 10.f);// 6 >> 14
-		else
-			m_isDead = true;
-	}
+	// 서서히 나타날 필요 없을 거 같은데
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta);
 }
 
-void CUI_QTE_Particle::Late_Tick(_float fTimeDelta)
+void CUI_RedDot::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
 }
 
-HRESULT CUI_QTE_Particle::Render()
+HRESULT CUI_RedDot::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -70,7 +62,7 @@ HRESULT CUI_QTE_Particle::Render()
 	return S_OK;
 }
 
-HRESULT CUI_QTE_Particle::Add_Components()
+HRESULT CUI_RedDot::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -83,14 +75,14 @@ HRESULT CUI_QTE_Particle::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Particle"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RedDot"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_QTE_Particle::Bind_ShaderResources()
+HRESULT CUI_RedDot::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -112,33 +104,33 @@ HRESULT CUI_QTE_Particle::Bind_ShaderResources()
 	return S_OK;
 }
 
-CUI_QTE_Particle* CUI_QTE_Particle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_RedDot* CUI_RedDot::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_QTE_Particle* pInstance = new CUI_QTE_Particle(pDevice, pContext);
+	CUI_RedDot* pInstance = new CUI_RedDot(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_QTE_Particle");
+		MSG_BOX("Failed To Created : CUI_RedDot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_QTE_Particle::Clone(void* pArg)
+CGameObject* CUI_RedDot::Clone(void* pArg)
 {
-	CUI_QTE_Particle* pInstance = new CUI_QTE_Particle(*this);
+	CUI_RedDot* pInstance = new CUI_RedDot(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_QTE_Particle");
+		MSG_BOX("Failed To Cloned : CUI_RedDot");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_QTE_Particle::Free()
+void CUI_RedDot::Free()
 {
 	__super::Free();
 }

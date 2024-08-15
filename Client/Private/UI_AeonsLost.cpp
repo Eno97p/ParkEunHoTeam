@@ -1,23 +1,23 @@
-#include "UI_Shop_AnimBG.h"
+#include "UI_AeonsLost.h"
 
 #include "GameInstance.h"
 
-CUI_Shop_AnimBG::CUI_Shop_AnimBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_AeonsLost::CUI_AeonsLost(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
 {
 }
 
-CUI_Shop_AnimBG::CUI_Shop_AnimBG(const CUI_Shop_AnimBG& rhs)
+CUI_AeonsLost::CUI_AeonsLost(const CUI_AeonsLost& rhs)
 	: CUI{ rhs }
 {
 }
 
-HRESULT CUI_Shop_AnimBG::Initialize_Prototype()
+HRESULT CUI_AeonsLost::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CUI_Shop_AnimBG::Initialize(void* pArg)
+HRESULT CUI_AeonsLost::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -25,8 +25,8 @@ HRESULT CUI_Shop_AnimBG::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
+	m_fX = (g_iWinSizeX >> 1);
+	m_fY = (g_iWinSizeY >> 1);
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
 
@@ -35,41 +35,43 @@ HRESULT CUI_Shop_AnimBG::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CUI_Shop_AnimBG::Priority_Tick(_float fTimeDelta)
+void CUI_AeonsLost::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CUI_Shop_AnimBG::Tick(_float fTimeDelta)
+void CUI_AeonsLost::Tick(_float fTimeDelta)
 {
-	// 이걸 흘러가게 하지 말고 커졌다가 작아지는 식으로 바꾸기 >>> AckBar에 추가하고 나면!
-	if (!m_isRenderAnimFinished)
-		Render_Animation(fTimeDelta);
-
-	m_fFlowTimer += fTimeDelta * 0.03f;
-	if (10.f <= m_fFlowTimer)
+	m_fDeadTimer += fTimeDelta;
+	if (1.f <= m_fDeadTimer)
 	{
-		m_fFlowTimer = 0.f;
+		// 떠 있다가 노이즈 좀 들어가주면서 팍 사라져야 함 >> 노이즈 구현 하고 나서 손댈 지?
+		
+		m_isEnd = true;
 	}
 }
 
-void CUI_Shop_AnimBG::Late_Tick(_float fTimeDelta)
+void CUI_AeonsLost::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FOURTH);
+	if(!m_isEnd)
+		CGameInstance::GetInstance()->Add_UI(this, SEVENTEENTH); // 더 추가될 수 있음
 }
 
-HRESULT CUI_Shop_AnimBG::Render()
+HRESULT CUI_AeonsLost::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(9);
+	m_pShaderCom->Begin(8); // 8
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
+
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo35"), TEXT("AEONS LOST"), _float2(m_fX - 110.f, m_fY - 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_Shop_AnimBG::Add_Components()
+HRESULT CUI_AeonsLost::Add_Components()
 {
 	/* For. Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
@@ -82,14 +84,14 @@ HRESULT CUI_Shop_AnimBG::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ValnirBG_Anim"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_AeonsLost"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CUI_Shop_AnimBG::Bind_ShaderResources()
+HRESULT CUI_AeonsLost::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -102,45 +104,42 @@ HRESULT CUI_Shop_AnimBG::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowTime", &m_fFlowTimer, sizeof(_float))))
-		return E_FAIL;
-
 	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
 	//	return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool)))) // m_isRenderOffAnim
 	//	return E_FAIL;
 
 	return S_OK;
 }
 
-CUI_Shop_AnimBG* CUI_Shop_AnimBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_AeonsLost* CUI_AeonsLost::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CUI_Shop_AnimBG* pInstance = new CUI_Shop_AnimBG(pDevice, pContext);
+	CUI_AeonsLost* pInstance = new CUI_AeonsLost(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CUI_Shop_AnimBG");
+		MSG_BOX("Failed To Created : CUI_AeonsLost");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject* CUI_Shop_AnimBG::Clone(void* pArg)
+CGameObject* CUI_AeonsLost::Clone(void* pArg)
 {
-	CUI_Shop_AnimBG* pInstance = new CUI_Shop_AnimBG(*this);
+	CUI_AeonsLost* pInstance = new CUI_AeonsLost(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CUI_Shop_AnimBG");
+		MSG_BOX("Failed To Cloned : CUI_AeonsLost");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CUI_Shop_AnimBG::Free()
+void CUI_AeonsLost::Free()
 {
 	__super::Free();
 }

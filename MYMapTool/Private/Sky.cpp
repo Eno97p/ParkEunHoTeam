@@ -1,7 +1,7 @@
 #include "Sky.h"
 
 #include "GameInstance.h"
-
+#include "Imgui_Manager.h"
 CSky::CSky(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -59,7 +59,9 @@ HRESULT CSky::Render()
 	//	m_pShaderCom->Begin(0);
 	//	m_pModelCom->Render(i);
 	//}
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+
+	_uint iIdx = CImgui_Manager::GetInstance()->Get_SkyIdx();
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", iIdx)))
 		return E_FAIL;
 
 	_float4 fogCol;

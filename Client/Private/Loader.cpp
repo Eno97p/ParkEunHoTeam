@@ -978,6 +978,18 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Mantari/MantariSword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Yantari/Yantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Weapon_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Yantari/YantariAxe2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Legionnaire */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Legionnaire"),
@@ -1716,6 +1728,18 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Mantari/MantariSword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Yantari/Yantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Weapon_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Yantari/YantariAxe2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Legionnaire */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Legionnaire"),
@@ -2433,6 +2457,18 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Mantari/MantariSword.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Model_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Yantari/Yantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Weapon_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Yantari/YantariAxe2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Model_Legionnaire */
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Legionnaire"),
@@ -2956,6 +2992,18 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Weapon_Mantari"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Mantari/MantariSword.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Yantari/Yantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Weapon_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Yantari/YantariAxe2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Legionnaire */
@@ -3790,6 +3838,18 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Weapon_Mantari"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Mantari/MantariSword.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Yantari/Yantari.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Model_Weapon_Yantari */
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Weapon_Yantari"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Yantari/YantariAxe2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Model_Legionnaire */

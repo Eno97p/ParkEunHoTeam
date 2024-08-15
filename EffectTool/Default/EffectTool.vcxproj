@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions);_WINDOWS;IMGUI_DEFINE_MATH_OPERATORS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../Imgui/;../Public/;../../EngineSDK/Inc/;../../EngineSDK/Inc/PhysX;../Backend/;../Public/DirectXTex/;../../EngineSDK/Inc/Blast/globals/;../../EngineSDK/Inc/Blast/lowlevel/;../../EngineSDK/Inc/Blast/shared/NvFoundation/;../../EngineSDK/Inc/Blast/toolkit/;../../EngineSDK/Inc/Blast/extensions/assetutils/;../../EngineSDK/Inc/Blast/extensions/authoring/;../../EngineSDK/Inc/Blast/extensions/authoringCommon/;../../EngineSDK/Inc/Blast/extensions/serialization/;../../EngineSDK/Inc/Blast/extensions/shaders/;../../EngineSDK/Inc/Blast/extensions/stress/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Imgui/;../Public/;../../EngineSDK/Inc/;../../EngineSDK/Inc/PhysX/;../Backend/;../Public/DirectXTex/;../../EngineSDK/Inc/Blast/globals/;../../EngineSDK/Inc/Blast/lowlevel/;../../EngineSDK/Inc/Blast/shared/NvFoundation/;../../EngineSDK/Inc/Blast/toolkit/;../../EngineSDK/Inc/Blast/extensions/assetutils/;../../EngineSDK/Inc/Blast/extensions/authoring/;../../EngineSDK/Inc/Blast/extensions/authoringCommon/;../../EngineSDK/Inc/Blast/extensions/serialization/;../../EngineSDK/Inc/Blast/extensions/shaders/;../../EngineSDK/Inc/Blast/extensions/stress/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -130,6 +130,8 @@
     </Link>
     <PreBuildEvent>
       <Command>cd /d $(SolutionDir)
+call Copy.bat
+cd /d $(SolutionDir)
 call Copy_EffectTool.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -210,6 +212,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Meteor_Wind.h" />
     <ClInclude Include="..\public\Particle.h" />
     <ClInclude Include="..\Public\ParticleMesh.h" />
+    <ClInclude Include="..\Public\Particle_PhysX.h" />
     <ClInclude Include="..\Public\Particle_Point.h" />
     <ClInclude Include="..\Public\Particle_Rect.h" />
     <ClInclude Include="..\Public\Particle_STrail.h" />
@@ -286,6 +289,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Meteor_Wind.cpp" />
     <ClCompile Include="..\private\Particle.cpp" />
     <ClCompile Include="..\Private\ParticleMesh.cpp" />
+    <ClCompile Include="..\Private\Particle_PhysX.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp" />
     <ClCompile Include="..\Private\Particle_Rect.cpp" />
     <ClCompile Include="..\Private\Particle_STrail.cpp" />

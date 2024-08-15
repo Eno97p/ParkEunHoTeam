@@ -74,8 +74,22 @@ public:
 	_float3 Get_GrassBotCol() { return m_BotCol; }
 
 	_float Get_BillboardFactor() { return m_fBillboardFactor; }
+	_float Get_ElasticityFactor() { return m_fElasticityFactor; }
+
+	_float Get_PlaneOffset() const { return m_fPlaneOffset; }
+	_float Get_PlaneVertOffset() const { return m_fPlaneVertOffset; }
+	_float Get_LODDistance1() const { return m_fLODDistance1; }
+	_float Get_LODDistance2() const { return m_fLODDistance2; }
+	_float Get_GrassAmplitude() const { return m_fGrassAmplitude; }
+	_float Get_GrassFrequency() const { return m_fGrassFrequency; }
+	_uint Get_LODPlaneCount1() const { return m_iLODPlaneCount1; }
+	_uint Get_LODPlaneCount2() const { return m_iLODPlaneCount2; }
+	_uint Get_LODPlaneCount3() const { return m_iLODPlaneCount3; }
 	_float3 Get_LeafCol() { return m_LeafCol; }
 	_bool Get_TreeBloom() { return m_bTreeBloom; }
+
+
+	_uint Get_SkyIdx() { return m_iSkyBoxIdx; }
 
 	_float4 Get_GlobalColorPicker() { return m_GlobalColor; }
 	void	Add_vecCreateObj(_char* pName) { m_vecCreateObj.emplace_back(pName); }
@@ -210,7 +224,18 @@ private:
 private:
 	_float3				m_TopCol = { 0.f, 1.f, 0.f };
 	_float3				m_BotCol = { 0.f, 0.f, 0.f };
-	_float				m_fBillboardFactor = { 0.f};
+	_float				m_fPlaneOffset = { 0.f};
+	_float				m_fPlaneVertOffset = { 0.f};
+	_float				m_fLODDistance1 = { 0.f};
+	_float				m_fLODDistance2 = { 0.f};
+	_float				m_fGrassAmplitude = { 0.f};
+	_float				m_fGrassFrequency = { 0.f};
+	_uint			 m_iLODPlaneCount1 = 0;
+	_uint			 m_iLODPlaneCount2 = 0;
+	_uint			 m_iLODPlaneCount3 = 0;
+
+
+	_float				m_fBillboardFactor = { 0.f };
 	_float				m_fElasticityFactor = { 0.f};
 	_float3				m_LeafCol = { 0.f, 0.f, 0.f };
 
@@ -218,6 +243,7 @@ private:
 	_float m_fGlobalWindStrength = 1.f;
 	_float m_fGlobalWindFrequency = 1.f;
 
+	_int m_iSkyBoxIdx = 0;
 private:
 	vector<CCamera::CameraKeyFrame>	m_vCameraKeyFrames;
 	_float m_fKeyFrameTime = 0.f;

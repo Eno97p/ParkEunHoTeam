@@ -26,7 +26,11 @@ private:
 public:
 	_bool			Get_End() { return m_isEnd; }
 	void			Set_End(_bool isEnd) { m_isEnd = isEnd; }
+
 	RING_STATE		Get_RingState() { return m_eRingState; }
+
+	_bool			Get_isAnimOn() { return m_isAnimOn; }
+	void			Set_isAnimOn(_bool isAnimOn) { m_isAnimOn = isAnimOn; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -38,6 +42,7 @@ public:
 
 private:
 	_bool			m_isEnd = { false };
+	_bool			m_isAnimOn = { false };
 
 	RING_TYPE		m_eRingType = { RING_END };
 	RING_STATE		m_eRingState = { RS_END };

@@ -78,6 +78,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
 
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
@@ -89,12 +90,9 @@ HRESULT CLevel_Jugglas::Initialize()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), TEXT("Prototype_GameObject_TreasureChest"))))
 		return E_FAIL;
 
-
-
-
-
-
-
+	_vector vEye = { -150.f, 100.f, 100.f, 1.f };
+	_vector vFocus = { -150.f, 0.f, 0.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.5f);
 
 	////비동기 저장
 	//auto futures = m_pGameInstance->AddWork([this]() {

@@ -23,6 +23,7 @@
 #include "Elevator.h"
 #include "TutorialMapBridge.h"
 #include "BackGround_Card.h"
+#include "BackGround_Moon.h"
 
 #include "EventTrigger.h"
 #include "Trap.h"
@@ -216,7 +217,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 /* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 7))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Brush*/
@@ -267,6 +268,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	/* Prototype_Component_Texture3D_Noise*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture3D_Noise"),
 		CTexture3D::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Noise/Cloud/pleaseplease.dds")))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Moon */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Moon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Moon/Moon_%d.png"), 3))))
 		return E_FAIL;
 
 #pragma region  Environmental Element Model Load
@@ -1097,6 +1103,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround_Card"), CBackGround_Card::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround_Moon"), CBackGround_Moon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Decal"), CDecal::Create(m_pDevice, m_pContext))))

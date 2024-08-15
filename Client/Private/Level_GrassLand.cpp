@@ -28,6 +28,8 @@
 #include "Passive_Element.h"
 #include"CInitLoader.h"
 
+#include "EffectManager.h"
+
 
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -84,15 +86,17 @@ HRESULT CLevel_GrassLand::Initialize()
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_GRASSLAND, TEXT("Layer_Camera")).size();
 
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
 
 
-
+	//_float4 vPos = { -502.f, 347.8f, -474.1, 1 };
+	_float4 vPos = { -598.f, 468.f, -403.f, 1.f };
+	EFFECTMGR->Generate_Particle(27, vPos);
 
 
 	////비동기 저장

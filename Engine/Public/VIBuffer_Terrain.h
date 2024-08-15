@@ -46,6 +46,9 @@ public:
 	ID3D11Buffer* Get_VertexBuffer() { return m_pVB; }
 	_float4* Get_VertexPositions() { return m_pVertexPositions; }
 
+public:
+	const vector<_float3>& GetValidGrassPositions() const { return m_validGrassPositions; }
+
 private:
 	_uint				m_iNumVerticesX = { 0 };
 	_uint				m_iNumVerticesZ = { 0 };
@@ -53,7 +56,8 @@ private:
 	class CQuadTree*	m_pQuadTree = { nullptr };
 	class COctTree*		m_pOctTree = { nullptr };
 	PxActor* m_pTerrainActor = { nullptr };
-
+private:
+	vector<_float3> m_validGrassPositions;
 public:
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath);
 	static CVIBuffer_Terrain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strHeightMapFilePath, _bool realmap);

@@ -57,11 +57,10 @@ void CUI_QTE_Btn::Tick(_float fTimeDelta)
 			{
 				Setting_ScoreType();
 
-				// Score UI »ý¼º
 				if(nullptr == m_pScore)
 					Create_Score();
 
-				m_isStart = false;
+				m_pRing->Set_isAnimOn(true);
 				m_isScore = true;
 			}
 

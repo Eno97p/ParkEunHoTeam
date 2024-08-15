@@ -127,6 +127,7 @@
 #include "UI_UpCompleted_Forge.h"
 #include "UI_UpCompleted_Crucible.h"
 #include "UIGroup_UP_Completed.h"
+#include "UI_RedDot.h"
 #pragma endregion Upgrade
 
 #pragma region Ch_Upgrade
@@ -196,6 +197,7 @@
 #include "UI_Broken.h"
 #include "UI_Dash.h"
 #include "UI_Memento.h"
+#include "UI_AeonsLost.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1540,6 +1542,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Memento"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_AeonsLost*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_AeonsLost"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/AeonsLost.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_RedDot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RedDot"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/RedDot.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2246,6 +2258,16 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Memento*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Memento"),
 		CUI_Memento::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_AeonsLost*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_AeonsLost"),
+		CUI_AeonsLost::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_RedDot*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_RedDot"),
+		CUI_RedDot::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

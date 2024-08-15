@@ -340,6 +340,7 @@ void CToolObj_Manager::Initialize()
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_BasicCube"), // ±¸¸§
+         TEXT("Prototype_Component_Model_Mountain_Card"),
          TEXT("Prototype_Component_Model_Mountain_Card")
     };
 }
@@ -547,7 +548,9 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
         case 12:
             return "Prototype_GameObject_BackGround_Card";
         case 13:
-            return "Prototype_GameObject_Lagoon";
+            return "Prototype_GameObject_Lagoon"; 
+        case 14:
+            return "Prototype_GameObject_BackGround_Moon";
         default:
             break;
         }

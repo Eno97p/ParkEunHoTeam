@@ -85,7 +85,7 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 					UI_FADEINOUT_DESC pDesc{};
 					pDesc.isFadeIn = true;
 					pDesc.eFadeType = TYPE_ALPHA;
-					pDesc.isLevelChange = false; // 
+					pDesc.isLevelChange = false; // false
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 						return;

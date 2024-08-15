@@ -24,7 +24,7 @@ HRESULT CInstance_Mesh::Initialize_ProtoType(CMesh* m_Meshes, const INSTANCE_DES
 	m_iNumVertexBuffers = 2;
 	m_iNumVertices = m_Meshes->Get_NumVertex();
 	m_iIndexStride = 4;
-	m_iIndexCountPerInstance = /*m_Meshes->Get_NumVertex()*/m_Meshes->Get_NumIndices()*3;
+	m_iIndexCountPerInstance = m_Meshes->Get_NumIndices()*3;
 	m_iNumIndices = m_iIndexCountPerInstance * m_iNumInstance;
 
 	m_iInstanceStride = sizeof(VTXMATRIX);

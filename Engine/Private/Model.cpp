@@ -503,16 +503,7 @@ HRESULT CModel::Save_BoneName()
 	return S_OK;
 }
 
-_bool CModel::Picking(CTransform* pTransform, _float3* pOut)
-{
-	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		if (m_Meshes[i]->Picking(pTransform, pOut))
-			return true;
-	}
 
-	return false;
-}
 
 HRESULT CModel::Ready_Meshes()
 {
@@ -648,6 +639,11 @@ void CModel::Only_Up(_float fTimeDelta)
 	for (auto& iter : m_InstanseMesh)
 		iter->Only_Up(fTimeDelta);
 }
+void CModel::PhysX_Particle_Simulate(_float fTimeDelta)
+{
+	for (auto& iter : m_PhysxParticleMesh)
+		iter->Tick(fTimeDelta);
+}
 #pragma endregion Effect
 
 _uint CModel::Get_Model_Vertices()
@@ -679,6 +675,18 @@ HRESULT CModel::Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& Instance
 			return E_FAIL;
 
 		m_InstanseMesh.emplace_back(pInstance);
+	}
+	return S_OK;
+}
+
+HRESULT CModel::Ready_PhysXParticle(const CPhysXParticle::PhysX_Particle_Desc& InstanceDesc)
+{
+	for (size_t i = 0; i < m_iNumMeshes; i++)
+	{
+		CPhysXParticle* pInstance = CPhysXParticle::Create(m_pDevice, m_pContext, m_Meshes[i], InstanceDesc);
+		if (nullptr == pInstance)
+			return E_FAIL;
+		m_PhysxParticleMesh.emplace_back(pInstance);
 	}
 	return S_OK;
 }
@@ -1026,9 +1034,11 @@ void CModel::Free()
 
 	for (auto& pMesh : m_InstanseMesh)
 		Safe_Release(pMesh);
+	for (auto& pMesh : m_PhysxParticleMesh)
+		Safe_Release(pMesh);
 
 	m_InstanseMesh.clear();
-
+	m_PhysxParticleMesh.clear();
 
 	m_Importer.FreeScene();
 }

@@ -52,6 +52,10 @@ public:
 
 	void				Resset_Player();
 
+	HRESULT				Create_FadeInOut_Dissolve(_bool isFadeIn);
+	void				Delete_FadeInOut(_bool isFadeIn);
+	_bool				Get_isFadeOutEnd();
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부
@@ -63,6 +67,14 @@ private:
 	class CUI_Broken*					m_pBroken = { nullptr };
 	vector<class CUI_Dash*>				m_vecDash;
 	class CQTE*							m_pQTE = { nullptr };
+	class CUI_FadeInOut*				m_pFadeOut = { nullptr };
+	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
+
+	// Red Dot 로직의 추가
+	// 일단 Red Dot은 Menu의 Btn과 Slot에다가 출력할 것이기 때문에 해당 객체가 가지고 있는 게 맞지 않을까 싶음
+	// 해당 객체가 가진 본인의 Red Dot을 출력할지 말지에 대한 판단을 UI Manager가 가진 함수로 하는 것은?
+	// Inventory에 새로운 아이템이 들어왔다 하면 뭔가 데이터를 넘겨주는 식
+
 
 private:
 	HRESULT		Create_UI();

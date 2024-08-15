@@ -835,7 +835,6 @@ PxControllerManager* CGameInstance::GetControllerManager()
 }
 
 
-
 void CGameInstance::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch)
 {
 	m_pSound_Manager->Play_Effect_Sound(pSoundKey, eID, fPosition, fPitch);

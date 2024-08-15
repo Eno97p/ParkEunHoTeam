@@ -17,6 +17,7 @@
 #include "SwingEffect.h"
 #include "AndrasLazer.h"
 #include "Meteor.h"
+#include "Particle_PhysX.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -163,8 +164,13 @@ private:
 	void Meteor_Tool(_bool* Open);
 	HRESULT Save_Meteor(CMeteor::METEOR_DESC* pMeteor);
 	HRESULT Load_Meteor(CMeteor::METEOR_DESC* pMeteor);
+
+private:
+	void PhysX_Particle_Tool(_bool* Open);
+
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
+
 
 private:
 	HRESULT ConvertToDDSWithMipmap(const string& inputFilePath, const string& outputFilePath);
@@ -187,6 +193,8 @@ private:
 
 private:
 	void Erase_Particle(_int index);
+
+
 
 private:
 	vector<pair<PARTICLETYPE, void*>>		m_Types;

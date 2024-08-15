@@ -62,8 +62,8 @@ HRESULT CLevel_AndrasArena::Initialize()
 	m_iCamSize =  m_pGameInstance->Get_GameObjects_Ref(/*m_pGameInstance->Get_CurrentLevel()*/LEVEL_ANDRASARENA, TEXT("Layer_Camera")).size();
 
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))

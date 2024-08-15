@@ -111,6 +111,10 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	{
 		pBarDesc.wszBossName = TEXT("MANTARI, THE WANDERING SPECTER");
 	}
+	else if (BOSSUI_YANTARI == m_eBossUIName)
+	{
+		pBarDesc.wszBossName = TEXT("YANTARI, THE WANDERING SPECTER");
+	}
 	else if (BOSSUI_ANDRAS == m_eBossUIName)
 	{
 		pBarDesc.wszBossName = TEXT("ANDRAS, THE FORSAKEN KING");

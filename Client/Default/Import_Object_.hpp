@@ -299,6 +299,20 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CWeapon_Mantari::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Yantari */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Yantari"),
+		CYantari::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Body_Yantari */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Body_Yantari"),
+		CBody_Yantari::Create(pDevice, pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Weapon_Yantari */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Yantari"),
+		CWeapon_Yantari::Create(pDevice, pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_Legionnaire */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Legionnaire"),

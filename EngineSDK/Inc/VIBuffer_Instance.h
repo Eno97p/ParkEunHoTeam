@@ -80,8 +80,6 @@ public:
 	void Initial_RandomOffset(CVIBuffer_Terrain* pTerrain);
 	vector<_float4x4*> Get_VtxMatrices();
 	//virtual void Setup_Onterrain(CVIBuffer_Terrain* pTerrain);
-
-
 	_bool Check_Instance_Dead() { return m_bInstanceDead; }	//IsLoop가 false일 경우 완전히 끝났는지 확인해주는 함수
 
 public:

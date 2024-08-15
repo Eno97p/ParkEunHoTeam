@@ -1,0 +1,11 @@
+Gameplay
+_vector vEye = { 140.f, 600.f, 97.f, 1.f };
+_vector vFocus = { 151.f, 521.f, 97.f, 1.f };
+
+Ackbar
+_vector vEye = { 86.f, 100.f, -163.f, 1.f };
+_vector vFocus = { 86.f, 0.f, 0.f, 1.f };
+
+Jugglas
+_vector vEye = { -150.f, 100.f, 100.f, 1.f };
+_vector vFocus = { -150.f, 0.f, 0.f, 1.f };

@@ -32,8 +32,6 @@ HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDe
 	m_RandomNumber = mt19937_64(m_RandomDevice());
 
 
-
-
 	return S_OK;
 }
 

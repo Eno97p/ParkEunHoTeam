@@ -30,8 +30,12 @@ HRESULT CBlastWall::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if(Desc!=nullptr)
+	if (Desc != nullptr)
+	{
+
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&Desc->fWorldMatrix));
+		m_vInitialPos ={ Desc->fWorldMatrix._41, Desc->fWorldMatrix._42, Desc->fWorldMatrix._43, 1.f };
+	}
 
 	//m_pTransformCom->Set_WorldMatrix()
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 453.f, 98.f, 1.0f));
@@ -41,7 +45,7 @@ HRESULT CBlastWall::Initialize(void* pArg)
 		return E_FAIL;
 
 
-
+	//m_vInitialPos = 
 	return S_OK;
 }
 

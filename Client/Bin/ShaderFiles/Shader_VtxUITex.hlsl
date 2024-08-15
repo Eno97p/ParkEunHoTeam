@@ -227,8 +227,8 @@ PS_OUT PS_FADE(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 
-	if (Out.vColor.a < 0.1f)
-		discard;
+	//if (Out.vColor.a < 0.1f)
+	//	discard;
 
 	float fAlpha = Out.vColor.a;
 

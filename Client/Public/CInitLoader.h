@@ -85,7 +85,7 @@ inline void CInitLoader<T...>::Save_Start(T ...Args)
 		_uint i = 0;
 		for(auto& pObject : pList)
 		{
-			m_pvecMonsterInitProperty[i].vPos = dynamic_cast<CMonster*>(pObject)->Get_InitPos();
+			m_pvecMonsterInitProperty[i].vPos = pObject->Get_InitPos();
 			m_pvecMonsterInitProperty[i].strMonsterTag = pObject->Get_ProtoTypeTag();
 			++i;
 		}
@@ -103,8 +103,9 @@ inline void CInitLoader<T...>::Load_Start(T ...Args)
 	auto pGameInstance = CGameInstance::GetInstance();
 	auto eLevel = get<0>(tuple<T...>(Args ...));
 	auto pLayer = get<1>(tuple<T...>(Args ...));
+	//auto Desc	= get<2>(tuple<T...>(Args ...));
 
-
+	
 	wstring wstrLevelName = Client::Get_CurLevelName(eLevel);
 	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName + L"_" + pLayer + L".dat";
 
@@ -132,7 +133,7 @@ inline void CInitLoader<T...>::Load_Start(T ...Args)
 
 	}
 
-	int test = 0;
+	
 
 
 }

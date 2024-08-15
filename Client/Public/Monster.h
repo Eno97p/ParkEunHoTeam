@@ -30,7 +30,7 @@ protected:
 
 public:
 	_float			Get_Ratio() { return m_fCurHp / m_fMaxHp; }
-	_float4			Get_InitPos() { return m_vInitialPos; }
+	//_float4			Get_InitPos() { return m_vInitialPos; }
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
@@ -81,7 +81,7 @@ protected:
 	class CTargetLock*	m_pTargetLock = { nullptr };
 
 	//맵툴 배치용
-	_float4 m_vInitialPos = {0.f, 0.f, 0.f, 1.f};
+	//_float4 m_vInitialPos = {0.f, 0.f, 0.f, 1.f};		//CGameObject에 있음
 protected:
 	virtual HRESULT		Add_Nodes();
 

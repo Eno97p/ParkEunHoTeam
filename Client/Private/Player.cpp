@@ -475,6 +475,8 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");		//지워야할 Layer
+				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");		//지워야할 Layer
+
 				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
 				
 
@@ -482,6 +484,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				CInitLoader<LEVEL, wstring>* InitLoader = new CInitLoader<LEVEL, wstring>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");                                                                                                                                                                              
 
 
 

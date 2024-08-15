@@ -1,9 +1,11 @@
 #include "UI_FadeInOut.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "Level_Loading.h"
 
 #include "UI_Memento.h"
+#include "UI_AeonsLost.h"
 
 CUI_FadeInOut::CUI_FadeInOut(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
@@ -51,8 +53,11 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 			m_fAlphaTimerMul = 0.4f;
 	}
 
-	if (!m_isLevelChange && m_isFadeIn)
+	if (!m_isLevelChange && m_isFadeIn && m_eFadeType == TYPE_ALPHA)
 		Create_Memento();
+	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE)
+		Create_AeonsLost(); // 여기서 생성하지 말구 > 아니 걍 생성하구
+	
 
 	return S_OK;
 }
@@ -82,50 +87,46 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 					UI_FADEINOUT_DESC pDesc{};
 					pDesc.isFadeIn = true;
 					pDesc.eFadeType = TYPE_ALPHA;
-					pDesc.isLevelChange = false;
+					pDesc.isLevelChange = false; // false
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 						return;
 
 					m_pGameInstance->Erase(this);
 				}
-
-				//m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
-				/*	if (FAILED(Create_FadeIn()))
-					return;*/
-				//// 씬 초기화 필요
-				//if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
-				//{
-				//	MSG_BOX("Failed to Open Level JUGGLAS");
-				//	return;
-				//}
-			}else
+			}
+			else
 				m_pGameInstance->Erase(this);
-
-			//	m_pGameInstance->Erase(this);
 		}
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
 	{
-		m_fDisolveValue += fTimeDelta * 0.3f;
+		if (!m_isFadeIn || (m_isFadeIn && m_pAeonsLost->Get_isEnd()))
+		{
+			m_fDisolveValue += fTimeDelta * 0.3f;
+		}
 
 		if (m_fDisolveValue >= 1.f)
 		{
-			m_fDisolveValue = 1.f;
-
 			if (!m_isFadeIn)
 			{
-				// 화면 전환? 필요
-				if (FAILED(Create_FadeIn()))
-					return;
-			}
+				m_isFadeOutEnd = true;
 
-			m_pGameInstance->Erase(this);
+				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(true);
+			}
+			else
+			{
+				CUI_Manager::GetInstance()->Delete_FadeInOut(true);
+				return;
+			}
 		}
 	}
 
 	if (nullptr != m_pMemento)
 		m_pMemento->Tick(fTimeDelta);
+
+	if (nullptr != m_pAeonsLost)
+		m_pAeonsLost->Tick(fTimeDelta);
 }
 
 void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
@@ -134,6 +135,9 @@ void CUI_FadeInOut::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pMemento)
 		m_pMemento->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pAeonsLost)
+		m_pAeonsLost->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_FadeInOut::Render()
@@ -220,26 +224,27 @@ HRESULT CUI_FadeInOut::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CUI_FadeInOut::Create_FadeIn()
-{
-	UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = true;
-
-	if (TYPE_DISSOLVE == m_eFadeType)
-	{
-		pDesc.eFadeType = TYPE_DISSOLVE;
-	}
-	else
-	{
-		pDesc.eFadeType = TYPE_ALPHA;
-	}
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
+//HRESULT CUI_FadeInOut::Create_FadeIn()
+//{
+//	UI_FADEINOUT_DESC pDesc{};
+//
+//	pDesc.isFadeIn = true;
+//	pDesc.isLevelChange = false;
+//
+//	if (TYPE_DISSOLVE == m_eFadeType)
+//	{
+//		pDesc.eFadeType = TYPE_DISSOLVE;
+//	}
+//	else
+//	{
+//		pDesc.eFadeType = TYPE_ALPHA;
+//	}
+//
+//	if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+//		return E_FAIL;
+//
+//	return S_OK;
+//}
 
 HRESULT CUI_FadeInOut::Create_Memento()
 {
@@ -247,6 +252,16 @@ HRESULT CUI_FadeInOut::Create_Memento()
 	pDesc.eLevel = LEVEL_STATIC;
 
 	m_pMemento = dynamic_cast<CUI_Memento*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Memento"), &pDesc));
+
+	return S_OK;
+}
+
+HRESULT CUI_FadeInOut::Create_AeonsLost()
+{
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel - LEVEL_STATIC;
+
+	m_pAeonsLost = dynamic_cast<CUI_AeonsLost*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_AeonsLost"), &pDesc));
 
 	return S_OK;
 }
@@ -298,6 +313,7 @@ void CUI_FadeInOut::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pAeonsLost);
 	Safe_Release(m_pMemento);
 	Safe_Release(m_pDisolveTextureCom);
 	Safe_Release(m_pVIBufferCom);

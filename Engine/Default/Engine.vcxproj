@@ -258,6 +258,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\PhysXComponent_HeightField.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_static.cpp" />
     <ClCompile Include="..\Private\PhysXComponent_Vehicle.cpp" />
+    <ClCompile Include="..\private\PhysXParticle.cpp" />
     <ClCompile Include="..\private\Picking.cpp" />
     <ClCompile Include="..\private\PipeLine.cpp" />
     <ClCompile Include="..\private\QuadTree.cpp" />
@@ -360,6 +361,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\PhysXComponent_HeightField.h" />
     <ClInclude Include="..\Public\PhysXComponent_static.h" />
     <ClInclude Include="..\Public\PhysXComponent_Vehicle.h" />
+    <ClInclude Include="..\public\PhysXParticle.h" />
     <ClInclude Include="..\public\Picking.h" />
     <ClInclude Include="..\public\PipeLine.h" />
     <ClInclude Include="..\public\QuadTree.h" />

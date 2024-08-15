@@ -33,6 +33,7 @@ public:
 protected:
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
+	
 protected:
 	virtual HRESULT Add_Components() = 0;
 	virtual HRESULT Bind_ShaderResources() = 0;

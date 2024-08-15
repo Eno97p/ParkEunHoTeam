@@ -33,7 +33,7 @@ private:
 	XMVECTOR CatmullRom(XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, XMVECTOR v3, float t);
 
 private:
-	ID3D11Buffer* m_pVBInstance = { nullptr };
+	ID3D11Buffer*				 m_pVBInstance = { nullptr };
 	D3D11_BUFFER_DESC			m_InstanceBufferDesc = {};
 	_uint						m_iNumInstance = { 0 };
 	_uint						m_iInstanceStride = { 0 };

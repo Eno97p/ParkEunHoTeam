@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "Animation.h"
 #include "VIBuffer_Instance.h"
+#include "PhysXParticle.h"
 BEGIN(Engine)
 
 class CMesh;
@@ -47,13 +48,15 @@ public:														//파티클 함수들
 	void Blow(_float fTimeDelta);
 	void Up_To_Stop(_float fTimeDelta);
 	void Only_Up(_float fTimeDelta);
-#pragma endregion PARTICLE_FUNCTION
 
+	void PhysX_Particle_Simulate(_float fTimeDelta);
+#pragma endregion PARTICLE_FUNCTION
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 
 	_bool Check_Instance_Dead();						//파티클이 끝났는지 검사해줌
 
 	HRESULT Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc);		//인스턴싱할 모델만 호출해준다
+	HRESULT Ready_PhysXParticle(const CPhysXParticle::PhysX_Particle_Desc& InstanceDesc);
 
 	HRESULT Ready_Instance_ForMapElements(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc);
 
@@ -139,6 +142,7 @@ private:
 	_uint						m_iNumMeshes = { 0 };
 	vector<class CMesh*>		m_Meshes;
 	vector<class CInstance_Mesh*>	m_InstanseMesh;
+	vector<CPhysXParticle*>			m_PhysxParticleMesh;
 	
 private:
 	_uint						m_iNumMaterials = { 0 };

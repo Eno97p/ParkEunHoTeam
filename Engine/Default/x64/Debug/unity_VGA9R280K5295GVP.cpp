@@ -191,6 +191,9 @@
 #include "C:\NewRepo\Engine\Private\PhysXComponent_Vehicle.cpp"
 
 
+#include "C:\NewRepo\Engine\private\PhysXParticle.cpp"
+
+
 #include "C:\NewRepo\Engine\private\Picking.cpp"
 
 

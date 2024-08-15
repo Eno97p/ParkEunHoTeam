@@ -149,6 +149,9 @@
 #include "C:\NewRepo\EffectTool\Private\ParticleMesh.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\Particle_PhysX.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Particle_Point.cpp"
 
 

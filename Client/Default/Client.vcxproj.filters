@@ -783,6 +783,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\YantariSword">
       <UniqueIdentifier>{1e529997-c700-4c80-9f26-10649c80c077}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\AeonsLost">
+      <UniqueIdentifier>{1b875788-8b7c-4f33-a55c-1368976a6cad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1705,6 +1708,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Yantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\UI_AeonsLost.h">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_RedDot.h">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2574,6 +2583,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Yantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\UI_AeonsLost.cpp">
+      <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_RedDot.cpp">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -21,13 +21,16 @@ HRESULT CFlatMap::Initialize(void * pArg)
 
 	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
-
-	if (FAILED(Add_Components()))
-		return E_FAIL;
 	m_pTransformCom->Set_Scale(((MAP_DEC*)pArg)->Scale.x, ((MAP_DEC*)pArg)->Scale.y, ((MAP_DEC*)pArg)->Scale.z);
 	_vector vPos = XMLoadFloat4(&((MAP_DEC*)pArg)->Pos);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+
+	//PxRigidDynamic* Test = m_pGameInstance->GetPhysics()->createRigidDynamic(PxTransform(PxVec4(0.0f,20.0f,1.0f),PxQuat()))
+	//m_pGameInstance->AddActor();
 	m_Mapdec = *(MAP_DEC*)pArg;
 	return S_OK;
 }
@@ -38,13 +41,16 @@ void CFlatMap::Priority_Tick(_float fTimeDelta)
 
 void CFlatMap::Tick(_float fTimeDelta)
 {
-
+	m_Test->Tick(m_pTransformCom->Get_WorldFloat4x4());
 	
 }
 
 void CFlatMap::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+
+	m_Test->Late_Tick(m_pTransformCom->Get_WorldFloat4x4Ref());
+
 }
 
 HRESULT CFlatMap::Render()
@@ -83,7 +89,22 @@ HRESULT CFlatMap::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;	
+	
+	/* For.Com_Physx */
 
+
+	CPhysXComponent::PHYSX_DESC Test;
+
+	Test.eGeometryType = PxGeometryType::eCONVEXMESH;
+	Test.fMatterial = _float3(0.5f, 0.5f, 0.5f);
+	Test.pMesh = m_pModelCom->Get_Meshes()[0];
+	Test.pName = "TestFlat";
+	XMStoreFloat4x4(&Test.fWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
+		TEXT("Com_Physx"), reinterpret_cast<CComponent**>(&m_Test), &Test)))
+		return E_FAIL;
+
+	m_Test->Get_Actor()->setActorFlag(PxActorFlag::eDISABLE_SIMULATION, true);
 
 	return S_OK;
 }
@@ -136,5 +157,5 @@ CGameObject * CFlatMap::Clone(void * pArg)
 void CFlatMap::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_Test);
 }

@@ -78,8 +78,8 @@ HRESULT CLevel_Ackbar::Initialize()
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
 
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))

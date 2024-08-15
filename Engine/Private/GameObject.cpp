@@ -57,11 +57,11 @@ HRESULT CGameObject::Initialize(void * pArg)
 
 	if (nullptr != pArg)
 	{
-		if (((GAMEOBJECT_DESC*)pArg)->pModelName)
+	/*	if (((GAMEOBJECT_DESC*)pArg)->pModelName)
 		{
 			if(sizeof(((GAMEOBJECT_DESC*)pArg)->pModelName)==sizeof(const char*))
 				m_wstrMoDelName= const_char_to_wstring(((GAMEOBJECT_DESC*)pArg)->pModelName);
-		}
+		}*/
 		
 
 		// m_iData = ((GAMEOBJECT_DESC*)pArg)->iData;

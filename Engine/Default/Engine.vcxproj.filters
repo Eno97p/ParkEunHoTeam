@@ -280,6 +280,9 @@
     <Filter Include="01.Utility\03.Components\Texture\Texture3D">
       <UniqueIdentifier>{4404ca08-8830-4fa4-a07c-4b6913fdd46a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Components\PhysXParticle">
+      <UniqueIdentifier>{c4024707-d65b-4999-ad90-324906f59399}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -579,6 +582,9 @@
     <ClInclude Include="..\Public\Texture3D.h">
       <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PhysXParticle.h">
+      <Filter>01.Utility\03.Components\PhysXParticle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -862,6 +868,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Texture3D.cpp">
       <Filter>01.Utility\03.Components\Texture\Texture3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PhysXParticle.cpp">
+      <Filter>01.Utility\03.Components\PhysXParticle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

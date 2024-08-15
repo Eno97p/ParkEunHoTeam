@@ -31,6 +31,8 @@ HRESULT CUI_QTE_Ring::Initialize(void* pArg)
 
 	Setting_Position();
 
+	Resset_Animation(true);
+
 	return S_OK;
 }
 
@@ -40,34 +42,44 @@ void CUI_QTE_Ring::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Ring::Tick(_float fTimeDelta)
 {
-	// 점점 작아짐
-	m_fSizeX -= 10.f; // 10
-	m_fSizeY -= 10.f;
-	Setting_Position();
-
-	// Good보다 크면 : Bad
-	// Good ~ Perfect 사이면 Good
-	// Perfect ~ End 사이면 Perfect
-	// End보다 작으면 Bad > 이때는 애초에 사라질 것
-
-	// 서서히 사라지게 만들기!
-
-	if (m_fSizeX >= fGOOD)
+	if (m_isAnimOn)
 	{
-		m_eRingState = RS_BAD;
-	}
-	else if (m_fSizeX >= fPERFECT)
-	{
-		m_eRingState = RS_GOOD;
-	}
-	else if (m_fSizeX >= fEND)
-	{
-		m_eRingState = RS_PERFECT;
+		m_fRenderTimer += fTimeDelta;
+
+		Render_Animation(fTimeDelta, 1.f);
+
+		if (m_isRenderAnimFinished)
+		{
+			// 여기서 찐 죽음 처리
+			m_isEnd = true;
+		}
 	}
 	else
 	{
-		m_eRingState = RS_BAD;
-		m_isEnd = true;
+		m_fSizeX -= 10.f; // 10
+		m_fSizeY -= 10.f;
+		Setting_Position();
+
+		if (m_fSizeX >= fGOOD)
+		{
+			m_eRingState = RS_BAD;
+		}
+		else if (m_fSizeX >= fPERFECT)
+		{
+			m_eRingState = RS_GOOD;
+		}
+		else if (m_fSizeX >= fEND)
+		{
+			m_eRingState = RS_PERFECT;
+		}
+		else
+		{
+			m_eRingState = RS_BAD;
+
+			m_isAnimOn = true;
+			//m_isEnd = true; // end는 나중에 true로 활성화 하는 것으로. 먼저 사라지는 로직이 나와야 함
+		}
+
 	}
 }
 
@@ -81,7 +93,7 @@ HRESULT CUI_QTE_Ring::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(8);
+	m_pShaderCom->Begin(3); // 8
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -119,6 +131,12 @@ HRESULT CUI_QTE_Ring::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_eRingType)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;

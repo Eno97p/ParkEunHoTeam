@@ -78,6 +78,7 @@ HRESULT CLevel_Jugglas::Initialize()
 	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
 
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = true;
 	pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
@@ -116,6 +117,8 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
+	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_BlastWall");
+
 
 	return S_OK;
 }

@@ -1,6 +1,7 @@
 #include "UI_FadeInOut.h"
 
 #include "GameInstance.h"
+#include "UI_Manager.h"
 #include "Level_Loading.h"
 
 #include "UI_Memento.h"
@@ -51,8 +52,10 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 			m_fAlphaTimerMul = 0.4f;
 	}
 
-	if (!m_isLevelChange && m_isFadeIn)
+	if (!m_isLevelChange && m_isFadeIn && m_eFadeType == TYPE_ALPHA)
 		Create_Memento();
+
+	// 현재 레벨 넘어가기만 해도 Memento가 뜨는 오류 있음 > Memento 생성 시점 분기 처리의 오류라고 보이는데
 
 	return S_OK;
 }
@@ -82,27 +85,16 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 					UI_FADEINOUT_DESC pDesc{};
 					pDesc.isFadeIn = true;
 					pDesc.eFadeType = TYPE_ALPHA;
-					pDesc.isLevelChange = false;
+					pDesc.isLevelChange = false; // 
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 						return;
 
 					m_pGameInstance->Erase(this);
 				}
-
-				//m_pGameInstance->Scene_Change(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR));
-				/*	if (FAILED(Create_FadeIn()))
-					return;*/
-				//// 씬 초기화 필요
-				//if ((m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR))))
-				//{
-				//	MSG_BOX("Failed to Open Level JUGGLAS");
-				//	return;
-				//}
-			}else
+			}
+			else
 				m_pGameInstance->Erase(this);
-
-			//	m_pGameInstance->Erase(this);
 		}
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
@@ -115,12 +107,10 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 
 			if (!m_isFadeIn)
 			{
-				// 화면 전환? 필요
-				if (FAILED(Create_FadeIn()))
-					return;
+				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(true);
 			}
 
-			m_pGameInstance->Erase(this);
+			m_isFadeOutEnd = true;
 		}
 	}
 
@@ -225,6 +215,7 @@ HRESULT CUI_FadeInOut::Create_FadeIn()
 	UI_FADEINOUT_DESC pDesc{};
 
 	pDesc.isFadeIn = true;
+	pDesc.isLevelChange = false;
 
 	if (TYPE_DISSOLVE == m_eFadeType)
 	{

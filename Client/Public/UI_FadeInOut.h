@@ -25,6 +25,9 @@ private:
 	virtual ~CUI_FadeInOut() = default;
 
 public:
+	_bool			Get_isFadeOutEnd() { return m_isFadeOutEnd; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -35,6 +38,7 @@ public:
 private:
 	_bool				m_isFadeIn = { false };
 	_bool				m_isLevelChange = { false };
+	_bool				m_isFadeOutEnd = { false }; // Fade Out 종료 여부
 	_float				m_fAlphaTimer = { 0.f };
 	_float				m_fDisolveValue = { 0.f };
 	_float				m_fAlphaTimerMul = { 0.f };
@@ -48,7 +52,7 @@ private:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();
 
-	HRESULT	Create_FadeIn();
+	HRESULT	Create_FadeIn(); // 필요 없을 듯
 	HRESULT	Create_Memento();
 	LEVEL	Check_NextLevel();
 

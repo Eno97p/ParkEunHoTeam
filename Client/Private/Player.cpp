@@ -15,6 +15,8 @@
 #include "CHoverBoard.h"
 #include "Monster.h"
 
+#include "UI_FadeInOut.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -454,33 +456,25 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
-			//페이드인 시작(	한 번만 생성 또는 시작되게 해야 함)
+			CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
 
-
-			if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code
-			//if ()//페이드인 끝났으면 아래 코드 실행
+			if (CUI_Manager::GetInstance()->Get_isFadeOutEnd()) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
 			{
 				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
 				if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
 				{
 					m_pPhysXCom->Set_Position(m_vDest);	//플레이어 위치 이동
 				}
-				else	//불러온 데이터가 없을 때`
+				else	//불러온 데이터가 없을 때
 				{
-
 					m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
 				}
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
 				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
-				
-
-
-
-
 
 				wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
-				wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName+ L"_"+ L"Layer_Monster" + L".bin";
+				wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName + L"_" + L"Layer_Monster" + L".bin";
 
 				decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(wstrFilePath);
 				if (pLoad_Data)
@@ -497,21 +491,71 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 						landObjDesc.mWorldMatrix._11 = 1.f;
 						m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster", vecMonsterInit[i].strMonsterTag, &landObjDesc);
 					}
-
 				}
 
-
-
-
-
-
-
-
-
+				CUI_Manager::GetInstance()->Delete_FadeInOut(false );
 
 				m_iState = STATE_REVIVE;
 				m_bIsLoadStart = false;
+
 			}
+
+			// 해당 코드 위로 옮김 ^
+			//if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code
+			////if ()//페이드인 끝났으면 아래 코드 실행
+			//{
+			//	LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
+			//	if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
+			//	{
+			//		m_pPhysXCom->Set_Position(m_vDest);	//플레이어 위치 이동
+			//	}
+			//	else	//불러온 데이터가 없을 때`
+			//	{
+
+			//		m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
+			//	}
+
+			//	m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
+			//	//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
+			//	
+
+
+
+
+
+			//	wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
+			//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName+ L"_"+ L"Layer_Monster" + L".bin";
+
+			//	decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(wstrFilePath);
+			//	if (pLoad_Data)
+			//	{
+			//		size_t  iVecSize = get<0>(*pLoad_Data);
+			//		_tagMonsterInit_Property* pMonsterInit = get<1>(*pLoad_Data);
+			//		vector<_tagMonsterInit_Property> vecMonsterInit(pMonsterInit, pMonsterInit + iVecSize);
+			//		for (_uint i = 0; i < iVecSize; ++i)
+			//		{
+			//			CLandObject::LANDOBJ_DESC landObjDesc;
+			//			landObjDesc.mWorldMatrix._41 = vecMonsterInit[i].vPos.x;
+			//			landObjDesc.mWorldMatrix._42 = vecMonsterInit[i].vPos.y;
+			//			landObjDesc.mWorldMatrix._43 = vecMonsterInit[i].vPos.z;
+			//			landObjDesc.mWorldMatrix._11 = 1.f;
+			//			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster", vecMonsterInit[i].strMonsterTag, &landObjDesc);
+			//		}
+
+			//	}
+
+
+
+
+
+
+
+
+
+
+			//	m_iState = STATE_REVIVE;
+			//	m_bIsLoadStart = false;
+			//}
 			
 			return SUCCESS;
 		}

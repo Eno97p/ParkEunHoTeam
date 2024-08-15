@@ -52,6 +52,10 @@ public:
 
 	void				Resset_Player();
 
+	HRESULT				Create_FadeInOut_Dissolve(_bool isFadeIn);
+	void				Delete_FadeInOut(_bool isFadeIn);
+	_bool				Get_isFadeOutEnd();
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부
@@ -63,6 +67,8 @@ private:
 	class CUI_Broken*					m_pBroken = { nullptr };
 	vector<class CUI_Dash*>				m_vecDash;
 	class CQTE*							m_pQTE = { nullptr };
+	class CUI_FadeInOut*				m_pFadeOut = { nullptr };
+	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
 
 private:
 	HRESULT		Create_UI();

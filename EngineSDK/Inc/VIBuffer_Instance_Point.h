@@ -16,6 +16,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 
 	virtual void Setup_Onterrain(CVIBuffer_Terrain* pTerrain);
+
 	HRESULT Ready_Instance_ForGrass(const CVIBuffer_Instance::INSTANCE_MAP_DESC& InstanceDesc);
 
 public:

@@ -122,6 +122,13 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
         ImGui::Separator();
         ImGui::ColorEdit4("Global ColorPicker", &m_GlobalColor.x);
+        ImGui::Separator();   
+        
+        ImGui::Separator();
+        ImGui::Separator();
+        const char* skybox_items[] = { "SkyBox 0", "SkyBox 1", "SkyBox 2", "SkyBox 3", "SkyBox 4", "SkyBox 5", "SkyBox 6" };
+        ImGui::Combo("SkyBox", &m_iSkyBoxIdx, skybox_items, IM_ARRAYSIZE(skybox_items));
+        ImGui::Separator();
         ImGui::Separator();
 
         // Stage 선택(List Box)
@@ -593,7 +600,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_MapObj[] = { "Grass", "TutorialMap Bridge", "Well", "FakeWall_Donut", "FakeWall_Box",
                                         "EventTrigger_Box", "EventTrigger_Sphere",
-                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" ,"Lagoon" };
+                                        "Elevator", "Treasure Chest", "Epic Chest", "Legendary Chest","Cloud" ,"BG Card" ,"Lagoon", "Moon"};
         ImGui::ListBox("###Obj", &item_current, items_MapObj, IM_ARRAYSIZE(items_MapObj)); // item_current 변수에 선택 값 저장
         break;
     }
@@ -658,6 +665,15 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
         static float BillboardFactor = 0.f;
         static float ElasticityFactor = 0.f;
+        static float PlaneOffset = 0.15f;
+        static float PlaneVertOffset = 0.15f;
+        static float LODDistance1 = 300.0f;
+        static float LODDistance2 = 500.0f;
+        static int LODPlaneCount1 = 5;
+        static int LODPlaneCount2 = 3;
+        static int LODPlaneCount3 = 1;
+        static float GrassFrequency = 1.5f;
+        static float GrassAmplitude = 0.05f;
 
         if (item_current == 0)
         {
@@ -667,11 +683,41 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             m_TopCol = { TopCol[0], TopCol[1], TopCol[2] };
             m_BotCol = { BotCol[0], BotCol[1], BotCol[2] };
 
-            ImGui::SliderFloat("Billboard Factor", &BillboardFactor, 0.f, 1.f, "%.6f");
-            m_fBillboardFactor = BillboardFactor;   
-            
-            ImGui::SliderFloat("Elasticity Factor", &ElasticityFactor, 0.f, 1.f, "%.6f");
-            m_fElasticityFactor = ElasticityFactor;
+    
+
+            if (item_current == 0)
+            {
+                ImGui::SliderFloat("Billboard Factor", &BillboardFactor, 0.f, 1.f, "%.3f");
+                m_fBillboardFactor = BillboardFactor;
+
+                ImGui::SliderFloat("Elasticity Factor", &ElasticityFactor, 0.f, 1.f, "%.3f");
+                m_fElasticityFactor = ElasticityFactor;
+
+
+                ImGui::SliderFloat("Plane Offset", &PlaneOffset, 0.f, 5.f, "%.3f");
+                m_fPlaneOffset = PlaneOffset;
+
+                ImGui::SliderFloat("Plane VErt Offset", &PlaneVertOffset, 0.f, 5.f, "%.3f");
+                m_fPlaneOffset = PlaneVertOffset;
+
+                ImGui::SliderFloat("LOD Distance 1", &LODDistance1, 100.f, 1000.f, "%.1f");
+                ImGui::SliderFloat("LOD Distance 2", &LODDistance2, LODDistance1, 2000.f, "%.1f");
+                m_fLODDistance1 = LODDistance1;
+                m_fLODDistance2 = LODDistance2;
+
+                ImGui::SliderInt("LOD 1 Plane Count", &LODPlaneCount1, 1, 30);
+                ImGui::SliderInt("LOD 2 Plane Count", &LODPlaneCount2, 1, 30);
+                ImGui::SliderInt("LOD 3 Plane Count", &LODPlaneCount3, 1, 30);
+                m_iLODPlaneCount1 = LODPlaneCount1;
+                m_iLODPlaneCount2 = LODPlaneCount2;
+                m_iLODPlaneCount3 = LODPlaneCount3;
+
+                ImGui::SliderFloat("Grass Frequency", &GrassFrequency, 0.1f, 5.f, "%.2f");
+                ImGui::SliderFloat("Grass Amplitude", &GrassAmplitude, 0.f, 0.2f, "%.3f");
+                m_fGrassFrequency = GrassFrequency;
+                m_fGrassAmplitude = GrassAmplitude;
+            }
+
         }
         else
         {
@@ -1432,7 +1478,7 @@ void CImgui_Manager::Camera_Editor()
             CSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
 
             CSCdesc.KeyFrames = m_vCameraKeyFrames;
-            m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_CutSceneCamera"), &CSCdesc);
+            m_pGameInstance->Add_Camera(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_CutSceneCamera"), &CSCdesc);
         }
 
         ImGui::SameLine();
@@ -1562,7 +1608,7 @@ void CImgui_Manager::Terrain_Editor()
 
     if (ImGui::SliderFloat("Snow Ground Height", &snowGroundHeight, 0.0f, 1000.0f))
     {
-        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
         if (pTerrain)
         {
             pTerrain->Set_SnowGroundHeight(snowGroundHeight);
@@ -1571,7 +1617,7 @@ void CImgui_Manager::Terrain_Editor()
 
     if (ImGui::SliderFloat("Snow Ground Height Offset", &snowGroundHeightOffset, 0.0f, 200.0f))
     {
-        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
         if (pTerrain)
         {
             pTerrain->Set_SnowGroundHeightOffset(snowGroundHeightOffset);
@@ -1586,7 +1632,7 @@ void CImgui_Manager::Terrain_Editor()
     // Load 버튼
     if (ImGui::Button("Load Height Map"))
     {
-        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
         if (pTerrain)
         {
             std::wstring wHeightMapPath;
@@ -1599,7 +1645,7 @@ void CImgui_Manager::Terrain_Editor()
     ImGui::SameLine();
     if (ImGui::Button("Save Height Map"))
     {
-        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+        CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
         if (pTerrain)
         {
             std::wstring wHeightMapPath;
@@ -1657,7 +1703,7 @@ void CImgui_Manager::Terrain_Editor()
         _float4 pPickPos = { 0.f, 0.f, 0.f, 1.f };
         if (m_pGameInstance->Get_PickPos(&pPickPos))
         {
-            CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
+            CTerrain* pTerrain = dynamic_cast<CTerrain*>(m_pGameInstance->Get_Object(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), 0));
             if (pTerrain)
             {
                 switch (brushMode)
@@ -1794,7 +1840,7 @@ void CImgui_Manager::Fog_Editor()
 
 void CImgui_Manager::Cloud_Editor()
 {
-    list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
     if (!clouds.empty())
     {
         CCloud* cloud = dynamic_cast<CCloud*>(clouds.front());
@@ -1983,7 +2029,7 @@ HRESULT CImgui_Manager::Create3DNoiseTexture(UINT width, UINT height, UINT depth
 
     std::vector<BYTE> noiseData(width * height * depth * 4);
 
-    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
     if (clouds.empty())
     {
         MessageBox(NULL, L"No cloud object found!", L"Error", MB_OK | MB_ICONERROR);
@@ -2052,7 +2098,7 @@ HRESULT CImgui_Manager::Create3DNoiseTexture(UINT width, UINT height, UINT depth
 
 void CImgui_Manager::GenerateNoiseData(BYTE* data, UINT width, UINT height, UINT depth)
 {
-    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
+    std::list<CGameObject*> clouds = m_pGameInstance->Get_GameObjects_Ref(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Clouds"));
     CCloud* cloud = dynamic_cast<CCloud*>(clouds.front());
     float perlinFreq = cloud->m_fPerlinFrequency;
     int perlinOctaves = cloud->m_iPerlinOctaves;
@@ -2243,7 +2289,7 @@ void CImgui_Manager::Setting_CreateObj_ListBox()
 
 void CImgui_Manager::Water_Editor()
 {
-    list<CGameObject*> waters = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_Lagoon"));
+    list<CGameObject*> waters = m_pGameInstance->Get_GameObjects_Ref(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Lagoon"));
     if (!waters.empty())
     {
         CLagoon* lagoon = dynamic_cast<CLagoon*>(waters.front());

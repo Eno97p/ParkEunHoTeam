@@ -1,6 +1,8 @@
 #include "..\Public\VIBuffer_Instance.h"
 #include "VIBuffer_Terrain.h"
 
+#include"GameInstance.h"
+#include "ComputeShader_Buffer.h"
 CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer{ pDevice, pContext }
 {
@@ -38,6 +40,23 @@ HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDe
 HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 {
 
+	// CVIBuffer_Instance 클래스 내부
+	//CComputeShader_Buffer* m_pCullingCS = nullptr;
+
+	//// 초기화 함수에서
+	//m_pCullingCS = CComputeShader_Buffer::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/CullingCS.hlsl", "CS_Cull");
+	//if (nullptr == m_pCullingCS)
+	//	return E_FAIL;
+
+	//CComputeShader_Buffer::CSBUFFER_DESC cullingDesc;
+	//cullingDesc.numInputVariables = 1;
+	//cullingDesc.arg = (void**)&m_pVertexInstanceBuffer;
+	//cullingDesc.variableSize = sizeof(VTXMATRIX);
+	//cullingDesc.variableNum = m_iNumInstance;
+	//cullingDesc.variableFormat = DXGI_FORMAT_UNKNOWN;
+
+	//if (FAILED(m_pCullingCS->Initialize(&cullingDesc)))
+	//	return E_FAIL;
 	return S_OK;
 }
 
@@ -1481,6 +1500,142 @@ void CVIBuffer_Instance::Initial_RotateY()
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
+void CVIBuffer_Instance::Initial_RandomOffset(CVIBuffer_Terrain* pTerrain)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_real_distribution<float> dis(-1.0f, 1.0f);
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		// 현재 위치 저장
+		_float3 currentPos = _float3(pVertices[i].vTranslation.x, pVertices[i].vTranslation.y, pVertices[i].vTranslation.z);
+
+		// 랜덤 오프셋 생성 (X와 Z 축에 대해서만)
+		float offsetX = dis(gen) * 1.f; // 오프셋 범위를 줄임
+		float offsetZ = dis(gen) * 1.f;
+
+		// Perlin Noise를 사용하여 더 자연스러운 오프셋 생성
+		float noiseX = PerlinNoise(currentPos.x * 0.1f, currentPos.y * 0.1f, currentPos.z * 0.1f);
+		float noiseZ = PerlinNoise(currentPos.z * 0.1f, currentPos.x * 0.1f, currentPos.y * 0.1f);
+
+		// Perlin Noise 값을 -1에서 1 사이의 범위로 변환
+		noiseX = (noiseX * 2.0f - 1.0f) * 1.f;
+		noiseZ = (noiseZ * 2.0f - 1.0f) * 1.f;
+
+		// 최종 오프셋 계산 (랜덤 오프셋과 노이즈 기반 오프셋의 조합)
+		float finalOffsetX = (offsetX + noiseX) * 0.5f;
+		float finalOffsetZ = (offsetZ + noiseZ) * 0.5f;
+
+		// 오프셋 적용
+		currentPos.x += finalOffsetX;
+		currentPos.z += finalOffsetZ;
+
+		// 새로운 위치에서의 높이 계산
+		float newHeight = pTerrain->Compute_Height(currentPos);
+
+		// 새 위치 적용
+		pVertices[i].vTranslation = _float4(currentPos.x, newHeight + 1.f, currentPos.z, 1.f);
+
+		// 노멀 계산 및 회전 적용 (Setup_Onterrain과 유사한 방식)
+		_float3 vNormal = pTerrain->Compute_Normal(currentPos);
+		_vector vUp = { 0, 1, 0, 0.f };
+		_vector vTerrainNormal = XMLoadFloat3(&vNormal);
+
+		if (!XMVector3NearEqual(vUp, vTerrainNormal, XMVectorReplicate(0.0001f)))
+		{
+			_vector vRotationAxis = XMVector3Normalize(XMVector3Cross(vUp, vTerrainNormal));
+			float fRotationAngle = XMScalarACos(XMVector3Dot(vUp, vTerrainNormal).m128_f32[0]);
+			_matrix rotationMatrix = XMMatrixRotationAxis(vRotationAxis, fRotationAngle);
+			_matrix currentRotation = XMMatrixIdentity();
+			currentRotation.r[0] = XMLoadFloat4(&pVertices[i].vRight);
+			currentRotation.r[1] = XMLoadFloat4(&pVertices[i].vUp);
+			currentRotation.r[2] = XMLoadFloat4(&pVertices[i].vLook);
+			_matrix newRotation = XMMatrixMultiply(currentRotation, rotationMatrix);
+			XMStoreFloat4(&pVertices[i].vRight, newRotation.r[0]);
+			XMStoreFloat4(&pVertices[i].vUp, newRotation.r[1]);
+			XMStoreFloat4(&pVertices[i].vLook, newRotation.r[2]);
+		}
+
+		// 크기 변화 추가 (선택적)
+		float sizeVariation = PerlinNoise(currentPos.x * 0.2f, currentPos.y * 0.2f, currentPos.z * 0.2f);
+		float newSize = m_pOriginalSize[i] * (0.8f + sizeVariation * 0.4f);  // 80% ~ 120% 변화
+
+		// 새로운 크기 적용
+		_vector Right = XMLoadFloat4(&pVertices[i].vRight);
+		_vector Up = XMLoadFloat4(&pVertices[i].vUp);
+		_vector Look = XMLoadFloat4(&pVertices[i].vLook);
+		XMStoreFloat4(&pVertices[i].vRight, XMVector3Normalize(Right) * newSize);
+		XMStoreFloat4(&pVertices[i].vUp, XMVector3Normalize(Up) * newSize);
+		XMStoreFloat4(&pVertices[i].vLook, XMVector3Normalize(Look) * newSize);
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
+void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float maxRenderDistance)
+{
+	// 1. 버퍼 유효성 확인
+	if (!m_pVBInstance)
+	{
+		// 로그 기록 또는 에러 처리
+		return;
+	}
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource);
+	if (FAILED(hr) || !mappedResource.pData)
+	{
+		// 매핑 실패 처리
+		// 로그 기록 또는 에러 처리
+		return;
+	}
+
+	VTXMATRIX* pInstanceData = static_cast<VTXMATRIX*>(mappedResource.pData);
+
+	// 2. 최적화: 거리 계산을 위한 상수 준비
+	const XMVECTOR camPos = XMLoadFloat3(&cameraPosition);
+	const float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
+
+	// 3. 가시성 검사 및 데이터 재정렬
+	unsigned int visibleCount = 0;
+
+
+
+	for (unsigned int i = 0; i < m_iNumInstance; ++i)
+	{
+		m_pGameInstance->AddWork([pInstanceData, i, maxDistanceSquared, camPos, &visibleCount]()
+			{
+				XMVECTOR instancePos = XMLoadFloat4(&pInstanceData[i].vTranslation);
+				float distanceSquared = XMVectorGetX(XMVector3LengthSq(XMVectorSubtract(instancePos, camPos)));
+
+				if (distanceSquared <= maxDistanceSquared)
+				{
+					if (i != visibleCount)
+					{
+						// 자리 바꾸기 (swap)
+						VTXMATRIX temp = pInstanceData[visibleCount];
+						pInstanceData[visibleCount] = pInstanceData[i];
+						pInstanceData[i] = temp;
+					}
+					++visibleCount; 
+				}
+			}
+		);
+
+		
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+	// 4. 가시 인스턴스 수 업데이트 (원자적 업데이트 없이)
+	m_iVisibleInstances = visibleCount;
+}
+
 vector<_float4x4*> CVIBuffer_Instance::Get_VtxMatrices()
 {
 	vector<_float4x4*> worldMats;
@@ -1510,6 +1665,33 @@ vector<_float4x4*> CVIBuffer_Instance::Get_VtxMatrices()
 	return worldMats;
 }
 
+HRESULT CVIBuffer_Instance::Render_Culling()
+{
+	//// 컬링 파라미터 업데이트
+	//CullingParams* pCullingParams = (CullingParams*)m_pCullingCSCom->GetConstantBuffer();
+	//pCullingParams->cameraPosition = m_pGameInstance->Get_CamPosition_float3();
+	//pCullingParams->maxRenderDistance = 1000.0f; // 적절한 값으로 설정
+	//pCullingParams->numInstances = m_iNumInstance;
+
+	//// 컴퓨트 셰이더 실행
+	//UINT* visibilityFlags = (UINT*)m_pCullingCSCom->Compute(m_iNumInstance / 256 + 1, 1, 1);
+	//if (visibilityFlags == nullptr)
+	//	return E_FAIL;
+
+	//// 가시적인 인스턴스 수 계산
+	//m_iVisibleInstances = 0;
+	//for (UINT i = 0; i < m_iNumInstance; ++i)
+	//{
+	//	if (visibilityFlags[i] == 1)
+	//		++m_iVisibleInstances;
+	//}
+
+	//// 가시적인 인스턴스만 렌더링
+	//m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iVisibleInstances, 0, 0, 0);
+
+
+	return S_OK;
+}
 void CVIBuffer_Instance::Free()
 {
 	__super::Free();

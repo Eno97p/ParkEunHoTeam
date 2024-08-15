@@ -465,6 +465,9 @@
 #include "C:\Real3DProject\Client\Private\UI_QTE_Score.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_RedDot.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_ScreenBlood.cpp"
 
 

@@ -1694,6 +1694,9 @@
     <ClInclude Include="..\Public\UI_AeonsLost.h">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_RedDot.h">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2556,6 +2559,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_AeonsLost.cpp">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_RedDot.cpp">
+      <Filter>02.GameObjects\07. UI\RedDot</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

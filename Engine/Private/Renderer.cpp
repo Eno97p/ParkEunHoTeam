@@ -225,6 +225,10 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pMaskTex)
         return E_FAIL;
 
+    m_pCausticTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/water%d.png"), 6);
+    if (nullptr == m_pCausticTex)
+        return E_FAIL;
+
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Mirror"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Mirror"), TEXT("Target_Mirror"))))
@@ -1247,7 +1251,21 @@ void CRenderer::Render_Reflection()
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Mirror"), m_pShader, "g_MirrorTexture")))
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Reflection"), m_pShader, "g_EffectTexture")))
+        return;   
+    
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
         return;
+
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+        return;
+
+    m_pCausticTex->Bind_ShaderResource(m_pShader, "g_CausticTexture", m_iCausticIdx);
+
+
+    m_pShader->Bind_RawValue("g_fWaveStrength", &m_fWaveStrength, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fWaveFrequency", &m_fWaveFrequency, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fWaveTimeOffset", &m_fWaveTimeOffset, sizeof(_float));
+    m_pShader->Bind_RawValue("g_fFresnelPower", &m_fFresnelPower, sizeof(_float));
 
     m_pShader->Begin(18);
 

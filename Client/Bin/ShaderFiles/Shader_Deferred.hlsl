@@ -913,6 +913,18 @@ PS_OUT PS_FINAL2(PS_IN In)
     Out.vColor.rgb /= (Out.vColor.rgb + 1.f);
     Out.vColor = pow(Out.vColor, 1 / g_Value);
 
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
+    }
+
+    Out.vColor /= float(NumSamples);
+
     if (g_fMirror != 0.f)
     {
         Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
@@ -990,6 +1002,18 @@ PS_OUT PS_FINAL3(PS_IN In)
     Out.vColor = saturate((Out.vColor * (a * Out.vColor + b)) / (Out.vColor * (c * Out.vColor + d) + e));
     Out.vColor = pow(Out.vColor, 1 / g_Value);
     Out.vColor.a = 1.f;
+
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
+    }
+
+    Out.vColor /= float(NumSamples);
 
     if (g_fMirror != 0.f)
     {

@@ -23,6 +23,9 @@
 #include "C:\3D_TeamProj\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\private\AndrasHead.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\private\AndrasLazer.cpp"
 
 
@@ -56,6 +59,12 @@
 #include "C:\3D_TeamProj\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\Charge_Ribbon.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Charge_Vane.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\Distortion_Effect.cpp"
 
 
@@ -68,7 +77,37 @@
 #include "C:\3D_TeamProj\EffectTool\private\FireEffect.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\private\FirePillar.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\FirePillarEffect.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\FirePillar_Bottom.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\FirePillar_Charge.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\private\HealEffect.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Heal_Line.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Heal_Ribbon.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Heal_Spiral.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\HoverBoard.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\ImguiMgr.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\LazerCast.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Level_GamePlay.cpp"
@@ -95,10 +134,22 @@
 #include "C:\3D_TeamProj\EffectTool\Private\Map_Flat.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\Meteor.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Meteor_Core.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Meteor_Wind.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\private\Particle.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\ParticleMesh.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Particle_PhysX.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Particle_Point.cpp"
@@ -125,6 +176,21 @@
 #include "C:\3D_TeamProj\EffectTool\Private\QuarterCamera.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\Rock_Ground.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\private\ShieldSphere.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\DefaultCylinder.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\SwingEffect.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Swing_Spiral.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\private\TextureFrame.cpp"
 
 
@@ -134,10 +200,10 @@
 #include "C:\3D_TeamProj\EffectTool\Private\TornadoWind.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\Tornado_Ring.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\Tornado_Root.cpp"
-
-
-#include "C:\3D_TeamProj\EffectTool\Private\Tornado_Spring.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Weapon.cpp"

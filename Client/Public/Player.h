@@ -167,6 +167,7 @@ private:
 	_bool										m_bIsCloaking = false;
 	_bool										m_bRiding = false;
 	_bool										m_bRided = false;
+	_bool										m_bChase = true;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;
@@ -191,11 +192,11 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	//_float m_fMaxHp = 1000.f; // 1000
-	_float m_fMaxHp = 10.f; // 1000
+	//_float m_fMaxHp = 10.f;
+	_float m_fMaxHp = 1000.f;
 #else
-	//_float m_fMaxHp = 300.f;
-	_float m_fMaxHp = 10.f;
+	_float m_fMaxHp = 300.f;
+	//_float m_fMaxHp = 10.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;

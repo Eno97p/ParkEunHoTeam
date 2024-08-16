@@ -430,7 +430,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Yantari"), &landObjDesc)))
 		return E_FAIL;
 
-	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 -5.f,landObjDesc.mWorldMatrix._43,1.f };
+	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 - 5.f, landObjDesc.mWorldMatrix._43, 1.f };
 	EFFECTMGR->Generate_Particle(40, GrassPos);
 
 	//// Npc Valnir

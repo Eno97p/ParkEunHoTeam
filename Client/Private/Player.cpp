@@ -459,9 +459,14 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
-			CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
+			if (!m_isReviveFadeing)
+			{
+				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
 
-			if (CUI_Manager::GetInstance()->Get_isFadeOutEnd()) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
+				m_isReviveFadeing = true;
+			}
+
+			if (CUI_Manager::GetInstance()->Get_isFadeAnimEnd(false)) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
 			{
 				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
 				if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
@@ -486,11 +491,18 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 
 				CUI_Manager::GetInstance()->Delete_FadeInOut(false);
+			}
+
+			if (CUI_Manager::GetInstance()->Get_isFadeAnimEnd(true))
+			{
+				CUI_Manager::GetInstance()->Delete_FadeInOut(true);
 
 				m_iState = STATE_REVIVE;
 				m_bIsLoadStart = false;
 
+				m_isReviveFadeing = false;
 			}
+
 
 			// 해당 코드 위로 옮김 ^
 			//if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code

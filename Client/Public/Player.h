@@ -219,6 +219,7 @@ private:
 	_float3 m_InitialPosition = { 0.f, 0.f, 0.f };
 
 #pragma region UI°ü·Ã Data
+	_bool		m_isReviveFadeing = { false };
 	_uint		m_iLevel = { 1 };
 	_uint		m_iVitalityLv = { 0 };
 	_uint		m_iStaminaLv = { 0 };

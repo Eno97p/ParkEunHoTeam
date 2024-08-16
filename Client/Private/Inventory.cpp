@@ -168,6 +168,12 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
+		// RedDot 관련 여기에서 해주면 될 거 같ㅌ응디~
+		// 일단 테스트로 UI Manager에서 Menu Btn에 RedDot 추가하는 함수 호출해보기
+		// 중복이든 아니든 RedDot은 생성될 것이기 때문에 분기문 안에 들어가지 않음
+
+
+
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
 			// Inventory에 ItemData 추가

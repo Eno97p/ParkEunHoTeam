@@ -130,7 +130,7 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pFadeIn)
 	{
-		if (m_pFadeIn->Get_isFadeOutEnd())
+		if (m_pFadeIn->Get_isFadeAnimEnd())
 			Delete_FadeInOut(true);
 		else
 			m_pFadeIn->Tick(fTimeDelta);
@@ -339,7 +339,7 @@ HRESULT CUI_Manager::Create_FadeInOut_Dissolve(_bool isFadeIn)
 		if (nullptr == m_pFadeIn)
 			return E_FAIL;
 	}
-	else
+	else if(!isFadeIn/* && nullptr == m_pFadeIn*/) // 이렇게 해도 여러 게 생성되나바 ㅇㅇ
 	{
 		if (nullptr != m_pFadeOut)
 			return S_OK;
@@ -368,12 +368,22 @@ void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
 	}
 }
 
-_bool CUI_Manager::Get_isFadeOutEnd()
+_bool CUI_Manager::Get_isFadeAnimEnd(_bool isFadeIn)
 {
-	if (nullptr == m_pFadeOut)
-		return false;
+	if (isFadeIn) // 여기? 무조건 false 반환하나본데?
+	{
+		if (nullptr == m_pFadeIn)
+			return false;
+		else
+			return m_pFadeIn->Get_isFadeAnimEnd();
+	}
 	else
-		return m_pFadeOut->Get_isFadeOutEnd();
+	{
+		if (nullptr == m_pFadeOut)
+			return false;
+		else
+			return m_pFadeOut->Get_isFadeAnimEnd();
+	}
 }
 
 void CUI_Manager::Key_Input()

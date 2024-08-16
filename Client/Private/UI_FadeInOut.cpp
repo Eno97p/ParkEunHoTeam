@@ -55,8 +55,8 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 
 	if (!m_isLevelChange && m_isFadeIn && m_eFadeType == TYPE_ALPHA)
 		Create_Memento();
-	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE)
-		Create_AeonsLost(); // 여기서 생성하지 말구 > 아니 걍 생성하구
+	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE) // FadeIn이 여러 개 생성되네~~~
+		Create_AeonsLost();
 	
 
 	return S_OK;
@@ -101,24 +101,20 @@ void CUI_FadeInOut::Tick(_float fTimeDelta)
 	}
 	else if (TYPE_DISSOLVE == m_eFadeType)
 	{
-		if (!m_isFadeIn || (m_isFadeIn && m_pAeonsLost->Get_isEnd()))
+		if (!m_isFadeIn || (m_isFadeIn && m_pAeonsLost->Get_isEnd())) // 이러면 AeonsLost의 렌더가 끝나고 나서 Tick이 돌텐데 왜 바로 nullptr이 된 것처럼 생성을 하지?
+
 		{
 			m_fDisolveValue += fTimeDelta * 0.3f;
 		}
 
 		if (m_fDisolveValue >= 1.f)
 		{
-			if (!m_isFadeIn)
-			{
-				m_isFadeOutEnd = true;
+			m_isFadeAnimEnd = true;
 
+			if (!m_isFadeIn)
 				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(true);
-			}
 			else
-			{
-				CUI_Manager::GetInstance()->Delete_FadeInOut(true);
 				return;
-			}
 		}
 	}
 

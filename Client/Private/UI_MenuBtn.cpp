@@ -5,6 +5,7 @@
 #include "CMouse.h"
 
 #include "UIGroup_Ch_Upgrade.h"
+#include "UI_RedDot.h"
 
 CUI_MenuBtn::CUI_MenuBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{pDevice, pContext}
@@ -64,6 +65,9 @@ void CUI_MenuBtn::Tick(_float fTimeDelta)
 	}
 	else
 		m_iTextureNum = 0;
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Tick(fTimeDelta);
 }
 
 void CUI_MenuBtn::Late_Tick(_float fTimeDelta)
@@ -233,6 +237,19 @@ void CUI_MenuBtn::Open_MenuPage()
 	CUI_Manager::GetInstance()->Set_MenuPageOpen();
 }
 
+HRESULT CUI_MenuBtn::Create_RedDot()
+{
+	CUI_RedDot::UI_REDDOT_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eUISort = EIGHT;
+
+	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
+	if (nullptr == m_pRedDot)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_MenuBtn* pInstance = new CUI_MenuBtn(pDevice, pContext);
@@ -262,4 +279,6 @@ CGameObject* CUI_MenuBtn::Clone(void* pArg)
 void CUI_MenuBtn::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pRedDot);
 }

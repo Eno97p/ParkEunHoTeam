@@ -27,10 +27,14 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
-private:
-	_uint			m_iTextureNum = { 0 };
+	HRESULT	Create_RedDot();
 
-	MENU_TYPE		m_eMenuType = { MENU_END };
+private:
+	_uint				m_iTextureNum = { 0 };
+
+	MENU_TYPE			m_eMenuType = { MENU_END };
+	
+	class CUI_RedDot*	m_pRedDot = { nullptr };
 	
 private:
 	HRESULT	Add_Components();

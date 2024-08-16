@@ -54,6 +54,7 @@ public:														//파티클 함수들
 	_uint Get_Model_Vertices();						//모델의 정점 갯수 반환
 
 	_bool Check_Instance_Dead();						//파티클이 끝났는지 검사해줌
+	_bool Check_PhysX_Dead();
 
 	HRESULT Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc);		//인스턴싱할 모델만 호출해준다
 	HRESULT Ready_PhysXParticle(const CPhysXParticle::PhysX_Particle_Desc& InstanceDesc);
@@ -113,11 +114,14 @@ public:
 	HRESULT Render(_uint iMeshIndex);
 	HRESULT Render(_uint iMeshIndex, ID3D11DeviceContext* pDeferredContext);
 	HRESULT Render_Instance(_uint iMeshIndex);
+	HRESULT Render_PhysXInstance(_uint iMeshIndex);
 	HRESULT Bind_Material_Instance_ForMapElements(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Render_Instance_ForMapElements(_uint iMeshIndex);
 
 	HRESULT Bind_Material(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
 	HRESULT Bind_Material_Instance(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
+	HRESULT Bind_Material_PhysX(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType);
+
 	HRESULT Bind_BoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 	HRESULT Bind_PrevBoneMatrices(class CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex);
 
@@ -127,7 +131,7 @@ public:
 	vector<string> Get_BoneNameVec();
 	HRESULT Save_AnimName();										// 애니메이션 이름 텍스트로 저장하는거
 	HRESULT Save_BoneName();										// 뼈이름 텍스트로 저장하는거
-	_bool Picking(class CTransform* pTransform, _float3* pOut);		// 메쉬피킹
+
 
 	_bool Culling(_uint iIndex, PxActor* actor);
 private:

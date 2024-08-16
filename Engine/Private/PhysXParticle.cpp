@@ -62,29 +62,47 @@ HRESULT CPhysXParticle::Render()
 
 void CPhysXParticle::Tick(_float fTimeDelta)
 {
-	//PxVec4* Positions = g_ParticleBuffer->getPositionInvMasses();
-	//PxVec4* velocities = g_ParticleBuffer->getVelocities();
-	PxU32	numActiveParticles = g_ParticleBuffer->getNbActiveParticles();
-
-	PxStrideIterator<const PxVec4> positionIter(g_ParticleBuffer->getPositionInvMasses());
-	PxStrideIterator<const PxVec4> velocityIter(g_ParticleBuffer->getVelocities());
-
-	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-	VTXPARTICLE* pInstanceData = (VTXPARTICLE*)SubResource.pData;
-	for (PxU32 i = 0; i < numActiveParticles; ++i)
+	_bool InstanceDead = true;
+	if (g_ParticleSystem)
 	{
-		pInstanceData[i].vLifeTime.y += fTimeDelta;
-		pInstanceData[i].vTranslation = _float4(positionIter[i].x, positionIter[i].y, positionIter[i].z, 1.0f);
-		_float4 direction = { velocityIter[i].x, velocityIter[i].y, velocityIter[i].z, 0.f };
-		_vector vDir = XMVector4Normalize(XMLoadFloat4(&direction));
-		_vector vRight = XMVector4Normalize(XMVector3Cross(vDir, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		_vector vUp = XMVector4Normalize(XMVector3Cross(vDir, vRight));
-		XMStoreFloat4(&pInstanceData[i].vRight, vRight * m_Size[i]);
-		XMStoreFloat4(&pInstanceData[i].vUp, vUp * m_Size[i]);
-		XMStoreFloat4(&pInstanceData[i].vLook, vDir * m_Size[i]);
+		PxU32	numActiveParticles = g_ParticleBuffer->getNbActiveParticles();
+		vector<PxVec4> Positions(numActiveParticles);
+		vector<PxVec4> velocities(numActiveParticles);
+
+		g_CudaContext->acquireContext();
+		PxCudaContext* cudaContext = g_CudaContext->getCudaContext();
+		cudaContext->memcpyDtoH(Positions.data(), CUdeviceptr(g_ParticleBuffer->getPositionInvMasses()), sizeof(PxVec4) * numActiveParticles);
+		cudaContext->memcpyDtoH(velocities.data(), CUdeviceptr(g_ParticleBuffer->getVelocities()), sizeof(PxVec4) * numActiveParticles);
+		g_CudaContext->releaseContext();
+
+		D3D11_MAPPED_SUBRESOURCE		SubResource{};
+		m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+		VTXPARTICLE* pInstanceData = (VTXPARTICLE*)SubResource.pData;
+		for (PxU32 i = 0; i < numActiveParticles; ++i)
+		{
+			pInstanceData[i].vLifeTime.y += fTimeDelta;
+			pInstanceData[i].vTranslation = _float4(Positions[i].x, Positions[i].y, Positions[i].z, 1.0f);
+			_float4 direction = { velocities[i].x, velocities[i].y, velocities[i].z, 0.f};
+
+		
+			_vector vDir = XMVector4Normalize(XMLoadFloat4(&direction));
+			_vector vRight = XMVector4Normalize(XMVector3Cross(vDir, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+			_vector vUp = XMVector4Normalize(XMVector3Cross(vDir, vRight));
+			XMStoreFloat4(&pInstanceData[i].vRight, vRight * m_Size[i]);
+			XMStoreFloat4(&pInstanceData[i].vUp, vUp * m_Size[i]);
+			XMStoreFloat4(&pInstanceData[i].vLook, vDir * m_Size[i]);
+			
+
+			if (pInstanceData[i].vLifeTime.y >= pInstanceData[i].vLifeTime.x)
+			{
+				pInstanceData[i].vLifeTime.y = pInstanceData[i].vLifeTime.x;
+			}
+			else
+				InstanceDead = false;
+		}
+		m_pContext->Unmap(m_pVBInstance, 0);
 	}
-	m_pContext->Unmap(m_pVBInstance, 0);
+	m_InstanceDead = InstanceDead;
 }
 
 
@@ -166,7 +184,7 @@ HRESULT CPhysXParticle::Init_Mesh_InstanceBuffer(CMesh* m_Meshes)
 	VTXPARTICLE* pInstanceVertices = new VTXPARTICLE[m_iNumInstance];
 	ZeroMemory(pInstanceVertices, sizeof(VTXPARTICLE) * m_iNumInstance);
 
-	if (FAILED(Init_Particle_System(pInstanceVertices)))
+	if (FAILED(Init_Particle_System(&pInstanceVertices)))
 		return E_FAIL;
 	m_InitialData.pSysMem = pInstanceVertices;
 	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))
@@ -176,7 +194,7 @@ HRESULT CPhysXParticle::Init_Mesh_InstanceBuffer(CMesh* m_Meshes)
 	return S_OK;
 }
 
-HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
+HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE** Buffer)
 {
 	g_Scene = m_pGameInstance->GetScene();
 	g_PhysXs = m_pGameInstance->GetPhysics();
@@ -187,10 +205,12 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 
 	
 	PxPBDMaterial* DefaultMat = g_PhysXs->createPBDMaterial(0.05f, 0.05f, 0.f, 0.001f, 0.5f, 0.005f, 0.01f, 0.f, 0.f);
-	DefaultMat->setViscosity(0.001f);
-	DefaultMat->setSurfaceTension(0.00704f);
-	DefaultMat->setCohesion(0.0704f);
-	DefaultMat->setVorticityConfinement(10.f);
+	DefaultMat->setViscosity(m_Owndesc->Viscosity);
+	DefaultMat->setSurfaceTension(m_Owndesc->SurfaceTension);
+	DefaultMat->setCohesion(m_Owndesc->Cohesion);
+	DefaultMat->setVorticityConfinement(m_Owndesc->VorticityConfinement);
+	DefaultMat->setFriction(m_Owndesc->Friction);
+	DefaultMat->setDamping(m_Owndesc->Damping);
 
 	PxPBDParticleSystem* particleSystem = g_PhysXs->createPBDParticleSystem(*g_CudaContext, 96);
 	g_ParticleSystem = particleSystem;
@@ -200,7 +220,7 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 	const PxReal fluidRestOffset = restOffset * 0.6f;
 	const PxReal particleMass = fluidDensity * 1.333f * 3.14159f * m_Owndesc->Size.x * m_Owndesc->Size.x * m_Owndesc->Size.x;
 	particleSystem->setRestOffset(restOffset);
-	particleSystem->setContactOffset(restOffset + 0.01f);
+	particleSystem->setContactOffset(restOffset * m_Owndesc->ContactOffset);
 	particleSystem->setParticleContactOffset(fluidRestOffset / 0.6f);
 	particleSystem->setSolidRestOffset(solidRestOffset);
 	particleSystem->setFluidRestOffset(fluidRestOffset);
@@ -219,8 +239,8 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 	dpParams.divergenceWeight = m_Owndesc->DivergenceWeight;
 	dpParams.lifetime = m_Owndesc->LifeTime.y;
 	dpParams.useAccurateVelocity = false;
-
-	const PxU32 particlePhase = particleSystem->createPhase(DefaultMat, PxParticlePhaseFlags(PxParticlePhaseFlag::eParticlePhaseFluid | PxParticlePhaseFlag::eParticlePhaseSelfCollide));
+	
+	const PxU32 particlePhase = particleSystem->createPhase(DefaultMat, PxParticlePhaseFlags(/*PxParticlePhaseFlag::eParticlePhaseFluid |*/ PxParticlePhaseFlag::eParticlePhaseSelfCollide));
 
 	PxU32* phase = PX_EXT_PINNED_MEMORY_ALLOC(PxU32, *g_CudaContext, maxParticles);
 	PxVec4* positionInvMass = PX_EXT_PINNED_MEMORY_ALLOC(PxVec4, *g_CudaContext, maxParticles);
@@ -238,16 +258,19 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 	m_Size = new _float[m_iNumInstance];
 	ZeroMemory(m_Size, sizeof(_float) * m_iNumInstance);
 
-	for (size_t i = 0; i < m_iNumInstance; i++)
+	for (PxU32 i = 0; i < m_iNumInstance; i++)
 	{
+		(*Buffer)[i].vLifeTime.y = 0.f;
+		(*Buffer)[i].vLifeTime.x = LifeTime(m_RandomNumber);
 		m_Size[i] = Size(m_RandomNumber);
-		Buffer[i].vRight = _float4(m_Size[i], 0.f, 0.f, 0.f);
-		Buffer[i].vUp = _float4(0.f, m_Size[i], 0.f, 0.f);
-		Buffer[i].vLook = _float4(0.f, 0.f, m_Size[i], 0.f);
-		Buffer[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
+		(*Buffer)[i].vRight = _float4(m_Size[i], 0.f, 0.f, 0.f);
+		(*Buffer)[i].vUp = _float4(0.f, m_Size[i], 0.f, 0.f);
+		(*Buffer)[i].vLook = _float4(0.f, 0.f, m_Size[i], 0.f);
+		(*Buffer)[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
 		phase[i] = particlePhase;
-		positionInvMass[i] = PxVec4(Buffer[i].vTranslation.x, Buffer[i].vTranslation.y, Buffer[i].vTranslation.z, 1.f);
-		velocity[i] = PxVec4(Velocity(m_RandomNumber));
+		positionInvMass[i] = PxVec4((*Buffer)[i].vTranslation.x, (*Buffer)[i].vTranslation.y, (*Buffer)[i].vTranslation.z, 1.0f / particleMass);
+		XMVECTOR vDir = XMVector4Normalize(XMLoadFloat4(&(*Buffer)[i].vTranslation) - XMLoadFloat3(&m_Owndesc->Offset)) * Velocity(m_RandomNumber);
+		velocity[i] = PxVec4(XMVectorGetX(vDir), XMVectorGetY(vDir), XMVectorGetZ(vDir),0.f);
 	}
 	
 	PxParticleAndDiffuseBufferDesc bufferDesc;
@@ -255,8 +278,8 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 	bufferDesc.numActiveParticles = maxParticles;
 	bufferDesc.maxDiffuseParticles = maxParticles;
 	bufferDesc.maxActiveDiffuseParticles = maxParticles;
-	bufferDesc.diffuseParams = dpParams;
 	bufferDesc.positions = positionInvMass;
+	bufferDesc.diffuseParams = dpParams;
 	bufferDesc.velocities = velocity;
 	bufferDesc.phases = phase;
 
@@ -264,13 +287,42 @@ HRESULT CPhysXParticle::Init_Particle_System(VTXPARTICLE* Buffer)
 	g_ParticleSystem->addParticleBuffer(g_ParticleBuffer);
 
 	
-
 	PX_EXT_PINNED_MEMORY_FREE(*g_CudaContext, positionInvMass);
 	PX_EXT_PINNED_MEMORY_FREE(*g_CudaContext, velocity);
 	PX_EXT_PINNED_MEMORY_FREE(*g_CudaContext, phase);
 
 	return S_OK;
 }
+
+//PxParticleBuffer* CPhysXParticle::CreateParticleBuffer(const PxParticleBufferDesc& desc, PxParticleBuffer* particleBuffer)
+//{
+//#if PX_SUPPORT_GPU_PHYSX
+//
+//	PxParticleBuffer* tmpparticleBuffer = g_PhysXs->createParticleBuffer(desc.maxParticles, desc.maxVolumes, g_CudaContext);
+//
+//	PxVec4* positionBuffer = tmpparticleBuffer->getPositionInvMasses();
+//	PxVec4* velocityBuffer = tmpparticleBuffer->getVelocities();
+//	PxU32* phaseBuffer = tmpparticleBuffer->getPhases();
+//	PxParticleVolume* volumeBuffer = tmpparticleBuffer->getParticleVolumes();
+//
+//	g_CudaContext->getCudaContext()->memcpyHtoDAsync(CUdeviceptr(positionBuffer), desc.positions, desc.numActiveParticles * sizeof(PxVec4), 0);
+//	g_CudaContext->getCudaContext()->memcpyHtoDAsync(CUdeviceptr(velocityBuffer), desc.velocities, desc.numActiveParticles * sizeof(PxVec4), 0);
+//	g_CudaContext->getCudaContext()->memcpyHtoDAsync(CUdeviceptr(phaseBuffer), desc.phases, desc.numActiveParticles * sizeof(PxU32), 0);
+//	g_CudaContext->getCudaContext()->memcpyHtoDAsync(CUdeviceptr(volumeBuffer), desc.volumes, desc.numVolumes * sizeof(PxParticleVolume), 0);
+//
+//	tmpparticleBuffer->setNbActiveParticles(desc.numActiveParticles);
+//	tmpparticleBuffer->setNbParticleVolumes(desc.numVolumes);
+//
+//	g_CudaContext->getCudaContext()->streamSynchronize(0);
+//
+//#else
+//	PX_UNUSED(cudaContextManager);
+//	PX_UNUSED(particleBuffer);
+//	PX_UNUSED(desc);
+//#endif
+//
+//	return tmpparticleBuffer;
+//}
 
 void CPhysXParticle::PxDmaDataToDevice(PxCudaContextManager* cudaContextManager, PxParticleBuffer* particleBuffer, const PxParticleBufferDesc& desc)
 {
@@ -338,8 +390,8 @@ CComponent* CPhysXParticle::Clone(void* pArg)
 void CPhysXParticle::Free()
 {
 	__super::Free();
-	g_ParticleBuffer->release();
-	g_ParticleSystem->release();
-	g_Scene->removeActor(*g_ParticleSystem);
+	Safe_physX_Release(g_ParticleBuffer);
+	Safe_physX_Release(g_ParticleSystem);
+	Safe_Release(m_pVBInstance);
 	Safe_Delete_Array(m_Size);
 }

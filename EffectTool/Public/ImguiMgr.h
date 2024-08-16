@@ -207,6 +207,7 @@ private:
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>				m_Heals;
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>			m_Swings;
+	vector<shared_ptr<CParticle_PhysX::PARTICLE_PHYSXDESC>> m_PhysX;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -218,6 +219,7 @@ private:
 	vector<string> HealNames;
 	vector<string> LazerNames;
 	vector<string> SwingNames;
+	vector<string> PhysXNames;
 
 
 private:

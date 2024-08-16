@@ -191,6 +191,9 @@
 #include "E:\3D_ShatteredNew\Engine\Private\PhysXComponent_Vehicle.cpp"
 
 
+#include "E:\3D_ShatteredNew\Engine\private\PhysXParticle.cpp"
+
+
 #include "E:\3D_ShatteredNew\Engine\private\Picking.cpp"
 
 

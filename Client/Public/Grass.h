@@ -78,6 +78,20 @@ private:
 
 	_float3 m_vPivotPos = {0.f, 0.f, 0.f};
 
+	_float				m_fPlaneOffset = { 1.23f };
+	_float				m_fPlaneVertOffset = { 0.916f };
+	_float				m_fLODDistance1 = { 100.f };
+	_float				m_fLODDistance2 = { 750.f };
+	_float				m_fGrassAmplitude = { 0.f };
+	_float				m_fGrassFrequency = { 0.f };
+	_uint			 m_iLODPlaneCount1 = 5;
+	_uint			 m_iLODPlaneCount2 = 2;
+	_uint			 m_iLODPlaneCount3 = 1;
+
+
+	_float				m_fBillboardFactor = { 0.97f };
+	_float				m_fElasticityFactor = { 0.644f };
+
 public:
 	static CGrass* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

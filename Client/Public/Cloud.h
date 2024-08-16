@@ -31,6 +31,16 @@ public:
 public:
 	_uint Get_ShaderPath() { return m_iShaderPath; }
 	void Set_ShaderPath(_uint iIdx) {  m_iShaderPath = iIdx; }
+
+public:
+	void Set_Colors(_float3 cloudColor, _float4 lightDiffuseColor) {
+		m_vCloudColor = cloudColor; 
+		m_vLightDiffuse = lightDiffuseColor;
+		XMStoreFloat4(&m_vLightAmbient, XMLoadFloat4(&lightDiffuseColor) * 0.8f);
+		m_fLightRange = 8000.f;
+		m_vBaseSkyColor = { 1.f, 0.f, 0.f, 1.f };
+		m_vLightPosition = { 2899.f, 3683.f, -1731.f, 1.f };
+	}
 private:
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };

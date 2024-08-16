@@ -16,13 +16,27 @@ float4 g_vLightDir = { 0.f, -1.f, 0.f, 1.f };
 
 
 float g_fAccTime;             // 현재 시간
+
+//바람
+const float3 g_vWindDirection = normalize(float3(1.0f, 0.0f, 0.5f));  // 예시 방향, 필요에 따라 조정
+float g_fGlobalWindFactor;
 float g_fWindStrength;     // 바람 세기
 
-float g_fElasticityFactor = 0.5f; // 탄성 제어 인자
-float g_fGlobalWindFactor = 0.3f; // 전역 바람 보정값
-float g_fBillboardFactor = 0.3f; // 빌보드 보정값
-
-const float3 g_vWindDirection = normalize(float3(1.0f, 0.0f, 0.5f));  // 예시 방향, 필요에 따라 조정
+cbuffer GrassConstants : register(b1)
+{
+	float g_fPlaneOffset;        // 평면 간 오프셋
+	float g_fPlaneVertOffset;
+	float g_fWindStrengthMultiplier; // 바람 세기 승수
+	float g_fGrassFrequency;      // 파동 주파수
+	float g_fGrassAmplitude;      // 파동 진폭
+	float g_fBillboardFactor;    // 빌보드 팩터
+	float g_fLODDistance1;       // LOD 거리 1 (가까운 거리)
+	float g_fLODDistance2;       // LOD 거리 2 (중간 거리)
+	float g_fElasticityFactor;       // LOD 거리 2 (중간 거리)
+	int g_iLODPlaneCount1 = 10;       // LOD 1의 평면 수
+	int g_iLODPlaneCount2;       // LOD 2의 평면 수
+	int g_iLODPlaneCount3;       // LOD 3의 평면 수
+}
 
 
 struct VS_IN
@@ -114,86 +128,126 @@ float3x3 ExtractRotationMatrix(matrix m)
 	return rotMat;
 }
 
-[maxvertexcount(6)]
+// LOD 레벨을 결정하는 함수 수정
+int DetermineLODLevel(float distanceToCamera)
+{
+	if (distanceToCamera < g_fLODDistance1) return 3;
+	else if (distanceToCamera < g_fLODDistance2) return 2;
+	else return 1;
+}
+
+// 평면 수를 결정하는 함수 수정
+int GetPlaneCount(int lodLevel)
+{
+	if (lodLevel == 3) return g_iLODPlaneCount1;
+	else if (lodLevel == 2) return g_iLODPlaneCount2;
+	else return g_iLODPlaneCount3;
+}
+// 최대 렌더링 거리 상수 추가
+static const float g_fMaxRenderDistance = 1000.0f; // 이 값은 필요에 따라 조정하세요
+
+[maxvertexcount(30)]
 void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-	GS_OUT Out[4];
-	for (int i = 0; i < 4; ++i)
-		Out[i] = (GS_OUT)0;
-
-	float3 worldPosition = In[0].TransformMatrix._41_42_43;
+	float3 centerPosition = In[0].TransformMatrix._41_42_43;
+	float distanceToCamera = length(centerPosition - g_vCamPosition.xyz);
+	if (distanceToCamera > 1000.f)
+	{
+		return;
+	}
+	int lodLevel = DetermineLODLevel(distanceToCamera);
+	int planeCount = GetPlaneCount(lodLevel);
 	float3x3 rotationMatrix = ExtractRotationMatrix(In[0].TransformMatrix);
 
 	// 바람 효과 계산 수정
-	float2 baseNoiseUV = worldPosition.xz * 0.01; // 노이즈 스케일 증가
+	float2 baseNoiseUV = centerPosition.xz * 0.01; // 노이즈 스케일 증가
 	float slowTime = g_fAccTime * 0.1 * g_fElasticityFactor; // 시간 스케일 감소
-
-	// 단일 노이즈 샘플 사용
-	float windStrength = SampleNoise(baseNoiseUV + float2(slowTime, slowTime * 0.7)) * g_fWindStrength * 0.2f;
-
-	// 전역 바람 방향 사용
+	float windStrength = SampleNoise(baseNoiseUV + float2(slowTime, slowTime * 0.7)) * g_fWindStrength * g_fGrassAmplitude;
 	float3 windVector = g_vWindDirection * g_fGlobalWindFactor * windStrength;
 
 	// 빌보드 계산
-	float3 toCamera = normalize(worldPosition - g_vCamPosition.xyz);
+	float3 toCamera = normalize(centerPosition - g_vCamPosition.xyz);
 	float3 billboardRight = normalize(cross(float3(0, 1, 0), toCamera));
 	float3 billboardUp = float3(0, 1, 0);
 
-	// 원래의 방향 벡터
-	float3 originalRight = normalize(rotationMatrix._11_12_13);
-	float3 originalUp = normalize(rotationMatrix._21_22_23);
-
-
-	// 최종 방향 벡터 계산
-	float3 finalRight = lerp(originalRight, billboardRight, g_fBillboardFactor);
-	float3 finalUp = lerp(originalUp, billboardUp, g_fBillboardFactor);
-
-	// 스케일 적용
-	finalRight *= In[0].vPSize.x * 0.5f;
-	finalUp *= In[0].vPSize.y * 0.5f;
-
 	matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
-	for (int i = 0; i < 4; ++i)
+	for (int plane = 0; plane < planeCount; ++plane)
 	{
-		float3 offset = float3(0, 0, 0);
-		if (i == 1 || i == 0) // 상단 정점들에만 바람 효과 적용
+		GS_OUT Out[4];
+		for (int i = 0; i < 4; ++i)
+			Out[i] = (GS_OUT)0;
+
+		// 각 평면의 오프셋 및 회전 계산
+		float angle = (plane / float(planeCount - 1)) * 3.14159;
+
+		// SampleNoise를 사용하여 랜덤 오프셋 생성
+		float2 noiseUV = centerPosition.xz * 0.1 + float2(cos(angle), sin(angle));
+		float2 randomOffset = SampleNoise(noiseUV) * In[0].vPSize.x * 0.2; // 20% 랜덤 오프셋
+
+		float3 planeOffset = float3(cos(angle), 0, sin(angle)) * (In[0].vPSize.x * g_fPlaneOffset) + float3(randomOffset.x, 0, randomOffset.y);
+
+		// 회전 행렬 계산
+		float3x3 planeRotation = {
+			cos(angle), 0, -sin(angle),
+			0, 1, 0,
+			sin(angle), 0, cos(angle)
+		};
+
+		// 원래의 방향 벡터
+		float3 originalRight = normalize(mul(float3(1, 0, 0), planeRotation));
+		float3 originalUp = float3(0, 1, 0);
+
+		// 최종 방향 벡터 계산 (각 평면마다)
+		float3 finalRight = lerp(originalRight, billboardRight, g_fBillboardFactor);
+		float3 finalUp = lerp(originalUp, billboardUp, g_fBillboardFactor);
+
+		// 스케일 적용
+		finalRight *= In[0].vPSize.x * 0.5f;
+		finalUp *= In[0].vPSize.y * 0.5f;
+
+		for (int i = 0; i < 4; ++i)
 		{
-			float vertexRatio = lerp(0.3, 0.7, i == 1 ? 1.0 : 0.0);
-			offset = windVector * vertexRatio;
+			float3 offset = float3(0, 0, 0);
+			if (i == 1 || i == 0) // 상단 정점들에만 바람 효과 적용
+			{
+				float vertexRatio = lerp(0.3, 0.7, i == 1 ? 1.0 : 0.0);
+				offset = windVector * vertexRatio;
+			}
+			float3 vertexOffset = finalRight * (i == 0 || i == 3 ? -1.0 : 1.0) +
+				finalUp * (i < 2 ? 1.0 : -1.0);
+			float3 newPosition = centerPosition + planeOffset + vertexOffset + offset;
 
+			// sin wave 추가
+			float globalWave = sin(g_fAccTime * 1.5 * g_fElasticityFactor + centerPosition.x * 0.05 + centerPosition.z * 0.05) * 0.2;
+			newPosition.x += globalWave * lerp(0.2, 1.0, i < 2 ? 1.0 : 0.0);
+
+			// 추가된 grass wave
+			float grassWave = sin(g_fAccTime * g_fGrassFrequency + newPosition.x * 0.1 + newPosition.z * 0.1) * g_fGrassAmplitude;
+			newPosition.x += grassWave * lerp(0.2, 1.0, i < 2 ? 1.0 : 0.0);
+
+			// 수직 오프셋 적용 (수정된 부분)
+			newPosition.y +=/* g_fPlaneVertOffset +*/ dot(finalUp, float3(0, 1, 0)) * In[0].vPSize.y * 0.5f;
+
+			Out[i].vPosition = mul(float4(newPosition, 1.f), matVP);
+			Out[i].vTexcoord = float2(i == 0 || i == 3 ? 0.f : 1.f, i < 2 ? 0.f : 1.f);
+			Out[i].vWorldPos = float4(newPosition, 1.f);
+			Out[i].vLifeTime = In[0].vLifeTime;
+			Out[i].vNormal = float4(finalUp, 0);
 			Out[i].vRandomColor = In[0].vRandomColor;
-
-			// 수직 움직임 제거
 		}
 
-		float3 vertexOffset = finalRight * (i == 0 || i == 3 ? -1.0 : 1.0) +
-			finalUp * (i < 2 ? 1.0 : -1.0);
+		Triangles.Append(Out[0]);
+		Triangles.Append(Out[1]);
+		Triangles.Append(Out[2]);
+		Triangles.RestartStrip();
 
-		float3 newPosition = worldPosition + vertexOffset + offset;
-
-		//sin wave 추가
-		float globalWave = sin(g_fAccTime * 1.5 * g_fElasticityFactor + worldPosition.x * 0.05 + worldPosition.z * 0.05) * 0.2;
-		newPosition.x += globalWave * lerp(0.2, 1.0, i < 2 ? 1.0 : 0.0);
-
-		Out[i].vPosition = mul(float4(newPosition, 1.f), matVP);
-		Out[i].vTexcoord = float2(i == 0 || i == 3 ? 0.f : 1.f, i < 2 ? 0.f : 1.f);
-		Out[i].vWorldPos = float4(newPosition, 1.f);
-		Out[i].vLifeTime = In[0].vLifeTime;
-		Out[i].vNormal = float4(finalUp, 0);
+		Triangles.Append(Out[0]);
+		Triangles.Append(Out[2]);
+		Triangles.Append(Out[3]);
+		Triangles.RestartStrip();
 	}
-
-	Triangles.Append(Out[0]);
-	Triangles.Append(Out[1]);
-	Triangles.Append(Out[2]);
-	Triangles.RestartStrip();
-
-	Triangles.Append(Out[0]);
-	Triangles.Append(Out[2]);
-	Triangles.Append(Out[3]);
-	Triangles.RestartStrip();
 }
-
 
 //[maxvertexcount(6)]
 //void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
@@ -318,11 +372,11 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11 DefaultTechnique
 {
-	
+
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
 	pass Grass
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_NoCull);
 		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

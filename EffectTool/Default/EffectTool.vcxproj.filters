@@ -137,6 +137,9 @@
     <Filter Include="Objects\02. Effects\14. PhysXParticle">
       <UniqueIdentifier>{73ae0830-e6d8-4558-a75d-9f8dbee3712d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\15. Hedgehog">
+      <UniqueIdentifier>{c66062d7-3db5-406c-9cbc-6809071bdd4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -370,6 +373,9 @@
     <ClInclude Include="..\Public\Particle_PhysX.h">
       <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Hedgehog.h">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -587,6 +593,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_PhysX.cpp">
       <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hedgehog.cpp">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

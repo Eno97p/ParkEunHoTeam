@@ -81,6 +81,8 @@ void CParticle_PhysX::Priority_Tick(_float fTimeDelta)
 
 void CParticle_PhysX::Tick(_float fTimeDelta)
 {
+	if (m_InstModelCom->Check_PhysX_Dead())
+		m_pGameInstance->Erase(this);
 	m_InstModelCom->PhysX_Particle_Simulate(fTimeDelta);
 }
 
@@ -102,15 +104,13 @@ HRESULT CParticle_PhysX::Render()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_InstModelCom->Bind_Material_PhysX(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (OwnDesc->eModelType >= BLADE_SLASH )
-			m_pShaderCom->Begin(2);
-		else
-			m_pShaderCom->Begin(0);
 
-		m_InstModelCom->Render_Instance(i);
+		m_pShaderCom->Begin(0);
+
+		m_InstModelCom->Render_PhysXInstance(i);
 	}
 
 	return S_OK;
@@ -125,15 +125,12 @@ HRESULT CParticle_PhysX::Render_Bloom()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(m_InstModelCom->Bind_Material_Instance(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_InstModelCom->Bind_Material_PhysX(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		if (OwnDesc->eModelType >= BLADE_SLASH)
-			m_pShaderCom->Begin(3);
-		else
-			m_pShaderCom->Begin(1);
+		m_pShaderCom->Begin(1);
 
-		m_InstModelCom->Render_Instance(i);
+		m_InstModelCom->Render_PhysXInstance(i);
 	}
 
 	return S_OK;
@@ -245,7 +242,6 @@ CGameObject* CParticle_PhysX::Clone(void* pArg)
 void CParticle_PhysX::Free()
 {
 	__super::Free();
-
 	Safe_Release(m_InstModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pDesolveTexture);

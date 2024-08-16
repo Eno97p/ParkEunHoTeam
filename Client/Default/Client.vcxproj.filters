@@ -586,9 +586,6 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword">
       <UniqueIdentifier>{76988682-71e3-47a1-87dd-d0f96e2f95ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
-      <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue">
       <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
     </Filter>
@@ -618,9 +615,6 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Shop\RemainIcon">
       <UniqueIdentifier>{fcc21c4f-1f42-4357-946d-5b753024ed51}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
-      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Up_Completed">
       <UniqueIdentifier>{439e4736-3f31-4fa8-8a7c-086a5f34088b}</UniqueIdentifier>
@@ -783,9 +777,15 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\YantariSword">
       <UniqueIdentifier>{1e529997-c700-4c80-9f26-10649c80c077}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\AeonsLost">
       <UniqueIdentifier>{1b875788-8b7c-4f33-a55c-1368976a6cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
+      <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
+      <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1708,7 +1708,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Yantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\UI_AeonsLost.h">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
     </ClInclude>
@@ -2583,7 +2583,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Yantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\UI_AeonsLost.cpp">
       <Filter>02.GameObjects\07. UI\FadeInFadeOut\AeonsLost</Filter>
     </ClCompile>

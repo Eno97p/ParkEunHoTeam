@@ -86,6 +86,8 @@ HRESULT CGraphic_Device::Initialize(const ENGINE_DESC& EngineDesc, _Inout_ ID3D1
 	Safe_AddRef(m_pDeviceContext);
 
 	return S_OK;
+
+	
 }
 
 HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)

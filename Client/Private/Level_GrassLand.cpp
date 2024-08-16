@@ -68,6 +68,8 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Grass"), TEXT("Prototype_GameObject_Grass"))))
+		return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;

@@ -21,6 +21,13 @@ public:
 		_float			Buoyancy = 0.9f;
 		_float			PressureWeight = 1.0f;
 		_float			DivergenceWeight = 1.0f;
+		_float			Viscosity = 0.001f; //점성
+		_float			SurfaceTension = 0.00704f;	//표면 장력
+		_float			Cohesion = 0.0704f;	//응집력
+		_float			VorticityConfinement = 10.f;	//와류 제한(회전운동강화)
+		_float			Friction = 0.5f;	//마찰력
+		_float			ContactOffset = 1.2f;
+		_float			Damping = 0.1f;
 	};
 
 protected:
@@ -34,6 +41,11 @@ public:
 	virtual HRESULT Bind_Buffers() override;
 	virtual HRESULT Render() override;
 	void	Tick(_float fTimeDelta);
+public:
+	_uint Get_MaterialIndex() const {
+		return m_iMaterialIndex;
+	}
+	_bool	Get_Instance_Dead() { return m_InstanceDead; }
 
 
 private:
@@ -44,18 +56,22 @@ private:
 	_uint						m_iIndexCountPerInstance = { 0 };
 	_uint						m_iMaterialIndex = { 0 };
 	unique_ptr<PhysX_Particle_Desc>				m_Owndesc{};
-	_float* m_Size = nullptr;
+	_float*						m_Size = nullptr;
+	_bool						m_InstanceDead = false;
 private:
 	PxScene*					g_Scene = nullptr;
 	PxCudaContextManager*		g_CudaContext = nullptr;
 	PxPhysics*					g_PhysXs = nullptr;
 	PxPBDParticleSystem*		g_ParticleSystem = nullptr;
-	PxParticleAndDiffuseBuffer* g_ParticleBuffer = nullptr;
+	PxParticleBuffer*			g_ParticleBuffer = nullptr;
 
 private:
 	HRESULT Compute_RandomNumbers();
 	HRESULT Init_Mesh_InstanceBuffer(class CMesh* m_Meshes);
-	HRESULT Init_Particle_System(VTXPARTICLE* Buffer);
+	HRESULT Init_Particle_System(VTXPARTICLE** Buffer);
+
+	//PxParticleBuffer* CreateParticleBuffer(const PxParticleBufferDesc& desc, PxParticleBuffer* particleBuffer);
+
 	void PxDmaDataToDevice(PxCudaContextManager* cudaContextManager, PxParticleBuffer* particleBuffer, const PxParticleBufferDesc& desc);
 	PxParticleAndDiffuseBuffer* PxCreateAndPopulateParticleAndDiffuseBuffer(const PxParticleAndDiffuseBufferDesc& desc, PxCudaContextManager* cudaContextManager);
 protected:

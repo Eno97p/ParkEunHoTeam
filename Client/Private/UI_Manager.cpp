@@ -386,6 +386,16 @@ _bool CUI_Manager::Get_isFadeAnimEnd(_bool isFadeIn)
 	}
 }
 
+HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+
+	if (FAILED(dynamic_cast<CUIGroup_Menu*>((*menu).second)->Create_RedDot_MenuBtn(isInv)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CUI_Manager::Key_Input()
 {
 	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요

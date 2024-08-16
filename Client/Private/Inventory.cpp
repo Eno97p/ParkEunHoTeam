@@ -84,7 +84,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
@@ -92,7 +91,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI 출력
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
-
 
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
@@ -102,12 +100,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false); // Test
 
 
 	// UI 출력
@@ -168,11 +165,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
-		// RedDot 관련 여기에서 해주면 될 거 같ㅌ응디~
-		// 일단 테스트로 UI Manager에서 Menu Btn에 RedDot 추가하는 함수 호출해보기
-		// 중복이든 아니든 RedDot은 생성될 것이기 때문에 분기문 안에 들어가지 않음
-
-
+		CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true);
 
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
@@ -260,6 +253,8 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 
 HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 {
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
+
 	// 무기 획득 함수
 
 	// Inventory에도 넣어줘야하고 / UI Weapon에도 넣어줘야 하고 / 

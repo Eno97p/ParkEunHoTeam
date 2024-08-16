@@ -20,6 +20,9 @@ private:
 	virtual ~CUI_MenuBtn() = default;
 
 public:
+	MENU_TYPE		Get_MenuType() { return m_eMenuType; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;

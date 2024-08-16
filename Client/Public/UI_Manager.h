@@ -57,7 +57,7 @@ public:
 	_bool				Get_isFadeAnimEnd(_bool isFadeIn);
 
 	// RedDot 관련 함수
-	HRESULT				Create_RedDot_MenuBtn();
+	HRESULT				Create_RedDot_MenuBtn(_bool isInv);
 
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부

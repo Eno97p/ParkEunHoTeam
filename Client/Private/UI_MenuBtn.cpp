@@ -73,6 +73,9 @@ void CUI_MenuBtn::Tick(_float fTimeDelta)
 void CUI_MenuBtn::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, SEVENTH);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_MenuBtn::Render()
@@ -239,9 +242,16 @@ void CUI_MenuBtn::Open_MenuPage()
 
 HRESULT CUI_MenuBtn::Create_RedDot()
 {
+	if (m_pRedDot != nullptr)
+		return S_OK;
+
 	CUI_RedDot::UI_REDDOT_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.eUISort = EIGHT;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY - 56.f;
+	pDesc.fSizeX = 20.f;
+	pDesc.fSizeY = 20.f;
 
 	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
 	if (nullptr == m_pRedDot)

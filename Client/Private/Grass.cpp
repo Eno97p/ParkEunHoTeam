@@ -36,9 +36,9 @@ HRESULT CGrass::Initialize(void* pArg)
 	//m_pVIBufferCom->Initial_RotateY();
 
 
-	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
+	/*GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
 	m_vTopCol = gd->vTopCol;
-	m_vBotCol = gd->vBotCol;
+	m_vBotCol = gd->vBotCol;*/
 
 	//랜덤으로 탑색 변경 살짞 어둡게
 	_float randFloat = RandomFloat(0.f, 0.2f);
@@ -81,6 +81,9 @@ void CGrass::Priority_Tick(_float fTimeDelta)
 
 void CGrass::Tick(_float fTimeDelta)
 {
+	_float3 camPos;
+	XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
+	m_pVIBufferCom->Culling_Instance(camPos, 500.f);
 	//m_pVIBufferCom->Drop(fTimeDelta);
 }
 
@@ -98,7 +101,7 @@ HRESULT CGrass::Render()
 
 	m_pVIBufferCom->Bind_Buffers();
 
-	m_pVIBufferCom->Render();
+	m_pVIBufferCom->Render_Culling();
 
 	return S_OK;
 }
@@ -119,10 +122,10 @@ HRESULT CGrass::Add_Components(void* pArg)
 
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	ZeroMemory(&InstanceDesc, sizeof InstanceDesc);
-
-	InstanceDesc.iNumInstance = 1;
+	
+	InstanceDesc.iNumInstance = 1000000;
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
-	InstanceDesc.vPivotPos = m_vPivotPos;
+	InstanceDesc.vPivotPos = {500.f, 347.f, 500.f};
 	InstanceDesc.vRange = _float3(25.0f, 0.f, 25.0f);
 	InstanceDesc.vSize = _float2(1.f, 5.f);
 	InstanceDesc.vSpeed = _float2(1.f, 7.f);
@@ -146,7 +149,7 @@ HRESULT CGrass::Add_Components(void* pArg)
 	{
 
 		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, /*desc->wstrModelName.c_str()*/TEXT("Prototype_Component_Texture_Grass_TT"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -164,11 +167,11 @@ HRESULT CGrass::Add_Components(void* pArg)
 		return E_FAIL;
 
 
-	CVIBuffer_Instance_Point::INSTANCE_MAP_DESC mapdesc{};
+	//CVIBuffer_Instance_Point::INSTANCE_MAP_DESC mapdesc{};
 
-	mapdesc.WorldMats = (desc->WorldMats);
+	//mapdesc.WorldMats = (desc->WorldMats);
 
-	m_pVIBufferCom->Ready_Instance_ForGrass(mapdesc);
+	//m_pVIBufferCom->Ready_Instance_ForGrass(mapdesc);
 
 	return S_OK;
 }

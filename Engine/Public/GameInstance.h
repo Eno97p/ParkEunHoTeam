@@ -246,6 +246,7 @@ private:
 	class CTarget_Manager*			m_pTarget_Manager = { nullptr };
 	class CFrustum*					m_pFrustum = { nullptr };
 	class CPhysX*					m_pPhysX = { nullptr };
+
 	class CBlastMgr*				m_pBlastMgr = { nullptr };
 	class CEventMgr*				m_pEvent_Manager = { nullptr };
 	class CCalculator*				m_pCalculator = { nullptr };

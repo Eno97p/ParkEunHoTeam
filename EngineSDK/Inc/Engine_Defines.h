@@ -17,6 +17,9 @@
 #include <DirectXCollision.h>
 #include <d3dcompiler.h>
 
+#include<cuda.h>
+#include<cuda_runtime.h>
+#include<cuda_d3d11_interop.h>
 
 #include"PxPhysicsAPI.h"
 

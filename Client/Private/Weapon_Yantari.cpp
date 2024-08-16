@@ -36,6 +36,8 @@ HRESULT CWeapon_Yantari::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_UP) * 0.5f);
+
 	return S_OK;
 }
 
@@ -248,7 +250,7 @@ HRESULT CWeapon_Yantari::Add_Components()
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.5f, 1.f, 0.5f);
+	ColliderDesc.vExtents = _float3(1.f, 1.f, 1.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
 
 

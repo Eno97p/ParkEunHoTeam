@@ -196,6 +196,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Heal_Line.h" />
     <ClInclude Include="..\Public\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\Heal_Spiral.h" />
+    <ClInclude Include="..\public\Hedgehog.h" />
     <ClInclude Include="..\Public\HoverBoard.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
     <ClInclude Include="..\Public\LazerCast.h" />
@@ -273,6 +274,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Heal_Line.cpp" />
     <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\Heal_Spiral.cpp" />
+    <ClCompile Include="..\private\Hedgehog.cpp" />
     <ClCompile Include="..\Private\HoverBoard.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
     <ClCompile Include="..\Private\LazerCast.cpp" />

@@ -3948,6 +3948,14 @@ void CImguiMgr::PhysX_Particle_Tool(_bool* Open)
 			ImGui::InputFloat("Buoyancy", &Desc.PhysXDesc.Buoyancy);
 			ImGui::InputFloat("PressureWeight", &Desc.PhysXDesc.PressureWeight);
 			ImGui::InputFloat("DivergenceWeight", &Desc.PhysXDesc.DivergenceWeight);
+			ImGui::InputFloat("Viscosity", &Desc.PhysXDesc.Viscosity);
+			ImGui::InputFloat("SurfaceTension", &Desc.PhysXDesc.SurfaceTension , 0.0f,0.0f, "%.5f");
+			ImGui::InputFloat("Cohesion", &Desc.PhysXDesc.Cohesion, 0.0f,0.0f, "%.5f");
+			ImGui::InputFloat("VorticityConfinement", &Desc.PhysXDesc.VorticityConfinement);
+			ImGui::InputFloat("Friction", &Desc.PhysXDesc.Friction);
+			ImGui::InputFloat("ContactOffset", &Desc.PhysXDesc.ContactOffset);
+			ImGui::InputFloat("Damping", &Desc.PhysXDesc.Damping);
+
 		}
 	}
 #pragma endregion PhysX
@@ -3963,6 +3971,9 @@ void CImguiMgr::PhysX_Particle_Tool(_bool* Open)
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
 	}
 	ImGui::End();
+
+
+
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

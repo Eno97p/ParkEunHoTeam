@@ -107,6 +107,11 @@ protected:
 
 	CComputeShader_Buffer*		m_pComputeShader = nullptr;
 
+	class CCuda* m_pCuda = nullptr;
+
+
+	VTXMATRIX* d_pInstanceData = nullptr;
+	int* d_visibleCount = nullptr;
 
 protected:
 	random_device				m_RandomDevice;

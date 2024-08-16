@@ -56,7 +56,7 @@ HRESULT CYantari::Initialize(void* pArg)
 
 	// Target Lock
 	vector<CGameObject*>::iterator body = m_PartObjects.begin();
-	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Mob_Elite-Head_end_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
+	if (FAILED(Create_TargetLock(dynamic_cast<CModel*>((*body)->Get_Component(TEXT("Com_Model"))), "Yantari-Head_end", XMVectorSet(-0.13f, -0.4f, 0.f, 1.f), 10.f)))
 		return E_FAIL;
 
 	m_iState = STATE_IDLE;
@@ -244,6 +244,7 @@ HRESULT CYantari::Add_PartObjects()
 	if (nullptr == pModelCom)
 		return E_FAIL;
 
+	//무기
 	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Root_Axe_R");
 	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
 		return E_FAIL;
@@ -254,6 +255,16 @@ HRESULT CYantari::Add_PartObjects()
 	m_PartObjects.emplace_back(pWeapon);
 
 	dynamic_cast<CBody_Yantari*>(pBody)->Set_Weapon(dynamic_cast<CWeapon*>(pWeapon));
+
+	//가면
+	WeaponDesc.pCombinedTransformationMatrix = pModelCom->Get_BoneCombinedTransformationMatrix("Yantari-Head");
+	if (nullptr == WeaponDesc.pCombinedTransformationMatrix)
+		return E_FAIL;
+
+	CGameObject* pMask = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Mask_Yantari"), &WeaponDesc);
+	if (nullptr == pMask)
+		return E_FAIL;
+	m_PartObjects.emplace_back(pMask);
 
 	return S_OK;
 }
@@ -364,7 +375,6 @@ NodeStates CYantari::Dead(_float fTimeDelta)
 
 NodeStates CYantari::Hit(_float fTimeDelta)
 {
-	
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
@@ -392,7 +402,7 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 				m_bParryFirstHit = !m_bParryFirstHit;
 			}
 		}
-		m_pGameInstance->Set_MotionBlur(true);
+		
 
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };
@@ -404,7 +414,7 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(1, vResult, nullptr);
 		EFFECTMGR->Generate_Particle(2, vResult, nullptr);
 		EFFECTMGR->Generate_Distortion(5, vResult);
-		m_iState = STATE_HIT;
+		//m_iState = STATE_HIT;
 		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 
 		// UI Damage 띄울 것
@@ -413,12 +423,11 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 		break;
 	}
 	case CCollider::COLL_CONTINUE:
-		m_iState = STATE_HIT;
+		//m_iState = STATE_HIT;
 		return RUNNING;
 		break;
 	case CCollider::COLL_FINISH:
-		//m_pGameInstance->Set_MotionBlur(false);
-		m_iState = STATE_HIT;
+		//m_iState = STATE_HIT;
 		break;
 	case CCollider::COLL_NOCOLL:
 		break;

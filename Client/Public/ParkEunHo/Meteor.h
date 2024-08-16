@@ -1,12 +1,12 @@
 #pragma once
-#include "GameObject.h"
+#include "Weapon.h"
 #include "Client_Defines.h"
 #include "Meteor_Core.h"
 #include "Meteor_Wind.h"
 #include "DefaultCylinder.h"
 
 BEGIN(Client)
-class CMeteor final : public CGameObject
+class CMeteor final : public CWeapon
 {
 public:
 	typedef struct METEOR_DESC
@@ -43,6 +43,12 @@ private:
 	_float									m_fWindSpawn = 0.f;
 	_float									m_LifeRatio = 0.f;
 	_float									m_CurLifeTime = 0.f;
+
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
+
 public:
 	static CMeteor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

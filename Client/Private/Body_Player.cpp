@@ -408,37 +408,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK3)
 	{
-		//if (m_iPastAnimIndex < 121 || m_iPastAnimIndex > 130)
-		//{
-		//	m_iPastAnimIndex = 121;
-		//}
-		//AnimDesc.isLoop = false;
-		//AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		//if(m_iPastAnimIndex > 125 && m_iPastAnimIndex < 129)
-		//{
-		//	fAnimSpeed = 1.f;
-		//}
-		//else
-		//{
-		//	fAnimSpeed = 1.5f; // 2
-		//}
-		//if ((m_iPastAnimIndex > 122 && m_iPastAnimIndex < 126) || m_iPastAnimIndex > 128)
-		//{
-		//	m_pWeapon[*m_pCurWeapon]->Set_Active();
-		//}
-		//else
-		//{
-		//	m_pWeapon[*m_pCurWeapon]->Set_Active(false);
-		//}
 		if (m_iPastAnimIndex < 131 || m_iPastAnimIndex > 136)
 		{
 			m_iPastAnimIndex = 131;
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 134)
+		if (m_iPastAnimIndex == 132 || m_iPastAnimIndex == 133)
 		{
-			fAnimSpeed = 3.f; // 2.5 
+			fAnimSpeed = 0.5f; // 2.5 
 		}
 		else
 		{
@@ -1003,10 +981,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 		*m_pState == CPlayer::STATE_SPECIALATTACK3 || *m_pState == CPlayer::STATE_SPECIALATTACK4)
 	{
 		m_pGameInstance->Set_MotionBlur(true);
-	}
-	else if(*m_pState != CPlayer::STATE_SLIDE)
-	{
-		m_pGameInstance->Set_MotionBlur(false);
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

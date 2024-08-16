@@ -140,18 +140,22 @@ void CHoverboard::Tick(_float fTimeDelta)
 		CUI_Manager::GetInstance()->Set_Dash(false);
 
 	}
+
+	if (m_bIsBoost)
+	{
+		m_pGameInstance->Set_MotionBlur(true);
+	}
+
 	if (KEY_TAP(DIK_LSHIFT))
 	{
 		if (m_bIsBoost)
 		{
-			m_pGameInstance->Set_MotionBlur(false);
 			m_bIsBoost = false;
 
 			CUI_Manager::GetInstance()->Set_Dash(false);
 		}
 		else
 		{
-			m_pGameInstance->Set_MotionBlur(true);
 			m_bIsBoost = true;
 
 			// UI Dash On

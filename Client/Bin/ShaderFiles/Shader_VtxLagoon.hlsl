@@ -453,9 +453,39 @@ PS_OUT_BLOOM PS_MIRROR(PS_IN In)
 {
 	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
 
+	// 디퓨즈 텍스처 샘플링 (기본 거울 색상)
 	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-	Out.vColor = vColor;
+	// 노말 맵 샘플링 및 블렌딩
+	float2 flowTexCoord0 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.05, g_fAccTime * g_fFlowSpeed * 0.07);
+	float2 flowTexCoord1 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.03, -g_fAccTime * g_fFlowSpeed * 0.06);
+	float2 flowTexCoord2 = In.vTexcoord + float2(-g_fAccTime * g_fFlowSpeed * 0.04, g_fAccTime * g_fFlowSpeed * 0.08);
+
+	float3 vNormal0 = g_NormalTexture.Sample(LinearSampler, flowTexCoord0).xyz * 2.0f - 1.0f;
+	float3 vNormal1 = g_NormalTexture1.Sample(LinearSampler, flowTexCoord1).xyz * 2.0f - 1.0f;
+	float3 vNormal2 = g_NormalTexture2.Sample(LinearSampler, flowTexCoord2).xyz * 2.0f - 1.0f;
+
+	vNormal0 *= g_fNormalStrength0;
+	vNormal1 *= g_fNormalStrength1;
+	vNormal2 *= g_fNormalStrength2;
+
+	float3 vNormal = normalize(vNormal0 + vNormal1 + vNormal2);
+
+	float3x3 TBN = float3x3(normalize(In.vTangent.xyz), normalize(In.vBinormal.xyz), normalize(In.vNormal.xyz));
+	vNormal = mul(vNormal, TBN);
+
+	// 뷰 방향 계산
+	float3 viewDir = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
+
+	// 프레넬 효과 계산
+	float NdotV = max(dot(vNormal, viewDir), 0.001);
+	float fresnel = pow(1.0 - NdotV, g_fFresnelStrength);
+
+	// 알파값 계산 (프레넬 효과에 따라 변화)
+	float finalAlpha = pow(lerp(0.3f, 1.0, fresnel), 4.f);
+
+	// 최종 출력 (색상은 그대로, 알파값만 조절)
+	Out.vColor = float4(vColor.rg, finalAlpha, 1.f);
 
 	return Out;
 }
@@ -525,6 +555,11 @@ PS_OUT_BLOOM PS_LAGOON(PS_IN In)
 	float3 finalLight = (ambientLight + (diffuseLight + specularLight) * fAtt);
 	float3 finalColor = vMtrlDiffuse.rgb * finalLight;
 
+	// 프레넬 효과 계산
+	float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 5.0);
+	fresnel = saturate(fresnel * g_fFresnelStrength);
+
+	
 	// 물의 특성을 고려한 추가적인 스페큘러
 	float waterSpecular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 256.0) * 0.5;
 	finalColor += waterSpecular * g_vLightSpecular.rgb;
@@ -537,13 +572,14 @@ PS_OUT_BLOOM PS_LAGOON(PS_IN In)
 	// Caustic 효과를 최종 색상에 적용
 	finalColor *= (1 + caustic * g_fCausticStrength);
 
-	// 프레넬 효과 (선택적)
-	float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 5.0);
-	fresnel = saturate(fresnel * g_fFresnelStrength);
+	// 프레넬 효과를 색상에 적용 (선택적)
 	finalColor = lerp(finalColor, g_vLightSpecular.rgb, fresnel);
 
-	// 최종 색상을 Out.vColor에 저장
-	Out.vColor = float4(finalColor, g_fWaterAlpha);
+	// 프레넬 효과를 알파값에 적용
+	float finalAlpha = lerp(g_fWaterAlpha, 1.0, fresnel);
+
+	// 최종 색상과 알파값을 Out.vColor에 저장
+	Out.vColor = float4(finalColor, finalAlpha);
 
 	return Out;
 }

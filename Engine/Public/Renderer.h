@@ -201,7 +201,7 @@ private:
 	_float m_fWaveStrength = 0.6f;
 	_float m_fWaveFrequency = 0.6f;
 	_float m_fWaveTimeOffset = 1.f;
-	_float m_fFresnelPower = 5.f;
+	_float m_fFresnelPower = 10.f;
 	class CTexture* m_pCausticTex = { nullptr };
 	_uint m_iCausticIdx = 0;
 	

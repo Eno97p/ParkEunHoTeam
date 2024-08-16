@@ -393,6 +393,10 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 	if (FAILED(dynamic_cast<CUIGroup_Menu*>((*menu).second)->Create_RedDot_MenuBtn(isInv)))
 		return E_FAIL;
 
+	// MenuBtn에 생성은 ㅇㅋ
+	// 삭제하는 로직의 경우에는 >>>> 일단 해당하는 Page에 들어가는 순간 제거되어야 함!
+
+
 	return S_OK;
 }
 

@@ -40,7 +40,7 @@ void CUI_RedDot::Priority_Tick(_float fTimeDelta)
 
 void CUI_RedDot::Tick(_float fTimeDelta)
 {
-	// 서서히 나타날 필요 없을 거 같은데
+	// 서서히 나타날 필요 없을 거 같은데 >> 고쳐주기
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
 }

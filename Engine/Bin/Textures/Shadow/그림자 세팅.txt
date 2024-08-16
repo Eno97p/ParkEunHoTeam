@@ -9,3 +9,7 @@ _vector vFocus = { 86.f, 0.f, 0.f, 1.f };
 Jugglas
 _vector vEye = { -150.f, 100.f, 100.f, 1.f };
 _vector vFocus = { -150.f, 0.f, 0.f, 1.f };
+
+AndrasArena
+_vector vEye = { 90.f, 100.f, -30.f, 1.f };
+_vector vFocus = { 90.f, 0.f, 100.f, 1.f };

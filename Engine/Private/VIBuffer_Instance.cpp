@@ -3,6 +3,8 @@
 
 #include"GameInstance.h"
 #include "ComputeShader_Buffer.h"
+
+#include"CCuda.h"
 CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer{ pDevice, pContext }
 {
@@ -55,6 +57,14 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 
 	//if (FAILED(m_pCullingCS->Initialize(&cullingDesc)))
 	//	return E_FAIL;
+
+
+
+
+
+	cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
+	cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
+														//초기화
 	return S_OK;
 }
 
@@ -1537,7 +1547,7 @@ void CVIBuffer_Instance::Initial_RandomOffset(CVIBuffer_Terrain* pTerrain)
 		float newHeight = pTerrain->Compute_Height(currentPos);
 
 		// 새 위치 적용
-		pVertices[i].vTranslation = _float4(currentPos.x, newHeight + 1.f, currentPos.z, 1.f);
+		pVertices[i].vTranslation = _float4(currentPos.x, newHeight, currentPos.z, 1.f);
 
 		// 노멀 계산 및 회전 적용 (Setup_Onterrain과 유사한 방식)
 		_float3 vNormal = pTerrain->Compute_Normal(currentPos);
@@ -1577,6 +1587,10 @@ void CVIBuffer_Instance::Initial_RandomOffset(CVIBuffer_Terrain* pTerrain)
 
 void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float maxRenderDistance)
 {
+	
+
+	CCuda::InitCuda();
+
 	// 1. 버퍼 유효성 확인
 	if (!m_pVBInstance)
 	{
@@ -1593,40 +1607,77 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 		return;
 	}
 
+
+
+	
+
 	VTXMATRIX* pInstanceData = static_cast<VTXMATRIX*>(mappedResource.pData);
 
-	// 2. 최적화: 거리 계산을 위한 상수 준비
-	const XMVECTOR camPos = XMLoadFloat3(&cameraPosition);
-	const float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
 
-	// 3. 가시성 검사 및 데이터 재정렬
+	/*VTXMATRIX* pMatHost = nullptr;
+	VTXMATRIX* pMatDevice = nullptr;
+	cudaMallocHost(&pMatHost, sizeof(VTXMATRIX) * m_iNumInstance);
+	pMatDevice->setToDefault();
+
+
+	cudaMalloc(&pMatDevice, sizeof(VTXMATRIX) * m_iNumInstance);
+	cudaMemcpy(pMatDevice, pMatHost, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyHostToDevice);*/
+
+	//cudaExternalMemoryBufferDesc
+	
+
+
+	//cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
+	//cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
+	//
+	cudaMemcpy(d_pInstanceData, pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyHostToDevice);		//디바이스에 복사
+	cudaMemset(d_visibleCount, 0, sizeof(int));																//초기화
+
+	//float3 cudaCameraPos = make_float3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	//CCuda::LaunchKernel_CullingInstance(d_pInstanceData, m_iNumInstance, cudaCameraPos, maxRenderDistance, d_visibleCount);		//커널 실행
+
+
+
+	cudaMemcpy(pInstanceData, d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyDeviceToHost);		//호스트로 복사
+	cudaMemcpy(&m_iVisibleInstances, d_visibleCount, sizeof(int), cudaMemcpyDeviceToHost);						//호스트로 복사
+
+	//cudaFree(d_pInstanceData);		//메모리 해제
+	//cudaFree(d_visibleCount);		//메모리 해제
+
+
+
+	//// 2. 최적화: 거리 계산을 위한 상수 준비
+	//const XMVECTOR camPos = XMLoadFloat3(&cameraPosition);
+	//const float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
+
+	//// 3. 가시성 검사 및 데이터 재정렬
 	unsigned int visibleCount = 0;
 
 
 
-	for (unsigned int i = 0; i < m_iNumInstance; ++i)
-	{
-		m_pGameInstance->AddWork([pInstanceData, i, maxDistanceSquared, camPos, &visibleCount]()
-			{
-				XMVECTOR instancePos = XMLoadFloat4(&pInstanceData[i].vTranslation);
-				float distanceSquared = XMVectorGetX(XMVector3LengthSq(XMVectorSubtract(instancePos, camPos)));
+	//for (unsigned int i = 0; i < m_iNumInstance; ++i)
+	//{
+	//	m_pGameInstance->AddWork([pInstanceData, i, maxDistanceSquared, camPos, &visibleCount]()
+	//		{
+	//			XMVECTOR instancePos = XMLoadFloat4(&pInstanceData[i].vTranslation);
+	//			float distanceSquared = XMVectorGetX(XMVector3LengthSq(XMVectorSubtract(instancePos, camPos)));
 
-				if (distanceSquared <= maxDistanceSquared)
-				{
-					if (i != visibleCount)
-					{
-						// 자리 바꾸기 (swap)
-						VTXMATRIX temp = pInstanceData[visibleCount];
-						pInstanceData[visibleCount] = pInstanceData[i];
-						pInstanceData[i] = temp;
-					}
-					++visibleCount; 
-				}
-			}
-		);
+	//			if (distanceSquared <= maxDistanceSquared)
+	//			{
+	//				if (i != visibleCount)
+	//				{
+	//					// 자리 바꾸기 (swap)
+	//					VTXMATRIX temp = pInstanceData[visibleCount];
+	//					pInstanceData[visibleCount] = pInstanceData[i];
+	//					pInstanceData[i] = temp;
+	//				}
+	//				++visibleCount; 
+	//			}
+	//		}
+	//	);
 
-		
-	}
+	//	
+	//}
 
 	m_pContext->Unmap(m_pVBInstance, 0);
 
@@ -1685,7 +1736,7 @@ HRESULT CVIBuffer_Instance::Render_Culling()
 	//}
 
 	//// 가시적인 인스턴스만 렌더링
-	//m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iVisibleInstances, 0, 0, 0);
+	m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iVisibleInstances, 0, 0, 0);
 
 
 	return S_OK;

@@ -25,7 +25,7 @@ private:
 	virtual ~CUI_FadeInOut() = default;
 
 public:
-	_bool			Get_isFadeOutEnd() { return m_isFadeOutEnd; }
+	_bool			Get_isFadeAnimEnd() { return m_isFadeAnimEnd; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -38,7 +38,7 @@ public:
 private:
 	_bool				m_isFadeIn = { false };
 	_bool				m_isLevelChange = { false };
-	_bool				m_isFadeOutEnd = { false }; // Fade Out 종료 여부
+	_bool				m_isFadeAnimEnd = { false }; // Fade Out 종료 여부
 	_float				m_fAlphaTimer = { 0.f };
 	_float				m_fDisolveValue = { 0.f };
 	_float				m_fAlphaTimerMul = { 0.f };

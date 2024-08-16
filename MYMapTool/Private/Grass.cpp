@@ -244,7 +244,10 @@ HRESULT CGrass::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
 		return E_FAIL;
-	m_fWindStrength = CImgui_Manager::GetInstance()->Get_GlobalWindStrenth();
+	_float wf = CImgui_Manager::GetInstance()->Get_GlobalWindStrenth();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlobalWindFactor", &wf, sizeof(_float))))
+		return E_FAIL;	
+	
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWindStrength", &m_fWindStrength, sizeof(_float))))
 		return E_FAIL;
 

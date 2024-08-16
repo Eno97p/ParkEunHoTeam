@@ -459,9 +459,14 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
-			CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
+			if (!m_isReviveFadeing)
+			{
+				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
 
-			if (CUI_Manager::GetInstance()->Get_isFadeOutEnd()) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
+				m_isReviveFadeing = true;
+			}
+
+			if (CUI_Manager::GetInstance()->Get_isFadeAnimEnd(false)) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
 			{
 				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
 				if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
@@ -482,15 +487,23 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				CInitLoader<LEVEL, wstring>* InitLoader = new CInitLoader<LEVEL, wstring>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");
 				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");                                                                                                                                                                              
 
 
 				CUI_Manager::GetInstance()->Delete_FadeInOut(false);
+			}
+
+			if (CUI_Manager::GetInstance()->Get_isFadeAnimEnd(true))
+			{
+				CUI_Manager::GetInstance()->Delete_FadeInOut(true);
 
 				m_iState = STATE_REVIVE;
 				m_bIsLoadStart = false;
 
+				m_isReviveFadeing = false;
 			}
+
 
 			// 해당 코드 위로 옮김 ^
 			//if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code
@@ -1107,18 +1120,11 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 {
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
 	{
-
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
 			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 			pThirdPersonCamera->Zoom(90.f, 2.5f, 0.602f);
-
-			_float4 vParticlepos;
-			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
-			EFFECTMGR->Generate_Particle(53, vParticlepos, this);
-			EFFECTMGR->Generate_Swing(0, m_pTransformCom->Get_WorldFloat4x4());
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
@@ -1129,6 +1135,11 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		}
 		if (m_iState != STATE_SPECIALATTACK3)
 		{
+			_float4 vParticlepos;
+			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
+			EFFECTMGR->Generate_Particle(53, vParticlepos, this);
+			EFFECTMGR->Generate_Swing(0, m_pTransformCom->Get_WorldFloat4x4());
 			m_fSpecialAttack += fTimeDelta;
 		}
 	}
@@ -1399,7 +1410,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 				Add_Stamina(-10.f);
 			}
 			// 락온 상태일 때
-			if (CThirdPersonCamera::m_bIsTargetLocked)
+			if (CThirdPersonCamera::m_bIsTargetLocked && m_bChase)
 			{
 				_float3 fScale = m_pTransformCom->Get_Scaled();
 
@@ -1417,12 +1428,17 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 				m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
 				m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
 				m_pPhysXCom->Go_Straight(fTimeDelta * fLength);
+				if (fLength < 1.f)
+				{
+					m_bChase = false;
+				}
 			}
 		}
 		m_iState = STATE_RCHARGEATTACK;
 
 		if (m_bAnimFinished)
 		{
+			m_bChase = true;
 			m_bStaminaCanDecrease = true;
 			m_iAttackCount = 1;
 			m_fRChargeAttack = 0.f;
@@ -1597,7 +1613,7 @@ void CPlayer::Generate_HoverBoard()
 		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f + 5.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
+		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f + 1.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
 		hoverboardInfo.vRight = _float3(vRight.m128_f32[0], vRight.m128_f32[1], vRight.m128_f32[2]);

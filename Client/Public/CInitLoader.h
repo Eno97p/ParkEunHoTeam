@@ -126,7 +126,7 @@ inline void CInitLoader<T...>::Load_Start(T ...Args)
 
 			//pGameInstance->Add_CloneObject(eLevel, pLayer, vecProperty[i].strMonsterTag, &tDesc);
 			pGameInstance->CreateObject(eLevel,pLayer.c_str(), vecProperty[i].strMonsterTag, &tDesc);
-			
+			 
 		}
 
 

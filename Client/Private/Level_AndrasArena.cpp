@@ -68,11 +68,10 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 		return E_FAIL;
-	
 
-
-
-
+	_vector vEye = { 90.f, 100.f, -30.f, 1.f };
+	_vector vFocus = { 90.f, 0.f, 100.f, 1.f };
+	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.5f);
 
 	////비동기 저장
 	//auto futures = m_pGameInstance->AddWork([this]() {
@@ -97,6 +96,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
+	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
 
 	return S_OK;
 }
@@ -247,6 +247,9 @@ HRESULT CLevel_AndrasArena::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Boss"), &LandObjDesc)))
+		return E_FAIL;
+
 
 
 	//_float3 fPosArray[] = {
@@ -286,6 +289,14 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Player(const wstring & strLayerTag, CLan
 
 HRESULT CLevel_AndrasArena::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = 90.f;
+	landObjDesc.mWorldMatrix._42 = 12.f;
+	landObjDesc.mWorldMatrix._43 = 130.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
+		return E_FAIL;
+
 	//for (size_t i = 0; i < 10; i++)
 	//{
 	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))

@@ -436,20 +436,20 @@ HRESULT CRenderer::Initialize()
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_GodRay"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
-       return E_FAIL;
-    currentX += targetWidth + gap;
-
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Shadow_NotMove"), currentX, currentY, targetWidth, targetHeight)))
     //   return E_FAIL;
     //currentX += targetWidth + gap;
 
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
-    //    return E_FAIL;
-    //currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+       return E_FAIL;
+    currentX += targetWidth + gap;
+
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
 
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
@@ -1274,6 +1274,7 @@ void CRenderer::Render_Reflection()
     m_pShader->Bind_RawValue("g_fWaveFrequency", &m_fWaveFrequency, sizeof(_float));
     m_pShader->Bind_RawValue("g_fWaveTimeOffset", &m_fWaveTimeOffset, sizeof(_float));
     m_pShader->Bind_RawValue("g_fFresnelPower", &m_fFresnelPower, sizeof(_float));
+    m_pShader->Bind_RawValue("g_Time", &m_fTime, sizeof(_float));
 
     m_pShader->Begin(18);
 
@@ -2015,20 +2016,20 @@ void CRenderer::Render_Debug()
 
 
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Move"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
-	m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_NotMove"), m_pShader, m_pVIBuffer);
+	//m_pGameInstance->Render_RTDebug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer);
 	//m_pGameInstance->Render_RTDebug(TEXT("MRT_Shadow_Result"), m_pShader, m_pVIBuffer);
 
 
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_GodRay"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_GodRay"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
-    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
-    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }

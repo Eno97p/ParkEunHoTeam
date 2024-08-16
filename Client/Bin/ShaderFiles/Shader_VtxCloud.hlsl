@@ -635,7 +635,7 @@ PS_OUT PS_REFLECTION(VS_OUT In)
     // 알파값이 낮으면 기본 하늘색 반환
     if (cloudColor.a < 0.1f)
     {
-        Out.vColor = float4(g_vBaseSkyColor.rgb, 0.5f);
+        Out.vColor = float4(g_vBaseSkyColor.rgb, 0.8f);
     }
     else
     {
@@ -646,7 +646,7 @@ PS_OUT PS_REFLECTION(VS_OUT In)
         // 반사에 대한 불투명도 조정
         cloudColor.a *= g_fReflectionOpacity;
 
-        Out.vColor = cloudColor;
+        Out.vColor = cloudColor * 1.4f;
     }
 
     return Out;

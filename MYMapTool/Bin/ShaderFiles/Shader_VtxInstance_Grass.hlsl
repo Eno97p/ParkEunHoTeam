@@ -146,25 +146,23 @@ int GetPlaneCount(int lodLevel)
 // 최대 렌더링 거리 상수 추가
 static const float g_fMaxRenderDistance = 1000.0f; // 이 값은 필요에 따라 조정하세요
 
-[maxvertexcount(30)]  // 최대 5개의 평면 * 6개의 정점
+[maxvertexcount(30)]
 void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
 	float3 centerPosition = In[0].TransformMatrix._41_42_43;
 	float distanceToCamera = length(centerPosition - g_vCamPosition.xyz);
-
 	if (distanceToCamera > 1000.f)
 	{
 		return;
 	}
-
 	int lodLevel = DetermineLODLevel(distanceToCamera);
 	int planeCount = GetPlaneCount(lodLevel);
 	float3x3 rotationMatrix = ExtractRotationMatrix(In[0].TransformMatrix);
 
-	// 바람 효과 계산 (기존 코드 유지)
-	float2 baseNoiseUV = centerPosition.xz * 0.01;
-	float slowTime = g_fAccTime * 0.1 * g_fElasticityFactor;
-	float windStrength = SampleNoise(baseNoiseUV + float2(slowTime, slowTime * 0.7)) * g_fWindStrength * 0.2f;
+	// 바람 효과 계산 수정
+	float2 baseNoiseUV = centerPosition.xz * 0.01; // 노이즈 스케일 증가
+	float slowTime = g_fAccTime * 0.1 * g_fElasticityFactor; // 시간 스케일 감소
+	float windStrength = SampleNoise(baseNoiseUV + float2(slowTime, slowTime * 0.7)) * g_fWindStrength * g_fGrassAmplitude;
 	float3 windVector = g_vWindDirection * g_fGlobalWindFactor * windStrength;
 
 	// 빌보드 계산
@@ -181,8 +179,13 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 			Out[i] = (GS_OUT)0;
 
 		// 각 평면의 오프셋 및 회전 계산
-		float angle = (plane / float(planeCount - 1)) * 3.14159 * 0.33;
-		float3 planeOffset = float3(cos(angle), 0, sin(angle)) * (In[0].vPSize.x * g_fPlaneOffset);
+		float angle = (plane / float(planeCount - 1)) * 3.14159;
+
+		// SampleNoise를 사용하여 랜덤 오프셋 생성
+		float2 noiseUV = centerPosition.xz * 0.1 + float2(cos(angle), sin(angle));
+		float2 randomOffset = SampleNoise(noiseUV) * In[0].vPSize.x * 0.2; // 20% 랜덤 오프셋
+
+		float3 planeOffset = float3(cos(angle), 0, sin(angle)) * (In[0].vPSize.x * g_fPlaneOffset) + float3(randomOffset.x, 0, randomOffset.y);
 
 		// 회전 행렬 계산
 		float3x3 planeRotation = {
@@ -191,9 +194,13 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 			sin(angle), 0, cos(angle)
 		};
 
+		// 원래의 방향 벡터
+		float3 originalRight = normalize(mul(float3(1, 0, 0), planeRotation));
+		float3 originalUp = float3(0, 1, 0);
+
 		// 최종 방향 벡터 계산 (각 평면마다)
-		float3 finalRight = lerp(mul(float3(1, 0, 0), planeRotation), billboardRight, g_fBillboardFactor);
-		float3 finalUp = lerp(float3(0, 1, 0), billboardUp, g_fBillboardFactor);
+		float3 finalRight = lerp(originalRight, billboardRight, g_fBillboardFactor);
+		float3 finalUp = lerp(originalUp, billboardUp, g_fBillboardFactor);
 
 		// 스케일 적용
 		finalRight *= In[0].vPSize.x * 0.5f;
@@ -201,28 +208,26 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
 		for (int i = 0; i < 4; ++i)
 		{
+			float3 offset = float3(0, 0, 0);
+			if (i == 1 || i == 0) // 상단 정점들에만 바람 효과 적용
+			{
+				float vertexRatio = lerp(0.3, 0.7, i == 1 ? 1.0 : 0.0);
+				offset = windVector * vertexRatio;
+			}
 			float3 vertexOffset = finalRight * (i == 0 || i == 3 ? -1.0 : 1.0) +
 				finalUp * (i < 2 ? 1.0 : -1.0);
+			float3 newPosition = centerPosition + planeOffset + vertexOffset + offset;
 
-			float3 newPosition = centerPosition + planeOffset + vertexOffset;
+			// sin wave 추가
+			float globalWave = sin(g_fAccTime * 1.5 * g_fElasticityFactor + centerPosition.x * 0.05 + centerPosition.z * 0.05) * 0.2;
+			newPosition.x += globalWave * lerp(0.2, 1.0, i < 2 ? 1.0 : 0.0);
 
-			// 바람 효과 (상단 부분에만 적용)
-			if (i < 2)
-			{
-				float windEffect = windStrength * 0.3;
-				newPosition += windVector * windEffect;
+			// 추가된 grass wave
+			float grassWave = sin(g_fAccTime * g_fGrassFrequency + newPosition.x * 0.1 + newPosition.z * 0.1) * g_fGrassAmplitude;
+			newPosition.x += grassWave * lerp(0.2, 1.0, i < 2 ? 1.0 : 0.0);
 
-				// 기존 sin wave
-				float globalWave = sin(g_fAccTime * 1.5 * g_fElasticityFactor + newPosition.x * 0.05 + newPosition.z * 0.05) * 0.2;
-				newPosition.x += globalWave;
-
-				// 추가된 grass wave
-				float grassWave = sin(g_fAccTime * g_fGrassFrequency + newPosition.x * 0.1 + newPosition.z * 0.1) * g_fGrassAmplitude;
-				newPosition.x += grassWave;
-			}
-
-			// 수직 오프셋 적용
-			newPosition.y += g_fPlaneVertOffset;
+			// 수직 오프셋 적용 (수정된 부분)
+			newPosition.y += g_fPlaneVertOffset + dot(finalUp, float3(0, 1, 0)) * In[0].vPSize.y * 0.5f;
 
 			Out[i].vPosition = mul(float4(newPosition, 1.f), matVP);
 			Out[i].vTexcoord = float2(i == 0 || i == 3 ? 0.f : 1.f, i < 2 ? 0.f : 1.f);

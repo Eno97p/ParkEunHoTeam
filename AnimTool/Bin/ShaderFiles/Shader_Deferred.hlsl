@@ -1326,7 +1326,7 @@ PS_OUT PS_REFLECTION(PS_IN In)
     vector vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-    if (vMirror.a < 0.1f)
+    if (vMirror.b < 0.1f)
     {
         Out.vColor = vDiffuse;
         return Out;
@@ -1345,31 +1345,31 @@ PS_OUT PS_REFLECTION(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    // 노말 벡터 계산
-    float3 normal = normalize(vNormalDesc.xyz * 2.f - 1.f);
+    // 노말 벡터 계산 (노말 맵의 영향 감소)
+    float3 normal = normalize(lerp(float3(0, 0, 1), vNormalDesc.xyz * 2.f - 1.f, 0.3));
 
     // 뷰 벡터 계산
     float3 viewDir = normalize(g_vCamPosition.xyz - vWorldPos.xyz);
 
     // 수정된 프레넬 효과 계산
     float NdotV = saturate(dot(normal, viewDir));
-    float fresnel = pow(max(0, NdotV), g_fFresnelPower);
+    float fresnel = pow(1 - NdotV, g_fFresnelPower);
 
-    // Caustic 노이즈를 이용한 파동 효과 계산
-    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * 0.5 * g_fWaveTimeOffset, g_Time * 0.7 * g_fWaveTimeOffset);
+    // Caustic 노이즈를 이용한 파동 효과 계산 (강도 감소)
+    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * g_fWaveTimeOffset * 2.f , g_Time * g_fWaveTimeOffset * 2.f);
     vector vCausticNoise = g_CausticTexture.Sample(LinearSampler, causticCoord);
+    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength * 0.1;
 
-    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength + 0.3f;
-
-    // 노말 맵을 사용하여 파동 강도 조절
-    waveOffset *= length(normal.xy);
+    // 노말 맵을 사용하여 파동 강도 조절 (영향 감소)
+    waveOffset *= length(normal.xy) * 0.5f;
 
     // 왜곡된 좌표로 리플렉션 텍스처 샘플링
     float2 distortedCoord = float2((1.f - In.vTexcoord.x), In.vTexcoord.y) + waveOffset;
     vector vReflection = g_EffectTexture.Sample(LinearSampler, distortedCoord);
 
-    // 프레넬 효과를 적용한 색상 블렌딩
-    Out.vColor = lerp(vDiffuse, vReflection, fresnel * vMirror.a);
+    // 프레넬 효과를 적용한 색상 블렌딩 (부드러운 전환)
+    float blendFactor = min(0.4f, saturate(fresnel * vMirror.b));
+    Out.vColor = lerp(vDiffuse, vReflection, blendFactor);
 
     return Out;
 }

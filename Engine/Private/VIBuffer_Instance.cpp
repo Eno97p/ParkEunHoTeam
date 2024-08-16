@@ -1547,7 +1547,7 @@ void CVIBuffer_Instance::Initial_RandomOffset(CVIBuffer_Terrain* pTerrain)
 		float newHeight = pTerrain->Compute_Height(currentPos);
 
 		// 새 위치 적용
-		pVertices[i].vTranslation = _float4(currentPos.x, newHeight + 1.f, currentPos.z, 1.f);
+		pVertices[i].vTranslation = _float4(currentPos.x, newHeight, currentPos.z, 1.f);
 
 		// 노멀 계산 및 회전 적용 (Setup_Onterrain과 유사한 방식)
 		_float3 vNormal = pTerrain->Compute_Normal(currentPos);

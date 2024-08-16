@@ -112,7 +112,8 @@ HRESULT CGrass::Render()
 
 	m_pVIBufferCom->Bind_Buffers();
 
-	m_pVIBufferCom->Render_Culling();
+	//m_pVIBufferCom->Render_Culling();
+	m_pVIBufferCom->Render();
 
 	return S_OK;
 }

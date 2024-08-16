@@ -96,6 +96,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
+	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
 
 	return S_OK;
 }

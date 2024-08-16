@@ -487,6 +487,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				CInitLoader<LEVEL, wstring>* InitLoader = new CInitLoader<LEVEL, wstring>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
+				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");
 				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");                                                                                                                                                                              
 
 

@@ -1651,7 +1651,7 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 	//const float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
 
 	//// 3. 가시성 검사 및 데이터 재정렬
-	//unsigned int visibleCount = 0;
+	unsigned int visibleCount = 0;
 
 
 
@@ -1682,7 +1682,7 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 	m_pContext->Unmap(m_pVBInstance, 0);
 
 	// 4. 가시 인스턴스 수 업데이트 (원자적 업데이트 없이)
-	//m_iVisibleInstances = *d_visibleCount;
+	m_iVisibleInstances = visibleCount;
 }
 
 vector<_float4x4*> CVIBuffer_Instance::Get_VtxMatrices()

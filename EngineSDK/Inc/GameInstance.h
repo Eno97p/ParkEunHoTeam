@@ -88,12 +88,12 @@ public: /* For.Renderer */
 	void Set_BRIS(_float fBRIS);
 	void Set_Mirror(_float fMirror);
 	// 화면 전체 모션블러 여부
-	void Set_MotionBlur(_bool bMotionBlur) { m_bMotionBlur = bMotionBlur; }
-	_bool Get_MotionBlur() { return m_bMotionBlur; }
+	void Set_MotionBlur(_bool bMotionBlur) { m_iMotionBlur = bMotionBlur ? m_iMotionBlur + 1 : m_iMotionBlur; }
+	_bool Get_MotionBlur() { return m_iMotionBlur > 0; }
 	_bool Get_NotMoveShadow(){ return m_bNotMoveShadow; }
 	_bool Get_MoveShadow(){ return m_bMoveShadow; }
 private:
-	_bool m_bMotionBlur = false;
+	_uint m_iMotionBlur = 0;
 	_bool m_bNotMoveShadow = false;
 	_bool m_bMoveShadow = true;
 #ifdef _DEBUG

@@ -50,7 +50,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 1000.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -358,9 +358,10 @@ NodeStates CMalkhel::Move(_float fTimeDelta)
 {
 	if (m_iState == STATE_DASHBACK || m_iState == STATE_DASHRIGHT || m_iState == STATE_DASHLEFT)
 	{
-		if (m_fLengthFromPlayer > 8.f)
+		if (m_fLengthFromPlayer > 8.f || m_fDashBackDelay < 0.f)
 		{
 			m_iState = STATE_IDLE;
+			m_fDashBackDelay = 1.f;
 			return SUCCESS;
 		}
 		else
@@ -368,6 +369,7 @@ NodeStates CMalkhel::Move(_float fTimeDelta)
 			m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			if (m_iState == STATE_DASHBACK)
 			{
+				m_fDashBackDelay -= fTimeDelta;
 				m_pPhysXCom->Go_BackWard(fTimeDelta);
 			}
 			else if (m_iState == STATE_DASHRIGHT)
@@ -406,6 +408,20 @@ NodeStates CMalkhel::Attack1(_float fTimeDelta)
 {
 	if (m_iState == STATE_ATTACK1)
 	{
+		if (m_fSpawnCoolTime > 0.f)
+		{
+			m_fSpawnCoolTime -= fTimeDelta;
+		}
+		
+		if (m_fSpawnCoolTime < 0.f)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(35, fPos);
+			m_fSpawnCoolTime = 0.f;
+			m_pPlayer->PlayerHit(30.f);
+		}
+		
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -520,6 +536,17 @@ NodeStates CMalkhel::Attack6(_float fTimeDelta)
 {
 	if (m_iState == STATE_ATTACK6)
 	{
+		m_fSpawnCoolTime -= fTimeDelta;
+		if (m_fSpawnCoolTime < 0.f)
+		{
+			m_fSpawnCoolTime = METEORCOOLTIME;
+			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
+			_vector vRandomDir = XMVectorSet(RandomFloat(-3.f, 3.f), 0.f, RandomFloat(-3.f, 3.f), 0.f);
+			_float4 vPos;
+			XMStoreFloat4(&vPos, vPlayerPos - vRandomDir);
+			EFFECTMGR->Generate_Meteor(vPos);
+		}
+
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -563,6 +590,7 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 			switch (i)
 			{
 			case 0:
+				m_fSpawnCoolTime = EXPLODECOOLTIME;
 				m_iState = STATE_ATTACK1;
 				break;
 			case 1:
@@ -572,6 +600,7 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_ATTACK5;
 				break;
 			case 3:
+				m_fSpawnCoolTime = 0.f;
 				m_iState = STATE_ATTACK6;
 				break;
 			case 4:
@@ -586,6 +615,7 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 			switch (i)
 			{
 			case 0:
+				m_fSpawnCoolTime = EXPLODECOOLTIME;
 				m_iState = STATE_ATTACK1;
 				break;
 			case 1:
@@ -601,6 +631,7 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_ATTACK5;
 				break;
 			case 5:
+				m_fSpawnCoolTime = 0.f;
 				m_iState = STATE_ATTACK6;
 				break;
 			case 6:

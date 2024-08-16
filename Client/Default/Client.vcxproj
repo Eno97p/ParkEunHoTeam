@@ -262,6 +262,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Lightning.h" />
     <ClInclude Include="..\Public\Malkhel.h" />
     <ClInclude Include="..\Public\Mask_Andras.h" />
+    <ClInclude Include="..\Public\Mask_Yantari.h" />
     <ClInclude Include="..\Public\Npc.h" />
     <ClInclude Include="..\Public\NPC_Choron.h" />
     <ClInclude Include="..\Public\NPC_Rlya.h" />
@@ -559,6 +560,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Lightning.cpp" />
     <ClCompile Include="..\Private\Malkhel.cpp" />
     <ClCompile Include="..\Private\Mask_Andras.cpp" />
+    <ClCompile Include="..\Private\Mask_Yantari.cpp" />
     <ClCompile Include="..\Private\Npc.cpp" />
     <ClCompile Include="..\Private\NPC_Choron.cpp" />
     <ClCompile Include="..\Private\NPC_Rlya.cpp" />

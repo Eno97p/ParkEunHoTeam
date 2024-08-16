@@ -309,6 +309,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CBody_Yantari::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Mask_Yantari */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Mask_Yantari"),
+		CMask_Yantari::Create(pDevice, pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Weapon_Yantari */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_Yantari"),
 		CWeapon_Yantari::Create(pDevice, pContext))))

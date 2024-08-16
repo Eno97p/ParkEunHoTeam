@@ -53,6 +53,7 @@
 
 #include "Yantari.h"
 #include "Body_Yantari.h"
+#include "Mask_Yantari.h"
 #include "Weapon_Yantari.h"
 
 #include "Legionnaire.h"

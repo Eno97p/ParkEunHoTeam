@@ -154,6 +154,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
 {
+	m_iMotionBlur = 0;
+
 	PROFILE_RESET();
 	
 	if (nullptr == m_pLevel_Manager)

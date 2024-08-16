@@ -221,7 +221,7 @@ HRESULT CRenderer::Initialize()
     if (nullptr == m_pMaskTex)
         return E_FAIL;
 
-    m_pShadowTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Shadow/Shadow%d.dds"), 3);
+    m_pShadowTex = CTexture::Create(m_pDevice, m_pContext, TEXT("../../Engine/Bin/Textures/Shadow/Shadow%d.dds"), 4);
     if (nullptr == m_pMaskTex)
         return E_FAIL;
 
@@ -1013,6 +1013,14 @@ void CRenderer::Render_Shadow_NotMove()
         if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 2)))
             return;
         break;
+    case ENGINE_ANDRASARENA:
+        if (FAILED(m_pShadowTex->Bind_ShaderResource(m_pShader, "g_LightDepthTexture", 3)))
+            return;
+        break;
+    default:
+        if (FAILED(m_pGameInstance->End_MRT()))
+            return;
+        return;
     }
     
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))

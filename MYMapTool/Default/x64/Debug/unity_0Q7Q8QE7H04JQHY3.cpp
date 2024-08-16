@@ -23,6 +23,9 @@
 #include "C:\3D_TeamProj\MYMapTool\Private\BackGround_Card.cpp"
 
 
+#include "C:\3D_TeamProj\MYMapTool\Private\BackGround_Moon.cpp"
+
+
 #include "C:\3D_TeamProj\MYMapTool\Private\Body_Player.cpp"
 
 

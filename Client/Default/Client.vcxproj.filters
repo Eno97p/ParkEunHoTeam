@@ -748,9 +748,6 @@
     <Filter Include="02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar">
       <UniqueIdentifier>{1d5ac9d6-58ee-4094-8aa6-1fe27c435555}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Meteor">
-      <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\06. Lagoon">
       <UniqueIdentifier>{486f42e8-b153-426e-957b-6c073414c5b5}</UniqueIdentifier>
     </Filter>
@@ -780,6 +777,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\FadeInFadeOut\AeonsLost">
       <UniqueIdentifier>{1b875788-8b7c-4f33-a55c-1368976a6cad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor">
+      <UniqueIdentifier>{3be91e83-3564-4b6d-abad-ae9a3dc6b27f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation">
       <UniqueIdentifier>{9725b54e-3d93-41e9-b044-6f17adf8a17f}</UniqueIdentifier>
@@ -1659,13 +1659,13 @@
       <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Mask_Andras.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
@@ -1714,6 +1714,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_RedDot.h">
       <Filter>02.GameObjects\07. UI\RedDot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mask_Yantari.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2534,13 +2537,13 @@
       <Filter>02.GameObjects\07. UI\MenuPage\Setting\Sound\Bar</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp">
-      <Filter>02.GameObjects\06.Effect\Meteor</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel\Pattern\Meteor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Mask_Andras.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
@@ -2589,6 +2592,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_RedDot.cpp">
       <Filter>02.GameObjects\07. UI\RedDot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mask_Yantari.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

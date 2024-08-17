@@ -396,6 +396,14 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 	return S_OK;
 }
 
+HRESULT CUI_Manager::Delete_RedDot_MenuBtn()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn_Inv();
+
+	return S_OK;
+}
+
 HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
 {
 	// Inv인 경우에는 Inventory Page와 Quick의 Inv Slot에다가 추가해주어야 하고
@@ -406,8 +414,13 @@ HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
 
 	if (isInv)
 	{
+		// Inventory
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
 		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Create_RedDot(iSlotIdx);
+
+		// Quiuck
+		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
+		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Create_RedDot(iSlotIdx);
 	}
 	else
 	{
@@ -421,8 +434,13 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 {
 	if (isInv)
 	{
+		// Inventory
 		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
 		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Delete_RedDot();
+
+		// Quick
+		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
+		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Delete_RedDot();
 	}
 	else
 	{
@@ -556,6 +574,10 @@ void CUI_Manager::Key_Input()
 					(*quick).second->Set_RenderOnAnim(false);
 
 					m_pGameInstance->Get_MainCamera()->Activate();
+
+					// MenuBtn도 사라져야죵
+					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn();
+					CUI_Manager::GetInstance()->Delete_RedDot_Slot(true); // UI Inventory의 RedDot 제거
 				}
 				else // 꺼져있을 때 > 켜지게
 				{
@@ -596,8 +618,6 @@ void CUI_Manager::Key_Input()
 			}
 
 			m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
-
-			// 일정 시간 지나면 지가 알아서 지워지든가.. 아무튼 없애는 로직도 필요함(누수!)
 		}
 	}
 }

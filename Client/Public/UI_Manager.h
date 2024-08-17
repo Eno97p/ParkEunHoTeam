@@ -58,6 +58,7 @@ public:
 
 	// RedDot 관련 함수
 	HRESULT				Create_RedDot_MenuBtn(_bool isInv);
+	HRESULT				Delete_RedDot_MenuBtn();
 	HRESULT				Create_RedDot_Slot(_bool isInv, _uint iSlotIdx);
 	HRESULT				Delete_RedDot_Slot(_bool isInv);
 

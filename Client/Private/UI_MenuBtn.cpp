@@ -272,6 +272,14 @@ HRESULT CUI_MenuBtn::Create_RedDot()
 	return S_OK;
 }
 
+HRESULT CUI_MenuBtn::Delete_RedDot()
+{
+	Safe_Release(m_pRedDot);
+	m_pRedDot = nullptr;
+
+	return S_OK;
+}
+
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_MenuBtn* pInstance = new CUI_MenuBtn(pDevice, pContext);

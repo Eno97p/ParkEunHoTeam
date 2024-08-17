@@ -210,6 +210,9 @@
 #include "C:\Real3DProject\Client\Private\Mask_Andras.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\Mask_Yantari.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Npc.cpp"
 
 

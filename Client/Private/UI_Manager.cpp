@@ -402,7 +402,7 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 
 void CUI_Manager::Key_Input()
 {
-	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요
+	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?
 
 	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
 	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
@@ -477,16 +477,17 @@ void CUI_Manager::Key_Input()
 	}
 	else // Menu가 꺼져 있을 때
 	{
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
+		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
+		map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+
+		_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
+		_bool isUpgPageOpen = (*upgpage).second->Get_Rend();
+		_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
+
+
 		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 		{
-			map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
-			map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
-			map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
-
-			_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
-			_bool isUpgPageOpen = (*upgpage).second->Get_Rend();
-			_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
-
 			// Quick이 열려있지 않을 때, Upgrade, UpPage, Ch Upgrade 가 열려있지 않을 때 Menu 열기
 			if (!isQuickOpen && !isUpgradeOpen && !isUpgPageOpen && !isChUpgradeOpen)
 			{
@@ -513,7 +514,7 @@ void CUI_Manager::Key_Input()
 		}
 		else if (m_pGameInstance->Key_Down(DIK_I))
 		{
-			if (!isMenuOpen)
+			if (!isMenuOpen && !isUpgradeOpen && !isChUpgradeOpen)
 			{
 				(*quick).second->Set_AnimFinished(false);
 
@@ -532,7 +533,7 @@ void CUI_Manager::Key_Input()
 				}
 			}
 		}
-		else if (m_pGameInstance->Key_Down(DIK_U))
+		else if (m_pGameInstance->Key_Down(DIK_U) && !isChUpgradeOpen)
 		{
 			map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 			(*upgrade).second->Set_Rend(true);
@@ -540,7 +541,7 @@ void CUI_Manager::Key_Input()
 
 			m_pGameInstance->Get_MainCamera()->Inactivate();
 		}
-		else if (m_pGameInstance->Key_Down(DIK_Y))
+		else if (m_pGameInstance->Key_Down(DIK_Y) && !isUpgradeOpen)
 		{
 			map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
 			(*ch_upgrade).second->Set_Rend(true);

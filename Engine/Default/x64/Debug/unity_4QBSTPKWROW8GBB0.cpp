@@ -47,6 +47,9 @@
 #include "C:\Real3DProject\Engine\Private\CCCTFilterCallBack.cpp"
 
 
+#include "C:\Real3DProject\Engine\private\CCuda.cpp"
+
+
 #include "C:\Real3DProject\Engine\private\Cell.cpp"
 
 

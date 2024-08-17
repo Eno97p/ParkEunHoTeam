@@ -165,7 +165,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
-		CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true);
+		// RedDot 추가
+		CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
+		
 
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
@@ -192,6 +194,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+		
+			// Slot에 RedDot 생성
+			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1);
 		}
 	}
 
@@ -217,7 +222,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 				pDropItemDesc.wszTextureName = (*item)->Get_TextureName();
 				m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pDropItemDesc);
 
-				return S_OK; // 이렇게 나가면 되겠지
+				return S_OK;
 			}
 			else
 				++item;
@@ -400,6 +405,10 @@ HRESULT CInventory::Delete_Item(CItemData* pItemData)
 
 _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 {
+	// Slot의 경우에는 Index를 알아야 하니까 여기에서 RedDot 생성 처리를 해주어야 할지?
+
+
+
 	CItemData::ITEM_NAME eItemName = { CItemData::ITEMNAME_END };
 	switch (eItemType)
 	{
@@ -431,7 +440,6 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 		break;
 	}
 
-
 	// UI 출력
 	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
 	pUIDesc.eLevel = LEVEL_STATIC;
@@ -449,6 +457,9 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+			// Slot에 RedDot 생성
+			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, i);
 
 			return true;
 		}

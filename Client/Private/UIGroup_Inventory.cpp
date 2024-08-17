@@ -168,6 +168,28 @@ void CUIGroup_Inventory::Update_Inventory(_uint iSlotIdx)
 	}
 }
 
+HRESULT CUIGroup_Inventory::Create_RedDot(_uint iSlotIdx)
+{
+	vector< CUI_Slot*>::iterator slot = m_vecSlot.begin();
+
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	(*slot)->Create_RedDot();
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_Inventory::Delete_RedDot()
+{
+	for (auto& pSlot : m_vecSlot)
+	{
+		pSlot->Delete_RedDot();
+	}
+
+	return S_OK;
+}
+
 HRESULT CUIGroup_Inventory::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

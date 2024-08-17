@@ -15,6 +15,8 @@
 #include "UIGroup_Quick.h"
 #include "UIGroup_WeaponSlot.h"
 
+#include "UI_RedDot.h"
+
 CUI_Slot::CUI_Slot(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{ pDevice, pContext }
 {
@@ -61,6 +63,34 @@ void CUI_Slot::Check_Equip(_bool isWeapon, CItemData* pItemData)
 			 }
 		 }
 	}
+}
+
+HRESULT CUI_Slot::Create_RedDot()
+{
+	if (nullptr != m_pRedDot)
+		return S_OK;
+
+	CUI_RedDot::UI_REDDOT_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eUISort = static_cast<UISORT_PRIORITY>(m_eUISort + 2);
+	pDesc.fX = m_fX + 25.f;
+	pDesc.fY = m_fY - 25.f;
+	pDesc.fSizeX = 15.f;
+	pDesc.fSizeY = 15.f;
+
+	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
+	if (nullptr == m_pRedDot)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Slot::Delete_RedDot()
+{
+	Safe_Release(m_pRedDot);
+	m_pRedDot = nullptr;
+
+	return S_OK;
 }
 
 HRESULT CUI_Slot::Initialize_Prototype()
@@ -122,6 +152,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pEquipSign)
 		m_pEquipSign->Tick(fTimeDelta);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Tick(fTimeDelta);
 }
 
 void CUI_Slot::Late_Tick(_float fTimeDelta)
@@ -140,6 +173,9 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pEquipSign && m_isEquip && Check_GroupRenderOnAnim())
 		m_pEquipSign->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -683,6 +719,7 @@ void CUI_Slot::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pRedDot);
 	Safe_Release(m_pEquipSign);
 	Safe_Release(m_pSymbolIcon);
 	Safe_Release(m_pItemIcon);

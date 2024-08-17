@@ -393,9 +393,41 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 	if (FAILED(dynamic_cast<CUIGroup_Menu*>((*menu).second)->Create_RedDot_MenuBtn(isInv)))
 		return E_FAIL;
 
-	// MenuBtn에 생성은 ㅇㅋ
-	// 삭제하는 로직의 경우에는 >>>> 일단 해당하는 Page에 들어가는 순간 제거되어야 함!
+	return S_OK;
+}
 
+HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
+{
+	// Inv인 경우에는 Inventory Page와 Quick의 Inv Slot에다가 추가해주어야 하고
+	// 아닌 경우에는 Weapon에 넣어주어야 할 것이다
+	// Slot의 경우에는 Menu Btn과 다르게 몇 번째 Slot인가에 대한 정보도 가지고 있어야 하기 때문에
+	// (Weapon의 경우에는 Weapon인지 Skill인지 까지 필요함)
+	// 인자로 해당 슬롯의 인덱스에 대한 값을 넣어주어야 할 것임 !!
+
+	if (isInv)
+	{
+		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Create_RedDot(iSlotIdx);
+	}
+	else
+	{
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
+{
+	if (isInv)
+	{
+		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Delete_RedDot();
+	}
+	else
+	{
+
+	}
 
 	return S_OK;
 }
@@ -444,6 +476,7 @@ void CUI_Manager::Key_Input()
 				else if (isInvOpen)
 				{
 					(*inventory).second->Set_RenderOnAnim(false);
+					Delete_RedDot_Slot(true); // RedDot 제거
 				}
 				else if (isWeaponOpen)
 				{

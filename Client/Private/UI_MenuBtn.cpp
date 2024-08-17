@@ -228,8 +228,18 @@ void CUI_MenuBtn::Open_MenuPage()
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");
 		break;
 	case Client::CUI_MenuBtn::MENU_INV:
+	{
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Inventory");
+
+		// Inventory의 경우에는 그런데 Weapon의 경우에는 좀 다름... 
+		if (nullptr != m_pRedDot)
+		{
+			Safe_Release(m_pRedDot);
+			m_pRedDot = nullptr;
+		}
+
 		break;
+	}
 	case Client::CUI_MenuBtn::MENU_SET:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Setting");
 		break;
@@ -238,6 +248,8 @@ void CUI_MenuBtn::Open_MenuPage()
 	}
 
 	CUI_Manager::GetInstance()->Set_MenuPageOpen();
+
+
 }
 
 HRESULT CUI_MenuBtn::Create_RedDot()

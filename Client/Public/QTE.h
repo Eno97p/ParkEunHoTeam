@@ -13,6 +13,9 @@ private:
 	virtual ~CQTE() = default;
 
 public:
+	_bool			Get_isEnd() { return m_isEnd; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -20,15 +23,18 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	_bool		Check_ResultScore();
+
 private:
-	vector<class CUI_QTE_Btn*> m_vecBtn;
+	_bool						m_isEnd = { false };
+	vector<class CUI_QTE_Btn*>	m_vecBtn;
 
 private:
 	HRESULT Create_QteBtn();
 
 	void	Start_BtnEvent();
 	_bool	Check_End();
-	void	Check_ResultScore();
+
 
 public:
 	static CQTE*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -113,12 +113,45 @@ HRESULT CLagoon::Render()
 		if (FAILED(m_pTexture[TEX_NORMAL2]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture2", 0)))
 			return E_FAIL;
 
+		if (FAILED(m_pTexture[TEX_FOAMMASK]->Bind_ShaderResource(m_pShaderCom, "g_FoamMaskTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_FOAM]->Bind_ShaderResources(m_pShaderCom, "g_FoamTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_FOAMNORMAL]->Bind_ShaderResources(m_pShaderCom, "g_FoamTextureNormal")))
+			return E_FAIL;
+	
+	
+	
+	
+	
+	
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamWaveFrequency", &m_fFoamWaveFrequency, sizeof(_float))))
+			return E_FAIL;	
+		
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamWaveAmplitude", &m_fFoamWaveAmplitude, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamMaskScale", &m_fFoamMaskScale, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamMaskSpeed", &m_fFoamMaskSpeed, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamBlendStrength", &m_fFoamBlendStrength, sizeof(_float))))
+			return E_FAIL;	
+		
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamFresnelStrength", &m_fFoamFresnelStrength, sizeof(_float))))
+			return E_FAIL;
+
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength0", &m_fNormalStrength0, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength1", &m_fNormalStrength1, sizeof(_float))))
 			return E_FAIL;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength2", &m_fNormalStrength2, sizeof(_float))))
 			return E_FAIL;
+
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fWaterAlpha", &m_fWaterAlpha, sizeof(_float))))
 			return E_FAIL;
@@ -319,6 +352,41 @@ HRESULT CLagoon::Add_Components(void* pArg)
 		TEXT("Com_Caustic"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_CAUSTIC]))))
 		return E_FAIL;
 
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FoamMask"),
+		TEXT("Com_FoamMask"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAMMASK]))))
+		return E_FAIL;
+
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Foam"),
+		TEXT("Com_Foam"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAM]))))
+		return E_FAIL;
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FoamNormal"),
+		TEXT("Com_FoamNormal"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAMNORMAL]))))
+		return E_FAIL;
+
+
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC ColliderDesc{};
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+
+	// 월드 매트릭스에서 스케일 추출
+	_float3 vScale;
+	vScale.x = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)));
+	vScale.y = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_UP)));
+	vScale.z = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_LOOK)));
+
+	// 기본 크기에 스케일 적용
+	ColliderDesc.vExtents = _float3(0.5f * vScale.x, 1.f * vScale.y, 0.5f * vScale.z);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y, 0.f);
+
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -366,7 +434,7 @@ CGameObject* CLagoon::Clone(void* pArg)
 void CLagoon::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pColliderCom);
 	//Safe_Release(m_pModelCom);
 	//Safe_Release(m_pShaderCom);
 }

@@ -90,7 +90,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     float2 ndcMotion = projNormal.xy * motionAlongNormal;
 
-    Out.vVelocity = ndcMotion * -0.3f;  // 스케일 조정
+    Out.vVelocity = ndcMotion * -0.15f;  // 스케일 조정
 
     return Out;
 }

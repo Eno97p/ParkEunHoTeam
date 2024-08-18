@@ -227,6 +227,23 @@ void CUIGroup_Quick::Update_Inventory(_uint iSlotIdx)
 	}
 }
 
+HRESULT CUIGroup_Quick::Create_RedDot(_uint iSlotIdx)
+{
+	vector<CUI_Slot*>::iterator slot = m_vecInvSlot.begin();
+	for (size_t i = 0; i < iSlotIdx; ++i)
+		++slot;
+
+	return (*slot)->Create_RedDot();
+}
+
+HRESULT CUIGroup_Quick::Delete_RedDot()
+{
+	for (auto& pSlot : m_vecInvSlot)
+		pSlot->Delete_RedDot();
+
+	return S_OK;
+}
+
 HRESULT CUIGroup_Quick::Create_UI()
 {
 	CUI::UI_DESC pDesc{};

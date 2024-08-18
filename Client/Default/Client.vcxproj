@@ -79,8 +79,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\Bin\</OutDir>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -88,8 +88,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\Release\</OutDir>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,6 +136,7 @@ call Copy_Client.bat</Command>
     </PreBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52;compute_61,sm_61;compute_75,sm_75;compute_86,sm_86;%(CodeGeneration)</CodeGeneration>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -187,6 +188,10 @@ call Copy_Client.bat</Command>
 cd /d $(SolutionDir)
 call Copy_Client.bat</Command>
     </PreBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52;compute_61,sm_61;compute_75,sm_75;compute_86,sm_86;%(CodeGeneration)</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -197,6 +202,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Aspiration.h" />
     <ClInclude Include="..\public\BackGround.h" />
     <ClInclude Include="..\Public\BackGround_Card.h" />
+    <ClInclude Include="..\Public\BackGround_Moon.h" />
     <ClInclude Include="..\public\BlastWall.h" />
     <ClInclude Include="..\Public\Body_Andras.h" />
     <ClInclude Include="..\Public\Body_Choron.h" />
@@ -252,6 +258,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
+    <ClInclude Include="..\Public\KickSword.h" />
     <ClInclude Include="..\Public\Lagoon.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Legionnaire.h" />
@@ -289,14 +296,18 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar_Charge.h" />
+    <ClInclude Include="..\Public\ParkEunHo\GroundSlash.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HammerSpawn.h" />
     <ClInclude Include="..\Public\ParkEunHo\HealEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Line.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
+    <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
+    <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h" />
     <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
@@ -499,6 +510,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Aspiration.cpp" />
     <ClCompile Include="..\private\BackGround.cpp" />
     <ClCompile Include="..\Private\BackGround_Card.cpp" />
+    <ClCompile Include="..\Private\BackGround_Moon.cpp" />
     <ClCompile Include="..\private\BlastWall.cpp" />
     <ClCompile Include="..\Private\Body_Andras.cpp" />
     <ClCompile Include="..\Private\Body_Choron.cpp" />
@@ -550,6 +562,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
+    <ClCompile Include="..\Private\KickSword.cpp" />
     <ClCompile Include="..\Private\Lagoon.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Legionnaire.cpp" />
@@ -587,14 +600,18 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar_Charge.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\GroundSlash.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HammerSpawn.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\HealEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Line.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />

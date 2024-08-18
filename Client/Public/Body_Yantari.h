@@ -31,6 +31,7 @@ public:
 	void Set_Weapon(class CWeapon* pWeapon) { m_pWeapon = pWeapon; }
 
 private:
+	CTexture* m_pBodyCom = nullptr;
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 

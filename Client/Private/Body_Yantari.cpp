@@ -330,8 +330,20 @@ HRESULT CBody_Yantari::Render()
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		_bool bResource = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bDiffuse"), &bResource, sizeof(_bool))))
 			return E_FAIL;
+
+		if (i == 0)
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
+				return E_FAIL;
+		}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
@@ -431,8 +443,20 @@ HRESULT CBody_Yantari::Render_Reflection()
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		_bool bResource = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bDiffuse"), &bResource, sizeof(_bool))))
 			return E_FAIL;
+
+		if (i == 0)
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
+				return E_FAIL;
+		}
 
 		if (i == 1)
 		{
@@ -500,6 +524,11 @@ HRESULT CBody_Yantari::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_YantariBody"),
+		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pBodyCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -560,4 +589,5 @@ void CBody_Yantari::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pBodyCom);
 }

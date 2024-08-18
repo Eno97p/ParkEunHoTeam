@@ -535,13 +535,13 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 	}
 
 	// 동적 할당된 메모리 해제
-	for (auto& pair : modelMatrices)
-	{
-		for (auto pWorldMatrix : pair.second)
-		{
-			Safe_Delete(pWorldMatrix);
-		}
-	}
+	//for (auto& pair : modelMatrices)
+	//{
+	//	for (auto pWorldMatrix : pair.second)
+	//	{
+	//		Safe_Delete(pWorldMatrix);
+	//	}
+	//}
 
 	return S_OK;
 }
@@ -653,13 +653,13 @@ HRESULT CLevel_Ackbar::Load_Data_Effects()
 			return E_FAIL;
 	}
 
-	for (auto& group : treeGroups)
-	{
-		for (auto& pMatrix : group.second)
-		{
-			delete pMatrix;
-		}
-	}
+	//for (auto& group : treeGroups)
+	//{
+	//	for (auto& pMatrix : group.second)
+	//	{
+	//		delete pMatrix;
+	//	}
+	//}
 
 #ifdef _DEBUG
 //	MSG_BOX("Effect Data Load");

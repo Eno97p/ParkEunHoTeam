@@ -159,6 +159,4 @@ CGameObject* CActive_Element::Clone(void* pArg)
 void CActive_Element::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pModelCom);
 }

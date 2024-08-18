@@ -34,6 +34,13 @@ HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDe
 	m_RandomNumber = mt19937_64(m_RandomDevice());
 
 
+
+	
+	
+	//cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당		
+	//cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
+	//초기화
+
 	return S_OK;
 }
 
@@ -61,10 +68,6 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 
 
 
-
-	cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
-	cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
-														//초기화
 	return S_OK;
 }
 
@@ -1589,8 +1592,6 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 {
 	
 
-	CCuda::InitCuda();
-
 	// 1. 버퍼 유효성 확인
 	if (!m_pVBInstance)
 	{
@@ -1598,51 +1599,18 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 		return;
 	}
 
-	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	HRESULT hr = m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource);
-	if (FAILED(hr) || !mappedResource.pData)
-	{
-		// 매핑 실패 처리
-		// 로그 기록 또는 에러 처리
-		return;
-	}
+	//D3D11_MAPPED_SUBRESOURCE mappedResource;
+	//HRESULT hr = m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource);
+	////if (FAILED(hr) || !mappedResource.pData)
+	////{
+	////	// 매핑 실패 처리
+	////	// 로그 기록 또는 에러 처리
+	////	return;
+	////}
 
-
+	//VTXMATRIX* pInstanceData = static_cast<VTXMATRIX*>(mappedResource.pData);
 
 	
-
-	VTXMATRIX* pInstanceData = static_cast<VTXMATRIX*>(mappedResource.pData);
-
-
-	/*VTXMATRIX* pMatHost = nullptr;
-	VTXMATRIX* pMatDevice = nullptr;
-	cudaMallocHost(&pMatHost, sizeof(VTXMATRIX) * m_iNumInstance);
-	pMatDevice->setToDefault();
-
-
-	cudaMalloc(&pMatDevice, sizeof(VTXMATRIX) * m_iNumInstance);
-	cudaMemcpy(pMatDevice, pMatHost, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyHostToDevice);*/
-
-	//cudaExternalMemoryBufferDesc
-	
-
-
-	//cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
-	//cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
-	//
-	cudaMemcpy(d_pInstanceData, pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyHostToDevice);		//디바이스에 복사
-	cudaMemset(d_visibleCount, 0, sizeof(int));																//초기화
-
-	//float3 cudaCameraPos = make_float3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
-	//CCuda::LaunchKernel_CullingInstance(d_pInstanceData, m_iNumInstance, cudaCameraPos, maxRenderDistance, d_visibleCount);		//커널 실행
-
-
-
-	cudaMemcpy(pInstanceData, d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyDeviceToHost);		//호스트로 복사
-	cudaMemcpy(&m_iVisibleInstances, d_visibleCount, sizeof(int), cudaMemcpyDeviceToHost);						//호스트로 복사
-
-	//cudaFree(d_pInstanceData);		//메모리 해제
-	//cudaFree(d_visibleCount);		//메모리 해제
 
 
 
@@ -1651,7 +1619,7 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 	//const float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
 
 	//// 3. 가시성 검사 및 데이터 재정렬
-	unsigned int visibleCount = 0;
+	//unsigned int visibleCount = 0;
 
 
 
@@ -1679,10 +1647,48 @@ void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float 
 	//	
 	//}
 
-	m_pContext->Unmap(m_pVBInstance, 0);
+	//m_pContext->Unmap(m_pVBInstance, 0);
 
 	// 4. 가시 인스턴스 수 업데이트 (원자적 업데이트 없이)
-	m_iVisibleInstances = visibleCount;
+	//m_iVisibleInstances = visibleCount;
+
+
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	HRESULT hr = m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &mappedResource);
+	//if (FAILED(hr) || !mappedResource.pData)
+	//{
+	//	// 매핑 실패 처리
+	//	// 로그 기록 또는 에러 처리
+	//	return;
+	//}
+
+	VTXMATRIX* pInstanceData = static_cast<VTXMATRIX*>(mappedResource.pData);
+
+
+	//cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
+	//cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
+	//
+	cudaMemcpy(d_pInstanceData, pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyHostToDevice);		//디바이스에 복사
+	cudaMemset(d_visibleCount, 0, sizeof(int));																//초기화
+
+	float3 cudaCameraPos = make_float3(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+	CCuda::LaunchKernel_CullingInstance(d_pInstanceData, m_iNumInstance, cudaCameraPos, maxRenderDistance, d_visibleCount);		//커널 실행
+
+
+
+	cudaMemcpy(pInstanceData, d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance, cudaMemcpyDeviceToHost);		//호스트로 복사
+	cudaMemcpy(&m_iVisibleInstances, d_visibleCount, sizeof(int), cudaMemcpyDeviceToHost);						//호스트로 복사
+
+
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+
+	//cudaFree(d_pInstanceData);		//메모리 해제
+	//cudaFree(d_visibleCount);		//메모리 해제
+
+
 }
 
 vector<_float4x4*> CVIBuffer_Instance::Get_VtxMatrices()

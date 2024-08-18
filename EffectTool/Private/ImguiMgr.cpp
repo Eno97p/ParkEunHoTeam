@@ -12,6 +12,8 @@
 #include "ElectricCylinder.h"
 
 #include "HoverBoard.h"
+#include "QuarterCamera.h"
+
 
 CImguiMgr::CImguiMgr()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
@@ -260,6 +262,13 @@ void CImguiMgr::Sound_Tool(_bool* Open)
 	ImGui::End();
 }
 
+void CImguiMgr::Change_Camera()
+{
+	CQuarterCamera* Camera = static_cast<CQuarterCamera*>(m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(),
+		TEXT("Layer_Camera")));
+	Camera->Change_Camera();
+}
+
 void CImguiMgr::Visible_Data()
 {
 	ImGui::Begin("DATA");
@@ -344,7 +353,21 @@ void CImguiMgr::Visible_Data()
 	if (bShow[16] == true)
 		PhysX_Particle_Tool(&bShow[16]);
 
-	
+	ImGui::Checkbox("HedgeHogTool", &bShow[17]);
+	if (bShow[17] == true)
+		Hedgehog_Tool(&bShow[17]);
+
+	ImGui::Checkbox("GroundSlashTool", &bShow[18]);
+	if (bShow[18] == true)
+		GroundSlash_Tool(&bShow[18]);
+
+	ImGui::Checkbox("HammerSpawnTool", &bShow[19]);
+	if (bShow[19] == true)
+		HammerSpawn_Tool(&bShow[19]);
+
+	if(ImGui::Button("Change_Camera"))
+		Change_Camera();
+
 
 	if (ImGui::Button("Bind_Sword_Matrix"))
 	{
@@ -3974,6 +3997,257 @@ void CImguiMgr::PhysX_Particle_Tool(_bool* Open)
 
 
 
+}
+
+void CImguiMgr::Hedgehog_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Hedgehog_Tool", Open);
+
+	static CNeedleSpawner::NEEDLESPAWNER Desc{};
+
+	if (ImGui::CollapsingHeader("Spawner"))
+	{
+		ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+		ImGui::InputFloat3("MinSize", reinterpret_cast<float*>(&Desc.vMinSize));
+		ImGui::InputFloat3("MaxSize", reinterpret_cast<float*>(&Desc.vMaxSize));
+		ImGui::InputFloat("LifeTime", &Desc.fMaxLifeTime);
+		ImGui::InputFloat2("ThreadRatio", reinterpret_cast<float*>(&Desc.fThreadRatio));
+		ImGui::InputFloat("SlowStrength", &Desc.fSlowStrength);
+		ImGui::InputFloat("SpawnTiming", &Desc.SpawnTiming);
+		ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+		ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.BloomColor));
+		ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+	}
+
+	if (ImGui::CollapsingHeader("HedgeHog"))
+	{
+		ImGui::InputFloat4("H_StartPos", reinterpret_cast<float*>(&Desc.ChildDesc.vStartPos));
+		ImGui::InputFloat3("H_Offset", reinterpret_cast<float*>(&Desc.ChildDesc.vOffset));
+		ImGui::InputFloat3("H_Size", reinterpret_cast<float*>(&Desc.ChildDesc.vSize));
+		ImGui::InputFloat3("H_MaxSize", reinterpret_cast<float*>(&Desc.ChildDesc.vMaxSize));
+		ImGui::ColorEdit3("H_Color", reinterpret_cast<float*>(&Desc.ChildDesc.fColor));
+		ImGui::ColorEdit3("H_BloomColor", reinterpret_cast<float*>(&Desc.ChildDesc.BloomColor));
+		ImGui::InputFloat("H_BloomPower", &Desc.ChildDesc.fBloomPower);
+		ImGui::InputFloat("H_LifeTime", &Desc.ChildDesc.fMaxLifeTime);
+		ImGui::InputFloat2("H_Thread", reinterpret_cast<float*>(&Desc.ChildDesc.fThreadRatio));
+		ImGui::InputInt("NumDesolve", &Desc.ChildDesc.NumDesolve);
+	}
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_NeedleSpawner"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Hedgehog(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Hedgehog(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HedgeHog.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pHedgehog, sizeof(CNeedleSpawner::NEEDLESPAWNER));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HedgeHog.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pHedgehog, sizeof(CNeedleSpawner::NEEDLESPAWNER));
+	inFile.close();
+	return S_OK;
+}
+
+void CImguiMgr::GroundSlash_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("GroundSlash_Tool", Open);
+	static CGroundSlash::GROUNDSLASH Desc{};
+	//ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+	//ImGui::InputFloat4("Direction", reinterpret_cast<float*>(&Desc.vDirection));
+	ImGui::InputFloat("Speed", &Desc.fSpeed);
+	ImGui::InputFloat3("StartSize", reinterpret_cast<float*>(&Desc.vStartSize));
+	ImGui::InputFloat3("EndSize", reinterpret_cast<float*>(&Desc.vEndSize));
+	ImGui::InputFloat("LifeTime", &Desc.fMaxLifeTime);
+	ImGui::InputFloat("ThreadRatio", &Desc.fThreadRatio);
+	ImGui::InputFloat("SlowStrength", &Desc.fSlowStrength);
+
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+	ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.BloomColor));
+	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (TrailMat == nullptr)
+			MSG_BOX("행렬을 대입하세요");
+		else
+		{
+			XMStoreFloat4(&Desc.vDirection, XMVector3Normalize(XMVectorSet(TrailMat->_31, TrailMat->_32, TrailMat->_33, 0.f)));
+			XMStoreFloat4(&Desc.vStartPos, XMVectorSet(TrailMat->_41, TrailMat->_42, TrailMat->_43, 1.f));
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Effect"), TEXT("Prototype_GameObject_GroundSlash"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_GroundSlash(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_GroundSlash(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/GroundSlash.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pGroundSlash, sizeof(CGroundSlash::GROUNDSLASH));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/GroundSlash.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pGroundSlash, sizeof(CGroundSlash::GROUNDSLASH));
+	inFile.close();
+	return S_OK;
+}
+
+void CImguiMgr::HammerSpawn_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("HammerSpawn", Open);
+	static CHammerSpawn::HAMMERSPAWN Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+
+	if (ImGui::CollapsingHeader("Aspiration"))
+	{
+		ImGui::InputFloat3("A_Size", reinterpret_cast<float*>(&Desc.RibbonDesc.vSize));
+		ImGui::ColorEdit3("A_Color", reinterpret_cast<float*>(&Desc.RibbonDesc.fColor));
+		ImGui::ColorEdit3("A_BloomColor", reinterpret_cast<float*>(&Desc.RibbonDesc.BloomColor));
+		ImGui::InputFloat("A_BloomPower", &Desc.RibbonDesc.fBloomPower);
+		ImGui::InputFloat("A_LifeTime", &Desc.RibbonDesc.fMaxLifeTime);
+	}
+	if (ImGui::CollapsingHeader("Vane"))
+	{
+		ImGui::InputFloat3("V_Size", reinterpret_cast<float*>(&Desc.VaneDesc.vSize));
+		ImGui::InputFloat3("V_Offset", reinterpret_cast<float*>(&Desc.VaneDesc.vOffset));
+		ImGui::ColorEdit3("V_Color", reinterpret_cast<float*>(&Desc.VaneDesc.fColor));
+		ImGui::ColorEdit3("V_BloomColor", reinterpret_cast<float*>(&Desc.VaneDesc.BloomColor));
+		ImGui::InputFloat("V_BloomPower", &Desc.VaneDesc.fBloomPower);
+		ImGui::InputFloat("V_LifeTime", &Desc.VaneDesc.fMaxLifeTime);
+		ImGui::InputFloat2("ThreadRatio", reinterpret_cast<float*>(&Desc.VaneDesc.fThreadRatio));
+		ImGui::InputFloat("SlowStrength", &Desc.VaneDesc.fSlowStrength);
+	}
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_HammerSpawn"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_HammerSpawn(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_HammerSpawn(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HammerSpawn.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pHammer, sizeof(CHammerSpawn::HAMMERSPAWN));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HammerSpawn.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pHammer, sizeof(CHammerSpawn::HAMMERSPAWN));
+	inFile.close();
+	return S_OK;
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

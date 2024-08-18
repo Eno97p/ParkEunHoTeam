@@ -463,7 +463,7 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 			m_iState = STATE_ATTACK1;
 			return SUCCESS;
 		}
-		else if (m_fLengthFromPlayer < 5.f)
+		else if (m_fLengthFromPlayer < 10.f)
 		{
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_pPhysXCom->Go_Straight(fTimeDelta);
@@ -488,7 +488,7 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 			m_iState = STATE_ATTACK1;
 			return SUCCESS;
 		}
-		else if (m_fLengthFromPlayer < 5.f)
+		else if (m_fLengthFromPlayer < 10.f)
 		{
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_pPhysXCom->Go_Straight(fTimeDelta);
@@ -564,6 +564,18 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_KICKATTACK)
 	{
+		m_fKickSwordDelay -= fTimeDelta;
+		if (m_fKickSwordDelay < 0.f)
+		{
+			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 5.f, 0.f, 0.f);
+			CPartObject::PARTOBJ_DESC pDesc;
+			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
+			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
+			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
+			m_fKickSwordDelay = 100.f;
+		}
+
 		if (m_fLengthFromPlayer > 3.f)
 		{
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
@@ -579,6 +591,7 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			m_fKickSwordDelay = 0.5f;
 			m_iState = STATE_IDLE;
 			m_bDashBack = true;
 			return SUCCESS;
@@ -766,9 +779,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			m_iState = STATE_SHOOTINGSTARATTACK;
 			break;
 		}
-
-		m_iState = STATE_LASERATTACK;
-
+		m_iState = STATE_KICKATTACK;
 		return SUCCESS;
 	}
 

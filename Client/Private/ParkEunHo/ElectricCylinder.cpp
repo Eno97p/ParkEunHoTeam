@@ -145,8 +145,8 @@ HRESULT CElectricCylinder::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
-	ColliderDesc.vExtents = _float3(0.1f, 0.1f, 5.f);
-	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vExtents = _float3(0.1f, 0.1f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 1.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

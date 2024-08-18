@@ -56,6 +56,8 @@ HRESULT CGrass::Initialize(void* pArg)
 	m_vTopCol.y -= randFloat;
 	m_vTopCol.z -= randFloat;
 
+	
+	
 	return S_OK;
 }
 
@@ -94,7 +96,9 @@ void CGrass::Tick(_float fTimeDelta)
 	//_float3 camPos;
 	//XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
 	//m_pVIBufferCom->Culling_Instance(camPos, 500.f);
-	//m_pVIBufferCom->Drop(fTimeDelta);
+
+
+
 
 }
 

@@ -43,6 +43,7 @@ public:
 
 public:
 	static HRESULT LaunchKernel_CullingInstance(VTXMATRIX* d_instanceData, int numInstances, float3 cameraPos, float maxRenderDistance, int* d_visibleCount);
+	static HRESULT LaunchKernel_CullingInstance(cudaGraphicsResource* cudaResource, int numInstances, float3 cameraPos, float maxRenderDistance, int* d_visibleCount);
 	static HRESULT InitCuda();
 
 };

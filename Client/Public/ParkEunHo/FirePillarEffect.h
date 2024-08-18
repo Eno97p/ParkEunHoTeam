@@ -55,6 +55,9 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	class CPlayer* m_pPlayer = { nullptr };
+	CTransform* m_pPlayerTransform = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	shared_ptr<FIREPILLAREFFECTDESC>	m_OwnDesc;

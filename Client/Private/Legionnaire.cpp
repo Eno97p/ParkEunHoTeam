@@ -188,12 +188,6 @@ HRESULT CLegionnaire::Add_Nodes()
 
 NodeStates CLegionnaire::Revive(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_L))
-	{
-		m_bReviving = true;
-		m_bDying = false;
-	}
-
 	if (m_bReviving)
 	{
 		m_iState = STATE_REVIVE;

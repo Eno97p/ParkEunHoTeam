@@ -134,6 +134,10 @@
 cd /d $(SolutionDir)
 call Copy_Client.bat</Command>
     </PreBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52;compute_61,sm_61;compute_75,sm_75;compute_86,sm_86;%(CodeGeneration)</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -184,6 +188,10 @@ call Copy_Client.bat</Command>
 cd /d $(SolutionDir)
 call Copy_Client.bat</Command>
     </PreBuildEvent>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52;compute_61,sm_61;compute_75,sm_75;compute_86,sm_86;%(CodeGeneration)</CodeGeneration>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -249,6 +257,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
+    <ClInclude Include="..\Public\KickSword.h" />
     <ClInclude Include="..\Public\Lagoon.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Legionnaire.h" />
@@ -551,6 +560,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
+    <ClCompile Include="..\Private\KickSword.cpp" />
     <ClCompile Include="..\Private\Lagoon.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Legionnaire.cpp" />

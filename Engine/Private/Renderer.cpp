@@ -9,9 +9,11 @@
 #include "VIBuffer_Rect.h"
 #include "RenderTarget.h"
 
-#include"CRenderWorker.h"
-_uint      g_iSizeX = 8192;
-_uint      g_iSizeY = 4608;
+#include "CRenderWorker.h"
+_uint      g_iSizeX = 1280;
+_uint      g_iSizeY = 720;
+
+
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : m_pDevice{ pDevice }

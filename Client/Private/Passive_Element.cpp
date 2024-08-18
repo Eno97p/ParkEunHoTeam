@@ -177,25 +177,25 @@ HRESULT CPassive_Element::Render_LightDepth()
 
 HRESULT CPassive_Element::Render_Mirror()
 {
-    if (FAILED(Bind_ShaderResources()))
-        return E_FAIL;
+    //if (FAILED(Bind_ShaderResources()))
+    //    return E_FAIL;
 
-    _uint   iNumMeshes = m_pModelCom->Get_NumMeshes();
+    //_uint   iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-    for (size_t i = 0; i < iNumMeshes; i++)
-    {
-        if (i != 1) continue;
+    //for (size_t i = 0; i < iNumMeshes; i++)
+    //{
+    //    if (i != 1) continue;
 
-        m_pShaderCom->Unbind_SRVs();
+    //    m_pShaderCom->Unbind_SRVs();
 
-        if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-            return E_FAIL;
+    //    if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+    //        return E_FAIL;
 
-        m_pShaderCom->Begin(1);
+    //    m_pShaderCom->Begin(1);
 
-        if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
-            return E_FAIL;
-    }
+    //    if (FAILED(m_pModelCom->Render_Instance_ForMapElements(i)))
+    //        return E_FAIL;
+    //}
     return S_OK;
 }
 
@@ -279,7 +279,6 @@ HRESULT CPassive_Element::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
         return E_FAIL;
 #pragma endregion 모션블러
-
 
     return S_OK;
 }

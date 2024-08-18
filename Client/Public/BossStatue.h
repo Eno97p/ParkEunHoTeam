@@ -28,8 +28,6 @@ public:
 	void Set_Active(_bool bActive) { m_bActive = bActive; }
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
 	CCollider::COLLTYPE m_eColltype = CCollider::COLL_NOCOLL;
 	class CPlayer* m_pPlayer = { nullptr };

@@ -2,6 +2,9 @@
 #include"TestCuda.cuh"
 
 
+
+
+
 __constant__ float3 g_cameraPos;
 __constant__ float g_maxDistanceSquared;
 
@@ -13,15 +16,13 @@ __global__ void cullingKernel(Cu_VTXMATRIX* instances, int numInstances, float3 
 {
 
 	unsigned int index_X = blockIdx.x * blockDim.x + threadIdx.x;
-	unsigned int index_Y = blockIdx.y * blockDim.y + threadIdx.y;
-
-
+	
 	if (index_X < numInstances)
 	{
-		float3 instancePos = make_float3(instances[index_X].vTranslation.x, instances[index_X].vTranslation.y, instances[index_X].vTranslation.z);
-		float distanceSquared = (instancePos.x - cameraPos.x) * (instancePos.x - cameraPos.x) +
-			(instancePos.y - cameraPos.y) * (instancePos.y - cameraPos.y) +
-			(instancePos.z - cameraPos.z) * (instancePos.z - cameraPos.z);
+		float4 instancePos = make_float4(instances[index_X].vTranslation.x, instances[index_X].vTranslation.y, instances[index_X].vTranslation.z, instances[index_X].vTranslation.w);
+		float distanceSquared = (instancePos.x - cameraPos.x) * (instancePos.x - cameraPos.x) + 
+								(instancePos.y - cameraPos.y) * (instancePos.y - cameraPos.y) +
+								(instancePos.z - cameraPos.z) * (instancePos.z - cameraPos.z);
 
 		if (distanceSquared < maxDistanceSquared)
 		{
@@ -44,8 +45,6 @@ cudaError_t LaunchCullingKernel(Cu_VTXMATRIX* d_instanceData, int numInstances, 
 	const DWORD THREAD_NUM_PER_BLOCK = 1024;
 	cudaError_t cudaStatus;
 
-	
-
 	while (numInstances)
 	{
 		DWORD NumPerOnce = numInstances;
@@ -64,14 +63,15 @@ cudaError_t LaunchCullingKernel(Cu_VTXMATRIX* d_instanceData, int numInstances, 
 		blockPerGrid.y = 1;
 
 		cullingKernel<<< blockPerGrid , threadPerBlock>>> (d_instanceData, NumPerOnce, cameraPos, maxDistanceSquared, d_visibleCount);
-		cudaStatus = cudaThreadSynchronize();
+		cudaStatus = cudaDeviceSynchronize();
+		if(cudaStatus != cudaSuccess)
+		{
+			return cudaStatus;
+		}
 		d_instanceData += NumPerOnce;
 		numInstances -= NumPerOnce;
 	}
 	
-
-	
-
 	return cudaStatus;
 
 }

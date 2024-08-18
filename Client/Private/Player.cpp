@@ -399,14 +399,6 @@ HRESULT CPlayer::Add_Nodes()
 
 NodeStates CPlayer::Revive(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_L))
-	{
-		
-
-
-		m_iState = STATE_REVIVE;
-	}
-
 	if (m_iState == STATE_REVIVE)
 	{
 		m_bIsCloaking = false;
@@ -780,7 +772,7 @@ NodeStates CPlayer::JumpAttack(_float fTimeDelta)
 	}
 
 	m_fSlowDelay = 0.f;
-	fSlowValue = 1.f;
+	if(fSlowValue != 0.01f) fSlowValue = 1.f;
 
 	if (m_fCurStamina < 10.f && m_bStaminaCanDecrease)
 	{
@@ -909,7 +901,8 @@ NodeStates CPlayer::RollAttack(_float fTimeDelta)
 NodeStates CPlayer::SpecialAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_ROLL || m_bJumping || m_iState == STATE_DASH || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
-		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_bRiding
+		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_bRiding 
+		|| m_iState == STATE_LATTACK1 || m_iState == STATE_LATTACK2 || m_iState == STATE_LATTACK3
 		|| m_bRAttacking || m_fLChargeAttack > 0.f || m_fRChargeAttack > 0.f || m_iState == STATE_USEITEM ||
 		(m_fCurStamina < 10.f && m_bStaminaCanDecrease))
 	{
@@ -956,11 +949,6 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 		{
 			m_fSpecialAttack += fTimeDelta;
 		}
-	}
-	else if (m_fSpecialAttack > 0.f && m_fSpecialAttack < 1.f)
-	{
-		m_fSpecialAttack = 0.f;
-		return FAILURE;
 	}
 
 	if (m_fSpecialAttack != 0.f)
@@ -1072,11 +1060,6 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 			m_fSpecialAttack += fTimeDelta;
 		}
 	}
-	else if (m_fSpecialAttack > 0.f && m_fSpecialAttack < 1.f)
-	{
-		m_fSpecialAttack = 0.f;
-		return FAILURE;
-	}
 
 	if (m_fSpecialAttack != 0.f)
 	{
@@ -1147,11 +1130,6 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			m_fSpecialAttack += fTimeDelta;
 		}
 	}
-	else if (m_fSpecialAttack > 0.f && m_fSpecialAttack < 0.5f)
-	{
-		m_fSpecialAttack = 0.f;
-		return FAILURE;
-	}
 
 	if (m_fSpecialAttack != 0.f)
 	{
@@ -1217,11 +1195,6 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 			m_fSpecialAttack += fTimeDelta;
 		}
 		fSlowValue = 0.1f;
-	}
-	else if (m_fSpecialAttack > 0.f && m_fSpecialAttack < 0.1f)
-	{
-		m_fSpecialAttack = 0.f;
-		return FAILURE;
 	}
 
 	if (m_fSpecialAttack != 0.f)

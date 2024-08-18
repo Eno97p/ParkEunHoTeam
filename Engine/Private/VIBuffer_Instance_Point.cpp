@@ -130,6 +130,9 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	Safe_Delete_Array(pInstanceVertices);
 #pragma endregion
 
+
+
+	
 	return S_OK;
 }
 

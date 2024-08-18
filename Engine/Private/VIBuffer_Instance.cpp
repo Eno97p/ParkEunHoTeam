@@ -37,8 +37,8 @@ HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDe
 
 	
 	
-	cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당
-	cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
+	//cudaMalloc(&d_pInstanceData, sizeof(VTXMATRIX) * m_iNumInstance);		//메모리 할당		
+	//cudaMalloc(&d_visibleCount, sizeof(int));								//메모리 할당
 	//초기화
 
 	return S_OK;

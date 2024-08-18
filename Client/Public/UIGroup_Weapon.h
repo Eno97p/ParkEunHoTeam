@@ -40,7 +40,7 @@ public:
 	
 	void			Update_Slot_EquipSign(_bool isEquip, _uint iSlotIdx = 0);
 	
-
+	void			Reset_Tab();
 
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부

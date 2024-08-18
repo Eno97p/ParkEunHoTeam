@@ -116,7 +116,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 	(*weapon)->Set_isEquip(true);
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
-
 	// Skill에 추가
 	pDesc.eItemName = CItemData::ITEMNAME_OPH;
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
@@ -261,24 +260,17 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	// RedDot
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 
-	// Weapon인가 Skill인가에 따라 다르게 들어가야 하는데...
-	// Slot을 기준으로 하니까 문제가 생기네. ItemIcon을 기준으로 했어야 했나...?
-	// ㄴㄴ 할 수 있을 거임 해보자
-
-	// 이 함수에서는 Weapon만 추가하는 거 같은데 Skill은? 함수 없는듯?
-
-	// ItemIcon이 출력하는 걸로 바꾸는 게 맞을 거 같은데............... 현재 추가하는 로직은 크게 바뀌지 않아도 되고
-	// Slot에 접근하면 그 Slot이 가지는 게 아니라 그 Slot이 가지고 있는 ItemData가 가지도록 변경을 좀 해줘야 할 거 같음
-	// 
-
 	CItemData::ITEMDATA_DESC pDesc{};
-
 	pDesc.isDropTem = false;
 	pDesc.eItemName = eItemName;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
 	// UI 출력
-	CUI_Manager::GetInstance()->Update_Weapon_Add();
+	// 그니까 새로 Weapon을 받았을 때 > 그 후에 바로 Weapon Page를 켰을 때
+	// ItemIcon이 Slot에 들어가 있어야 해서 밑의 코드를 넣은 거자나
+	// 흠 그러면 Weapon Page가 무조건 Weapon에서 시작하도록 만들어볼까?
+	// 그러면 이 함수 그대로 써도 될 거 같운데 ㅇㅇ Skill은 Tab 할 때만 바꾸고
+	//CUI_Manager::GetInstance()->Update_Weapon_Add(); 
 
 	// Upgrade Page에도 weapon 추가
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
@@ -297,8 +289,6 @@ HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
 	pDesc.eItemName = eItemName;
 
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-	CUI_Manager::GetInstance()->Update_Skill_Add(); // 음 이거 조심해야겠는데? Tab이 Weapon인 상태인데 거기에다가 갱신해버릴거가틈
 
 	return S_OK;
 }

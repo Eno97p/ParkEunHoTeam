@@ -523,7 +523,10 @@ void CUI_Manager::Key_Input()
 				{
 					// weapon의 sub도 활성화 되어있지 않을 때 예외 처리 필요
 					if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Get_EquipMode())
+					{
 						(*weapon).second->Set_RenderOnAnim(false);
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Reset_Tab(); // Tab 상태 초기화
+					}
 					else
 						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
 				}

@@ -374,6 +374,39 @@ void CUIGroup_Weapon::Change_Tab()
 	}
 }
 
+void CUIGroup_Weapon::Reset_Tab()
+{
+	// 만약 Tab이 Skill 상태라면 Weapon으로 되돌리기
+	if (TAB_R == m_eTabType)
+	{
+		// Slot들 리셋
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+		{
+			(*slot)->Resset_Data();
+			++slot;
+		}
+
+		slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+		{
+			(*slot)->Change_ItemIcon_Weapon(); // 여기서 몇 번째 슬롯인지 넣어줄                                                 까?
+			++slot;
+		}
+
+		// Equip Slot 리셋하고 채워넣기
+		vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+		for (size_t i = 0; i < 3; ++i)
+		{
+			(*equipslot)->Delete_ItemIcon();
+			(*equipslot)->Change_ItemIcon(true, i);
+			++equipslot;
+		}
+
+		m_eTabType = TAB_L;
+	}
+}
+
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUIGroup_Weapon* pInstance = new CUIGroup_Weapon(pDevice, pContext);

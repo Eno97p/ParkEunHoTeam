@@ -13,9 +13,6 @@ private:
 	virtual ~CQTE() = default;
 
 public:
-	_bool			Get_isEnd() { return m_isEnd; }
-
-public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -26,7 +23,6 @@ public:
 	_bool		Check_ResultScore();
 
 private:
-	_bool						m_isEnd = { false };
 	vector<class CUI_QTE_Btn*>	m_vecBtn;
 
 private:

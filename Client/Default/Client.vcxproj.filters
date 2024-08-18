@@ -783,7 +783,7 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\07. Moon">
       <UniqueIdentifier>{96512c81-6708-42a4-8f4f-8730331d4a1f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\06.Effect\Needle">
       <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
     </Filter>
@@ -798,6 +798,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword">
       <UniqueIdentifier>{38f5b161-4571-43d8-bcaa-0f385634f40a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score\Shine">
+      <UniqueIdentifier>{2a3bbf4f-bf0c-4af6-921e-70885535074a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1732,7 +1735,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\BackGround_Moon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClInclude>
@@ -1747,6 +1750,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\KickSword.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_QTE_Shine.h">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Shine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2628,7 +2634,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\BackGround_Moon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClCompile>
@@ -2643,6 +2649,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\KickSword.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_QTE_Shine.cpp">
+      <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Shine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

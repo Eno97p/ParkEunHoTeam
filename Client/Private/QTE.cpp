@@ -39,14 +39,6 @@ void CQTE::Tick(_float fTimeDelta)
 
 	for (auto& pBtn : m_vecBtn)
 		pBtn->Tick(fTimeDelta);
-
-	// 체크하고 없애는 코드 필요 > 추후 Andras와 연결 필요
-
-	if (Check_End())
-	{
-		//Check_ResultScore();
-		m_isEnd = true;
-	}
 }
 
 void CQTE::Late_Tick(_float fTimeDelta)

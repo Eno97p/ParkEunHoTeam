@@ -28,6 +28,9 @@ public:
 
 private:
 	class CUI_QTE_Particle*		m_pParticle = { nullptr };
+	class CUI_QTE_Shine*		m_pShine_Big = { nullptr }; // 한 개만 할 건지? 대각선으로 두 개도 괜찮을 듯
+	class CUI_QTE_Shine*		m_pShine_Small = { nullptr }; // 한 개만 할 건지? 대각선으로 두 개도 괜찮을 듯
+
 	SCORE_TYPE					m_eScoreType = { SCORE_END };
 
 private:
@@ -35,6 +38,7 @@ private:
 	HRESULT	Bind_ShaderResources();
 
 	HRESULT	Create_Particle();
+	HRESULT	Create_Shine();
 
 public:
 	static CUI_QTE_Score*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

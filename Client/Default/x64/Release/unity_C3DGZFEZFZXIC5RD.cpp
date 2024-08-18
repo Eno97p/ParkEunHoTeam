@@ -489,6 +489,9 @@
 #include "C:\Real3DProject\Client\Private\UI_QTE_Score.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_QTE_Shine.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_RedDot.cpp"
 
 

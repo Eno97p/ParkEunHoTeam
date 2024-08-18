@@ -61,7 +61,7 @@ HRESULT CQTE::Render()
 
 HRESULT CQTE::Create_QteBtn()
 {
-	_uint iRand = (rand() % 3) + 1; // 1 ~ 3
+	_uint iRand = (rand() % 2) + 2; // 2 ~ 3
 
 	CUI_QTE_Btn::UI_QTE_BTN_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;

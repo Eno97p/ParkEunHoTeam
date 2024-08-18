@@ -36,6 +36,9 @@ public:
 
 	void			Update_Inventory(_uint iSlotIdx);
 
+	HRESULT			Create_RedDot(_uint iSlotIdx);
+	HRESULT			Delete_RedDot();
+
 private:
 	_bool					m_isInvSlot_Act = { false }; // InvSlot 활성화 여부
 

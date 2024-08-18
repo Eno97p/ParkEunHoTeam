@@ -70,6 +70,9 @@ public:
 	void			Clear_ItemIcon(); // nullptr로만 만들어주는 함수
 	void			Check_Equip(_bool isWeapon, CItemData* pItemData);
 
+	HRESULT			Create_RedDot();
+	HRESULT			Delete_RedDot();
+
 private:
 	_bool						m_isEquip = { false };
 
@@ -87,6 +90,8 @@ private:
 	CUI_ItemIcon*				m_pItemIcon = { nullptr };
 	CUI_ItemIcon*				m_pSymbolIcon = { nullptr };
 	CUI_Slot_EquipSign*			m_pEquipSign = { nullptr };
+
+	class CUI_RedDot*			m_pRedDot = { nullptr };
 
 private:
 	HRESULT	Add_Components();

@@ -31,6 +31,7 @@ public:
 	virtual HRESULT	Render() override;
 
 	HRESULT	Create_RedDot();
+	HRESULT Delete_RedDot();
 
 private:
 	_uint				m_iTextureNum = { 0 };

@@ -13,6 +13,8 @@
 _uint      g_iSizeX = 1280;
 _uint      g_iSizeY = 720;
 
+
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : m_pDevice{ pDevice }
     , m_pContext{ pContext }

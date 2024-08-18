@@ -77,9 +77,26 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 	}
 	if (FAILED(Load_FirePillar()))
 	{
-		MSG_BOX("FAILED_FirePillar");
+		MSG_BOX("FAILED_Load_FirePillar");
 		return E_FAIL;
 	}
+	if (FAILED(Load_Needle()))
+	{
+		MSG_BOX("FAILED_Load_Needle");
+		return E_FAIL;
+	}
+	if (FAILED(Load_GroundSlash()))
+	{
+		MSG_BOX("FAILED_Load_GroundSlash");
+		return E_FAIL;
+	}
+	if (FAILED(Load_HammerSpawn()))
+	{
+		MSG_BOX("FAILED_Load_HammerSpawn");
+		return E_FAIL;
+	}
+
+	
 	return S_OK;
 }
 
@@ -320,6 +337,35 @@ HRESULT CEffectManager::Generate_FirePillar(const _float4 vStartPos)
 	Desc->vStartPos = vStartPos;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_FirePillar"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_Needle(const _float4 vStartPos)
+{
+	CNeedleSpawner::NEEDLESPAWNER* Desc = m_Needle.get();
+	Desc->vStartPos = vStartPos;
+	Desc->vStartPos.y += 0.1f;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_NeedleSpawner"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_GroundSlash(const _float4 vStartPos, const _float4 vDirection)
+{
+	CGroundSlash::GROUNDSLASH* Desc = m_GroundSlash.get();
+	Desc->vStartPos = vStartPos;
+	Desc->vDirection = vDirection;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_GroundSlash"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_HammerSpawn(const _float4 vStartPos)
+{
+	CHammerSpawn::HAMMERSPAWN* Desc = m_HammerSpawn.get();
+	Desc->vStartPos = vStartPos;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_HammerSpawn"), Desc);
 	return S_OK;
 }
 
@@ -634,7 +680,7 @@ HRESULT CEffectManager::Load_Meteor()
 
 HRESULT CEffectManager::Load_FirePillar()
 {
-	string finalPath = "../../Client/Bin/BinaryFile/Effect/FirePillar.Bin";
+	string finalPath = "../Bin/BinaryFile/Effect/FirePillar.Bin";
 	ifstream inFile(finalPath, std::ios::binary);
 	if (!inFile.good())
 		return E_FAIL;
@@ -647,6 +693,58 @@ HRESULT CEffectManager::Load_FirePillar()
 	inFile.close();
 
 	m_FirePillar->vStartPos = { 0.f,0.f,0.f,1.f };
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_Needle()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/HedgeHog.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_Needle = make_shared<CNeedleSpawner::NEEDLESPAWNER>();
+	inFile.read((char*)m_Needle.get(), sizeof(CNeedleSpawner::NEEDLESPAWNER));
+	inFile.close();
+	m_Needle->vStartPos = { 0.f,0.f,0.f,1.f };
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_GroundSlash()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/GroundSlash.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_GroundSlash = make_shared<CGroundSlash::GROUNDSLASH>();
+	inFile.read((char*)m_GroundSlash.get(), sizeof(CGroundSlash::GROUNDSLASH));
+	inFile.close();
+	m_GroundSlash->vStartPos = { 0.f,0.f,0.f,1.f };
+	m_GroundSlash->vDirection = { 0.f,0.f,0.f,0.f };
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_HammerSpawn()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/HammerSpawn.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_HammerSpawn = make_shared<CHammerSpawn::HAMMERSPAWN>();
+	inFile.read((char*)m_HammerSpawn.get(), sizeof(CHammerSpawn::HAMMERSPAWN));
+	inFile.close();
+	m_HammerSpawn->vStartPos = { 0.f,0.f,0.f,1.f };
 	return S_OK;
 }
 
@@ -800,6 +898,21 @@ HRESULT CEffectManager::Ready_GameObjects()
 
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Rock_Ground"),
 		CRock_Ground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Hedgehog"),
+		CHedgehog::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_NeedleSpawner"),
+		CNeedleSpawner::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_GroundSlash"),
+		CGroundSlash::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HammerSpawn"),
+		CHammerSpawn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

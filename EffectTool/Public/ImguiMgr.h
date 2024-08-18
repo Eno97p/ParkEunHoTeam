@@ -18,7 +18,9 @@
 #include "AndrasLazer.h"
 #include "Meteor.h"
 #include "Particle_PhysX.h"
-
+#include "NeedleSpawner.h"
+#include "GroundSlash.h"
+#include "HammerSpawn.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -40,6 +42,7 @@ private:
 	void Model_Change();
 private:
 	void Sound_Tool(_bool* Open);
+	void Change_Camera();
 
 private:	//for FileSystem
 	void Load_Texture();
@@ -168,6 +171,20 @@ private:
 private:
 	void PhysX_Particle_Tool(_bool* Open);
 
+private:
+	void Hedgehog_Tool(_bool* Open);
+	HRESULT Save_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog);
+	HRESULT Load_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog);
+
+private:
+	void GroundSlash_Tool(_bool* Open);
+	HRESULT Save_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash);
+	HRESULT Load_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash);
+
+private:
+	void HammerSpawn_Tool(_bool* Open);
+	HRESULT Save_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
+	HRESULT Load_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 

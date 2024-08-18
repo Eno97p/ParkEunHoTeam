@@ -46,6 +46,8 @@ public:
 	}
 
 	void Key_Input(_float fTimeDelta);
+	void Free_Key_Input(_float fTimeDelta);
+	void Change_Camera();
 
 private:
 	_float		m_fSensor = { 0.0f };
@@ -69,6 +71,10 @@ private:
 	_float	m_fShakeTime;	//진동 시간
 	_float	m_fShakeAccTime;		//누적 시간
 	_bool	m_bLockWidth;
+
+private:
+	_bool	m_FreeCamera = false;
+	_bool	m_bStop = false;
  
 public:
 	static CQuarterCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

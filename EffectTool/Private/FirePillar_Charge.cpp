@@ -61,7 +61,6 @@ void CFirePillar_Charge::Tick(_float fTimeDelta)
 	m_fLifeTimeRatio = m_fCurLifeTime / m_OwnDesc->fMaxLifeTime;
 	m_fLifeTimeRatio = max(0.f, min(m_fLifeTimeRatio, 1.f));
 
-
 }
 
 void CFirePillar_Charge::Late_Tick(_float fTimeDelta)

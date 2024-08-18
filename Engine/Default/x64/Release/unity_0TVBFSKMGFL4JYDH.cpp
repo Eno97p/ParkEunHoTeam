@@ -47,6 +47,9 @@
 #include "C:\NewRepo\Engine\Private\CCCTFilterCallBack.cpp"
 
 
+#include "C:\NewRepo\Engine\private\CCuda.cpp"
+
+
 #include "C:\NewRepo\Engine\private\Cell.cpp"
 
 

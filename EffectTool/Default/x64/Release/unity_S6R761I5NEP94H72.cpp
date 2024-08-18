@@ -89,6 +89,9 @@
 #include "C:\NewRepo\EffectTool\Private\FirePillar_Charge.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\GroundSlash.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\HealEffect.cpp"
 
 
@@ -101,10 +104,16 @@
 #include "C:\NewRepo\EffectTool\Private\Heal_Spiral.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\Hedgehog.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\HoverBoard.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\ImguiMgr.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\HammerSpawn.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\LazerCast.cpp"
@@ -141,6 +150,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\Meteor_Wind.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\NeedleSpawner.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\Particle.cpp"

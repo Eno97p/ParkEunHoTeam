@@ -808,6 +808,22 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Meteor/Rock_Impact/R_Impact2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	//가시 패턴
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Hedgehog"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Hedgehog/Hedgehog.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_NeedleSpawner"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Hedgehog/NeedleSpawner.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//검기
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(270.f)) * XMMatrixRotationZ(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_GroundSlash"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/GroundSlash/GroundSlash2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 #pragma endregion MODEL
 
 	if (FAILED(EFFECTMGR->Initialize(m_pDevice, m_pContext)))

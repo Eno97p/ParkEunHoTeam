@@ -450,6 +450,19 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 	return S_OK;
 }
 
+void CUI_Manager::Create_QTE()
+{
+	CQTE::GAMEOBJECT_DESC pQteDesc{};
+
+	if (nullptr != m_pQTE)
+	{
+		Safe_Release(m_pQTE);
+		m_pQTE = nullptr;
+	}
+
+	m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
+}
+
 void CUI_Manager::Key_Input()
 {
 	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?
@@ -523,6 +536,8 @@ void CUI_Manager::Key_Input()
 			else
 			{
 				(*invsub).second->Set_RenderOnAnim(false);
+
+				Delete_RedDot_Slot(true); // RedDot 제거
 			}
 		}
 	}
@@ -608,16 +623,7 @@ void CUI_Manager::Key_Input()
 		else if (m_pGameInstance->Key_Down(DIK_L)) // <<<<< Test용 (QTE)
 		{
 			// QTE 생성 Prototype_GameObject_QTE
-
-			CQTE::GAMEOBJECT_DESC pQteDesc{};
-
-			if (nullptr != m_pQTE)
-			{
-				Safe_Release(m_pQTE);
-				m_pQTE = nullptr;
-			}
-
-			m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
+			Create_QTE();
 		}
 	}
 }

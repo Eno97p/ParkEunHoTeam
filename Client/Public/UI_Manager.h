@@ -62,6 +62,9 @@ public:
 	HRESULT				Create_RedDot_Slot(_bool isInv, _uint iSlotIdx);
 	HRESULT				Delete_RedDot_Slot(_bool isInv);
 
+	// QTE
+	void				Create_QTE();
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부

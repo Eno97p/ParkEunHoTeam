@@ -34,7 +34,7 @@ public:
 	vector<class CItemData*>*			Get_Weapons() { return &m_vecWeapon; }
 	class CItemData*					Get_EquipWeapon(_uint iArrIdx) { return m_arrEquipWeapon[iArrIdx]; }
 	class CItemData*					Get_EquipSkill(_uint iArrIdx) { return m_arrEquipSkill[iArrIdx]; }
-	// 장착 슬롯들에 값이 들어간 총 개수를 반환하는 함수가 필요함
+
 	_uint								Get_EquipWeaponSize();
 	_uint								Get_EquipSkillSize();
 	vector<class CItemData*>*			Get_Artefact() { return &m_vecArtefact; }
@@ -50,6 +50,7 @@ public:
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 	HRESULT Add_Item(CItemData::ITEM_NAME eItemName);
 	HRESULT Add_Weapon(CItemData::ITEM_NAME eItemName);
+	HRESULT	Add_Skill(CItemData::ITEM_NAME eItemName);
 	HRESULT	Add_QuickAccess(CItemData* pItemData, _int iInvenIdx);
 	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
 	HRESULT	Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx);

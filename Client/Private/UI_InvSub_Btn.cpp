@@ -212,6 +212,8 @@ void CUI_InvSub_Btn::Mouse_Input()
 
 				// Quick에 Item을 추가한 순간 Quick~ size에 맞게 m_iQuickIdx 초기화
 				dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotIdx(CUIGroup_WeaponSlot::SLOT_QUICK);
+				
+				CUI_Manager::GetInstance()->Delete_RedDot_Slot(true);
 			}
 			break;
 		}
@@ -228,6 +230,7 @@ void CUI_InvSub_Btn::Mouse_Input()
 
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 				CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+				CUI_Manager::GetInstance()->Delete_RedDot_Slot(true);
 
 				if (CItemData::ITEMTYPE_ETC == pItem->Get_ItemType())
 				{
@@ -240,6 +243,7 @@ void CUI_InvSub_Btn::Mouse_Input()
 		case Client::CUI_InvSub_Btn::BTN_CANCEL:
 			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_AnimFinished(false);
 			CUI_Manager::GetInstance()->Get_UIGroup("InvSub")->Set_RenderOnAnim(false);
+			CUI_Manager::GetInstance()->Delete_RedDot_Slot(true);
 			break;
 		default:
 			break;

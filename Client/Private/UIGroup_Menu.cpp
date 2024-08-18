@@ -108,6 +108,18 @@ HRESULT CUIGroup_Menu::Create_RedDot_MenuBtn(_bool isInv)
 	return S_OK;
 }
 
+HRESULT CUIGroup_Menu::Delete_RedDot_MenuBtn_Inv()
+{
+	for (auto& pBtn : m_vecBtn)
+	{
+		if (pBtn->Get_MenuType() == CUI_MenuBtn::MENU_INV)
+		{
+			pBtn->Delete_RedDot();
+			return S_OK;
+		}
+	}
+}
+
 HRESULT CUIGroup_Menu::Create_UI()
 {
 	CUI::UI_DESC pDesc;

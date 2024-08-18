@@ -146,6 +146,9 @@
 #include "C:\NewRepo\EffectTool\Private\Meteor_Wind.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\NeedleSpawner.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\Particle.cpp"
 
 

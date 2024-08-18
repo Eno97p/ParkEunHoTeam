@@ -188,10 +188,14 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_H))
 	{
-		_float4 vStartPosition;
+		_float4 vStartPosition, playerLook;
 		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		XMStoreFloat4(&playerLook, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		//EFFECTMGR->Generate_Meteor(vStartPosition);
-		EFFECTMGR->Generate_FirePillar(vStartPosition);
+		//EFFECTMGR->Generate_Needle(vStartPosition);
+		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
+		EFFECTMGR->Generate_HammerSpawn(vStartPosition);
+
 	}
 
 }

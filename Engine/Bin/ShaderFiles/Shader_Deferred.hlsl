@@ -799,8 +799,8 @@ PS_OUT PS_DISTORTION(PS_IN In)
     //{
         // 파동 효과 적용: 사인 함수를 사용하여 텍스처 좌표를 변형
     distortedTex = float2(
-        In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
-        In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
+        In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x /*+ g_Time*/, In.vTexcoord.y /*+ g_Time*/)).r) * waveAmplitude,
+        In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x /*+ g_Time*/, In.vTexcoord.y /*+ g_Time*/)).r) * waveAmplitude
     );
     //}
 

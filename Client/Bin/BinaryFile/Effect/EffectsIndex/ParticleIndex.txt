@@ -74,3 +74,15 @@
 73. MeteorExplosionFog2
 74. FirePillarSpawnRock
 75. FirePillarNeedle
+76. Hedgehog0
+77. Hedgehog2
+78. Hedgehog3
+79. GroundSlashSpark
+80. GroundSlashSpark1
+81. GroundSlashSpark2
+82. GroundSlashSpark3
+83. ItemEffectRed
+84. ItemEffectBlue
+85. ItemEffectYellow
+86. JugglusHammerSpawnRing
+87. JugglusHammerSpawnLenz

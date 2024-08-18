@@ -784,6 +784,15 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\07. Moon">
       <UniqueIdentifier>{96512c81-6708-42a4-8f4f-8730331d4a1f}</UniqueIdentifier>
 	</Filter>
+    <Filter Include="02.GameObjects\06.Effect\Needle">
+      <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\GroundSlash">
+      <UniqueIdentifier>{0072fe49-26b2-4135-8270-0b52067b9006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\JugglusHammerSpawn">
+      <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\FirePillar">
       <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
@@ -1724,6 +1733,18 @@
     <ClInclude Include="..\Public\BackGround_Moon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
 	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
+      <Filter>02.GameObjects\06.Effect\Needle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h">
+      <Filter>02.GameObjects\06.Effect\Needle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\GroundSlash.h">
+      <Filter>02.GameObjects\06.Effect\GroundSlash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HammerSpawn.h">
+      <Filter>02.GameObjects\06.Effect\JugglusHammerSpawn</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\KickSword.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
     </ClInclude>
@@ -2608,6 +2629,18 @@
     <ClCompile Include="..\Private\BackGround_Moon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
 	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
+      <Filter>02.GameObjects\06.Effect\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp">
+      <Filter>02.GameObjects\06.Effect\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\GroundSlash.cpp">
+      <Filter>02.GameObjects\06.Effect\GroundSlash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HammerSpawn.cpp">
+      <Filter>02.GameObjects\06.Effect\JugglusHammerSpawn</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\KickSword.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
     </ClCompile>

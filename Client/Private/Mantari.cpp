@@ -293,11 +293,6 @@ HRESULT CMantari::Add_Nodes()
 
 NodeStates CMantari::Revive(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_L))
-	{
-		m_bReviving = true;
-	}
-
 	if (m_bReviving)
 	{
 		m_iState = STATE_REVIVE;

@@ -80,6 +80,7 @@ private:
 	_float										m_fMoveTime = 2.f;
 	_float										m_fTurnDelay = 0.5f;
 	_float m_fSpawnCoolTime = SPAWNCOOLTIME;
+	_float m_fKickSwordDelay = 0.5f;
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
 

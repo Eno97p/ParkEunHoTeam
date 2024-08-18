@@ -209,6 +209,10 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_RushSword"),
 		CRushSword::Create(pDevice, pContext))))
 		return E_FAIL;
+	/* For.Prototype_GameObject_KickSword */
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Weapon_KickSword"),
+		CKickSword::Create(pDevice, pContext))))
+		return E_FAIL;
 	/* For.Prototype_GameObject_AndrasHead */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasHead"),
 		CAndrasHead::Create(pDevice, pContext))))

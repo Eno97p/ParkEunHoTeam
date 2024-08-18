@@ -33,10 +33,16 @@ public:
 	void			Change_Texture(wstring wstrTextureName);
 	void			Update_Pos(_float fX, _float fY);
 
-private:
-	UISORT_PRIORITY	m_eUISort = { SORT_END };
+	HRESULT			Create_RedDot();
+	HRESULT			Delete_RedDot();
 
-	wstring			m_wszTexture;
+
+private:
+	wstring				m_wszTexture;
+
+	UISORT_PRIORITY		m_eUISort = { SORT_END };
+
+	class CUI_RedDot*	m_pRedDot = { nullptr };
 
 private:
 	HRESULT	Add_Components();

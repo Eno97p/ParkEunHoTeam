@@ -397,7 +397,7 @@ NodeStates CMalkhel::Chase(_float fTimeDelta)
 		}
 		else
 		{
-			Chase_Player(fTimeDelta);
+			Chase_Player(fTimeDelta * 0.5f);
 		}
 		return RUNNING;
 	}

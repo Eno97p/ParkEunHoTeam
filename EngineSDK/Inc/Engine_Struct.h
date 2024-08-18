@@ -189,7 +189,7 @@ namespace Engine
 
 	}VTXANIMMESH;
 
-	typedef struct ENGINE_DLL VTXMATRIX
+	typedef struct  ENGINE_DLL VTXMATRIX
 	{
 		XMFLOAT4			vRight;
 		XMFLOAT4			vUp;
@@ -197,16 +197,16 @@ namespace Engine
 		XMFLOAT4			vTranslation;
 		XMFLOAT2			vLifeTime;
 		_float			   vGravity;
-
-		void setToDefault()		//Test
-		{
-			vRight = { 0,0,0,0 };
-			vUp = { 0,0,0,0 };
-			vLook = { 0,0,0,0 };
-			vTranslation = { 0,0,0,0 };
-			vLifeTime = { 0,0 };
-			vGravity = 0;
-		}
+		//_float padding;  // 4바이트 패딩 추가
+		//void setToDefault()		//Test
+		//{
+		//	vRight = { 0,0,0,0 };
+		//	vUp = { 0,0,0,0 };
+		//	vLook = { 0,0,0,0 };
+		//	vTranslation = { 0,0,0,0 };
+		//	vLifeTime = { 0,0 };
+		//	vGravity = 0;
+		//}
 
 	}VTXMATRIX;
 

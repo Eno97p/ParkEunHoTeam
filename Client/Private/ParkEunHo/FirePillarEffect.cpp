@@ -1,5 +1,6 @@
 #include "FirePillarEffect.h"
 #include "GameInstance.h"
+#include "Player.h"
 
 CFirePillarEffect::CFirePillarEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
@@ -49,6 +50,12 @@ HRESULT CFirePillarEffect::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(WorldMat);
 
 	m_CurrentSize = { 0.f,0.f,0.f };
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+
 	return S_OK;
 }
 
@@ -59,7 +66,6 @@ void CFirePillarEffect::Priority_Tick(_float fTimeDelta)
 
 void CFirePillarEffect::Tick(_float fTimeDelta)
 {
-
 	m_fCurLifeTime += fTimeDelta;
 	if (m_fCurLifeTime >= m_OwnDesc->fMaxLifeTime)
 	{
@@ -108,15 +114,21 @@ void CFirePillarEffect::Tick(_float fTimeDelta)
 		SizeDirectionChange = !SizeDirectionChange;
 	}
 
-
-
-	
-	
 	m_pTransformCom->Set_Scale(m_CurrentSize.x, m_CurrentSize.y, m_CurrentSize.z);
 }
 
 void CFirePillarEffect::Late_Tick(_float fTimeDelta)
 {
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	// 플레이어 충돌처리
+	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START && m_OwnDesc->NumModels == F_1)
+	{
+		m_pPlayer->PlayerHit(10);
+	}
+
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
@@ -191,6 +203,17 @@ HRESULT CFirePillarEffect::Render_Distortion()
 
 HRESULT CFirePillarEffect::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.f, 10.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y * 0.5f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, m_ModelProtoName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -299,4 +322,6 @@ void CFirePillarEffect::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

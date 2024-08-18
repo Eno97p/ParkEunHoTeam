@@ -134,6 +134,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	Spawn_CircleSphere(fTimeDelta);
 	Spawn_Lightning(fTimeDelta);
+	Spawn_Flame(fTimeDelta);
 }
 
 void CBoss_Juggulus::Late_Tick(_float fTimeDelta)
@@ -401,6 +402,51 @@ void CBoss_Juggulus::Spawn_Lightning(_float fTimeDelta)
 	}
 }
 
+void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
+{
+	if (m_fFlameSpawnTime < FLAMESPAWNTIME)
+	{
+		m_fFlameSpawnTime -= fTimeDelta;
+
+		if (m_fFlameSpawnTime < 5.f && m_iFlameCount == 0)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_FirePillar(fPos);
+			m_iFlameCount++;
+		}
+		else if (m_fFlameSpawnTime < 4.f && m_iFlameCount == 1)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_FirePillar(fPos);
+			m_iFlameCount++;
+		}
+		else if (m_fFlameSpawnTime < 3.f && m_iFlameCount == 2)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_FirePillar(fPos);
+			m_iFlameCount++;
+		}
+		else if (m_fFlameSpawnTime < 2.f && m_iFlameCount == 3)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_FirePillar(fPos);
+			m_iFlameCount++;
+		}
+		else if (m_fFlameSpawnTime < 1.f && m_iFlameCount == 4)
+		{
+			_float4 fPos;
+			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_FirePillar(fPos);
+			m_iFlameCount = 0;
+			m_fFlameSpawnTime = FLAMESPAWNTIME;
+		}
+	}
+}
+
 NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
 	if (0.f >= m_fCurHp)
@@ -565,7 +611,7 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		m_iState = STATE_TORNADO_ATTACK;
 		break;
 	}
-	m_iState = STATE_THUNDER_ATTACK;
+	m_iState = STATE_FLAME_ATTACK;
 	return SUCCESS;
 }
 
@@ -601,9 +647,14 @@ NodeStates CBoss_Juggulus::FlameAttack(_float fTimeDelta)
 
 	if (m_iState == STATE_FLAME_ATTACK)
 	{
+		if (m_fFlameSpawnTime == FLAMESPAWNTIME)
+		{
+			m_fFlameSpawnTime -= 0.01f;
+		}
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE_SEC;
+
 			return SUCCESS;
 		}
 		return RUNNING;

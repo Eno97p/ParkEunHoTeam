@@ -58,6 +58,7 @@ HRESULT CCuda::LaunchKernel_CullingInstance(VTXMATRIX* d_instanceData, int numIn
 	Cu_VTXMATRIX* cu_instanceData = reinterpret_cast<Cu_VTXMATRIX*>(d_instanceData);
 	cudaError_t cudaStatus = LaunchCullingKernel(cu_instanceData, numInstances, cameraPos, maxDistanceSquared, d_visibleCount);
 
+	
 	if (cudaStatus != cudaSuccess)
 	{
 		// 오류 처리
@@ -65,6 +66,46 @@ HRESULT CCuda::LaunchKernel_CullingInstance(VTXMATRIX* d_instanceData, int numIn
 	}
 
 	cudaDeviceSynchronize();
+	return S_OK;
+}
+
+HRESULT CCuda::LaunchKernel_CullingInstance(cudaGraphicsResource* cudaResource, int numInstances, float3 cameraPos, float maxRenderDistance, int* d_visibleCount)
+{
+
+	float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
+
+	// CUDA 리소스 매핑
+	cudaError_t cudaStatus = cudaGraphicsMapResources(1, &cudaResource, 0);
+	if (cudaStatus != cudaSuccess)
+	{
+		// 오류 처리
+		return E_FAIL;
+	}
+	// CUDA 포인터 얻기
+	void* d_resourceData = nullptr;
+	size_t size;
+	cudaStatus = cudaGraphicsResourceGetMappedPointer(&d_resourceData, &size, cudaResource);
+	if (cudaStatus != cudaSuccess)
+	{
+		cudaGraphicsUnmapResources(1, &cudaResource, 0);
+		return E_FAIL;
+	}
+
+	// 포인터 타입 변환
+	Cu_VTXMATRIX* d_instanceData = static_cast<Cu_VTXMATRIX*>(d_resourceData);
+
+	// 커널 실행
+	cudaStatus = LaunchCullingKernel(d_instanceData, numInstances, cameraPos, maxDistanceSquared, d_visibleCount);
+	// CUDA 리소스 언매핑
+	cudaGraphicsUnmapResources(1, &cudaResource, 0);
+
+	if (cudaStatus != cudaSuccess)
+	{
+		// 오류 처리
+		return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 

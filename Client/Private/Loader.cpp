@@ -544,6 +544,10 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 16))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_YantariBody"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Yantari/YantariBody%d.dds"), 3))))
+		return E_FAIL;
+
 
 #pragma region  Environmental Element Model Load
 

@@ -9,7 +9,7 @@ BEGIN(MYMapTool)
 class CLagoon final : public CToolObj
 {
 private:
-	enum TEXS {TEX_NORMAL1, TEX_NORMAL2, TEX_CAUSTIC, TEX_END};
+	enum TEXS { TEX_NORMAL1, TEX_NORMAL2, TEX_CAUSTIC, TEX_FOAMMASK, TEX_FOAM, TEX_FOAMNORMAL, TEX_END };
 private:
 	CLagoon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CLagoon(const CLagoon& rhs);
@@ -53,7 +53,13 @@ public:
 
 	_float m_fBloomIntensity = 1.f;    // 물의 기본 알파값
 	_float m_fBloomThreshold = 0.8f;    // 물의 깊이 (미터 단위)
-private:
+
+    _float m_fFoamWaveFrequency = 1.0f;		// 거품 파도의 주파수
+    _float m_fFoamWaveAmplitude = 0.05f;	// 거품 파도의 진폭
+    _float m_fFoamMaskScale = 10.0f;		// 거품 마스크의 스케일
+    _float m_fFoamMaskSpeed = 0.01f;		// 거품 마스크의 이동 속도
+    _float m_fFoamBlendStrength = 0.5f;		// 거품 블렌딩 강도
+    _float m_fFoamFresnelStrength = 0.5f;	// 거품에 적용되는 프레넬 효과 강도private:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pNoiseCom = { nullptr };

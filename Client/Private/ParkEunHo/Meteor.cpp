@@ -62,6 +62,10 @@ void CMeteor::Tick(_float fTimeDelta)
 {
 	m_CurLifeTime -= fTimeDelta;
 	m_fWindSpawn -= fTimeDelta;
+
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Zoom(90.f, 0.3f, 2.f);
+
 	if (m_CurLifeTime < 0.f)
 	{
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());

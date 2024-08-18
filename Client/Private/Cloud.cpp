@@ -37,10 +37,10 @@ HRESULT CCloud::Initialize(void* pArg)
 		return E_FAIL;
 
 	_matrix mat = {
-		0.02f, 0, 0.f, 0.f,
-		0, 0.02f, 0.f, 0.f,
-		0.f, 0.f, 0.02, 0.f,
-		-71.919f, 426.108f, -49.122f, 1.f
+		0.025f, 0, 0.f, 0.f,
+		0, 0.025f, 0.f, 0.f,
+		0.f, 0.f, 0.025, 0.f,
+		-71.919f, 299.f, -49.122f, 1.f
 	};
 	m_pTransformCom->Set_WorldMatrix(mat);
 
@@ -176,7 +176,7 @@ HRESULT CCloud::Render_Reflection()
 	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
 
 	// 바닥 평면의 높이 (물 표면 높이)
-	float floorHeight = 272.f; // 적절한 값으로 조정 필요
+	float floorHeight = 300.f; // 적절한 값으로 조정 필요
 
 	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
 	XMVECTOR vReflectedCamPos = vCamPos;

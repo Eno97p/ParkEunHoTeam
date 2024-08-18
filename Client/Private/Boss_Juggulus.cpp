@@ -58,17 +58,14 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
 	m_pUI_HP->Set_Rend(true);
 
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
-	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
-	Safe_AddRef(m_pPlayer);
-	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
-	Safe_AddRef(m_pPlayerTransform);
 
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
 	_uint i = 0;
 	for (auto iter : StatueList)
 	{
-		m_pBossStatues[i++] = dynamic_cast<CBossStatue*>(iter);
+		m_pBossStatues[i] = dynamic_cast<CBossStatue*>(iter);
+		Safe_AddRef(m_pBossStatues[i]);
+		i++;
 	}
 
 	m_bPlayerIsFront = true;
@@ -783,10 +780,14 @@ void CBoss_Juggulus::Free()
 	__super::Free();
 
 	Safe_Release(m_pBehaviorCom);
-	Safe_Release(m_pPlayer);
-	Safe_Release(m_pPlayerTransform);
+
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject.second);
+
+	for (auto statue : m_pBossStatues)
+		Safe_Release(statue);
+
 	m_PartObjects.clear();
+
 }

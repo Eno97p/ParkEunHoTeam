@@ -600,9 +600,13 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_ATTACK5;
 				break;
 			case 3:
+			{
 				m_fSpawnCoolTime = 0.f;
 				m_iState = STATE_ATTACK6;
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 1.f, 2.f);
 				break;
+			}
 			case 4:
 				m_iState = STATE_ATTACK7;
 				break;
@@ -631,9 +635,14 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_ATTACK5;
 				break;
 			case 5:
+			{
+
 				m_fSpawnCoolTime = 0.f;
 				m_iState = STATE_ATTACK6;
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(60.f, 0.13f, 0.602f);
 				break;
+			}
 			case 6:
 				m_iState = STATE_ATTACK7;
 				break;

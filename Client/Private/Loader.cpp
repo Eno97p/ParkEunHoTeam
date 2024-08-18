@@ -3280,15 +3280,27 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_WaterNormal1"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/waterwayNRM.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/waterwayNRM.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_WaterNormal2"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/T_StylizedWater_03_N.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/T_StylizedWater_03_N.dds"), 1))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_WaterCaustic"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/water5.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/water5.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_FoamMask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/Foam/T_RiverFoam.dds"), 1))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_Foam"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/Foam/T_Foam_D_%d.dds"), 2))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Texture_FoamNormal"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/Foam/T_WaterFoam_N_%d.dds"), 2))))
 		return E_FAIL;
 
 

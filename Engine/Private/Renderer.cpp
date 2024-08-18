@@ -453,9 +453,9 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     currentX += targetWidth + gap;
 
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
-    //    return E_FAIL;
-    //currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
 
 
 
@@ -558,7 +558,7 @@ HRESULT CRenderer::Initialize()
     currentX += targetWidth + gap;
 
     if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Final"), currentX, currentY, targetWidth, targetHeight)))
-       return E_FAIL;*/
+       return E_FAIL;
 
 
        /* if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
@@ -2032,7 +2032,7 @@ void CRenderer::Render_Debug()
 
     m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
     m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
-    //m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }
 

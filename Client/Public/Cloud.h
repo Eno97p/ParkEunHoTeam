@@ -113,7 +113,7 @@ private:
 	_float m_fReflectionQuality = 0.01f; // 0.1 (낮음) ~ 1.0 (높음)
 	_float m_fReflectionOpacity = 1.f; // 0.0 (완전 투명) ~ 1.0 (불투명)
 	_float m_fReflectionDensityScale = 3.f; // 0.1 (엷음) ~ 1.0 (진함)
-	_float4 m_vBaseSkyColor = { 226.f / 255.f, 243.f / 255.f, 1.f, 1.f };
+	_float4 m_vBaseSkyColor = { 195.f / 255.f, 232.f / 255.f, 1.f, 1.f };
 
 
 public:

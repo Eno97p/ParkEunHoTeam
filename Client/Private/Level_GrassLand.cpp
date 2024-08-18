@@ -339,7 +339,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
 	_matrix vMat = {500.f, 0.f, 0.f, 0.f,
 	0.f, 1.f, 0.f, 0.f,
 	0.f, 0.f, 500.f, 0.f,
-	-41.f, 271.f, -80.565f, 1.f };
+	-41.f, 300.f, -80.565f, 1.f };
 
 	XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Lagoon"), TEXT("Prototype_GameObject_Lagoon"), &desc)))
@@ -668,13 +668,13 @@ HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 	}
 
 	// 동적 할당된 메모리 해제
-	for (auto& pair : modelMatrices)
-	{
-		for (auto pWorldMatrix : pair.second)
-		{
-			Safe_Delete(pWorldMatrix);
-		}
-	}
+	//for (auto& pair : modelMatrices)
+	//{
+	//	for (auto pWorldMatrix : pair.second)
+	//	{
+	//		Safe_Delete(pWorldMatrix);
+	//	}
+	//}
 
 	return S_OK;
 }
@@ -824,25 +824,25 @@ HRESULT CLevel_GrassLand::Load_Data_Effects()
 	}
 
 	// Tree 메모리 해제
-	for (auto& group : treeGroups)
-	{
-		for (auto& pMatrix : group.second)
-		{
-			delete pMatrix;
-		}
-	}
+	//for (auto& group : treeGroups)
+	//{
+	//	for (auto& pMatrix : group.second)
+	//	{
+	//		delete pMatrix;
+	//	}
+	//}
 
-	// Grass 메모리 해제
-	for (auto& group : grassGroups)
-	{
-		for (auto& instanceMatrices : group.second)
-		{
-			for (auto& pMatrix : instanceMatrices)
-			{
-				delete pMatrix;
-			}
-		}
-	}
+	//// Grass 메모리 해제
+	//for (auto& group : grassGroups)
+	//{
+	//	for (auto& instanceMatrices : group.second)
+	//	{
+	//		for (auto& pMatrix : instanceMatrices)
+	//		{
+	//			delete pMatrix;
+	//		}
+	//	}
+	//}
 
 #ifdef _DEBUG
 	  MSG_BOX("Effect Data Load");

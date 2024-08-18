@@ -1176,8 +1176,6 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 {
 	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
 	{
-		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
-		pThirdPersonCamera->Zoom(90.f, 0.13f, 0.602f);
 
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)

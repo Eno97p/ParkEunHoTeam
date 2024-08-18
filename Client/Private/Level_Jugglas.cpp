@@ -626,13 +626,13 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 	}
 
 	// 동적 할당된 메모리 해제
-	for (auto& pair : modelMatrices)
-	{
-		for (auto pWorldMatrix : pair.second)
-		{
-			Safe_Delete(pWorldMatrix);
-		}
-	}
+	//for (auto& pair : modelMatrices)
+	//{
+	//	for (auto pWorldMatrix : pair.second)
+	//	{
+	//		Safe_Delete(pWorldMatrix);
+	//	}
+	//}
 
 	return S_OK;
 }

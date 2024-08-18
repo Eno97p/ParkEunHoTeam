@@ -26,13 +26,13 @@ HRESULT CBossStatue::Initialize(void* pArg)
 
 	if (nullptr != pArg)
 	{
-		CActive_Element::MAP_ELEMENT_DESC* pDesc = (CActive_Element::MAP_ELEMENT_DESC*)pArg;
+		CMap_Element::MAP_ELEMENT_DESC* pDesc = (CMap_Element::MAP_ELEMENT_DESC*)pArg;
 		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 	}
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
-
+	Safe_AddRef(m_pPlayer);
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
@@ -263,6 +263,6 @@ CGameObject* CBossStatue::Clone(void* pArg)
 void CBossStatue::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pPlayer);
 	Safe_Release(m_pColliderCom);
 }

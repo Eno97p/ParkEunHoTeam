@@ -108,7 +108,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 				case TRIG_TUTORIAL_BOSSENCOUNTER:
 				{
-					CMap_Element::MAP_ELEMENT_DESC pDesc = {};
+					CMap_Element::MAP_ELEMENT_DESC pDesc{};
 					_matrix vMat = { 1.4f, 0.f, 0.f, 0.f,
 					0.f, 10.f, 0.f, 0.f,
 					0.f, 0.f, 1.4f, 0.f,
@@ -120,30 +120,44 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_JUGGLAS_SPAWNSECONDROOM:
 				{
-					CMap_Element::MAP_ELEMENT_DESC pDesc = {};
-					_float4x4 vMat;
-					XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
+					CMap_Element::MAP_ELEMENT_DESC pDesc{};
+					_float4x4* vMat = new _float4x4();
+					XMStoreFloat4x4(vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
 					pDesc.iInstanceCount = 1;
-					pDesc.WorldMats.emplace_back(&vMat);
+					pDesc.WorldMats.emplace_back(vMat);
 					pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle2");
+
+					// Add_CloneObject 함수가 pDesc의 내용을 복사한다고 가정
 					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+
+					// pDesc.Cleanup() 대신 직접 메모리 해제
+					for (auto& mat : pDesc.WorldMats)
+					{
+						delete mat;
+					}
+					pDesc.WorldMats.clear();
+
+					//Safe_Delete(pDesc.WorldMats.front());
+
 				}
 				break;
 				case TRIG_JUGGLAS_SPAWNTHIRDROOM:
 				{
 					//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), 0));`
 					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 6));
-					CMap_Element::MAP_ELEMENT_DESC pDesc = {};
-					_float4x4 vMat;
-					XMStoreFloat4x4(&vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
+					CMap_Element::MAP_ELEMENT_DESC pDesc;
+					_float4x4* vMat = new _float4x4();
+					XMStoreFloat4x4(vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));
 					pDesc.iInstanceCount = 1;
-
-					pDesc.WorldMats.emplace_back(&vMat);
+					pDesc.WorldMats.emplace_back(vMat);
 					pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle3");
 					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
 
 					pDesc.wstrModelName = TEXT("Prototype_Component_Model_RasSamrahCastle4");
 					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_Passive_Element"), &pDesc);
+
+					pDesc.Cleanup();  // 명시적으로 정리 작업 수행
+					//Safe_Delete(pDesc.WorldMats.front());
 				}
 				break;
 				case TRIG_VIEWCHANGE_TTOS:
@@ -201,6 +215,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_ASCEND_ELEVATOR:
 				{
+					// FOG_DESC 설정
 					CRenderer::FOG_DESC fogDesc{};
 					fogDesc.vFogColor = { 0.154f, 0.115f, 0.211f, 1.f };
 					fogDesc.vFogColor2 = { 0.814f, 0.814f, 0.814f, 1.f };
@@ -213,47 +228,42 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					fogDesc.fNoiseIntensity2 = 3.125f;
 					fogDesc.fNoiseSize = 0.008654f;
 					fogDesc.fNoiseSize2 = 0.003365f;
-
 					fogDesc.fFogBlendFactor = 0.457f;
 
+					// FOG_DESC 적용 (구체적인 적용 방법은 m_pGameInstance의 구현에 따라 다를 수 있음)
+					m_pGameInstance->Set_FogOption(fogDesc);
+
 					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
-					
-					//보스 석상 소환
-					CMap_Element::MAP_ELEMENT_DESC StatueDesc = {};
-					_matrix vMat = { 0.f, 0.f, -1.f, 0.f,
-					0.f, 1.f, 0.f, 0.f,
-					1.f, 0.f, 0.f, 0.f,
-					-410.189f, 67.966f, -2.195f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
 
-					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
-					vMat = { -0.91f, 0.f, -0.415f, 0.f,
-				   0.f, 1.f, 0.f, 0.f,
-				   0.415f, 0.f, -0.91f, 0.f,
-				   -420.326f, 67.976f, -17.686f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+					// 보스 석상 소환
+					const _float4x4 statueMatrices[3] = {
+						{ 0.f, 0.f, -1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -410.189f, 67.966f, -2.195f, 1.f },
+						{ -0.91f, 0.f, -0.415f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.415f, 0.f, -0.91f, 0.f, -420.326f, 67.976f, -17.686f, 1.f },
+						{ 0.845f, 0.f, -0.536f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.536f, 0.f, 0.845f, 0.f, -420.068f, 67.932f, 13.209f, 1.f }
+					};
 
-					ZeroMemory(&StatueDesc, sizeof(StatueDesc));
-					vMat = { 0.845f, 0.f, -0.536f, 0.f,
-				   0.f, 1.f, 0.f, 0.f,
-				   0.536f, 0.f, 0.845f, 0.f,
-				   -420.068f, 67.932f, 13.209f, 1.f };
-					XMStoreFloat4x4(&StatueDesc.mWorldMatrix, vMat);
-					m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+					for (const auto& matrix : statueMatrices)
+					{
+						CMap_Element::MAP_ELEMENT_DESC StatueDesc{};
+						StatueDesc.mWorldMatrix = matrix;
+						m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+					}
 
-					//보스 소환
-					dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0))->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f)); //LEVEL_JUGGLAS로 변경
-				
+					// 보스 소환
+					auto pElevator = dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0));
+					if (pElevator)
+					{
+						pElevator->Ascend(XMVectorSet(-310.f, 69.f, -1.5f, 1.f));
+					}
+
 					CLandObject::LANDOBJ_DESC desc{};
-					desc.mWorldMatrix._41 = -8.3f;
-					desc.mWorldMatrix._42 = 3.5f;
-					desc.mWorldMatrix._43 = -2.4f;
-					desc.mWorldMatrix._44 = 1.f;
+					XMStoreFloat4x4(&desc.mWorldMatrix, XMMatrixTranslation(-8.3f, 3.5f, -2.4f));
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), &desc)))
+					{
+						MSG_BOX("Failed to add Boss_Juggulus");
 						return;
+					}
 				}
 				break;
 				case TRIG_DESCEND_ELEVATOR:

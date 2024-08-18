@@ -781,6 +781,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
       <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\07. Moon">
+      <UniqueIdentifier>{96512c81-6708-42a4-8f4f-8730331d4a1f}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\06.Effect\Needle">
       <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
     </Filter>
@@ -1727,6 +1730,9 @@
     <ClInclude Include="..\Public\Mask_Yantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackGround_Moon.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClInclude>
@@ -2620,6 +2626,9 @@
     <ClCompile Include="..\Private\Mask_Yantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BackGround_Moon.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClCompile>

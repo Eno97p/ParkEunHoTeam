@@ -25,6 +25,19 @@ public:
 
 		_uint TriggerType = 0; //Trigger 전용 이벤트 타입
 
+		void Cleanup()
+		{
+			for (auto& mat : WorldMats)
+			{
+				Safe_Delete(mat);
+			}
+			WorldMats.clear();
+		}
+
+		~MAP_ELEMENT_DESC()
+		{
+			Cleanup();
+		}
 	}MAP_ELEMENT_DESC;
 
 

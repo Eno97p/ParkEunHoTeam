@@ -30,6 +30,7 @@
 #include "Weapon_Andras4.h"
 #include "Weapon_Andras5.h"
 #include "RushSword.h"
+#include "KickSword.h"
 
 #include "Boss_Juggulus.h"
 #include "Body_Juggulus.h"
@@ -53,6 +54,7 @@
 
 #include "Yantari.h"
 #include "Body_Yantari.h"
+#include "Mask_Yantari.h"
 #include "Weapon_Yantari.h"
 
 #include "Legionnaire.h"

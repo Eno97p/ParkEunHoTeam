@@ -75,13 +75,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>../Bin\</OutDir>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>../Bin\</OutDir>
-    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -192,12 +192,15 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\FirePillarEffect.h" />
     <ClInclude Include="..\Public\FirePillar_Bottom.h" />
     <ClInclude Include="..\Public\FirePillar_Charge.h" />
+    <ClInclude Include="..\Public\GroundSlash.h" />
     <ClInclude Include="..\public\HealEffect.h" />
     <ClInclude Include="..\Public\Heal_Line.h" />
     <ClInclude Include="..\Public\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\Heal_Spiral.h" />
+    <ClInclude Include="..\public\Hedgehog.h" />
     <ClInclude Include="..\Public\HoverBoard.h" />
     <ClInclude Include="..\Public\ImguiMgr.h" />
+    <ClInclude Include="..\Public\HammerSpawn.h" />
     <ClInclude Include="..\Public\LazerCast.h" />
     <ClInclude Include="..\Public\Level_GamePlay.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
@@ -210,6 +213,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Meteor.h" />
     <ClInclude Include="..\Public\Meteor_Core.h" />
     <ClInclude Include="..\Public\Meteor_Wind.h" />
+    <ClInclude Include="..\Public\NeedleSpawner.h" />
     <ClInclude Include="..\public\Particle.h" />
     <ClInclude Include="..\Public\ParticleMesh.h" />
     <ClInclude Include="..\Public\Particle_PhysX.h" />
@@ -269,12 +273,15 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\FirePillar_Bottom.cpp" />
     <ClCompile Include="..\Private\FirePillar_Charge.cpp" />
+    <ClCompile Include="..\Private\GroundSlash.cpp" />
     <ClCompile Include="..\private\HealEffect.cpp" />
     <ClCompile Include="..\Private\Heal_Line.cpp" />
     <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\Heal_Spiral.cpp" />
+    <ClCompile Include="..\private\Hedgehog.cpp" />
     <ClCompile Include="..\Private\HoverBoard.cpp" />
     <ClCompile Include="..\Private\ImguiMgr.cpp" />
+    <ClCompile Include="..\Private\HammerSpawn.cpp" />
     <ClCompile Include="..\Private\LazerCast.cpp" />
     <ClCompile Include="..\Private\Level_GamePlay.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
@@ -287,6 +294,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Meteor.cpp" />
     <ClCompile Include="..\Private\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\Meteor_Wind.cpp" />
+    <ClCompile Include="..\Private\NeedleSpawner.cpp" />
     <ClCompile Include="..\private\Particle.cpp" />
     <ClCompile Include="..\Private\ParticleMesh.cpp" />
     <ClCompile Include="..\Private\Particle_PhysX.cpp" />

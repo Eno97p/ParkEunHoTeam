@@ -137,6 +137,15 @@
     <Filter Include="Objects\02. Effects\14. PhysXParticle">
       <UniqueIdentifier>{73ae0830-e6d8-4558-a75d-9f8dbee3712d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\15. Hedgehog">
+      <UniqueIdentifier>{c66062d7-3db5-406c-9cbc-6809071bdd4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\16. GroundSlash">
+      <UniqueIdentifier>{bb8505a6-4662-48db-af4b-5398a1cd2c84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\17. Jugglus">
+      <UniqueIdentifier>{941b2fce-0f99-473c-a5ff-8c35bda1cca6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -370,6 +379,18 @@
     <ClInclude Include="..\Public\Particle_PhysX.h">
       <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Hedgehog.h">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NeedleSpawner.h">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GroundSlash.h">
+      <Filter>Objects\02. Effects\16. GroundSlash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HammerSpawn.h">
+      <Filter>Objects\02. Effects\17. Jugglus</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -587,6 +608,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_PhysX.cpp">
       <Filter>Objects\02. Effects\14. PhysXParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Hedgehog.cpp">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NeedleSpawner.cpp">
+      <Filter>Objects\02. Effects\15. Hedgehog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GroundSlash.cpp">
+      <Filter>Objects\02. Effects\16. GroundSlash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HammerSpawn.cpp">
+      <Filter>Objects\02. Effects\17. Jugglus</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,7 @@
 #include "CMouse.h"
 
 #include "UIGroup_Ch_Upgrade.h"
+#include "UI_RedDot.h"
 
 CUI_MenuBtn::CUI_MenuBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Interaction{pDevice, pContext}
@@ -64,11 +65,17 @@ void CUI_MenuBtn::Tick(_float fTimeDelta)
 	}
 	else
 		m_iTextureNum = 0;
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Tick(fTimeDelta);
 }
 
 void CUI_MenuBtn::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, SEVENTH);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_MenuBtn::Render()
@@ -221,8 +228,18 @@ void CUI_MenuBtn::Open_MenuPage()
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");
 		break;
 	case Client::CUI_MenuBtn::MENU_INV:
+	{
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Inventory");
+
+		// Inventory의 경우에는 그런데 Weapon의 경우에는 좀 다름... 
+		if (nullptr != m_pRedDot)
+		{
+			Safe_Release(m_pRedDot);
+			m_pRedDot = nullptr;
+		}
+
 		break;
+	}
 	case Client::CUI_MenuBtn::MENU_SET:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Setting");
 		break;
@@ -231,6 +248,36 @@ void CUI_MenuBtn::Open_MenuPage()
 	}
 
 	CUI_Manager::GetInstance()->Set_MenuPageOpen();
+
+
+}
+
+HRESULT CUI_MenuBtn::Create_RedDot()
+{
+	if (m_pRedDot != nullptr)
+		return S_OK;
+
+	CUI_RedDot::UI_REDDOT_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eUISort = EIGHT;
+	pDesc.fX = m_fX;
+	pDesc.fY = m_fY - 56.f;
+	pDesc.fSizeX = 20.f;
+	pDesc.fSizeY = 20.f;
+
+	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
+	if (nullptr == m_pRedDot)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_MenuBtn::Delete_RedDot()
+{
+	Safe_Release(m_pRedDot);
+	m_pRedDot = nullptr;
+
+	return S_OK;
 }
 
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -262,4 +309,6 @@ CGameObject* CUI_MenuBtn::Clone(void* pArg)
 void CUI_MenuBtn::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pRedDot);
 }

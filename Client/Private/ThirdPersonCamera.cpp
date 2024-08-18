@@ -230,6 +230,7 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
     // 셰이크 효과 적용
     if (m_bIsShaking)
     {
+        m_pGameInstance->Set_MotionBlur(true);
         _vector vShakePosition = XMLoadFloat4(&m_vCameraPosition) + XMLoadFloat3(&m_vShakeOffset);
         XMStoreFloat4(&m_vCameraPosition, vShakePosition);
 

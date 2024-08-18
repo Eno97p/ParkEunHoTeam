@@ -36,7 +36,16 @@ HRESULT CGrass::Initialize(void* pArg)
 	//m_pVIBufferCom->Initial_RotateY();
 
 
+
 	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
+
+	CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+	m_pVIBufferCom->Initial_RotateY();
+	m_pVIBufferCom->Setup_Onterrain(pTerrain);
+	//m_pVIBufferCom->Initial_RandomOffset(pTerrain);
+
+	
+
 	m_vTopCol = gd->vTopCol;
 	m_vBotCol = gd->vBotCol;
 
@@ -47,6 +56,8 @@ HRESULT CGrass::Initialize(void* pArg)
 	m_vTopCol.y -= randFloat;
 	m_vTopCol.z -= randFloat;
 
+	
+	
 	return S_OK;
 }
 
@@ -81,7 +92,14 @@ void CGrass::Priority_Tick(_float fTimeDelta)
 
 void CGrass::Tick(_float fTimeDelta)
 {
-	//m_pVIBufferCom->Drop(fTimeDelta);
+
+	//_float3 camPos;
+	//XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
+	//m_pVIBufferCom->Culling_Instance(camPos, 500.f);
+
+
+
+
 }
 
 void CGrass::Late_Tick(_float fTimeDelta)
@@ -98,6 +116,7 @@ HRESULT CGrass::Render()
 
 	m_pVIBufferCom->Bind_Buffers();
 
+	//m_pVIBufferCom->Render_Culling();
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -115,15 +134,18 @@ vector<_float4x4*> CGrass::Get_VtxMatrices()
 
 HRESULT CGrass::Add_Components(void* pArg)
 {
+	GRASS_DESC* desc = static_cast<GRASS_DESC*>(pArg);
+
 	CVIBuffer_Instance::INSTANCE_DESC		InstanceDesc{};
 
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	ZeroMemory(&InstanceDesc, sizeof InstanceDesc);
 
-	InstanceDesc.iNumInstance = 1;
+
+	InstanceDesc.iNumInstance = desc->iInstanceCount;
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
 	InstanceDesc.vPivotPos = m_vPivotPos;
-	InstanceDesc.vRange = _float3(25.0f, 0.f, 25.0f);
+	InstanceDesc.vRange = _float3(500.0f, 0.f, 500.0f);
 	InstanceDesc.vSize = _float2(1.f, 5.f);
 	InstanceDesc.vSpeed = _float2(1.f, 7.f);
 	InstanceDesc.vLifeTime = _float2(10.f, 15.f);
@@ -142,11 +164,10 @@ HRESULT CGrass::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	GRASS_DESC* desc = static_cast<GRASS_DESC*>(pArg);
 	{
 
 		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, /*desc->wstrModelName.c_str()*/TEXT("Prototype_Component_Texture_Grass_TT"),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -164,11 +185,19 @@ HRESULT CGrass::Add_Components(void* pArg)
 		return E_FAIL;
 
 
-	CVIBuffer_Instance_Point::INSTANCE_MAP_DESC mapdesc{};
+
+	
+
+	/*CVIBuffer_Instance_Point::INSTANCE_MAP_DESC mapdesc{};
+
 
 	mapdesc.WorldMats = (desc->WorldMats);
 
-	m_pVIBufferCom->Ready_Instance_ForGrass(mapdesc);
+
+	m_pVIBufferCom->Ready_Instance_ForGrass(mapdesc);*/
+
+	
+
 
 	return S_OK;
 }
@@ -181,46 +210,75 @@ HRESULT CGrass::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
-
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
 		return E_FAIL;
-
-	/*if (FAILED(m_pNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
-		return E_FAIL;*/
-
+	//if (FAILED(m_pNormalCom->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+	//	return E_FAIL;
 	if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0)))
 		return E_FAIL;
 
-	
-
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_vector))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vTopColor", &m_vTopCol, sizeof(_float3))))
 		return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vBotColor", &m_vBotCol, sizeof(_float3))))
-		return E_FAIL;	
-	
-	_float bill = 0.5f;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBillboardFactor", &bill, sizeof(_float))))
-		return E_FAIL;	
-	
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fElasticityFactor", &bill, sizeof(_float))))
 		return E_FAIL;
-	
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vTopColorOffset", &m_vTopColorOffset, sizeof(_float3))))
-	//	return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fBillboardFactor", &m_fBillboardFactor, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fElasticityFactor", &m_fElasticityFactor, sizeof(_float))))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAccTime", &m_fAccTime, sizeof(_float))))
 		return E_FAIL;
 
-	m_fWindStrength = 10.f;
+	_float wf = 1.304f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlobalWindFactor", &wf, sizeof(_float))))
+		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fWindStrength", &m_fWindStrength, sizeof(_float))))
-		return E_FAIL;	
-	
-	_float3 WindDir = {1.f, 0.f, 0.f};
+		return E_FAIL;
+
+	_float3 WindDir = { 1.f, 0.f, 0.5f };
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vWindDirection", &WindDir, sizeof(_float3))))
+		return E_FAIL;
+
+	// 새로 추가된 변수들 ImGui 매니저에서 가져와서 바인딩
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fPlaneOffset", &m_fPlaneOffset, sizeof(_float))))
+		return E_FAIL;
+
+	// 새로 추가된 변수들 ImGui 매니저에서 가져와서 바인딩
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fPlaneVertOffset", &m_fPlaneVertOffset, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLODDistance1", &m_fLODDistance1, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fLODDistance2", &m_fLODDistance2, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGrassAmplitude", &m_fGrassAmplitude, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGrassFrequency", &m_fGrassFrequency, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_iLODPlaneCount1", &m_iLODPlaneCount1, sizeof(_uint))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_iLODPlaneCount2", &m_iLODPlaneCount2, sizeof(_uint))))
+		return E_FAIL;
+	
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_iLODPlaneCount3", &m_iLODPlaneCount3, sizeof(_uint))))
+		return E_FAIL;
+
+	_float grassAmplitude = 0.069f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGrassAmplitude", &grassAmplitude, sizeof(_float))))
+		return E_FAIL;
+
+	_float grassFrequency = 0.36f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGrassFrequency", &grassFrequency, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

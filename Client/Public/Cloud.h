@@ -31,6 +31,16 @@ public:
 public:
 	_uint Get_ShaderPath() { return m_iShaderPath; }
 	void Set_ShaderPath(_uint iIdx) {  m_iShaderPath = iIdx; }
+
+public:
+	void Set_Colors(_float3 cloudColor, _float4 lightDiffuseColor) {
+		m_vCloudColor = cloudColor; 
+		m_vLightDiffuse = lightDiffuseColor;
+		XMStoreFloat4(&m_vLightAmbient, XMLoadFloat4(&lightDiffuseColor) * 0.8f);
+		m_fLightRange = 8000.f;
+		m_vBaseSkyColor = { 1.f, 0.f, 0.f, 1.f };
+		m_vLightPosition = { 2899.f, 3683.f, -1731.f, 1.f };
+	}
 private:
 	CTexture* m_pNoiseCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
@@ -103,7 +113,7 @@ private:
 	_float m_fReflectionQuality = 0.01f; // 0.1 (낮음) ~ 1.0 (높음)
 	_float m_fReflectionOpacity = 1.f; // 0.0 (완전 투명) ~ 1.0 (불투명)
 	_float m_fReflectionDensityScale = 3.f; // 0.1 (엷음) ~ 1.0 (진함)
-	_float4 m_vBaseSkyColor = { 226.f / 255.f, 243.f / 255.f, 1.f, 1.f };
+	_float4 m_vBaseSkyColor = { 195.f / 255.f, 232.f / 255.f, 1.f, 1.f };
 
 
 public:

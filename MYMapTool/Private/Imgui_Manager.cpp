@@ -2407,6 +2407,45 @@ void CImgui_Manager::Water_Editor()
             // Caustic 강도는 읽기 전용으로 표시 (자동 조절되므로)
 
             ImGui::Separator();
+            ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Foam Settings");
+
+            // Foam Wave Frequency
+            if (ImGui::SliderFloat("Foam Wave Frequency", &lagoon->m_fFoamWaveFrequency, 0.1f, 5.0f))
+            {
+                // 값이 변경됨
+            }
+
+            // Foam Wave Amplitude
+            if (ImGui::SliderFloat("Foam Wave Amplitude", &lagoon->m_fFoamWaveAmplitude, 0.01f, 0.2f, "%.3f"))
+            {
+                // 값이 변경됨
+            }
+
+            // Foam Mask Scale
+            if (ImGui::SliderFloat("Foam Mask Scale", &lagoon->m_fFoamMaskScale, 0.0f, 1.1f, "%.6f"))
+            {
+                // 값이 변경됨
+            }
+
+            // Foam Mask Speed
+            if (ImGui::SliderFloat("Foam Mask Speed", &lagoon->m_fFoamMaskSpeed, 0.001f, 0.1f, "%.3f"))
+            {
+                // 값이 변경됨
+            }
+
+            // Foam Blend Strength
+            if (ImGui::SliderFloat("Foam Blend Strength", &lagoon->m_fFoamBlendStrength, 0.0f, 1.0f))
+            {
+                // 값이 변경됨
+            }
+
+            // Foam Fresnel Strength
+            if (ImGui::SliderFloat("Foam Fresnel Strength", &lagoon->m_fFoamFresnelStrength, 0.0f, 1.0f))
+            {
+                // 값이 변경됨
+            }
+
+            ImGui::Separator();
             ImGui::TextColored({ 1.f, 1.f, 0.f, 1.f }, "Reflection Wave Settings");
 
             if (ImGui::SliderFloat("Caustic Strength", &lagoon->m_fCausticStrength, 0.0f, 1.0f))

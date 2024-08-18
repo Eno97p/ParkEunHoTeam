@@ -29,7 +29,8 @@
 #include"CInitLoader.h"
 
 #include "EffectManager.h"
-
+#include "Lagoon.h"
+#include "Cloud.h"
 
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -60,7 +61,7 @@ HRESULT CLevel_GrassLand::Initialize()
 	fogDesc.fFogBlendFactor = 0.284f;
 	m_pGameInstance->Set_FogOption(fogDesc);
 
-	m_pGameInstance->Set_ReflectionWave(0.693f, 0.1f, 13.743f, 7.5f, 0);
+	//m_pGameInstance->Set_ReflectionWave(0.693f, 0.1f, 13.743f, 7.5f, 0);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
@@ -69,6 +70,8 @@ HRESULT CLevel_GrassLand::Initialize()
 		return E_FAIL;
 
 
+	if (FAILED(Ready_Grass(TEXT("Layer_Grass"))))
+		return E_FAIL;
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
 	
@@ -191,6 +194,55 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 				pPassiveElement->Discover_HiddenObject();
 			}
 		}
+
+		//블러드문 세팅 1 : 라이트
+		m_pGameInstance->LightOff_All();
+
+		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
+
+		//블러드문 세팅 2 : 포그
+		CRenderer::FOG_DESC fogDesc{};
+		fogDesc.vFogColor = { 255.f / 255.f, 0.f, 0.f, 1.f };
+		fogDesc.vFogColor2 = { 61.f / 255.f, 61.f / 255.f, 61.f / 255.f, 1.f };
+		fogDesc.fFogRange = 4038.5;
+		fogDesc.fFogHeightFalloff = 9.087f;
+		fogDesc.fFogGlobalDensity = 0.538f;
+		fogDesc.fFogTimeOffset = 2.596f;
+		fogDesc.fFogTimeOffset2 = 0.0f;
+		fogDesc.fNoiseIntensity = 2.74f;
+		fogDesc.fNoiseIntensity2 = 0.00f;
+		fogDesc.fNoiseSize = 0.000481f;
+		fogDesc.fNoiseSize2 = 0.000f;
+		fogDesc.fFogBlendFactor = 0.05f;
+		m_pGameInstance->Set_FogOption(fogDesc);
+
+		//블러드문 세팅 3 : 라군
+		CLagoon::LAGOON_DESC lagoonDesc{};
+		lagoonDesc.vLightPosition = { -415.f, 343.f, -122.7f, 1.f };
+		lagoonDesc.fLightRange = 1000.f;
+		lagoonDesc.vLightDiffuse = { 164.f / 255.f, 0.f, 0.f,1.f };
+		lagoonDesc.vLightAmbient = { 255.f / 255.f, 88.f / 255.f, 88.f / 255.f,1.f };
+		lagoonDesc.vLightSpecular = { 184.f / 255.f, 0.f, 0.f,1.f };
+		lagoonDesc.vMtrlSpecular = { 1.f, 164.f / 255.f, 164.f / 255.f,1.f };
+		lagoonDesc.fBloomThreshold = 0.8f;
+		lagoonDesc.fBloomIntensity = 1.f;
+		lagoonDesc.fFlowSpeed = 0.721f;
+		lagoonDesc.fNormalStrength0 = 0.33f;
+		lagoonDesc.fNormalStrength1 = 0.33f;
+		lagoonDesc.fNormalStrength2 = 0.33f;
+		lagoonDesc.fFresnelStrength = 0.181f;
+		lagoonDesc.fRoughness = 0.427f;
+		lagoonDesc.fWaterAlpha = 0.95f;
+		lagoonDesc.fWaterDepth = 1.539f;
+		lagoonDesc.fCausticStrength = 0.f;
+
+		list<CGameObject*> lagoon = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND,TEXT("Layer_Lagoon"));
+		dynamic_cast<CLagoon*>(lagoon.front())->Set_LagoonDesc(lagoonDesc);
+
+		//블러드문 세팅 4 : 클라우드
+		list<CGameObject*> cloud = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Cloud"));
+		dynamic_cast<CCloud*>(cloud.front())->Set_Colors({ 255.f / 255.f, 73.f / 255.f, 180.f / 255.f }, { 1.f, 0.f, 0.f, 1.f});
+
 	}
 	SetWindowText(g_hWnd, TEXT("GrassLand 레벨임"));
 //#endif
@@ -205,7 +257,7 @@ HRESULT CLevel_GrassLand::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
- 	Load_Lights();
+ 	Load_Lights(L"../Bin/MapData/LightsData/GrassLand_Lights.dat");
 
 	return S_OK;
 }
@@ -278,7 +330,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Cloud"))))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Cloud"), TEXT("Prototype_GameObject_Cloud"))))
 		return E_FAIL;
 
 	CMap_Element::MAP_ELEMENT_DESC desc{};
@@ -287,10 +339,10 @@ HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
 	_matrix vMat = {500.f, 0.f, 0.f, 0.f,
 	0.f, 1.f, 0.f, 0.f,
 	0.f, 0.f, 500.f, 0.f,
-	-41.f, 271.f, -80.565f, 1.f };
+	-41.f, 300.f, -80.565f, 1.f };
 
 	XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Lagoon"), &desc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Lagoon"), TEXT("Prototype_GameObject_Lagoon"), &desc)))
 		return E_FAIL;
 
 
@@ -449,6 +501,40 @@ HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandO
 	return S_OK;
 }
 
+HRESULT CLevel_GrassLand::Ready_Grass(const wstring& strLayerTag)
+{
+	CGrass::GRASS_DESC		GrassDesc{};
+
+	GrassDesc.iInstanceCount = 500000;
+	GrassDesc.vTopCol = {245.f / 255.f  , 1.f , 168.f / 255.f };
+	GrassDesc.vBotCol = { 179.f / 255.f  , 193.f / 255.f , 82.f / 255.f };
+	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TF");
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&GrassDesc, sizeof(GrassDesc));
+
+	GrassDesc.iInstanceCount = 500000;
+	GrassDesc.vTopCol = { 235.f / 255.f  , 1.f , 200.f / 255.f };
+	GrassDesc.vBotCol = { 190.f / 255.f  , 200.f / 255.f , 130.f / 255.f };
+	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TF");
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
+		return E_FAIL;
+
+	ZeroMemory(&GrassDesc, sizeof(GrassDesc));
+
+	GrassDesc.iInstanceCount = 300000;
+	GrassDesc.vTopCol = { 245.f / 255.f  , 1.f , 168.f / 255.f };
+	GrassDesc.vBotCol = { 179.f / 255.f  , 193.f / 255.f , 82.f / 255.f };
+	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TT");
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -582,13 +668,13 @@ HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 	}
 
 	// 동적 할당된 메모리 해제
-	for (auto& pair : modelMatrices)
-	{
-		for (auto pWorldMatrix : pair.second)
-		{
-			Safe_Delete(pWorldMatrix);
-		}
-	}
+	//for (auto& pair : modelMatrices)
+	//{
+	//	for (auto pWorldMatrix : pair.second)
+	//	{
+	//		Safe_Delete(pWorldMatrix);
+	//	}
+	//}
 
 	return S_OK;
 }
@@ -738,25 +824,25 @@ HRESULT CLevel_GrassLand::Load_Data_Effects()
 	}
 
 	// Tree 메모리 해제
-	for (auto& group : treeGroups)
-	{
-		for (auto& pMatrix : group.second)
-		{
-			delete pMatrix;
-		}
-	}
+	//for (auto& group : treeGroups)
+	//{
+	//	for (auto& pMatrix : group.second)
+	//	{
+	//		delete pMatrix;
+	//	}
+	//}
 
-	// Grass 메모리 해제
-	for (auto& group : grassGroups)
-	{
-		for (auto& instanceMatrices : group.second)
-		{
-			for (auto& pMatrix : instanceMatrices)
-			{
-				delete pMatrix;
-			}
-		}
-	}
+	//// Grass 메모리 해제
+	//for (auto& group : grassGroups)
+	//{
+	//	for (auto& instanceMatrices : group.second)
+	//	{
+	//		for (auto& pMatrix : instanceMatrices)
+	//		{
+	//			delete pMatrix;
+	//		}
+	//	}
+	//}
 
 #ifdef _DEBUG
 	  MSG_BOX("Effect Data Load");
@@ -765,7 +851,7 @@ HRESULT CLevel_GrassLand::Load_Data_Effects()
 	return S_OK;
 }
 
-void CLevel_GrassLand::Load_Lights()
+void CLevel_GrassLand::Load_Lights(const wstring& strLightFile)
 {
 	list<CLight*> lights = m_pGameInstance->Get_Lights();
 	for (auto& iter : lights)
@@ -773,7 +859,7 @@ void CLevel_GrassLand::Load_Lights()
 		iter->LightOff();
 	}
 
-	wstring LightsDataPath = L"../Bin/MapData/LightsData/GrassLand_Lights.dat";
+	wstring LightsDataPath = strLightFile.c_str();
 
 	HANDLE hFile = CreateFile(LightsDataPath.c_str(), GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (nullptr == hFile)

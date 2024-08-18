@@ -92,11 +92,6 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 0;
-		if (m_pModelCom->Check_CurDuration(0.4f))
-		{
-			_float4 fPos = _float4(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f);
-			EFFECTMGR->Generate_Particle(35, fPos);
-		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK2)
 	{

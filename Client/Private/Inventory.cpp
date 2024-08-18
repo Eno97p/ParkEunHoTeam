@@ -84,7 +84,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
@@ -92,7 +91,6 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// UI 출력
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
-
 
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
@@ -102,12 +100,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	CUI_Manager::GetInstance()->Update_Weapon_Add();
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
 
-
 	pDesc.isDropTem = false;
 	pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false); // Test
 
 
 	// UI 출력
@@ -168,6 +165,10 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
+		// RedDot 추가
+		CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
+		
+
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
 			// Inventory에 ItemData 추가
@@ -193,6 +194,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+		
+			// Slot에 RedDot 생성
+			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1);
 		}
 	}
 
@@ -218,7 +222,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 				pDropItemDesc.wszTextureName = (*item)->Get_TextureName();
 				m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pDropItemDesc);
 
-				return S_OK; // 이렇게 나가면 되겠지
+				return S_OK;
 			}
 			else
 				++item;
@@ -254,9 +258,18 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 
 HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 {
-	// 무기 획득 함수
+	// RedDot
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 
-	// Inventory에도 넣어줘야하고 / UI Weapon에도 넣어줘야 하고 / 
+	// Weapon인가 Skill인가에 따라 다르게 들어가야 하는데...
+	// Slot을 기준으로 하니까 문제가 생기네. ItemIcon을 기준으로 했어야 했나...?
+	// ㄴㄴ 할 수 있을 거임 해보자
+
+	// 이 함수에서는 Weapon만 추가하는 거 같은데 Skill은? 함수 없는듯?
+
+	// ItemIcon이 출력하는 걸로 바꾸는 게 맞을 거 같은데............... 현재 추가하는 로직은 크게 바뀌지 않아도 되고
+	// Slot에 접근하면 그 Slot이 가지는 게 아니라 그 Slot이 가지고 있는 ItemData가 가지도록 변경을 좀 해줘야 할 거 같음
+	// 
 
 	CItemData::ITEMDATA_DESC pDesc{};
 
@@ -273,13 +286,30 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	return S_OK;
 }
 
+HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
+{
+	// RedDot
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
+
+	CItemData::ITEMDATA_DESC pDesc{};
+
+	pDesc.isDropTem = false;
+	pDesc.eItemName = eItemName;
+
+	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	CUI_Manager::GetInstance()->Update_Skill_Add(); // 음 이거 조심해야겠는데? Tab이 Weapon인 상태인데 거기에다가 갱신해버릴거가틈
+
+	return S_OK;
+}
+
 HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 {
 	// Inventory에서 현재 선택한 아이템을 QuickAccess에 등록
 	m_mapQuickAccess.emplace(iInvenIdx, pItemData);
 
 	// InvSub QuickAccess Slot UI에 출력하기
-	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(iInvenIdx); // !!!! 여기서 Inventory Idx값을 제대로 활용 못한 거 같위
+	CUI_Manager::GetInstance()->Update_InvSub_Quick_Add(iInvenIdx);
 
 	// QuickAccess에도 출력 필요
 	CUI_Manager::GetInstance()->Update_Quick_Add(pItemData, iInvenIdx);
@@ -292,7 +322,7 @@ HRESULT CInventory::Add_QuickAccess(CItemData* pItemData, _int iInvenIdx)
 HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 {
 	// Weapon의 Slot에서 현재 선택한 아이템을 EquipWeapon에 넣어주기
-	m_arrEquipWeapon[iEquipSlotIdx] = pItemData; // >>>>>>>>>>>>> 여기서 넣어주어야 하는 거 아님?
+	m_arrEquipWeapon[iEquipSlotIdx] = pItemData;
 
 	// Weapon Equip Slot UI에 출력
 	CUI_Manager::GetInstance()->Update_EquipWeapon_Add(iEquipSlotIdx); // 여기서 지워지넹
@@ -430,7 +460,6 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 		break;
 	}
 
-
 	// UI 출력
 	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
 	pUIDesc.eLevel = LEVEL_STATIC;
@@ -441,13 +470,16 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 	{
 		if (eItemName == (*item)->Get_ItemName()) // 이름이 일치하는 것이 있다면
 		{
-			// 여기서 해당 ItemData에 중복 처리를 해주는 것이?
+			// 여기서 해당 ItemData에 중복 처리
 			(*item)->Set_Count(1);
 
 			// UI DropItem 출력
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+			// Slot에 RedDot 생성
+			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, i);
 
 			return true;
 		}

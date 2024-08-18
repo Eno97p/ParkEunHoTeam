@@ -148,6 +148,13 @@ HRESULT CModel::Render_Instance(_uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Render_PhysXInstance(_uint iMeshIndex)
+{
+	m_PhysxParticleMesh[iMeshIndex]->Bind_Buffers();
+	m_PhysxParticleMesh[iMeshIndex]->Render();
+	return S_OK;
+}
+
 HRESULT CModel::Render_Instance_ForMapElements(_uint iMeshIndex)
 {
 	if (iMeshIndex >= m_InstanseMesh.size())
@@ -214,6 +221,11 @@ HRESULT CModel::Bind_Material(CShader* pShaderCom, const _char* pConstantName, _
 HRESULT CModel::Bind_Material_Instance(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
 {
 	return m_Materials[m_InstanseMesh[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
+}
+
+HRESULT CModel::Bind_Material_PhysX(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
+{
+	return m_Materials[m_PhysxParticleMesh[iMeshIndex]->Get_MaterialIndex()].MaterialTextures[eMaterialType]->Bind_ShaderResource(pShaderCom, pConstantName, 0);
 }
 
 HRESULT CModel::Bind_Material_Instance_ForMapElements(CShader* pShaderCom, const _char* pConstantName, _uint iMeshIndex, aiTextureType eMaterialType)
@@ -666,6 +678,16 @@ _bool CModel::Check_Instance_Dead()
 	return true;
 }
 
+_bool CModel::Check_PhysX_Dead()
+{
+	for (auto& iter : m_PhysxParticleMesh)
+	{
+		if (!iter->Get_Instance_Dead())
+			return false;
+	}
+	return true;
+}
+
 HRESULT CModel::Ready_Instance(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
 {
 	for (size_t i = 0; i < m_iNumMeshes; i++)
@@ -1034,8 +1056,8 @@ void CModel::Free()
 
 	for (auto& pMesh : m_InstanseMesh)
 		Safe_Release(pMesh);
-	for (auto& pMesh : m_PhysxParticleMesh)
-		Safe_Release(pMesh);
+	for (auto& iter : m_PhysxParticleMesh)
+		Safe_Release(iter);
 
 	m_InstanseMesh.clear();
 	m_PhysxParticleMesh.clear();

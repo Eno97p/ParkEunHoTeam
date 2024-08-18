@@ -283,6 +283,12 @@
     <Filter Include="01.Utility\03.Components\PhysXParticle">
       <UniqueIdentifier>{c4024707-d65b-4999-ad90-324906f59399}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\999.Nvidia\Cuda">
+      <UniqueIdentifier>{7e983604-2000-4720-b476-b45e90c2a295}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\999.Nvidia\Cuda\Cuda/C++">
+      <UniqueIdentifier>{738c8643-f549-4879-8800-afd7c65184aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -585,6 +591,15 @@
     <ClInclude Include="..\public\PhysXParticle.h">
       <Filter>01.Utility\03.Components\PhysXParticle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\CCuda.h">
+      <Filter>01.Utility\999.Nvidia\Cuda\Cuda/C++</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CudaDefines.h">
+      <Filter>01.Utility\999.Nvidia\Cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TestCuda.cuh">
+      <Filter>01.Utility\999.Nvidia\Cuda</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Base.cpp">
@@ -872,6 +887,9 @@
     <ClCompile Include="..\private\PhysXParticle.cpp">
       <Filter>01.Utility\03.Components\PhysXParticle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\CCuda.cpp">
+      <Filter>01.Utility\999.Nvidia\Cuda\Cuda/C++</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
@@ -915,5 +933,10 @@
     <None Include="..\Bin\ShaderFiles\ShaderFunctor.hlsli">
       <Filter>98.ShaderFiles</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="TestCuda.cu">
+      <Filter>01.Utility\999.Nvidia\Cuda</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

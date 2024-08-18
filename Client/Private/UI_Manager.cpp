@@ -130,7 +130,7 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pFadeIn)
 	{
-		if (m_pFadeIn->Get_isFadeOutEnd())
+		if (m_pFadeIn->Get_isFadeAnimEnd())
 			Delete_FadeInOut(true);
 		else
 			m_pFadeIn->Tick(fTimeDelta);
@@ -339,7 +339,7 @@ HRESULT CUI_Manager::Create_FadeInOut_Dissolve(_bool isFadeIn)
 		if (nullptr == m_pFadeIn)
 			return E_FAIL;
 	}
-	else
+	else if(!isFadeIn/* && nullptr == m_pFadeIn*/) // 이렇게 해도 여러 게 생성되나바 ㅇㅇ
 	{
 		if (nullptr != m_pFadeOut)
 			return S_OK;
@@ -368,17 +368,104 @@ void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
 	}
 }
 
-_bool CUI_Manager::Get_isFadeOutEnd()
+_bool CUI_Manager::Get_isFadeAnimEnd(_bool isFadeIn)
 {
-	if (nullptr == m_pFadeOut)
-		return false;
+	if (isFadeIn) // 여기? 무조건 false 반환하나본데?
+	{
+		if (nullptr == m_pFadeIn)
+			return false;
+		else
+			return m_pFadeIn->Get_isFadeAnimEnd();
+	}
 	else
-		return m_pFadeOut->Get_isFadeOutEnd();
+	{
+		if (nullptr == m_pFadeOut)
+			return false;
+		else
+			return m_pFadeOut->Get_isFadeAnimEnd();
+	}
+}
+
+HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+
+	if (FAILED(dynamic_cast<CUIGroup_Menu*>((*menu).second)->Create_RedDot_MenuBtn(isInv)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Delete_RedDot_MenuBtn()
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn_Inv();
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
+{
+	// Inv인 경우에는 Inventory Page와 Quick의 Inv Slot에다가 추가해주어야 하고
+	// 아닌 경우에는 Weapon에 넣어주어야 할 것이다
+	// Slot의 경우에는 Menu Btn과 다르게 몇 번째 Slot인가에 대한 정보도 가지고 있어야 하기 때문에
+	// (Weapon의 경우에는 Weapon인지 Skill인지 까지 필요함)
+	// 인자로 해당 슬롯의 인덱스에 대한 값을 넣어주어야 할 것임 !!
+
+	if (isInv)
+	{
+		// Inventory
+		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Create_RedDot(iSlotIdx);
+
+		// Quiuck
+		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
+		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Create_RedDot(iSlotIdx);
+	}
+	else
+	{
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
+{
+	if (isInv)
+	{
+		// Inventory
+		map<string, CUIGroup*>::iterator inventory = m_mapUIGroup.find("Inventory");
+		dynamic_cast<CUIGroup_Inventory*>((*inventory).second)->Delete_RedDot();
+
+		// Quick
+		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
+		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Delete_RedDot();
+	}
+	else
+	{
+
+	}
+
+	return S_OK;
+}
+
+void CUI_Manager::Create_QTE()
+{
+	CQTE::GAMEOBJECT_DESC pQteDesc{};
+
+	if (nullptr != m_pQTE)
+	{
+		Safe_Release(m_pQTE);
+		m_pQTE = nullptr;
+	}
+
+	m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
 }
 
 void CUI_Manager::Key_Input()
 {
-	// 게임 플레이 레벨에서만 키보드 먹도록 하는 예외 처리 필요
+	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?
 
 	map<string, CUIGroup*>::iterator logo = m_mapUIGroup.find("Logo");
 	map<string, CUIGroup*>::iterator loading = m_mapUIGroup.find("Loading");
@@ -420,6 +507,7 @@ void CUI_Manager::Key_Input()
 				else if (isInvOpen)
 				{
 					(*inventory).second->Set_RenderOnAnim(false);
+					Delete_RedDot_Slot(true); // RedDot 제거
 				}
 				else if (isWeaponOpen)
 				{
@@ -448,21 +536,24 @@ void CUI_Manager::Key_Input()
 			else
 			{
 				(*invsub).second->Set_RenderOnAnim(false);
+
+				Delete_RedDot_Slot(true); // RedDot 제거
 			}
 		}
 	}
 	else // Menu가 꺼져 있을 때
 	{
+		map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
+		map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
+		map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+
+		_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
+		_bool isUpgPageOpen = (*upgpage).second->Get_Rend();
+		_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
+
+
 		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 		{
-			map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
-			map<string, CUIGroup*>::iterator upgpage = m_mapUIGroup.find("UpGPage"); // Upgrade
-			map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
-
-			_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
-			_bool isUpgPageOpen = (*upgpage).second->Get_Rend();
-			_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
-
 			// Quick이 열려있지 않을 때, Upgrade, UpPage, Ch Upgrade 가 열려있지 않을 때 Menu 열기
 			if (!isQuickOpen && !isUpgradeOpen && !isUpgPageOpen && !isChUpgradeOpen)
 			{
@@ -489,7 +580,7 @@ void CUI_Manager::Key_Input()
 		}
 		else if (m_pGameInstance->Key_Down(DIK_I))
 		{
-			if (!isMenuOpen)
+			if (!isMenuOpen && !isUpgradeOpen && !isChUpgradeOpen)
 			{
 				(*quick).second->Set_AnimFinished(false);
 
@@ -498,6 +589,10 @@ void CUI_Manager::Key_Input()
 					(*quick).second->Set_RenderOnAnim(false);
 
 					m_pGameInstance->Get_MainCamera()->Activate();
+
+					// MenuBtn도 사라져야죵
+					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn();
+					CUI_Manager::GetInstance()->Delete_RedDot_Slot(true); // UI Inventory의 RedDot 제거
 				}
 				else // 꺼져있을 때 > 켜지게
 				{
@@ -508,7 +603,7 @@ void CUI_Manager::Key_Input()
 				}
 			}
 		}
-		else if (m_pGameInstance->Key_Down(DIK_U))
+		else if (m_pGameInstance->Key_Down(DIK_U) && !isChUpgradeOpen)
 		{
 			map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade"); // Upgrade
 			(*upgrade).second->Set_Rend(true);
@@ -516,7 +611,7 @@ void CUI_Manager::Key_Input()
 
 			m_pGameInstance->Get_MainCamera()->Inactivate();
 		}
-		else if (m_pGameInstance->Key_Down(DIK_Y))
+		else if (m_pGameInstance->Key_Down(DIK_Y) && !isUpgradeOpen)
 		{
 			map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
 			(*ch_upgrade).second->Set_Rend(true);
@@ -528,18 +623,7 @@ void CUI_Manager::Key_Input()
 		else if (m_pGameInstance->Key_Down(DIK_L)) // <<<<< Test용 (QTE)
 		{
 			// QTE 생성 Prototype_GameObject_QTE
-
-			CQTE::GAMEOBJECT_DESC pQteDesc{};
-
-			if (nullptr != m_pQTE)
-			{
-				Safe_Release(m_pQTE);
-				m_pQTE = nullptr;
-			}
-
-			m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
-
-			// 일정 시간 지나면 지가 알아서 지워지든가.. 아무튼 없애는 로직도 필요함(누수!)
+			Create_QTE();
 		}
 	}
 }

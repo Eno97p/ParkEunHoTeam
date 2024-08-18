@@ -29,10 +29,13 @@ private:
 	HRESULT Ready_Layer_Player(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
 	HRESULT Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);
 
+	HRESULT Ready_Grass(const wstring& strLayerTag);
+
+
 	HRESULT Load_LevelData(const _tchar* pFilePath);
 	HRESULT Load_Data_Effects();
 
-	void Load_Lights();
+	void Load_Lights(const wstring& strLightFile);
 
 	HRESULT	Add_FadeInOut(_bool isDissolve);
 	

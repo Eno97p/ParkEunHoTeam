@@ -64,6 +64,7 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 28;
 		fAnimSpeed = 0.9f;
+		m_pWeapon->Set_Active(false);
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CYantari::STATE_PARRIED)
@@ -71,6 +72,7 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 28;
 		fAnimSpeed = 0.7f;
+		m_pWeapon->Set_Active(false);
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 	else if (*m_pState == CYantari::STATE_WALKLEFT)
@@ -162,8 +164,8 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 4) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		m_pModelCom->Set_LerpTime(1.3);
-		if (m_iPastAnimIndex == 1)
+		m_pModelCom->Set_LerpTime(1.3f);
+		if (m_iPastAnimIndex == 2)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -174,17 +176,17 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CYantari::STATE_ATTACK2)
 	{
-		if (m_iPastAnimIndex < 5 || m_iPastAnimIndex > 9)
+		if (m_iPastAnimIndex < 6 || m_iPastAnimIndex > 9)
 		{
-			m_iPastAnimIndex = 5;
+			m_iPastAnimIndex = 6;
 			fAnimSpeed = 0.9f;
 		}
 		if (m_iPastAnimIndex == 9) *m_pCanCombo = true;
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		m_pModelCom->Set_LerpTime(1.3);
-		if (m_iPastAnimIndex == 13)
-		{ 
+		m_pModelCom->Set_LerpTime(1.3f);
+		if (m_iPastAnimIndex == 7)
+		{
 			m_pWeapon->Set_Active();
 		}
 		else
@@ -194,15 +196,15 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CYantari::STATE_ATTACK3)
 	{
-		if (m_iPastAnimIndex < 10 || m_iPastAnimIndex > 16)
+		if (m_iPastAnimIndex < 11 || m_iPastAnimIndex > 16)
 		{
-			m_iPastAnimIndex = 10;
+			m_iPastAnimIndex = 11;
 			fAnimSpeed = 0.9f;
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		m_pModelCom->Set_LerpTime(1.3);
-		if (m_iPastAnimIndex == 12)
+		m_pModelCom->Set_LerpTime(1.3f);
+		if (m_iPastAnimIndex == 12 || m_iPastAnimIndex == 13)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -231,14 +233,14 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 	else if (*m_pState == CYantari::STATE_DEAD)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 11;
+		AnimDesc.iAnimIndex = 24;
 		fAnimSpeed = 0.8f;
 		m_pModelCom->Set_LerpTime(1.3);
 	}
 	else if (*m_pState == CYantari::STATE_REVIVE)
 	{
 		AnimDesc.isLoop = false;
-		AnimDesc.iAnimIndex = 12;
+		AnimDesc.iAnimIndex = 25;
 		fAnimSpeed = 1.f;
 	}
 
@@ -255,8 +257,8 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 
 	_bool isLerp = true;
 	// 여러 애니메이션을 이어서 재생할 때는 보간하지 않음
-	if ((m_iPastAnimIndex >= 1 && m_iPastAnimIndex < 4) || (m_iPastAnimIndex >= 6 && m_iPastAnimIndex < 9) ||
-		(m_iPastAnimIndex >= 11 && m_iPastAnimIndex < 17) || (m_iPastAnimIndex >= 18 && m_iPastAnimIndex < 23))
+	if ((m_iPastAnimIndex >= 1 && m_iPastAnimIndex < 5) || (m_iPastAnimIndex >= 7 && m_iPastAnimIndex < 10) ||
+		(m_iPastAnimIndex >= 12 && m_iPastAnimIndex < 17) || (m_iPastAnimIndex >= 18 && m_iPastAnimIndex < 23))
 	{
 		isLerp = false;
 	}
@@ -328,8 +330,20 @@ HRESULT CBody_Yantari::Render()
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		_bool bResource = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bDiffuse"), &bResource, sizeof(_bool))))
 			return E_FAIL;
+
+		if (i == 0)
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
+				return E_FAIL;
+		}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 			return E_FAIL;
@@ -429,8 +443,20 @@ HRESULT CBody_Yantari::Render_Reflection()
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+		_bool bResource = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue(("g_bDiffuse"), &bResource, sizeof(_bool))))
 			return E_FAIL;
+
+		if (i == 0)
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pBodyCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
+				return E_FAIL;
+		}
 
 		if (i == 1)
 		{
@@ -498,6 +524,11 @@ HRESULT CBody_Yantari::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
 		return E_FAIL;
 
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_YantariBody"),
+		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pBodyCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -558,4 +589,5 @@ void CBody_Yantari::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pBodyCom);
 }

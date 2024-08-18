@@ -25,10 +25,14 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	HRESULT	Create_RedDot_MenuBtn(_bool isInv);
+	HRESULT	Delete_RedDot_MenuBtn_Inv();
+
 private:
 	_bool					m_isMenuPageOpen;
 
-	vector<CUI*>			m_vecUI;
+	vector<CUI*>				m_vecUI;
+	vector<class CUI_MenuBtn*>	m_vecBtn;
 
 private:
 	HRESULT					Create_UI();

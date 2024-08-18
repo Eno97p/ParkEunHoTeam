@@ -113,7 +113,7 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	}
 	else if (BOSSUI_YANTARI == m_eBossUIName)
 	{
-		pBarDesc.wszBossName = TEXT("YANTARI, THE WANDERING SPECTER");
+		pBarDesc.wszBossName = TEXT("KETHER, APOCRYPHAL WATCHER");
 	}
 	else if (BOSSUI_ANDRAS == m_eBossUIName)
 	{

@@ -477,70 +477,96 @@ float calculateCloudDensityFromTexture(float3 position, float time)
 PS_OUT PS_TEX(VS_OUT In)
 {
     PS_OUT Out = (PS_OUT)0;
-
-    float3 rayStart = In.vWorldPos;
-    float3 rayDir = normalize(In.vWorldPos - g_vCamPosition.xyz);
+    float3 worldPos = In.vWorldPos;
+    float3 viewDir = normalize(worldPos - g_vCamPosition.xyz);
     float time = g_fAccTime;
-
     const float MAX_DIST = 100.0;
-    const int NUM_STEPS = 128; // 레이캐스팅 스텝 수
-    const float STEP_SIZE = MAX_DIST / NUM_STEPS;
+    float4 cloudColor = float4(0, 0, 0, 0);
 
-    float4 accumulatedColor = float4(0, 0, 0, 0);
-    float transmittance = 1.0;
+    // 구름의 중심점 정의 (x와 z만 사용)
+    float2 cloudCenter = float2(-71.919f, -49.122f);
 
-    // 레이캐스팅 루프
-    for (int i = 0; i < NUM_STEPS; i++)
+    // 현재 위치와 구름 중심 사이의 XZ 평면상의 거리 계산
+    float distFromCenter = length(worldPos.xz - cloudCenter);
+
+    // 최대 페이드 거리 (이 값은 돔의 크기에 따라 조정 필요)
+    float maxFadeDistance = 2800.f;
+
+    // XZ 평면상의 거리에 따른 페이드 팩터 계산 (0: 완전 투명, 1: 완전 불투명)
+    float fadeFactor = saturate(1.0 - (distFromCenter / maxFadeDistance));
+
+    // fadeFactor가 0이면 early out
+    if (fadeFactor == 0.0)
     {
-        float t = i * STEP_SIZE;
-        float3 currentPos = rayStart + rayDir * t;
+        discard;
+        return Out;
+    }
 
-        // 구름 밀도 계산
-        float density = calculateCloudDensityFromTexture(currentPos, time);
-
-        if (density > 0.01) // 의미 있는 밀도일 경우에만 계산
+    // 대략적인 레이 마칭
+    float coarseT = 0.0;
+    float coarseDensity = 0.0;
+    for (int i = 0; i < g_iMaxCoarseSteps; i++)
+    {
+        float3 pos = worldPos + coarseT * viewDir;
+        coarseDensity = calculateCloudDensityFromTexture(pos, time);
+        if (coarseDensity > g_fDensityThreshold)
+            break;
+        coarseT += g_fCoarseStepSize;
+        if (coarseT > MAX_DIST)
         {
-            // 광원 에너지 계산
-            float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, rayDir);
-
-            // 색상 계산
-            float3 cloudColor = g_CloudColor * lightEnergy * density;
-
-            // 투과율 계산
-            float stepTransmittance = exp(-density * STEP_SIZE);
-
-            // 색상 누적
-            accumulatedColor.rgb += cloudColor * transmittance * (1 - stepTransmittance);
-
-            // 전체 투과율 업데이트
-            transmittance *= stepTransmittance;
-
-            // 불투명도가 높아지면 조기 종료
-            if (transmittance < 0.01)
-                break;
+            discard;
+            return Out;
         }
     }
 
-    // 최종 색상 계산
-    accumulatedColor.a = 1 - transmittance;
+    // 정밀한 레이 마칭 (적응형 샘플링)
+    float t = max(0, coarseT - g_fCoarseStepSize);
+    float3 currentPos = worldPos + t * viewDir;
+    float totalDensity = 0.0;
+    float stepSize = (coarseDensity > g_fDensityThreshold) ? g_fFineStepSize : g_fCoarseStepSize;
+    int maxSteps = (coarseDensity > g_fDensityThreshold) ? g_iMaxFineSteps : g_iMaxCoarseSteps;
 
-    // 주변광 추가
-    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
-    accumulatedColor.rgb += ambient * transmittance;
+    [loop]
+        for (int j = 0; j < maxSteps; j++)
+        {
+            float density = calculateCloudDensityFromTexture(currentPos, time);
+            if (density > 0.01)
+            {
+                totalDensity += density * stepSize;
+                float3 lightEnergy = calculatePointLightEnergy(currentPos, g_vLightPosition, g_fLightRange, density, viewDir);
+                float3 color = g_CloudColor * lightEnergy * density;
+                float transmittance = exp(-density * stepSize);
+                cloudColor.rgb += color * (1.0 - cloudColor.a) * transmittance;
+                cloudColor.a += density * (1.0 - cloudColor.a) * 0.1;
+                if (cloudColor.a > g_fAlphaThreshold) break;
+            }
+            currentPos += viewDir * stepSize;
+            t += stepSize;
+            if (t > MAX_DIST) break;
+        }
 
-    // 감마 보정
-    accumulatedColor.rgb = pow(accumulatedColor.rgb, 1.0 / 2.2);
+    cloudColor.a = 1.0 - exp(-totalDensity * 0.1);
 
-    // 알파 블렌딩을 위한 사전 곱셈 알파
-    accumulatedColor.rgb *= accumulatedColor.a;
+    // 페이드 팩터 적용
+    cloudColor.a *= fadeFactor;
 
-    if (accumulatedColor.a < 0.01)
+    // 알파값이 0이면 discard
+    if (cloudColor.a < 0.1f)
+    {
         discard;
+    }
 
-    Out.vColor = accumulatedColor;
+    float3 ambient = g_vLightAmbient.rgb * g_CloudColor * 0.1;
+    cloudColor.rgb += ambient * (1.0 - cloudColor.a);
+    cloudColor.rgb = pow(cloudColor.rgb, 1.0 / 2.2);
+
+    if (cloudColor.r < 0.5f)
+    {
+        discard;
+    }
+    Out.vColor = cloudColor;
     return Out;
 }
-
 // 레이-박스 교차 함수
 bool IntersectRayBox(float3 rayOrigin, float3 rayDir, BoundingBox box, out float tMin, out float tMax)
 {

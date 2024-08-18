@@ -18,7 +18,9 @@
 #include "AndrasLazer.h"
 #include "Meteor.h"
 #include "Particle_PhysX.h"
-
+#include "NeedleSpawner.h"
+#include "GroundSlash.h"
+#include "HammerSpawn.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -40,6 +42,7 @@ private:
 	void Model_Change();
 private:
 	void Sound_Tool(_bool* Open);
+	void Change_Camera();
 
 private:	//for FileSystem
 	void Load_Texture();
@@ -169,6 +172,20 @@ private:
 	void PhysX_Particle_Tool(_bool* Open);
 
 private:
+	void Hedgehog_Tool(_bool* Open);
+	HRESULT Save_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog);
+	HRESULT Load_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog);
+
+private:
+	void GroundSlash_Tool(_bool* Open);
+	HRESULT Save_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash);
+	HRESULT Load_GroundSlash(CGroundSlash::GROUNDSLASH* pGroundSlash);
+
+private:
+	void HammerSpawn_Tool(_bool* Open);
+	HRESULT Save_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
+	HRESULT Load_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
+private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
 
@@ -207,6 +224,7 @@ private:
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>				m_Heals;
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>			m_Swings;
+	vector<shared_ptr<CParticle_PhysX::PARTICLE_PHYSXDESC>> m_PhysX;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -218,6 +236,7 @@ private:
 	vector<string> HealNames;
 	vector<string> LazerNames;
 	vector<string> SwingNames;
+	vector<string> PhysXNames;
 
 
 private:

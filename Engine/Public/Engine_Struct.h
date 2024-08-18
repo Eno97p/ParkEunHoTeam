@@ -189,7 +189,7 @@ namespace Engine
 
 	}VTXANIMMESH;
 
-	typedef struct ENGINE_DLL VTXMATRIX
+	typedef struct  ENGINE_DLL VTXMATRIX
 	{
 		XMFLOAT4			vRight;
 		XMFLOAT4			vUp;
@@ -197,6 +197,17 @@ namespace Engine
 		XMFLOAT4			vTranslation;
 		XMFLOAT2			vLifeTime;
 		_float			   vGravity;
+		//_float padding;  // 4바이트 패딩 추가
+		//void setToDefault()		//Test
+		//{
+		//	vRight = { 0,0,0,0 };
+		//	vUp = { 0,0,0,0 };
+		//	vLook = { 0,0,0,0 };
+		//	vTranslation = { 0,0,0,0 };
+		//	vLifeTime = { 0,0 };
+		//	vGravity = 0;
+		//}
+
 	}VTXMATRIX;
 
 
@@ -287,7 +298,24 @@ namespace Engine
 		DWORD_PTR		fParam;
 	}tEvent;
 
+	struct ENGINE_DLL MATRIX4
+	{
+		union
+		{
+			struct 
+			{
+				_float	_11, _12, _13, _14;
+				_float	_21, _22, _23, _24;
+				_float	_31, _32, _33, _34;
+				_float	_41, _42, _43, _44;
 
+			};
+			struct
+			{
+				float f[4][4];
+			};
+		};
+	};
 
 	namespace Vehicle
 	{

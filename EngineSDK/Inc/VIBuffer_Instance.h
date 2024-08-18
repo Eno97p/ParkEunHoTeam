@@ -1,5 +1,6 @@
 #pragma once
 #include "VIBuffer.h"
+#include"CudaDefines.h"
 BEGIN(Engine)
 class CVIBuffer_Terrain;
 class CComputeShader_Buffer;
@@ -50,6 +51,7 @@ public:
 	virtual HRESULT Render() override;
 	INSTANCE_DESC* Get_Instance_Desc() { return &m_InstanceDesc; }
 
+	
 
 
 public:
@@ -108,6 +110,18 @@ protected:
 	CComputeShader_Buffer*		m_pComputeShader = nullptr;
 
 
+
+
+
+private:
+//cuda Test----------------------------------------
+	class CCuda* m_pCuda = nullptr;
+	VTXMATRIX* d_pInstanceData = nullptr;
+	int* d_visibleCount = nullptr;
+	cudaGraphicsResource* m_cudaResource = nullptr;
+public:
+	void TestCuda();
+//cuda Test----------------------------------------
 protected:
 	random_device				m_RandomDevice;
 	mt19937_64					m_RandomNumber;

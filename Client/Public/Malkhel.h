@@ -16,6 +16,8 @@ class CMalkhel final : public CMonster
 {
 #define MALKHELSPEED 10.f
 #define SPAWNCOOLTIME 0.05f
+#define METEORCOOLTIME 0.5f
+#define EXPLODECOOLTIME 0.9f
 #define TRIPPLEATTACK 1.2f
 #define UPSPEED 5.f
 #define DOWNSPEED 20.f
@@ -78,6 +80,7 @@ private:
 	_bool m_bDashBack = false;
 #pragma endregion 상태제어 bool변수
 
+	_float										m_fDashBackDelay = 1.f;
 	_float										m_fChasingDelay = 0.5f;
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;

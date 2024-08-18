@@ -799,8 +799,8 @@ PS_OUT PS_DISTORTION(PS_IN In)
     //{
         // 파동 효과 적용: 사인 함수를 사용하여 텍스처 좌표를 변형
     distortedTex = float2(
-        In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude,
-        In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x + g_Time, In.vTexcoord.y + g_Time)).r) * waveAmplitude
+        In.vTexcoord.x + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x /*+ g_Time*/, In.vTexcoord.y /*+ g_Time*/)).r) * waveAmplitude,
+        In.vTexcoord.y + sin(dist * waveFrequency + g_DistortionTexture.Sample(LinearSampler, float2(In.vTexcoord.x /*+ g_Time*/, In.vTexcoord.y /*+ g_Time*/)).r) * waveAmplitude
     );
     //}
 
@@ -913,6 +913,18 @@ PS_OUT PS_FINAL2(PS_IN In)
     Out.vColor.rgb /= (Out.vColor.rgb + 1.f);
     Out.vColor = pow(Out.vColor, 1 / g_Value);
 
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
+    }
+
+    Out.vColor /= float(NumSamples);
+
     if (g_fMirror != 0.f)
     {
         Out.vColor = float4(1.f - Out.vColor.r, 1.f - Out.vColor.g, 1.f - Out.vColor.b, 1.f);
@@ -990,6 +1002,18 @@ PS_OUT PS_FINAL3(PS_IN In)
     Out.vColor = saturate((Out.vColor * (a * Out.vColor + b)) / (Out.vColor * (c * Out.vColor + d) + e));
     Out.vColor = pow(Out.vColor, 1 / g_Value);
     Out.vColor.a = 1.f;
+
+    float2 velocity = g_EffectTexture.Sample(LinearSampler, In.vTexcoord).xy;
+
+    const int NumSamples = 8;
+
+    for (int i = 0; i < NumSamples; ++i)
+    {
+        float2 offset = velocity * (float(i) / float(NumSamples - 1) - 0.5f);
+        Out.vColor += g_ResultTexture.Sample(LinearSampler, saturate(In.vTexcoord + offset));
+    }
+
+    Out.vColor /= float(NumSamples);
 
     if (g_fMirror != 0.f)
     {
@@ -1326,7 +1350,7 @@ PS_OUT PS_REFLECTION(PS_IN In)
     vector vMirror = g_MirrorTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-    if (vMirror.a < 0.1f)
+    if (vMirror.b < 0.1f)
     {
         Out.vColor = vDiffuse;
         return Out;
@@ -1345,32 +1369,35 @@ PS_OUT PS_REFLECTION(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    // 노말 벡터 계산
-    float3 normal = normalize(vNormalDesc.xyz * 2.f - 1.f);
+    // 노말 벡터 계산 (노말 맵의 영향 감소)
+    float3 normal = normalize(lerp(float3(0, 0, 1), vNormalDesc.xyz * 2.f - 1.f, 0.3));
 
     // 뷰 벡터 계산
     float3 viewDir = normalize(g_vCamPosition.xyz - vWorldPos.xyz);
 
     // 수정된 프레넬 효과 계산
     float NdotV = saturate(dot(normal, viewDir));
-    float fresnel = pow(max(0, NdotV), g_fFresnelPower);
+    float fresnel = pow(1 - NdotV, g_fFresnelPower);
 
-    // Caustic 노이즈를 이용한 파동 효과 계산
-    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * 0.5 * g_fWaveTimeOffset, g_Time * 0.7 * g_fWaveTimeOffset);
+    // Caustic 노이즈를 이용한 파동 효과 계산 (강도 감소)
+    float2 causticCoord = In.vTexcoord * g_fWaveFrequency + float2(g_Time * g_fWaveTimeOffset * 2.f , g_Time * g_fWaveTimeOffset * 2.f);
     vector vCausticNoise = g_CausticTexture.Sample(LinearSampler, causticCoord);
+    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength * 0.1;
 
-    float2 waveOffset = (vCausticNoise.xy - 0.5) * g_fWaveStrength + 0.3f;
-
-    // 노말 맵을 사용하여 파동 강도 조절
-    waveOffset *= length(normal.xy);
+    // 노말 맵을 사용하여 파동 강도 조절 (영향 감소)
+    waveOffset *= length(normal.xy) * 0.5f;
 
     // 왜곡된 좌표로 리플렉션 텍스처 샘플링
     float2 distortedCoord = float2((1.f - In.vTexcoord.x), In.vTexcoord.y) + waveOffset;
     vector vReflection = g_EffectTexture.Sample(LinearSampler, distortedCoord);
 
-    // 프레넬 효과를 적용한 색상 블렌딩
-    Out.vColor = lerp(vDiffuse, vReflection, fresnel * vMirror.a);
+    // 프레넬 효과를 적용한 색상 블렌딩 (부드러운 전환)
+    float blendFactor = min(0.1f, saturate(/*fresnel **/ vMirror.b));
+   // vReflection *= blendFactor;
 
+    vMirror.b *= vMirror.b;
+    Out.vColor = lerp(vDiffuse, vReflection, vMirror.b);
+    Out.vColor.a = 1.f;
     return Out;
 }
 
@@ -1435,7 +1462,7 @@ PS_OUT PS_GODRAY(PS_IN In)
     float initialDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord).r;
 
     // 레이 마칭 루프
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         currentTexCoord -= deltaTexCoord;
 

@@ -57,10 +57,6 @@ void CDeco_Element::Priority_Tick(_float fTimeDelta)
 {
 }
 
-void CDeco_Element::Tick(_float fTimeDelta)
-{
-    return;
-}
 
 void CDeco_Element::Late_Tick(_float fTimeDelta)
 {

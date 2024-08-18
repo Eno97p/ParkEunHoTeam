@@ -28,6 +28,9 @@ public:
 	void			Rend_Calcul(_int iSoul);
 	void			Update_Inventory(_uint iSlotIdx);
 
+	HRESULT			Create_RedDot(_uint iSlotIdx);
+	HRESULT			Delete_RedDot();
+
 private:
 	vector<CUI*>			m_vecUI;
 	vector<CUI_Slot*>		m_vecSlot;

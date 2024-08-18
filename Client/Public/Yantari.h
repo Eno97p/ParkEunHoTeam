@@ -61,6 +61,7 @@ private:
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
+	CTexture* m_pYantariBody = nullptr;
 
 #pragma region 상태제어 bool변수
 	_bool										m_bReviving = false;

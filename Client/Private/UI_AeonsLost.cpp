@@ -42,7 +42,7 @@ void CUI_AeonsLost::Priority_Tick(_float fTimeDelta)
 void CUI_AeonsLost::Tick(_float fTimeDelta)
 {
 	m_fDeadTimer += fTimeDelta;
-	if (1.f <= m_fDeadTimer)
+	if (1.f <= m_fDeadTimer) // 1.f
 	{
 		// 떠 있다가 노이즈 좀 들어가주면서 팍 사라져야 함 >> 노이즈 구현 하고 나서 손댈 지?
 		

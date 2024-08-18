@@ -13,6 +13,7 @@
 #include "Picking.h"
 #include "Frustum.h"
 #include "CPhysX.h"
+#include "CCuda.h"
 #include "BlastMgr.h"
 #include "EventMgr.h"
 #include "Calculator.h"
@@ -107,6 +108,9 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 	m_pPhysX = CPhysX::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pPhysX)
 		return E_FAIL;
+
+
+
 	m_pBlastMgr = CBlastMgr::Create();
 	if (nullptr == m_pBlastMgr)
 		return E_FAIL;
@@ -154,6 +158,8 @@ HRESULT CGameInstance::Initialize_Engine(HINSTANCE hInst, _uint iNumLevels, cons
 
 void CGameInstance::Tick_Engine(_float fTimeDelta)
 {
+	m_iMotionBlur = 0;
+
 	PROFILE_RESET();
 	
 	if (nullptr == m_pLevel_Manager)
@@ -983,6 +989,7 @@ void CGameInstance::Free()
 
 
 	Safe_Release(m_pPhysX);
+
 	Safe_Release(m_pBlastMgr);
 	m_iRefCnt;
 	int ttmp = 0;

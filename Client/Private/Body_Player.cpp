@@ -408,37 +408,15 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CPlayer::STATE_SPECIALATTACK3)
 	{
-		//if (m_iPastAnimIndex < 121 || m_iPastAnimIndex > 130)
-		//{
-		//	m_iPastAnimIndex = 121;
-		//}
-		//AnimDesc.isLoop = false;
-		//AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		//if(m_iPastAnimIndex > 125 && m_iPastAnimIndex < 129)
-		//{
-		//	fAnimSpeed = 1.f;
-		//}
-		//else
-		//{
-		//	fAnimSpeed = 1.5f; // 2
-		//}
-		//if ((m_iPastAnimIndex > 122 && m_iPastAnimIndex < 126) || m_iPastAnimIndex > 128)
-		//{
-		//	m_pWeapon[*m_pCurWeapon]->Set_Active();
-		//}
-		//else
-		//{
-		//	m_pWeapon[*m_pCurWeapon]->Set_Active(false);
-		//}
 		if (m_iPastAnimIndex < 131 || m_iPastAnimIndex > 136)
 		{
 			m_iPastAnimIndex = 131;
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = m_iPastAnimIndex;
-		if (m_iPastAnimIndex == 134)
+		if (m_iPastAnimIndex == 132 || m_iPastAnimIndex == 133)
 		{
-			fAnimSpeed = 3.f; // 2.5 
+			fAnimSpeed = 0.5f; // 2.5 
 		}
 		else
 		{
@@ -474,6 +452,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
@@ -504,6 +484,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
@@ -533,6 +515,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
@@ -1004,10 +988,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Set_MotionBlur(true);
 	}
-	else if(*m_pState != CPlayer::STATE_SLIDE)
-	{
-		m_pGameInstance->Set_MotionBlur(false);
-	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 
@@ -1301,7 +1281,7 @@ HRESULT CBody_Player::Render_Reflection()
 	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
 
 	// 바닥 평면의 높이 (예: Y = 0)
-	float floorHeight = 521.9f;
+	float floorHeight = 300.f;
 
 	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
 	XMVECTOR vReflectedCamPos = vCamPos;

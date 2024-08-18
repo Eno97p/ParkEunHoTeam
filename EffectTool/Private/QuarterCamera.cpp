@@ -44,77 +44,83 @@ void CQuarterCamera::Priority_Tick(_float fTimeDelta)
 
 void CQuarterCamera::Tick(_float fTimeDelta)
 {
-	if (m_pTarget == nullptr)
-		return;
-
-
-
-
-	if(!m_isTargetChanging)
-	{ 
-		_vector vTarget;
-		CTransform* TargetTransform = static_cast<CTransform*>(m_pTarget->Get_Component(TEXT("Com_Transform")));
-		vTarget = TargetTransform->Get_State(CTransform::STATE_POSITION);
-		XMStoreFloat4(&vAt, vTarget); //vTarget이 플레이어의 위치벡터. vAt은 플레이어를 바라본다.
-
-		_vector CurAt = XMLoadFloat4(&vAt);
-		vEye.x = vAt.x + cosf(m_fAngle) * fDistance; //카메라의 각도와 위치 조정
-		vEye.y = vAt.y + fDistance;
-		vEye.z = vAt.z + sinf(m_fAngle) * fDistance;
-		vEye.w = 1.f;
-
-		_vector CurPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector Dst = XMLoadFloat4(&vEye);
-
-
-		_vector Lerp = XMVectorLerp(CurPos, Dst, 0.5f);
-		_vector LerpAt = XMVectorLerp(CurAt, XMLoadFloat4(&vAt), 0.5f);
-
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, Lerp);
-		m_pTransformCom->LookAt(LerpAt);
-
-	
-	}
-	else   
+	if (!m_FreeCamera)
 	{
-		_vector vTarget;
-		CTransform* TargetTransform = static_cast<CTransform*>(m_pTarget->Get_Component(TEXT("Com_Transform")));
-		vTarget = TargetTransform->Get_State(CTransform::STATE_POSITION);
-		XMStoreFloat4(&vAt, vTarget); //vTarget이 플레이어의 위치벡터. vAt은 플레이어를 바라본다.
+		if (m_pTarget == nullptr)
+			return;
 
-		_vector CurAt = XMLoadFloat4(&vAt);
-		vEye.x = vAt.x + cosf(m_fAngle) * fDistance; //카메라의 각도와 위치 조정
-		vEye.y = vAt.y + fDistance;
-		vEye.z = vAt.z + sinf(m_fAngle) * fDistance;
-		vEye.w = 1.f;
+		if (!m_isTargetChanging)
+		{
+			_vector vTarget;
+			CTransform* TargetTransform = static_cast<CTransform*>(m_pTarget->Get_Component(TEXT("Com_Transform")));
+			vTarget = TargetTransform->Get_State(CTransform::STATE_POSITION);
+			XMStoreFloat4(&vAt, vTarget); //vTarget이 플레이어의 위치벡터. vAt은 플레이어를 바라본다.
 
-		_vector CurPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-		_vector Dst = XMLoadFloat4(&vEye);
+			_vector CurAt = XMLoadFloat4(&vAt);
+			vEye.x = vAt.x + cosf(m_fAngle) * fDistance; //카메라의 각도와 위치 조정
+			vEye.y = vAt.y + fDistance;
+			vEye.z = vAt.z + sinf(m_fAngle) * fDistance;
+			vEye.w = 1.f;
 
-
-		_vector Lerp = XMVectorLerp(CurPos, Dst, fTimeDelta);
-		_vector LerpAt = XMVectorLerp(CurAt, XMLoadFloat4(&vAt), fTimeDelta);
-
-		if (XMVectorGetX(XMVector3Length(Dst - Lerp)) < 0.01f)
-			m_isTargetChanging = false;
+			_vector CurPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector Dst = XMLoadFloat4(&vEye);
 
 
+			_vector Lerp = XMVectorLerp(CurPos, Dst, 0.5f);
+			_vector LerpAt = XMVectorLerp(CurAt, XMLoadFloat4(&vAt), 0.5f);
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, Lerp);
-		m_pTransformCom->LookAt(LerpAt);
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, Lerp);
+			m_pTransformCom->LookAt(LerpAt);
+
+
+		}
+		else
+		{
+			_vector vTarget;
+			CTransform* TargetTransform = static_cast<CTransform*>(m_pTarget->Get_Component(TEXT("Com_Transform")));
+			vTarget = TargetTransform->Get_State(CTransform::STATE_POSITION);
+			XMStoreFloat4(&vAt, vTarget); //vTarget이 플레이어의 위치벡터. vAt은 플레이어를 바라본다.
+
+			_vector CurAt = XMLoadFloat4(&vAt);
+			vEye.x = vAt.x + cosf(m_fAngle) * fDistance; //카메라의 각도와 위치 조정
+			vEye.y = vAt.y + fDistance;
+			vEye.z = vAt.z + sinf(m_fAngle) * fDistance;
+			vEye.w = 1.f;
+
+			_vector CurPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			_vector Dst = XMLoadFloat4(&vEye);
+
+
+			_vector Lerp = XMVectorLerp(CurPos, Dst, fTimeDelta);
+			_vector LerpAt = XMVectorLerp(CurAt, XMLoadFloat4(&vAt), fTimeDelta);
+
+			if (XMVectorGetX(XMVector3Length(Dst - Lerp)) < 0.01f)
+				m_isTargetChanging = false;
+
+
+
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, Lerp);
+			m_pTransformCom->LookAt(LerpAt);
+		}
+		if (m_fShakeTime > m_fShakeAccTime)
+		{
+			m_fShakeAccTime += fTimeDelta;
+			Shaking();
+		}
+
+		Key_Input(fTimeDelta);
 	}
-	if (m_fShakeTime > m_fShakeAccTime)
+	else
 	{
-		m_fShakeAccTime += fTimeDelta;
-		Shaking();
+		Free_Key_Input(fTimeDelta);
 	}
 	__super::Tick(fTimeDelta);
 }
 
 void CQuarterCamera::Late_Tick(_float fTimeDelta)
 {
-	Key_Input(fTimeDelta);
+	
 }
 
 HRESULT CQuarterCamera::Render()
@@ -154,10 +160,7 @@ void CQuarterCamera::Shaking()
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, eye);
 	m_pTransformCom->LookAt(at);
-	
 }
-
-
 
 void CQuarterCamera::Key_Input(_float fTimeDelta)
 {
@@ -178,6 +181,40 @@ void CQuarterCamera::Key_Input(_float fTimeDelta)
 		m_fAngle -= fTimeDelta;
 	}
 
+}
+
+void CQuarterCamera::Free_Key_Input(_float fTimeDelta)
+{
+	if (m_pGameInstance->Key_Down(DIK_TAB))
+		m_bStop = !m_bStop;
+
+	if (!m_bStop)
+	{
+		if (m_pGameInstance->Key_Pressing(DIK_A))
+			m_pTransformCom->Go_Left(fTimeDelta);
+		if (m_pGameInstance->Key_Pressing(DIK_D))
+			m_pTransformCom->Go_Right(fTimeDelta);
+		if (m_pGameInstance->Key_Pressing(DIK_W))
+			m_pTransformCom->Go_Straight(fTimeDelta);
+		if (m_pGameInstance->Key_Pressing(DIK_S))
+			m_pTransformCom->Go_Backward(fTimeDelta);
+
+		_long		MouseMove = { 0 };
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
+		{
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+		}
+
+		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
+		{
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
+		}
+	}
+}
+
+void CQuarterCamera::Change_Camera()
+{
+	m_FreeCamera = !m_FreeCamera;
 }
 
 

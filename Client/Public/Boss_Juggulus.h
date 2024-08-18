@@ -10,6 +10,7 @@ class CBoss_Juggulus final : public CMonster
 {
 #define CIRCLESPHERESPAWNTIME 4.5f
 #define LIGHTNINGSPAWNTIME 10.f
+#define FLAMESPAWNTIME 7.f
 #define STATUECOUNT 3
 
 public:
@@ -67,6 +68,8 @@ private:
 	_uint m_iCircleSphereCount = 0;
 	_float m_fLightningSpawnTime = LIGHTNINGSPAWNTIME;
 	_uint m_iLightningCount = 0;
+	_float m_fFlameSpawnTime = FLAMESPAWNTIME;
+	_uint m_iFlameCount = 0;
 
 private:
 	HRESULT				Add_Components();
@@ -78,6 +81,7 @@ private:
 	void				Check_AnimFinished();
 	void Spawn_CircleSphere(_float fTimeDelta);
 	void Spawn_Lightning(_float fTimeDelta);
+	void Spawn_Flame(_float fTimeDelta);
 
 private:
 	NodeStates			Dead(_float fTimedelta);

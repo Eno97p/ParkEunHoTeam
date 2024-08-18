@@ -60,6 +60,20 @@ void CUIGroup_Menu::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		for (auto& pBtn : m_vecBtn)
+		{
+			if (!m_isRenderOnAnim && !(pBtn->Get_RenderOnAnim()))
+			{
+				pBtn->Resset_Animation(true);
+			}
+			else if (m_isRenderOnAnim && pBtn->Get_RenderOnAnim())
+			{
+				pBtn->Resset_Animation(false);
+			}
+
+			pBtn->Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -69,12 +83,41 @@ void CUIGroup_Menu::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		for (auto& pBtn : m_vecBtn)
+			pBtn->Late_Tick(fTimeDelta);
 	}
 }
 
 HRESULT CUIGroup_Menu::Render()
 {
 	return S_OK;
+}
+
+HRESULT CUIGroup_Menu::Create_RedDot_MenuBtn(_bool isInv)
+{
+	for (auto& pBtn : m_vecBtn)
+	{
+		if ((isInv && pBtn->Get_MenuType() == CUI_MenuBtn::MENU_INV) || (!isInv && pBtn->Get_MenuType() == CUI_MenuBtn::MENU_WEAPON))
+		{
+			pBtn->Create_RedDot();
+			break;
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CUIGroup_Menu::Delete_RedDot_MenuBtn_Inv()
+{
+	for (auto& pBtn : m_vecBtn)
+	{
+		if (pBtn->Get_MenuType() == CUI_MenuBtn::MENU_INV)
+		{
+			pBtn->Delete_RedDot();
+			return S_OK;
+		}
+	}
 }
 
 HRESULT CUIGroup_Menu::Create_UI()
@@ -101,11 +144,11 @@ HRESULT CUIGroup_Menu::Create_UI()
 
 	for (auto& pMenuType : vecMenuType)
 	{
-		ZeroMemory(&pBtnDesc, sizeof(pBtnDesc));
+		//ZeroMemory(&pBtnDesc, sizeof(pBtnDesc));
 		pBtnDesc.eLevel = LEVEL_STATIC;
 		pBtnDesc.eMenuType = pMenuType;
 
-		m_vecUI.emplace_back(dynamic_cast<CUI_MenuBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuBtn"), &pBtnDesc)));
+		m_vecBtn.emplace_back(dynamic_cast<CUI_MenuBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_MenuBtn"), &pBtnDesc))); // m_vecBtn
 	}
 
 	// Menu SelectFrame
@@ -159,4 +202,7 @@ void CUIGroup_Menu::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	for (auto& pBtn : m_vecBtn)
+		Safe_Release(pBtn);
 }

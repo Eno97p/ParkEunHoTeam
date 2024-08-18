@@ -11,7 +11,9 @@
 #include "SwingEffect.h"
 #include "Meteor.h"
 #include "FirePillar.h"
-
+#include "NeedleSpawner.h"
+#include "GroundSlash.h"
+#include "HammerSpawn.h"
 BEGIN(Client)
 class CEffectManager final : public CBase
 {
@@ -38,6 +40,10 @@ public:
 	HRESULT Generate_Swing(const _int iIndex, const _float4x4* BindMat);
 	HRESULT Generate_Meteor(const _float4 vStartPos);
 	HRESULT Generate_FirePillar(const _float4 vStartPos);
+	HRESULT Generate_Needle(const _float4 vStartPos);
+	HRESULT Generate_GroundSlash(const _float4 vStartPos, const _float4 vDirection);
+	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
+
 private:		//Load Values
 	HRESULT Load_Trails();
 	HRESULT Load_SwordTrails();
@@ -50,6 +56,10 @@ private:		//Load Values
 	HRESULT Load_Swing();
 	HRESULT Load_Meteor();
 	HRESULT Load_FirePillar();
+	HRESULT Load_Needle();
+	HRESULT Load_GroundSlash();
+	HRESULT Load_HammerSpawn();
+
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
 private:		//Free
@@ -68,6 +78,10 @@ private:
 
 	shared_ptr<CMeteor::METEOR_DESC>							m_Meteor;
 	shared_ptr<CFirePillar::FIREPILLAR>							m_FirePillar;
+	shared_ptr<CNeedleSpawner::NEEDLESPAWNER>					m_Needle;
+	shared_ptr<CGroundSlash::GROUNDSLASH>						m_GroundSlash;
+	shared_ptr<CHammerSpawn::HAMMERSPAWN>						m_HammerSpawn;
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

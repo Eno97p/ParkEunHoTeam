@@ -2,13 +2,15 @@
 #include "GameInstance.h"
 #include "EffectManager.h"
 #include "ThirdPersonCamera.h"
+#include "Player.h"
+
 CMeteor::CMeteor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject(pDevice, pContext)
+	:CWeapon(pDevice, pContext)
 {
 }
 
 CMeteor::CMeteor(const CMeteor& rhs)
-	:CGameObject(rhs)
+	:CWeapon(rhs)
 {
 }
 
@@ -22,7 +24,7 @@ HRESULT CMeteor::Initialize(void* pArg)
 	if (pArg == nullptr)
 		return E_FAIL;
 	m_OwnDesc = make_shared<METEOR_DESC>(*((METEOR_DESC*)pArg));
-	if (FAILED(__super::Initialize(nullptr)))
+	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -42,6 +44,11 @@ HRESULT CMeteor::Initialize(void* pArg)
 	if (FAILED(Add_Child_Effects()))
 		return E_FAIL;
 
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
+
 	return S_OK;
 }
 
@@ -55,8 +62,19 @@ void CMeteor::Tick(_float fTimeDelta)
 {
 	m_CurLifeTime -= fTimeDelta;
 	m_fWindSpawn -= fTimeDelta;
+
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Zoom(90.f, 0.3f, 2.f);
+
 	if (m_CurLifeTime < 0.f)
 	{
+		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+		if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+
 		EFFECTMGR->Generate_Particle(65, m_OwnDesc->vTargetPos);
 		_vector vLook = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f);
 		EFFECTMGR->Generate_Particle(66, m_OwnDesc->vTargetPos, nullptr, XMVectorZero(), 0.f, vLook);
@@ -99,6 +117,17 @@ void CMeteor::Late_Tick(_float fTimeDelta)
 
 HRESULT CMeteor::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(3.f, 3.f, 3.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -178,4 +207,6 @@ void CMeteor::Free()
 	__super::Free();
 	for (auto& iter : m_EffectClasses)
 		Safe_Release(iter);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

@@ -47,6 +47,9 @@
 #include "C:\3D_TeamProj\Engine\Private\CCCTFilterCallBack.cpp"
 
 
+#include "C:\3D_TeamProj\Engine\private\CCuda.cpp"
+
+
 #include "C:\3D_TeamProj\Engine\private\Cell.cpp"
 
 

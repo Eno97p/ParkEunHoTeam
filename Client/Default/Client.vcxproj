@@ -257,6 +257,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Juggulus_HandOne.h" />
     <ClInclude Include="..\Public\Juggulus_HandThree.h" />
     <ClInclude Include="..\Public\Juggulus_HandTwo.h" />
+    <ClInclude Include="..\Public\KickSword.h" />
     <ClInclude Include="..\Public\Lagoon.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\Public\Legionnaire.h" />
@@ -555,6 +556,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Juggulus_HandOne.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandThree.cpp" />
     <ClCompile Include="..\Private\Juggulus_HandTwo.cpp" />
+    <ClCompile Include="..\Private\KickSword.cpp" />
     <ClCompile Include="..\Private\Lagoon.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\Private\Legionnaire.cpp" />

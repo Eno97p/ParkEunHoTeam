@@ -168,6 +168,9 @@
 #include "C:\3D_TeamProj\Client\Private\Juggulus_HandTwo.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\KickSword.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\Lagoon.cpp"
 
 
@@ -208,6 +211,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\Mask_Andras.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\Mask_Yantari.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\Npc.cpp"

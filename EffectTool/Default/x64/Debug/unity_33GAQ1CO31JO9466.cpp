@@ -101,6 +101,9 @@
 #include "C:\3D_TeamProj\EffectTool\Private\Heal_Spiral.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\private\Hedgehog.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\HoverBoard.cpp"
 
 
@@ -147,6 +150,9 @@
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\ParticleMesh.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\Particle_PhysX.cpp"
 
 
 #include "C:\3D_TeamProj\EffectTool\Private\Particle_Point.cpp"

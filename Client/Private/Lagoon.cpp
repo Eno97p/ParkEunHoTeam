@@ -58,7 +58,7 @@ void CLagoon::Tick(_float fTimeDelta)
 void CLagoon::Late_Tick(_float fTimeDelta)
 {
 	//DECAL
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
 
@@ -92,6 +92,34 @@ HRESULT CLagoon::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pTexture[TEX_NORMAL2]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture2", 0)))
+			return E_FAIL;	
+		
+		if (FAILED(m_pTexture[TEX_FOAMMASK]->Bind_ShaderResource(m_pShaderCom, "g_FoamMaskTexture", 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_FOAM]->Bind_ShaderResources(m_pShaderCom, "g_FoamTexture")))
+			return E_FAIL;
+
+		if (FAILED(m_pTexture[TEX_FOAMNORMAL]->Bind_ShaderResources(m_pShaderCom, "g_FoamTextureNormal")))
+			return E_FAIL;
+
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamWaveFrequency", &m_fFoamWaveFrequency, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamWaveAmplitude", &m_fFoamWaveAmplitude, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamMaskScale", &m_fFoamMaskScale, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamMaskSpeed", &m_fFoamMaskSpeed, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamBlendStrength", &m_fFoamBlendStrength, sizeof(_float))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fFoamFresnelStrength", &m_fFoamFresnelStrength, sizeof(_float))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalStrength0", &m_fNormalStrength0, sizeof(_float))))
@@ -337,6 +365,27 @@ HRESULT CLagoon::Add_Components(void* pArg)
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_WaterCaustic"),
 		TEXT("Com_Caustic"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_CAUSTIC]))))
 		return E_FAIL;
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FoamMask"),
+		TEXT("Com_FoamMask"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAMMASK]))))
+		return E_FAIL;
+
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Foam"),
+		TEXT("Com_Foam"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAM]))))
+		return E_FAIL;
+
+	/* For.Com_Normal3 */
+	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_FoamNormal"),
+		TEXT("Com_FoamNormal"), reinterpret_cast<CComponent**>(&m_pTexture[TEX_FOAMNORMAL]))))
+		return E_FAIL;
+
+	PxPhysics* pPhysics = m_pGameInstance->GetPhysics();
+	PxMaterial* pMaterial = pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxRigidStatic* groundPlane = PxCreatePlane(*pPhysics, PxPlane(0, 1, 0, -300), *pMaterial);
+	m_pGameInstance->GetScene()->addActor(*groundPlane);
 
 	return S_OK;
 }

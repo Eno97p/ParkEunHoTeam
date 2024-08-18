@@ -9,6 +9,10 @@ texture2D	g_NormalTexture2;
 texture2D	g_CausticTexture;
 texture2D	g_SpecularTexture;
 
+texture2D	g_FoamTexture[2];
+texture2D	g_FoamTextureNormal[2];
+texture2D	g_FoamMaskTexture;
+
 texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
 texture2D g_EmissiveTexture;
@@ -63,6 +67,14 @@ float3 g_LeafCol;
 
 //for Card
 uint g_TextureNum;
+
+//Foam
+float g_fFoamWaveFrequency = 1.0f;  // 거품 파도의 주파수
+float g_fFoamWaveAmplitude = 0.05f; // 거품 파도의 진폭
+float g_fFoamMaskScale = 10.0f;     // 거품 마스크의 스케일
+float g_fFoamMaskSpeed = 0.01f;     // 거품 마스크의 이동 속도
+float g_fFoamBlendStrength = 0.5f;  // 거품 블렌딩 강도
+float g_fFoamFresnelStrength = 0.5f;// 거품에 적용되는 프레넬 효과 강도
 
 struct VS_IN
 {
@@ -273,7 +285,7 @@ PS_OUT PS_DISSOLVE(PS_IN In)
 	float3x3	WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
 
 	vNormal = mul(vNormal, WorldMatrix);
-	
+
 
 
 	Out.vDiffuse = vDiffuse/* * 0.9f*/;
@@ -453,9 +465,39 @@ PS_OUT_BLOOM PS_MIRROR(PS_IN In)
 {
 	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
 
+	// 디퓨즈 텍스처 샘플링 (기본 거울 색상)
 	vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
-	Out.vColor = vColor;
+	// 노말 맵 샘플링 및 블렌딩
+	float2 flowTexCoord0 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.05, g_fAccTime * g_fFlowSpeed * 0.07);
+	float2 flowTexCoord1 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.03, -g_fAccTime * g_fFlowSpeed * 0.06);
+	float2 flowTexCoord2 = In.vTexcoord + float2(-g_fAccTime * g_fFlowSpeed * 0.04, g_fAccTime * g_fFlowSpeed * 0.08);
+
+	float3 vNormal0 = g_NormalTexture.Sample(LinearSampler, flowTexCoord0).xyz * 2.0f - 1.0f;
+	float3 vNormal1 = g_NormalTexture1.Sample(LinearSampler, flowTexCoord1).xyz * 2.0f - 1.0f;
+	float3 vNormal2 = g_NormalTexture2.Sample(LinearSampler, flowTexCoord2).xyz * 2.0f - 1.0f;
+
+	vNormal0 *= g_fNormalStrength0;
+	vNormal1 *= g_fNormalStrength1;
+	vNormal2 *= g_fNormalStrength2;
+
+	float3 vNormal = normalize(vNormal0 + vNormal1 + vNormal2);
+
+	float3x3 TBN = float3x3(normalize(In.vTangent.xyz), normalize(In.vBinormal.xyz), normalize(In.vNormal.xyz));
+	vNormal = mul(vNormal, TBN);
+
+	// 뷰 방향 계산
+	float3 viewDir = normalize(g_vCamPosition.xyz - In.vWorldPos.xyz);
+
+	// 프레넬 효과 계산
+	float NdotV = max(dot(vNormal, viewDir), 0.001);
+	float fresnel = pow(1.0 - NdotV, g_fFresnelStrength);
+
+	// 알파값 계산 (프레넬 효과에 따라 변화)
+	float finalAlpha = pow(lerp(0.3f, 1.0, fresnel), 4.f);
+
+	// 최종 출력 (색상은 그대로, 알파값만 조절)
+	Out.vColor = float4(vColor.rg, finalAlpha, 1.f);
 
 	return Out;
 }
@@ -475,8 +517,40 @@ PS_OUT_BLOOM PS_LAGOON(PS_IN In)
 	vNormal1 *= g_fNormalStrength1;
 	vNormal2 *= g_fNormalStrength2;
 	float3 vNormal = normalize(vNormal0 + vNormal1 + vNormal2);
+
+
+	// Foam 텍스처 샘플링 (사인 파동 추가)
+	float2 foamTexCoord1 = In.vTexcoord + float2(g_fAccTime * g_fFlowSpeed * 0.02, g_fAccTime * g_fFlowSpeed * 0.03);
+	float2 foamTexCoord2 = In.vTexcoord + float2(-g_fAccTime * g_fFlowSpeed * 0.03, g_fAccTime * g_fFlowSpeed * 0.02);
+
+	// 사인 파동 추가
+	float2 sineWave = float2(
+		sin(g_fAccTime * g_fFoamWaveFrequency + In.vTexcoord.x * 10.0) * g_fFoamWaveAmplitude,
+		cos(g_fAccTime * g_fFoamWaveFrequency + In.vTexcoord.y * 8.0) * g_fFoamWaveAmplitude
+	);
+
+	foamTexCoord1 += sineWave;
+	foamTexCoord2 += sineWave;
+
+	float foam1 = g_FoamTexture[0].Sample(LinearSampler, foamTexCoord1).r;
+	float foam2 = g_FoamTexture[1].Sample(LinearSampler, foamTexCoord2).r;
+	float3 foamNormal1 = g_FoamTextureNormal[0].Sample(LinearSampler, foamTexCoord1).xyz * 2.0f - 1.0f;
+	float3 foamNormal2 = g_FoamTextureNormal[1].Sample(LinearSampler, foamTexCoord2).xyz * 2.0f - 1.0f;
+
+	// 마스크 맵 움직임 (사인 파동 추가)
+	float2 maskOffset = float2(g_fAccTime * g_fFoamMaskSpeed, g_fAccTime * g_fFoamMaskSpeed * 1.5) + sineWave;
+	float foamMask = g_FoamMaskTexture.Sample(LinearSampler, In.vTexcoord * g_fFoamMaskScale + maskOffset).r;
+
+	// Foam 텍스처와 노멀 블렌딩
+	float foamBlend = (foam1 + foam2) * g_fFoamBlendStrength;
+	float3 foamNormalBlend = normalize(foamNormal1 + foamNormal2);
+
+	// Foam 노멀 적용 (foamMask 강도에 따라 조절)
+	vNormal = normalize(vNormal + foamNormalBlend * foamMask);
+
 	float3x3 TBN = float3x3(normalize(In.vTangent.xyz), normalize(In.vBinormal.xyz), normalize(In.vNormal.xyz));
 	vNormal = mul(vNormal, TBN);
+
 
 	// 디퓨즈 텍스처 샘플링
 	vector vMtrlDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
@@ -496,8 +570,7 @@ PS_OUT_BLOOM PS_LAGOON(PS_IN In)
 
 	// PBR 계산을 위한 변수들
 	float roughness = g_fRoughness;
-	float metallic = 0.02; // 물은 약간의 금속성을 가질 수 있습니다.
-
+	float metallic = 0.02;
 	float3 halfVec = normalize(lightDir + viewDir);
 	float NdotV = max(dot(vNormal, viewDir), 0.001);
 	float NdotL = max(dot(vNormal, lightDir), 0.001);
@@ -508,46 +581,55 @@ PS_OUT_BLOOM PS_LAGOON(PS_IN In)
 	float a = roughness * roughness;
 	float a2 = a * a;
 	float D = a2 / (3.141592 * pow(NdotH * NdotH * (a2 - 1.0) + 1.0, 2.0));
-
 	float G1 = 2.0 * NdotH / (NdotH + sqrt(a2 + (1.0 - a2) * NdotH * NdotH));
 	float G = G1 * G1;
-
 	float F0 = lerp(0.04, 1.0, metallic);
 	float F = F0 + (1.0 - F0) * pow(1.0 - HdotV, 5.0);
-
 	float specular = (D * F * G) / (4.0 * NdotV * NdotL + 0.001);
 
 	// 최종 라이팅 계산
 	float3 ambientLight = g_vLightAmbient.rgb * g_vMtrlAmbient.rgb;
 	float3 diffuseLight = g_vLightDiffuse.rgb * NdotL * (1.0 - metallic);
 	float3 specularLight = g_vLightSpecular.rgb * specular;
-
 	float3 finalLight = (ambientLight + (diffuseLight + specularLight) * fAtt);
 	float3 finalColor = vMtrlDiffuse.rgb * finalLight;
 
-	// 물의 특성을 고려한 추가적인 스페큘러
-	float waterSpecular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 256.0) * 0.5;
-	finalColor += waterSpecular * g_vLightSpecular.rgb;
-
-	// 깊이에 따른 색상 변화
-	float depthFactor = saturate(g_fWaterDepth / 5.0f);
-	float3 deepColor = float3(0.0f, 0.2f, 0.3f);  // 깊은 물의 색상
-	finalColor = lerp(finalColor, deepColor, depthFactor);
-
-	// Caustic 효과를 최종 색상에 적용
-	finalColor *= (1 + caustic * g_fCausticStrength);
-
-	// 프레넬 효과 (선택적)
+	// 프레넬 효과 계산
 	float fresnel = pow(1.0 - max(dot(vNormal, viewDir), 0.0), 5.0);
 	fresnel = saturate(fresnel * g_fFresnelStrength);
+
+	// Foam 적용 (foamMask 강도와 프레넬 효과에 따라 조절)
+	float3 foamColor = float3(1.0, 1.0, 1.0); // 흰색 거품
+	float foamIntensity = foamMask * foamBlend;
+
+	// 프레넬 효과를 foam에 더 강하게 적용
+	foamIntensity = lerp(foamIntensity, 1.0, fresnel * g_fFoamFresnelStrength);
+
+	// 물의 특성을 고려한 추가적인 스페큘러
+	float waterSpecular = pow(max(dot(reflect(-lightDir, vNormal), viewDir), 0.0), 256.0) * 0.5;
+
+	// 깊이에 따른 색상 변화
+	float depthFactor = saturate(g_fWaterDepth * 1.5 / 5.0f);
+	float3 deepColor = float3(0.0f, 0.2f, 0.3f);  // 깊은 물의 색상
+
+	// 최종 색상 계산 (순서 변경)
+	finalColor = lerp(finalColor, deepColor, depthFactor);
+	finalColor *= (1 + caustic * g_fCausticStrength);
+	finalColor += waterSpecular * g_vLightSpecular.rgb;
+
+	// Foam 색상을 최종 색상에 블렌딩 (프레넬 효과 포함)
+	finalColor = lerp(finalColor, foamColor, foamIntensity * fresnel);
+
+	// 프레넬 효과를 최종 색상에 적용
 	finalColor = lerp(finalColor, g_vLightSpecular.rgb, fresnel);
 
-	// 최종 색상을 Out.vColor에 저장
-	Out.vColor = float4(finalColor, g_fWaterAlpha);
+	// 프레넬 효과를 알파값에 적용
+	float finalAlpha = lerp(g_fWaterAlpha, 1.0, fresnel * 0.5f);
 
+	// 최종 색상과 알파값을 Out.vColor에 저장
+	Out.vColor = float4(finalColor, finalAlpha);
 	return Out;
 }
-
 technique11 DefaultTechnique
 {
 	pass DefaultPass_0

@@ -21,37 +21,28 @@ HRESULT CPassive_Element::Initialize_Prototype()
 
 HRESULT CPassive_Element::Initialize(void* pArg)
 {
-
-
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-
-
-
-
     MAP_ELEMENT_DESC* desc = (MAP_ELEMENT_DESC*)(pArg);
-    // m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 
-    if (FAILED(Add_Components((MAP_ELEMENT_DESC*)(pArg))))
+    // WorldMats의 복사본 생성
+    m_WorldMats.reserve(desc->WorldMats.size());
+    for (const auto& mat : desc->WorldMats)
+    {
+        m_WorldMats.push_back(new _float4x4(*mat));
+    }
+
+    if (FAILED(Add_Components(desc)))
         return E_FAIL;
 
-    /*m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 3.f, 5.f, 1.f));
-    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);*/
-
-    //m_pTransformCom->Scaling(100.f, 100.f, 100.f);
-
     CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
-    instanceDesc.WorldMats = desc->WorldMats;
+    instanceDesc.WorldMats = m_WorldMats;  // 복사본 사용
     instanceDesc.iNumInstance = desc->iInstanceCount;
     m_pModelCom->Ready_Instance_ForMapElements(instanceDesc);
 
-    //FOR CULLING
-    //m_pGameInstance->AddCullingObject(this, m_pPhysXCom->Get_Actor());
     m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
-
     return S_OK;
-
 }
 
 void CPassive_Element::Late_Tick(_float fTimeDelta)
@@ -313,6 +304,11 @@ CGameObject* CPassive_Element::Clone(void* pArg)
 void CPassive_Element::Free()
 {
     __super::Free();
+
+    for (auto& mat : m_WorldMats)
+    {
+        Safe_Delete(mat);
+    }
 
     for (_int i = 0; i < m_iInstanceCount; ++i)
     {

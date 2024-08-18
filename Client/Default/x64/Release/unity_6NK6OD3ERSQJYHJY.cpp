@@ -210,6 +210,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\Mask_Andras.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\Mask_Yantari.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\Npc.cpp"
 
 

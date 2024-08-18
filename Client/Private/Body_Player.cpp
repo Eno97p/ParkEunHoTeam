@@ -452,6 +452,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
@@ -482,6 +484,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
 			{
@@ -511,6 +515,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 			{
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
+				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+				pThirdPersonCamera->Zoom(90.f, 0.65f, 0.602f);
 			}
 
 			if (m_pModelCom->Get_Ratio_Betwin(0.2f, 0.4f))
@@ -1275,7 +1281,7 @@ HRESULT CBody_Player::Render_Reflection()
 	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
 
 	// 바닥 평면의 높이 (예: Y = 0)
-	float floorHeight = 521.9f;
+	float floorHeight = 300.f;
 
 	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
 	XMVECTOR vReflectedCamPos = vCamPos;

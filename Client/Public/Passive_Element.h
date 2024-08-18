@@ -41,6 +41,9 @@ private:
 	_bool			m_bHiddenObject = false;
 private:
 	_float4x4 m_PrevViewMatrix;
+private:
+		vector<_float4x4*> m_WorldMats;
+
 
 public:
 	static CPassive_Element* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

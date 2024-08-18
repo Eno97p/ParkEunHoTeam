@@ -787,6 +787,9 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\04. Vegetation\00. Grass">
       <UniqueIdentifier>{2cf9eea6-c4c3-43e2-b1ee-f733309fd916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\07. Moon">
+      <UniqueIdentifier>{96512c81-6708-42a4-8f4f-8730331d4a1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1718,6 +1721,9 @@
     <ClInclude Include="..\Public\Mask_Yantari.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BackGround_Moon.h">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2595,6 +2601,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mask_Yantari.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround_Moon.cpp">
+      <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

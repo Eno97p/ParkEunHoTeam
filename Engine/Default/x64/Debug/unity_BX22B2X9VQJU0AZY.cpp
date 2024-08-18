@@ -47,6 +47,9 @@
 #include "E:\3D_ShatteredNew\Engine\Private\CCCTFilterCallBack.cpp"
 
 
+#include "E:\3D_ShatteredNew\Engine\private\CCuda.cpp"
+
+
 #include "E:\3D_ShatteredNew\Engine\private\Cell.cpp"
 
 

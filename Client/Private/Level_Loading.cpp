@@ -37,7 +37,7 @@ typedef unsigned (__stdcall* _beginthreadex_proc_type)(void*);
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 {
 	m_eNextLevel = eNextLevel;
-	//CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
+	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
 	
 	
 

@@ -365,10 +365,32 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
 }
 
+HRESULT CGameInstance::Set_CurrentLevel(_uint iLevelIndex, CLevel* pNewLevel)
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Set_CurrentLevel(iLevelIndex, pNewLevel);
+}
+
+HRESULT CGameInstance::Delete_CurrentLevel()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Delete_CurrentLevel();
+}
+
 _uint CGameInstance::Get_CurrentLevel()
 {
 	return m_pLevel_Manager->Get_CurrentLevel();
 }
+
+_uint CGameInstance::Get_CurrentLevelIndex()
+{
+	return m_pLevel_Manager->Get_CurrentLevelIndex();
+}
+
 
 void CGameInstance::Set_NextLevel(_uint iNextLevel)
 {

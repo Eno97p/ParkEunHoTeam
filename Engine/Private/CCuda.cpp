@@ -55,7 +55,7 @@ HRESULT CCuda::Initialize()
 HRESULT CCuda::LaunchKernel_CullingInstance(VTXMATRIX* d_instanceData, int numInstances, float3 cameraPos, float maxRenderDistance, int* d_visibleCount)
 {
 	float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
-	Cu_VTXMATRIX* cu_instanceData = reinterpret_cast<Cu_VTXMATRIX*>(d_instanceData);
+	cu_VTXMATRIX* cu_instanceData = reinterpret_cast<cu_VTXMATRIX*>(d_instanceData);
 	cudaError_t cudaStatus = LaunchCullingKernel(cu_instanceData, numInstances, cameraPos, maxDistanceSquared, d_visibleCount);
 
 	
@@ -71,6 +71,7 @@ HRESULT CCuda::LaunchKernel_CullingInstance(VTXMATRIX* d_instanceData, int numIn
 
 HRESULT CCuda::LaunchKernel_CullingInstance(cudaGraphicsResource* cudaResource, int numInstances, float3 cameraPos, float maxRenderDistance, int* d_visibleCount)
 {
+	
 
 	float maxDistanceSquared = maxRenderDistance * maxRenderDistance;
 
@@ -92,7 +93,7 @@ HRESULT CCuda::LaunchKernel_CullingInstance(cudaGraphicsResource* cudaResource, 
 	}
 
 	// 포인터 타입 변환
-	Cu_VTXMATRIX* d_instanceData = static_cast<Cu_VTXMATRIX*>(d_resourceData);
+	cu_VTXMATRIX* d_instanceData = static_cast<cu_VTXMATRIX*>(d_resourceData);
 
 	// 커널 실행
 	cudaStatus = LaunchCullingKernel(d_instanceData, numInstances, cameraPos, maxDistanceSquared, d_visibleCount);

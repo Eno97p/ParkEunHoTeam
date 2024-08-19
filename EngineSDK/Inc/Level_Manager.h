@@ -23,8 +23,11 @@ public:
 public:
 	/* 새로운 레벨로 교체한다. */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Set_CurrentLevel(_uint iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Delete_CurrentLevel();
 	void Set_NextLevelIndex(_uint iNext) { m_iNextLevelIndex = iNext; }
 	_uint Get_CurrentLevel() { return m_iNextLevelIndex; }
+	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
 
 private:
 	class CLevel*			m_pCurrentLevel = { nullptr };

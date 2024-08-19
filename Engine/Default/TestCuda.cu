@@ -12,7 +12,7 @@ __constant__ float g_maxDistanceSquared;
 
 __device__ int atomicAdd(int* address, int val);
 
-__global__ void cullingKernel(Cu_VTXMATRIX* instances, int numInstances, float3 cameraPos, float maxDistanceSquared, int* visibleCount)
+__global__ void cullingKernel(cu_VTXMATRIX* instances, int numInstances, float3 cameraPos, float maxDistanceSquared, int* visibleCount)
 {
 
 	unsigned int index_X = blockIdx.x * blockDim.x + threadIdx.x;
@@ -30,7 +30,7 @@ __global__ void cullingKernel(Cu_VTXMATRIX* instances, int numInstances, float3 
 			if (visibleIndex != index_X)
 			{
 				// Swap
-				Cu_VTXMATRIX temp = instances[visibleIndex];
+				cu_VTXMATRIX temp = instances[visibleIndex];
 				instances[visibleIndex] = instances[index_X];
 				instances[index_X] = temp;
 			}
@@ -39,7 +39,7 @@ __global__ void cullingKernel(Cu_VTXMATRIX* instances, int numInstances, float3 
 	}
 }
 
-cudaError_t LaunchCullingKernel(Cu_VTXMATRIX* d_instanceData, int numInstances, float3 cameraPos, float maxDistanceSquared, int* d_visibleCount)
+cudaError_t LaunchCullingKernel(cu_VTXMATRIX* d_instanceData, int numInstances, float3 cameraPos, float maxDistanceSquared, int* d_visibleCount)
 {
 	const DWORD MAX_NUM_PER_ONCE = 65536 * 10;
 	const DWORD THREAD_NUM_PER_BLOCK = 1024;

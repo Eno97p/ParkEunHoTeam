@@ -240,7 +240,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float3 normal = normalize(vNormal.xyz);
     float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
     float3 lightDiffuse = g_vLightDiffuse * saturate(max(dot(-lightDir, normal), 0.f));
-    Out.vShade = float4((lightDiffuse + lightAmbient) * hbao, 1.f);
+    Out.vShade = float4((lightDiffuse + lightAmbient) /** hbao*/, 1.f);
 
 
 
@@ -666,10 +666,8 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     }
 
     float HBAO = g_HBAOTexture.Sample(LinearSampler, In.vTexcoord).r;
-    if (g_TestBool == 1.0f)
-    {
-        vColor *= HBAO;
-    }
+
+    vColor *= HBAO;
 
 
     Out.vColor = vColor;

@@ -18,7 +18,7 @@ HRESULT CComponent_Manager::Initialize(_uint iNumLevels)
 
 HRESULT CComponent_Manager::Add_Prototype(_uint iLevelIndex, const wstring & strPrototypeTag, CComponent * pPrototype)
 {
-	//원형이 있으면 들어온 데이터를 지우고 종료
+	//원형이 이미 있으면 들어온 데이터를 지우고 종료
 	if (nullptr != Find_Prototype(iLevelIndex, strPrototypeTag))
 	{
 		Safe_Release(pPrototype);

@@ -23,6 +23,11 @@ HRESULT CUI_QTE_Ring::Initialize(void* pArg)
 
 	m_eRingType = pDesc->eRingType;
 
+	if (pDesc->isDuo)
+		m_fSpeed = 10.f;
+	else
+		m_fSpeed = 13.f; // 더 빠르게
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -56,8 +61,8 @@ void CUI_QTE_Ring::Tick(_float fTimeDelta)
 	}
 	else
 	{
-		m_fSizeX -= 10.f; // 10
-		m_fSizeY -= 10.f;
+		m_fSizeX -= m_fSpeed; // 10
+		m_fSizeY -= m_fSpeed;
 		Setting_Position();
 
 		if (m_fSizeX >= fGOOD)

@@ -44,7 +44,8 @@ void CQTE::Tick(_float fTimeDelta)
 
 	if (Check_End())
 	{
-		Check_ResultScore();
+		//Check_ResultScore();
+		m_isEnd = true;
 	}
 }
 
@@ -61,10 +62,15 @@ HRESULT CQTE::Render()
 
 HRESULT CQTE::Create_QteBtn()
 {
-	_uint iRand = (rand() % 3) + 1; // 1 ~ 3
+	_uint iRand = (rand() % 2) + 2; // 2 ~ 3
 
 	CUI_QTE_Btn::UI_QTE_BTN_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
+
+	if (iRand == 2)
+		pDesc.isDuo = true;
+	else
+		pDesc.isDuo = false;
 	
 	for (size_t i = 0; i < iRand; ++i)
 	{
@@ -115,21 +121,19 @@ _bool CQTE::Check_End()
 		return false;
 }
 
-void CQTE::Check_ResultScore()
+_bool CQTE::Check_ResultScore()
 {
 	// Btn을 순회하며 Score를 체크하고 하나라도 Bad가 있으면 ~ / 통과했으면 ~ 기믹 처리 필요(Andras와 연결)
 	for (auto& pBtn : m_vecBtn)
 	{
 		if (pBtn->Get_ScoreType() == CUI_QTE_Btn::SCORE_BAD) // Bad가 하나라도 있으면 ~~~ 처리
 		{
-
-
-			return; 
+			return false; 
 		}
 	}
 
 	// 없으면 ~~~ 처리
-
+	return true;
 }
 
 CQTE* CQTE::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

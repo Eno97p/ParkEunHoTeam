@@ -238,6 +238,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Elevator.h" />
     <ClInclude Include="..\Public\EventTrigger.h" />
     <ClInclude Include="..\Public\FakeWall.h" />
+    <ClInclude Include="..\Public\FallPlatform.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
     <ClInclude Include="..\Public\Ghost.h" />
@@ -543,6 +544,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Elevator.cpp" />
     <ClCompile Include="..\Private\EventTrigger.cpp" />
     <ClCompile Include="..\Private\FakeWall.cpp" />
+    <ClCompile Include="..\Private\FallPlatform.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Ghost.cpp" />

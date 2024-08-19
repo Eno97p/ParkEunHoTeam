@@ -215,7 +215,15 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CYantari::STATE_CASTATTACK)
 	{
-		fAnimSpeed = 1.f;
+		if (m_pModelCom->Get_Ratio_Betwin(0.65f, 0.68f))
+		{
+			fAnimSpeed = 0.01f;
+		}
+		else
+		{
+			fAnimSpeed = 1.f;
+		}
+		
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 23;

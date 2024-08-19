@@ -47,6 +47,7 @@ HRESULT CMantari::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(2.f, 2.f, 2.f);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 
 	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
@@ -86,7 +87,6 @@ void CMantari::Tick(_float fTimeDelta)
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
 	if (!m_bPlayerIsFront)
 	{
-
 		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
 	}
 	else

@@ -463,6 +463,16 @@ void CUI_Manager::Create_QTE()
 	m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
 }
 
+_bool CUI_Manager::Delete_QTE()
+{
+	_bool isSuccess = m_pQTE->Check_ResultScore();
+
+	Safe_Release(m_pQTE);
+	m_pQTE = nullptr;
+
+	return isSuccess;
+}
+
 void CUI_Manager::Key_Input()
 {
 	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?

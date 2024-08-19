@@ -52,7 +52,6 @@ void CSphere::Priority_Tick(_float fTimeDelta)
 
 void CSphere::Tick(_float fTimeDelta)
 {
-	
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
 	{

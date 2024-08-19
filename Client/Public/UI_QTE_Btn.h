@@ -10,7 +10,8 @@ public:
 	enum SCORE_TYPE { SCORE_PERFECT = 0, SCORE_GOOD, SCORE_BAD, SCORE_END };
 	typedef struct UI_Qte_Btn_Desc : public UI_DESC
 	{
-		_uint iBtnIndex;
+		_bool		isDuo;
+		_uint		iBtnIndex;
 	}UI_QTE_BTN_DESC;
 
 private:
@@ -36,6 +37,7 @@ public:
 private:
 	_bool					m_isStart = { false };
 	_bool					m_isScore = { false }; // 끝나고 점수 매겨졌는지
+	_bool					m_isDuo = { false };
 	_uint					m_iBtnNum = { 0 };
 
 	class CUI_QTE_Ring*		m_pRing = { nullptr };

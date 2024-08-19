@@ -16,6 +16,8 @@ public:
 	typedef struct BODY_ANDRAS_DESC : public PARTOBJ_DESC
 	{
 		_bool* bSprint = nullptr;
+		_bool* bKick = nullptr;
+		_bool* bSlash = nullptr;
 	}BODY_ANDRAS_DESC;
 
 private:
@@ -45,6 +47,8 @@ private:
 	class CWeapon* m_pWeapon[5] = { nullptr };
 	_float m_fDamageTiming = 0.f;
 	_bool* m_bSprint = nullptr;
+	_bool* m_bKick = nullptr;
+	_bool* m_bSlash = nullptr;
 
 public:
 	HRESULT Add_Components();

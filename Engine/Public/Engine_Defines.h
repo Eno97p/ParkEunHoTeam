@@ -18,6 +18,15 @@
 #include <d3dcompiler.h>
 
 
+
+// For. NVIDIA HBAO+
+#include"GFSDK_ShadowLib.h"
+#include"GFSDK_ShadowLib_Common.h"
+#include"GFSDK_SSAO.h"
+
+
+
+
 #include"PxPhysicsAPI.h"
 
 #pragma region Lowlevel_Blast

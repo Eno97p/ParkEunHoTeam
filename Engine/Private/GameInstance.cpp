@@ -698,6 +698,11 @@ ID3D11RenderTargetView* CGameInstance::Get_RTV(const wstring& strTargetTag)
 	return m_pTarget_Manager->Get_RTV(strTargetTag);
 }
 
+ID3D11ShaderResourceView* CGameInstance::Get_SRV(const wstring& strTargetTag)
+{
+	return m_pTarget_Manager ->Get_SRV(strTargetTag);
+}
+
 HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)
 {
 	return m_pTarget_Manager->Bind_RenderTargetSRV(strTargetTag, pShader, pConstantName);

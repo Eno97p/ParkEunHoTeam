@@ -153,6 +153,7 @@ public: /* For.Target_Manager */
 	HRESULT End_MRT();
 	HRESULT End_MRT(ID3D11DeviceContext* pDeferredContext);
 	ID3D11RenderTargetView* Get_RTV(const wstring& strTargetTag);
+	ID3D11ShaderResourceView* Get_SRV(const wstring& strTargetTag);
 	HRESULT Bind_RenderTargetSRV(const wstring & strTargetTag, class CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_RenderTargetSRV_Compute(const wstring& strTargetTag, class CComputeShader_Texture* pComputeShader, const _char* pConstantName);
 	HRESULT Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D* pDesc);

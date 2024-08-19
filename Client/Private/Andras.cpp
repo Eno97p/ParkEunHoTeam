@@ -50,7 +50,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 1000.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -130,7 +130,7 @@ void CAndras::Tick(_float fTimeDelta)
 
 void CAndras::Late_Tick(_float fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
@@ -173,6 +173,13 @@ void CAndras::Chase_Player(_float fTimeDelta)
 	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
 	m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
 	m_pPhysXCom->Go_Straight(fTimeDelta * m_fLengthFromPlayer);
+}
+
+void CAndras::KickStop()
+{
+	m_bDashBack = false;
+	m_fKickSwordDelay = 0.5f;
+	m_iState = STATE_IDLE;
 }
 
 HRESULT CAndras::Add_Components()
@@ -227,6 +234,8 @@ HRESULT CAndras::Add_PartObjects()
 	BodyDesc.pState = &m_iState;
 	BodyDesc.pCanCombo = &m_bCanCombo;
 	BodyDesc.bSprint = &m_bSprint;
+	BodyDesc.bKick = &m_bKick;
+	BodyDesc.bSlash = &m_bSlash;
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Andras"), &BodyDesc);
 	if (nullptr == pBody)
@@ -549,6 +558,24 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_GROUNDATTACK)
 	{
+		if (m_bSlash)
+		{
+			_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+			vDir.m128_f32[1] = 0.f;
+			_float4 fPos, fDir;
+			XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			XMMATRIX rotationMatrix = XMMatrixRotationY(XMConvertToRadians(45.0f));
+
+			for (_uint i = 0; i < 8; i++)
+			{
+				XMStoreFloat4(&fDir, vDir);
+				EFFECTMGR->Generate_GroundSlash(fPos, fDir);
+				vDir = XMVector3Transform(vDir, rotationMatrix);
+				vDir.m128_f32[3] = 0.f;
+			}
+			m_bSlash = false;
+		}
+
 		if (m_isAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -586,6 +613,11 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 		}
 		else if (m_fLengthFromPlayer <= 3.f)
 		{
+			if (m_bKick)
+			{
+				m_pPlayer->KnockBack(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pPlayerTransform->Get_State(CTransform::STATE_POSITION), fTimeDelta);
+				m_bKick = false;
+			}
 			m_bSprint = false;
 		}
 
@@ -748,6 +780,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			i = RandomInt(0, 6);
 		}
 
+		// 거리에 따라 패턴 다르게 할것
 		switch (i)
 		{
 		case 0:
@@ -779,7 +812,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			m_iState = STATE_SHOOTINGSTARATTACK;
 			break;
 		}
-		m_iState = STATE_KICKATTACK;
+		m_iState = STATE_GROUNDATTACK;
 		return SUCCESS;
 	}
 

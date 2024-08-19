@@ -3,7 +3,9 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Andras.h"
 #include "EffectManager.h"
+#include "UI_Manager.h"
 
 
 CKickSword::CKickSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -31,6 +33,10 @@ HRESULT CKickSword::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	list<CGameObject*>& MonsterList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+	m_pAndras = dynamic_cast<CAndras*>(MonsterList.front());
+	Safe_AddRef(m_pAndras);
 
 	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
@@ -92,13 +98,24 @@ void CKickSword::Tick(_float fTimeDelta)
 		{
 			m_eDisolveType = TYPE_DECREASE;
 			fSlowValue = 1.f;
-			m_pPlayer->PlayerHit(10);
+			if (!CUI_Manager::GetInstance()->Delete_QTE())
+			{
+				m_pPlayer->PlayerHit(10, true);
+			}
+			else
+			{
+				m_pAndras->KickStop();
+			}
 		}
 		else
 		{
 			_float fLengthFromPlayer = XMVectorGetX(XMVector3Length(vPlayerPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 			if (fLengthFromPlayer < 5.f)
 			{
+				if (fSlowValue != 0.01f)
+				{
+					CUI_Manager::GetInstance()->Create_QTE();
+				}
 				fSlowValue = 0.01f;
 			}
 		}
@@ -264,4 +281,5 @@ void CKickSword::Free()
 {
 	__super::Free();
 	Safe_Release(m_pPlayer);
+	Safe_Release(m_pAndras);
 }

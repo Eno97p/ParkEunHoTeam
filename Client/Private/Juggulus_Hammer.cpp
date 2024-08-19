@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "EffectManager.h"
 
 CJuggulus_Hammer::CJuggulus_Hammer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -78,6 +79,17 @@ void CJuggulus_Hammer::Tick(_float fTimeDelta)
 
 void CJuggulus_Hammer::Late_Tick(_float fTimeDelta)
 {
+	m_fHammerDelay -= fTimeDelta;
+	if (m_fHammerDelay > 0.f)
+	{
+		if (m_fHammerDelay < 2.f && !m_bSpawnEffect)
+		{
+			EFFECTMGR->Generate_HammerSpawn(_float4(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f));
+			m_bSpawnEffect = true;
+		}
+		return;
+	}
+
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	if (m_pGameInstance->Get_MoveShadow())

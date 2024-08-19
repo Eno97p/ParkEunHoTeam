@@ -25,6 +25,7 @@ HRESULT CUI_QTE_Btn::Initialize(void* pArg)
 	UI_QTE_BTN_DESC* pDesc = static_cast<UI_QTE_BTN_DESC*>(pArg);
 
 	m_iBtnNum = pDesc->iBtnIndex;
+	m_isDuo = pDesc->isDuo;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -143,6 +144,7 @@ HRESULT CUI_QTE_Btn::Create_Ring()
 	pDesc.fY = m_fY;
 	pDesc.fSizeX = 800.f; // 512;
 	pDesc.fSizeY = 800.f;
+	pDesc.isDuo = m_isDuo;
 
 	m_pRing = dynamic_cast<CUI_QTE_Ring*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Ring"), &pDesc));
 

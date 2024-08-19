@@ -343,7 +343,13 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = -200.f;
+	landObjDesc.mWorldMatrix._42 = -20.f;
+	landObjDesc.mWorldMatrix._43 = 0.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
+		return E_FAIL;
 
 	_float3 fPosArray[] = {
 	_float3(-73.8f, 6.7f, -7.2f),

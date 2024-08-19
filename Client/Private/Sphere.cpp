@@ -52,7 +52,6 @@ void CSphere::Priority_Tick(_float fTimeDelta)
 
 void CSphere::Tick(_float fTimeDelta)
 {
-	
 	m_pTransformCom->Go_Straight(fTimeDelta);
 
 	_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());

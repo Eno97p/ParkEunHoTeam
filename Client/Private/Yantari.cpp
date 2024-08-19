@@ -589,9 +589,22 @@ NodeStates CYantari::CastAttack(_float fTimeDelta)
 {
 	if (m_iState == STATE_CASTATTACK)
 	{
+		m_fNeedleDelay -= fTimeDelta;
+		if (m_fNeedleDelay < 0.f)
+		{
+			for (_uint i = 0; i < 10; i++)
+			{
+				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(RandomFloat(-10.f, 10.f), 0.f, RandomFloat(-10.f, 10.f), 0.f);
+				_float4 fPos;
+				XMStoreFloat4(&fPos, vPos);
+				EFFECTMGR->Generate_Needle(fPos);
+			}
+			m_fNeedleDelay = NEEDLEDELAY;
+		}
 		if (m_isAnimFinished)
 		{
 			m_iAttackCount++;
+			m_fNeedleDelay = 2.f;
 			if (m_fLengthFromPlayer < 6.f)
 			{
 				m_iState = rand() % 4;

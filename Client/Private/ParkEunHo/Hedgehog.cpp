@@ -1,6 +1,8 @@
 #include "Hedgehog.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "Player.h"
+
 CHedgehog::CHedgehog(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
 {
@@ -38,7 +40,9 @@ HRESULT CHedgehog::Initialize(void* pArg)
 	vStart = XMLoadFloat4(&vPos);
 	m_pTransformCom->Set_WorldMatrix(worldmat);
 
-	
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -88,6 +92,16 @@ void CHedgehog::Tick(_float fTimeDelta)
 		RingPos.y += 1.f;
 		EFFECTMGR->Generate_Particle(77, RingPos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
 	}
+
+	if (m_fLifeTimeRatio > m_OwnDesc->fThreadRatio.x && m_fLifeTimeRatio < m_OwnDesc->fThreadRatio.y)
+	{
+		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+		if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+	}
 }
 
 void CHedgehog::Late_Tick(_float fTimeDelta)
@@ -131,6 +145,17 @@ HRESULT CHedgehog::Render_Bloom()
 
 HRESULT CHedgehog::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_AABB;
+	ColliderDesc.vExtents = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Hedgehog"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -223,4 +248,6 @@ void CHedgehog::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pDesolveTexture);
+	Safe_Release(m_pPlayer);
+	Safe_Release(m_pColliderCom);
 }

@@ -476,19 +476,16 @@ void CUI_Manager::Create_LevelUI()
 {
 	if (m_mapUIGroup.find("Level") != m_mapUIGroup.end()) // 값이 있으면
 	{
-		// 기존에 map에 값이 있다면 없애고 생성!
-		if ((*m_mapUIGroup.find("Level")).second != nullptr)
-		{
-			Safe_Release((*m_mapUIGroup.find("Level")).second);
-			((*m_mapUIGroup.find("Level")).second) = nullptr;
-		}
+		// erase를 해야 할듯
+		Safe_Release((*m_mapUIGroup.find("Level")).second);
+		m_mapUIGroup.erase("Level");
 	}
 
 	// UI Level을 생성
 	CUIGroup::UIGROUP_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 
-	m_mapUIGroup.emplace("Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc)));
+	m_mapUIGroup.insert({"Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc))});
 }
 
 void CUI_Manager::Key_Input()

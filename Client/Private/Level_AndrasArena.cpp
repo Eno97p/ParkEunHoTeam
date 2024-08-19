@@ -99,6 +99,9 @@ HRESULT CLevel_AndrasArena::Initialize()
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
 
+	// UI Manaver로 UI Level 생성하기
+	CUI_Manager::GetInstance()->Create_LevelUI();
+
 	return S_OK;
 }
 

@@ -93,8 +93,8 @@ void CGrass::Priority_Tick(_float fTimeDelta)
 void CGrass::Tick(_float fTimeDelta)
 {
 
-	//_float3 camPos;
-	//XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
+	_float3 camPos;
+	XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
 	//m_pVIBufferCom->Culling_Instance(camPos, 500.f);
 
 

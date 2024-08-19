@@ -8,7 +8,7 @@ float		g_Ratio;
 //레이져
 float		g_CurTime, g_Speed;
 float3		g_Color, g_Color2, g_Color3;
-float		g_FrameRatio;
+float		g_FrameRatio; 
 
 //블룸 파워
 float		g_BloomPower;
@@ -19,6 +19,8 @@ float		g_OpacityPower;
 
 //Fresnel
 float		g_FresnelPower;
+
+bool		g_Hit; //ForShield
 
 
 //vector vOpacity = g_OpacityTex.Sample(LinearSampler, Texcoord);
@@ -995,6 +997,88 @@ PS_OUT PS_Main_Alpha_Bloom(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_HexaShield(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, uv);
+	vector Desolve = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+	if (!g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+	else
+	{
+		if (Desolve.r < g_Ratio)
+			discard;
+	}
+
+	Color.a = Color.r;
+	Color.rgb = g_Color;
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_HexaShield_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 Center = float2(0.5f, 0.5f);
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_CurTime * g_Speed;
+	uv.y += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, uv);
+	vector Desolve = g_DesolveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (!g_Opacity)
+	{
+		if (vOpacity.r < g_OpacityPower)
+			discard;
+	}
+	else
+	{
+		if (Desolve.r < g_Ratio)
+			discard;
+	}
+	Color.a = g_BloomPower;
+	Color.a *= Color.r;
+	if (g_Hit)
+	{
+		Color.rgb = lerp(g_Color2, g_Color, g_FrameRatio);
+	}
+	else
+	{
+		Color.rgb = g_Color;
+	}
+	
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_HexaHit(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, In.vTexcoord);
+	if (vOpacity.r < g_Ratio)
+		discard;
+	
+	Out.vColor = Color;
+	return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -1445,6 +1529,45 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_Main_Alpha_Bloom();
 	}
 
-	
+
+	pass HexaShield		//33Pass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_HexaShield();
+	}
+
+	pass HexaShield_Bloom	//34Pass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_HexaShield_Bloom();
+	}
+
+	pass HexaShield_Hit		//35Pass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Particle, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_HexaHit();
+	}
+		
 }
 

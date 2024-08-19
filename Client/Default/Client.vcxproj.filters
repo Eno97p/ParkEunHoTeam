@@ -801,6 +801,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Cameras\03. Transition">
       <UniqueIdentifier>{f44c0e31-9f04-48e6-be62-39a81841c722}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\06.Effect\HexaShield">
+      <UniqueIdentifier>{acacff6f-b31a-4893-8fdb-12e5255bed3f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1753,6 +1756,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\CutSceneCamera.h">
       <Filter>02.GameObjects\99.Cameras\04. CutSceneCamera</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HexaHit.h">
+      <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HexaShield.h">
+      <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2652,6 +2661,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02.GameObjects\99.Cameras\04. CutSceneCamera</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp">
+      <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HexaHit.cpp">
+      <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -56,7 +56,10 @@ public: /* For.Timer_Manager */
 
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Set_CurrentLevel(_uint iLevelIndex, class CLevel* pNewLevel);
+	HRESULT Delete_CurrentLevel();
 	_uint Get_CurrentLevel();			//현재 레벨 받아오기
+	_uint Get_CurrentLevelIndex();		//현재 레벨 인덱스 받아오기
 	void Set_NextLevel(_uint iNextLevel);			//현재 레벨 받아오기
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
@@ -153,6 +156,7 @@ public: /* For.Target_Manager */
 	HRESULT End_MRT();
 	HRESULT End_MRT(ID3D11DeviceContext* pDeferredContext);
 	ID3D11RenderTargetView* Get_RTV(const wstring& strTargetTag);
+	ID3D11ShaderResourceView* Get_SRV(const wstring& strTargetTag);
 	HRESULT Bind_RenderTargetSRV(const wstring & strTargetTag, class CShader* pShader, const _char* pConstantName);
 	HRESULT Bind_RenderTargetSRV_Compute(const wstring& strTargetTag, class CComputeShader_Texture* pComputeShader, const _char* pConstantName);
 	HRESULT Copy_Resource(const wstring & strTargetTag, ID3D11Texture2D* pDesc);

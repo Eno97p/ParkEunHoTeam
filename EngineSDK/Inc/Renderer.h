@@ -175,6 +175,12 @@ private:
 	_float m_fMirror = 0.f;
 
 
+private:		//For. NVIDIA_HBAO
+	GFSDK_ShadowLib_Context* m_pShadowLibContext = nullptr;
+	GFSDK_ShadowLib_Buffer*	m_pShadowBuffer = {};
+	GFSDK_ShadowLib_Map*	m_pShadowMap = nullptr;
+	ID3D11ShaderResourceView* m_pHBAOShadowSRV = nullptr;
+	GFSDK_SSAO_Context_D3D11* m_pSSAOContext = nullptr;
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);
@@ -215,6 +221,7 @@ private:
 	void Render_Shadow_Move();
 	void Render_Shadow_NotMove();
 	void Render_Shadow_Result();
+	void Render_HBAO();
 	void Render_DeferredResult();
 	void Render_NonLight();
 	void Render_Blend();

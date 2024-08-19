@@ -289,8 +289,8 @@ void CSoundMgr::Free()
 
 	FMOD_System_Release(m_pSystem);
 	FMOD_System_Close(m_pSystem);
-	FMOD_DSP_Release(reverbDSP);
-	FMOD_DSP_Release(echoDSP);
+	//FMOD_DSP_Release(reverbDSP);
+	//FMOD_DSP_Release(echoDSP);
 	FMOD_ChannelGroup_Release(m_pMasterGroup);
 	FMOD_ChannelGroup_Release(m_pBGMGroup);
 }

@@ -230,6 +230,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Client_Macro.h" />
     <ClInclude Include="..\Public\Clone.h" />
     <ClInclude Include="..\Public\Cloud.h" />
+    <ClInclude Include="..\Public\CutSceneCamera.h" />
     <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\Public\Deco_Element.h" />
     <ClInclude Include="..\Public\Distortion.h" />
@@ -537,6 +538,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\Cloud.cpp" />
+    <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\Private\Deco_Element.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />

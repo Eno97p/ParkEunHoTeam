@@ -116,6 +116,28 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
 					pDesc.wstrModelName = TEXT("Prototype_Component_Model_BasicDonut");
 					m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Passive_Element"), TEXT("Prototype_GameObject_FakeWall"), &pDesc);
+
+					//ÄÆ¾À Æ®·»Áö¼Ç
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_CUTSCENE;
+					pTCDesc.fTransitionTime = 1.f;
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
 				}
 				break;
 				case TRIG_JUGGLAS_SPAWNSECONDROOM:
@@ -296,7 +318,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 						return;
 					}
 
-					//m_pGameInstance->Set_MainCamera(2);
+					m_pGameInstance->Set_MainCamera(2);
 					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
 
 				}

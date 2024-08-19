@@ -350,6 +350,25 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVDesc)))
         return E_FAIL;
 
+
+    CCutSceneCamera::CUTSCENECAMERA_DESC pCSCdesc = {};
+
+
+    pCSCdesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+    pCSCdesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+    pCSCdesc.fFovy = XMConvertToRadians(60.f);
+    pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+    pCSCdesc.fNear = 0.1f;
+    pCSCdesc.fFar = 3000.f;
+
+    pCSCdesc.fSpeedPerSec = 40.f;
+    pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+    if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_CutSceneCamera"), &pCSCdesc)))
+        return E_FAIL;
+
+
     return S_OK;
 }
 

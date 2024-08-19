@@ -32,6 +32,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CTransitionCamera::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_CutSceneCamera*/
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"),
+		CCutSceneCamera::Create(pDevice, pContext))))
+		return E_FAIL;
+
 
 	///* For.Prototype_GameObject_Monster */
 	//if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Monster"),

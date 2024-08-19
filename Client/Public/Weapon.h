@@ -27,14 +27,7 @@ protected:
 	virtual ~CWeapon() = default;
 
 public:
-	void Set_Active(_bool isActive = true)
-	{
-		if (m_bIsActive == false && isActive == true)
-		{
-			m_GenerateTrail = true;
-		}
-		m_bIsActive = isActive;
-	}
+	void Set_Active(_bool isActive = true);
 	void Generate_Trail(_int iIndex);
 
 	_bool Get_Active() { return m_bIsActive; }

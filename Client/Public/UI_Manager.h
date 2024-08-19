@@ -64,6 +64,7 @@ public:
 
 	// QTE
 	void				Create_QTE();
+	_bool				Delete_QTE();
 
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부

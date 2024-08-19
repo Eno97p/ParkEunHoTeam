@@ -35,8 +35,8 @@ public:
 		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_LOCKON_STRAIGHT, STATE_LOCKON_BACKWARD, STATE_LOCKON_LEFT, STATE_LOCKON_RIGHT, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND,
 		STATE_PARRY, STATE_JUMPATTACK, STATE_JUMPATTACK_LAND, STATE_ROLLATTACK, STATE_SPECIALATTACK, STATE_SPECIALATTACK2, STATE_SPECIALATTACK3, STATE_SPECIALATTACK4, 
 		STATE_LCHARGEATTACK, STATE_RCHARGEATTACK, STATE_BACKATTACK,	STATE_LATTACK1, STATE_LATTACK2, STATE_LATTACK3, STATE_RATTACK1, STATE_RATTACK2, 
-		STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, 
-		STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_RIDE, STATE_SLIDE, STATE_END
+		STATE_RUNLATTACK1, STATE_RUNLATTACK2, STATE_RUNRATTACK, STATE_COUNTER, STATE_ROLL, STATE_HIT, STATE_SLOWHIT, 
+		STATE_DASH, STATE_DASH_FRONT, STATE_DASH_BACK, STATE_DASH_LEFT, STATE_DASH_RIGHT, STATE_USEITEM, STATE_BUFF, STATE_DEAD, STATE_REVIVE, STATE_RIDE, STATE_SLIDE, STATE_KNOCKBACK, STATE_END
 	};
 	enum WEAPON { WEAPON_DURGASWORD, WEAPON_PRETORIANSWORD, WEAPON_RADAMANTHESWORD, WEAPON_ELISH, WEAPON_END };
 
@@ -58,7 +58,7 @@ public:
 	HRESULT Add_PartObjects();
 	_uint Get_State() { return m_iState; }
 	CGameObject* Get_Weapon();
-	void PlayerHit(_float iValue);
+	void PlayerHit(_float iValue, _bool bSlowHit = false);
 	_float Get_HpRatio() { return m_fCurHp / m_fMaxHp; }
 	_float Get_StaminaRatio() { return m_fCurStamina / m_fMaxStamina; }
 	_float Get_MpRatio() { return m_fCurMp / m_fMaxMp; }
@@ -96,6 +96,7 @@ public:
 	void			Pull_Status(); // HP / Stamina / MP 를 Pull
 	void			Update_LvData();
 	void			Update_Weapon(wstring wstrTextureName);
+	void			KnockBack(_vector vDir, _float fTimeDelta);
 
 	// Buff 관련 함수
 	void			Set_Shield(_bool isOn) { if (isOn) m_fShield = 0.4f; else m_fShield = 1.f; }
@@ -108,6 +109,7 @@ private:
 private:
 	NodeStates Revive(_float fTimeDelta);
 	NodeStates Dead(_float fTimeDelta);
+	NodeStates Knockback(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
 	NodeStates Counter(_float fTimeDelta);
 	void Move_Counter();

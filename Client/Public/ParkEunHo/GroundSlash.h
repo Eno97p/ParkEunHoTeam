@@ -48,6 +48,9 @@ private:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	class CPlayer* m_pPlayer = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	shared_ptr<GROUNDSLASH>			m_OwnDesc;

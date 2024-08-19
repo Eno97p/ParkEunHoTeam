@@ -334,8 +334,15 @@ HRESULT CLevel_GamePlay::Ready_Layer_BackGround(const wstring & strLayerTag)
 
 HRESULT CLevel_GamePlay::Ready_LandObjects()
 {
-
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = 140.f;
+	landObjDesc.mWorldMatrix._42 = 450.f;
+	landObjDesc.mWorldMatrix._43 = 100.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))
@@ -423,11 +430,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
-	landObjDesc.mWorldMatrix._41 = 167.f;
+	landObjDesc.mWorldMatrix._41 = 165.f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
-	landObjDesc.mWorldMatrix._43 = 98.f;
+	landObjDesc.mWorldMatrix._43 = 97.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 - 5.f, landObjDesc.mWorldMatrix._43, 1.f };

@@ -580,9 +580,6 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword">
       <UniqueIdentifier>{b1bb8d0d-0a05-4be2-b53f-005da4a70b68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword">
-      <UniqueIdentifier>{76988682-71e3-47a1-87dd-d0f96e2f95ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\BossStatue">
       <UniqueIdentifier>{5c5f2ea1-ba71-4c96-a550-82ee0656cc00}</UniqueIdentifier>
     </Filter>
@@ -709,9 +706,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\05. Cloud">
       <UniqueIdentifier>{8f311101-5eef-40eb-bc46-22fd415539b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser">
-      <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Dash">
       <UniqueIdentifier>{2aad0df8-07fa-401d-96f4-67011444a8da}</UniqueIdentifier>
     </Filter>
@@ -796,11 +790,35 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\FirePillar">
       <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword">
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern">
+      <UniqueIdentifier>{e981cba5-39dc-48fd-8fe2-fd576fcc65ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle">
+      <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn">
+      <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern">
+      <UniqueIdentifier>{b2e4d449-0ed2-4059-9980-8b1fe794bcf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser">
+      <UniqueIdentifier>{27368fcf-a373-417d-9be0-6ce5fa065070}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\KickSword">
       <UniqueIdentifier>{38f5b161-4571-43d8-bcaa-0f385634f40a}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\HexaShield">
       <UniqueIdentifier>{acacff6f-b31a-4893-8fdb-12e5255bed3f}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\GroundSlash">
+      <UniqueIdentifier>{0072fe49-26b2-4135-8270-0b52067b9006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\RushSword">
+      <UniqueIdentifier>{76988682-71e3-47a1-87dd-d0f96e2f95ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\05. FallPlatform">
+      <UniqueIdentifier>{c98b7873-a5e3-4d32-926e-dd102c79c78f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1422,7 +1440,7 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RushSword.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\RushSword</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tree.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
@@ -1743,13 +1761,22 @@
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\GroundSlash.h">
-      <Filter>02.GameObjects\06.Effect\GroundSlash</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\HammerSpawn.h">
-      <Filter>02.GameObjects\06.Effect\JugglusHammerSpawn</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\GroundSlash</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\KickSword.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\KickSword</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HammerSpawn.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FallPlatform.h">
+      <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\HexaHit.h">
       <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
@@ -2354,7 +2381,7 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\AndrasSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RushSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\RushSword</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\RushSword</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tree.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\04. Vegetation</Filter>
@@ -2507,28 +2534,28 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Base.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClCompile>
     <ClCompile Include="..\private\SavePoint.cpp">
       <Filter>02.GameObjects\10.SavePoint</Filter>
@@ -2645,13 +2672,22 @@
       <Filter>02.GameObjects\06.Effect\Needle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\GroundSlash.cpp">
-      <Filter>02.GameObjects\06.Effect\GroundSlash</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\HammerSpawn.cpp">
-      <Filter>02.GameObjects\06.Effect\JugglusHammerSpawn</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\GroundSlash</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\KickSword.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\KickSword</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\KickSword</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HammerSpawn.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FallPlatform.cpp">
+      <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp">
       <Filter>02.GameObjects\06.Effect\HexaShield</Filter>

@@ -1,6 +1,7 @@
 #include "GroundSlash.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "Player.h"
 
 CGroundSlash::CGroundSlash(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
@@ -43,6 +44,11 @@ HRESULT CGroundSlash::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(m_OwnDesc->vStartSize.x, m_OwnDesc->vStartSize.y, m_OwnDesc->vStartSize.z);
 
 	m_OwnMat = m_pTransformCom->Get_WorldFloat4x4();
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+
 	return S_OK;
 }
 
@@ -91,6 +97,13 @@ void CGroundSlash::Tick(_float fTimeDelta)
 
 void CGroundSlash::Late_Tick(_float fTimeDelta)
 {
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	{
+		m_pPlayer->PlayerHit(10);
+	}
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -128,9 +141,19 @@ HRESULT CGroundSlash::Render_Bloom()
 	return S_OK;
 }
 
-
 HRESULT CGroundSlash::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_OBB;
+	ColliderDesc.vExtents = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_GroundSlash"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;

@@ -11,6 +11,7 @@
 #include "TransitionCamera.h"
 #include "ForkLift.h"
 #include "Terrain.h"
+#include "FallPlatform.h"
 //#include "Monster.h"
 #include "WhisperSword_Anim.h"
 #include "DurgaSword.h"

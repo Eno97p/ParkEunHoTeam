@@ -26,6 +26,7 @@ public:
 	HRESULT Bind_ShaderResources();
 
 private:
+	class CAndras* m_pAndras = { nullptr };
 	class CPlayer* m_pPlayer = { nullptr };
 	CTransform* m_pPlayerTransform = { nullptr };
 

@@ -56,6 +56,8 @@ void CGroundSlash::Tick(_float fTimeDelta)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
 		m_pGameInstance->Erase(this);
+		for (auto& iter : ChildEffects)
+			m_pGameInstance->Erase(iter);
 	}
 
 	if (m_fCurLifeTime < m_OwnDesc->fThreadRatio)
@@ -70,12 +72,15 @@ void CGroundSlash::Tick(_float fTimeDelta)
 	}
 	else
 	{
+		if (!m_ParticleSpawn)
+		{
+			Add_ChildEffect();
+			m_ParticleSpawn = true;
+		}
+
 		_float4 ParticlePos = { m_OwnMat->_41,m_OwnMat->_42,m_OwnMat->_43,1.f };
-		EFFECTMGR->Generate_Particle(79, ParticlePos, nullptr, XMVectorZero(), 0.f, XMLoadFloat4(&m_OwnDesc->vDirection));
 		EFFECTMGR->Generate_Particle(80, ParticlePos);
 		EFFECTMGR->Generate_Particle(81, ParticlePos);
-		EFFECTMGR->Generate_Particle(82, ParticlePos);
-
 		m_fCurLifeTime += fTimeDelta;
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
@@ -134,6 +139,16 @@ HRESULT CGroundSlash::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CGroundSlash::Add_ChildEffect()
+{
+	_float4 ParticlePos = { m_OwnMat->_41,m_OwnMat->_42,m_OwnMat->_43,1.f };
+	CGameObject* Particle =  EFFECTMGR->Generate_Particle(79, ParticlePos, this, XMVectorZero(), 0.f, XMLoadFloat4(&m_OwnDesc->vDirection));
+	ChildEffects.emplace_back(Particle);
+	CGameObject* Spark2 = EFFECTMGR->Generate_Particle(82, ParticlePos, this);
+	ChildEffects.emplace_back(Spark2);
 	return S_OK;
 }
 
@@ -198,4 +213,5 @@ void CGroundSlash::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+
 }

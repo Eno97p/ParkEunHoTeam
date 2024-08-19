@@ -15,6 +15,9 @@
 #include "C:\NewRepo\Client\Private\BackGround_Card.cpp"
 
 
+#include "C:\NewRepo\Client\Private\BackGround_Moon.cpp"
+
+
 #include "C:\NewRepo\Client\private\BlastWall.cpp"
 
 
@@ -168,6 +171,9 @@
 #include "C:\NewRepo\Client\Private\Juggulus_HandTwo.cpp"
 
 
+#include "C:\NewRepo\Client\Private\KickSword.cpp"
+
+
 #include "C:\NewRepo\Client\Private\Lagoon.cpp"
 
 
@@ -298,6 +304,12 @@
 
 
 #include "C:\NewRepo\Client\Private\ParkEunHo\Hedgehog.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\HexaHit.cpp"
+
+
+#include "C:\NewRepo\Client\Private\ParkEunHo\HexaShield.cpp"
 
 
 #include "C:\NewRepo\Client\Private\ParkEunHo\LazerCast.cpp"

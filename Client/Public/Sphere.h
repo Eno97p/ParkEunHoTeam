@@ -40,6 +40,7 @@ private:
 	CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 	_float m_fPlayerY = 0.f;
 
+	_float m_Interval = 0.f;
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

@@ -337,10 +337,12 @@ void CUIGroup_UpGPage::Calculate_UpgradeCost()
 	vector<CItemData*>::iterator item =  CInventory::GetInstance()->Get_ItemDatas()->begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_vecItemSize(); ++i)
 	{
-		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE")) // !!!!!!!!!!!!!!!!!!!!!!!!!!! ¿©±â¼­ ÅÍÁü
+		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE"))
 		{
 			for(size_t j = 0; j < (*weapon)->Get_Value(); ++j)
 				(*item)->Apply_UseCount(i);
+
+			break;
 		}
 		else
 			++item;

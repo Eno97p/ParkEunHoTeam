@@ -74,9 +74,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 	
 	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD); 
 
-	Add_Weapon(CItemData::ITEMNAME_DURGASWORD); 
-	Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD);
-	Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD);
+	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD); 
+	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD);
+	//Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD);
 
 	CItemData::ITEMDATA_DESC pDesc{};
 
@@ -90,7 +90,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	// Skill
 	Add_Skill(CItemData::ITEMNAME_OPH);
-	Add_Skill(CItemData::ITEMNAME_AKSHA);
+	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);

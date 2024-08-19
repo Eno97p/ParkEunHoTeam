@@ -120,6 +120,8 @@ HRESULT CLevel_Jugglas::Initialize()
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_BlastWall");
 
+	// UI Manaver로 UI Level 생성하기
+	//CUI_Manager::GetInstance()->Create_LevelUI();
 
 	return S_OK;
 }

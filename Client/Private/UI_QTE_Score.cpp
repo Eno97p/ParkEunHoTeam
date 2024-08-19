@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "UI_QTE_Particle.h"
+#include "UI_QTE_Shine.h"
 
 CUI_QTE_Score::CUI_QTE_Score(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{ pDevice, pContext }
@@ -34,7 +35,10 @@ HRESULT CUI_QTE_Score::Initialize(void* pArg)
     Setting_Position();
 
     if (SCORE_PERFECT == m_eScoreType)
+    {
         Create_Particle();
+        Create_Shine();
+    }
 
     return S_OK;
 }
@@ -45,8 +49,6 @@ void CUI_QTE_Score::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Score::Tick(_float fTimeDelta)
 {
-    // ¾ê »ý¼ºµÉ ¶§ ¹º°¡ ÆÅ Æ¢´Â ¸®¼Ò½º Ãß°¡ÇØÁÖ±â
-
     if (nullptr != m_pParticle)
     {
         if (m_pParticle->Get_isDead())
@@ -57,6 +59,28 @@ void CUI_QTE_Score::Tick(_float fTimeDelta)
         else
             m_pParticle->Tick(fTimeDelta);
     }
+
+    if (nullptr != m_pShine_Big)
+    {
+        if (m_pShine_Big->Get_isDead())
+        {
+            Safe_Release(m_pShine_Big);
+            m_pShine_Big = nullptr;
+        }else
+
+            m_pShine_Big->Tick(fTimeDelta);
+    }
+
+    if (nullptr != m_pShine_Small)
+    {
+        if (m_pShine_Small->Get_isDead())
+        {
+            Safe_Release(m_pShine_Small);
+            m_pShine_Small = nullptr;
+        }
+        else
+            m_pShine_Small->Tick(fTimeDelta);
+    }
 }
 
 void CUI_QTE_Score::Late_Tick(_float fTimeDelta)
@@ -65,6 +89,12 @@ void CUI_QTE_Score::Late_Tick(_float fTimeDelta)
 
     if (nullptr != m_pParticle)
         m_pParticle->Late_Tick(fTimeDelta);
+
+    if (nullptr != m_pShine_Big)
+        m_pShine_Big->Late_Tick(fTimeDelta);
+
+    if (nullptr != m_pShine_Small)
+        m_pShine_Small->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_QTE_Score::Render()
@@ -145,6 +175,56 @@ HRESULT CUI_QTE_Score::Create_Particle()
     return S_OK;
 }
 
+HRESULT CUI_QTE_Score::Create_Shine()
+{
+    _uint iRand = rand() % 4;
+    _float fX = { 0.f };
+    _float fY = { 0.f };
+
+    switch (iRand)
+    {
+    case 0:
+        fX = 70.f;
+        fY = 60.f;
+        break;
+    case 1:
+        fX = 40.f;
+        fY = 50.f;
+        break;
+    case 2:
+        fX = -70.f;
+        fY = -60.f;
+        break;
+    case 3:
+        fX = 60.f;
+        fY = 80.f;
+        break;
+    default:
+        break;
+    }
+
+    // m_pShine
+    CUI_QTE_Shine::UI_SHINE_DESC pDesc{};
+    pDesc.eLevel = LEVEL_STATIC;
+    pDesc.fX = m_fX + fX;
+    pDesc.fY = m_fY - fY;
+    pDesc.fSizeX = 10.f; // 128
+    pDesc.fSizeY = 10.f;
+    pDesc.isBig = true;
+
+    m_pShine_Big = dynamic_cast<CUI_QTE_Shine*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Shine"), &pDesc));
+
+    pDesc.fX = m_fX - fX;
+    pDesc.fY = m_fY + fY;
+    pDesc.fSizeX = 10.f; // 32
+    pDesc.fSizeY = 10.f;
+    pDesc.isBig = false;
+
+    m_pShine_Small = dynamic_cast<CUI_QTE_Shine*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_QTE_Shine"), &pDesc));
+
+    return S_OK;
+}
+
 CUI_QTE_Score* CUI_QTE_Score::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     CUI_QTE_Score* pInstance = new CUI_QTE_Score(pDevice, pContext);
@@ -175,5 +255,7 @@ void CUI_QTE_Score::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pShine_Big);
+    Safe_Release(m_pShine_Small);
     Safe_Release(m_pParticle);
 }

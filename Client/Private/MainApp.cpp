@@ -171,16 +171,22 @@
 #include "UI_QTE_Ring.h"
 #include "UI_QTE_Score.h"
 #include "UI_QTE_Particle.h"
+#include "UI_QTE_Shine.h"
 #include "QTE.h"
 #pragma endregion QTE
 
 #pragma region BuffTimer
 #include "UI_BuffTimer_Bar.h"
 #include "UI_BuffTimer_Timer.h"
-
 #include "UI_BuffTimer.h"
 #include "UIGroup_BuffTimer.h"
 #pragma endregion BuffTimer
+
+#pragma region Level
+#include "UI_LevelBG.h"
+#include "UI_Level_TextBox.h"
+#include "UIGroup_Level.h"
+#pragma endregion Level
 
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
@@ -1520,6 +1526,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Particle"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Particle.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_QTE_Shine */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Shine"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Shine.png"), 1))))
+		return E_FAIL;
 #pragma endregion QTE
 
 #pragma region ETC
@@ -1576,6 +1587,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_UI_RedDot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RedDot"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/RedDot.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Level_BG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Level_BG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_BG.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Level_TextBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Level_TextBox"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_TextBox.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -2211,6 +2232,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_QTE_Particle::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_QTE_Shine*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_QTE_Shine"),
+		CUI_QTE_Shine::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_QTE*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_QTE"),
 		CQTE::Create(m_pDevice, m_pContext))))
@@ -2238,6 +2264,23 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_BuffTimer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion BuffTimer
+
+#pragma region Level
+	/* For.Prototype_GameObject_UI_LevelBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_LevelBG"),
+		CUI_LevelBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Level_TextBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Level_TextBox"),
+		CUI_Level_TextBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_Level*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Level"),
+		CUIGroup_Level::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Level
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

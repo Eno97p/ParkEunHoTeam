@@ -303,6 +303,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HexaHit.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HexaShield.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
@@ -607,6 +609,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HexaHit.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />

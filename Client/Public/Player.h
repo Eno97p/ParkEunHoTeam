@@ -249,6 +249,10 @@ private:
 	_bool m_bSpecialAttackShake = false;
 	_bool m_bSpecialAttackZoom = false;
 
+
+private:
+	CGameObject* HexaShieldText = nullptr;
+
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

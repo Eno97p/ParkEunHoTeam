@@ -18,6 +18,7 @@
 
 #include "UI_FadeInOut.h"
 #include"CInitLoader.h"
+#include "HexaShield.h"
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -194,10 +195,25 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_Meteor(vStartPosition);
 		//EFFECTMGR->Generate_Needle(vStartPosition);
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
-		EFFECTMGR->Generate_HammerSpawn(vStartPosition);
-
+		HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
+		}
+	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
+			HexaShieldText = nullptr;
+		}
+	}
 }
 
 HRESULT CPlayer::Render()

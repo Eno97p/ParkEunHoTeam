@@ -107,6 +107,12 @@
 #include "C:\NewRepo\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\HexaHit.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\HexaShield.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\HoverBoard.cpp"
 
 

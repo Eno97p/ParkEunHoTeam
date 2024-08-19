@@ -86,3 +86,9 @@
 85. ItemEffectYellow
 86. JugglusHammerSpawnRing
 87. JugglusHammerSpawnLenz
+88. Yantari_Crash
+89. Yantari_Crash2
+90. JugglusTale
+91. JugglusTale2
+92. ShieldHit
+93. ShieldHit2

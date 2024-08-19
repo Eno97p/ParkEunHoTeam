@@ -71,44 +71,16 @@ HRESULT CInventory::Initialize_DefaultItem()
 {
 	// 게임 처음 시작 시 기본적으로 가지고 있는 아이템 
 	// Weapon에 추가
+	
+	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD); 
+
+	Add_Weapon(CItemData::ITEMNAME_DURGASWORD); 
+	Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD);
+	Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD);
+
 	CItemData::ITEMDATA_DESC pDesc{};
 
 	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_WHISPERSWORD;
-	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-
-	// 지금 임의로 이렇게 추가하지만 나중에 실제로 추가할 때는 <<Upgrade의 Slot에 추가하는 로직>>도 필요
-	// test >> 추후 삭제
-	// UI 출력
-	CUI_Manager::GetInstance()->Update_Weapon_Add();
-	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
-
-	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_DURGASWORD;
-	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-	// UI 출력
-	CUI_Manager::GetInstance()->Update_Weapon_Add();
-	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
-
-	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_PRETORIANSWORD;
-	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-	// UI 출력
-	CUI_Manager::GetInstance()->Update_Weapon_Add();
-	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
-
-	pDesc.isDropTem = false;
-	pDesc.eItemName = CItemData::ITEMNAME_RADAMANTHESWORD;
-	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false); // Test
-
-
-	// UI 출력
-	CUI_Manager::GetInstance()->Update_Weapon_Add();
 
 	// Equip Sign 활성화
 	vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
@@ -116,20 +88,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 	(*weapon)->Set_isEquip(true);
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
-	// Skill에 추가
-	pDesc.eItemName = CItemData::ITEMNAME_OPH;
-	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-	// test
-	pDesc.eItemName = CItemData::ITEMNAME_AKSHA;
-	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
-
-
-	// UI의 경우에는 Tab 누르면 변환되면서 보여줘야함
-	//CUI_Manager::GetInstance()->Update_Skill_Add();
-
-	// Upgrade Page에도 weapon 추가
-	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
+	// Skill
+	Add_Skill(CItemData::ITEMNAME_OPH);
+	Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
 	Add_DropItem(CItem::ITEM_ESSENCE);
@@ -144,10 +105,9 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_DropItem(CItem::ITEM_ESSENCE);
 	Add_DropItem(CItem::ITEM_ETHER);
 	Add_DropItem(CItem::ITEM_UPGRADE2);
-
-	Add_Item(CItemData::ITEMNAME_CATALYST);
-	Add_Item(CItemData::ITEMNAME_CATALYST);
-	Add_Item(CItemData::ITEMNAME_CATALYST);
+	
+	for(size_t i = 0; i < 5; ++i)
+		Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }
@@ -260,9 +220,6 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 
 HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 {
-	// RedDot
-	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
-
 	CItemData::ITEMDATA_DESC pDesc{};
 	pDesc.isDropTem = false;
 	pDesc.eItemName = eItemName;
@@ -272,25 +229,31 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	// 그니까 새로 Weapon을 받았을 때 > 그 후에 바로 Weapon Page를 켰을 때
 	// ItemIcon이 Slot에 들어가 있어야 해서 밑의 코드를 넣은 거
 	// 그러면 이 함수 그대로 써도 될 거 같운데 ㅇㅇ Skill은 Tab 할 때만 바꾸고 (!!!!!추후 실제로 테스트해보고 주석 지우기)
+
 	CUI_Manager::GetInstance()->Update_Weapon_Add(); 
 
 	// Upgrade Page에도 weapon 추가
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);
+
+	// RedDot
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
+	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecWeapon.size() - 1);
 
 	return S_OK;
 }
 
 HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
 {
-	// RedDot
-	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
-
 	CItemData::ITEMDATA_DESC pDesc{};
 
 	pDesc.isDropTem = false;
 	pDesc.eItemName = eItemName;
 
 	m_vecSkill.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
+
+	// RedDot
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
+	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecSkill.size() - 1, true);
 
 	return S_OK;
 }

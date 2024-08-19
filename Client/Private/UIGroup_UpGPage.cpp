@@ -337,7 +337,7 @@ void CUIGroup_UpGPage::Calculate_UpgradeCost()
 	vector<CItemData*>::iterator item =  CInventory::GetInstance()->Get_ItemDatas()->begin();
 	for (size_t i = 0; i < CInventory::GetInstance()->Get_vecItemSize(); ++i)
 	{
-		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE"))
+		if ((*item)->Get_ItemNameText() == TEXT("HADRONITE")) // !!!!!!!!!!!!!!!!!!!!!!!!!!! 여기서 터짐
 		{
 			for(size_t j = 0; j < (*weapon)->Get_Value(); ++j)
 				(*item)->Apply_UseCount(i);

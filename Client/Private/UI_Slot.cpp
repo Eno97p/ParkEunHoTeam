@@ -469,6 +469,13 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	pDesc.fSizeY = 160.f;
 	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
 
+	// RedDot 처리도 해주기
+	if ((*skill)->Get_isRedDotUse())
+	{
+		m_pItemIcon->Create_RedDot();
+		(*skill)->Set_isRedDotUse(false);
+	}
+
 	return S_OK;
 }
 

@@ -43,6 +43,9 @@ public:
 	_uint			Get_Count() { return m_iCount; }
 	void			Set_Count(_int iCount) { m_iCount += iCount; }
 
+	_bool			Get_isRedDotUse() { return m_isRedDotUse; }
+	void			Set_isRedDotUse(_bool isRedDotUse) { m_isRedDotUse = isRedDotUse; }
+
 public:
 	wstring			Get_TextureName() { return m_wszTexture; }
 	wstring			Get_ItemNameText() { return m_wszItemName; }
@@ -74,6 +77,7 @@ public:
 
 private:
 	_bool					m_isEquip = { false };
+	_bool					m_isRedDotUse = { false }; // RedDot 소유 여부(Skill만 해당)
 
 	_uint					m_iCount = { 0 }; // 아이템 개수
 

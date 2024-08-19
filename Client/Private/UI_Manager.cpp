@@ -370,7 +370,7 @@ void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
 
 _bool CUI_Manager::Get_isFadeAnimEnd(_bool isFadeIn)
 {
-	if (isFadeIn) // 여기? 무조건 false 반환하나본데?
+	if (isFadeIn)
 	{
 		if (nullptr == m_pFadeIn)
 			return false;
@@ -396,10 +396,10 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 	return S_OK;
 }
 
-HRESULT CUI_Manager::Delete_RedDot_MenuBtn()
+HRESULT CUI_Manager::Delete_RedDot_MenuBtn(_bool isInv)
 {
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
-	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn_Inv();
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn(isInv);
 
 	return S_OK;
 }
@@ -418,32 +418,17 @@ HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx, _bool isSki
 	}
 	else
 	{
-		// Weapon의 경우에는 Weapon과 Skill인 경우를 나누어서 처리해주어야 함...
-		// 일단 Weapon이면 Inventory에 하던 거랑 똑같이 하면 될듯
-		// 근데 Skill의 경우에는 Tab이 눌렸을 때 (Tab 상태가 R이 되었을 때) 적용되어야 함
-
-		// skill을 어떻게 할지...?! skill에 RedDot이 있는지 여부에 대한 데이터가 필요함!
-
-		// 우선 Weapon인 경우 Weapon인지 Skill인지에 대한 값도 인자로 받아와야 하네..?!
-
 		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 
 		if (!isSkill) // Weapon인 경우
 		{
-			//dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Creat
-
-
-
+			dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Create_RedDot(iSlotIdx);
 		}
 		else // Skill인 경우
 		{
-
-
-
-
+			dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Create_RedDot(iSlotIdx, true);
 		}
 	}
-
 	return S_OK;
 }
 
@@ -461,9 +446,8 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 	}
 	else
 	{
-
+		// 안 없애도 알아서 사라지는 거 같응디 새로 출력하면서..........
 	}
-
 	return S_OK;
 }
 
@@ -543,6 +527,14 @@ void CUI_Manager::Key_Input()
 					{
 						(*weapon).second->Set_RenderOnAnim(false);
 						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Reset_Tab(); // Tab 상태 초기화
+
+						// Skill에 RedDot이 하나라도 있는 게 아니라면 Menu Btn의 RedDot 제거
+						if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Check_RedDot())
+						{
+							CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn(false);
+						}
+
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Delete_RedDot();
 					}
 					else
 						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
@@ -621,7 +613,7 @@ void CUI_Manager::Key_Input()
 					m_pGameInstance->Get_MainCamera()->Activate();
 
 					// MenuBtn도 사라져야죵
-					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn();
+					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn(true);
 					CUI_Manager::GetInstance()->Delete_RedDot_Slot(true); // UI Inventory의 RedDot 제거
 				}
 				else // 꺼져있을 때 > 켜지게

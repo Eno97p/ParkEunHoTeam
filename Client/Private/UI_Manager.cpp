@@ -404,14 +404,8 @@ HRESULT CUI_Manager::Delete_RedDot_MenuBtn()
 	return S_OK;
 }
 
-HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
+HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx, _bool isSkill)
 {
-	// Inv인 경우에는 Inventory Page와 Quick의 Inv Slot에다가 추가해주어야 하고
-	// 아닌 경우에는 Weapon에 넣어주어야 할 것이다
-	// Slot의 경우에는 Menu Btn과 다르게 몇 번째 Slot인가에 대한 정보도 가지고 있어야 하기 때문에
-	// (Weapon의 경우에는 Weapon인지 Skill인지 까지 필요함)
-	// 인자로 해당 슬롯의 인덱스에 대한 값을 넣어주어야 할 것임 !!
-
 	if (isInv)
 	{
 		// Inventory
@@ -424,7 +418,30 @@ HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
 	}
 	else
 	{
+		// Weapon의 경우에는 Weapon과 Skill인 경우를 나누어서 처리해주어야 함...
+		// 일단 Weapon이면 Inventory에 하던 거랑 똑같이 하면 될듯
+		// 근데 Skill의 경우에는 Tab이 눌렸을 때 (Tab 상태가 R이 되었을 때) 적용되어야 함
 
+		// skill을 어떻게 할지...?! skill에 RedDot이 있는지 여부에 대한 데이터가 필요함!
+
+		// 우선 Weapon인 경우 Weapon인지 Skill인지에 대한 값도 인자로 받아와야 하네..?!
+
+		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
+
+		if (!isSkill) // Weapon인 경우
+		{
+			//dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Creat
+
+
+
+		}
+		else // Skill인 경우
+		{
+
+
+
+
+		}
 	}
 
 	return S_OK;

@@ -42,6 +42,9 @@ public:
 	
 	void			Reset_Tab();
 
+	HRESULT			Create_RedDot(_uint iSlotIdx, _bool isSkill = false);
+	HRESULT			Delete_RedDot();
+
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부
 	_uint						m_iCurSlotIdx = { 0 }; // 현재 선택한 Weapon Slot의 Idx

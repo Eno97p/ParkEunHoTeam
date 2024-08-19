@@ -52,6 +52,11 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 	_bool isRender_End = false;
 	if (m_isRend)
 	{
+		if (m_pGameInstance->Key_Down(DIK_TAB))
+		{
+			Change_Tab();
+		}
+
 		if (!m_isEquipMode)
 		{
 
@@ -103,11 +108,6 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 			}
 			pEquipSlot->Tick(fTimeDelta);
 		}
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_TAB))
-	{
-		Change_Tab();
 	}
 }
 
@@ -405,6 +405,39 @@ void CUIGroup_Weapon::Reset_Tab()
 
 		m_eTabType = TAB_L;
 	}
+}
+
+HRESULT CUIGroup_Weapon::Create_RedDot(_uint iSlotIdx, _bool isSkill)
+{
+	// 여기서 넣어주기는 하는데 Tab 상황에 따라... 흠
+	// 이 함수로는 Inventory에서 해줬던 것처럼 바로 RedDot을 생성해주도록 하고 Skill의 경우에는 다른 함수를 하나 더 추가
+	// 매개변수로 bool 값을 넣어서 Weapon과 Skill의 경우를 분기 처리하는 것으로
+
+	if (!isSkill) // Weapon의 경우
+	{
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < iSlotIdx; ++i)
+			++slot;
+
+		return 	(*slot)->Create_RedDot();
+	}
+	else // Skill의 경우
+	{
+		// ItemIcon이 RedDot의 값을 가지고 있어야 할 거 같은데!
+		// > 그건 좀 난해하고.. (아 이제 보니 Slot에서 ItemIcon으로 바꾼게 그렇게 큰 의미는 없는 듯함)
+		// ItemData가 해당 값 가지고 있는 수밖에..?!
+
+
+
+	}
+}
+
+HRESULT CUIGroup_Weapon::Delete_RedDot()
+{
+	for (auto& pSlot : m_vecSlot)
+		pSlot->Delete_RedDot();
+
+	return S_OK;
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

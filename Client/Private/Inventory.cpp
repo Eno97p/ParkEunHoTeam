@@ -164,10 +164,6 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	}
 	else
 	{
-		// RedDot 추가
-		CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
-		
-
 		if (!Check_Overlab(eItemType)) // 중복 체크
 		{
 			// Inventory에 ItemData 추가
@@ -194,8 +190,9 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 		
-			// Slot에 RedDot 생성
-			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1);
+			// RedDot 추가
+			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
+			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1); // Slot
 		}
 	}
 
@@ -204,6 +201,8 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 
 HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 {
+	// 여기는 아직 RedDot 안 들어간 거 같은데 ?
+
 	if (eItemName == CItemData::ITEMNAME_CATALYST)
 	{
 		CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pDropItemDesc{};
@@ -252,6 +251,10 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
 	CUI_Manager::GetInstance()->Update_Quick_InvSlot_Add(m_vecItem.size() - 1);
 
+	// RedDot 추가
+	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
+	CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1); // Slot
+
 	return S_OK;
 }
 
@@ -267,10 +270,9 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 
 	// UI 출력
 	// 그니까 새로 Weapon을 받았을 때 > 그 후에 바로 Weapon Page를 켰을 때
-	// ItemIcon이 Slot에 들어가 있어야 해서 밑의 코드를 넣은 거자나
-	// 흠 그러면 Weapon Page가 무조건 Weapon에서 시작하도록 만들어볼까?
-	// 그러면 이 함수 그대로 써도 될 거 같운데 ㅇㅇ Skill은 Tab 할 때만 바꾸고
-	//CUI_Manager::GetInstance()->Update_Weapon_Add(); 
+	// ItemIcon이 Slot에 들어가 있어야 해서 밑의 코드를 넣은 거
+	// 그러면 이 함수 그대로 써도 될 거 같운데 ㅇㅇ Skill은 Tab 할 때만 바꾸고 (!!!!!추후 실제로 테스트해보고 주석 지우기)
+	CUI_Manager::GetInstance()->Update_Weapon_Add(); 
 
 	// Upgrade Page에도 weapon 추가
 	dynamic_cast<CUIGroup_UpGPage*>(CUI_Manager::GetInstance()->Get_UIGroup("UpGPage"))->Add_WeaponList(m_vecWeapon.size() - 1);

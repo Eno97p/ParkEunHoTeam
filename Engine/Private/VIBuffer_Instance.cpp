@@ -1742,6 +1742,9 @@ HRESULT CVIBuffer_Instance::Render_Culling()
 	//}
 
 	//// 가시적인 인스턴스만 렌더링
+	
+
+
 	m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iVisibleInstances, 0, 0, 0);
 
 

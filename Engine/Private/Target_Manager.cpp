@@ -146,6 +146,17 @@ ID3D11RenderTargetView* CTarget_Manager::Get_RTV(const wstring& strTargetTag)
 	return pRenderTarget->Get_RTV();
 }
 
+ID3D11ShaderResourceView* CTarget_Manager::Get_SRV(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+
+	if (nullptr == pRenderTarget)
+		return nullptr;
+
+	return pRenderTarget->Get_SRV();
+
+}
+
 HRESULT CTarget_Manager::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)
 {
 	CRenderTarget*		pRenderTarget = Find_RenderTarget(strTargetTag);

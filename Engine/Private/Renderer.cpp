@@ -10,10 +10,12 @@
 #include "RenderTarget.h"
 
 #include "CRenderWorker.h"
+
+
 _uint      g_iSizeX = 1280;
 _uint      g_iSizeY = 720;
 
-
+#define HBAO_Plus
 
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : m_pDevice{ pDevice }
@@ -30,7 +32,12 @@ HRESULT CRenderer::Initialize()
     D3D11_VIEWPORT         ViewportDesc{};
     _uint               iNumViewports = 1;
 
+
+    
     m_pContext->RSGetViewports(&iNumViewports, &ViewportDesc);
+
+
+
 
     /* Target_Diffuse */
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.0f, 0.f, 1.f, 0.f))))
@@ -75,6 +82,11 @@ HRESULT CRenderer::Initialize()
     if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Velocity"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
         return E_FAIL;
 
+    /* HBAO */
+    if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_HBAO"), ViewportDesc.Width, ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+        return E_FAIL;
+
+
     /* MRT_GameObjects */
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
         return E_FAIL;
@@ -102,6 +114,12 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
         return E_FAIL;
+
+    /* MRT_HBAO */
+    if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_HBAO"), TEXT("Target_HBAO"))))
+        return E_FAIL;
+
+
 
 #pragma region MRT_Effect
 
@@ -457,6 +475,12 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     currentX += targetWidth + gap;
 
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_HBAO"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
+
+
+
 
 
 //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Velocity"), currentX, currentY, targetWidth, targetHeight)))
@@ -573,7 +597,63 @@ HRESULT CRenderer::Initialize()
 
 
 
+    //SSAO
+     const UINT NodeMask = 1;
+     GFSDK_SSAO_CustomHeap CustomHeap;
+     CustomHeap.new_ = ::operator new;
+     CustomHeap.delete_ = ::operator delete;
 
+     GFSDK_SSAO_Status SSAOstatus = GFSDK_SSAO_CreateContext_D3D11(m_pDevice, &m_pSSAOContext, &CustomHeap);
+     if (SSAOstatus != GFSDK_SSAO_OK)
+     {
+         return E_FAIL;
+     }
+     
+
+        //그림자 맵을 생성하는 코드 
+        GFSDK_ShadowLib_Version version;
+        GFSDK_ShadowLib_GetDLLVersion(&version);
+        
+        GFSDK_ShadowLib_DeviceContext deviceContext;
+        deviceContext.pD3DDevice = m_pDevice;
+        deviceContext.pDeviceContext = m_pContext;
+        
+        GFSDK_ShadowLib_Status status;
+        status = GFSDK_ShadowLib_Create(&version, &m_pShadowLibContext, &deviceContext);
+        if (status != GFSDK_ShadowLib_Status_Ok)
+        {
+            return E_FAIL;
+        }
+        GFSDK_ShadowLib_BufferDesc bufferDesc;
+        bufferDesc.uResolutionWidth = g_iSizeX;
+        bufferDesc.uResolutionHeight = g_iSizeY;
+        bufferDesc.uViewportTop = 0;
+        bufferDesc.uViewportLeft = 0;
+        bufferDesc.uViewportBottom = bufferDesc.uResolutionHeight;
+        bufferDesc.uViewportRight = bufferDesc.uResolutionWidth;
+        bufferDesc.uSampleCount = 1;
+        
+        status = m_pShadowLibContext->AddBuffer(&bufferDesc, &m_pShadowBuffer);
+        if (status != GFSDK_ShadowLib_Status_Ok)
+        {
+            return E_FAIL;
+        }
+        
+        GFSDK_ShadowLib_MapDesc mapDesc;
+        mapDesc.uResolutionWidth = g_iSizeX;
+        mapDesc.uResolutionHeight = g_iSizeY;
+        mapDesc.eViewType = GFSDK_ShadowLib_ViewType_Single;
+        mapDesc.RayTraceMapDesc.bRequirePrimitiveMap = false;
+        mapDesc.FrustumTraceMapDesc.bRequireFrustumTraceMap = false;
+
+        status = m_pShadowLibContext->AddMap(&mapDesc, &bufferDesc, &m_pShadowMap);
+        if (status != GFSDK_ShadowLib_Status_Ok)
+		{
+			return E_FAIL;
+		}
+        
+        
+        
     return S_OK;
 
 }
@@ -632,8 +712,7 @@ void CRenderer::Draw()
 
 
 
-    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
-
+    PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());     
 
 
     PROFILE_CALL("Render NonBlend", Render_NonBlend());
@@ -643,7 +722,10 @@ void CRenderer::Draw()
 
     PROFILE_CALL("Render NonDecal", Render_NonDecal());
 
+    PROFILE_CALL("Render HBAO", Render_HBAO());
     PROFILE_CALL("Render LightAcc", Render_LightAcc());
+
+   
 
     PROFILE_CALL("Render Shadow_Move", Render_Shadow_Move());
     PROFILE_CALL("Render Shadow_NotMove", Render_Shadow_NotMove());
@@ -773,7 +855,7 @@ void CRenderer::Render_ShadowObjects()
     ViewPortDesc.MaxDepth = 1.f;
 
     m_pContext->RSSetViewports(1, &ViewPortDesc);
-
+    
 
     for (auto& pGameObject : m_RenderGroup[RENDER_SHADOWOBJ])
     {
@@ -912,6 +994,12 @@ void CRenderer::Render_LightAcc()
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Metalic"), m_pShader, "g_MetalicTexture")))
         return;
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_HBAO"), m_pShader, "g_HBAOTexture")))
+        return;
+
+
+
+
 
     m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
 
@@ -1089,8 +1177,193 @@ void CRenderer::Render_Shadow_Result()
     m_pGameInstance->End_MRT();
 }
 
+void CRenderer::Render_HBAO()
+{
+    m_pGameInstance->Begin_MRT(TEXT("MRT_HBAO"));
+    
+
+
+
+    const XMFLOAT4X4* pProjMatrix = m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ);
+
+
+    GFSDK_SSAO_InputData_D3D11 InputData;
+    ZeroMemory(&InputData, sizeof(GFSDK_SSAO_InputData_D3D11));
+
+    InputData.DepthData.DepthTextureType = GFSDK_SSAO_HARDWARE_DEPTHS;
+    InputData.DepthData.pFullResDepthTextureSRV = m_pGameInstance->Get_SRV(TEXT("Target_Depth"));
+    InputData.DepthData.ProjectionMatrix.Data = GFSDK_SSAO_Float4x4(reinterpret_cast<const float*>(pProjMatrix));
+    InputData.DepthData.ProjectionMatrix.Layout = GFSDK_SSAO_ROW_MAJOR_ORDER;
+
+    InputData.DepthData.MetersToViewSpaceUnits = 1.0f;
+    
+    
+    InputData.DepthData.Viewport.Width = 1280.0f;
+    InputData.DepthData.Viewport.Height = 720.0f;
+
+    // AO 파라미터 설정
+    GFSDK_SSAO_Parameters Params;
+    static bool isMaxEffect = false;
+
+    if (KEY_TAP(DIK_9))
+    {
+        isMaxEffect = !isMaxEffect;
+    }
+
+    if (isMaxEffect)
+    {
+        // 최대 효과 설정
+        Params.Radius = 5.0f;
+        Params.Bias = 0.1f;
+        Params.SmallScaleAO = 2.0f;
+        Params.LargeScaleAO = 2.0f;
+        Params.PowerExponent = 4.0f;
+    }
+    else
+    {
+        // 최소 효과 설정
+        Params.Radius = 0.5f;
+        Params.Bias = 0.5f;
+        Params.SmallScaleAO = 0.5f;
+        Params.LargeScaleAO = 0.5f;
+        Params.PowerExponent = 1.0f;
+    }
+
+
+   
+    // 공통 설정
+    Params.StepCount = GFSDK_SSAO_STEP_COUNT_4;
+    Params.DepthStorage = GFSDK_SSAO_FP16_VIEW_DEPTHS;
+    Params.DepthClampMode = GFSDK_SSAO_CLAMP_TO_EDGE;
+    Params.EnableDualLayerAO = false;
+    
+
+
+    // Blur 설정
+    Params.Blur.Enable = true;
+    Params.Blur.Radius = GFSDK_SSAO_BLUR_RADIUS_4;
+    Params.Blur.Sharpness = 16.0f;
+
+
+    GFSDK_SSAO_Output_D3D11 Output;
+    ZeroMemory(&Output, sizeof(GFSDK_SSAO_Output_D3D11));
+    Output.pRenderTargetView = m_pGameInstance->Get_RTV(TEXT("Target_HBAO"));
+    Output.Blend.Mode = GFSDK_SSAO_OVERWRITE_RGB;
+
+    GFSDK_SSAO_Status status = m_pSSAOContext->RenderAO(m_pContext, InputData, Params, Output);
+
+
+
+
+
+    m_pGameInstance->End_MRT();
+
+
+ //   GFSDK_ShadowLib_MapRenderParams mapRenderParams;
+ //   mapRenderParams.eTechniqueType = GFSDK_ShadowLib_TechniqueType_PCSS;
+ //   mapRenderParams.eCascadedShadowMapType = GFSDK_ShadowLib_CascadedShadowMapType_SampleDistribution;
+ //   mapRenderParams.eCullModeType = GFSDK_ShadowLib_CullModeType_Back;
+
+ //   //view, proj
+ //   memcpy(&mapRenderParams.m4x4EyeViewMatrix, m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW), sizeof(gfsdk_float4x4));
+ //   memcpy(&mapRenderParams.m4x4EyeProjectionMatrix, m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ), sizeof(gfsdk_float4x4));
+
+ //   //LIGHT
+ //   mapRenderParams.LightDesc.eLightType = GFSDK_ShadowLib_LightType_Directional;
+ //   _float3 shadowEye, shadwoFocus;
+ //   XMStoreFloat3(&shadowEye, m_vShadowEye);
+ //   XMStoreFloat3(&shadwoFocus, m_vShadowFocus);
+ //   mapRenderParams.LightDesc.v3LightPos[0].x = shadowEye.x;
+ //   mapRenderParams.LightDesc.v3LightPos[0].y = shadowEye.y;
+ //   mapRenderParams.LightDesc.v3LightPos[0].z = shadowEye.z;
+ //   mapRenderParams.LightDesc.v3LightLookAt[0].x = shadwoFocus.x;
+ //   mapRenderParams.LightDesc.v3LightLookAt[0].y = shadwoFocus.y;
+ //   mapRenderParams.LightDesc.v3LightLookAt[0].z = shadwoFocus.z;
+ //   mapRenderParams.LightDesc.fLightSize = 1000.0f;
+
+ //   //Depth
+ //   mapRenderParams.DepthBufferDesc.eDepthType = GFSDK_ShadowLib_DepthType_DepthBuffer;
+ //   mapRenderParams.DepthBufferDesc.DepthSRV.pSRV = m_pGameInstance->Get_SRV(TEXT("Target_Depth"));
+ //   mapRenderParams.DepthBufferDesc.ResolvedDepthSRV.pSRV = m_pGameInstance->Get_SRV(TEXT("Target_Depth"));
+ //   mapRenderParams.DepthBufferDesc.uComplexRefValue = 0x01;
+ //   mapRenderParams.DepthBufferDesc.uSimpleRefValue = 0x00;
+
+
+
+ //   GFSDK_ShadowLib_Status status;
+
+ //   status = m_pShadowLibContext->SetMapRenderParams(m_pShadowMap, &mapRenderParams);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+
+ //   // 광원 뷰 및 투영 행렬 배열
+ //   gfsdk_float4x4 LightViewMatrix[4];
+ //   gfsdk_float4x4 LightProjMatrix[4];
+ //   GFSDK_ShadowLib_Frustum RenderFrustum[4];
+
+ //   status = m_pShadowLibContext->UpdateMapBounds(m_pShadowMap, LightViewMatrix, LightProjMatrix, RenderFrustum);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+
+ //   status = m_pShadowLibContext->InitializeMapRendering(m_pShadowMap, GFSDK_ShadowLib_MapRenderType_Depth);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+
+ //   status = m_pShadowLibContext->BeginMapRendering(m_pShadowMap, GFSDK_ShadowLib_MapRenderType_Depth, 0);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+
+ //   PROFILE_CALL("Render ShadowObjects", Render_ShadowObjects());
+
+
+
+
+ //   status = m_pShadowLibContext->EndMapRendering(m_pShadowMap, GFSDK_ShadowLib_MapRenderType_Depth, 0);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+
+ //   status = m_pShadowLibContext->ClearBuffer(m_pShadowBuffer);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+	//{
+	//	return;
+	//}
+
+ //   GFSDK_ShadowLib_BufferRenderParams bufferRenderParams;
+ //   bufferRenderParams.eMSAARenderMode = GFSDK_ShadowLib_MSAARenderMode_BruteForce;
+ //   bufferRenderParams.fCascadeBlendPercent = 0.0f;
+ //   bufferRenderParams.fCascadeBorderPercent = 0.0f;
+ //   bufferRenderParams.eDebugViewType = GFSDK_ShadowLib_DebugViewType_None;
+ //   status = m_pShadowLibContext->RenderBuffer(m_pShadowMap, m_pShadowBuffer, &bufferRenderParams);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+	//{
+	//	return;
+	//}
+
+ //   GFSDK_ShadowLib_ShaderResourceView shadowSRV;
+ //   status = m_pShadowLibContext->FinalizeBuffer(m_pShadowBuffer, &shadowSRV);
+ //   if (status != GFSDK_ShadowLib_Status_Ok)
+ //   {
+ //       return;
+ //   }
+ //   m_pHBAOShadowSRV=  shadowSRV.pSRV;
+
+    
+
+}
+
 void CRenderer::Render_DeferredResult()
 {
+
     m_pGameInstance->Begin_MRT(TEXT("MRT_Result"), false);
 
     if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1188,6 +1461,8 @@ void CRenderer::Render_DeferredResult()
         return;
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Metalic"), m_pShader, "g_MetalicTexture")))
         return;
+
+
 
     m_pShader->Begin(3);
 
@@ -2033,6 +2308,8 @@ void CRenderer::Render_Debug()
     m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
     m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
     m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_HBAO"), m_pShader, m_pVIBuffer);
+
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_BlurY"), m_pShader, m_pVIBuffer);
 }
 
@@ -2089,7 +2366,7 @@ void CRenderer::Free()
     }
     m_CommandLists.clear();
 
-
+    //m_pShadowLibContext->RemoveMap();
 
     Safe_Release(m_pShader);
     //Safe_Release(m_pBloomComputeShader);
@@ -2105,4 +2382,10 @@ void CRenderer::Free()
     Safe_Release(m_pDecalTex);
     Safe_Release(m_pShadowTex);
     Safe_Release(m_pReflectionDepthStencilView);
+
+    m_pShadowLibContext->RemoveMap(&m_pShadowMap);
+    m_pShadowLibContext->RemoveBuffer(&m_pShadowBuffer);
+    m_pShadowLibContext->Destroy();
+
+    m_pSSAOContext->Release();
 }

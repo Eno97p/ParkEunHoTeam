@@ -365,10 +365,32 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pNewLevel);
 }
 
+HRESULT CGameInstance::Set_CurrentLevel(_uint iLevelIndex, CLevel* pNewLevel)
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Set_CurrentLevel(iLevelIndex, pNewLevel);
+}
+
+HRESULT CGameInstance::Delete_CurrentLevel()
+{
+	if (nullptr == m_pLevel_Manager)
+		return E_FAIL;
+
+	return m_pLevel_Manager->Delete_CurrentLevel();
+}
+
 _uint CGameInstance::Get_CurrentLevel()
 {
 	return m_pLevel_Manager->Get_CurrentLevel();
 }
+
+_uint CGameInstance::Get_CurrentLevelIndex()
+{
+	return m_pLevel_Manager->Get_CurrentLevelIndex();
+}
+
 
 void CGameInstance::Set_NextLevel(_uint iNextLevel)
 {
@@ -696,6 +718,11 @@ HRESULT CGameInstance::End_MRT(ID3D11DeviceContext* pDeferredContext)
 ID3D11RenderTargetView* CGameInstance::Get_RTV(const wstring& strTargetTag)
 {
 	return m_pTarget_Manager->Get_RTV(strTargetTag);
+}
+
+ID3D11ShaderResourceView* CGameInstance::Get_SRV(const wstring& strTargetTag)
+{
+	return m_pTarget_Manager ->Get_SRV(strTargetTag);
 }
 
 HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring & strTargetTag, CShader * pShader, const _char * pConstantName)

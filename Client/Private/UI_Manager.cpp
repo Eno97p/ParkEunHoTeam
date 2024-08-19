@@ -20,6 +20,7 @@
 #include "UIGroup_Setting.h"
 #include "UIGroup_Ch_Upgrade.h"
 #include "UIGroup_BuffTimer.h"
+#include "UIGroup_Level.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -444,10 +445,7 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
 		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Delete_RedDot();
 	}
-	else
-	{
-		// 안 없애도 알아서 사라지는 거 같응디 새로 출력하면서..........
-	}
+
 	return S_OK;
 }
 
@@ -472,6 +470,25 @@ _bool CUI_Manager::Delete_QTE()
 	m_pQTE = nullptr;
 
 	return isSuccess;
+}
+
+void CUI_Manager::Create_LevelUI()
+{
+	if (m_mapUIGroup.find("Level") != m_mapUIGroup.end()) // 값이 있으면
+	{
+		// 기존에 map에 값이 있다면 없애고 생성!
+		if ((*m_mapUIGroup.find("Level")).second != nullptr)
+		{
+			Safe_Release((*m_mapUIGroup.find("Level")).second);
+			((*m_mapUIGroup.find("Level")).second) = nullptr;
+		}
+	}
+
+	// UI Level을 생성
+	CUIGroup::UIGROUP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_mapUIGroup.emplace("Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc)));
 }
 
 void CUI_Manager::Key_Input()

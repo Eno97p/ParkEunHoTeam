@@ -390,6 +390,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_DropItem.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Level.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Map.cpp"
 
 
@@ -445,6 +448,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_ItemIcon.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_LevelBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Level_TextBox.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_LogoFlow.cpp"

@@ -66,6 +66,9 @@ public:
 	void				Create_QTE();
 	_bool				Delete_QTE();
 
+	// Level
+	void				Create_LevelUI();
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부

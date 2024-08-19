@@ -802,6 +802,15 @@
     <Filter Include="02.GameObjects\07. UI\QTE\Btn\Score\Shine">
       <UniqueIdentifier>{2a3bbf4f-bf0c-4af6-921e-70885535074a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Level">
+      <UniqueIdentifier>{76abc2ea-fbff-4e63-8830-f6c52dff643b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Level\BG">
+      <UniqueIdentifier>{a765ec9b-63af-495b-8f8c-e3f1d3dcb977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Level\TextBox">
+      <UniqueIdentifier>{2e69359c-7c50-43d1-88a2-25091170ceb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1754,6 +1763,15 @@
     <ClInclude Include="..\Public\UI_QTE_Shine.h">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Shine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Level.h">
+      <Filter>02.GameObjects\07. UI\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_LevelBG.h">
+      <Filter>02.GameObjects\07. UI\Level\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Level_TextBox.h">
+      <Filter>02.GameObjects\07. UI\Level\TextBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2652,6 +2670,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_QTE_Shine.cpp">
       <Filter>02.GameObjects\07. UI\QTE\Btn\Score\Shine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Level.cpp">
+      <Filter>02.GameObjects\07. UI\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_LevelBG.cpp">
+      <Filter>02.GameObjects\07. UI\Level\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Level_TextBox.cpp">
+      <Filter>02.GameObjects\07. UI\Level\TextBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

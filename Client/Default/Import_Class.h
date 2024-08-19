@@ -5,10 +5,13 @@
 #include "GameInstance.h"
 #include "Body_Player.h"
 #include "Clone.h"
+#pragma region Cameras
 #include "FreeCamera.h"
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
 #include "TransitionCamera.h"
+#include "CutSceneCamera.h"
+#pragma endregion
 #include "ForkLift.h"
 #include "Terrain.h"
 //#include "Monster.h"

@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Camera.h"
-#include "MYMapTool_Defines.h"
+#include "Client_Defines.h"
 
-BEGIN(MYMapTool)
+BEGIN(Client)
 
 class CCutSceneCamera final : public CCamera
 {
@@ -29,10 +29,13 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void Load_CameraKeyFrames();
+
+
 	void ZoomIn(_float fTimeDelta);
 
 public:
-	void ZoomIn();
 	void Revolution360(_float fTime);
 	void TiltAdjust(_float fAngle);
 	void HeightChange(_float fHeight);
@@ -91,7 +94,7 @@ private:
 
 public:
 	_uint Get_CutSceneCount() const { return m_AllCutScenes.size(); }
-	void Set_CutSceneIdx(_uint idx) { m_iCurrentCutSceneIdx = idx; }
+	void Set_CutSceneIdx(_uint idx);
 	_uint Get_CutSceneIdx() const { return m_iCurrentCutSceneIdx; }
 	void Add_CutScene(const vector<CameraKeyFrame>& keyFrames) { m_AllCutScenes.push_back(keyFrames); }
 

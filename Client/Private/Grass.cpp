@@ -42,7 +42,7 @@ HRESULT CGrass::Initialize(void* pArg)
 	CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 	m_pVIBufferCom->Initial_RotateY();
 	m_pVIBufferCom->Setup_Onterrain(pTerrain);
-	//m_pVIBufferCom->Initial_RandomOffset(pTerrain);
+	m_pVIBufferCom->Initial_RandomOffset(pTerrain);
 
 	
 
@@ -167,7 +167,7 @@ HRESULT CGrass::Add_Components(void* pArg)
 	{
 
 		/* For.Com_Texture */
-		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, /*desc->wstrModelName.c_str()*/TEXT("Prototype_Component_Texture_Grass_TT"),
+		if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, desc->wstrModelName.c_str(),
 			TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 			return E_FAIL;
 
@@ -317,6 +317,4 @@ void CGrass::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pNoiseCom);
-	//Safe_Release(m_pNormalCom);
-	Safe_Release(m_pShaderCom);
 }

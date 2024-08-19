@@ -8,6 +8,7 @@
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
 #include "TransitionCamera.h"
+#include "CutSceneCamera.h"
 
 #include "Map_Element.h"
 #include "Monster.h"
@@ -262,6 +263,23 @@ HRESULT CLevel_Jugglas::Ready_Layer_Camera(const wstring & strLayerTag)
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
 
+	 CCutSceneCamera::CUTSCENECAMERA_DESC pCSCdesc = {};
+
+
+	 pCSCdesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pCSCdesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
+	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pCSCdesc.fNear = 0.1f;
+	 pCSCdesc.fFar = 3000.f;
+
+	 pCSCdesc.fSpeedPerSec = 40.f;
+	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_CutSceneCamera"), &pCSCdesc)))
+		 return E_FAIL;
+
 	 CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
 
 	 pSVCDesc.fSensor = 0.1f;
@@ -280,7 +298,7 @@ HRESULT CLevel_Jugglas::Ready_Layer_Camera(const wstring & strLayerTag)
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
 		 return E_FAIL;
 
-	 m_pGameInstance->Set_MainCamera(1);
+	 m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 	return S_OK;
 }
 
@@ -417,7 +435,9 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	
 
 
-
+	//Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Choron"))))
+		return E_FAIL;
 
 	return S_OK;
 }

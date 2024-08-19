@@ -406,15 +406,6 @@
     <Filter Include="02.GameObjects\99.Cameras">
       <UniqueIdentifier>{76ad73bb-b076-4596-bcf9-4cd613663360}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.Cameras\Free">
-      <UniqueIdentifier>{0c037ddb-f937-42d8-bd6d-e3d8f1af58f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Cameras\ThirdPerson">
-      <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Cameras\SideView">
-      <UniqueIdentifier>{6cbae87c-1690-4d5d-8859-ce47f8fed19b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\03. Ackbar">
       <UniqueIdentifier>{8684d1fa-42aa-4b3a-8c6e-b6f745010d40}</UniqueIdentifier>
     </Filter>
@@ -483,9 +474,6 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Fire">
       <UniqueIdentifier>{d0100aad-c10c-4eb1-9079-7b40e15eb3a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Cameras\Transition">
-      <UniqueIdentifier>{f44c0e31-9f04-48e6-be62-39a81841c722}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\03. Trap">
       <UniqueIdentifier>{1d0a1bad-0052-4027-855e-7ba8239ed853}</UniqueIdentifier>
@@ -808,6 +796,21 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\KickSword">
       <UniqueIdentifier>{38f5b161-4571-43d8-bcaa-0f385634f40a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\00. Free">
+      <UniqueIdentifier>{0c037ddb-f937-42d8-bd6d-e3d8f1af58f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\04. CutSceneCamera">
+      <UniqueIdentifier>{f4ce6af7-7da3-40d2-8c97-866f5fcd85c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\02. SideView">
+      <UniqueIdentifier>{6cbae87c-1690-4d5d-8859-ce47f8fed19b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\01. ThirdPerson">
+      <UniqueIdentifier>{7b52c189-7098-4046-b9af-63f578db4e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Cameras\03. Transition">
+      <UniqueIdentifier>{f44c0e31-9f04-48e6-be62-39a81841c722}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\06.Effect\HexaShield">
       <UniqueIdentifier>{acacff6f-b31a-4893-8fdb-12e5255bed3f}</UniqueIdentifier>
 	</Filter>
@@ -859,7 +862,7 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\FreeCamera.h">
-      <Filter>02.GameObjects\99.Cameras\Free</Filter>
+      <Filter>02.GameObjects\99.Cameras\00. Free</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster</Filter>
@@ -1155,7 +1158,7 @@
       <Filter>02.GameObjects\02.LandObject\01.Item</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ThirdPersonCamera.h">
-      <Filter>02.GameObjects\99.Cameras\ThirdPerson</Filter>
+      <Filter>02.GameObjects\99.Cameras\01. ThirdPerson</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIGroup_Logo.h">
       <Filter>02.GameObjects\07. UI\Logo</Filter>
@@ -1269,7 +1272,7 @@
       <Filter>01.Levels\04. Jugglas</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SideViewCamera.h">
-      <Filter>02.GameObjects\99.Cameras\SideView</Filter>
+      <Filter>02.GameObjects\99.Cameras\02. SideView</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Aspiration.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Aspiration</Filter>
@@ -1383,7 +1386,7 @@
       <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TransitionCamera.h">
-      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+      <Filter>02.GameObjects\99.Cameras\03. Transition</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossDeco.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
@@ -1778,6 +1781,9 @@
     <ClInclude Include="..\Public\FallPlatform.h">
       <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutSceneCamera.h">
+      <Filter>02.GameObjects\99.Cameras\04. CutSceneCamera</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\HexaHit.h">
       <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
     </ClInclude>
@@ -1814,7 +1820,7 @@
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FreeCamera.cpp">
-      <Filter>02.GameObjects\99.Cameras\Free</Filter>
+      <Filter>02.GameObjects\99.Cameras\00. Free</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster</Filter>
@@ -2102,7 +2108,7 @@
       <Filter>02.GameObjects\02.LandObject\01.Item</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ThirdPersonCamera.cpp">
-      <Filter>02.GameObjects\99.Cameras\ThirdPerson</Filter>
+      <Filter>02.GameObjects\99.Cameras\01. ThirdPerson</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIGroup_Logo.cpp">
       <Filter>02.GameObjects\07. UI\Logo</Filter>
@@ -2213,7 +2219,7 @@
       <Filter>01.Levels\04. Jugglas</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SideViewCamera.cpp">
-      <Filter>02.GameObjects\99.Cameras\SideView</Filter>
+      <Filter>02.GameObjects\99.Cameras\02. SideView</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Aspiration.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Hand\Three\Aspiration</Filter>
@@ -2324,7 +2330,7 @@
       <Filter>02.GameObjects\08. vehicle\TestPhysX</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TransitionCamera.cpp">
-      <Filter>02.GameObjects\99.Cameras\Transition</Filter>
+      <Filter>02.GameObjects\99.Cameras\03. Transition</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossDeco.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\01. Active_Element\05. BossDeco</Filter>
@@ -2689,6 +2695,9 @@
     <ClCompile Include="..\Private\FallPlatform.cpp">
       <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CutSceneCamera.cpp">
+      <Filter>02.GameObjects\99.Cameras\04. CutSceneCamera</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp">
       <Filter>02.GameObjects\06.Effect\HexaShield</Filter>
     </ClCompile>

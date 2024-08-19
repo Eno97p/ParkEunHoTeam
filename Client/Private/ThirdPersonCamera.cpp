@@ -85,11 +85,13 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
 {
     if (!m_bCamActivated || m_pPlayerTrans == nullptr)
     {
-        if (2 == m_pGameInstance->Get_MainCameraIdx())
+        if (CAM_SIDEVIEW == (CAMERA_INDEX)m_pGameInstance->Get_MainCameraIdx())
         {
             m_pTransformCom->Set_WorldMatrix(dynamic_cast<CTransform*>(m_pGameInstance->Get_MainCamera()->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix());
             return;
         }
+
+        return;
     }
 
     // 플레이어 위치 가져오기

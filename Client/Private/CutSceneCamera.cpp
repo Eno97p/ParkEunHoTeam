@@ -1,5 +1,6 @@
 #include "CutSceneCamera.h"
 #include "GameInstance.h"
+#include "TransitionCamera.h"
 
 CCutSceneCamera::CCutSceneCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
@@ -25,7 +26,8 @@ HRESULT CCutSceneCamera::Initialize(void* pArg)
 
     m_KeyFrames = pDesc->KeyFrames;
 
-    //__super::Activate();
+   Load_CameraKeyFrames();
+   Set_CutSceneIdx(0);
 
     return S_OK;
 }
@@ -36,7 +38,7 @@ void CCutSceneCamera::Priority_Tick(_float fTimeDelta)
 }
 void CCutSceneCamera::Tick(_float fTimeDelta)
 {
-    if (m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
+    if (!m_bCamActivated || m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
         return;
 
     vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[m_iCurrentCutSceneIdx];
@@ -46,7 +48,28 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
     if (m_bAnimationFinished || m_bPaused)
     {
-        m_pGameInstance->Set_MainCamera(0);
+       // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+
+        //컷씬 트렌지션
+        CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+        pTCDesc.fFovy = XMConvertToRadians(60.f);
+        pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+        pTCDesc.fNear = 0.1f;
+        pTCDesc.fFar = 3000.f;
+
+        pTCDesc.fSpeedPerSec = 40.f;
+        pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+        pTCDesc.iStartCam = CAM_CUTSCENE;
+        pTCDesc.iEndCam = CAM_THIRDPERSON;
+        pTCDesc.fTransitionTime = 1.f;
+        if (FAILED(m_pGameInstance->Add_Camera(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+        {
+            MSG_BOX("FAILED");
+            return;
+        }
+
         return;
     }
 
@@ -124,6 +147,131 @@ HRESULT CCutSceneCamera::Render()
     return S_OK;
 }
 
+
+void CCutSceneCamera::Load_CameraKeyFrames()
+{
+    wstring filePath = L"../Bin/CutSceneData/CutSceneKeyFrames.dat";
+
+    HANDLE hFile = CreateFile(filePath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed to open file for camera keyframes.");
+        return;
+    }
+
+    DWORD dwByte = 0;
+
+    // 컷씬 개수 로드
+    _uint iCutSceneCount = 0;
+    ReadFile(hFile, &iCutSceneCount, sizeof(_uint), &dwByte, nullptr);
+
+    // 기존 컷씬 클리어
+    Clear_CutScenes();
+
+    // 각 컷씬의 키프레임 로드
+    for (_uint i = 0; i < iCutSceneCount; ++i)
+    {
+        vector<CCamera::CameraKeyFrame> cutScene;
+
+        // 키프레임 개수 로드
+        _uint iKeyFrameCount = 0;
+        ReadFile(hFile, &iKeyFrameCount, sizeof(_uint), &dwByte, nullptr);
+
+        // 각 키프레임 정보 로드
+        for (_uint j = 0; j < iKeyFrameCount; ++j)
+        {
+            CCamera::CameraKeyFrame keyFrame;
+            ReadFile(hFile, &keyFrame.fTime, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.matWorld, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fFovy, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fNear, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fFar, sizeof(float), &dwByte, nullptr);
+
+            // 속도 변화 정보 로드
+            _uint iSpeedChangeCount = 0;
+            ReadFile(hFile, &iSpeedChangeCount, sizeof(_uint), &dwByte, nullptr);
+            for (_uint k = 0; k < iSpeedChangeCount; ++k)
+            {
+                float time, speed, smoothOffset;
+                ReadFile(hFile, &time, sizeof(float), &dwByte, nullptr);
+                ReadFile(hFile, &speed, sizeof(float), &dwByte, nullptr);
+                ReadFile(hFile, &smoothOffset, sizeof(float), &dwByte, nullptr);
+                keyFrame.speedChanges.emplace_back(time, speed, smoothOffset);
+            }
+
+            cutScene.push_back(keyFrame);
+        }
+
+        Add_CutScene(cutScene);
+    }
+
+    CloseHandle(hFile);
+    MSG_BOX("Camera KeyFrames Data Loaded");
+
+}
+
+void CCutSceneCamera::Set_CutSceneIdx(_uint idx)
+{
+    if (idx >= m_AllCutScenes.size())
+        return;
+
+    m_iCurrentCutSceneIdx = idx;
+    m_iCurrentKeyFrame = 0;
+    m_fKeyFrameTime = 0.0f;
+    m_bAnimationFinished = false;
+    
+    vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[idx];
+
+    if (currentCutScene.size() < 2)  // 최소 2개의 키프레임이 필요합니다.
+        return;
+
+    CameraKeyFrame& currentKeyFrame = currentCutScene[0];
+    CameraKeyFrame& nextKeyFrame = currentCutScene[1];
+
+    // 0.01초 동안의 보간 수행
+    float fTimeDelta = 0.01f;
+    float t = fTimeDelta / (nextKeyFrame.fTime - currentKeyFrame.fTime);
+
+    // 속도 변화 적용 (Tick 함수의 로직과 유사)
+    float speedMultiplier = 1.0f;
+    for (const auto& [changeTime, changeSpeed, smoothOffset] : currentKeyFrame.speedChanges)
+    {
+        if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
+        {
+            float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
+            speedMultiplier = 1.0f + (changeSpeed - 1.0f) * lerpT;
+            break;
+        }
+        else if (t >= changeTime + smoothOffset)
+        {
+            speedMultiplier = changeSpeed;
+        }
+    }
+
+    // 월드 행렬 보간
+    _matrix matCurrent = XMLoadFloat4x4(&currentKeyFrame.matWorld);
+    _matrix matTarget = XMLoadFloat4x4(&nextKeyFrame.matWorld);
+    _matrix matLerpedWorld = XMMatrixSlerp(matCurrent, matTarget, t * speedMultiplier);
+
+    // 보간된 월드 행렬 설정
+    m_pTransformCom->Set_WorldMatrix(matLerpedWorld);
+
+    // FOV, Near, Far 보간
+    float fLerpedFovy = XMConvertToRadians(
+        XMConvertToDegrees(currentKeyFrame.fFovy) +
+        (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t * speedMultiplier
+    );
+    Set_Fovy(fLerpedFovy);
+
+    // Near와 Far 값 설정이 필요한 경우 주석 해제
+    // float fLerpedNear = currentKeyFrame.fNear + (nextKeyFrame.fNear - currentKeyFrame.fNear) * t * speedMultiplier;
+    // float fLerpedFar = currentKeyFrame.fFar + (nextKeyFrame.fFar - currentKeyFrame.fFar) * t * speedMultiplier;
+    // Set_Near(fLerpedNear);
+    // Set_Far(fLerpedFar);
+
+    // 키프레임 시간 업데이트
+    m_fKeyFrameTime = fTimeDelta * speedMultiplier;
+}
 void CCutSceneCamera::ZoomIn(_float fTimeDelta)
 {
     m_fZoomDistance += m_fZoomSpeed * fTimeDelta;

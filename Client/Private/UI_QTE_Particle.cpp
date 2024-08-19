@@ -40,17 +40,22 @@ void CUI_QTE_Particle::Tick(_float fTimeDelta)
 {
 	m_fDeadTimer += fTimeDelta;
 
-	m_fSizeX *= 1.03f; // 1.1f > 1.09
-	m_fSizeY *= 1.03f;
+	m_fSizeX *= 1.1f; // 1.1
+	m_fSizeY *= 1.1f;
 	Setting_Position();
 
-	if (0.1f <= m_fDeadTimer)
-	{
-		if (!m_isRenderAnimFinished)
-			Render_Animation(fTimeDelta, 10.f);// 6 >> 14
-		else
-			m_isDead = true;
-	}
+	//if (0.1f <= m_fDeadTimer) // 이 부분도 수정이 들어가야 함
+	//{
+	//	if (!m_isRenderAnimFinished)
+	//		Render_Animation(fTimeDelta, 10.f);// 10
+	//	else
+	//		m_isDead = true;
+	//}
+
+	if (!m_isRenderAnimFinished)
+		Render_Animation(fTimeDelta, 600.f);// 10
+	else
+		m_isDead = true;
 }
 
 void CUI_QTE_Particle::Late_Tick(_float fTimeDelta)

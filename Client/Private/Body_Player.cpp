@@ -76,7 +76,27 @@ void CBody_Player::Tick(_float fTimeDelta)
 	}
 
 	*m_pCanCombo = false;
-	if (*m_pState == CPlayer::STATE_IDLE)
+	if (*m_pState == CPlayer::STATE_KNOCKBACK)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 31;
+		fAnimSpeed = 1.f;
+		m_pModelCom->Set_LerpTime(1.3);
+	}
+	else if (*m_pState == CPlayer::STATE_SLOWHIT)
+	{
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_float4 ParticlePos = { m_WorldMatrix._41,m_WorldMatrix._42 + 1.f,m_WorldMatrix._43,1.f };
+
+			EFFECTMGR->Generate_Particle(11, ParticlePos);
+		}
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 13;
+		fAnimSpeed = 0.1f;
+		m_pModelCom->Set_LerpTime(1.2);
+	}
+	else if (*m_pState == CPlayer::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
@@ -160,7 +180,6 @@ void CBody_Player::Tick(_float fTimeDelta)
 			_float4 ParticlePos = { m_WorldMatrix._41,m_WorldMatrix._42 + 1.f,m_WorldMatrix._43,1.f };
 
 			EFFECTMGR->Generate_Particle(11, ParticlePos);
-
 		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 13;

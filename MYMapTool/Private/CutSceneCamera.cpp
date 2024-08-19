@@ -36,21 +36,26 @@ void CCutSceneCamera::Priority_Tick(_float fTimeDelta)
 }
 void CCutSceneCamera::Tick(_float fTimeDelta)
 {
-    if (m_KeyFrames.empty())
+    if (m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
         return;
-    if (m_bAnimationFinished)
+
+    vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[m_iCurrentCutSceneIdx];
+
+    if (currentCutScene.empty())
+        return;
+
+    if (m_bAnimationFinished || m_bPaused)
     {
-        //Test
-        m_pGameInstance->Erase(this);
+        m_pGameInstance->Set_MainCamera(0);
         return;
     }
 
     if (!m_bPaused)
     {
-        if (m_iCurrentKeyFrame + 1 < m_KeyFrames.size())
+        if (m_iCurrentKeyFrame + 1 < currentCutScene.size())
         {
-            CameraKeyFrame& currentKeyFrame = m_KeyFrames[m_iCurrentKeyFrame];
-            CameraKeyFrame& nextKeyFrame = m_KeyFrames[m_iCurrentKeyFrame + 1];
+            CameraKeyFrame& currentKeyFrame = currentCutScene[m_iCurrentKeyFrame];
+            CameraKeyFrame& nextKeyFrame = currentCutScene[m_iCurrentKeyFrame + 1];
             float t = m_fKeyFrameTime / (nextKeyFrame.fTime - currentKeyFrame.fTime);
 
             // 현재 키프레임 구간에서의 속도 변화 확인 및 적용
@@ -97,7 +102,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             _float fLerpedFovy = XMConvertToRadians(XMConvertToDegrees(currentKeyFrame.fFovy) + (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t);
             _float fLerpedNear = currentKeyFrame.fNear + (nextKeyFrame.fNear - currentKeyFrame.fNear) * t;
             _float fLerpedFar = currentKeyFrame.fFar + (nextKeyFrame.fFar - currentKeyFrame.fFar) * t;
-            // Set_Fovy(fLerpedFovy);
+            Set_Fovy(fLerpedFovy);
             // Set_Near(fLerpedNear);
             // Set_Far(fLerpedFar);
         }
@@ -109,7 +114,6 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
     __super::Tick(fTimeDelta);
 }
-
 void CCutSceneCamera::Late_Tick(_float fTimeDelta)
 {
     Key_Input(fTimeDelta);
@@ -168,6 +172,58 @@ void CCutSceneCamera::HeightChange(_float fTimeDelta)
     vEye.y = vAt.y + m_fHeight;
 }
 
+float CCutSceneCamera::Get_AnimationProgress() const
+{
+    if (m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
+        return 0.0f;
+
+    const vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[m_iCurrentCutSceneIdx];
+
+    if (currentCutScene.empty())
+        return 0.0f;
+
+    if (m_bAnimationFinished)
+        return 1.0f;
+
+    if (m_iCurrentKeyFrame >= currentCutScene.size() - 1)
+        return 1.0f;
+
+    float totalDuration = currentCutScene.back().fTime - currentCutScene.front().fTime;
+    float currentTime = currentCutScene[m_iCurrentKeyFrame].fTime + m_fKeyFrameTime;
+
+    return (currentTime - currentCutScene.front().fTime) / totalDuration;
+}
+
+const vector<CCutSceneCamera::CameraKeyFrame>& CCutSceneCamera::Get_CutScene(_uint iIndex) const
+{
+    if (iIndex >= m_AllCutScenes.size())
+    {
+        // 잘못된 인덱스에 대한 예외 처리
+        static vector<CameraKeyFrame> emptyKeyFrames;
+        return emptyKeyFrames;
+    }
+    return m_AllCutScenes[iIndex];
+}
+
+void CCutSceneCamera::Set_CutScene(_uint iIndex, const vector<CameraKeyFrame>& keyFrames)
+{
+    if (iIndex >= m_AllCutScenes.size())
+    {
+        // 잘못된 인덱스에 대한 예외 처리
+        return;
+    }
+    m_AllCutScenes[iIndex] = keyFrames;
+}
+
+void CCutSceneCamera::Clear_CutScenes()
+{
+    m_AllCutScenes.clear();
+    m_iCurrentCutSceneIdx = 0;
+    m_iCurrentKeyFrame = 0;
+    m_fKeyFrameTime = 0.0f;
+    m_bAnimationFinished = true;
+    m_bPaused = true;
+}
 
 CCutSceneCamera* CCutSceneCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -54,13 +54,6 @@ public:
 	_int	Get_TerrainX() { return m_iTerrainX; }
 	_int	Get_TerrainZ() { return m_iTerrainZ; }
 
-	_bool	Get_IsNaviMode() { return m_IsNaviMode; }
-	_bool	Get_IsNaviClear() { return m_IsNaviClear; }
-	void	Set_IsNaviClear() { m_IsNaviClear = false; }
-
-	_bool	Get_IsNaviDelete() { return m_isNaviDelete; }
-	void	Set_IsNaviDelete() { m_isNaviDelete = false; }
-
 	_float Get_TrapTimeOffset() { return m_fTrapTimeOffset; }
 	_bool isAnimModel() { return m_bIsAnimModel; }
 	_bool isDecoObject() { return m_bIsDecoObject; }
@@ -131,6 +124,9 @@ private:
 	void Shadow_Editor();
 
 	void Camera_Editor();
+	void Save_CameraKeyFrames();
+	void Load_CameraKeyFrames();
+
 	void Battle_Camera_Editor();
 
 	void Terrain_Editor();
@@ -175,9 +171,8 @@ private:
 
 	_bool	m_IsTerrainReLoad = { false };
 
-	_bool	m_IsNaviMode = { false };
-	_bool	m_IsNaviClear = { false };
-	_bool	m_isNaviDelete = { false };
+	bool m_bEditingCutScene = false;
+	_uint m_iEditingCutSceneIdx = 0;
 
 private:
 	_bool m_bAddToolObj = false;
@@ -244,10 +239,15 @@ private:
 	_float m_fGlobalWindFrequency = 1.f;
 
 	_int m_iSkyBoxIdx = 0;
+
+//FOR CINE CAMERA TOOL
 private:
 	vector<CCamera::CameraKeyFrame>	m_vCameraKeyFrames;
 	_float m_fKeyFrameTime = 0.f;
 	_int m_iSelectedKeyFrame = 0;
+
+	vector<string> m_keyFrameNames;
+
 
 private:
 	_float4 m_GlobalColor = { 1.f, 1.f, 1.f, 1.f };

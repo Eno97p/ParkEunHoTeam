@@ -25,6 +25,8 @@ HRESULT CBody_Andras::Initialize(void* pArg)
 {
 	BODY_ANDRAS_DESC* pDesc = (BODY_ANDRAS_DESC*)pArg;
 	m_bSprint = pDesc->bSprint;
+	m_bKick = pDesc->bKick;
+	m_bSlash = pDesc->bSlash;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -194,6 +196,10 @@ void CBody_Andras::Tick(_float fTimeDelta)
 	}
 	else if (*m_pState == CAndras::STATE_GROUNDATTACK)
 	{
+		if (m_pModelCom->Check_CurDuration(0.63f))
+		{
+			*m_bSlash = true;
+		}
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 23;
 		fAnimSpeed = 1.f;
@@ -208,6 +214,10 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 19 && m_pModelCom->Check_CurDuration(0.4f))
 		{
 			*m_bSprint = true;
+		}
+		if (m_iPastAnimIndex == 19 && m_pModelCom->Check_CurDuration(0.9f))
+		{
+			*m_bKick = true;
 		}
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.3);

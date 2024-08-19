@@ -19,6 +19,11 @@ public:
 		_float4			vStartPos;
 		_float3			vTopCol = { 1.f, 0.f, 0.f };
 		_float3			vBotCol = {0.f, 0.f, 0.f};
+
+		~GRASS_DESC()
+		{
+			MAP_ELEMENT_DESC::Cleanup();
+		}
 	}GRASS_DESC;
 private:
 	CGrass(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -40,7 +45,6 @@ public:
 
 	vector<_float4x4*> Get_VtxMatrices();
 private:
-	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CTexture* m_pNormalCom = { nullptr };
 	CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };

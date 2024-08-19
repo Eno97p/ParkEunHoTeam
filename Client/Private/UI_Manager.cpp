@@ -20,6 +20,7 @@
 #include "UIGroup_Setting.h"
 #include "UIGroup_Ch_Upgrade.h"
 #include "UIGroup_BuffTimer.h"
+#include "UIGroup_Level.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -370,7 +371,7 @@ void CUI_Manager::Delete_FadeInOut(_bool isFadeIn)
 
 _bool CUI_Manager::Get_isFadeAnimEnd(_bool isFadeIn)
 {
-	if (isFadeIn) // 여기? 무조건 false 반환하나본데?
+	if (isFadeIn)
 	{
 		if (nullptr == m_pFadeIn)
 			return false;
@@ -396,22 +397,16 @@ HRESULT CUI_Manager::Create_RedDot_MenuBtn(_bool isInv)
 	return S_OK;
 }
 
-HRESULT CUI_Manager::Delete_RedDot_MenuBtn()
+HRESULT CUI_Manager::Delete_RedDot_MenuBtn(_bool isInv)
 {
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
-	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn_Inv();
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Delete_RedDot_MenuBtn(isInv);
 
 	return S_OK;
 }
 
-HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
+HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx, _bool isSkill)
 {
-	// Inv인 경우에는 Inventory Page와 Quick의 Inv Slot에다가 추가해주어야 하고
-	// 아닌 경우에는 Weapon에 넣어주어야 할 것이다
-	// Slot의 경우에는 Menu Btn과 다르게 몇 번째 Slot인가에 대한 정보도 가지고 있어야 하기 때문에
-	// (Weapon의 경우에는 Weapon인지 Skill인지 까지 필요함)
-	// 인자로 해당 슬롯의 인덱스에 대한 값을 넣어주어야 할 것임 !!
-
 	if (isInv)
 	{
 		// Inventory
@@ -424,9 +419,17 @@ HRESULT CUI_Manager::Create_RedDot_Slot(_bool isInv, _uint iSlotIdx)
 	}
 	else
 	{
+		map<string, CUIGroup*>::iterator weapon = m_mapUIGroup.find("Weapon");
 
+		if (!isSkill) // Weapon인 경우
+		{
+			dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Create_RedDot(iSlotIdx);
+		}
+		else // Skill인 경우
+		{
+			dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Create_RedDot(iSlotIdx, true);
+		}
 	}
-
 	return S_OK;
 }
 
@@ -441,10 +444,6 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 		// Quick
 		map<string, CUIGroup*>::iterator quickaccess = m_mapUIGroup.find("Quick");
 		dynamic_cast<CUIGroup_Quick*>((*quickaccess).second)->Delete_RedDot();
-	}
-	else
-	{
-
 	}
 
 	return S_OK;
@@ -461,6 +460,35 @@ void CUI_Manager::Create_QTE()
 	}
 
 	m_pQTE = dynamic_cast<CQTE*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTE"), &pQteDesc));
+}
+
+_bool CUI_Manager::Delete_QTE()
+{
+	_bool isSuccess = m_pQTE->Check_ResultScore();
+
+	Safe_Release(m_pQTE);
+	m_pQTE = nullptr;
+
+	return isSuccess;
+}
+
+void CUI_Manager::Create_LevelUI()
+{
+	if (m_mapUIGroup.find("Level") != m_mapUIGroup.end()) // 값이 있으면
+	{
+		// 기존에 map에 값이 있다면 없애고 생성!
+		if ((*m_mapUIGroup.find("Level")).second != nullptr)
+		{
+			Safe_Release((*m_mapUIGroup.find("Level")).second);
+			((*m_mapUIGroup.find("Level")).second) = nullptr;
+		}
+	}
+
+	// UI Level을 생성
+	CUIGroup::UIGROUP_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_mapUIGroup.emplace("Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc)));
 }
 
 void CUI_Manager::Key_Input()
@@ -513,7 +541,18 @@ void CUI_Manager::Key_Input()
 				{
 					// weapon의 sub도 활성화 되어있지 않을 때 예외 처리 필요
 					if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Get_EquipMode())
+					{
 						(*weapon).second->Set_RenderOnAnim(false);
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Reset_Tab(); // Tab 상태 초기화
+
+						// Skill에 RedDot이 하나라도 있는 게 아니라면 Menu Btn의 RedDot 제거
+						if (!dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Check_RedDot())
+						{
+							CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn(false);
+						}
+
+						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Delete_RedDot();
+					}
 					else
 						dynamic_cast<CUIGroup_Weapon*>((*weapon).second)->Set_EquipMode(false);
 				}
@@ -591,7 +630,7 @@ void CUI_Manager::Key_Input()
 					m_pGameInstance->Get_MainCamera()->Activate();
 
 					// MenuBtn도 사라져야죵
-					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn();
+					CUI_Manager::GetInstance()->Delete_RedDot_MenuBtn(true);
 					CUI_Manager::GetInstance()->Delete_RedDot_Slot(true); // UI Inventory의 RedDot 제거
 				}
 				else // 꺼져있을 때 > 켜지게

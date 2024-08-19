@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "UI_RedDot.h"
+
 CUI_ItemIcon::CUI_ItemIcon(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
 {
@@ -48,11 +50,17 @@ void CUI_ItemIcon::Tick(_float fTimeDelta)
 {
 	if (!m_isRenderAnimFinished)
 		Render_Animation(fTimeDelta);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Tick(fTimeDelta);
 }
 
 void CUI_ItemIcon::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
+
+	if (nullptr != m_pRedDot)
+		m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_ItemIcon::Render()
@@ -86,6 +94,34 @@ void CUI_ItemIcon::Update_Pos(_float fX, _float fY)
 	m_fX = fX;
 	m_fY = fY;
 	Setting_Position();
+}
+
+HRESULT CUI_ItemIcon::Create_RedDot()
+{
+	if (nullptr != m_pRedDot)
+		return S_OK;
+
+	CUI_RedDot::UI_REDDOT_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.eUISort = static_cast<UISORT_PRIORITY>(m_eUISort + 2);
+	pDesc.fX = m_fX + 25.f;
+	pDesc.fY = m_fY - 25.f;
+	pDesc.fSizeX = 15.f;
+	pDesc.fSizeY = 15.f;
+
+	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
+	if (nullptr == m_pRedDot)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_ItemIcon::Delete_RedDot()
+{
+	Safe_Release(m_pRedDot);
+	m_pRedDot = nullptr;
+
+	return S_OK;
 }
 
 HRESULT CUI_ItemIcon::Add_Components()
@@ -154,4 +190,6 @@ CGameObject* CUI_ItemIcon::Clone(void* pArg)
 void CUI_ItemIcon::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pRedDot);
 }

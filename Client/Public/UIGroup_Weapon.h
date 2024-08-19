@@ -40,7 +40,12 @@ public:
 	
 	void			Update_Slot_EquipSign(_bool isEquip, _uint iSlotIdx = 0);
 	
+	void			Reset_Tab();
+	
+	HRESULT			Create_RedDot(_uint iSlotIdx, _bool isSkill = false);
+	HRESULT			Delete_RedDot();
 
+	_bool			Check_RedDot();
 
 private:
 	_bool						m_isEquipMode = { false }; // 장착 활성화 여부

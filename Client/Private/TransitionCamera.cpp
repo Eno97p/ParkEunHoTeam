@@ -1,5 +1,6 @@
 #include "TransitionCamera.h"
 #include "GameInstance.h"
+#include "CutSceneCamera.h"
 
 CTransitionCamera::CTransitionCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
@@ -26,7 +27,7 @@ HRESULT CTransitionCamera::Initialize(void* pArg)
     m_iEndCam = desc->iEndCam;
     m_fTotalTransitionTime = desc->fTransitionTime;
 
-    m_fTransitionTime = 0.0f;
+    m_fTransitionTime = 0.01f;
 
     return S_OK;
 }
@@ -54,7 +55,12 @@ void CTransitionCamera::Tick(_float fTimeDelta)
     if (t >= 1.0f)
     {
         m_bTransitionFinished = true;
+        if ((CAMERA_INDEX)m_iEndCam == CAM_CUTSCENE)
+        {
+            dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Play_CutScene();
+        }
         m_pGameInstance->Set_MainCamera(m_iEndCam);
+
         m_pGameInstance->Erase(this);
     }
     else

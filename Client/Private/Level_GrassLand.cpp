@@ -8,6 +8,7 @@
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
 #include "TransitionCamera.h"
+#include "CutSceneCamera.h"
 
 #include "Map_Element.h"
 #include "Monster.h"
@@ -302,6 +303,43 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
 
+	 CCutSceneCamera::CUTSCENECAMERA_DESC pCSCdesc = {};
+
+
+	 pCSCdesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pCSCdesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
+	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pCSCdesc.fNear = 0.1f;
+	 pCSCdesc.fFar = 3000.f;
+
+	 pCSCdesc.fSpeedPerSec = 40.f;
+	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_CutSceneCamera"), &pCSCdesc)))
+		 return E_FAIL;
+
+	 CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
+
+	 pSVCDesc.fSensor = 0.1f;
+
+	 pSVCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pSVCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pSVCDesc.fFovy = XMConvertToRadians(60.f);
+	 pSVCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pSVCDesc.fNear = 0.1f;
+	 pSVCDesc.fFar = 3000.f;
+
+	 pSVCDesc.fSpeedPerSec = 40.f;
+	 pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	 pSVCDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
+		 return E_FAIL;
+
+	 m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+
 	return S_OK;
 }
 
@@ -322,85 +360,43 @@ HRESULT CLevel_GrassLand::Ready_Layer_Effect(const wstring & strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring & strLayerTag)
+HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
 		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
 		return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Cloud"), TEXT("Prototype_GameObject_Cloud"))))
 		return E_FAIL;
 
-	CMap_Element::MAP_ELEMENT_DESC desc{};
-	desc.mWorldMatrix = {};
+	{
+		CMap_Element::MAP_ELEMENT_DESC desc{};
+		XMMATRIX matWorld = XMMatrixScaling(500.f, 1.f, 500.f) * XMMatrixTranslation(-41.f, 300.f, -80.565f);
+		XMStoreFloat4x4(&desc.mWorldMatrix, matWorld);
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Lagoon"), TEXT("Prototype_GameObject_Lagoon"), &desc)))
+			return E_FAIL;
+	}
 
-	_matrix vMat = {500.f, 0.f, 0.f, 0.f,
-	0.f, 1.f, 0.f, 0.f,
-	0.f, 0.f, 500.f, 0.f,
-	-41.f, 300.f, -80.565f, 1.f };
+	struct CardInfo {
+		XMMATRIX matWorld;
+		int iTexNum;
+	};
 
-	XMStoreFloat4x4(&desc.mWorldMatrix, vMat);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Lagoon"), TEXT("Prototype_GameObject_Lagoon"), &desc)))
-		return E_FAIL;
+	const CardInfo cardInfos[] = {
+		{ XMMatrixScaling(1427.475f, 1000.f, 2009.57f) * XMMatrixRotationY(XMConvertToRadians(-22.067f)) * XMMatrixTranslation(-3342.f, 695.f, -1722.f), 0 },
+		{ XMMatrixScaling(1977.f, 2000.f, 3478.f) * XMMatrixRotationY(XMConvertToRadians(41.334f)) * XMMatrixTranslation(-3304.f, 1157.f, 2678.f), 1 },
+		{ XMMatrixScaling(1143.863f, 1500.f, 2773.897f) * XMMatrixRotationY(XMConvertToRadians(-50.455f)) * XMMatrixTranslation(3609.f, 783.378f, -706.441f), 2 },
+		{ XMMatrixScaling(3495.291f, 2000.f, 2996.f) * XMMatrixRotationY(XMConvertToRadians(-3.089f)) * XMMatrixTranslation(1349.754f, 1881.764f, 4170.497f), 0 }
+	};
 
-
-	CBackGround_Card::CARD_DESC CardDesc{};
-	CardDesc.mWorldMatrix = {};
-
-	vMat = { 1427.475f, 0.f, -2009.57, 0.f,
-	0.f, 1000.f, 0.f, 0.f,
-	815.468f, 0.f, 579.258f, 0.f,
-	-3342.f, 695.f, -1722.f, 1.f };
-
-	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
-	CardDesc.iTexNum = 0;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CardDesc, sizeof(CardDesc));
-	vMat = { -1977.f, 0.f, -3478.f, 0.f,
-   0.f, 2000.f, 0.f, 0.f,
-   1739.f, 0.f, -988.f, 0.f,
-  -3304.f, 1157.f, 2678.f, 1.f };
-	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
-	CardDesc.iTexNum = 1;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
-		return E_FAIL;
-
-	CardDesc.mWorldMatrix = {};
-	vMat = { 1143.863f, 0.f, 2773.897f, 0.f,
-	   0.f, 1500.f, 0.f, 0.f,
-	   -1386.976f, 0.f, 571.943f, 0.f,
-	   3609.f, 783.378f, -706.441f, 1.f };
-	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
-	CardDesc.iTexNum = 2;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
-		return E_FAIL;
-
-	ZeroMemory(&CardDesc, sizeof(CardDesc));
-	vMat = { 3495.291f, 0.f, -188.991f, 0.f,
-		0.f, 2000.f, 0.f, 0.f,
-		161.997f, 0.f, 2996.f, 0.f,
-		1349.754f, 1881.764f, 4170.497f, 1.f };
-	XMStoreFloat4x4(&CardDesc.mWorldMatrix, vMat);
-	CardDesc.iTexNum = 0;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &CardDesc)))
-		return E_FAIL;
-	//CMap_Element::MAP_ELEMENT_DESC desc{};
-	//XMStoreFloat4x4(&desc.mWorldMatrix,  XMMatrixIdentity());
-	//desc.mWorldMatrix.m[3][1] = 100.f;
-	//desc.mWorldMatrix.m[0][0] = 300.f;
-	//desc.mWorldMatrix.m[1][1] = 300.f;
-	//desc.mWorldMatrix.m[2][2] = 300.f;
-
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Lagoon"), &desc)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_ForkLift"))))
-	//	return E_FAIL;
+	for (const auto& cardInfo : cardInfos)
+	{
+		CBackGround_Card::CARD_DESC desc;
+		XMStoreFloat4x4(&desc.mWorldMatrix, cardInfo.matWorld);
+		desc.iTexNum = cardInfo.iTexNum;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_BackGround_Card"), &desc)))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -434,6 +430,10 @@ HRESULT CLevel_GrassLand::Ready_LandObjects()
 	//}
 
 
+
+	//Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Yaak"))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -503,38 +503,43 @@ HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandO
 
 HRESULT CLevel_GrassLand::Ready_Grass(const wstring& strLayerTag)
 {
-	CGrass::GRASS_DESC		GrassDesc{};
+	struct GrassInfo {
+		int iInstanceCount;
+		XMFLOAT3 vTopCol;
+		XMFLOAT3 vBotCol;
+		const wchar_t* wstrModelName;
+	};
 
-	GrassDesc.iInstanceCount = 500000;
-	GrassDesc.vTopCol = {245.f / 255.f  , 1.f , 168.f / 255.f };
-	GrassDesc.vBotCol = { 179.f / 255.f  , 193.f / 255.f , 82.f / 255.f };
-	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TF");
+	const GrassInfo grassInfos[] = {
+		{ 500000, {245.f / 255.f, 1.f, 168.f / 255.f}, {179.f / 255.f, 193.f / 255.f, 82.f / 255.f}, L"Prototype_Component_Texture_Grass_TF" },
+		{ 500000, {235.f / 255.f, 1.f, 200.f / 255.f}, {190.f / 255.f, 200.f / 255.f, 130.f / 255.f}, L"Prototype_Component_Texture_Grass_TF" },
+		{ 300000, {245.f / 255.f, 1.f, 168.f / 255.f}, {179.f / 255.f, 193.f / 255.f, 82.f / 255.f}, L"Prototype_Component_Texture_Grass_TT" }
+	};
 
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
-		return E_FAIL;
+	for (const auto& info : grassInfos)
+	{
+		CGrass::GRASS_DESC GrassDesc;
+		GrassDesc.iInstanceCount = info.iInstanceCount;
+		GrassDesc.vTopCol = info.vTopCol;
+		GrassDesc.vBotCol = info.vBotCol;
+		GrassDesc.wstrModelName = info.wstrModelName;
 
-	ZeroMemory(&GrassDesc, sizeof(GrassDesc));
+		HRESULT hr = m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc);
 
-	GrassDesc.iInstanceCount = 500000;
-	GrassDesc.vTopCol = { 235.f / 255.f  , 1.f , 200.f / 255.f };
-	GrassDesc.vBotCol = { 190.f / 255.f  , 200.f / 255.f , 130.f / 255.f };
-	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TF");
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
-		return E_FAIL;
+		if (FAILED(hr))
+		{
+			// Cleanup을 호출하여 메모리 해제
+			GrassDesc.Cleanup();
+			return E_FAIL;
+		}
 
-	ZeroMemory(&GrassDesc, sizeof(GrassDesc));
-
-	GrassDesc.iInstanceCount = 300000;
-	GrassDesc.vTopCol = { 245.f / 255.f  , 1.f , 168.f / 255.f };
-	GrassDesc.vBotCol = { 179.f / 255.f  , 193.f / 255.f , 82.f / 255.f };
-	GrassDesc.wstrModelName = TEXT("Prototype_Component_Texture_Grass_TT");
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Grass"), &GrassDesc)))
-		return E_FAIL;
+		// Add_CloneObject 함수가 GrassDesc의 내용을 복사했다고 가정합니다.
+		// 따라서 여기서 WorldMats를 비워줍니다.
+		GrassDesc.WorldMats.clear();
+	}
 
 	return S_OK;
 }
-
 HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 {
 	HANDLE hFile = CreateFile(pFilePath, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);

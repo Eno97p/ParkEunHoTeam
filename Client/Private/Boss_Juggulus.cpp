@@ -179,7 +179,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
-	m_vInitialPos = { -450.f , 56.f , -5.f, 1.f };
+	m_vInitialPos = { -450.f , 56.f , -3.f, 1.f };
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
 	PhysXDesc.fJumpSpeed = 10.f;
@@ -506,18 +506,18 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 
 NodeStates CBoss_Juggulus::CreateHammer(_float fTimeDelta)
 {
-	if (!m_isHammerCreate && m_iState == STATE_CREATE_HAMMER)
+	if (m_iState == STATE_CREATE_HAMMER)
 	{
-		m_fHammerCreationDelay -= fTimeDelta;
-		if (m_fHammerCreationDelay < 0.f && m_fHammerCreationDelay > -1.f)
+		if (!m_isHammerCreate)
 		{
 			Create_Hammer();
-			m_fHammerCreationDelay = -1.1f;
+			m_isHammerCreate = true;
 		}
+
 		if (m_isAnimFinished)
 		{
 			m_ePhase = PHASE_TWO;
-			m_isHammerCreate = true;
+			m_iState = STATE_IDLE_SEC;
 		}
 		return RUNNING;
 	}
@@ -611,7 +611,6 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		m_iState = STATE_TORNADO_ATTACK;
 		break;
 	}
-	m_iState = STATE_FLAME_ATTACK;
 	return SUCCESS;
 }
 

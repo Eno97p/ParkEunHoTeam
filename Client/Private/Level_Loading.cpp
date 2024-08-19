@@ -38,6 +38,18 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 {
 	m_eNextLevel = eNextLevel;
 	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
+	
+	
+
+	//m_Engine_iLevelIndex = eNextLevel;
+
+	//LEVEL  NowPlayLevel =(LEVEL)m_pGameInstance->Get_CurrentLevelIndex();
+
+	//if (NowPlayLevel == eNextLevel)			//들어온 레벨이 현재 진행중인 레벨과 같을 때만 삭제	
+	//{
+	//	m_pGameInstance->Delete_CurrentLevel();
+	//}
+
 
 	/* 로딩씬에 뭔가를 보여주려한다면 그 보여주기위한 객체들을 생성한다. (백그라운드 + 로딩바 + 폰트) */
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
@@ -48,6 +60,18 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 	
+
+
+	//if (NowPlayLevel == eNextLevel)		//들어온 레벨이 현재 진행중인 레벨과 같을 때만 다시 로딩 레벨 세팅
+	//{
+
+	//	return  m_pGameInstance->Set_CurrentLevel(LEVEL_LOADING, this);
+	//}
+
+
+
+
+
 	if (g_IsThreadFinish)
 		int test = 0;
 	return S_OK;

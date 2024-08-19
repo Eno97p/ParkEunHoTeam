@@ -21,6 +21,7 @@
 #include "NeedleSpawner.h"
 #include "GroundSlash.h"
 #include "HammerSpawn.h"
+#include "HexaShield.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -185,6 +186,11 @@ private:
 	void HammerSpawn_Tool(_bool* Open);
 	HRESULT Save_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
 	HRESULT Load_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer);
+
+private:
+	void Shield_Tool(_bool* Open);
+	HRESULT Save_Shield(CHexaShield::HEXASHIELD* pShield);
+	HRESULT Load_Shield(CHexaShield::HEXASHIELD* pShield);
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -243,7 +249,7 @@ private:
 	vector<string> ModelName;
 	_int CurModel = 0;
 
-	_bool bShow[20];
+	_bool bShow[25];
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

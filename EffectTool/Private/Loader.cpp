@@ -82,6 +82,8 @@
 #include "GroundSlash.h"
 
 #include "HammerSpawn.h"
+#include "HexaShield.h"
+#include "HexaHit.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -488,6 +490,15 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/GroundSlash/GroundSlash2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_HexaShield"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HexaShield/HexaShield.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_HexaShield_MK2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HexaShield/HexaShield_Mk3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 #pragma region SHADER
@@ -780,6 +791,13 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HammerSpawn"),
 		CHammerSpawn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HexaShield"),
+		CHexaShield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HexaHit"),
+		CHexaHit::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

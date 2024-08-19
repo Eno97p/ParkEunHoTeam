@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Render() override;
 
 	HRESULT	Create_RedDot_MenuBtn(_bool isInv);
-	HRESULT	Delete_RedDot_MenuBtn_Inv();
+	HRESULT	Delete_RedDot_MenuBtn(_bool isInv);
 
 private:
 	_bool					m_isMenuPageOpen;

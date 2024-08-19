@@ -1031,32 +1031,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 #pragma endregion DECAL
 
 
-#pragma region Npc
-	// Npc Rlya
-	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Rlya"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Myosis/NPC_Rlya.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// Npc Valnir
-	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Valnir"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Valnir/Valnir.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// Npc Choron
-	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Choron"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Choron/Choron.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	// Npc Yaak
-	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Npc_Yaak"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Yaak/Yaak.fbx", PreTransformMatrix))))
-		return E_FAIL;
-#pragma endregion Npc
-
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Fragile_Rock"),
@@ -1786,11 +1760,21 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 
 #pragma endregion DECAL
 
+
 #pragma region Npc
+	// Npc Rlya
 	PreTransformMatrix = XMMatrixScaling(0.03f, 0.03f, 0.03f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Npc_Rlya"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Myosis/NPC_Rlya.fbx", PreTransformMatrix))))
 		return E_FAIL;
+
+	// Npc Valnir
+	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_Npc_Valnir"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Valnir/Valnir.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 #pragma endregion Npc
 
 
@@ -1956,6 +1940,17 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.png"), 16))))
 		return E_FAIL;
 
+	_matrix		PreTransformMatrix;
+
+#pragma region Npc
+
+	// Npc Choron
+	PreTransformMatrix = XMMatrixScaling(0.015f, 0.015f, 0.015f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_Npc_Choron"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Choron/Choron.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion Npc
 
 #pragma region  Environmental Element Model Load
 
@@ -1970,7 +1965,6 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	_matrix		PreTransformMatrix;
 
 	PreTransformMatrix = XMMatrixScaling(1.f, 1.f, 1.f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_SkySphere"),
@@ -3303,7 +3297,18 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Lagoon/Water/Foam/T_WaterFoam_N_%d.dds"), 2))))
 		return E_FAIL;
 
+	_matrix		PreTransformMatrix;
 
+#pragma region Npc
+
+
+	// Npc Yaak
+	PreTransformMatrix = XMMatrixScaling(0.02f, 0.02f, 0.02f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Npc_Yaak"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/NPC_Yaak/Yaak.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+#pragma endregion Npc
 #pragma region  Environmental Element Model Load
 
 	lstrcpy(m_szLoadingText, TEXT("환경 Element 로딩 중"));
@@ -3323,7 +3328,6 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	_matrix		PreTransformMatrix;
 
 	PreTransformMatrix = XMMatrixScaling(100.f, 100.f, 100.f);
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_SkySphere"),

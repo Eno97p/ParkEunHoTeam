@@ -41,18 +41,25 @@ public:
 
 private:
 	HRESULT Add_Components();
+	HRESULT Add_ChildEffect();
 	HRESULT Bind_ShaderResources();
 	HRESULT Bind_BloomResources();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	class CPlayer* m_pPlayer = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	shared_ptr<GROUNDSLASH>			m_OwnDesc;
+	vector<CGameObject*>			ChildEffects;
 	_float							m_fCurLifeTime = 0.f;
 	_float							m_fLifeTimeRatio = 0.f;
 	const _float4x4*				m_OwnMat = nullptr;
+	_bool							m_ParticleSpawn = false;
+
 
 public:
 	static CGroundSlash* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

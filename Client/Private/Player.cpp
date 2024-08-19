@@ -18,6 +18,7 @@
 
 #include "UI_FadeInOut.h"
 #include"CInitLoader.h"
+#include "HexaShield.h"
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -194,10 +195,25 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_Meteor(vStartPosition);
 		//EFFECTMGR->Generate_Needle(vStartPosition);
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
-		EFFECTMGR->Generate_HammerSpawn(vStartPosition);
-
+		HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}
 
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
+		}
+	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
+			HexaShieldText = nullptr;
+		}
+	}
 }
 
 HRESULT CPlayer::Render()
@@ -315,12 +331,19 @@ CGameObject* CPlayer::Get_Weapon()
 	return m_PartObjects[m_iCurWeapon + 1];
 }
 
-void CPlayer::PlayerHit(_float fValue)
+void CPlayer::PlayerHit(_float fValue, _bool bSlowHit)
 {
-	if (m_bParrying || m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
+	if (!bSlowHit && (m_bParrying || m_iState == STATE_ROLL || m_iState == STATE_DASH_FRONT || m_iState == STATE_DASH_BACK ||
 		m_iState == STATE_DASH_LEFT || m_iState == STATE_DASH_RIGHT || m_iState == STATE_SPECIALATTACK ||
-		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 || m_bParry) return;
-	m_iState = STATE_HIT;
+		m_iState == STATE_SPECIALATTACK2 || m_iState == STATE_SPECIALATTACK3 || m_iState == STATE_SPECIALATTACK4 || m_bParry)) return;
+	if (bSlowHit)
+	{
+		m_iState = STATE_SLOWHIT;
+	}
+	else
+	{
+		m_iState = STATE_HIT;
+	}
 	m_bLAttacking = false;
 	m_bRAttacking = false;
 	m_bIsRunAttack = false;
@@ -371,6 +394,7 @@ HRESULT CPlayer::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Top_Selector"), TEXT("Idle"), bind(&CPlayer::Idle, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Revive"), bind(&CPlayer::Revive, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CPlayer::Dead, this, std::placeholders::_1));
+	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Knockback"), bind(&CPlayer::Knockback, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CPlayer::Hit, this, std::placeholders::_1));
 
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Counter"), bind(&CPlayer::Counter, this, std::placeholders::_1));
@@ -568,6 +592,32 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 	}
 }
 
+NodeStates CPlayer::Knockback(_float fTimeDelta)
+{
+	if (m_iState == STATE_KNOCKBACK)
+	{
+		if (m_pPhysXCom->Get_IsJump())
+		{
+			m_pPhysXCom->Go_BackWard(fTimeDelta);
+		}
+		m_bIsCloaking = false;
+		if (m_bAnimFinished)
+		{
+			m_fFightIdle = 0.01f;
+			m_iState = STATE_FIGHTIDLE;
+			m_fLChargeAttack = false;
+			m_fRChargeAttack = false;
+			return SUCCESS;
+		}
+		else
+		{
+			return RUNNING;
+		}
+	}
+
+	return FAILURE;
+}
+
 NodeStates CPlayer::Hit(_float fTimeDelta)
 {
 	if (m_iState == STATE_COUNTER || m_bParry)
@@ -575,7 +625,7 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 		return COOLING;
 	}
 
-	if (m_iState == STATE_HIT)
+	if (m_iState == STATE_HIT || m_iState == STATE_SLOWHIT)
 	{
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
@@ -2399,6 +2449,20 @@ void CPlayer::Update_Weapon(wstring wstrTextureName)
 	{
 		m_iCurWeapon = WEAPON_ELISH;
 	}
+}
+
+void CPlayer::KnockBack(_vector vDir, _float fTimeDelta)
+{
+	_float3 fScale = m_pTransformCom->Get_Scaled();
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(vUp, vDir));
+	m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+	m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+	m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
+	m_iState = STATE_KNOCKBACK;
+	m_pPhysXCom->Go_Jump(fTimeDelta);
+	m_bIsLanded = false;
+	Knockback(fTimeDelta);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

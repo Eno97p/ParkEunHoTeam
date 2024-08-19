@@ -90,6 +90,12 @@ float g_fTexW = 1280.0f;
 float g_fTexH = 720.0f;
 int     g_BlurNum = 1;
 
+int g_TestBool;
+
+//HBAO
+texture2D g_HBAOTexture;
+
+
 static const float g_fWeight[13] =
 {
    0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989, 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044
@@ -222,6 +228,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
 
+
+    float hbao = g_HBAOTexture.Sample(LinearSampler, In.vTexcoord).r;
+
     // 노멀 벡터가 정상적으로 계산되고 있는지 확인
     if (length(vNormal.xyz) == 0)
         return Out;
@@ -231,7 +240,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float3 normal = normalize(vNormal.xyz);
     float3 lightAmbient = g_vLightAmbient * g_vMtrlAmbient;
     float3 lightDiffuse = g_vLightDiffuse * saturate(max(dot(-lightDir, normal), 0.f));
-    Out.vShade = float4(lightDiffuse + lightAmbient, 1.f);
+    Out.vShade = float4((lightDiffuse + lightAmbient) /** hbao*/, 1.f);
 
 
 
@@ -275,6 +284,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float kD = (1.f - kS) * (1.f - metallic);
 
     Out.vSpecular = kS * pow(max(dot(-vReflect, vLook), 0.f), 5.f);
+
+    Out.vSpecular *= hbao;
 
     return Out;
 }
@@ -653,6 +664,12 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
         vShadow.rgb = float3(0.f, 0.f, 0.f);
         vColor = lerp(vColor, (vShadow + vColor) * 0.5f, vShadow.a);
     }
+
+    float HBAO = g_HBAOTexture.Sample(LinearSampler, In.vTexcoord).r;
+
+    vColor *= HBAO;
+
+
     Out.vColor = vColor;
 
     /*  float2 lightScreenPos = CalculateScreenSpacePosition(g_vLightPos.xyz, Test_g_LightViewMatrix * Test_g_LightProjMatrix);
@@ -1392,9 +1409,12 @@ PS_OUT PS_REFLECTION(PS_IN In)
     vector vReflection = g_EffectTexture.Sample(LinearSampler, distortedCoord);
 
     // 프레넬 효과를 적용한 색상 블렌딩 (부드러운 전환)
-    float blendFactor = min(0.4f, saturate(fresnel * vMirror.b));
-    Out.vColor = lerp(vDiffuse, vReflection, blendFactor);
+    float blendFactor = min(0.1f, saturate(/*fresnel **/ vMirror.b));
+   // vReflection *= blendFactor;
 
+    vMirror.b *= vMirror.b;
+    Out.vColor = lerp(vDiffuse, vReflection, vMirror.b);
+    Out.vColor.a = 1.f;
     return Out;
 }
 

@@ -17,6 +17,7 @@ class CYantari final : public CMonster
 #define DETECTRANGE 20.f
 #define JUMPATTACKRANGE 15.f
 #define ATTACKRANGE 5.f
+#define NEEDLEDELAY 1.f
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
@@ -73,6 +74,7 @@ private:
 	_uint										m_iAttackCount = 0;
 	_bool										m_bCanCombo = false;
 	_float										m_fMoveTime = 2.f;
+	_float m_fNeedleDelay = 2.f;
 
 	_bool										m_bParryFirstHit = true;
 

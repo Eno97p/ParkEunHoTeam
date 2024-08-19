@@ -35,7 +35,7 @@ private:
 	_uint					m_iWeaponIdx = { 0 }; // Quick Access¿« Weapon Idx
 	_uint					m_iSkillIdx = { 0 }; // Quick Access¿« Skill Idx
 
-	vector<CUI*>			m_vecUI;
+	vector<class CUI*>			m_vecUI;
 	CUI_ItemIcon*			m_pWeaponSlot;
 	CUI_ItemIcon*			m_pSkillSlot;
 	CUI_ItemIcon*			m_pQuickSlot;

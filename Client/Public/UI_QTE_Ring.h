@@ -15,6 +15,7 @@ public:
 	enum RING_STATE { RS_PERFECT = 0, RS_GOOD, RS_BAD, RS_END };
 	typedef struct UI_Ring_Desc : public UI_DESC
 	{
+		_bool		isDuo;
 		RING_TYPE	eRingType;
 	}UI_RING_DESC;
 
@@ -43,6 +44,7 @@ public:
 private:
 	_bool			m_isEnd = { false };
 	_bool			m_isAnimOn = { false };
+	_float			m_fSpeed = { 0.f };
 
 	RING_TYPE		m_eRingType = { RING_END };
 	RING_STATE		m_eRingState = { RS_END };

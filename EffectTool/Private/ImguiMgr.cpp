@@ -365,6 +365,11 @@ void CImguiMgr::Visible_Data()
 	if (bShow[19] == true)
 		HammerSpawn_Tool(&bShow[19]);
 
+	ImGui::Checkbox("Shield_Tool", &bShow[20]);
+	if (bShow[20] == true)
+		Shield_Tool(&bShow[20]);
+	
+
 	if(ImGui::Button("Change_Camera"))
 		Change_Camera();
 
@@ -4246,6 +4251,118 @@ HRESULT CImguiMgr::Load_HammerSpawn(CHammerSpawn::HAMMERSPAWN* pHammer)
 		return E_FAIL;
 	}
 	inFile.read((char*)pHammer, sizeof(CHammerSpawn::HAMMERSPAWN));
+	inFile.close();
+	return S_OK;
+}
+
+void CImguiMgr::Shield_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Shield_Editor", Open);
+	static CHexaShield::HEXASHIELD Desc{};
+
+	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&Desc.vSize));
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.vOffset));
+	ImGui::InputFloat("UVSpeed", &Desc.fUVSpeed);
+	ImGui::InputFloat("RotationSpeed", &Desc.RotationSpeed);
+	ImGui::InputFloat("OpacitySpeed", &Desc.fOpacitySpeed);
+	ImGui::InputFloat("OpacityPower", &Desc.OpacityPower);
+	ImGui::InputFloat("LoopInterval", &Desc.LoopInterval);
+	ImGui::InputFloat("DesolveTime", &Desc.DesolveTime);
+	ImGui::InputFloat("HitTime", &Desc.HitTime);
+
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+	ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.fBloomColor));
+	ImGui::ColorEdit3("HitBloomColor", reinterpret_cast<float*>(&Desc.fBloomColor2));
+	ImGui::InputFloat("BloomPower", &Desc.fBloomPower);
+
+	if (ImGui::CollapsingHeader("Hit_Desc"))
+	{
+		ImGui::InputFloat3("Hit_Start_Size", reinterpret_cast<float*>(&Desc.HitDesc.vSize));
+		ImGui::InputFloat3("Hit_End_Size", reinterpret_cast<float*>(&Desc.HitDesc.vMaxSize));
+		ImGui::InputFloat3("Hit_Offset", reinterpret_cast<float*>(&Desc.HitDesc.vOffset));
+		ImGui::InputFloat("Hit_LifeTime", &Desc.HitDesc.fLifeTime);
+	}
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (TrailMat == nullptr)
+			MSG_BOX("행렬을 대입하세요");
+		else
+		{
+			Desc.ParentMatrix = TrailMat;
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Shield"), TEXT("Prototype_GameObject_HexaShield"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Shield"));
+	}
+
+	if (ImGui::Button("Hit", ButtonSize))
+	{
+		CGameObject* Shield = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Shield"));
+		if (Shield == nullptr)
+			MSG_BOX("먼저 생성을 해주세요");
+		else
+		{
+			static_cast<CHexaShield*>(Shield)->Set_Shield_Hit();
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Desolve", ButtonSize))
+	{
+		CGameObject* Shield = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Shield"));
+		if (Shield == nullptr)
+			MSG_BOX("먼저 생성을 해주세요");
+		else
+		{
+			static_cast<CHexaShield*>(Shield)->Set_Delete();
+		}
+	}
+
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_Shield(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_Shield(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_Shield(CHexaShield::HEXASHIELD* pShield)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HexaShield.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pShield, sizeof(CHexaShield::HEXASHIELD));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_Shield(CHexaShield::HEXASHIELD* pShield)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/HexaShield.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pShield, sizeof(CHexaShield::HEXASHIELD));
 	inFile.close();
 	return S_OK;
 }

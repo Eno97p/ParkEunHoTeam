@@ -27,6 +27,12 @@ xcopy			/y/s		.\Engine\DLL\Assimp\Release\*.*		.\Client\Bin\Release\
 xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\Client\Bin\
 xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\Client\Bin\Release\
 
+
+::HBAO
+xcopy			/y/s		.\Engine\DLL\HBAO\*.*				.\Client\Bin\
+xcopy			/y/s		.\Engine\DLL\HBAO\*.*				.\Client\Bin\Release\
+
+
 ::PhysX
 xcopy			/y/s		.\Engine\DLL\PhysX\Debug\*.*		.\Client\Bin\
 xcopy			/y/s		.\Engine\DLL\PhysX\Release\*.*		.\Client\Bin\Release\
@@ -55,6 +61,9 @@ xcopy			/y/s		.\Engine\DLL\Assimp\Release\*.*		.\AnimTool\Bin\
 ::FOMOD
 xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\AnimTool\Bin\
 
+::HBAO
+xcopy			/y/s		.\Engine\DLL\HBAO\*.*				.\AnimTool\Bin\
+
 ::PhysX
 xcopy			/y/s		.\Engine\DLL\PhysX\Debug\*.*		.\AnimTool\Bin\
 
@@ -81,6 +90,8 @@ xcopy			/y/s		.\Engine\DLL\Assimp\Release\*.*		.\EffectTool\Bin\
 
 ::FOMOD
 xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\EffectTool\Bin\
+::HBAO
+xcopy			/y/s		.\Engine\DLL\HBAO\*.*				.\EffectTool\Bin\
 
 ::PhysX
 xcopy			/y/s		.\Engine\DLL\PhysX\Debug\*.*		.\EffectTool\Bin\
@@ -110,6 +121,8 @@ xcopy			/y/s		.\Engine\DLL\Assimp\Release\*.*		.\MYMapTool\Bin\
 
 ::FOMOD_DLL
 xcopy			/y/s		.\Engine\DLL\FMOD\*.*				.\MYMapTool\Bin\
+::HBAO
+xcopy			/y/s		.\Engine\DLL\HBAO\*.*				.\MYMapTool\Bin\
 
 ::PhysX_DLL
 xcopy			/y/s		.\Engine\DLL\PhysX\Debug\*.*		.\MYMapTool\Bin\

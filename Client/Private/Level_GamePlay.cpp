@@ -5,6 +5,9 @@
 
 #include "FreeCamera.h"
 #include "ThirdPersonCamera.h"
+#include "CutSceneCamera.h"
+#include "SideViewCamera.h"
+
 #include "Map_Element.h"
 #include "Monster.h"
 
@@ -136,6 +139,9 @@ HRESULT CLevel_GamePlay::Initialize()
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
 
+
+	// UI Manaver로 UI Level 생성하기
+	CUI_Manager::GetInstance()->Create_LevelUI();
 	
 
 	return S_OK;
@@ -201,6 +207,12 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 			}
 		}
 	}*/
+
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_MainCamera())->Play_CutScene();
+	}
 
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
@@ -293,6 +305,45 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
+
+
+	 CCutSceneCamera::CUTSCENECAMERA_DESC pCSCdesc = {};
+
+
+	 pCSCdesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pCSCdesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
+	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pCSCdesc.fNear = 0.1f;
+	 pCSCdesc.fFar = 3000.f;
+
+	 pCSCdesc.fSpeedPerSec = 40.f;
+	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_CutSceneCamera"), &pCSCdesc)))
+		 return E_FAIL;
+
+
+	CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
+
+	pSVCDesc.fSensor = 0.1f;
+
+	pSVCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	pSVCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	pSVCDesc.fFovy = XMConvertToRadians(60.f);
+	pSVCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	pSVCDesc.fNear = 0.1f;
+	pSVCDesc.fFar = 3000.f;
+
+	pSVCDesc.fSpeedPerSec = 40.f;
+	pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	pSVCDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+	if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
+		return E_FAIL;
+
+	m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 
 	return S_OK;
 }
@@ -423,11 +474,11 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
-	landObjDesc.mWorldMatrix._41 = 167.f;
+	landObjDesc.mWorldMatrix._41 = 165.712f;
 	landObjDesc.mWorldMatrix._42 = 528.f;
-	landObjDesc.mWorldMatrix._43 = 98.f;
+	landObjDesc.mWorldMatrix._43 = 97.312f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Andras"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 - 5.f, landObjDesc.mWorldMatrix._43, 1.f };

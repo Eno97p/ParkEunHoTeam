@@ -113,6 +113,10 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
 	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
+
+	// UI Manaver로 UI Level 생성하기
+	//CUI_Manager::GetInstance()->Create_LevelUI();
+
 	return S_OK;
 }
 
@@ -330,6 +334,10 @@ HRESULT CLevel_Ackbar::Ready_LandObjects()
 
 	 //Npc
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"))))
+		return E_FAIL;
+
+	//Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Valnir"))))
 		return E_FAIL;
 
 

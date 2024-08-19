@@ -341,6 +341,8 @@ void CUIGroup_UpGPage::Calculate_UpgradeCost()
 		{
 			for(size_t j = 0; j < (*weapon)->Get_Value(); ++j)
 				(*item)->Apply_UseCount(i);
+
+			break;
 		}
 		else
 			++item;

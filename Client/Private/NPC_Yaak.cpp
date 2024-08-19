@@ -33,7 +33,13 @@ HRESULT CNPC_Yaak::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 521.f, 100.f, 1.f)); // Test
+	_matrix vMat = { 1, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			-6.245, 337.545f, 415.339f, 1.f };
+
+	m_pTransformCom->Set_WorldMatrix(vMat);
+
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;

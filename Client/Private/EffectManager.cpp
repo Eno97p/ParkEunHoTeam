@@ -95,7 +95,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_HammerSpawn");
 		return E_FAIL;
 	}
-
+	if (FAILED(Load_HexaShield()))
+	{
+		MSG_BOX("FAILED_Load_HexaShield");
+		return E_FAIL;
+	}
 	
 	return S_OK;
 }
@@ -143,7 +147,7 @@ HRESULT CEffectManager::Generate_SwordTrail(const _int iIndex, const _float4x4* 
 	return S_OK;
 }
 
-HRESULT CEffectManager::Generate_Particle(const _int iIndex,
+CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 	const _float4 vStartpos,
 	CGameObject* pTarget,
 	const _vector vAxis,
@@ -153,7 +157,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 	if (iIndex >= m_Particles.size())
 	{
 		MSG_BOX("인덱스 사이즈 초과, 파티클 생성 실패");
-		return S_OK;
+		return nullptr;
 	}
 
 	PARTICLETYPE eType = m_Particles[iIndex].first;
@@ -175,6 +179,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 			pPoint->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effect"), pPoint);
+		return pPoint;
 		break;
 	}
 	case Client::PART_MESH:
@@ -191,6 +196,7 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 			pMesh->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effect"), pMesh);
+		return pMesh;
 		break;
 	}
 	case Client::PART_RECT:
@@ -207,15 +213,16 @@ HRESULT CEffectManager::Generate_Particle(const _int iIndex,
 			pRect->AdJustLook(vLook);
 		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
 			TEXT("Layer_Effect"), pRect);
+		return pRect;
 		break;
 	}
 	case Client::PART_END:
-		return E_FAIL;
+		return nullptr;
 	default:
-		return E_FAIL;
+		return nullptr;
 	}
 
-	return S_OK;
+	return nullptr;
 }
 
 HRESULT CEffectManager::Generate_Distortion(const _int iIndex, const _float4 vStartpos)
@@ -367,6 +374,16 @@ HRESULT CEffectManager::Generate_HammerSpawn(const _float4 vStartPos)
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_HammerSpawn"), Desc);
 	return S_OK;
+}
+
+CGameObject* CEffectManager::Generate_HexaShield(const _float4x4* BindMat)
+{
+	CHexaShield::HEXASHIELD* Desc = m_HexaShield.get();
+	Desc->ParentMatrix = BindMat;
+
+	CGameObject* HexaShield = CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_HexaShield"), Desc);
+	CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Effect"), HexaShield);
+	return HexaShield;
 }
 
 
@@ -748,6 +765,23 @@ HRESULT CEffectManager::Load_HammerSpawn()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_HexaShield()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/HexaShield.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_HexaShield = make_shared<CHexaShield::HEXASHIELD>();
+	inFile.read((char*)m_HexaShield.get(), sizeof(CHexaShield::HEXASHIELD));
+	inFile.close();
+	m_HexaShield->ParentMatrix = nullptr;
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -913,6 +947,13 @@ HRESULT CEffectManager::Ready_GameObjects()
 
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HammerSpawn"),
 		CHammerSpawn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HexaShield"),
+		CHexaShield::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HexaHit"),
+		CHexaHit::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

@@ -37,6 +37,7 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	void Chase_Player(_float fTimeDelta);
+	void KickStop();
 
 public:
 	HRESULT Add_Components();
@@ -69,6 +70,8 @@ private:
 	_bool										m_bChasing = true;
 	_bool										m_bHit = false;
 	_bool m_bSprint = false;
+	_bool m_bKick = false;
+	_bool m_bSlash = false;
 	_bool	m_bTrigger = false;
 	_bool m_bDashBack = false;
 	_bool m_bLaser = false;
@@ -81,6 +84,7 @@ private:
 	_float										m_fTurnDelay = 0.5f;
 	_float m_fSpawnCoolTime = SPAWNCOOLTIME;
 	_float m_fKickSwordDelay = 0.5f;
+	_float m_fKickAttackDelay = 2.f;
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
 

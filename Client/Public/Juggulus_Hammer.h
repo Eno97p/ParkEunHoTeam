@@ -28,6 +28,8 @@ public:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+	_float m_fHammerDelay = 4.f;
+	_bool m_bSpawnEffect = false;
 
 public:
 	static CJuggulus_Hammer*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

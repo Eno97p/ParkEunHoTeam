@@ -1236,263 +1236,403 @@ void CImgui_Manager::Shadow_Editor()
 
 void CImgui_Manager::Camera_Editor()
 {
-    // Set color scheme
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.06f, 0.06f, 0.06f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
-
     ImGui::Begin("Camera Settings", &m_bCameraWindow);
 
-    // Camera Editing Toggle
-    static bool bCameraEditing = false;
-    ImGui::Checkbox("Camera Editing", &bCameraEditing);
-
-    if (bCameraEditing)
+    CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[3]);
+    if (pCutSceneCamera)
     {
-        // Section: Camera KeyFrame Controls
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 0.9f, 1.0f), "Camera KeyFrame Controls");
+        // CutScene 선택
+        static int selectedCutScene = 0;
+        static vector<string> cutSceneNames;
+        static vector<const char*> cutSceneNamesCStr;
 
-        if (ImGui::Button("Save Camera KeyFrame"))
+        if (cutSceneNames.size() != pCutSceneCamera->Get_CutSceneCount())
         {
-            CCutSceneCamera::CameraKeyFrame keyFrame;
-            keyFrame.fTime = m_fKeyFrameTime;
-            m_fKeyFrameTime += 0.5f;
-            keyFrame.matWorld = *m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
-            keyFrame.fFovy = XMConvertToRadians(60.f);
-            keyFrame.fNear = 0.1f;
-            keyFrame.fFar = 3000.f;
-
-            m_vCameraKeyFrames.emplace_back(keyFrame);
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Pop Camera KeyFrame"))
-        {
-            if (!m_vCameraKeyFrames.empty())
-                m_vCameraKeyFrames.pop_back();
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Clear Camera KeyFrames"))
-        {
-            m_vCameraKeyFrames.clear();
-        }
-
-        // Section: Current Time Display
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 0.9f, 1.0f), "Current Time");
-        ImGui::Text("Time Now: %.2f" /* m_pGameInstance->Get_Cameras().back() */);
-
-        // Section: KeyFrames List
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "KeyFrames:");
-
-        // 스크롤 가능한 영역 시작
-        float itemHeight = ImGui::GetTextLineHeightWithSpacing();
-        ImGui::BeginChild("KeyframesScroll", ImVec2(0, 5 * itemHeight + ImGui::GetStyle().ScrollbarSize), true);
-
-        for (size_t i = 0; i < m_vCameraKeyFrames.size(); ++i)
-        {
-            ImGui::PushID(static_cast<int>(i));
-
-            // 키프레임 선택을 위한 셀렉터블 추가
-            char label[32];
-            snprintf(label, sizeof(label), "KeyFrame %d", static_cast<int>(i));
-            if (ImGui::Selectable(label, m_iSelectedKeyFrame == i))
+            cutSceneNames.clear();
+            cutSceneNamesCStr.clear();
+            for (_uint i = 0; i < pCutSceneCamera->Get_CutSceneCount(); ++i)
             {
-                m_iSelectedKeyFrame = i;
+                cutSceneNames.push_back("CutScene " + to_string(i));
             }
-
-            ImGui::PopID();
+            for (const auto& name : cutSceneNames)
+            {
+                cutSceneNamesCStr.push_back(name.c_str());
+            }
         }
 
-        ImGui::EndChild();
+        ImGui::Combo("Select CutScene", &selectedCutScene, cutSceneNamesCStr.data(), cutSceneNamesCStr.size());
 
-        // 선택된 키프레임 편집
-        if (m_iSelectedKeyFrame >= 0 && m_iSelectedKeyFrame < m_vCameraKeyFrames.size())
+        // CutScene 컨트롤
+        if (ImGui::Button("Add New CutScene"))
         {
-            CCamera::CameraKeyFrame& keyFrame = m_vCameraKeyFrames[m_iSelectedKeyFrame];
+            vector<CCamera::CameraKeyFrame> newCutScene;
+            pCutSceneCamera->Add_CutScene(newCutScene);
+            selectedCutScene = pCutSceneCamera->Get_CutSceneCount() - 1;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Edit CutScene"))
+        {
+            m_vCameraKeyFrames = pCutSceneCamera->Get_CutScene(selectedCutScene);
+            m_bEditingCutScene = true;
+            m_iEditingCutSceneIdx = selectedCutScene;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Play CutScene"))
+        {
+            pCutSceneCamera->Set_CutSceneIdx(selectedCutScene);
+            pCutSceneCamera->Play_CutScene();
+            m_pGameInstance->Set_MainCamera(3);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Stop CutScene"))
+        {
+            pCutSceneCamera->Stop_CutScene();
+        }
 
+        // 현재 재생 중인 컷신 정보
+        ImGui::Text("Current CutScene: %d", pCutSceneCamera->Get_CutSceneIdx());
+        ImGui::Text("Animation Progress: %.2f%%", pCutSceneCamera->Get_AnimationProgress() * 100.0f);
+        // 컷씬 카메라 데이터 세이브 버튼 추가
+        ImGui::Separator();
+        ImGui::TextColored(ImVec4(0.4f, 0.8f, 0.9f, 1.0f), "CutScene Camera Data");
+
+        if (ImGui::Button("Save CutScene Data"))
+        {
+            Save_CameraKeyFrames();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Load CutScene Data"))
+        {
+            Load_CameraKeyFrames();
+        }
+        // 컷신 편집 모드
+        if (m_bEditingCutScene)
+        {
             ImGui::Separator();
-            ImGui::TextColored(ImVec4(0.9f, 0.6f, 0.3f, 1.0f), "Editing KeyFrame %d", m_iSelectedKeyFrame);
+            ImGui::TextColored(ImVec4(0.9f, 0.6f, 0.3f, 1.0f), "Editing CutScene %d", m_iEditingCutSceneIdx);
 
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
-            ImGui::SliderFloat("Total Time", &keyFrame.fTime, 0.0f, 10.0f);
+            // KeyFrame 목록
+            static int selectedKeyFrame = 0;
+            static vector<string> keyFrameNames;
+            static vector<const char*> keyFrameNamesCStr;
 
-            float fovDegrees = XMConvertToDegrees(keyFrame.fFovy);
-            if (ImGui::SliderFloat("FOV", &fovDegrees, 1.0f, 179.0f))
+            // 키프레임 이름 목록 업데이트
+            if (keyFrameNames.size() != m_vCameraKeyFrames.size())
             {
-                keyFrame.fFovy = XMConvertToRadians(fovDegrees);
-            }
-            ImGui::PopStyleColor();
-
-            // Speed Changes SubSection
-            ImGui::TextColored(ImVec4(0.3f, 0.7f, 0.9f, 1.f), "Speed Changes:");
-            for (size_t j = 0; j < keyFrame.speedChanges.size(); ++j)
-            {
-                ImGui::PushID(static_cast<int>(j));
-                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Speed Change %d", static_cast<int>(j));
-                ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.15f, 0.15f, 0.15f, 1.0f));
-                ImGui::SliderFloat("Timing", &get<0>(keyFrame.speedChanges[j]), 0.0f, 1.0f);
-                ImGui::SliderFloat("Speed", &get<1>(keyFrame.speedChanges[j]), 0.1f, 10.0f);
-                ImGui::SliderFloat("Smooth Offset", &get<2>(keyFrame.speedChanges[j]), 0.0f, 1.0f);
-                ImGui::PopStyleColor();
-                ImGui::PopID();
+                keyFrameNames.clear();
+                keyFrameNamesCStr.clear();
+                for (size_t i = 0; i < m_vCameraKeyFrames.size(); ++i)
+                {
+                    keyFrameNames.push_back("KeyFrame " + to_string(i));
+                }
+                for (const auto& name : keyFrameNames)
+                {
+                    keyFrameNamesCStr.push_back(name.c_str());
+                }
             }
 
-            if (ImGui::Button("Add Speed Change"))
+            ImGui::ListBox("KeyFrames", &selectedKeyFrame, keyFrameNamesCStr.data(), keyFrameNamesCStr.size());
+
+            // KeyFrame 저장 버튼
+            if (ImGui::Button("Save New KeyFrame"))
             {
-                keyFrame.speedChanges.emplace_back(0.0f, 1.0f, 0.3f);
+                CCamera::CameraKeyFrame newKeyFrame;
+                newKeyFrame.fTime = m_fKeyFrameTime;
+                m_fKeyFrameTime += 0.5f;
+                newKeyFrame.matWorld = *m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
+                newKeyFrame.fFovy = XMConvertToRadians(60.f);
+                newKeyFrame.fNear = 0.1f;
+                newKeyFrame.fFar = 3000.f;
+
+                m_vCameraKeyFrames.push_back(newKeyFrame);
+                selectedKeyFrame = m_vCameraKeyFrames.size() - 1;
             }
 
-            // Speed Change Graph 부분 수정
-            if (!keyFrame.speedChanges.empty())
+            ImGui::SameLine();
+
+            // KeyFrame 삭제 버튼
+            if (ImGui::Button("Delete KeyFrame") && !m_vCameraKeyFrames.empty())
             {
-                ImGui::Spacing();
-                ImGui::Text("Speed Change Graph:");
-                ImVec2 graphSize(250, 120); // 그래프 크기
-                ImVec2 graphPos = ImGui::GetCursorScreenPos();
-                graphPos.x += 30; // 그래프를 오른쪽으로 30픽셀 이동
+                m_vCameraKeyFrames.erase(m_vCameraKeyFrames.begin() + selectedKeyFrame);
+                if (selectedKeyFrame >= m_vCameraKeyFrames.size())
+                {
+                    selectedKeyFrame = m_vCameraKeyFrames.size() - 1;
+                }
+            }
 
-                // 그래프 배경 및 격자 그리기
-                ImGui::GetWindowDrawList()->AddRectFilled(
-                    graphPos,
-                    ImVec2(graphPos.x + graphSize.x, graphPos.y + graphSize.y),
-                    IM_COL32(30, 30, 30, 255));
+            // KeyFrame 편집
+            if (selectedKeyFrame >= 0 && selectedKeyFrame < m_vCameraKeyFrames.size())
+            {
+                CCamera::CameraKeyFrame& keyFrame = m_vCameraKeyFrames[selectedKeyFrame];
 
-                // 수평 격자선 (y축 레이블 수정)
-                for (int i = 0; i <= 5; i++) {
-                    float y = graphPos.y + (i * graphSize.y / 5);
-                    ImGui::GetWindowDrawList()->AddLine(
-                        ImVec2(graphPos.x, y),
-                        ImVec2(graphPos.x + graphSize.x, y),
-                        IM_COL32(100, 100, 100, 100));
-                    char label[16];
-                    snprintf(label, sizeof(label), "%.f", (5 - i) * 2.0f);
-                    ImGui::GetWindowDrawList()->AddText(
-                        ImVec2(graphPos.x + graphSize.x + 10, y - 7),
-                        IM_COL32(200, 200, 200, 150),
-                        label);
+                ImGui::SliderFloat("Time", &keyFrame.fTime, 0.0f, 10.0f);
+                float fovDegrees = XMConvertToDegrees(keyFrame.fFovy);
+                if (ImGui::SliderFloat("FOV", &fovDegrees, 1.0f, 179.0f))
+                {
+                    keyFrame.fFovy = XMConvertToRadians(fovDegrees);
                 }
 
-                // y축 레이블 추가
-                ImGui::GetWindowDrawList()->AddText(
-                    ImVec2(graphPos.x + graphSize.x +  25, graphPos.y - 15),
-                    IM_COL32(126, 66, 245, 200),
-                    "Speed");
-
-                // 수직 격자선 (x축 레이블 수정)
-                for (int i = 0; i <= 10; i++) {
-                    float x = graphPos.x + (i * graphSize.x / 10);
-                    ImGui::GetWindowDrawList()->AddLine(
-                        ImVec2(x, graphPos.y),
-                        ImVec2(x, graphPos.y + graphSize.y),
-                        IM_COL32(100, 100, 100, 100));
-
-                    // 0에서 10까지의 정수 값으로 레이블 수정
-                    char label[16];
-                    snprintf(label, sizeof(label), "%d", i);
-                    ImGui::GetWindowDrawList()->AddText(
-                        ImVec2(x - 10, graphPos.y + graphSize.y + 5),
-                        IM_COL32(200, 200, 200, 150),
-                        label);
-                }
-
-                // x축 레이블 추가
-                ImGui::GetWindowDrawList()->AddText(
-                    ImVec2(graphPos.x + graphSize.x + 25, graphPos.y + graphSize.y - 5),
-                    IM_COL32(126, 66, 245, 200),
-                    "Time");
-
-                // 속도 그래프 그리기
-                std::vector<ImVec2> points;
-                for (int i = 0; i <= 100; i++) {
-                    float t = static_cast<float>(i) / 100.0f;
-                    float speedMultiplier = 1.0f;
-                    float prevSpeedMultiplier = 1.0f;
-
-                    for (const auto& [changeTime, changeSpeed, smoothOffset] : keyFrame.speedChanges)
+                // Speed Changes
+                if (ImGui::TreeNode("Speed Changes"))
+                {
+                    for (size_t j = 0; j < keyFrame.speedChanges.size(); ++j)
                     {
-                        if (t < changeTime - smoothOffset)
-                        {
-                            speedMultiplier = prevSpeedMultiplier;
-                            break;
-                        }
-                        else if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
-                        {
-                            float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
-                            speedMultiplier = prevSpeedMultiplier + (changeSpeed - prevSpeedMultiplier) * lerpT * lerpT * (3.0f - 2.0f * lerpT);
-                            break;
-                        }
-                        else
-                        {
-                            prevSpeedMultiplier = changeSpeed;
-                        }
+                        ImGui::PushID(static_cast<int>(j));
+                        ImGui::SliderFloat("Timing", &get<0>(keyFrame.speedChanges[j]), 0.0f, 1.0f);
+                        ImGui::SliderFloat("Speed", &get<1>(keyFrame.speedChanges[j]), 0.1f, 10.0f);
+                        ImGui::SliderFloat("Smooth Offset", &get<2>(keyFrame.speedChanges[j]), 0.0f, 1.0f);
+                        ImGui::PopID();
+                    }
+                    if (ImGui::Button("Add Speed Change"))
+                    {
+                        keyFrame.speedChanges.emplace_back(0.0f, 1.0f, 0.3f);
+                    }
+                    ImGui::TreePop();
+                }
+
+                // Speed Change Graph
+                if (!keyFrame.speedChanges.empty())
+                {
+                    ImGui::Spacing();
+                    ImGui::Text("Speed Change Graph:");
+                    ImVec2 graphSize(250, 120);
+                    ImVec2 graphPos = ImGui::GetCursorScreenPos();
+                    graphPos.x += 30;
+
+                    // 그래프 배경 및 격자 그리기
+                    ImGui::GetWindowDrawList()->AddRectFilled(
+                        graphPos,
+                        ImVec2(graphPos.x + graphSize.x, graphPos.y + graphSize.y),
+                        IM_COL32(30, 30, 30, 255));
+
+                    // 수평 격자선 및 y축 레이블
+                    for (int i = 0; i <= 5; i++) {
+                        float y = graphPos.y + (i * graphSize.y / 5);
+                        ImGui::GetWindowDrawList()->AddLine(
+                            ImVec2(graphPos.x, y),
+                            ImVec2(graphPos.x + graphSize.x, y),
+                            IM_COL32(100, 100, 100, 100));
+                        char label[16];
+                        snprintf(label, sizeof(label), "%.f", (5 - i) * 2.0f);
+                        ImGui::GetWindowDrawList()->AddText(
+                            ImVec2(graphPos.x + graphSize.x + 10, y - 7),
+                            IM_COL32(200, 200, 200, 150),
+                            label);
                     }
 
-                    points.push_back(ImVec2(
-                        graphPos.x + t * graphSize.x,
-                        graphPos.y + graphSize.y - (speedMultiplier / 10.0f) * graphSize.y
-                    ));
-                }
+                    // 수직 격자선 및 x축 레이블
+                    for (int i = 0; i <= 10; i++) {
+                        float x = graphPos.x + (i * graphSize.x / 10);
+                        ImGui::GetWindowDrawList()->AddLine(
+                            ImVec2(x, graphPos.y),
+                            ImVec2(x, graphPos.y + graphSize.y),
+                            IM_COL32(100, 100, 100, 100));
+                        char label[16];
+                        snprintf(label, sizeof(label), "%d", i);
+                        ImGui::GetWindowDrawList()->AddText(
+                            ImVec2(x - 10, graphPos.y + graphSize.y + 5),
+                            IM_COL32(200, 200, 200, 150),
+                            label);
+                    }
 
-                // 선 그리기
-                for (size_t i = 1; i < points.size(); i++) {
-                    ImGui::GetWindowDrawList()->AddLine(points[i - 1], points[i], IM_COL32(0, 255, 0, 255), 2.0f);
-                }
+                    // 속도 그래프 그리기
+                    std::vector<ImVec2> points;
+                    for (int i = 0; i <= 100; i++) {
+                        float t = static_cast<float>(i) / 100.0f;
+                        float speedMultiplier = 1.0f;
+                        float prevSpeedMultiplier = 1.0f;
 
-                // 속도 변화 지점 표시
-                for (const auto& [changeTime, changeSpeed, smoothOffset] : keyFrame.speedChanges)
-                {
-                    float x = graphPos.x + changeTime * graphSize.x;
-                    float y = graphPos.y + graphSize.y - (changeSpeed / 10.0f) * graphSize.y;
-                    ImGui::GetWindowDrawList()->AddCircleFilled(
-                        ImVec2(x, y), 4.0f, IM_COL32(255, 0, 0, 255));
-                }
+                        for (const auto& [changeTime, changeSpeed, smoothOffset] : keyFrame.speedChanges)
+                        {
+                            if (t < changeTime - smoothOffset)
+                            {
+                                speedMultiplier = prevSpeedMultiplier;
+                                break;
+                            }
+                            else if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
+                            {
+                                float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
+                                speedMultiplier = prevSpeedMultiplier + (changeSpeed - prevSpeedMultiplier) * lerpT * lerpT * (3.0f - 2.0f * lerpT);
+                                break;
+                            }
+                            else
+                            {
+                                prevSpeedMultiplier = changeSpeed;
+                            }
+                        }
 
-                ImGui::Spacing();
-                ImGui::Spacing();
-                ImGui::Spacing();
-                ImGui::Spacing();
-                ImGui::Dummy(graphSize);  // 그래프 영역만큼 공간 확보
+                        points.push_back(ImVec2(
+                            graphPos.x + t * graphSize.x,
+                            graphPos.y + graphSize.y - (speedMultiplier / 10.0f) * graphSize.y
+                        ));
+                    }
+
+                    // 선 그리기
+                    for (size_t i = 1; i < points.size(); i++) {
+                        ImGui::GetWindowDrawList()->AddLine(points[i - 1], points[i], IM_COL32(0, 255, 0, 255), 2.0f);
+                    }
+
+                    // 속도 변화 지점 표시
+                    for (const auto& [changeTime, changeSpeed, smoothOffset] : keyFrame.speedChanges)
+                    {
+                        float x = graphPos.x + changeTime * graphSize.x;
+                        float y = graphPos.y + graphSize.y - (changeSpeed / 10.0f) * graphSize.y;
+                        ImGui::GetWindowDrawList()->AddCircleFilled(
+                            ImVec2(x, y), 4.0f, IM_COL32(255, 0, 0, 255));
+                    }
+
+                    ImGui::Dummy(graphSize);
+                }
+            }
+
+            if (ImGui::Button("Save Changes"))
+            {
+                pCutSceneCamera->Set_CutScene(m_iEditingCutSceneIdx, m_vCameraKeyFrames);
+                m_bEditingCutScene = false;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel Editing"))
+            {
+                m_bEditingCutScene = false;
             }
         }
-
-        // Section: Camera Controls
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 0.9f, 1.0f), "Camera Controls");
-
-        if (ImGui::Button("Add Camera"))
-        {
-            CCutSceneCamera::CUTSCENECAMERA_DESC CSCdesc{};
-
-            CSCdesc.vEye = _float4(50.f, 100.f, -10.f, 1.f);
-            CSCdesc.vAt = _float4(0.f, 30.f, 0.f, 1.f);
-            CSCdesc.fFovy = XMConvertToRadians(60.f);
-            CSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-            CSCdesc.fNear = 0.1f;
-            CSCdesc.fFar = 3000.f;
-            CSCdesc.fSpeedPerSec = 40.f;
-            CSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
-
-            CSCdesc.KeyFrames = m_vCameraKeyFrames;
-            m_pGameInstance->Add_Camera(MYMapTool::LEVEL_GAMEPLAY, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_CutSceneCamera"), &CSCdesc);
-        }
-
-        ImGui::SameLine();
-        if (ImGui::Button("Return to FreeCamera"))
-        {
-            m_pGameInstance->Set_MainCamera(0);
-            m_fKeyFrameTime = 0.f;
-        }
+    }
+    else
+    {
+        ImGui::Text("CutSceneCamera not found.");
     }
 
     ImGui::End();
+}
 
-    // Pop color styles
-    ImGui::PopStyleColor(4);
+void CImgui_Manager::Save_CameraKeyFrames()
+{
+    wstring filePath = L"../Bin/CutSceneData/CutSceneKeyFrames.dat";
+
+    HANDLE hFile = CreateFile(filePath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed to create file for camera keyframes.");
+        return;
+    }
+
+    DWORD dwByte = 0;
+
+    CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[3]);
+    if (!pCutSceneCamera)
+    {
+        CloseHandle(hFile);
+        MSG_BOX("CutSceneCamera not found.");
+        return;
+    }
+
+    // 컷씬 개수 저장
+    _uint iCutSceneCount = pCutSceneCamera->Get_CutSceneCount();
+    WriteFile(hFile, &iCutSceneCount, sizeof(_uint), &dwByte, nullptr);
+
+    // 각 컷씬의 키프레임 저장
+    for (_uint i = 0; i < iCutSceneCount; ++i)
+    {
+        const vector<CCamera::CameraKeyFrame>& cutScene = pCutSceneCamera->Get_CutScene(i);
+
+        // 키프레임 개수 저장
+        _uint iKeyFrameCount = cutScene.size();
+        WriteFile(hFile, &iKeyFrameCount, sizeof(_uint), &dwByte, nullptr);
+
+        // 각 키프레임 정보 저장
+        for (const auto& keyFrame : cutScene)
+        {
+            WriteFile(hFile, &keyFrame.fTime, sizeof(float), &dwByte, nullptr);
+            WriteFile(hFile, &keyFrame.matWorld, sizeof(_float4x4), &dwByte, nullptr);
+            WriteFile(hFile, &keyFrame.fFovy, sizeof(float), &dwByte, nullptr);
+            WriteFile(hFile, &keyFrame.fNear, sizeof(float), &dwByte, nullptr);
+            WriteFile(hFile, &keyFrame.fFar, sizeof(float), &dwByte, nullptr);
+
+            // 속도 변화 정보 저장
+            _uint iSpeedChangeCount = keyFrame.speedChanges.size();
+            WriteFile(hFile, &iSpeedChangeCount, sizeof(_uint), &dwByte, nullptr);
+            for (const auto& speedChange : keyFrame.speedChanges)
+            {
+                WriteFile(hFile, &get<0>(speedChange), sizeof(float), &dwByte, nullptr);
+                WriteFile(hFile, &get<1>(speedChange), sizeof(float), &dwByte, nullptr);
+                WriteFile(hFile, &get<2>(speedChange), sizeof(float), &dwByte, nullptr);
+            }
+        }
+    }
+
+    CloseHandle(hFile);
+    MSG_BOX("Camera KeyFrames Data Saved");
+}
+
+void CImgui_Manager::Load_CameraKeyFrames()
+{
+    wstring filePath = L"../Bin/CutSceneData/CutSceneKeyFrames.dat";
+
+    HANDLE hFile = CreateFile(filePath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        MSG_BOX("Failed to open file for camera keyframes.");
+        return;
+    }
+
+    DWORD dwByte = 0;
+
+    CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[3]);
+    if (!pCutSceneCamera)
+    {
+        CloseHandle(hFile);
+        MSG_BOX("CutSceneCamera not found.");
+        return;
+    }
+
+    // 컷씬 개수 로드
+    _uint iCutSceneCount = 0;
+    ReadFile(hFile, &iCutSceneCount, sizeof(_uint), &dwByte, nullptr);
+
+    // 기존 컷씬 클리어
+    pCutSceneCamera->Clear_CutScenes();
+
+    // 각 컷씬의 키프레임 로드
+    for (_uint i = 0; i < iCutSceneCount; ++i)
+    {
+        vector<CCamera::CameraKeyFrame> cutScene;
+
+        // 키프레임 개수 로드
+        _uint iKeyFrameCount = 0;
+        ReadFile(hFile, &iKeyFrameCount, sizeof(_uint), &dwByte, nullptr);
+
+        // 각 키프레임 정보 로드
+        for (_uint j = 0; j < iKeyFrameCount; ++j)
+        {
+            CCamera::CameraKeyFrame keyFrame;
+            ReadFile(hFile, &keyFrame.fTime, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.matWorld, sizeof(_float4x4), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fFovy, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fNear, sizeof(float), &dwByte, nullptr);
+            ReadFile(hFile, &keyFrame.fFar, sizeof(float), &dwByte, nullptr);
+
+            // 속도 변화 정보 로드
+            _uint iSpeedChangeCount = 0;
+            ReadFile(hFile, &iSpeedChangeCount, sizeof(_uint), &dwByte, nullptr);
+            for (_uint k = 0; k < iSpeedChangeCount; ++k)
+            {
+                float time, speed, smoothOffset;
+                ReadFile(hFile, &time, sizeof(float), &dwByte, nullptr);
+                ReadFile(hFile, &speed, sizeof(float), &dwByte, nullptr);
+                ReadFile(hFile, &smoothOffset, sizeof(float), &dwByte, nullptr);
+                keyFrame.speedChanges.emplace_back(time, speed, smoothOffset);
+            }
+
+            cutScene.push_back(keyFrame);
+        }
+
+        pCutSceneCamera->Add_CutScene(cutScene);
+    }
+
+    CloseHandle(hFile);
+    MSG_BOX("Camera KeyFrames Data Loaded");
 }
 
 void CImgui_Manager::Battle_Camera_Editor()
@@ -2241,29 +2381,8 @@ void CImgui_Manager::GenerateNoiseData(BYTE* data, UINT width, UINT height, UINT
 
 void CImgui_Manager::Setting_CreateObj_ListBox()
 {
-    if (m_IsNaviMode) // Navi 상태 활성화
-    {
-        static int Cell_current_idx = 0;
-        if (ImGui::BeginListBox("##Obj", ImVec2(300, 200)))
-        {
-            for (int n = 0; n < m_vecCreateCell.size(); n++)
-            {
-                const bool is_selected = (Cell_current_idx == n);
-                if (ImGui::Selectable(m_vecCreateCell[n], is_selected)) // Cell 추가 시 요쪽에 오류 발생
-                {
-                    Cell_current_idx = n;
-                    m_iCreateCellIdx = Cell_current_idx;
-                    //CNaviMgr::GetInstance()->Check_Cell(m_iCreateCellIdx); // 이렇게 전달해줄 게 아니고 그냥 Terrain에서 Imgui의 Get 함수를 받아오는게?
-                }
-
-                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndListBox();
-        }
-    }
-    else
+  
+  
     {
         static int item_current_idx = 0;
         if (ImGui::BeginListBox("##Obj", ImVec2(300, 200)))

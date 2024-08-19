@@ -33,7 +33,13 @@ HRESULT CNPC_Choron::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 521.f, 90.f, 1.f)); // Test
+	_matrix vMat = { 0.750f, 0.f, -1.299f, 0.f,
+			0.f, 1.5f, 0.f, 0.f,
+			1.299f, 0.f, 0.750f, 0.f,
+			-261.643f, 20.761f, -180.369f, 1.f };
+
+	m_pTransformCom->Set_WorldMatrix(vMat);
+
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;

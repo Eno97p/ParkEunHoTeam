@@ -230,6 +230,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Client_Macro.h" />
     <ClInclude Include="..\Public\Clone.h" />
     <ClInclude Include="..\Public\Cloud.h" />
+    <ClInclude Include="..\Public\CutSceneCamera.h" />
     <ClInclude Include="..\Public\Decal.h" />
     <ClInclude Include="..\Public\Deco_Element.h" />
     <ClInclude Include="..\Public\Distortion.h" />
@@ -238,6 +239,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Elevator.h" />
     <ClInclude Include="..\Public\EventTrigger.h" />
     <ClInclude Include="..\Public\FakeWall.h" />
+    <ClInclude Include="..\Public\FallPlatform.h" />
     <ClInclude Include="..\Public\ForkLift.h" />
     <ClInclude Include="..\public\FreeCamera.h" />
     <ClInclude Include="..\Public\Ghost.h" />
@@ -303,6 +305,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HexaHit.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HexaShield.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
@@ -331,6 +335,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_BuffTimer.h" />
     <ClInclude Include="..\Public\UIGroup_Ch_Upgrade.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
+    <ClInclude Include="..\Public\UIGroup_Level.h" />
     <ClInclude Include="..\Public\UIGroup_Map.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_Setting.h" />
@@ -350,6 +355,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Dash.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
+    <ClInclude Include="..\Public\UI_LevelBG.h" />
+    <ClInclude Include="..\Public\UI_Level_TextBox.h" />
     <ClInclude Include="..\Public\UI_LogoFlow.h" />
     <ClInclude Include="..\Public\UI_MapArea.h" />
     <ClInclude Include="..\Public\UI_MapBG.h" />
@@ -364,6 +371,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_QTE_Particle.h" />
     <ClInclude Include="..\Public\UI_QTE_Ring.h" />
     <ClInclude Include="..\Public\UI_QTE_Score.h" />
+    <ClInclude Include="..\Public\UI_QTE_Shine.h" />
     <ClInclude Include="..\Public\UI_RedDot.h" />
     <ClInclude Include="..\Public\UI_ScreenBlood.h" />
     <ClInclude Include="..\Public\UI_ScriptBG_Aura.h" />
@@ -535,6 +543,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\CircleSphere.cpp" />
     <ClCompile Include="..\Private\Clone.cpp" />
     <ClCompile Include="..\Private\Cloud.cpp" />
+    <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\Private\Decal.cpp" />
     <ClCompile Include="..\Private\Deco_Element.cpp" />
     <ClCompile Include="..\Private\Distortion.cpp" />
@@ -543,6 +552,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Elevator.cpp" />
     <ClCompile Include="..\Private\EventTrigger.cpp" />
     <ClCompile Include="..\Private\FakeWall.cpp" />
+    <ClCompile Include="..\Private\FallPlatform.cpp" />
     <ClCompile Include="..\Private\ForkLift.cpp" />
     <ClCompile Include="..\private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\Ghost.cpp" />
@@ -607,6 +617,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HexaHit.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
@@ -635,6 +647,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UIGroup_Ch_Upgrade.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Level.cpp" />
     <ClCompile Include="..\Private\UIGroup_Map.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_Setting.cpp" />
@@ -654,6 +667,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Dash.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
+    <ClCompile Include="..\Private\UI_LevelBG.cpp" />
+    <ClCompile Include="..\Private\UI_Level_TextBox.cpp" />
     <ClCompile Include="..\Private\UI_LogoFlow.cpp" />
     <ClCompile Include="..\Private\UI_MapArea.cpp" />
     <ClCompile Include="..\Private\UI_MapBG.cpp" />
@@ -668,6 +683,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_QTE_Particle.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Ring.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Score.cpp" />
+    <ClCompile Include="..\Private\UI_QTE_Shine.cpp" />
     <ClCompile Include="..\Private\UI_RedDot.cpp" />
     <ClCompile Include="..\Private\UI_ScreenBlood.cpp" />
     <ClCompile Include="..\Private\UI_ScriptBG_Aura.cpp" />

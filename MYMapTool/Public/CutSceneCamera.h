@@ -62,8 +62,45 @@ public:
 	void Set_KeyFrameTime(_float fTime) { m_fKeyFrameTime = fTime; }
 	void Set_CamACcel(_float fAccel) { m_fAccel = fAccel; }
 
+public:
+	float Get_AnimationProgress() const;
+
+public:
+	const vector<CameraKeyFrame>& Get_KeyFrames() const { return m_KeyFrames; }
+	void Set_KeyFrames(const vector<CameraKeyFrame>& keyFrames) { m_KeyFrames = keyFrames; }
+	void Play_CutScene()
+	{
+		if (m_iCurrentCutSceneIdx < m_AllCutScenes.size())
+		{
+			m_KeyFrames = m_AllCutScenes[m_iCurrentCutSceneIdx];
+			m_iCurrentKeyFrame = 0;
+			m_fKeyFrameTime = 0.f;
+			m_bAnimationFinished = false;
+			m_bPaused = false;
+		}
+	}
+
+	void Stop_CutScene()
+	{
+		m_bAnimationFinished = true;
+		m_bPaused = true;
+	}
+private:
+	vector<vector<CameraKeyFrame>> m_AllCutScenes;
+	_uint m_iCurrentCutSceneIdx = 0;
+
+public:
+	_uint Get_CutSceneCount() const { return m_AllCutScenes.size(); }
+	void Set_CutSceneIdx(_uint idx) { m_iCurrentCutSceneIdx = idx; }
+	_uint Get_CutSceneIdx() const { return m_iCurrentCutSceneIdx; }
+	void Add_CutScene(const vector<CameraKeyFrame>& keyFrames) { m_AllCutScenes.push_back(keyFrames); }
+
+	const vector<CameraKeyFrame>& Get_CutScene(_uint iIndex) const;
+	void Set_CutScene(_uint iIndex, const vector<CameraKeyFrame>& keyFrames);
+	void Clear_CutScenes();
 
 private: // FOR CAMERA ANIMATIOn
+	_uint m_iCutSceneIdx = 0;
 	vector<CameraKeyFrame> m_KeyFrames;
 	_uint m_iCurrentKeyFrame;
 	_float m_fKeyFrameTime;

@@ -8,6 +8,7 @@
 #include "ThirdPersonCamera.h"
 #include "SideViewCamera.h"
 #include "TransitionCamera.h"
+#include "CutSceneCamera.h"
 
 #include "Map_Element.h"
 #include "Monster.h"
@@ -207,6 +208,44 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pTPCDesc.pPlayerTrans = dynamic_cast<CTransform*>( m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ANDRASARENA, strLayerTag, TEXT("Prototype_GameObject_ThirdPersonCamera"), &pTPCDesc)))
 		 return E_FAIL;
+
+
+	 CCutSceneCamera::CUTSCENECAMERA_DESC pCSCdesc = {};
+
+
+	 pCSCdesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pCSCdesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
+	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pCSCdesc.fNear = 0.1f;
+	 pCSCdesc.fFar = 3000.f;
+
+	 pCSCdesc.fSpeedPerSec = 40.f;
+	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ANDRASARENA, strLayerTag, TEXT("Prototype_GameObject_CutSceneCamera"), &pCSCdesc)))
+		 return E_FAIL;
+
+	 CSideViewCamera::SIDEVIEWCAMERA_DESC pSVCDesc = {};
+
+	 pSVCDesc.fSensor = 0.1f;
+
+	 pSVCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
+	 pSVCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+
+	 pSVCDesc.fFovy = XMConvertToRadians(60.f);
+	 pSVCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	 pSVCDesc.fNear = 0.1f;
+	 pSVCDesc.fFar = 3000.f;
+
+	 pSVCDesc.fSpeedPerSec = 40.f;
+	 pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	 pSVCDesc.pPlayerTrans = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+	 if (FAILED(m_pGameInstance->Add_Camera(LEVEL_ANDRASARENA, strLayerTag, TEXT("Prototype_GameObject_SideViewCamera"), &pSVCDesc)))
+		 return E_FAIL;
+
+	 m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 
 	return S_OK;
 }

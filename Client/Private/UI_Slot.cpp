@@ -67,30 +67,18 @@ void CUI_Slot::Check_Equip(_bool isWeapon, CItemData* pItemData)
 
 HRESULT CUI_Slot::Create_RedDot()
 {
-	if (nullptr != m_pRedDot)
+	if (nullptr == m_pItemIcon)
 		return S_OK;
 
-	CUI_RedDot::UI_REDDOT_DESC pDesc{};
-	pDesc.eLevel = LEVEL_STATIC;
-	pDesc.eUISort = static_cast<UISORT_PRIORITY>(m_eUISort + 2);
-	pDesc.fX = m_fX + 25.f;
-	pDesc.fY = m_fY - 25.f;
-	pDesc.fSizeX = 15.f;
-	pDesc.fSizeY = 15.f;
-
-	m_pRedDot = dynamic_cast<CUI_RedDot*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_RedDot"), &pDesc));
-	if (nullptr == m_pRedDot)
-		return E_FAIL;
-
-	return S_OK;
+	return m_pItemIcon->Create_RedDot();
 }
 
 HRESULT CUI_Slot::Delete_RedDot()
 {
-	Safe_Release(m_pRedDot);
-	m_pRedDot = nullptr;
+	if (nullptr == m_pItemIcon)
+		return S_OK;
 
-	return S_OK;
+	return m_pItemIcon->Delete_RedDot();
 }
 
 HRESULT CUI_Slot::Initialize_Prototype()
@@ -153,8 +141,8 @@ void CUI_Slot::Tick(_float fTimeDelta)
 	if (nullptr != m_pEquipSign)
 		m_pEquipSign->Tick(fTimeDelta);
 
-	if (nullptr != m_pRedDot)
-		m_pRedDot->Tick(fTimeDelta);
+	//if (nullptr != m_pRedDot)
+	//	m_pRedDot->Tick(fTimeDelta);
 }
 
 void CUI_Slot::Late_Tick(_float fTimeDelta)
@@ -174,8 +162,8 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 	if (nullptr != m_pEquipSign && m_isEquip && Check_GroupRenderOnAnim())
 		m_pEquipSign->Late_Tick(fTimeDelta);
 
-	if (nullptr != m_pRedDot)
-		m_pRedDot->Late_Tick(fTimeDelta);
+	//if (nullptr != m_pRedDot)
+	//	m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -480,6 +468,13 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 	pDesc.fSizeX = 160.f;
 	pDesc.fSizeY = 160.f;
 	m_pSymbolIcon = dynamic_cast<CUI_ItemIcon*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ItemIcon"), &pDesc));
+
+	// RedDot 처리도 해주기
+	if ((*skill)->Get_isRedDotUse())
+	{
+		m_pItemIcon->Create_RedDot();
+		(*skill)->Set_isRedDotUse(false);
+	}
 
 	return S_OK;
 }

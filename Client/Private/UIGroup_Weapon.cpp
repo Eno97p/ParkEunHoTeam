@@ -52,6 +52,11 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 	_bool isRender_End = false;
 	if (m_isRend)
 	{
+		if (m_pGameInstance->Key_Down(DIK_TAB))
+		{
+			Change_Tab();
+		}
+
 		if (!m_isEquipMode)
 		{
 
@@ -103,11 +108,6 @@ void CUIGroup_Weapon::Tick(_float fTimeDelta)
 			}
 			pEquipSlot->Tick(fTimeDelta);
 		}
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_TAB))
-	{
-		Change_Tab();
 	}
 }
 
@@ -372,6 +372,84 @@ void CUIGroup_Weapon::Change_Tab()
 
 		m_eTabType = TAB_L;
 	}
+}
+
+void CUIGroup_Weapon::Reset_Tab()
+{
+	// 만약 Tab이 Skill 상태라면 Weapon으로 되돌리기
+	if (TAB_R == m_eTabType)
+	{
+		// Slot들 리셋
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize(); ++i)
+		{
+			(*slot)->Resset_Data();
+			++slot;
+		}
+
+		slot = m_vecSlot.begin();
+		for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize(); ++i)
+		{
+			(*slot)->Change_ItemIcon_Weapon(); // 여기서 몇 번째 슬롯인지 넣어줄                                                 까?
+			++slot;
+		}
+
+		// Equip Slot 리셋하고 채워넣기
+		vector<CUI_WPEquipSlot*>::iterator equipslot = m_vecEquipSlot.begin();
+		for (size_t i = 0; i < 3; ++i)
+		{
+			(*equipslot)->Delete_ItemIcon();
+			(*equipslot)->Change_ItemIcon(true, i);
+			++equipslot;
+		}
+
+		m_eTabType = TAB_L;
+	}
+}
+
+HRESULT CUIGroup_Weapon::Create_RedDot(_uint iSlotIdx, _bool isSkill)
+{
+	if (!isSkill) // Weapon의 경우
+	{
+		vector<CUI_Slot*>::iterator slot = m_vecSlot.begin();
+		for (size_t i = 0; i < iSlotIdx; ++i)
+			++slot;
+
+		return 	(*slot)->Create_RedDot();
+	}
+	else // Skill의 경우
+	{
+		vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+		for (size_t i = 0; i < iSlotIdx; ++i)
+			++skill;
+
+		(*skill)->Set_isRedDotUse(true);
+	}
+}
+
+HRESULT CUIGroup_Weapon::Delete_RedDot()
+{
+	for (auto& pSlot : m_vecSlot)
+		pSlot->Delete_RedDot();
+
+	return S_OK;
+}
+
+_bool CUIGroup_Weapon::Check_RedDot()
+{
+	// Skill에 RedDot이 하나라도 있는지 체크
+	vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+	for (size_t i = 0; i < CInventory::GetInstance()->Get_Skills()->size(); ++i)
+	{
+ 		if ((*skill)->Get_isRedDotUse())
+		{
+			return true;
+		}
+		else
+			++skill;
+	}
+
+	return false;
 }
 
 CUIGroup_Weapon* CUIGroup_Weapon::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

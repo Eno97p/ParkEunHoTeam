@@ -37,7 +37,14 @@ HRESULT CNpc_Valnir::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 521.f, 98.f, 1.f)); // Test
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(75.f, 521.f, 98.f, 1.f)); // Test
+
+		_matrix vMat = { -0.998f, 0.f, -0.065f, 0.f,
+				0.f, 1.f, 0.f, 0.f,
+				0.065f, 0.f, -0.998f, 0.f,
+				293.824f, 8.483f, -22.493f, 1.f };
+
+	m_pTransformCom->Set_WorldMatrix(vMat);
 
 	if (FAILED(Add_PartObjects()))
 		return E_FAIL;

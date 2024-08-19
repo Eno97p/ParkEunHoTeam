@@ -118,9 +118,6 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			}
 		}
 
-
-
-
 		if (m_iPastAnimIndex < 17 || m_iPastAnimIndex > 25)
 		{
 			m_iPastAnimIndex = 17;

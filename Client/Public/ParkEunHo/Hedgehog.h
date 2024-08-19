@@ -47,6 +47,9 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pDesolveTexture = { nullptr };
+	class CPlayer* m_pPlayer = { nullptr };
+
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	unique_ptr<HEDGEHOG>			m_OwnDesc;

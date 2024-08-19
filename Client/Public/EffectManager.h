@@ -14,6 +14,7 @@
 #include "NeedleSpawner.h"
 #include "GroundSlash.h"
 #include "HammerSpawn.h"
+#include "HexaShield.h"
 BEGIN(Client)
 class CEffectManager final : public CBase
 {
@@ -27,7 +28,7 @@ public:
 	HRESULT Generate_Trail(const _int iIndex, const _float4x4* BindMat);	//1. 인덱스, 2.대상의 행렬
 	CGameObject* Member_Trail(const _int iIndex, const _float4x4* BindMat);
 	HRESULT Generate_SwordTrail(const _int iIndex, const _float4x4* Swordmat);  //1. 인덱스, 2. 칼 행렬
-	HRESULT Generate_Particle(const _int iIndex, const _float4 vStartpos,  //1. 인덱스, 2. 위치, 3. 타겟, 4. 회전축, 5.회전각도
+	CGameObject* Generate_Particle(const _int iIndex, const _float4 vStartpos,  //1. 인덱스, 2. 위치, 3. 타겟, 4. 회전축, 5.회전각도
 		CGameObject* pTarget = nullptr,
 		const _vector vAxis = XMVectorZero(),
 		const _float fRadians = 0.f,
@@ -44,6 +45,8 @@ public:
 	HRESULT Generate_GroundSlash(const _float4 vStartPos, const _float4 vDirection);
 	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
 
+	CGameObject* Generate_HexaShield(const _float4x4* BindMat);	//CHexaShield로 캐스팅해서 맞을땐 Set_Shield_Hit() 호출 , 삭제할땐  Set_Delete()호출
+
 private:		//Load Values
 	HRESULT Load_Trails();
 	HRESULT Load_SwordTrails();
@@ -59,6 +62,7 @@ private:		//Load Values
 	HRESULT Load_Needle();
 	HRESULT Load_GroundSlash();
 	HRESULT Load_HammerSpawn();
+	HRESULT Load_HexaShield();
 
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
@@ -81,6 +85,7 @@ private:
 	shared_ptr<CNeedleSpawner::NEEDLESPAWNER>					m_Needle;
 	shared_ptr<CGroundSlash::GROUNDSLASH>						m_GroundSlash;
 	shared_ptr<CHammerSpawn::HAMMERSPAWN>						m_HammerSpawn;
+	shared_ptr<CHexaShield::HEXASHIELD>							m_HexaShield;
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

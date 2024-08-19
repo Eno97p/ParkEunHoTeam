@@ -1,6 +1,7 @@
 #include "GroundSlash.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "Player.h"
 
 CGroundSlash::CGroundSlash(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
@@ -43,6 +44,11 @@ HRESULT CGroundSlash::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(m_OwnDesc->vStartSize.x, m_OwnDesc->vStartSize.y, m_OwnDesc->vStartSize.z);
 
 	m_OwnMat = m_pTransformCom->Get_WorldFloat4x4();
+
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	Safe_AddRef(m_pPlayer);
+
 	return S_OK;
 }
 
@@ -56,6 +62,8 @@ void CGroundSlash::Tick(_float fTimeDelta)
 	{
 		m_fCurLifeTime = m_OwnDesc->fMaxLifeTime;
 		m_pGameInstance->Erase(this);
+		for (auto& iter : ChildEffects)
+			m_pGameInstance->Erase(iter);
 	}
 
 	if (m_fCurLifeTime < m_OwnDesc->fThreadRatio)
@@ -70,12 +78,15 @@ void CGroundSlash::Tick(_float fTimeDelta)
 	}
 	else
 	{
+		if (!m_ParticleSpawn)
+		{
+			Add_ChildEffect();
+			m_ParticleSpawn = true;
+		}
+
 		_float4 ParticlePos = { m_OwnMat->_41,m_OwnMat->_42,m_OwnMat->_43,1.f };
-		EFFECTMGR->Generate_Particle(79, ParticlePos, nullptr, XMVectorZero(), 0.f, XMLoadFloat4(&m_OwnDesc->vDirection));
 		EFFECTMGR->Generate_Particle(80, ParticlePos);
 		EFFECTMGR->Generate_Particle(81, ParticlePos);
-		EFFECTMGR->Generate_Particle(82, ParticlePos);
-
 		m_fCurLifeTime += fTimeDelta;
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
@@ -86,6 +97,13 @@ void CGroundSlash::Tick(_float fTimeDelta)
 
 void CGroundSlash::Late_Tick(_float fTimeDelta)
 {
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	{
+		m_pPlayer->PlayerHit(10);
+	}
+
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
@@ -123,9 +141,19 @@ HRESULT CGroundSlash::Render_Bloom()
 	return S_OK;
 }
 
-
 HRESULT CGroundSlash::Add_Components()
 {
+	/* For.Com_Collider */
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::TYPE_OBB;
+	ColliderDesc.vExtents = _float3(1.f, 1.f, 1.f);
+	ColliderDesc.vCenter = _float3(0.f, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_GroundSlash"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -134,6 +162,16 @@ HRESULT CGroundSlash::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CGroundSlash::Add_ChildEffect()
+{
+	_float4 ParticlePos = { m_OwnMat->_41,m_OwnMat->_42,m_OwnMat->_43,1.f };
+	CGameObject* Particle =  EFFECTMGR->Generate_Particle(79, ParticlePos, this, XMVectorZero(), 0.f, XMLoadFloat4(&m_OwnDesc->vDirection));
+	ChildEffects.emplace_back(Particle);
+	CGameObject* Spark2 = EFFECTMGR->Generate_Particle(82, ParticlePos, this);
+	ChildEffects.emplace_back(Spark2);
 	return S_OK;
 }
 
@@ -198,4 +236,5 @@ void CGroundSlash::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+
 }

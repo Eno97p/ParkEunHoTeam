@@ -146,6 +146,9 @@
     <Filter Include="Objects\02. Effects\17. Jugglus">
       <UniqueIdentifier>{941b2fce-0f99-473c-a5ff-8c35bda1cca6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\18. HexaShield">
+      <UniqueIdentifier>{94f755af-e0f0-4d26-ba24-30b82ddab5ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -391,6 +394,12 @@
     <ClInclude Include="..\Public\HammerSpawn.h">
       <Filter>Objects\02. Effects\17. Jugglus</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HexaShield.h">
+      <Filter>Objects\02. Effects\18. HexaShield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HexaHit.h">
+      <Filter>Objects\02. Effects\18. HexaShield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -620,6 +629,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\HammerSpawn.cpp">
       <Filter>Objects\02. Effects\17. Jugglus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HexaShield.cpp">
+      <Filter>Objects\02. Effects\18. HexaShield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HexaHit.cpp">
+      <Filter>Objects\02. Effects\18. HexaShield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

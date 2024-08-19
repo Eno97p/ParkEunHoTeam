@@ -336,6 +336,10 @@ HRESULT CLevel_Ackbar::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Rlya"))))
 		return E_FAIL;
 
+	//Npc
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Valnir"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

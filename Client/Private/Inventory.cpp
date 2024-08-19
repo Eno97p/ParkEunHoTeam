@@ -151,7 +151,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 		
 			// RedDot 추가
-			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn
+			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn // 해주는데 왜 안 생기지!
 			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1); // Slot
 		}
 	}
@@ -434,6 +434,7 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 			// Slot에 RedDot 생성
+			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn // 해주는데 왜 안 생기지!
 			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, i);
 
 			return true;

@@ -122,6 +122,8 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 			if (m_eColltype == CCollider::COLL_START)
 			{
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}

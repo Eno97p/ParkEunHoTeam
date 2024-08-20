@@ -189,13 +189,13 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 17, true };
 	_float fAnimSpeed = 1.f;
 
-	m_pWeapon->Set_Active(false);
 	if (*m_pState == CGhost::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 17;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_MOVE)
 	{
@@ -203,6 +203,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 18;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_DEAD)
 	{
@@ -210,6 +211,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 9;
 		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_HIT)
 	{
@@ -217,6 +219,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.0f;
 		m_pModelCom->Set_LerpTime(0.8);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_PARRIED)
 	{
@@ -224,6 +227,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 11;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_1)
 	{
@@ -231,6 +235,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 0;
 		fAnimSpeed = 0.8f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_2)
 	{
@@ -238,6 +243,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 1;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_DEFAULTATTACK_3)
 	{
@@ -253,6 +259,7 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 3;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_DOWNATTACK)
 	{
@@ -265,6 +272,10 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CGhost::STATE_LEFT)
 	{
@@ -272,12 +283,14 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 19;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CGhost::STATE_RIGHT)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 20;
 		fAnimSpeed = 1.f;
+		m_pWeapon->Set_Active(false);
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 

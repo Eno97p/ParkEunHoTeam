@@ -224,7 +224,8 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 	switch (m_eColltype)
 	{
 	case CCollider::COLL_START:
-
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
 		_float4 ParticlePs = XM3TO4(m_pHitColliderCom->Get_Center());
 		EFFECTMGR->Generate_Particle(1, ParticlePs, nullptr);
 		EFFECTMGR->Generate_Particle(2, ParticlePs, nullptr);

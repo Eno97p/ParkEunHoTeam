@@ -40,6 +40,7 @@ private:
 	_uint		m_iPastAnimIndex = 0;
 	class CWeapon* m_pWeapon = nullptr;
 	_float m_fDamageTiming = 0.f;
+	_float m_fWalkSound = 0.f;
 
 public:
 	HRESULT Add_Components();

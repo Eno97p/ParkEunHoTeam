@@ -99,6 +99,17 @@ void CWeapon_Homonculus::Late_Tick(_float fTimeDelta)
 #endif
 }
 
+void CWeapon_Homonculus::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Attack.ogg"), SOUND_MONSTER);
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CWeapon_Homonculus::Add_Components()
 {
 	/* For.Com_Collider */

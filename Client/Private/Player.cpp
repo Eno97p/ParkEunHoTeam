@@ -449,11 +449,11 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 	if (m_iState == STATE_DEAD)
 	{
-		
-		
 		//죽었을 때 한 번만 비동기 실행
 		if (!m_bIsLoadStart)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Dead.ogg"), SOUND_EFFECT);
 			m_bIsLoadStart = true;
 			
 			auto futures = m_pGameInstance->AddWork([this]() {
@@ -570,9 +570,17 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 
 	if (m_iState == STATE_HIT || m_iState == STATE_SLOWHIT)
 	{
+		if (!m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
+			m_bSound = true;
+		}
+
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
+			m_bSound = false;
 			if (m_bRiding)
 			{
 				m_iState = STATE_SLIDE;
@@ -980,6 +988,8 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 
 				if (!m_bSpecialAttackShake)
 				{
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("BRIS.mp3"), SOUND_EFFECT, 0.f, 1.2f);
 					CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 					pThirdPersonCamera->Shake_Camera(0.05f, 0.366f, 0.058f, 3.166f);
 					m_bSpecialAttackShake = true;
@@ -1115,6 +1125,8 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		}
 		if (m_iState != STATE_SPECIALATTACK3)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Special3_Charge.ogg"), SOUND_EFFECT, 0.f, 0.8f);
 			_float4 vParticlepos;
 			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
@@ -1138,6 +1150,12 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
 		}
+		if (m_fSpecialAttack > 3.f && !m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Special3.ogg"), SOUND_EFFECT, 0.f, 0.8f);
+			m_bSound = true;
+		}
 		if (m_bAnimFinished)
 		{
 			if (m_bRunning)
@@ -1148,6 +1166,7 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			{
 				m_pPhysXCom->Set_Speed(WALKSPEED);
 			}
+			m_bSound = false;
 			m_bStaminaCanDecrease = true;
 			m_fSpecialAttack = 0.f;
 			m_fFightIdle = 0.01f;
@@ -1668,6 +1687,8 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping && m_iState != STATE_DASH)
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Dash.ogg"), SOUND_PLAYER);
 
 		m_pPhysXCom->Set_JumpSpeed(0.f);
 		m_pPhysXCom->Go_Jump(fTimeDelta);
@@ -2023,6 +2044,8 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Heal.ogg"), SOUND_PLAYER);
 		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{

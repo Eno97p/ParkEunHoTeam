@@ -378,6 +378,8 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -812,7 +814,6 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			m_iState = STATE_SHOOTINGSTARATTACK;
 			break;
 		}
-		m_iState = STATE_GROUNDATTACK;
 		return SUCCESS;
 	}
 

@@ -107,6 +107,12 @@
 #include "C:\3D_TeamProj\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\3D_TeamProj\EffectTool\Private\HexaHit.cpp"
+
+
+#include "C:\3D_TeamProj\EffectTool\Private\HexaShield.cpp"
+
+
 #include "C:\3D_TeamProj\EffectTool\Private\HoverBoard.cpp"
 
 

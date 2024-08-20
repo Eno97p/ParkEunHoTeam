@@ -23,7 +23,7 @@ HRESULT CFakeWall::Initialize(void* pArg)
 {
 
 
-	if (FAILED(CGameObject::Initialize(nullptr)))
+	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
 
 

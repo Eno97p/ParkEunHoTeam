@@ -111,7 +111,7 @@ HRESULT CLevel_Ackbar::Initialize()
 	//	Engine::Save_Data(wstrFilePath.c_str(), false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
 	//});
 
-	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
 
 	// UI Manaver로 UI Level 생성하기

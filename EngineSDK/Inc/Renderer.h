@@ -119,6 +119,9 @@ public:
 		m_fFresnelPower = fresnelPower;
 		m_iCausticIdx = CausticIdx;
 	}
+
+public:
+	void Set_HBAOParams(GFSDK_SSAO_Parameters params);
 	//ÀÌ¹Î¿µ Ãß°¡ 240711 2002PM
 private:
 	ID3D11Texture2D* m_pPrevDepthTexture = nullptr;
@@ -181,6 +184,9 @@ private:		//For. NVIDIA_HBAO
 	GFSDK_ShadowLib_Map*	m_pShadowMap = nullptr;
 	ID3D11ShaderResourceView* m_pHBAOShadowSRV = nullptr;
 	GFSDK_SSAO_Context_D3D11* m_pSSAOContext = nullptr;
+
+	GFSDK_SSAO_Parameters m_Params;
+
 	//Shadow
 private:
 	_vector								m_vShadowEye = XMVectorSet(0.f, 10.f, -10.f, 1.f);

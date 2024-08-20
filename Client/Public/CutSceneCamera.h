@@ -26,6 +26,7 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
 	virtual void Tick(_float fTimeDelta) override;
+	float EaseInOutCubic(float t);
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
@@ -95,6 +96,11 @@ private:
 public:
 	_uint Get_CutSceneCount() const { return m_AllCutScenes.size(); }
 	void Set_CutSceneIdx(_uint idx);
+	_float PerlinNoise(_float x, _float y, int octaves, _float persistence);
+	_float InterpolatedNoise(_float x, _float y);
+	_float SmoothNoise(int x, int y);
+	_float Noise(int x, int y);
+	_float CosineInterpolate(_float a, _float b, _float t);
 	_uint Get_CutSceneIdx() const { return m_iCurrentCutSceneIdx; }
 	void Add_CutScene(const vector<CameraKeyFrame>& keyFrames) { m_AllCutScenes.push_back(keyFrames); }
 

@@ -78,12 +78,18 @@ void CHomonculus::Priority_Tick(_float fTimeDelta)
 
 void CHomonculus::Tick(_float fTimeDelta)
 {
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 	m_fDegreeBetweenPlayerAndMonster = abs(XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
+
 	if (!m_bPlayerIsFront)
 	{
-
-		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
+		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking() && m_fLengthFromPlayer < DETECTRANGE)
+		{
+			m_bPlayerIsFront = true;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else
 	{
@@ -92,7 +98,6 @@ void CHomonculus::Tick(_float fTimeDelta)
 			m_bPlayerIsFront = false;
 		}
 	}
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	Check_AnimFinished();
 
@@ -264,7 +269,6 @@ NodeStates CHomonculus::Explosion(_float fTimeDelta)
 {
 	if (m_iState == STATE_EXPLOSION)
 	{
-
 		if (m_isAnimFinished)
 		{
 			_matrix Worldmat = m_pTransformCom->Get_WorldMatrix();
@@ -273,6 +277,8 @@ NodeStates CHomonculus::Explosion(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(8, vParticlePos);
 			vParticlePos.y += 1.5f;
 			EFFECTMGR->Generate_Particle(9, vParticlePos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Explosion.ogg"), SOUND_EFFECT, 0.f, 1.2f);
 			// Æø¹ß ÀÌÆåÆ®
 			if (m_fLengthFromPlayer < EXPLOSIONRANGE)
 			{
@@ -321,8 +327,8 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
-		m_bPlayerIsFront = true;
-
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Hit.ogg"), SOUND_MONSTER);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -343,6 +349,13 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 				pThirdPersonCamera->StartTilt(-25.344f, 0.24f, 0.44f);
 				m_bParryFirstHit = !m_bParryFirstHit;
 			}
+		}
+
+		if (!m_bPlayerIsFront)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER);
+			m_bPlayerIsFront = true;
 		}
 
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();

@@ -171,6 +171,18 @@ void CPlayer::Tick(_float fTimeDelta)
 	} 
 
 
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_GRASSLAND)
+	{
+		m_GrassBlowInterval -= fTimeDelta;
+		if (m_GrassBlowInterval < 0.f)
+		{
+			_float4 vParticlePos;
+			XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(40, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+			m_GrassBlowInterval = 1.f;
+		}
+	}
+
 }
 
 void CPlayer::Late_Tick(_float fTimeDelta)

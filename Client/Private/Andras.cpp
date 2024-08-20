@@ -9,6 +9,7 @@
 #include "Weapon_Andras.h"
 #include "RushSword.h"
 #include "EffectManager.h"
+#include "Particle.h"
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
@@ -64,7 +65,12 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_iState = STATE_IDLE;
 
 	m_bPlayerIsFront = true;
-
+	_float4 vstartPos;
+	XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	CGameObject* Oura = EFFECTMGR->Generate_Particle(94, vstartPos, this);
+	m_Particles.emplace_back(Oura);
+	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
+	m_Particles.emplace_back(Oura2);
 	return S_OK;
 }
 
@@ -76,6 +82,11 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		if (m_fDeadDelay < 0.f)
 		{
 			m_pGameInstance->Erase(this);
+			for (auto& iter : m_Particles)
+			{
+				static_cast<CParticle*>(iter)->Set_Delete();
+			}
+			m_Particles.clear();
 		}
 	}
 
@@ -896,10 +907,14 @@ CGameObject* CAndras::Clone(void* pArg)
 
 void CAndras::Free()
 {
+
+
 	__super::Free();
 
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
+
+
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);

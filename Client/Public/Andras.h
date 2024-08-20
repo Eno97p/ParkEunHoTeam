@@ -64,7 +64,7 @@ private:
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
-
+	vector<class CGameObject*>					m_Particles;
 #pragma region 상태제어 bool변수
 	_bool										m_bReviving = false;
 	_bool										m_bChasing = true;

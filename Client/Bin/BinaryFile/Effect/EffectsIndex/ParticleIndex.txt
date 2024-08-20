@@ -92,3 +92,5 @@
 91. JugglusTale2
 92. ShieldHit
 93. ShieldHit2
+94. AndrasOura
+95. JugglusSphereFire

@@ -171,7 +171,8 @@ private:
 
 private:
 	void PhysX_Particle_Tool(_bool* Open);
-
+	HRESULT Store_PhysX(char* Name, CParticle_PhysX::PARTICLE_PHYSXDESC desc);
+	void PhysX_ListBox(CParticle_PhysX::PARTICLE_PHYSXDESC* PhysX);
 private:
 	void Hedgehog_Tool(_bool* Open);
 	HRESULT Save_Hedgehog(CNeedleSpawner::NEEDLESPAWNER* pHedgehog);

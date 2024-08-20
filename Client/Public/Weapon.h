@@ -18,7 +18,7 @@ public:
 	typedef struct WEAPON_DESC : public CPartObject::PARTOBJ_DESC
 	{
 		const _float4x4*			pCombinedTransformationMatrix;
-
+		_float3						vOffset = { 0.f,0.f,0.f };
 	}WEAPON_DESC;
 
 protected:

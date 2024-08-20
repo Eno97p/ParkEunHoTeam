@@ -115,7 +115,7 @@ HRESULT CLevel_Ackbar::Initialize()
 	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
 
 	// UI Manaver로 UI Level 생성하기
-	//CUI_Manager::GetInstance()->Create_LevelUI();
+	CUI_Manager::GetInstance()->Create_LevelUI();
 
 	return S_OK;
 }

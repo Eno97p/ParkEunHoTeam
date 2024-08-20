@@ -129,6 +129,9 @@ HRESULT CLevel_GrassLand::Initialize()
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
 
+	// UI Manaver로 UI Level 생성하기
+	CUI_Manager::GetInstance()->Create_LevelUI();
+
 	return S_OK;
 }
 

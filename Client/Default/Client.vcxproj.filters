@@ -835,6 +835,9 @@
     <Filter Include="02.GameObjects\02.LandObject\05. FallPlatform">
       <UniqueIdentifier>{c98b7873-a5e3-4d32-926e-dd102c79c78f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Cinematic">
+      <UniqueIdentifier>{edfab1b0-2109-419a-bd05-c1bdd4700630}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1790,6 +1793,9 @@
     <ClInclude Include="..\Public\UI_Level_TextBox.h">
       <Filter>02.GameObjects\07. UI\Level\TextBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_Cinematic.h">
+      <Filter>02.GameObjects\07. UI\Cinematic</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClInclude>
@@ -2739,6 +2745,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Level_TextBox.cpp">
       <Filter>02.GameObjects\07. UI\Level\TextBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Cinematic.cpp">
+      <Filter>02.GameObjects\07. UI\Cinematic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

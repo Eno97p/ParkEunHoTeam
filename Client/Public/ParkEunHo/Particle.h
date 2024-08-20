@@ -47,10 +47,12 @@ public:
 	void Set_Target(CGameObject* Target);
 	void Set_Rotation(_float Radian, _vector Axis);
 	void AdJustLook(_vector vLook);
+	void Set_Delete() { m_Delete = true; }
 protected:
 	CTexture* m_pDesolveTexture = { nullptr };
 	CShader*  m_pShaderCom = { nullptr };
 	CTransform* m_pTarget = { nullptr };
+	_bool		m_Delete = false;
 public:
 	virtual void Free() override;
 };

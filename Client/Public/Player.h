@@ -255,11 +255,12 @@ private:
 
 private:
 	CGameObject* HexaShieldText = nullptr;
-
+	_float		m_GrassBlowInterval = 1.f;
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);
 	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
+
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

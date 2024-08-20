@@ -86,7 +86,7 @@ void CWeapon_Yantari::Tick(_float fTimeDelta)
 		}
 	}
 
-	Generate_Trail(2);
+	Generate_Trail(9);
 }
 
 void CWeapon_Yantari::Late_Tick(_float fTimeDelta)

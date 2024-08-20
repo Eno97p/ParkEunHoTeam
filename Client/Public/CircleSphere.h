@@ -45,6 +45,7 @@ private:
 
 	_float m_fShootDelay = 3.f;
 	_bool m_bLookatPlayer = false;
+	CGameObject* Particle = nullptr;
 
 public:
 	HRESULT Add_Components();

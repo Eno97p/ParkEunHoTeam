@@ -27,6 +27,7 @@
 #include "UI_Dash.h"
 #include "QTE.h"
 #include "UI_FadeInOut.h"
+#include "UI_Cinematic.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -136,6 +137,9 @@ void CUI_Manager::Tick(_float fTimeDelta)
 		else
 			m_pFadeIn->Tick(fTimeDelta);
 	}
+
+	if (nullptr != m_pCinematic)
+		m_pCinematic->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -163,6 +167,9 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pFadeIn)
 		m_pFadeIn->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pCinematic)
+		m_pCinematic->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -302,14 +309,12 @@ HRESULT CUI_Manager::Create_UI()
 	m_mapUIGroup.emplace("BuffTimer", dynamic_cast<CUIGroup_BuffTimer*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_BuffTimer"), &pDesc)));
 
 	// ScreenBlood
-	CUI::UI_DESC pBloodDesc{};
-	pBloodDesc.eLevel = LEVEL_STATIC;
-	m_pScreenBlood = dynamic_cast<CUI_ScreenBlood*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScreenBlood"), &pBloodDesc));
+	CUI::UI_DESC pUIDesc{};
+	pUIDesc.eLevel = LEVEL_STATIC;
+	m_pScreenBlood = dynamic_cast<CUI_ScreenBlood*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ScreenBlood"), &pUIDesc));
 
 	// Broken   
-	CUI::UI_DESC pBrokenDesc{};
-	pBrokenDesc.eLevel = LEVEL_STATIC;
-	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pBrokenDesc));
+	m_pBroken = dynamic_cast<CUI_Broken*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Broken"), &pUIDesc));
 
 	// Dash
 	CUI_Dash::UI_DASH_DESC pDashDesc{};
@@ -319,6 +324,9 @@ HRESULT CUI_Manager::Create_UI()
 		pDashDesc.iDashIdx = i;
 		m_vecDash.emplace_back(dynamic_cast<CUI_Dash*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Dash"), &pDashDesc)));
 	}
+
+	// Cinematic
+	m_pCinematic = dynamic_cast<CUI_Cinematic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_Cinematic"), &pUIDesc));
 
 	return S_OK;
 }
@@ -486,6 +494,11 @@ void CUI_Manager::Create_LevelUI()
 	pDesc.eLevel = LEVEL_STATIC;
 
 	m_mapUIGroup.insert({"Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc))});
+}
+
+void CUI_Manager::Setting_Cinematic()
+{
+	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
 }
 
 void CUI_Manager::Key_Input()
@@ -662,6 +675,13 @@ void CUI_Manager::Key_Input()
 			Create_QTE();
 		}
 	}
+
+
+	// Test 키보드로 테스트
+	if (m_pGameInstance->Key_Down(DIK_J))
+	{
+		Setting_Cinematic();
+	}
 }
 
 void CUI_Manager::Free()
@@ -675,6 +695,7 @@ void CUI_Manager::Free()
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
 	
+	Safe_Release(m_pCinematic);
 	Safe_Release(m_pFadeIn);
 	Safe_Release(m_pFadeOut);
 	Safe_Release(m_pQTE);

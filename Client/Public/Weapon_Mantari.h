@@ -24,6 +24,7 @@ public:
 	virtual HRESULT Render_Bloom() override;
 	_bool Get_IsParried() { return m_bIsParried; }
 	void Set_IsParried(_bool isParried) { m_bIsParried = isParried; }
+	virtual void Set_Active(_bool isActive) override;
 
 public:
 	HRESULT Add_Components();

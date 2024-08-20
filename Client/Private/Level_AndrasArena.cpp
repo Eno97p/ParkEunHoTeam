@@ -95,7 +95,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 	//});
 
 
-	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
 
@@ -289,7 +289,7 @@ HRESULT CLevel_AndrasArena::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Boss"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
 		return E_FAIL;
 
 

@@ -51,6 +51,7 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void * pArg)
 {
+
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
@@ -71,6 +72,8 @@ HRESULT CGameObject::Initialize(void * pArg)
 		{
 			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 		}*/
+		Set_Desc(*static_cast<GAMEOBJECT_DESC*>(pArg));
+		
 	}
 
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
@@ -138,4 +141,9 @@ void CGameObject::Free()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	if (m_pDesc)
+	{
+		free(m_pDesc);
+		m_pDesc = nullptr;
+	}
 }

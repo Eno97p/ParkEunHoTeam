@@ -90,8 +90,6 @@ void CThirdPersonCamera::Tick(_float fTimeDelta)
             m_pTransformCom->Set_WorldMatrix(dynamic_cast<CTransform*>(m_pGameInstance->Get_MainCamera()->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix());
             return;
         }
-
-        return;
     }
 
     // 플레이어 위치 가져오기

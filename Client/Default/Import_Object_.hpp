@@ -174,6 +174,11 @@ HRESULT Load_Object(CGameInstance* pGameInstance, ID3D11Device* pDevice, ID3D11D
 		CBackGround_Card::Create(pDevice, pContext))))
 		return E_FAIL;
 
+	//Prototype_GameObject_BackGround_Moon
+	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BackGround_Moon"),
+		CBackGround_Moon::Create(pDevice, pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_FallPlatform */
 	if (FAILED(pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FallPlatform"),
 		CFallPlatform::Create(pDevice, pContext))))

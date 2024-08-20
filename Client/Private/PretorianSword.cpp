@@ -284,6 +284,20 @@ CCollider* CPretorianSword::Get_Collider()
 	}
 }
 
+void CPretorianSword::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (*m_pState != CPlayer::STATE_SPECIALATTACK4)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Slash2.ogg"), SOUND_PLAYER);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CPretorianSword::Add_Components()
 {
 	/* For.Com_Collider */

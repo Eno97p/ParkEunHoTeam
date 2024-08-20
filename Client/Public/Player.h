@@ -186,6 +186,7 @@ private:
 	_float										m_fJumpAttackdelay = 0.7f;
 	_float										m_fStaminaRecoverDelay = STAMINARECOVERDELAY;
 	_float m_fBRIS = 0.f;
+	_bool m_bSound = false;
 	const _float4x4* m_pParriedMonsterFloat4x4 = { nullptr }; 
 	CTransform* m_pCameraTransform = { nullptr };
 	class CHoverboard* m_pHoverBoard = nullptr;
@@ -194,11 +195,11 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	//_float m_fMaxHp = 10.f;
-	_float m_fMaxHp = 1000.f;
+	_float m_fMaxHp = 10.f;
+	//_float m_fMaxHp = 1000.f;
 #else
-	_float m_fMaxHp = 300.f;
-	//_float m_fMaxHp = 10.f;
+	//_float m_fMaxHp = 300.f;
+	_float m_fMaxHp = 10.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;
@@ -254,11 +255,12 @@ private:
 
 private:
 	CGameObject* HexaShieldText = nullptr;
-
+	_float		m_GrassBlowInterval = 1.f;
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);
 	bool OnFilterCallback(const PxController& Caller, const PxController& Ohter);
+
 
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -9,6 +9,7 @@ class ENGINE_DLL CVIBuffer_Instance_Point final : public CVIBuffer_Instance
 private:
 	CVIBuffer_Instance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CVIBuffer_Instance_Point(const CVIBuffer_Instance_Point& rhs);
+	CVIBuffer_Instance_Point(const CVIBuffer_Instance_Point& rhs, _bool For_Copy);
 	virtual ~CVIBuffer_Instance_Point() = default;
 
 public:

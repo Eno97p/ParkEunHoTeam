@@ -100,6 +100,17 @@ void CWeapon_Ghost::Late_Tick(_float fTimeDelta)
 #endif
 }
 
+void CWeapon_Ghost::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Attack.ogg"), SOUND_MONSTER);
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CWeapon_Ghost::Add_Components()
 {
 	/* For.Com_Collider */

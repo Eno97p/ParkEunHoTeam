@@ -33,6 +33,7 @@ public:
 	void Add_Hp(_int iValue);
 
 private:
+	_bool m_bSound = false;
 	_uint m_eMode = MODE_IDLE;
 	_bool							m_isHit = { false };
 	_bool							m_isAttackDistance = { false };

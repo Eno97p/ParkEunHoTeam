@@ -126,7 +126,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 
 
-	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
 
 	return S_OK;

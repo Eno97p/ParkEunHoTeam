@@ -290,6 +290,8 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(18, PartPos);
 			EFFECTMGR->Generate_Particle(42, PartPos);
 			EFFECTMGR->Generate_Particle(43, PartPos);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_GroundAttack.ogg"), SOUND_MONSTER);
 		}
 
 
@@ -302,8 +304,6 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active();
 		}
-
-
 	}
 	else if (*m_pState == CHomonculus::STATE_FULLATTACK)
 	{
@@ -316,6 +316,8 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(18, PartPos);
 			EFFECTMGR->Generate_Particle(42, PartPos);
 			EFFECTMGR->Generate_Particle(43, PartPos);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_GroundAttack.ogg"), SOUND_MONSTER);
 		}
 
 
@@ -331,6 +333,14 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 	}
 	else if (*m_pState == CHomonculus::STATE_MOVE)
 	{
+		m_fWalkSound += fTimeDelta;
+		if (m_fWalkSound > 0.7f)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Disable_Reverb();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Walk.ogg"), SOUND_MONSTER);
+			m_fWalkSound = 0.f;
+		}
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.4f;
@@ -351,6 +361,10 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.2);
 	}
 
+	if (*m_pState != CHomonculus::STATE_MOVE)
+	{
+		m_fWalkSound = 0.f;
+	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);
 

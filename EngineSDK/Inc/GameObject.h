@@ -30,6 +30,21 @@ public:
 	// 0713 김보민 추가
 	HRESULT				Delete_Component(const wstring& strComponentTag);
 
+//PSW
+	template<typename T>
+	void Set_Desc(const T& t)
+	{
+		if (m_pDesc)
+		{
+			free(m_pDesc);
+		}
+		m_DescSize = sizeof(T);
+		m_pDesc = malloc(m_DescSize);
+		memcpy(m_pDesc, &t, m_DescSize);
+	}
+	void* Get_Desc() { return m_pDesc; }
+	size_t Get_DescSize() { return m_DescSize; }
+
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -53,6 +68,7 @@ public:
 	void Set_ProtoTypeTag(const wstring& wstrPrototypeTag) {m_wstrPrototypeTag = wstrPrototypeTag;}
 	const wstring& Get_ProtoTypeTag() { return m_wstrPrototypeTag; }
 	virtual _float4	Get_InitPos() { return m_vInitialPos; }
+	
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
@@ -69,7 +85,8 @@ protected:
 	class CTransform*			m_pTransformCom = { nullptr };
 	static const _tchar*		m_pTransformTag;
 	wstring						m_wstrPrototypeTag = L"";
-
+	void*						m_pDesc = nullptr;
+	size_t						m_DescSize = 0;
 	_float4 m_vInitialPos = { 0.f, 0.f, 0.f, 1.f };
 protected:
 	map<const wstring, class CComponent*>		m_Components;		//복사된 컴포넌트를 들고 있음

@@ -449,11 +449,11 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 	if (m_iState == STATE_DEAD)
 	{
-		
-		
 		//죽었을 때 한 번만 비동기 실행
 		if (!m_bIsLoadStart)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Dead.ogg"), SOUND_EFFECT);
 			m_bIsLoadStart = true;
 			
 			auto futures = m_pGameInstance->AddWork([this]() {
@@ -488,7 +488,8 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 			if (CUI_Manager::GetInstance()->Get_isFadeAnimEnd(false)) // FadeOut이 끝나면 아래 로직 실시(화면이 까매지면)
 			{
-				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
+				
+				LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevelIndex();
 				if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
 				{
 					m_pPhysXCom->Set_Position(m_vDest);	//플레이어 위치 이동
@@ -498,17 +499,17 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 					m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
 				}
 
-				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
-				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
 				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");		//지워야할 Layer
 
 
-
-
-				CInitLoader<LEVEL, wstring>* InitLoader = new CInitLoader<LEVEL, wstring>(&InitLoader);
-				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");
-				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_Boss");
+				CInitLoader<LEVEL, const wchar_t*>* InitLoader = new CInitLoader<LEVEL, const wchar_t*>(&InitLoader);
+				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");
+				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
 				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");                                                                                                                                                                              
+
 
 
 				CUI_Manager::GetInstance()->Delete_FadeInOut(false);
@@ -524,64 +525,6 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				m_isReviveFadeing = false;
 			}
 
-
-			// 해당 코드 위로 옮김 ^
-			//if (m_pGameInstance->Get_DIKeyState(DIK_0))		//Test Code
-			////if ()//페이드인 끝났으면 아래 코드 실행
-			//{
-			//	LEVEL eCurLevel = (LEVEL)m_pGameInstance->Get_CurrentLevel();
-			//	if (!XMVector4Equal(XMVectorZero(), m_vDest) && m_eCurLevel == eCurLevel)	//불러온 데이터가 있을 때 그리고 불러온 레벨이 현재 진행중인 레벨과 같을 때
-			//	{
-			//		m_pPhysXCom->Set_Position(m_vDest);	//플레이어 위치 이동
-			//	}
-			//	else	//불러온 데이터가 없을 때`
-			//	{
-
-			//		m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
-			//	}
-
-			//	m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster");		//지워야할 Layer
-			//	//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_???");		//지워야할 Layer
-			//	
-
-
-
-
-
-			//	wstring wstrLevelName = Client::Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
-			//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrLevelName+ L"_"+ L"Layer_Monster" + L".bin";
-
-			//	decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(wstrFilePath);
-			//	if (pLoad_Data)
-			//	{
-			//		size_t  iVecSize = get<0>(*pLoad_Data);
-			//		_tagMonsterInit_Property* pMonsterInit = get<1>(*pLoad_Data);
-			//		vector<_tagMonsterInit_Property> vecMonsterInit(pMonsterInit, pMonsterInit + iVecSize);
-			//		for (_uint i = 0; i < iVecSize; ++i)
-			//		{
-			//			CLandObject::LANDOBJ_DESC landObjDesc;
-			//			landObjDesc.mWorldMatrix._41 = vecMonsterInit[i].vPos.x;
-			//			landObjDesc.mWorldMatrix._42 = vecMonsterInit[i].vPos.y;
-			//			landObjDesc.mWorldMatrix._43 = vecMonsterInit[i].vPos.z;
-			//			landObjDesc.mWorldMatrix._11 = 1.f;
-			//			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), L"Layer_Monster", vecMonsterInit[i].strMonsterTag, &landObjDesc);
-			//		}
-
-			//	}
-
-
-
-
-
-
-
-
-
-
-			//	m_iState = STATE_REVIVE;
-			//	m_bIsLoadStart = false;
-			//}
-			
 			return SUCCESS;
 		}
 		return RUNNING;
@@ -627,9 +570,17 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 
 	if (m_iState == STATE_HIT || m_iState == STATE_SLOWHIT)
 	{
+		if (!m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
+			m_bSound = true;
+		}
+
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
+			m_bSound = false;
 			if (m_bRiding)
 			{
 				m_iState = STATE_SLIDE;
@@ -1037,6 +988,8 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 
 				if (!m_bSpecialAttackShake)
 				{
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("BRIS.mp3"), SOUND_EFFECT, 0.f, 1.2f);
 					CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 					pThirdPersonCamera->Shake_Camera(0.05f, 0.366f, 0.058f, 3.166f);
 					m_bSpecialAttackShake = true;
@@ -1172,6 +1125,8 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		}
 		if (m_iState != STATE_SPECIALATTACK3)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Special3_Charge.ogg"), SOUND_EFFECT, 0.f, 0.8f);
 			_float4 vParticlepos;
 			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
@@ -1195,6 +1150,12 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
 		}
+		if (m_fSpecialAttack > 3.f && !m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Special3.ogg"), SOUND_EFFECT, 0.f, 0.8f);
+			m_bSound = true;
+		}
 		if (m_bAnimFinished)
 		{
 			if (m_bRunning)
@@ -1205,6 +1166,7 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			{
 				m_pPhysXCom->Set_Speed(WALKSPEED);
 			}
+			m_bSound = false;
 			m_bStaminaCanDecrease = true;
 			m_fSpecialAttack = 0.f;
 			m_fFightIdle = 0.01f;
@@ -1725,6 +1687,8 @@ NodeStates CPlayer::Dash(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_bJumping && m_iState != STATE_DASH)
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Dash.ogg"), SOUND_PLAYER);
 
 		m_pPhysXCom->Set_JumpSpeed(0.f);
 		m_pPhysXCom->Go_Jump(fTimeDelta);
@@ -2080,6 +2044,8 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Heal.ogg"), SOUND_PLAYER);
 		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{

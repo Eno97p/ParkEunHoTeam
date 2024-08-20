@@ -265,6 +265,20 @@ HRESULT CDurgaSword::Render_Bloom()
 	return S_OK;
 }
 
+void CDurgaSword::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (*m_pState != CPlayer::STATE_SPECIALATTACK3)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Slash.ogg"), SOUND_PLAYER);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CDurgaSword::Add_Components()
 {
 	/* For.Com_Collider */

@@ -98,51 +98,19 @@ HRESULT CLevel_GamePlay::Initialize()
 	_vector vFocus = { 151.f, 521.f, 97.f, 1.f };
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
-	
-
-
-	
-
-	//initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
-	
-	
-	////비동기 저장
-	//auto futures = m_pGameInstance->AddWork([this]()
-	//{
-	//	//초기값 몬스터 저장
-	//	//vector<_tagMonsterInit_Property> vecMonsterInitProperty;
-	//	list<CGameObject*> pList = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, L"Layer_Monster");
-	//	//vecMonsterInitProperty.resize(pList.size());
-	//	m_pvecMonsterInitProperty.resize(pList.size());
-	//	_uint iIndex = 0;
-	//	for (auto& pMonster : pList)
-	//	{
-	//		m_pvecMonsterInitProperty[iIndex].vPos = dynamic_cast<CMonster*>(pMonster)->Get_InitPos();
-	//		m_pvecMonsterInitProperty[iIndex].strMonsterTag = pMonster->Get_ProtoTypeTag();
-	//		iIndex++;
-
-	//	}
-	//	wstring wstrlevelName = Get_CurLevelName(m_pGameInstance->Get_CurrentLevel());
-	//	wstring wstrFilePath = L"../Bin/DataFiles/LevelInit_" + wstrlevelName + L".dat";
-	//	Engine::Save_Data(wstrFilePath, false, m_pvecMonsterInitProperty.size(), m_pvecMonsterInitProperty.data());
-
-	//});
-	//if (futures.wait_for(chrono::milliseconds(10)) == future_status::ready)	//비동기 작업이 끝났을 때
-	//{
-	//	decltype(auto) pLoad_Data = Engine::Load_Data<size_t, _tagMonsterInit_Property*>(L"../Bin/DataFiles/LevelInit_GamePlay.dat");
-	//	int test = 0;
-	//}
-
 
 	//위에 코드를 아래 코드로 대체 (지역적으로 있는 값을 저장할 떄 문제를 해결)
 	//힙영역에 데이터를 할당하고 프로그램이 꺼지면 해당 힙 데이터 삭제 (스스로 지움)
-	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
-	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
+
 
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
 	
+
+
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
+	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
 
 	return S_OK;
 }
@@ -387,6 +355,14 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 {
 
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	CLandObject::LANDOBJ_DESC landObjDesc;
+	landObjDesc.mWorldMatrix._41 = 140.f;
+	landObjDesc.mWorldMatrix._42 = 450.f;
+	landObjDesc.mWorldMatrix._43 = 100.f;
+	landObjDesc.mWorldMatrix._44 = 1.f;
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"))))

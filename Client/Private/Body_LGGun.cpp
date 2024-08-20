@@ -212,14 +212,14 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 	_float fAnimSpeed = 1.f;
 
 	*m_pCanCombo = false;
-	m_pSword->Set_Active(false);
-	m_pGun->Set_Active(false);
 	if (*m_pState == CLegionnaire_Gun::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_IDLE_GUN)
 	{
@@ -227,6 +227,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 14;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_IDLE_MELEE)
 	{
@@ -234,6 +236,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 17;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(2.0);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_HIT)
 	{
@@ -241,6 +245,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 46;
 		fAnimSpeed = 2.f; // 1
 		m_pModelCom->Set_LerpTime(1.0); // 1.2
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_PARRIED)
 	{
@@ -248,6 +254,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 46;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_WAKEUP)
 	{
@@ -255,6 +263,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 12;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_KNOCKDOWN)
 	{
@@ -262,6 +272,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 10;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_DEAD)
 	{
@@ -269,6 +281,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 10;
 		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_WALK)
 	{
@@ -276,6 +290,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 21;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_RUN)
 	{
@@ -283,6 +299,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 19;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_BACK)
 	{
@@ -290,6 +308,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 20;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_LEFT)
 	{
@@ -297,6 +317,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 22;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_RIGHT)
 	{
@@ -304,6 +326,8 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 24;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pSword->Set_Active(false);
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_GUNATTACK)
 	{
@@ -317,6 +341,12 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 			m_pGun->Set_Active();
 			m_fDamageTiming += 0.2f;
 		}
+		else
+		{
+			m_pGun->Set_Active(false);
+		}
+		m_pSword->Set_Active(false);
+		
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_MELEEATTACK1)
 	{
@@ -337,6 +367,11 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		{
 			m_pSword->Set_Active();
 		}
+		else
+		{
+			m_pSword->Set_Active(false);
+		}
+		m_pGun->Set_Active(false);
 	}
 	else if (*m_pState == CLegionnaire_Gun::STATE_MELEEATTACK2)
 	{
@@ -349,6 +384,11 @@ void CBody_LGGun::Change_Animation(_float fTimeDelta)
 		{
 			m_pSword->Set_Active();
 		}
+		else
+		{
+			m_pSword->Set_Active(false);
+		}
+		m_pGun->Set_Active(false);
 	}
 
 	m_pModelCom->Set_AnimationIndex(AnimDesc);

@@ -1075,7 +1075,7 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 		{
 			// 스테미나 조절할 것
 			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
-			pThirdPersonCamera->Zoom(45.f, 0.1f, 0.251f);
+			pThirdPersonCamera->Zoom(75.f, 0.1f, 0.251f);
 			Add_Stamina(-10.f);
 		}
 		if (m_bAnimFinished)
@@ -1114,7 +1114,7 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		if (!m_bDisolved_Yaak)
 		{
 			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
-			pThirdPersonCamera->Zoom(90.f, 2.5f, 0.602f);
+			pThirdPersonCamera->Zoom(90.f, 2.5f, 10.0f);
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}

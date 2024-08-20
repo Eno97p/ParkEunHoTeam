@@ -18,8 +18,6 @@ HRESULT CBackGround_Moon::Initialize_Prototype()
 
 HRESULT CBackGround_Moon::Initialize(void* pArg)
 {
-	if (pArg == nullptr)
-		return E_FAIL;
 
 	if (FAILED(CGameObject::Initialize(nullptr)))
 		return E_FAIL;
@@ -32,6 +30,10 @@ HRESULT CBackGround_Moon::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_pTransformCom->Set_Scale(1000.f, 1000.f, 1.f);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-4130.f, 4788.3f, 5495.383, 1.f));
+
 	CARD_DESC* cardDesc = (CARD_DESC*)pArg;
 
 	m_iTexNum = 1;
@@ -83,7 +85,7 @@ HRESULT CBackGround_Moon::Render()
 		if (FAILED(m_pMoonTex->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(11); //COLOR
+		m_pShaderCom->Begin(8); //COLOR
 
 		m_pModelCom->Render(i);
 	}
@@ -112,7 +114,7 @@ HRESULT CBackGround_Moon::Render_Bloom()
 		if (FAILED(m_pMoonTex->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 2)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(11); //COLOR
+		m_pShaderCom->Begin(8); //COLOR
 
 		m_pModelCom->Render(i);
 	}

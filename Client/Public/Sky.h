@@ -27,6 +27,8 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render(ID3D11DeviceContext* pDeferredContext) override;
 
+public:
+	void Set_SkyTex(_uint idx) { m_iSkyTex = idx; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

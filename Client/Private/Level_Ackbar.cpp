@@ -502,11 +502,19 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 				// 다른 객체들은 개별적으로 생성
 
 			
+				const TCHAR* pModifiedName = nullptr;
 
 				CLandObject::LANDOBJ_DESC pDesc{};
 				pDesc.mWorldMatrix = WorldMatrix;
-
-				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wszLayer, wszName, &pDesc)))
+				if (wstring(wszName) == TEXT("Prototype_GameObject_Mantari"))
+				{
+					pModifiedName = TEXT("Prototype_GameObject_Yantari");
+				}
+				else
+				{
+					pModifiedName = wszName;
+				}
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wszLayer, pModifiedName, &pDesc)))
 					return E_FAIL;
 
 			}

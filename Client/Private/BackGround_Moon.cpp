@@ -181,4 +181,6 @@ void CBackGround_Moon::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMoonTex);
+
 }

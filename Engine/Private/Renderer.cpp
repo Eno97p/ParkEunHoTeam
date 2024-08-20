@@ -12,8 +12,8 @@
 #include "CRenderWorker.h"
 
 
-_uint      g_iSizeX = 1280;
-_uint      g_iSizeY = 720;
+_uint      g_iSizeX = 8192;
+_uint      g_iSizeY = 4608;
 
 #define HBAO_Plus
 

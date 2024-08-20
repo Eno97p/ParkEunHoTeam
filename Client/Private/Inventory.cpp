@@ -93,21 +93,21 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
-	Add_DropItem(CItem::ITEM_ESSENCE);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF2);
-	Add_DropItem(CItem::ITEM_BUFF3);
-	Add_DropItem(CItem::ITEM_BUFF4);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_ESSENCE);
-	Add_DropItem(CItem::ITEM_ETHER);
-	Add_DropItem(CItem::ITEM_UPGRADE2);
-	
-	for(size_t i = 0; i < 5; ++i)
-		Add_Item(CItemData::ITEMNAME_CATALYST);
+	//Add_DropItem(CItem::ITEM_ESSENCE);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF2);
+	//Add_DropItem(CItem::ITEM_BUFF3);
+	//Add_DropItem(CItem::ITEM_BUFF4);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	//Add_DropItem(CItem::ITEM_ESSENCE);
+	//Add_DropItem(CItem::ITEM_ETHER);
+	//Add_DropItem(CItem::ITEM_UPGRADE2);
+	//
+	//for(size_t i = 0; i < 5; ++i)
+	//	Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	return S_OK;
 }

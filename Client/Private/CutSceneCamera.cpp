@@ -3,6 +3,7 @@
 #include "TransitionCamera.h"
 #include "EventTrigger.h"
 #include "Boss_Juggulus.h"
+#include"UI_Manager.h"
 CCutSceneCamera::CCutSceneCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {
@@ -50,7 +51,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
     if (m_bAnimationFinished || m_bPaused)
     {
        // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
-
+        CUI_Manager::GetInstance()->Setting_Cinematic();
         //ÄÆ¾À Æ®·»Áö¼Ç
         CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
@@ -267,7 +268,7 @@ void CCutSceneCamera::Load_CameraKeyFrames()
     }
 
     CloseHandle(hFile);
-    MSG_BOX("Camera KeyFrames Data Loaded");
+    //MSG_BOX("Camera KeyFrames Data Loaded");
 
 }
 

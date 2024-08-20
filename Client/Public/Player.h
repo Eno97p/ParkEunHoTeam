@@ -195,8 +195,8 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	_float m_fMaxHp = 10.f;
-	//_float m_fMaxHp = 1000.f;
+	//_float m_fMaxHp = 10.f;
+	_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
 	_float m_fMaxHp = 10.f;

@@ -784,9 +784,6 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle">
       <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn">
-      <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern">
       <UniqueIdentifier>{b2e4d449-0ed2-4059-9980-8b1fe794bcf4}</UniqueIdentifier>
     </Filter>
@@ -837,6 +834,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Cinematic">
       <UniqueIdentifier>{edfab1b0-2109-419a-bd05-c1bdd4700630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\JugglusHammerSpawn">
+      <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1613,30 +1613,6 @@
     <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Body</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Laser</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\SavePoint.h">
       <Filter>02.GameObjects\10.SavePoint</Filter>
     </ClInclude>
@@ -1767,7 +1743,7 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\HammerSpawn.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\JugglusHammerSpawn</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\FallPlatform.h">
       <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>
@@ -1795,7 +1771,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_Cinematic.h">
       <Filter>02.GameObjects\07. UI\Cinematic</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClInclude>
@@ -1820,6 +1796,14 @@
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h" />
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2720,7 +2704,7 @@
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\HammerSpawn.cpp">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\Weapon\JugglusHammerSpawn</Filter>
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\JugglusHammerSpawn</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\FallPlatform.cpp">
       <Filter>02.GameObjects\02.LandObject\05. FallPlatform</Filter>

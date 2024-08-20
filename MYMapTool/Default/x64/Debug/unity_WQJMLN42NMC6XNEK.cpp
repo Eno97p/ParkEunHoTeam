@@ -20,13 +20,22 @@
 #include "C:\Real3DProject\MYMapTool\Private\BackGround.cpp"
 
 
+#include "C:\Real3DProject\MYMapTool\Private\BackGround_Card.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\BackGround_Moon.cpp"
+
+
 #include "C:\Real3DProject\MYMapTool\Private\Body_Player.cpp"
 
 
 #include "C:\Real3DProject\MYMapTool\Private\CutSceneCamera.cpp"
 
 
-#include "C:\Real3DProject\MYMapTool\private\DecalBox.cpp"
+#include "C:\Real3DProject\MYMapTool\Private\Decal.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\private\Cloud.cpp"
 
 
 #include "C:\Real3DProject\MYMapTool\Private\Default_Camera.cpp"
@@ -39,6 +48,9 @@
 
 
 #include "C:\Real3DProject\MYMapTool\private\FakeWall.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\FireEffect.cpp"
 
 
 #include "C:\Real3DProject\MYMapTool\Private\Grass.cpp"
@@ -66,6 +78,9 @@
 
 
 #include "C:\Real3DProject\MYMapTool\Private\imgui_widgets.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\Lagoon.cpp"
 
 
 #include "C:\Real3DProject\MYMapTool\Private\LandObject.cpp"
@@ -116,7 +131,16 @@
 #include "C:\Real3DProject\MYMapTool\Private\ToolObj_Manager.cpp"
 
 
-#include "C:\Real3DProject\MYMapTool\private\TrapMace.cpp"
+#include "C:\Real3DProject\MYMapTool\Private\TransitionCamera.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\Trap.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\TreasureChest.cpp"
+
+
+#include "C:\Real3DProject\MYMapTool\Private\Tree.cpp"
 
 
 #include "C:\Real3DProject\MYMapTool\Private\TutorialMapBridge.cpp"

@@ -28,9 +28,6 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	if (nullptr == pNewLevel)
 		return E_FAIL;
 
-	//_uint iPreLevel = pNewLevel->Get_iLevelIndex();		//이전에 똑같은 레벨을 열려고 한다면 그냥 리턴한다.	//클라이언트가 직접 지워줘야 함
-	//if(m_iLevelIndex== iPreLevel)
-	//	return S_OK;
 
 	/* 기존레벨의 자원을 삭제한다. */
 	if(nullptr != m_pCurrentLevel)

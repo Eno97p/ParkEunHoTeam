@@ -321,6 +321,7 @@ void CImGuiMgr::Render_Object(list<CGameObject*>& listGameObject)
 	{
 		const std::type_info& info = typeid((**iter));
 		const char* szClassname = info.name();
+		
 		const char* szClassCutName= strstr(szClassname, "class");
 		if (szClassCutName)
 			szClassname = szClassCutName + 6;

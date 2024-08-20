@@ -246,12 +246,10 @@ void CUI_MenuBtn::Open_MenuPage()
 		CUI_Manager::GetInstance()->Set_RedDot_Rend(false);
 		break;
 	default:
-		break;
+		return;
 	}
 
 	CUI_Manager::GetInstance()->Set_MenuPageOpen();
-
-
 }
 
 HRESULT CUI_MenuBtn::Create_RedDot()

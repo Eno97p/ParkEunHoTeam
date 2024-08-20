@@ -89,6 +89,9 @@
 #include "C:\Real3DProject\EffectTool\Private\FirePillar_Charge.cpp"
 
 
+#include "C:\Real3DProject\EffectTool\Private\GroundSlash.cpp"
+
+
 #include "C:\Real3DProject\EffectTool\private\HealEffect.cpp"
 
 
@@ -104,10 +107,19 @@
 #include "C:\Real3DProject\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\Real3DProject\EffectTool\Private\HexaHit.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\Private\HexaShield.cpp"
+
+
 #include "C:\Real3DProject\EffectTool\Private\HoverBoard.cpp"
 
 
 #include "C:\Real3DProject\EffectTool\Private\ImguiMgr.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\Private\HammerSpawn.cpp"
 
 
 #include "C:\Real3DProject\EffectTool\Private\LazerCast.cpp"
@@ -144,6 +156,9 @@
 
 
 #include "C:\Real3DProject\EffectTool\Private\Meteor_Wind.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\Private\NeedleSpawner.cpp"
 
 
 #include "C:\Real3DProject\EffectTool\private\Particle.cpp"

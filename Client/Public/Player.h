@@ -199,7 +199,7 @@ private:
 	_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
-	_float m_fMaxHp = 10.f;
+	_float m_fMaxHp = 300.f;
 #endif // _DEBUG
 
 	_float m_fCurHp = m_fMaxHp;

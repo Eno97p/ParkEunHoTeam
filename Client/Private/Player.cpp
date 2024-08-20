@@ -439,7 +439,9 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 	{
 		m_bIsCloaking = false;
 		m_iState = STATE_REVIVE;
+		Add_Hp(m_fMaxHp);
 
+		m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;

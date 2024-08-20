@@ -134,7 +134,7 @@ private:
 	void Fog_Editor();
 	void Cloud_Editor();
 	void Water_Editor();
-
+	void HBAO_Editor();
 
 
 private:
@@ -154,6 +154,7 @@ private:
 	_bool	m_bFogWindow = false;
 	_bool	m_bCloudWindow = false;
 	_bool	m_bWaterWindow = false;
+	_bool	m_bHBAOWindow = false;
 	
 	_bool	m_bShowDecalTextureWindow = false;
 

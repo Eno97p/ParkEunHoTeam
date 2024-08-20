@@ -71,6 +71,8 @@ private:
 	_float m_fFlameSpawnTime = FLAMESPAWNTIME;
 	_uint m_iFlameCount = 0;
 
+	//For Groggy State Camera Change
+	_bool m_bGroggyCamChange = false;
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();

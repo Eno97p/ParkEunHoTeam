@@ -24,7 +24,9 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
-	CTexture*				m_pDisolveTextureCom = nullptr;
+	_float					m_fGlitchTimer = { 0.f };
+
+	CTexture*				m_pDisolveTextureCom = { nullptr };
 
 private:
 	HRESULT	Add_Components();

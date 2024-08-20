@@ -117,6 +117,7 @@ public:
 	//ÀÌ¹Î¿µ Ãß°¡ 240811 2114PM
 	void Set_ReflectionWave(_float strength, _float frequency, _float fWaveTimeOffset, _float fresnelPower, _uint CausticIdx);
 
+	void Set_HBAOParams(GFSDK_SSAO_Parameters params);
 public: /* For.PipeLine */
 	const _float4x4* Get_Transform_float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
 	_matrix Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);

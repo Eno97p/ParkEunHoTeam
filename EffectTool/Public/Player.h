@@ -51,6 +51,7 @@ public:
 	_uint CurState = STATE_IDLE;
 	WEAPONSTATE CurWeapon = WHISPER_SWORD;
 
+
 public:
 	static CPlayerDummy* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

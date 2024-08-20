@@ -43,8 +43,11 @@ void CParticle_Point::Priority_Tick(_float fTimeDelta)
 
 void CParticle_Point::Tick(_float fTimeDelta)
 {
-	if (m_pVIBufferCom->Check_Instance_Dead())
+	if (m_pVIBufferCom->Check_Instance_Dead() || m_Delete == true)
+	{
 		m_pGameInstance->Erase(this);
+		return;
+	}
 
 	if (m_pTarget != nullptr)
 	{

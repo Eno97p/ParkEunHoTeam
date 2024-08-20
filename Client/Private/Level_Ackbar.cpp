@@ -115,7 +115,7 @@ HRESULT CLevel_Ackbar::Initialize()
 	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
 
 	// UI Manaver로 UI Level 생성하기
-	//CUI_Manager::GetInstance()->Create_LevelUI();
+	CUI_Manager::GetInstance()->Create_LevelUI();
 
 	return S_OK;
 }
@@ -502,11 +502,19 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 				// 다른 객체들은 개별적으로 생성
 
 			
+				const TCHAR* pModifiedName = nullptr;
 
 				CLandObject::LANDOBJ_DESC pDesc{};
 				pDesc.mWorldMatrix = WorldMatrix;
-
-				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wszLayer, wszName, &pDesc)))
+				if (wstring(wszName) == TEXT("Prototype_GameObject_Mantari"))
+				{
+					pModifiedName = TEXT("Prototype_GameObject_Yantari");
+				}
+				else
+				{
+					pModifiedName = wszName;
+				}
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, wszLayer, pModifiedName, &pDesc)))
 					return E_FAIL;
 
 			}

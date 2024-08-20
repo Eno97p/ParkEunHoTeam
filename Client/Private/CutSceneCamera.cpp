@@ -1,7 +1,9 @@
 #include "CutSceneCamera.h"
 #include "GameInstance.h"
 #include "TransitionCamera.h"
-
+#include "EventTrigger.h"
+#include "Boss_Juggulus.h"
+#include"UI_Manager.h"
 CCutSceneCamera::CCutSceneCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {
@@ -49,7 +51,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
     if (m_bAnimationFinished || m_bPaused)
     {
        // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
-
+        CUI_Manager::GetInstance()->Setting_Cinematic();
         //컷씬 트렌지션
         CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
@@ -63,6 +65,21 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
         pTCDesc.iStartCam = CAM_CUTSCENE;
         pTCDesc.iEndCam = CAM_THIRDPERSON;
+
+        switch (m_iCurrentCutSceneIdx)
+        {
+        case 1:
+            {
+            dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_PhysX")))->Set_Position({ -450.f , 56.f , -3.f, 1.f });
+            dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")))->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
+            }
+            break;
+        default:
+        {
+        }
+            break;
+        }
+
         pTCDesc.fTransitionTime = 1.f;
         if (FAILED(m_pGameInstance->Add_Camera(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
         {
@@ -75,13 +92,17 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
     if (!m_bPaused)
     {
-        if (m_iCurrentKeyFrame + 1 < currentCutScene.size())
+        if (m_iCurrentKeyFrame < currentCutScene.size())
         {
             CameraKeyFrame& currentKeyFrame = currentCutScene[m_iCurrentKeyFrame];
-            CameraKeyFrame& nextKeyFrame = currentCutScene[m_iCurrentKeyFrame + 1];
-            float t = m_fKeyFrameTime / (nextKeyFrame.fTime - currentKeyFrame.fTime);
+            CameraKeyFrame& nextKeyFrame = (m_iCurrentKeyFrame + 1 < currentCutScene.size())
+                ? currentCutScene[m_iCurrentKeyFrame + 1]
+                : currentKeyFrame;
 
-            // 현재 키프레임 구간에서의 속도 변화 확인 및 적용
+            float totalDuration = nextKeyFrame.fTime - currentKeyFrame.fTime;
+            float t = (totalDuration > 0) ? m_fKeyFrameTime / totalDuration : 1.0f;
+
+            // 속도 변화 로직 적용 (기존 코드 유지)
             float speedMultiplier = 1.0f;
             float prevSpeedMultiplier = 1.0f;
 
@@ -89,7 +110,6 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             {
                 if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
                 {
-                    // 속도 변화 구간에서는 이전 속도와 현재 속도를 보간
                     float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
                     speedMultiplier = prevSpeedMultiplier + (changeSpeed - prevSpeedMultiplier) * lerpT;
                     break;
@@ -101,41 +121,83 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
                 }
             }
 
+            // 부드러운 이징 적용
+            t = EaseInOutCubic(t);
+
             m_fKeyFrameTime += fTimeDelta * speedMultiplier;
 
             // 현재 월드 행렬과 목표 월드 행렬 가져오기
             _matrix matCurrent = XMLoadFloat4x4(&currentKeyFrame.matWorld);
             _matrix matTarget = XMLoadFloat4x4(&nextKeyFrame.matWorld);
 
+            // 행렬 구면 선형 보간
+            _matrix matLerpedWorld = XMMatrixSlerp(matCurrent, matTarget, t);
+
+            // 핸드헬드 카메라 스타일의 셰이킹 적용
+            static float timeAccumulator = 0.0f;
+            timeAccumulator += fTimeDelta * speedMultiplier;
+
+            // 다중 주파수 노이즈 생성
+            float noise_low1 = PerlinNoise(timeAccumulator * 0.3f, 0, 2, 0.5f);
+            float noise_low2 = PerlinNoise(0, timeAccumulator * 0.3f, 2, 0.5f);
+            float noise_mid1 = PerlinNoise(timeAccumulator * 1.0f, 0, 4, 0.5f);
+            float noise_mid2 = PerlinNoise(0, timeAccumulator * 1.0f, 4, 0.5f);
+            float noise_high1 = PerlinNoise(timeAccumulator * 4.0f, 0, 4, 0.5f);
+            float noise_high2 = PerlinNoise(0, timeAccumulator * 4.0f, 4, 0.5f);
+
+            // 시간에 따른 강도 변화 (더 부드럽게)
+            float intensityVariation = (sinf(timeAccumulator * 0.05f) + 1.0f) * 0.5f;
+
+            // 위치 셰이킹 적용 (강도 감소 및 축별 차등 적용)
+            float shakeX = (noise_low1 * 0.6f + noise_mid1 * 0.3f + noise_high1 * 0.1f) * 0.03f * intensityVariation;
+            float shakeY = (noise_low2 * 0.6f + noise_mid2 * 0.3f + noise_high2 * 0.1f) * 0.02f * intensityVariation;
+            float shakeZ = (noise_mid1 * 0.7f + noise_high1 * 0.3f) * 0.01f * intensityVariation;
+
+            _vector shakeOffset = XMVectorSet(shakeX, shakeY, shakeZ, 0.0f);
+            matLerpedWorld.r[3] = XMVectorAdd(matLerpedWorld.r[3], shakeOffset);
+
+            // 회전 셰이킹 적용 (강도 대폭 감소)
+            float rotX = (noise_low1 * 0.7f + noise_mid1 * 0.3f) * 0.005f * intensityVariation;
+            float rotY = (noise_low2 * 0.7f + noise_mid2 * 0.3f) * 0.005f * intensityVariation;
+            float rotZ = (noise_mid1 * 0.8f + noise_high1 * 0.2f) * 0.003f * intensityVariation;
+
+            _matrix rotShake = XMMatrixRotationRollPitchYaw(rotX, rotY, rotZ);
+            matLerpedWorld = XMMatrixMultiply(matLerpedWorld, rotShake);
+
+            // 부드러운 카메라 움직임을 위한 추가 보간
+            static _matrix prevMatrix = matLerpedWorld;
+            float smoothFactor = 0.1f + 0.05f * intensityVariation; // 부드러움 정도 증가
+            matLerpedWorld = XMMatrixSlerp(prevMatrix, matLerpedWorld, smoothFactor);
+            prevMatrix = matLerpedWorld;
+
+
+            // 보간된 월드 행렬 설정
+            m_pTransformCom->Set_WorldMatrix(matLerpedWorld);
+
+            // 보간된 시야각 설정
+            _float fLerpedFovy = XMConvertToRadians(XMConvertToDegrees(currentKeyFrame.fFovy) + (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t);
+            Set_Fovy(fLerpedFovy);
+
             if (t >= 1.0f)
             {
                 m_iCurrentKeyFrame++;
                 m_fKeyFrameTime = 0.0f;
-                m_pTransformCom->Set_WorldMatrix(matTarget);
-            }
-            else
-            {
-                // 행렬 구면 선형 보간
-                _matrix matLerpedWorld = XMMatrixSlerp(matCurrent, matTarget, t);
-                // 보간된 월드 행렬 설정
-                m_pTransformCom->Set_WorldMatrix(matLerpedWorld);
-            }
 
-            // 보간된 시야각, 근평면, 원평면 설정
-            _float fLerpedFovy = XMConvertToRadians(XMConvertToDegrees(currentKeyFrame.fFovy) + (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t);
-            _float fLerpedNear = currentKeyFrame.fNear + (nextKeyFrame.fNear - currentKeyFrame.fNear) * t;
-            _float fLerpedFar = currentKeyFrame.fFar + (nextKeyFrame.fFar - currentKeyFrame.fFar) * t;
-            Set_Fovy(fLerpedFovy);
-            // Set_Near(fLerpedNear);
-            // Set_Far(fLerpedFar);
-        }
-        else
-        {
-            m_bAnimationFinished = true;
+                if (m_iCurrentKeyFrame >= currentCutScene.size())
+                {
+                    m_bAnimationFinished = true;
+                }
+            }
         }
     }
 
     __super::Tick(fTimeDelta);
+}
+
+// 부드러운 이징 함수
+float CCutSceneCamera::EaseInOutCubic(float t)
+{
+    return t < 0.5f ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
 }
 void CCutSceneCamera::Late_Tick(_float fTimeDelta)
 {
@@ -188,7 +250,7 @@ void CCutSceneCamera::Load_CameraKeyFrames()
             ReadFile(hFile, &keyFrame.fFar, sizeof(float), &dwByte, nullptr);
 
             // 속도 변화 정보 로드
-            _uint iSpeedChangeCount = 0;
+             _uint iSpeedChangeCount = 0;
             ReadFile(hFile, &iSpeedChangeCount, sizeof(_uint), &dwByte, nullptr);
             for (_uint k = 0; k < iSpeedChangeCount; ++k)
             {
@@ -206,7 +268,7 @@ void CCutSceneCamera::Load_CameraKeyFrames()
     }
 
     CloseHandle(hFile);
-    MSG_BOX("Camera KeyFrames Data Loaded");
+    //MSG_BOX("Camera KeyFrames Data Loaded");
 
 }
 
@@ -272,6 +334,67 @@ void CCutSceneCamera::Set_CutSceneIdx(_uint idx)
     // 키프레임 시간 업데이트
     m_fKeyFrameTime = fTimeDelta * speedMultiplier;
 }
+
+_float CCutSceneCamera::PerlinNoise(_float x, _float y, int octaves, _float persistence)
+{
+    _float total = 0;
+    _float frequency = 1;
+    _float amplitude = 1;
+    _float maxValue = 0;
+
+    for (int i = 0; i < octaves; i++)
+    {
+        total += InterpolatedNoise(x * frequency, y * frequency) * amplitude;
+        maxValue += amplitude;
+        amplitude *= persistence;
+        frequency *= 2;
+    }
+
+    // 정규화된 값을 -1에서 1 사이로 매핑
+    _float normalizedValue = total / maxValue;
+    return normalizedValue;
+}
+
+_float CCutSceneCamera::InterpolatedNoise(_float x, _float y)
+{
+    int intX = static_cast<int>(floor(x));
+    _float fracX = x - intX;
+    int intY = static_cast<int>(floor(y));
+    _float fracY = y - intY;
+
+    _float v1 = SmoothNoise(intX, intY);
+    _float v2 = SmoothNoise(intX + 1, intY);
+    _float v3 = SmoothNoise(intX, intY + 1);
+    _float v4 = SmoothNoise(intX + 1, intY + 1);
+
+    _float i1 = CosineInterpolate(v1, v2, fracX);
+    _float i2 = CosineInterpolate(v3, v4, fracX);
+
+    return CosineInterpolate(i1, i2, fracY);
+}
+
+_float CCutSceneCamera::SmoothNoise(int x, int y)
+{
+    _float corners = (Noise(x - 1, y - 1) + Noise(x + 1, y - 1) + Noise(x - 1, y + 1) + Noise(x + 1, y + 1)) / 16.0f;
+    _float sides = (Noise(x - 1, y) + Noise(x + 1, y) + Noise(x, y - 1) + Noise(x, y + 1)) / 8.0f;
+    _float center = Noise(x, y) / 4.0f;
+    return corners + sides + center;
+}
+
+_float CCutSceneCamera::Noise(int x, int y)
+{
+    int n = x + y * 57;
+    n = (n << 13) ^ n;
+    return (1.0f - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0f);
+}
+
+_float CCutSceneCamera::CosineInterpolate(_float a, _float b, _float t)
+{
+    _float ft = t * 3.1415927f;
+    _float f = (1 - cos(ft)) * 0.5f;
+    return a * (1 - f) + b * f;
+}
+
 void CCutSceneCamera::ZoomIn(_float fTimeDelta)
 {
     m_fZoomDistance += m_fZoomSpeed * fTimeDelta;

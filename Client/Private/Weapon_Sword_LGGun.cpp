@@ -170,6 +170,17 @@ HRESULT CWeapon_Sword_LGGun::Render_LightDepth()
 	return S_OK;
 }
 
+void CWeapon_Sword_LGGun::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Slash.ogg"), SOUND_MONSTER);
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CWeapon_Sword_LGGun::Add_Components()
 {
 	/* For.Com_Collider */

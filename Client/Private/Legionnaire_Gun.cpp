@@ -79,12 +79,16 @@ void CLegionnaire_Gun::Priority_Tick(_float fTimeDelta)
 
 void CLegionnaire_Gun::Tick(_float fTimeDelta)
 {
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 	m_fDegreeBetweenPlayerAndMonster = abs(XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
+
 	if (!m_bPlayerIsFront)
 	{
-
-		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
+		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking() && m_fLengthFromPlayer < DETECTRANGE)
+		{
+			m_bPlayerIsFront = true;
+		}
 	}
 	else
 	{
@@ -93,7 +97,6 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 			m_bPlayerIsFront = false;
 		}
 	}
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	Set_Weapon();
 	Check_AnimFinished();
@@ -333,8 +336,10 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 	{
 	case CCollider::COLL_START:
 	{
+		m_bSound = false;
 		m_bPlayerIsFront = true;
-
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Hit.ogg"), SOUND_MONSTER);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -436,8 +441,15 @@ NodeStates CLegionnaire_Gun::GunAttack(_float fTimedelta)
 
 	if (m_iState == STATE_GUNATTACK)
 	{
+		if (!m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Charge.ogg"), SOUND_MONSTER);
+			m_bSound = true;
+		}
 		if (m_isAnimFinished)
 		{
+			m_bSound = false;
 			Set_Idle();
 			return SUCCESS;
 		}
@@ -465,6 +477,12 @@ NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimeDelta)
 				if (m_fBackStepTime > -0.1f)
 				{
 					m_pPhysXCom->Go_Jump(fTimeDelta);
+					if (!m_bSound)
+					{
+						m_pGameInstance->Disable_Echo();
+						m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_BackJump.ogg"), SOUND_MONSTER);
+						m_bSound = true;
+					}
 				}
 				m_pPhysXCom->Go_BackWard(fTimeDelta * 3.f);
 			}
@@ -481,6 +499,7 @@ NodeStates CLegionnaire_Gun::MeleeAttack(_float fTimeDelta)
 			}
 			case STATE_MELEEATTACK2:
 			{
+				m_bSound = false;
 				if (m_fLengthFromPlayer < ATTACKRANGE)
 				{
 					m_iState = RandomInt(2, 7);

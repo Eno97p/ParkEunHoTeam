@@ -398,6 +398,33 @@ PS_OUT PS_CARD(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT_BLOOM PS_MOON(PS_IN In)
+{
+	PS_OUT_BLOOM Out = (PS_OUT_BLOOM)0;
+
+	vector vColor = g_DiffuseTexture.Sample(PointSampler, In.vTexcoord);
+
+	if (vColor.a < 0.1f)
+		discard;
+
+	//	if (g_bDiffuse)
+	{
+		Out.vColor = vColor;
+	}
+
+	float3 vNormal;
+	vNormal = In.vNormal.xyz * 2.f - 1.f;
+	float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+	vNormal = mul(vNormal, WorldMatrix);
+
+	//Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+	//Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass
@@ -503,6 +530,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_CARD();
+	}
+
+		pass Moon_8
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_None_Test_None_Write, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MOON();
 	}
 
 }

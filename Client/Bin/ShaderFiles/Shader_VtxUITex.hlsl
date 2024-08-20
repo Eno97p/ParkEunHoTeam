@@ -14,6 +14,11 @@ float		g_CurrentRatio;
 float		g_PastRatio;
 float		g_HudRatio = 1.f;
 
+// 글리치 시도
+texture2D	g_NoiseTexture;
+float		g_GlitchTimer;
+float2		g_vResolution = float2(1280.f, 820.f); // 임의로
+
 matrix		g_RotationMatrix; // 회전 행렬
 
 struct VS_IN
@@ -364,6 +369,55 @@ PS_OUT PS_ALPHA(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_GLITCH(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 vGlitchUV = In.vTexcoord; // 텍스쳐 좌표와 색상 샘플링
+	
+	float2 vNoiseUV = In.vTexcoord * g_vResolution / 100.f;
+	
+	vNoiseUV.x -= g_GlitchTimer * 10.f; // g_fGlitchSpeed; // 시간에 따른 노이즈 텍스쳐으 ㅣY축 이동
+
+	float fNoiseValue = g_NoiseTexture.Sample(LinearSampler, vNoiseUV).r; // 노이즈 값 가져오기
+
+	// 글리치 효과 적용을 위한 텍스쳐 좌표 왜곡
+	vGlitchUV.x += 10.f * (sin(g_GlitchTimer * 10.0 + fNoiseValue * 10.0) * 0.02f); // g_fGlitchIntensity -> 3.f
+
+	// 글리치 효과를 위한 RGB 채널 분리
+	float4 vColorR = g_Texture.Sample(LinearSampler, vGlitchUV + float2(0.005f, 0.0f));
+	float4 vColorG = g_Texture.Sample(LinearSampler, vGlitchUV);
+	float4 vColorB = g_Texture.Sample(LinearSampler, vGlitchUV - float2(0.005f, 0.0f));
+
+	// RGB 채널을 합쳐 최종 색상 계산
+	Out.vColor = float4(vColorR.r, vColorG.g, vColorB.b, 1.0f);
+
+
+
+	//Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	float fAlpha = Out.vColor.a;
+
+	if (g_bIsFadeIn)
+	{
+		if (fAlpha < (1.f - g_fAlphaTimer))
+			Out.vColor.a = fAlpha;
+		else
+			Out.vColor.a = 1.f - g_fAlphaTimer;
+	}
+	else
+	{
+		float fResultAlpha = g_fAlphaTimer;
+
+		if (fAlpha < fResultAlpha)
+			fResultAlpha = fAlpha;
+
+		Out.vColor.a = fResultAlpha;
+	}
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass_0
@@ -533,6 +587,19 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_BUFFTIMER();
+	}
+
+	pass Glitch_13
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_GLITCH();
 	}
 }
 

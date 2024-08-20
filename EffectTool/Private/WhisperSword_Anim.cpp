@@ -34,6 +34,7 @@ HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(-90.f));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.1f, 0.f, 1.f));
 
+
 	return S_OK;
 }
 

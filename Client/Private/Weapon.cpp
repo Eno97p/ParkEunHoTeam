@@ -18,8 +18,6 @@ void CWeapon::Set_Active(_bool isActive)
 {
 	if (m_bIsActive == false && isActive == true)
 	{
-		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Magic_Buff_Attack_01.ogg"), SOUND_PLAYER);
 		m_GenerateTrail = true;
 	}
 	m_bIsActive = isActive;

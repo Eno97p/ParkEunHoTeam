@@ -7,6 +7,8 @@
 
 #include "SideViewCamera.h"
 #include "TransitionCamera.h"
+#include "CutSceneCamera.h"
+
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
@@ -29,7 +31,7 @@ HRESULT CEventTrigger::Initialize(void* pArg)
 {
 
 
-	if (FAILED(CGameObject::Initialize(nullptr)))
+	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
@@ -279,7 +281,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					}
 
 					CLandObject::LANDOBJ_DESC desc{};
-					XMStoreFloat4x4(&desc.mWorldMatrix, XMMatrixTranslation(-8.3f, 3.5f, -2.4f));
+					XMStoreFloat4x4(&desc.mWorldMatrix, XMMatrixTranslation(-8.3f, 0.f, -2.4f));
 
 					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Prototype_GameObject_Boss_Juggulus"), &desc)))
 					{
@@ -295,10 +297,12 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_VIEWCHANGE_TTOBS:
 				{
-					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
-					//pTCDesc.vEye = _float4(10.f, 10.f, -10.f, 1.f);
-					//pTCDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(1);
+					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
+
+					//ÄÆ¾À Æ®·»Áö¼Ç
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
 					pTCDesc.fFovy = XMConvertToRadians(60.f);
 					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
@@ -309,17 +313,16 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 					pTCDesc.iStartCam = CAM_THIRDPERSON;
-					pTCDesc.iEndCam = CAM_SIDEVIEW;
+					pTCDesc.iEndCam = CAM_CUTSCENE;
 					pTCDesc.fTransitionTime = 1.f;
-
 					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
 					{
 						MSG_BOX("FAILED");
 						return;
 					}
 
-					m_pGameInstance->Set_MainCamera(2);
-					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
+					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+
 
 				}
 				break;

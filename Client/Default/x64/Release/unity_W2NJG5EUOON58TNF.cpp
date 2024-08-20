@@ -90,6 +90,9 @@
 #include "C:\NewRepo\Client\Private\Cloud.cpp"
 
 
+#include "C:\NewRepo\Client\Private\CutSceneCamera.cpp"
+
+
 #include "C:\NewRepo\Client\Private\Decal.cpp"
 
 
@@ -112,6 +115,9 @@
 
 
 #include "C:\NewRepo\Client\Private\FakeWall.cpp"
+
+
+#include "C:\NewRepo\Client\Private\FallPlatform.cpp"
 
 
 #include "C:\NewRepo\Client\Private\ForkLift.cpp"
@@ -396,6 +402,9 @@
 #include "C:\NewRepo\Client\Private\UIGroup_DropItem.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UIGroup_Level.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UIGroup_Map.cpp"
 
 
@@ -453,6 +462,12 @@
 #include "C:\NewRepo\Client\Private\UI_ItemIcon.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UI_LevelBG.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_Level_TextBox.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UI_LogoFlow.cpp"
 
 
@@ -493,6 +508,9 @@
 
 
 #include "C:\NewRepo\Client\Private\UI_QTE_Score.cpp"
+
+
+#include "C:\NewRepo\Client\Private\UI_QTE_Shine.cpp"
 
 
 #include "C:\NewRepo\Client\Private\UI_RedDot.cpp"

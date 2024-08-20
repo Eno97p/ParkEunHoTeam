@@ -116,12 +116,12 @@ HRESULT CLevel_Jugglas::Initialize()
 	//});
 
 
-	CInitLoader<LEVEL, wstring>* initLoader = new CInitLoader<LEVEL, wstring>(&initLoader);
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_BlastWall");
 
 	// UI Manaver로 UI Level 생성하기
-	//CUI_Manager::GetInstance()->Create_LevelUI();
+	CUI_Manager::GetInstance()->Create_LevelUI();
 
 	return S_OK;
 }

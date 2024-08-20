@@ -90,6 +90,9 @@
 #include "C:\Real3DProject\Client\Private\Cloud.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\CutSceneCamera.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\Decal.cpp"
 
 
@@ -112,6 +115,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\FakeWall.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\FallPlatform.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ForkLift.cpp"
@@ -306,6 +312,12 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Hedgehog.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\HexaHit.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\HexaShield.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\LazerCast.cpp"
 
 
@@ -439,6 +451,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_Cinematic.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Dash.cpp"

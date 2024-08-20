@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Mantari.h"
 
 
 CWeapon_Mantari::CWeapon_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -240,6 +241,25 @@ HRESULT CWeapon_Mantari::Render_Bloom()
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
+}
+
+void CWeapon_Mantari::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (*m_pState != CMantari::STATE_CIRCLEATTACK && *m_pState != CMantari::STATE_JUMPATTACK)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Attack.ogg"), SOUND_MONSTER, 0.8f);
+		}
+		else
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_CircleAttack.ogg"), SOUND_MONSTER);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
 }
 
 HRESULT CWeapon_Mantari::Add_Components()

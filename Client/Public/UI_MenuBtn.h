@@ -33,6 +33,8 @@ public:
 	HRESULT	Create_RedDot();
 	HRESULT Delete_RedDot();
 
+	void	Set_RedDot_Rend(_bool isRend);
+
 private:
 	_uint				m_iTextureNum = { 0 };
 

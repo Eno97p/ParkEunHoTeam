@@ -27,10 +27,10 @@ HRESULT CUI_LogoBanner::Initialize(void* pArg)
 
 	m_fX = g_iWinSizeX >> 1;
 	m_fY = (g_iWinSizeY >> 1) - 70.f;
-	m_fSizeX = 1365.f; // 2048.f
-	m_fSizeY = 341.3f; // 512.f
-	//m_fSizeX = g_iWinSizeX; // 2048.f
+	//m_fSizeX = 1365.f; // 2048.f
 	//m_fSizeY = 341.3f; // 512.f
+	m_fSizeX = g_iWinSizeX; // 2048.f
+	m_fSizeY = 341.3f; // 512.f
 
 	Setting_Position();
 

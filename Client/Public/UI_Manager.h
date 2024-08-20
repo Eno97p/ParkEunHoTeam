@@ -61,6 +61,7 @@ public:
 	HRESULT				Delete_RedDot_MenuBtn(_bool isInv);
 	HRESULT				Create_RedDot_Slot(_bool isInv, _uint iSlotIdx, _bool isSkill = false);
 	HRESULT				Delete_RedDot_Slot(_bool isInv);
+	void				Set_RedDot_Rend(_bool isRend);
 
 	// QTE
 	void				Create_QTE();

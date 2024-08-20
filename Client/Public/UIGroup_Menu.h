@@ -28,6 +28,8 @@ public:
 	HRESULT	Create_RedDot_MenuBtn(_bool isInv);
 	HRESULT	Delete_RedDot_MenuBtn(_bool isInv);
 
+	void	Set_RedDot_Rend(_bool isRend);
+
 private:
 	_bool					m_isMenuPageOpen;
 

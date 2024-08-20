@@ -11,6 +11,12 @@ CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(const CVIBuffer_Instance_Poin
 {
 }
 
+CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(const CVIBuffer_Instance_Point& rhs, _bool For_Copy)
+	: CVIBuffer_Instance{ rhs}	
+{
+	m_pContext->CopyResource(m_pVBInstance, rhs.m_pVBInstance);
+}
+
 HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 {
 

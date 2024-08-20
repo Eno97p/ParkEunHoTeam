@@ -200,6 +200,8 @@ void CUIGroup_WeaponSlot::Key_Input()
     }
     else if (m_pGameInstance->Key_Down(DIK_B)) // Quick Weapon Slot Change
     {
+        m_pGameInstance->Disable_Echo();
+        m_pGameInstance->Play_Effect_Sound(TEXT("ChangeWeapon.ogg"), SOUND_MONSTER);
         if (m_iWeaponIdx < CInventory::GetInstance()->Get_EquipWeaponSize() - 1)
             ++m_iWeaponIdx;
         else

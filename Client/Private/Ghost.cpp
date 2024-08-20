@@ -76,12 +76,18 @@ void CGhost::Priority_Tick(_float fTimeDelta)
 
 void CGhost::Tick(_float fTimeDelta)
 {
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 	m_fDegreeBetweenPlayerAndMonster = abs(XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
+
 	if (!m_bPlayerIsFront)
 	{
-
-		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
+		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking() && m_fLengthFromPlayer < DETECTRANGE)
+		{
+			m_bPlayerIsFront = true;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else
 	{
@@ -90,8 +96,6 @@ void CGhost::Tick(_float fTimeDelta)
 			m_bPlayerIsFront = false;
 		}
 	}
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-
 	Check_AnimFinished();
 
 	m_pBehaviorCom->Update(fTimeDelta);
@@ -287,6 +291,8 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Hit.ogg"), SOUND_MONSTER);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -309,7 +315,13 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 			}
 		}
 
-		m_bPlayerIsFront = true;
+		if (!m_bPlayerIsFront)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Aggro.ogg"), SOUND_MONSTER);
+			m_bPlayerIsFront = true;
+		}
+		
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };
 		_vector vStartPos = XMVector3TransformCoord(XMLoadFloat3(&vOffset), vMat);

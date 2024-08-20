@@ -23,6 +23,7 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 	virtual HRESULT Render_Bloom() override;
 	virtual CCollider* Get_Collider();
+	virtual void Set_Active(_bool isActive) override;
 
 private:
 	CCollider* m_pSpecialColliderCom = { nullptr };

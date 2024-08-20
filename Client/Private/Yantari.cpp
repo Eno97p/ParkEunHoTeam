@@ -86,8 +86,12 @@ void CYantari::Tick(_float fTimeDelta)
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
 	if (!m_bPlayerIsFront)
 	{
-
-		m_bPlayerIsFront = m_fDegreeBetweenPlayerAndMonster < 60.f;
+		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking())
+		{
+			m_bPlayerIsFront = true;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else
 	{
@@ -379,6 +383,8 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
 		m_bPlayerIsFront = true;
 		m_fChasingDelay = 0.5f;
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());

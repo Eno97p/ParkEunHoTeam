@@ -12,6 +12,11 @@ CWeapon::CWeapon(const CWeapon& rhs)
 {
 }
 
+void CWeapon::Set_Weapon_Offset(WEAPON_DESC* pDesc, CTransform* TransCom)
+{
+	TransCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(XMLoadFloat3(&pDesc->vOffset), 1.f));
+}
+
 void CWeapon::Free()
 {
 	__super::Free();

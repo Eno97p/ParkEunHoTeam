@@ -69,6 +69,9 @@ public:
 	// Level
 	void				Create_LevelUI();
 
+	// Cinematic
+	void				Setting_Cinematic();
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부
@@ -82,6 +85,7 @@ private:
 	class CQTE*							m_pQTE = { nullptr };
 	class CUI_FadeInOut*				m_pFadeOut = { nullptr };
 	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
+	class CUI_Cinematic*				m_pCinematic = { nullptr };
 
 private:
 	HRESULT		Create_UI();

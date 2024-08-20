@@ -156,6 +156,15 @@ HRESULT CWeapon_Andras4::Render_LightDepth()
 	return S_OK;
 }
 
+void CWeapon_Andras4::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CWeapon_Andras4::Add_Components()
 {
 	/* For.Com_Collider */

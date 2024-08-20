@@ -29,7 +29,10 @@ HRESULT CParticle::Initialize(void* pArg)
 
 void CParticle::Set_Target(CGameObject* Target)
 {
-	m_pTarget = (CTransform*)Target->Get_Component(TEXT("Com_Transform"));
+	if (Target == nullptr)
+		m_pTarget = nullptr;
+	else
+		m_pTarget = (CTransform*)Target->Get_Component(TEXT("Com_Transform"));
 }
 
 void CParticle::Set_Rotation(_float Radian, _vector Axis)

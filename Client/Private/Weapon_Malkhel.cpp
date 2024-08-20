@@ -76,7 +76,7 @@ void CWeapon_Malkhel::Tick(_float fTimeDelta)
 		}
 	}
 
-	Generate_Trail(3);
+	Generate_Trail(8);
 }
 
 void CWeapon_Malkhel::Late_Tick(_float fTimeDelta)

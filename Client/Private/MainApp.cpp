@@ -204,6 +204,7 @@
 #include "UI_Dash.h"
 #include "UI_Memento.h"
 #include "UI_AeonsLost.h"
+#include "UI_Cinematic.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1598,6 +1599,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Level_TextBox"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_TextBox.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_Cinematic*/
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Cinematic"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_front_Plan_cinematic.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2336,6 +2342,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_RedDot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_RedDot"),
 		CUI_RedDot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_Cinematic*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Cinematic"),
+		CUI_Cinematic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

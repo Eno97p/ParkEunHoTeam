@@ -21,6 +21,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Bloom() override;
 	virtual HRESULT Render_LightDepth() override;
+	virtual void Set_Active(_bool isActive) override;
 
 public:
 	HRESULT Add_Components();

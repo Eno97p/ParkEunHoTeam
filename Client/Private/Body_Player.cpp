@@ -469,6 +469,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			if (m_pModelCom->Check_CurDuration(0.15))
 			{
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Special4.ogg"), SOUND_PLAYER);
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
 				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
@@ -501,6 +503,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			if (m_pModelCom->Check_CurDuration(0.15))
 			{
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Special4.ogg"), SOUND_PLAYER);
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
 				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
@@ -532,6 +536,8 @@ void CBody_Player::Tick(_float fTimeDelta)
 		{
 			if (m_pModelCom->Check_CurDuration(0.15))
 			{
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Special4.ogg"), SOUND_PLAYER);
 				EFFECTMGR->Generate_Particle(57, ParticlePos);
 				EFFECTMGR->Generate_Particle(59, ParticlePos);
 				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);

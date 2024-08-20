@@ -99,6 +99,9 @@ HRESULT CLevel_AndrasArena::Initialize()
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
 
+	// UI Manaver로 UI Level 생성하기
+	CUI_Manager::GetInstance()->Create_LevelUI();
+
 	return S_OK;
 }
 
@@ -286,7 +289,7 @@ HRESULT CLevel_AndrasArena::Ready_LandObjects()
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"), &LandObjDesc)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Boss"), &LandObjDesc)))
+	if (FAILED(Ready_Layer_Monster(TEXT("Layer_Monster"), &LandObjDesc)))
 		return E_FAIL;
 
 

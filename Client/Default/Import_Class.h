@@ -120,6 +120,7 @@
 #include "Grass.h"
 #include "Cloud.h"
 #include "Lagoon.h"
+#include "BackGround_Moon.h"
 
 #include "Trap.h"
 #include"CHoverboard.h"

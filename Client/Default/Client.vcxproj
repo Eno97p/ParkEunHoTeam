@@ -345,6 +345,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_AeonsLost.h" />
+    <ClInclude Include="..\Public\UI_ArrowSign.h" />
     <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_BuffTimer.h" />
     <ClInclude Include="..\Public\UI_BuffTimer_Bar.h" />
@@ -658,6 +659,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_AeonsLost.cpp" />
+    <ClCompile Include="..\Private\UI_ArrowSign.cpp" />
     <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp" />

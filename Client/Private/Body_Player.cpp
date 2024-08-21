@@ -82,6 +82,11 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 31;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.3);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
+		}
 	}
 	else if (*m_pState == CPlayer::STATE_SLOWHIT)
 	{
@@ -599,7 +604,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		}
 
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_iPastAnimIndex > 150)
+		if ((m_iPastAnimIndex == 151 && m_pModelCom->Get_Ratio_Betwin(0.f, 0.5f)) || (m_iPastAnimIndex == 151 && m_pModelCom->Get_Ratio_Betwin(0.6f, 1.f)))
 		{
 			m_pWeapon[*m_pCurWeapon]->Set_Active();
 		}

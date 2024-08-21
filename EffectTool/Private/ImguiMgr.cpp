@@ -368,6 +368,14 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("Shield_Tool", &bShow[20]);
 	if (bShow[20] == true)
 		Shield_Tool(&bShow[20]);
+
+	ImGui::Checkbox("FireFly_Tool", &bShow[21]);
+	if (bShow[21] == true)
+		FireFly_Tool(&bShow[21]);
+	
+	ImGui::Checkbox("BlackHole_Tool", &bShow[22]);
+	if (bShow[22] == true)
+		BlackHole_Tool(&bShow[22]);
 	
 
 	if(ImGui::Button("Change_Camera"))
@@ -4387,7 +4395,7 @@ void CImguiMgr::Shield_Tool(_bool* Open)
 		ImGui::InputFloat3("Hit_Offset", reinterpret_cast<float*>(&Desc.HitDesc.vOffset));
 		ImGui::InputFloat("Hit_LifeTime", &Desc.HitDesc.fLifeTime);
 	}
-
+#pragma region BUTTONS
 	if (ImGui::Button("Generate", ButtonSize))
 	{
 		if (TrailMat == nullptr)
@@ -4443,7 +4451,7 @@ void CImguiMgr::Shield_Tool(_bool* Open)
 		else
 			MSG_BOX("SUCCEED");
 	}
-
+#pragma endregion BUTTONS
 	ImGui::End();
 }
 
@@ -4469,6 +4477,132 @@ HRESULT CImguiMgr::Load_Shield(CHexaShield::HEXASHIELD* pShield)
 	inFile.read((char*)pShield, sizeof(CHexaShield::HEXASHIELD));
 	inFile.close();
 	return S_OK;
+}
+
+void CImguiMgr::FireFly_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("FireFlyEditor", Open);
+	static CFireFlyCube::FIREFLYCUBE Desc{};
+
+	ImGui::InputFloat3("MinSize", reinterpret_cast<float*>(&Desc.fMinSize));
+	ImGui::InputFloat3("MaxSize", reinterpret_cast<float*>(&Desc.fMaxSize));
+	ImGui::InputFloat3("Offset", reinterpret_cast<float*>(&Desc.vOffset));
+
+	ImGui::InputFloat("RotationSpeed", &Desc.fRotSpeed);
+	ImGui::InputFloat("RotAngle", &Desc.fStartRotAngle);
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat("StartDelay", &Desc.fStartdelay);
+	ImGui::InputFloat("BloomInterval", &Desc.fBloomInterval);
+	ImGui::InputFloat("BloomStartRatio", &Desc.fBloomIntervalStartRatio);
+	ImGui::InputFloat("ChaseSpeed", &Desc.fChaseSpeed);
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+	ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.fBloomColor));
+
+#pragma region BUTTONS
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (TrailMat == nullptr)
+			MSG_BOX("행렬을 대입하세요");
+		else
+		{
+			Desc.ParentMatrix = TrailMat;
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_FireFly"), TEXT("Prototype_GameObject_FireFly"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_FireFly"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_FireFly(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_FireFly(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+#pragma endregion BUTTONS
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_FireFly(CFireFlyCube::FIREFLYCUBE* pFireFly)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/FireFly.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)pFireFly, sizeof(CFireFlyCube::FIREFLYCUBE));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_FireFly(CFireFlyCube::FIREFLYCUBE* pFireFly)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/FireFly.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)pFireFly, sizeof(CFireFlyCube::FIREFLYCUBE));
+	inFile.close();
+	return S_OK;
+}
+
+void CImguiMgr::BlackHole_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("BlackHole_Editor", Open);
+	static CBlackHole::BLACKHOLE Desc{};
+
+	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+	if (ImGui::CollapsingHeader("Sphere"))
+	{
+		ImGui::InputFloat3("Sphere_MinSize", reinterpret_cast<float*>(&Desc.SphereDesc.fMinSize));
+		ImGui::InputFloat3("Sphere_MaxSize", reinterpret_cast<float*>(&Desc.SphereDesc.fMaxSize));
+		ImGui::InputFloat("Sphere_StartDelay", &Desc.SphereDesc.fStartdelay);
+		ImGui::ColorEdit3("Sphere_Color", reinterpret_cast<float*>(&Desc.SphereDesc.fColor));
+	}
+
+	if (ImGui::CollapsingHeader("Ring"))
+	{
+		ImGui::InputFloat3("Ring_MinSize", reinterpret_cast<float*>(&Desc.RingDesc.vMinSize));
+		ImGui::InputFloat3("Ring_MaxSize", reinterpret_cast<float*>(&Desc.RingDesc.vMaxSize));
+		ImGui::InputFloat("UV_Speed", &Desc.RingDesc.fUVSpeed);
+		ImGui::InputFloat("Ring_StartDelay", &Desc.RingDesc.fStartdelay);
+		ImGui::ColorEdit3("Ring_Color", reinterpret_cast<float*>(&Desc.RingDesc.vColor));
+		ImGui::ColorEdit3("Ring_BloomColor", reinterpret_cast<float*>(&Desc.RingDesc.vBloomColor));
+		ImGui::InputFloat("Ring_BloomPower", &Desc.RingDesc.fBloomPower);
+		ImGui::InputFloat("Ring_RotAngle", &Desc.RingDesc.fRotAngle);
+	}
+
+#pragma region BUTTONS
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+#pragma endregion BUTTONS
+
+
+	ImGui::End();
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

@@ -3,7 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
-
+#include "Andras.h"
 
 CWeapon_Andras::CWeapon_Andras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -162,6 +162,11 @@ void CWeapon_Andras::Set_Active(_bool isActive)
 {
 	if (m_bIsActive == false && isActive == true)
 	{
+		if (*m_pState != CAndras::STATE_SPRINTATTACK)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Attack1.ogg"), SOUND_MONSTER);
+		}
 		m_GenerateTrail = true;
 	}
 	m_bIsActive = isActive;

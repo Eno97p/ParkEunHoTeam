@@ -149,6 +149,12 @@
     <Filter Include="Objects\02. Effects\18. HexaShield">
       <UniqueIdentifier>{94f755af-e0f0-4d26-ba24-30b82ddab5ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\02. Effects\19. FireFly">
+      <UniqueIdentifier>{152662e2-d1fe-4e6e-8aff-810a854e3fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\02. Effects\20. BlackHole">
+      <UniqueIdentifier>{39bd8142-f0a3-461a-bae7-40693890fd94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -400,6 +406,18 @@
     <ClInclude Include="..\Public\HexaHit.h">
       <Filter>Objects\02. Effects\18. HexaShield</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\FireFlyCube.h">
+      <Filter>Objects\02. Effects\19. FireFly</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BlackHole.h">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BlackSphere.h">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BlackHole_Ring.h">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -635,6 +653,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\HexaHit.cpp">
       <Filter>Objects\02. Effects\18. HexaShield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FireFlyCube.cpp">
+      <Filter>Objects\02. Effects\19. FireFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BlackHole.cpp">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BlackSphere.cpp">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BlackHole_Ring.cpp">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

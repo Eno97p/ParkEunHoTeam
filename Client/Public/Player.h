@@ -16,6 +16,10 @@ BEGIN(Client)
 
 class CPlayer final : public CLandObject
 {
+public:
+
+
+
 #define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
@@ -28,6 +32,20 @@ class CPlayer final : public CLandObject
 #define PARRYEND 0.3f
 #define JUMPSPEED 13.f
 #define BRISDELAY 0.05f
+
+public:
+	typedef struct Player_Status_Data // 다음 Level로 넘어갈 때 저장되어야 하는 Player 스탯 데이터
+	{
+		_bool		isReviveFadeing;
+		_uint		iLevel;
+		_uint		iVitalityLv;
+		_uint		iStaminaLv;
+		_uint		iStrenghtLv;
+		_uint		iMysticismLv;
+		_uint		iKnowledgeLv;
+		_uint		iPhysicalDmg;
+		_uint		iEtherDmg;
+	}PLAYER_STATUS_DATA;
 
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
@@ -195,8 +213,8 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	//_float m_fMaxHp = 10.f;
-	_float m_fMaxHp = 1000.f;
+	_float m_fMaxHp = 10.f;
+	//_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
 	_float m_fMaxHp = 300.f;
@@ -252,9 +270,6 @@ private:
 	_bool m_bSpecialAttackShake = false;
 	_bool m_bSpecialAttackZoom = false;
 
-
-private:
-	CGameObject* HexaShieldText = nullptr;
 	_float		m_GrassBlowInterval = 1.f;
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

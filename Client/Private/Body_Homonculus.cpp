@@ -243,6 +243,11 @@ void CBody_Homonculus::Change_Animation(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 5;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CHomonculus::STATE_HIT)
 	{

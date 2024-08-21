@@ -9,6 +9,7 @@ class CCutSceneCamera final : public CCamera
 {
 public:
 	enum class CAMERA_PHASE {CAMERA_FOLLOW = 0, CAMERA_REVOLUTION, CAMERA_RETURN, CAMERA_ZOOMIN, CAMERA_END};
+	enum CUTSCENE_IDX {SCENE_MANTARI, SCENE_JUGGULAS, SCENE_ANDRAS_PHASE2, SCENE_ANDRAS_PROJECTILE, SCENE_ANDRAS_DEAD };
 public:
 	
 	typedef struct CUTSCENECAMERA_DESC : public CCamera::CAMERA_DESC
@@ -108,12 +109,24 @@ public:
 	void Set_CutScene(_uint iIndex, const vector<CameraKeyFrame>& keyFrames);
 	void Clear_CutScenes();
 
+public:
+	void Init_AndrasQTECutScene();
+	//_float4x4 CalculateCameraMatrix(_matrix fromMatrix, _matrix toMatrix, const _float3& offset, const _float3& lookOffset);
+	_matrix CalculateCameraMatrixFromProjectile(const _float4x4& fromMatrix, const _float4x4& toMatrix, const _float3& offset, const _float3& lookOffset);
+	void Set_SlowMo(_bool b) { m_bSlowmo = b; }
 private: // FOR CAMERA ANIMATIOn
 	_uint m_iCutSceneIdx = 0;
 	vector<CameraKeyFrame> m_KeyFrames;
 	_uint m_iCurrentKeyFrame;
 	_float m_fKeyFrameTime;
 	_bool m_bAnimationFinished;
+
+private: // FOR ANDARAS CUTSCENE
+	shared_ptr<_float4x4> m_pPlayerMatrix;
+    shared_ptr<_float4x4> m_pAndrasMatrix;
+    shared_ptr<_float4x4> m_pProjectileMatrix;
+
+	_bool m_bSlowmo = false;
 
 private:
 	_float		m_fSensor = { 0.0f };

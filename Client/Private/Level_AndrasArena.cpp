@@ -98,6 +98,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
+	initLoader->Save_TriggerStart(LEVEL_ANDRASARENA, L"Layer_Trigger");
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
@@ -109,16 +110,11 @@ void CLevel_AndrasArena::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		Add_FadeInOut(false);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K))
-	{
-		Add_FadeInOut(true);
-	}
 
 //#ifdef _DEBUG
+
+	
+#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -154,8 +150,19 @@ void CLevel_AndrasArena::Tick(_float fTimeDelta)
 	//	return;
 	//}
 
+
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+			m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_MainCamera())->Set_CutSceneIdx(2);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_MainCamera())->Play_CutScene();
+
+			dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Monster"), TEXT("Com_PhysX")))->Set_Position({ 91.6f, 11.f, 89.3f, 1.f });
+			dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Monster"), TEXT("Com_Transform")))->Set_State(CTransform::STATE_POSITION, { 91.6f, 11.f, 89.3f, 1.f });
+
+	}
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
-//#endif
+#endif
 }
 
 void CLevel_AndrasArena::Late_Tick(_float fTimeDelta)
@@ -636,22 +643,6 @@ void CLevel_AndrasArena::Load_Lights()
 	MSG_BOX("Lights Data Load");
 #endif
 	return;
-}
-
-HRESULT CLevel_AndrasArena::Add_FadeInOut(_bool isDissolve)
-{
-	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = false;
-	if(isDissolve)
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
-	else
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ANDRASARENA, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
 }
 
 CLevel_AndrasArena * CLevel_AndrasArena::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

@@ -99,8 +99,6 @@ HRESULT CLevel_GamePlay::Initialize()
 	m_pGameInstance->Set_ShadowEyeFocus(vEye, vFocus, 0.3f);
 
 
-	//위에 코드를 아래 코드로 대체 (지역적으로 있는 값을 저장할 떄 문제를 해결)
-	//힙영역에 데이터를 할당하고 프로그램이 꺼지면 해당 힙 데이터 삭제 (스스로 지움)
 
 
 
@@ -111,6 +109,9 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
+	initLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
+
+	Set_Volume();
 
 	return S_OK;
 }
@@ -119,20 +120,9 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		Add_FadeInOut(false);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K))
-	{
-		Add_FadeInOut(true);
-	}
 
 
-	
-
-
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -184,6 +174,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
+#endif // _DEBUG
+
 //#endif
 }
 
@@ -196,6 +188,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	LIGHT_DESC			LightDesc{};
+
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->LightOff(0);
 
 	Load_Lights();
 
@@ -937,20 +941,9 @@ HRESULT CLevel_GamePlay::ReLoad_Monster(const _tchar* pFilePath)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
+void CLevel_GamePlay::Set_Volume()
 {
-	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = false;
-	if(isDissolve)
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
-	else
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
+	m_pGameInstance->SetChannelVolume(SOUND_MONSTER05, 0.5f);
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

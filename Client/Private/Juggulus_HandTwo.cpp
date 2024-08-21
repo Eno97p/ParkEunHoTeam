@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Weapon.h"
+#include "Monster.h"
 
 CJuggulus_HandTwo::CJuggulus_HandTwo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -70,6 +71,8 @@ void CJuggulus_HandTwo::Tick(_float fTimeDelta)
 		m_fDisolveValue -= fTimeDelta * 2.f;
 		if (m_fDisolveValue < 0.f)
 		{
+			//m_pGameInstance->Disable_Echo();
+			//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 			m_eDisolveType = TYPE_INCREASE;
 		}
 		break;
@@ -177,6 +180,8 @@ NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 
  	if (m_eDisolveType == TYPE_IDLE && m_bScoop)
 	{
+		//m_pGameInstance->Disable_Echo();
+		//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 		m_eDisolveType = TYPE_DECREASE;
 	}
 
@@ -194,6 +199,8 @@ NodeStates CJuggulus_HandTwo::Scoop(_float fTimeDelta)
 	{
 		if (m_isAnimFinished)
 		{
+			//m_pGameInstance->Disable_Echo();
+			//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 			m_eDisolveType = TYPE_DECREASE;
 			return SUCCESS;
 		}
@@ -231,14 +238,17 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 		{
 			if (m_eDisolveType == TYPE_IDLE)
 			{
-				CLandObject::LANDOBJ_DESC		LandObjDesc{}; 
+				CMonster::MST_DESC		LandObjDesc{}; 
 				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 				LandObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 15.f;
 				LandObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 53.f;
 				LandObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) + 10.f;
+				LandObjDesc.bPlayerIsFront = true;
 				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Homonculus"), &LandObjDesc);
+				//m_pGameInstance->Disable_Echo();
+				//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 				m_eDisolveType = TYPE_DECREASE;
 				return RUNNING;
 			}

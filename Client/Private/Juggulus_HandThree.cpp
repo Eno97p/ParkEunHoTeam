@@ -70,6 +70,8 @@ void CJuggulus_HandThree::Tick(_float fTimeDelta)
 		m_fDisolveValue -= fTimeDelta * 5.f;
 		if (m_fDisolveValue < 0.f)
 		{
+			//m_pGameInstance->Disable_Echo();
+			//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 			m_eDisolveType = TYPE_INCREASE;
 		}
 		break;
@@ -177,6 +179,8 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 
 	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_ATTACK)
 	{
+		//m_pGameInstance->Disable_Echo();
+		//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 		m_eDisolveType = TYPE_DECREASE;
 	}
 
@@ -210,6 +214,8 @@ NodeStates CJuggulus_HandThree::Attack(_float fTimeDelta)
 			{
 				if (m_eDisolveType == TYPE_IDLE)
 				{
+					//m_pGameInstance->Disable_Echo();
+					//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 					m_eDisolveType = TYPE_DECREASE;
 				}
 				if (m_eDisolveType == TYPE_INCREASE)

@@ -66,6 +66,7 @@ void CUIGroup_Loading::Setting_Data()
 {
 	vector<CUI*>::iterator circle = m_vecUI.begin();
 	++circle;
+	++circle;
 
 	dynamic_cast<CUI_LoadingCircle*>(*circle)->Setting_Data();
 }

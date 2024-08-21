@@ -1,11 +1,15 @@
 #pragma once
 #include<windows.h>
 #include <process.h>
+#include <vector>
+#include<unordered_set>
 
 namespace Client
 {
 #define MAX_THREAD 4
 #define USED_THREAD_COUNT 3
+	static std::unordered_set<const wchar_t*> g__Exit_Delete_FileList ;		//프로그램이 종료되면 삭제할 파일들
+
 	static bool g_IsThreadFinish[USED_THREAD_COUNT];
 	//Level이 추가되면 아래 문자열 순서 맞춰서 추가해주기
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_ACKBAR, LEVEL_JUGGLAS, LEVEL_ANDRASARENA, LEVEL_GRASSLAND, LEVEL_END };

@@ -14,7 +14,7 @@ BEGIN(Client)
 
 class CMalkhel final : public CMonster
 {
-#define MALKHELSPEED 10.f
+#define MALKHELSPEED 15.f
 #define SPAWNCOOLTIME 0.05f
 #define METEORCOOLTIME 0.5f
 #define EXPLODECOOLTIME 0.9f
@@ -26,7 +26,7 @@ class CMalkhel final : public CMonster
 public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
-		STATE_IDLE, STATE_DASHLEFT, STATE_DASHRIGHT, STATE_DASHBACK, STATE_DASHFRONT, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_ATTACK4,
+		STATE_IDLE, STATE_DASHLEFT, STATE_DASHRIGHT, STATE_DASHBACK, STATE_DASHFRONT, STATE_TELEPORT, STATE_ATTACK1, STATE_ATTACK2, STATE_ATTACK3, STATE_ATTACK4,
 		STATE_ATTACK5, STATE_ATTACK6, STATE_ATTACK7, STATE_DEAD, STATE_END
 	};
 
@@ -55,6 +55,7 @@ private:
 private:
 	NodeStates Dead(_float fTimeDelta);
 	NodeStates Hit(_float fTimeDelta);
+	NodeStates Teleport(_float fTimeDelta);
 	NodeStates Move(_float fTimeDelta);
 	NodeStates Chase(_float fTimeDelta);
 	NodeStates Attack1(_float fTimeDelta);
@@ -78,6 +79,7 @@ private:
 	_bool m_bSprint = false;
 	_bool	m_bTrigger = false;
 	_bool m_bDashBack = false;
+	_bool m_bTeleport = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fDashBackDelay = 1.f;

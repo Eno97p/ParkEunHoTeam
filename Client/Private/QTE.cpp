@@ -125,16 +125,15 @@ _bool CQTE::Check_End()
 
 _bool CQTE::Check_ResultScore()
 {
-	// Btn을 순회하며 Score를 체크하고 하나라도 Bad가 있으면 ~ / 통과했으면 ~ 기믹 처리 필요(Andras와 연결)
+	// Btn을 순회하며 Score를 체크하고 하나라도 Bad가 있으면 true 반환
 	for (auto& pBtn : m_vecBtn)
 	{
-		if (pBtn->Get_ScoreType() == CUI_QTE_Btn::SCORE_BAD) // Bad가 하나라도 있으면 ~~~ 처리
+		if (pBtn->Get_ScoreType() == CUI_QTE_Btn::SCORE_BAD)
 		{
 			return false; 
 		}
 	}
 
-	// 없으면 ~~~ 처리
 	return true;
 }
 

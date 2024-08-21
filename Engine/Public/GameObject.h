@@ -68,6 +68,7 @@ public:
 	void Set_ProtoTypeTag(const wstring& wstrPrototypeTag) {m_wstrPrototypeTag = wstrPrototypeTag;}
 	const wstring& Get_ProtoTypeTag() { return m_wstrPrototypeTag; }
 	virtual _float4	Get_InitPos() { return m_vInitialPos; }
+	virtual _float4x4 Get_worldMat();
 	
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };

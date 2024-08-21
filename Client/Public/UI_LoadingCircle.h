@@ -27,6 +27,7 @@ public:
 	virtual HRESULT	Render() override;
 
 	void			Setting_Data();
+	void			Setting_Text();
 
 private:
 	_bool			m_isFontOn = { false };

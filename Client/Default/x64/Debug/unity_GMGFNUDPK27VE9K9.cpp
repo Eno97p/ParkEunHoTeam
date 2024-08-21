@@ -279,6 +279,9 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\FireFlyCube.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\FirePillar.cpp"
 
 
@@ -508,6 +511,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_PortalPic.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_PortalText.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_QTE_Btn.cpp"

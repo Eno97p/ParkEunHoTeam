@@ -190,8 +190,7 @@
 
 #pragma region Portal
 #include "UI_PortalPic.h"
-
-
+#include "UI_PortalText.h"
 #include "UIGroup_Portal.h"
 #pragma endregion Portal
 
@@ -2318,6 +2317,10 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_PortalPic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_PortalText*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PortalText"),
+		CUI_PortalText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Portal*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Portal"),

@@ -113,6 +113,8 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	Set_Volume();
 
+	CUI_Manager::GetInstance()->Create_PortalUI();
+
 	return S_OK;
 }
 

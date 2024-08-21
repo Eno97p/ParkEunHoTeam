@@ -25,10 +25,12 @@ HRESULT CUI_PortalPic::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fX = g_iWinSizeX >> 1;
-	m_fY = g_iWinSizeY >> 1;
-	m_fSizeX = g_iWinSizeX;
-	m_fSizeY = g_iWinSizeY;
+	// Level에 따라 위치 정해줘야 함~!
+
+	/*m_fX = g_iWinSizeX >> 1;
+	m_fY = g_iWinSizeY - 150.f;
+	m_fSizeX = 512.f;
+	m_fSizeY = 512.f;*/
 
 	Setting_Position();
 
@@ -45,7 +47,7 @@ void CUI_PortalPic::Tick(_float fTimeDelta)
 
 void CUI_PortalPic::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	//CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
 
 HRESULT CUI_PortalPic::Render()
@@ -73,7 +75,7 @@ HRESULT CUI_PortalPic::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalText"),
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

@@ -73,6 +73,10 @@ public:
 	// Cinematic
 	void				Setting_Cinematic();
 
+	// Portal
+	void				Create_PortalUI(_bool isBackPortal = false);
+	void				Delete_PortalUI(_bool isBackPortal = false);
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부

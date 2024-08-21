@@ -59,6 +59,15 @@
 #include "C:\Real3DProject\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\Real3DProject\EffectTool\private\BlackHole.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\Private\BlackHole_Ring.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\Private\BlackSphere.cpp"
+
+
 #include "C:\Real3DProject\EffectTool\Private\Charge_Ribbon.cpp"
 
 
@@ -75,6 +84,9 @@
 
 
 #include "C:\Real3DProject\EffectTool\private\FireEffect.cpp"
+
+
+#include "C:\Real3DProject\EffectTool\private\FireFlyCube.cpp"
 
 
 #include "C:\Real3DProject\EffectTool\private\FirePillar.cpp"

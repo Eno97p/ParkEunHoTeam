@@ -21,6 +21,7 @@
 #include "UIGroup_Ch_Upgrade.h"
 #include "UIGroup_BuffTimer.h"
 #include "UIGroup_Level.h"
+#include "UIGroup_Portal.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -505,6 +506,39 @@ void CUI_Manager::Create_LevelUI()
 void CUI_Manager::Setting_Cinematic()
 {
 	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
+}
+
+void CUI_Manager::Create_PortalUI(_bool isBackPortal)
+{
+	if (!isBackPortal)
+	{
+		CUIGroup::UIGROUP_DESC pDesc{};
+		pDesc.eLevel = LEVEL_STATIC;
+
+		m_mapUIGroup.insert({ "Portal", dynamic_cast<CUIGroup_Portal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Portal"), &pDesc)) });
+
+	}
+	else
+	{
+		// 초원에 설치될 AckBar로 가는 BackPortal의 경우에는 예외적으로 다르게 처리해주는 수밖에! (key값 다르게 해서)
+	}
+}
+
+void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
+{
+	if (isBackPortal)
+	{
+		if (m_mapUIGroup.find("Portal") != m_mapUIGroup.end()) // 값이 있으면
+		{
+			Safe_Release((*m_mapUIGroup.find("Portal")).second);
+			m_mapUIGroup.erase("Portal");
+		}
+	}
+	else
+	{
+
+	}
+
 }
 
 void CUI_Manager::Key_Input()

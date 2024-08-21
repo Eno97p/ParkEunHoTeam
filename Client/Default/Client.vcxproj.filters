@@ -1870,6 +1870,9 @@
     <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_PortalText.h">
+      <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2807,9 +2810,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_PortalPic.cpp">
       <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PortalText.cpp">
+      <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

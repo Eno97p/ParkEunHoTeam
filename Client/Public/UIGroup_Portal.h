@@ -21,7 +21,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	class CUI_PortalPic* m_pPic = { nullptr };
+	class CUI_PortalPic*	m_pPic = { nullptr };
+	class CUI_PortalText*	m_pText = { nullptr };
 
 private:
 	HRESULT					Create_UI();

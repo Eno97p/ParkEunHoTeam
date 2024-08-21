@@ -6,7 +6,7 @@
 #include "Andras.h"
 #include "EffectManager.h"
 #include "UI_Manager.h"
-
+#include "CutSceneCamera.h"
 
 CKickSword::CKickSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -55,6 +55,8 @@ HRESULT CKickSword::Initialize(void* pArg)
 	_float fDegree = XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(vPlayerLook, vDir))));
 
 	m_bIsActive = true;
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("RushStart.ogg"), SOUND_EFFECT);
 
 	return S_OK;
 }
@@ -98,25 +100,44 @@ void CKickSword::Tick(_float fTimeDelta)
 		{
 			m_eDisolveType = TYPE_DECREASE;
 			fSlowValue = 1.f;
-			if (!CUI_Manager::GetInstance()->Delete_QTE())
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_SlowMo(false);
+
+		//	if (!CUI_Manager::GetInstance()->Delete_QTE())
 			{
 				m_pPlayer->PlayerHit(10, true);
 			}
-			else
+		/*	else
 			{
 				m_pAndras->KickStop();
-			}
+			}*/
 		}
 		else
 		{
+			_vector vAndrasPos = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Monster"), TEXT("Com_Transform")))->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+
 			_float fLengthFromPlayer = XMVectorGetX(XMVector3Length(vPlayerPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-			if (fLengthFromPlayer < 5.f)
+			_float fLengthFromAndras = XMVectorGetX(XMVector3Length(vAndrasPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+			_bool StartSlowMo = false;
+
+			if (fLengthFromAndras < 7.f)
 			{
-				if (fSlowValue != 0.01f)
+				StartSlowMo = true;
+			}
+
+			if (fLengthFromPlayer < 5.f || StartSlowMo)
+			{
+				if (fSlowValue != 0.01f && !StartSlowMo)
 				{
-					CUI_Manager::GetInstance()->Create_QTE();
+					//CUI_Manager::GetInstance()->Create_QTE();
 				}
 				fSlowValue = 0.01f;
+				//dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_SlowMo(true);
+			}
+			else
+			{
+				fSlowValue = 1.f;
 			}
 		}
 	}

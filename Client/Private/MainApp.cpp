@@ -188,6 +188,13 @@
 #include "UIGroup_Level.h"
 #pragma endregion Level
 
+#pragma region Portal
+#include "UI_PortalPic.h"
+
+
+#include "UIGroup_Portal.h"
+#pragma endregion Portal
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -205,6 +212,7 @@
 #include "UI_Memento.h"
 #include "UI_AeonsLost.h"
 #include "UI_Cinematic.h"
+#include "UI_ArrowSign.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -883,32 +891,32 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Logo
 	/* Prototype_Component_Texture_LogoBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_StartMenu_BG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_StartMenu_BG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Logo_Banner */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Banner"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Banner.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Banner.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Logo_Selector */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Selector"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Selector.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Logo_Selector.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Logo_Title */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Logo_Title"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Title.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/Title.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_LogoFlow */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoFlow"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffect1.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffect1.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_LogoFlowMask */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LogoFlowMask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffectMask.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Logo/T_PixelEffectMask.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion Logo
@@ -916,12 +924,12 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Loading
 	/* Prototype_Component_Texture_LoadingBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/fond_loading2.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/fond_loading2.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_LoadingCircle */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_LoadingCircle"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/T_Circle_loading%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Loading/T_Circle_loading%d.dds"), 2))))
 		return E_FAIL;
 
 #pragma endregion Loading
@@ -930,39 +938,39 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region State
 	/* Prototype_Component_Texture_HUD_StateBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_StateBG.png"), 1)))) // dds ÀÌ½´?
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_StateBG.dds"), 1)))) // dds ÀÌ½´?
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_HUD_StateBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateBar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_Bar.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_Bar.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_HUD_StateHP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateHP"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_HP.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_HP.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_HUD_StateEnergy */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateEnergy"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_Energy.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_Energy.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_HUD_StateEther */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateEther"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_Ether.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HDU_Ether.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_HUD_StateSoul */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_StateSoul"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_Soul.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/State/HUD_Soul.dds"), 1))))
 		return E_FAIL;
 #pragma endregion State
 
 #pragma region WeaponSlot
 	/* Prototype_Component_Texture_HUD_WeaponSlotBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_WeaponSlotBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUD_WeaponSlotBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUD_WeaponSlotBG.dds"), 1))))
 		return E_FAIL;
 #pragma endregion WeaponSlot
 #pragma endregion HUD
@@ -971,34 +979,34 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Weapon
 	/* Prototype_Component_Texture_Icon_Durgas_Claymore */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Durgas_Claymore"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Durgas_Claymore.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Durgas_Claymore.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Elish */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Elish"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Elish.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Elish.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Pretorian*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Pretorian"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Pretorian.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Pretorian.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Radamanthes*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Radamanthes"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Radamanthes_Dagger.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Radamanthes_Dagger.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Weapon
 
 #pragma region Skill
 	/* Prototype_Component_Texture_Icon_Oph */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Oph"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Oph.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Oph.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Aksha */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Aksha"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Aksha.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Aksha.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Skill
 
@@ -1007,64 +1015,64 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region DropItem
 	/* Prototype_Component_Texture_Icon_Item_Buff0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff0"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff0.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff0.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Buff1 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff1"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff1.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff1.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Buff2 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff2"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff2.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff2.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Buff3 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Buff3"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff3.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Buff3.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Essence */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Essence"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Essence.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Essence.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Ether */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Ether"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Ether.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Ether.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Upgrade0 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Upgrade0"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade0.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade0.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Item_Upgrade1 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Item_Upgrade1"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade1.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Upgrade1.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion DropItem
 
 	/* Prototype_Component_Texture_Icon_Whisperer */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Whisperer"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Whisperer.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Whisperer.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Firefly */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Firefly"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Firefly.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_Firefly.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_HoverBoard */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_HoverBoard"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_HoverBoard.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Icon_Catalyst */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Icon_Catalyst"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_AncientCatalyst.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Icon_Item_AncientCatalyst.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Item */
@@ -1075,12 +1083,12 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_DropItemBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_DropItemBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DropItem.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/DropItem.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_ItemIcon_None */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ItemIcon_None"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_None.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_None.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion Icon
@@ -1089,12 +1097,12 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_MenuBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_BG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_BG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuFontaine */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuFontaine"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_Fontaine.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/T_IGGOUI_Fontaine.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuAlphaBG */
@@ -1105,45 +1113,43 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Btn
 	/* Prototype_Component_Texture_MenuBtn_Ch */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Ch"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Ch_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Ch_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuBtn_Cod */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Cod"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Cod_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Cod_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuBtn_Inv */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Inv"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Inv_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Inv_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuBtn_Map */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Map"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Map_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Map_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuBtn_Set */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_Set"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Set_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_Set_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_MenuBtn_WP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MenuBtn_WP"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_WP_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/MenuBtn_WP_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Menu_SelectFrame */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Menu_SelectFrame"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/Menu_SelectFrame.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/Menu_SelectFrame.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Menu_Mask */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Menu_Mask"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/Menu_Mask.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Menu/Menu_Mask.dds"), 1))))
 		return E_FAIL;
-
-
 #pragma endregion Btn
 
 #pragma endregion Menu
@@ -1151,260 +1157,258 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Quick
 	/* Prototype_Component_Texture_UI_QuickBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuickBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/T_Weapons_Overlay.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/T_Weapons_Overlay.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_QuickTop */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuickTop"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/T_Character_TopImage.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/T_Character_TopImage.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_QuickInvBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuickInvBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/QuickInvBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/QuickInvBG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_QuickExplain */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QuickExplain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/QuickExplain.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QuickAccess/QuickExplain.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Quick
 
 #pragma region Inventory
 	/* Prototype_Component_Texture_UI_InvSub_Btn_None */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_None"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_None.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_None.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_InvSub_Btn_Select */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_InvSub_Btn_Select"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_Select.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/InvSub_Btn_Select.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Inventory
 
 #pragma region Character
 	/* Prototype_Component_Texture_UI_CharacterBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_CharacterBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_background_character_sheet.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_background_character_sheet.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_CharacterTop */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_CharacterTop"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/Ch_Top.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/Ch_Top.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Character
 
 #pragma region Slot
 	/* Prototype_Component_Texture_UI_Slot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Slot"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Slot_SelectFrame */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Slot_SelectFrame"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot_SelectFrame.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot_SelectFrame.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_EquipSign */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_EquipSign"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Inventory_InQANotif.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Inventory_InQANotif.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Slot
 
 #pragma region MenuPage
 	/* Prototype_Component_Texture_UI_MenuPageBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MenuPageBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Options_BG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_Options_BG.dds"), 1))))
 		return E_FAIL;
 #pragma endregion MenuPage
 
 #pragma region Weapon
 	/* Prototype_Component_Texture_UI_WeaponRTop */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_WeaponRTop"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/RightTop.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/RightTop.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_WeaponEquipSlot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_WeaponEquipSlot"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/EquipSlot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/EquipSlot.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_WPFontaine */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_WPFontaine"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Fontaine_%d.png"), 3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Fontaine_%d.dds"), 3))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_WPEquipNone */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_WPEquipNone"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/EquipSlot_None.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/EquipSlot_None.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_WeaponTab */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_WeaponTab"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Tab.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Weapon/Tab.dds"), 1))))
 		return E_FAIL;
-
-
 #pragma endregion Weapon
 
 #pragma region Monster
 	/* Prototype_Component_Texture_UI_MonsterHP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHP"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHP.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHP.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_MonsterHPBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_MonsterHPBar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHPBar.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/MonsterHPBar.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_BossHP */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHP"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHP.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHP.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_BossHPBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHPBar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHPBar.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHPBar.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Monster
 
 #pragma region Script
 	/* Prototype_Component_Texture_Script_NameBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_NameBox"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_NameBox.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_NameBox.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_DialogBox */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_DialogBox"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_Text_Box_Whisperer.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_Dialog_Text_Box_Whisperer.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Aura */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Aura"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_NaiAura%d.png"), 5))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_NaiAura%d.dds"), 5))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_Rlya */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Rlya"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Rlya.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Rlya.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_Valnir */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_Valnir"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Valnir.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/T_NPC_Valnir.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_ChoronBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_BG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_BG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_ChoronKey */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_ChoronKey"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_Key_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/Choron_Key_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Script_Npc_YaakBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Script_Npc_YaakBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/YaakBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Script/YaakBG.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Script
 
 #pragma region Upgrade
 	/* Prototype_Component_Texture_Upgrade_BG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_BG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_home.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_home.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Upgrade_Forge */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Forge"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Upgrade_Forge_Text */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Forge_Text"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge_Text.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Forge_Text.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Upgrade_Crucible */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Upgrade_Crucible"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Crucible.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Crucible.dds"), 1))))
 		return E_FAIL;
 
 #pragma region UpGPage
 	/* Prototype_Component_Texture_UpGPage_BG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_BG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge__1_.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge__1_.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_Circle */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Circle"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_Top */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Top"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Top.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Top.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_Slot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Slot"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Slot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_Slot.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_SlotSelect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_SlotSelect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_SlotSelect.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_SlotSelect.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_value */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_value"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_value.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/Upgrade_value.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_Btn */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_Btn"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeBtn.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeBtn.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_BtnSelect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_BtnSelect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/BtnSelect.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/BtnSelect.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UpGPage_MatSlot */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UpGPage_MatSlot"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeMat_Slot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/UpgradeMat_Slot.dds"), 1))))
 		return E_FAIL;
 #pragma endregion UpGPage
 
 #pragma region Up_Completed
 	/* Prototype_Component_Texture_UI_UpCompleted_Circle_1 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_1"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_UpCompleted_Circle_2 */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Circle_2"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic_small.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/T_circle_cinematic_small.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_UpCompleted_Forge */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_UpCompleted_Forge"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle2.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Upgrade/CRAFT_background_forge_circle2.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Up_Completed
 
 #pragma region Ch_Upgrade
 	/* Prototype_Component_Texture_Ch_Upgrade_Btn */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_Btn"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_Weapons_Slot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_Weapons_Slot.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Ch_Upgrade_BtnSelect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Ch_Upgrade_BtnSelect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_LevleUp_Select.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Character/T_LevleUp_Select.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Ch_Upgrade
 
@@ -1413,59 +1417,59 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Map
 	/* Prototype_Component_Texture_MapBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_MapBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/T_Plaines_Map.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/T_Plaines_Map.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Map_Icon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Icon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Icon_%d.png"), 6))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Icon_%d.dds"), 6))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Map_Area */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Area"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Area.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Area.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Map_Detail */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_Detail"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Detail.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_Detail.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Map_PosIcon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_PosIcon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_PosIcon.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_PosIcon.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Map_User */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Map_User"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_User.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Map/Map_User.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Map
 
 #pragma region Shop
 	/* Prototype_Component_Texture_UI_ShopBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ShopBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopBG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_ShopSelect */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ShopSelect"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopSelect.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/ShopSelect.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_SoulBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_SoulBG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/SoulBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/SoulBG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_RemainIcon */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RemainIcon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/Shop_RemainIcon.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/Shop_RemainIcon.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_ValnirBG_Anim */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ValnirBG_Anim"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/AnimBG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Shop/AnimBG.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion Shop
@@ -1473,32 +1477,32 @@ HRESULT CMainApp::Ready_Texture_UI()
 #pragma region Setting
 	/* Prototype_Component_Texture_UI_Setting_Star */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Star"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/star.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/star.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Setting_OnOffBtn */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_OnOffBtn"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/OnOffBtn.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/OnOffBtn.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Setting_Overlay */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Overlay"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/T_Options_Overlay.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/T_Options_Overlay.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Setting_BackBtn */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_BackBtn"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/Setting_BackBtn.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Setting_Sound */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_Sound"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBtn.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBtn.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Setting_SoundBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Setting_SoundBar"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBar.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Setting/SoundBar.dds"), 1))))
 		return E_FAIL;
 #pragma endregion Setting
 
@@ -1535,79 +1539,94 @@ HRESULT CMainApp::Ready_Texture_UI()
 
 	/* Prototype_Component_Texture_UI_QTE_Shine */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_QTE_Shine"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Shine.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/QTE/Qte_Shine.dds"), 1))))
 		return E_FAIL;
 #pragma endregion QTE
 
 #pragma region ETC
 	/* Prototype_Component_Texture_Mouse */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Mouse"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ShatteredCursor.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ShatteredCursor.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_FadeInOut */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_FadeInOut"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/FadeInOut.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_BG_Alpha */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_BG_Alpha"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BG_Alpha.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Activate */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Activate"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Activate.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Activate.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_ScreenBlood */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_ScreenBlood"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_ScreenBlood.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_ScreenBlood.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Broken */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Broken"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Broken.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Broken.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Dash */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Dash"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Dash_%d.dds"), 2))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_BuffTimer */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BuffTimer"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BuffTimer.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Memento */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Memento"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Memento.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_AeonsLost*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_AeonsLost"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/AeonsLost.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/AeonsLost.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_RedDot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_RedDot"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/RedDot.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/RedDot.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Level_BG*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Level_BG"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_BG.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_BG.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Level_TextBox*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Level_TextBox"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_TextBox.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Level_TextBox.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_UI_Cinematic*/
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_Cinematic"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_front_Plan_cinematic.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/T_front_Plan_cinematic.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_ArrowSign */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ArrowSign"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ArrowSign.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalPic */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PortalPic/PortalPic_%d.png"), 4))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalText */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalText"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PortalPic/Portal_Text.png"), 1))))
 		return E_FAIL;
 #pragma endregion ETC
 
@@ -2293,6 +2312,19 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		return E_FAIL;
 #pragma endregion Level
 
+#pragma region Portal
+	/* For.Prototype_GameObject_UI_PortalPic*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PortalPic"),
+		CUI_PortalPic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UIGroup_Portal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Portal"),
+		CUIGroup_Portal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Portal
+
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Inventory"),
@@ -2352,6 +2384,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Cinematic*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Cinematic"),
 		CUI_Cinematic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ArrowSign*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ArrowSign"),
+		CUI_ArrowSign::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

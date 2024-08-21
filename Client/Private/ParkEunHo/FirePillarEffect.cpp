@@ -28,6 +28,8 @@ HRESULT CFirePillarEffect::Initialize(void* pArg)
 	switch (m_OwnDesc->NumModels)
 	{
 	case F_1:
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Flame.ogg"), SOUND_EFFECT);
 		m_ModelProtoName = TEXT("Prototype_Component_Model_FirePillar1");
 		break;
 	case F_2:

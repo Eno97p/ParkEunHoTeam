@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Yantari.h"
 
 
 CWeapon_Yantari::CWeapon_Yantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -242,6 +243,31 @@ HRESULT CWeapon_Yantari::Render_Bloom()
 		m_pModelCom->Render(i);
 	}
 	return S_OK;
+}
+
+void CWeapon_Yantari::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (*m_pState != CYantari::STATE_DASHATTACK && *m_pState != CYantari::STATE_CASTATTACK)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Attack.ogg"), SOUND_MONSTER, 0.8f);
+
+		}
+		else if(*m_pState != CYantari::STATE_DASHATTACK)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Attack.ogg"), SOUND_MONSTER, 0.8f);
+		}
+		else if (*m_pState != CYantari::STATE_CASTATTACK)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Attack.ogg"), SOUND_MONSTER, 0.8f);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
 }
 
 HRESULT CWeapon_Yantari::Add_Components()

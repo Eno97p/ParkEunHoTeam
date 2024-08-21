@@ -111,6 +111,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
 	initLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
 
+	Set_Volume();
+
 	return S_OK;
 }
 
@@ -118,17 +120,6 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		Add_FadeInOut(false);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K))
-	{
-		Add_FadeInOut(true);
-	}
-
-
-	
 
 
 #ifdef _DEBUG
@@ -197,6 +188,18 @@ HRESULT CLevel_GamePlay::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	LIGHT_DESC			LightDesc{};
+
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->LightOff(0);
 
 	Load_Lights();
 
@@ -938,20 +941,9 @@ HRESULT CLevel_GamePlay::ReLoad_Monster(const _tchar* pFilePath)
 	return S_OK;
 }
 
-HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
+void CLevel_GamePlay::Set_Volume()
 {
-	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = false;
-	if(isDissolve)
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
-	else
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
+	m_pGameInstance->SetChannelVolume(SOUND_MONSTER05, 0.5f);
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

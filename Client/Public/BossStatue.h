@@ -33,12 +33,16 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 	_bool m_bActive = true;
 
+	class CUI_ArrowSign*	m_pSignUI = { nullptr };
+
 private:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
+	HRESULT	Create_UI();
+
 private:
-	_uint m_iTest = 0;
+	_uint					m_iTest = 0;
 
 public:
 	static CBossStatue* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

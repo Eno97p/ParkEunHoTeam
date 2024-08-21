@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "Weapon.h"
 
+#include "UI_ArrowSign.h"
+
 CBossStatue::CBossStatue(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CActive_Element(pDevice, pContext)
 {
@@ -36,6 +38,9 @@ HRESULT CBossStatue::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Create_UI()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -64,9 +69,23 @@ void CBossStatue::Tick(_float fTimeDelta)
 	if (m_eColltype == CCollider::COLL_START)
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
 		m_bActive = false;
 	}
+
+	// Sign UI 관련 함수
+	if(!m_bActive)
+	{
+		// Sigh UI 제거
+		if (nullptr != m_pSignUI)
+		{
+			Safe_Release(m_pSignUI);
+			m_pSignUI = nullptr;
+		}
+	}
+
+	if (nullptr != m_pSignUI)
+		m_pSignUI->Tick(fTimeDelta);
 }
 
 void CBossStatue::Late_Tick(_float fTimeDelta)
@@ -80,6 +99,9 @@ void CBossStatue::Late_Tick(_float fTimeDelta)
 	if (m_bActive)
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+		if (nullptr != m_pSignUI)
+			m_pSignUI->Late_Tick(fTimeDelta);
 	}
 	if (m_pGameInstance->Get_NotMoveShadow())
 	{
@@ -236,6 +258,19 @@ HRESULT CBossStatue::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CBossStatue::Create_UI()
+{
+	CUI_ArrowSign::UI_ARROWSIGN_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	m_pSignUI = dynamic_cast<CUI_ArrowSign*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_ArrowSign"), &pDesc));
+	if (nullptr == m_pSignUI)
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CBossStatue* CBossStatue::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CBossStatue* pInstance = new CBossStatue(pDevice, pContext);
@@ -265,6 +300,8 @@ CGameObject* CBossStatue::Clone(void* pArg)
 void CBossStatue::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSignUI);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pColliderCom);
 }

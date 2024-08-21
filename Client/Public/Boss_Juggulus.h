@@ -54,6 +54,7 @@ private:
 	_bool							m_isHandAnimFinished = { false };
 	_bool							m_isHandTwoAnimFinished = { false };
 	_bool							m_isHandThreeAnimFinished = { false };
+	_bool							m_bDeadSound = false;
 	CBossStatue* m_pBossStatues[STATUECOUNT] = { nullptr };
 	_float m_fGroggyTime = 10.f;
 

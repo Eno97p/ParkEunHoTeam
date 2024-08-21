@@ -47,7 +47,8 @@ void CUI_RedDot::Tick(_float fTimeDelta)
 
 void CUI_RedDot::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
+	if(m_isRend)
+		CGameInstance::GetInstance()->Add_UI(this, m_eUISort);
 }
 
 HRESULT CUI_RedDot::Render()

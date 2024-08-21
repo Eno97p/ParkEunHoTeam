@@ -40,6 +40,10 @@ HRESULT CTornadoEffect::Initialize(void* pArg)
 	EFFECTMGR->Generate_Particle(m_OwnDesc->NumParticle, m_OwnDesc->vStartPos, this);
 	EFFECTMGR->Generate_Particle(48, m_OwnDesc->vStartPos, this);
 	EFFECTMGR->Generate_Particle(49, m_OwnDesc->vStartPos, this);
+
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Tornado.ogg"), SOUND_EFFECT);
+
     return S_OK;
 }
 

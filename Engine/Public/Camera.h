@@ -15,6 +15,11 @@ public:
 		_float fNear;
 		_float fFar;
 		vector<tuple<_float, _float, _float>> speedChanges; // 상대적인 시간 (0.0 ~ 1.0), 해당 시점에서의 속도 배수, 보간 시간
+
+		// 투사체 추적을 위한 추가 필드
+		bool bTrackProjectile = false;
+		_float3 offset = _float3(0, 0, 0);
+		_float3 lookOffset = _float3(0, 0, 0);
 	};
 
 	typedef struct CAMERA_DESC : CGameObject::GAMEOBJECT_DESC

@@ -294,6 +294,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h" />
@@ -337,6 +338,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
     <ClInclude Include="..\Public\UIGroup_Level.h" />
     <ClInclude Include="..\Public\UIGroup_Map.h" />
+    <ClInclude Include="..\Public\UIGroup_Portal.h" />
     <ClInclude Include="..\Public\UIGroup_Script.h" />
     <ClInclude Include="..\Public\UIGroup_Setting.h" />
     <ClInclude Include="..\Public\UIGroup_Shop.h" />
@@ -345,6 +347,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UIGroup_UP_Completed.h" />
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_AeonsLost.h" />
+    <ClInclude Include="..\Public\UI_ArrowSign.h" />
     <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_BuffTimer.h" />
     <ClInclude Include="..\Public\UI_BuffTimer_Bar.h" />
@@ -368,6 +371,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Memento.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
+    <ClInclude Include="..\Public\UI_PortalPic.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
     <ClInclude Include="..\Public\UI_QTE_Particle.h" />
     <ClInclude Include="..\Public\UI_QTE_Ring.h" />
@@ -607,6 +611,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp" />
@@ -650,6 +655,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
     <ClCompile Include="..\Private\UIGroup_Level.cpp" />
     <ClCompile Include="..\Private\UIGroup_Map.cpp" />
+    <ClCompile Include="..\Private\UIGroup_Portal.cpp" />
     <ClCompile Include="..\Private\UIGroup_Script.cpp" />
     <ClCompile Include="..\Private\UIGroup_Setting.cpp" />
     <ClCompile Include="..\Private\UIGroup_Shop.cpp" />
@@ -658,6 +664,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UIGroup_UP_Completed.cpp" />
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_AeonsLost.cpp" />
+    <ClCompile Include="..\Private\UI_ArrowSign.cpp" />
     <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp" />
@@ -681,6 +688,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Memento.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\UI_PortalPic.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Particle.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Ring.cpp" />

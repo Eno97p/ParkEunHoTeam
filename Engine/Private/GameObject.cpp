@@ -58,6 +58,11 @@ HRESULT CGameObject::Initialize(void * pArg)
 
 	if (nullptr != pArg)
 	{
+	
+		
+		
+
+		
 	/*	if (((GAMEOBJECT_DESC*)pArg)->pModelName)
 		{
 			if(sizeof(((GAMEOBJECT_DESC*)pArg)->pModelName)==sizeof(const char*))
@@ -72,7 +77,7 @@ HRESULT CGameObject::Initialize(void * pArg)
 		{
 			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
 		}*/
-		Set_Desc(*static_cast<GAMEOBJECT_DESC*>(pArg));
+		
 		
 	}
 
@@ -110,6 +115,14 @@ _float CGameObject::Get_LengthFromCamera()
 	return XMVectorGetX(XMVector3Length(vPos - vCamPos));
 }
 
+_float4x4 CGameObject::Get_worldMat()
+{
+	_float4x4 matWorld = {};
+	XMStoreFloat4x4(&matWorld, m_pTransformCom->Get_WorldMatrix());
+
+	return matWorld;
+}
+
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const wstring& strPrototypeTag, const wstring & strComponentTag, CComponent** ppOut, void* pArg)
 {
 	if (m_Components.end() != m_Components.find(strComponentTag))
@@ -141,9 +154,9 @@ void CGameObject::Free()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-	if (m_pDesc)
-	{
-		free(m_pDesc);
-		m_pDesc = nullptr;
-	}
+	//if (m_pDesc)
+	//{
+	//	free(m_pDesc);
+	//	m_pDesc = nullptr;
+	//}
 }

@@ -50,7 +50,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -88,8 +88,6 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 
 void CMalkhel::Tick(_float fTimeDelta)
 {
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
 		m_bTrigger = true;
@@ -132,13 +130,14 @@ void CMalkhel::Tick(_float fTimeDelta)
 
 void CMalkhel::Late_Tick(_float fTimeDelta)
 {
+	m_pPhysXCom->Late_Tick(fTimeDelta);
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
 	}
-
-	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
@@ -275,6 +274,7 @@ HRESULT CMalkhel::Add_Nodes()
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Dead"), bind(&CMalkhel::Dead, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Hit_Selector"), TEXT("Hit"), bind(&CMalkhel::Hit, this, std::placeholders::_1));
 
+	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Teleport"), bind(&CMalkhel::Teleport, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Move"), bind(&CMalkhel::Move, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Move_Selector"), TEXT("Chase"), bind(&CMalkhel::Chase, this, std::placeholders::_1));
 	m_pBehaviorCom->Add_Action_Node(TEXT("Attack_Selector"), TEXT("Attack1"), bind(&CMalkhel::Attack1, this, std::placeholders::_1));
@@ -323,7 +323,7 @@ NodeStates CMalkhel::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Hit.ogg"), SOUND_MONSTER05);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -353,6 +353,59 @@ NodeStates CMalkhel::Hit(_float fTimeDelta)
 		break;
 	}
 
+	return FAILURE;
+}
+
+NodeStates CMalkhel::Teleport(_float fTimeDelta)
+{
+	if (m_iState == STATE_TELEPORT)
+	{
+		m_pPhysXCom->Set_Gravity(false);
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		_float3 fScale = m_pTransformCom->Get_Scaled();
+		if (!m_bTeleport)
+		{
+			m_pTransformCom->Set_Scale(fScale.x - fTimeDelta * 5.f, fScale.y - fTimeDelta * 5.f, fScale.z - fTimeDelta * 5.f);
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			if (m_pTransformCom->Get_Scaled().x < 0.1f)
+			{
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Teleport.ogg"), SOUND_MONSTER);
+				m_bTeleport = true;
+				_uint i = RandomInt(0, 2);
+				switch (i)
+				{
+				case 0:
+					m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION)
+						- XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)) * 10.f);
+					break;
+				case 1:
+					m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION)
+						+ XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)) * 10.f);
+					break;
+				case 2:
+					m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION)
+						- XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)) * 10.f);
+					break;
+				}
+			}
+		}
+		else
+		{
+			m_pTransformCom->Set_Scale(fScale.x + fTimeDelta * 5.f, fScale.y + fTimeDelta * 5.f, fScale.z + fTimeDelta * 5.f);
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			if (m_pTransformCom->Get_Scaled().x > 1.5f)
+			{
+				m_pTransformCom->Set_Scale(1.5f, 1.5f, 1.5f);
+				m_bTeleport = false;
+				m_iState = STATE_IDLE;
+				m_fDashBackDelay = 1.f;
+				m_pPhysXCom->Set_Gravity();
+				return SUCCESS;
+			}
+		}
+		return RUNNING;
+	}
 	return FAILURE;
 }
 
@@ -422,6 +475,8 @@ NodeStates CMalkhel::Attack1(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(35, fPos);
 			m_fSpawnCoolTime = 0.f;
 			m_pPlayer->PlayerHit(30.f);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack1.ogg"), SOUND_MONSTER);
 		}
 		
 		if (m_isAnimFinished)
@@ -468,6 +523,8 @@ NodeStates CMalkhel::Attack3(_float fTimeDelta)
 		{
 			m_fTrippleAttack = TRIPPLEATTACK;
 			m_iTrippleAttackCount--;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
 		}
 		if (m_fTrippleAttack < TRIPPLEATTACK && m_fTrippleAttack > TRIPPLEATTACK * 0.5f)
 		{
@@ -581,13 +638,13 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 	{
 		m_fTurnDelay = 0.5f;
 
-		if (m_fLengthFromPlayer > 10.f)
+		if (m_fLengthFromPlayer > 20.f)
 		{
 			m_iState = STATE_DASHFRONT;
 		}
 		else if (m_fLengthFromPlayer > 5.f)
 		{
-			_uint i = RandomInt(0, 4);
+			_uint i = RandomInt(0, 5);
 
 			switch (i)
 			{
@@ -612,11 +669,14 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 			case 4:
 				m_iState = STATE_ATTACK7;
 				break;
+			case 5:
+				m_iState = STATE_TELEPORT;
+				break;
 			}
 		}
 		else
 		{
-			_uint i = RandomInt(0, 9);
+			_uint i = RandomInt(0, 10);
 
 			switch (i)
 			{
@@ -656,6 +716,9 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				break;
 			case 9:
 				m_iState = STATE_DASHRIGHT;
+				break;
+			case 10:
+				m_iState = STATE_TELEPORT;
 				break;
 			}
 		}

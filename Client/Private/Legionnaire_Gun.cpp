@@ -79,7 +79,6 @@ void CLegionnaire_Gun::Priority_Tick(_float fTimeDelta)
 
 void CLegionnaire_Gun::Tick(_float fTimeDelta)
 {
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 	m_fDegreeBetweenPlayerAndMonster = abs(XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)),
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
 
@@ -132,12 +131,14 @@ void CLegionnaire_Gun::Tick(_float fTimeDelta)
 
 void CLegionnaire_Gun::Late_Tick(_float fTimeDelta)
 {
+	m_pPhysXCom->Late_Tick(fTimeDelta);
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
 	}
-	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
@@ -339,7 +340,7 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 		m_bSound = false;
 		m_bPlayerIsFront = true;
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Hit.ogg"), SOUND_MONSTER05);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{

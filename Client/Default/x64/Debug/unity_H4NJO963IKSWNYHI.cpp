@@ -453,6 +453,9 @@
 #include "C:\3D_TeamProj\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\UI_Cinematic.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UI_Dash.cpp"
 
 

@@ -18,7 +18,6 @@
 
 #include "UI_FadeInOut.h"
 #include"CInitLoader.h"
-#include "HexaShield.h"
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -187,10 +186,10 @@ void CPlayer::Tick(_float fTimeDelta)
 
 void CPlayer::Late_Tick(_float fTimeDelta)
 {
+	m_pPhysXCom->Late_Tick(fTimeDelta);
+
 	for (auto& pPartObject : m_PartObjects)
 		pPartObject->Late_Tick(fTimeDelta);
-
-	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 
@@ -198,34 +197,6 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
-
-	if (m_pGameInstance->Key_Down(DIK_H))
-	{
-		_float4 vStartPosition, playerLook;
-		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		XMStoreFloat4(&playerLook, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-		//EFFECTMGR->Generate_Meteor(vStartPosition);
-		//EFFECTMGR->Generate_Needle(vStartPosition);
-		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
-		HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
-		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
-	}
-
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
-	{
-		if (HexaShieldText != nullptr)
-		{
-			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
-		}
-	}
-	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
-	{
-		if (HexaShieldText != nullptr)
-		{
-			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
-			HexaShieldText = nullptr;
-		}
-	}
 }
 
 HRESULT CPlayer::Render()
@@ -387,6 +358,8 @@ void CPlayer::Parry_Succeed()
 	m_bParry = true;
 	m_fSlowDelay = 0.f;
 	fSlowValue = 0.2f;
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT);
 }
 
 void CPlayer::Pull_Status()
@@ -586,8 +559,8 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 	{
 		if (!m_bSound)
 		{
-			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
+			/*m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);*/
 			m_bSound = true;
 		}
 
@@ -1905,6 +1878,8 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 	if (m_pGameInstance->Get_DIKeyState(DIK_E) && m_iState != STATE_ROLL && m_iState != STATE_DASH_FRONT && m_iState != STATE_DASH_BACK &&
 		m_iState != STATE_DASH_LEFT && m_iState != STATE_DASH_RIGHT)
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Roll.ogg"), SOUND_EFFECT);
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);
@@ -2443,6 +2418,7 @@ void CPlayer::KnockBack(_vector vDir, _float fTimeDelta)
 	m_pPhysXCom->Go_Jump(fTimeDelta);
 	m_bIsLanded = false;
 	Knockback(fTimeDelta);
+	Add_Hp(-50.f);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

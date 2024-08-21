@@ -29,7 +29,7 @@ HRESULT CBody_Malkhel::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 20, true));
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(12, true));
 
 	return S_OK;
 }
@@ -51,6 +51,18 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 	CModel::ANIMATION_DESC		AnimDesc{ 3, true };
 	_float fAnimSpeed = 1.f;
 
+	if (*m_pState == CMalkhel::STATE_TELEPORT)
+	{
+		AnimDesc.isLoop = false;
+		AnimDesc.iAnimIndex = 12;
+		fAnimSpeed = 1.5f;
+		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Teleport.ogg"), SOUND_MONSTER);
+		}
+	}
 	if (*m_pState == CMalkhel::STATE_IDLE)
 	{
 		AnimDesc.isLoop = true;
@@ -64,6 +76,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHRIGHT)
 	{
@@ -71,6 +88,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHFRONT)
 	{
@@ -78,6 +100,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 14;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHBACK)
 	{
@@ -85,6 +112,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 13;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK1)
 	{
@@ -145,6 +177,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active(false);
 		}
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack4.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK5)
 	{
@@ -159,6 +196,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		else
 		{
 			m_pWeapon->Set_Active(false);
+		}
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack4.ogg"), SOUND_MONSTER);
 		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK6)

@@ -111,7 +111,7 @@ HRESULT CBackGround_Moon::Render_Bloom()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDiffuse", &t, sizeof(_bool))))
 			return E_FAIL;
 
-		if (FAILED(m_pMoonTex->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 2)))
+		if (FAILED(m_pMoonTex->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
 			return E_FAIL;
 
 		m_pShaderCom->Begin(8); //COLOR

@@ -70,6 +70,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 36;
 		fAnimSpeed = 7.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dash.ogg"), SOUND_MONSTER, 0.f, 1.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_DASHRIGHT)
 	{
@@ -77,6 +82,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 37;
 		fAnimSpeed = 7.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dash.ogg"), SOUND_MONSTER, 0.f, 1.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_DASHFRONT)
 	{
@@ -84,6 +94,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 35;
 		fAnimSpeed = 7.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dash.ogg"), SOUND_MONSTER, 0.f, 1.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_DASHBACK)
 	{
@@ -91,6 +106,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 34;
 		fAnimSpeed = 7.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dash.ogg"), SOUND_MONSTER, 0.f, 1.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_ATTACK1)
 	{
@@ -177,6 +197,8 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		if (m_iPastAnimIndex == 27 && m_pModelCom->Check_CurDuration(0.01f))
 		{
 			*m_bSprint = true;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dash.ogg"), SOUND_MONSTER, 0.f, 1.5f);
 		}
 		// 애니메이션 속도가 빠르면 플레이어에 도달하기도 전에 칼을 휘두를 수 있기 때문에 주의
 		fAnimSpeed = 1.f;
@@ -204,6 +226,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 23;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Charge.ogg"), SOUND_MONSTER, 0.f, 0.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_KICKATTACK)
 	{
@@ -244,6 +271,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 24;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Charge.ogg"), SOUND_MONSTER, 0.f, 0.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_SHOOTINGSTARATTACK)
 	{
@@ -251,6 +283,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 23;
 		fAnimSpeed = 1.f;
 		m_pModelCom->Set_LerpTime(1.2);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Charge.ogg"), SOUND_MONSTER, 0.f, 0.5f);
+		}
 	}
 	else if (*m_pState == CAndras::STATE_DEAD)
 	{
@@ -258,6 +295,11 @@ void CBody_Andras::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 32;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.3);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Dead.ogg"), SOUND_MONSTER);
+		}
 	}
 
 	if (*m_pState == CAndras::STATE_DASHLEFT || *m_pState == CAndras::STATE_DASHRIGHT ||

@@ -28,6 +28,7 @@ HRESULT CRushSword::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 50.f;
 	m_fHeight = pDesc->fHeight + 0.5f;
 	m_iMeshNum = pDesc->meshNum;
+	m_bSound = pDesc->bSound;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
@@ -96,11 +97,12 @@ void CRushSword::Tick(_float fTimeDelta)
 	m_fShootDelay -= fTimeDelta;
 	if (m_fShootDelay < 0.f && m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] > m_fHeight)
 	{
-		Set_Active();
+		Set_Active(true);
 		m_pTransformCom->Go_Up(fTimeDelta);
 	}
 	else if (m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] <= m_fHeight)
 	{
+
 		if (m_eDisolveType != TYPE_DECREASE)
 		{
 			_float4 pParticlePos;
@@ -108,6 +110,7 @@ void CRushSword::Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(97, pParticlePos);
 			EFFECTMGR->Generate_Particle(98, pParticlePos);
 			EFFECTMGR->Generate_Particle(99, pParticlePos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
+
 		}
 		m_eDisolveType = TYPE_DECREASE;
 	}
@@ -198,6 +201,20 @@ HRESULT CRushSword::Render_LightDepth()
 	//}
 
 	return S_OK;
+}
+
+void CRushSword::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (m_bSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("RushStart.ogg"), SOUND_EFFECT);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
 }
 
 HRESULT CRushSword::Add_Components()

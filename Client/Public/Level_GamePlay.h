@@ -38,6 +38,7 @@ private:
 
 	HRESULT ReLoad_Monster(const _tchar* pFilePath);
 	HRESULT	Add_FadeInOut(_bool isDissolve);
+	void Set_Volume();
 
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;

@@ -86,11 +86,11 @@ void CYantari::Tick(_float fTimeDelta)
 		XMVector3Normalize(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)))))));
 	if (!m_bPlayerIsFront)
 	{
-		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking())
+		if (m_fDegreeBetweenPlayerAndMonster < 60.f && !m_pPlayer->Get_Cloaking() && m_fLengthFromPlayer < DETECTRANGE)
 		{
 			m_bPlayerIsFront = true;
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
 		}
 	}
 	else
@@ -100,7 +100,6 @@ void CYantari::Tick(_float fTimeDelta)
 			m_bPlayerIsFront = false;
 		}
 	}
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
 	m_pBehaviorCom->Update(fTimeDelta);
 
@@ -136,13 +135,14 @@ void CYantari::Tick(_float fTimeDelta)
 
 void CYantari::Late_Tick(_float fTimeDelta)
 {
+	m_pPhysXCom->Late_Tick(fTimeDelta);
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
 	}
-
-	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
@@ -384,7 +384,8 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER05);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_HitVoice.ogg"), SOUND_MONSTER);
 		m_bPlayerIsFront = true;
 		m_fChasingDelay = 0.5f;
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
@@ -408,7 +409,14 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 				m_bParryFirstHit = !m_bParryFirstHit;
 			}
 		}
-		
+		m_pGameInstance->Set_MotionBlur(true);
+
+		if (!m_bPlayerIsFront)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_bPlayerIsFront = true;
+		}
 
 		_matrix vMat = m_pTransformCom->Get_WorldMatrix();
 		_float3 vOffset = { 0.f,1.f,0.f };

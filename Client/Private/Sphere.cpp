@@ -43,6 +43,10 @@ HRESULT CSphere::Initialize(void* pArg)
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 5.f);
 
 	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Boss")).front());
+
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Sphere.ogg"), SOUND_MONSTER);
+
 	return S_OK;
 }
 
@@ -61,6 +65,8 @@ void CSphere::Tick(_float fTimeDelta)
 	if (XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)) < m_fPlayerY)
 	{
 		// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 		EFFECTMGR->Generate_Particle(14, vStartPos);
 		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 		m_pGameInstance->Erase(this);
@@ -100,6 +106,8 @@ void CSphere::Late_Tick(_float fTimeDelta)
 			{
 				m_pPlayer->PlayerHit(10);
 				// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 				EFFECTMGR->Generate_Particle(14, fPos);
 				EFFECTMGR->Generate_Particle(15, fPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 				m_pGameInstance->Erase(this);
@@ -123,6 +131,8 @@ void CSphere::Late_Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(15, fPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			m_pJuggulus->Add_Hp(-10);
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 			m_pGameInstance->Erase(this);
 		}
 	}

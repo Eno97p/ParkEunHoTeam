@@ -205,6 +205,7 @@
 #include "UI_Memento.h"
 #include "UI_AeonsLost.h"
 #include "UI_Cinematic.h"
+#include "UI_ArrowSign.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -2348,6 +2349,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_Cinematic*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_Cinematic"),
 		CUI_Cinematic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_ArrowSign*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ArrowSign"),
+		CUI_ArrowSign::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

@@ -89,6 +89,7 @@
 #include <fstream>
 #include <sstream>
 #include <tchar.h>
+#include<filesystem>
 using namespace DirectX;
 using namespace physx;
 using namespace physx::vehicle2;

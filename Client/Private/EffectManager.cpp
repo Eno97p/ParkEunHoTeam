@@ -100,6 +100,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_HexaShield");
 		return E_FAIL;
 	}
+	if (FAILED(Load_FireFly()))
+	{
+		MSG_BOX("FAILED_Load_FireFly");
+		return E_FAIL;
+	}
 	
 	return S_OK;
 }
@@ -384,6 +389,16 @@ CGameObject* CEffectManager::Generate_HexaShield(const _float4x4* BindMat)
 	CGameObject* HexaShield = CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_HexaShield"), Desc);
 	CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Effect"), HexaShield);
 	return HexaShield;
+}
+
+HRESULT CEffectManager::Generate_FireFly(const _float4x4* BindMat)
+{
+	CFireFlyCube::FIREFLYCUBE* Desc = m_FireFly.get();
+	Desc->ParentMatrix = BindMat;
+
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_FireFly"), Desc);
+	return S_OK;
 }
 
 
@@ -782,6 +797,23 @@ HRESULT CEffectManager::Load_HexaShield()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_FireFly()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/FireFly.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_FireFly = make_shared<CFireFlyCube::FIREFLYCUBE>();
+	inFile.read((char*)m_FireFly.get(), sizeof(CFireFlyCube::FIREFLYCUBE));
+	inFile.close();
+	m_FireFly->ParentMatrix = nullptr;
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -954,6 +986,10 @@ HRESULT CEffectManager::Ready_GameObjects()
 		return E_FAIL;
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HexaHit"),
 		CHexaHit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FireFly"),
+		CFireFlyCube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	return S_OK;

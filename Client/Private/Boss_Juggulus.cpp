@@ -123,7 +123,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			if (m_eColltype == CCollider::COLL_START)
 			{
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
@@ -181,7 +181,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
-	m_vInitialPos = {-429.212f, 50.232f, -3.151f, 1.f};
+	m_vInitialPos = {-429.212f, 45.232f, -3.151f, 1.f};
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
 	PhysXDesc.fJumpSpeed = 10.f;
@@ -415,6 +415,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -422,6 +423,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -429,6 +431,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -443,6 +446,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount = 0;
 			m_fFlameSpawnTime = FLAMESPAWNTIME;
@@ -454,6 +458,13 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
 	if (0.f >= m_fCurHp)
 	{
+		if (!m_bDeadSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Dead.ogg"), SOUND_MONSTER);
+			m_bDeadSound = true;
+		}
+
 		m_iState = STATE_DEAD;
 
 		if (m_isAnimFinished)
@@ -491,6 +502,8 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			vPos.m128_f32[1] += 15.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Phase2.ogg"), SOUND_MONSTER);
 		}
 
 		m_iState = STATE_NEXTPHASE;
@@ -786,7 +799,7 @@ NodeStates CBoss_Juggulus::TornadoAttack(_float fTimeDelta)
 			_float4 TorPos;
 			XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			TorPos.x += 43.f;
-			TorPos.y -= 3.f;
+			TorPos.y = 68.f;
 			TorPos.z += 4.f;
 			EFFECTMGR->Generate_Tornado(0, TorPos, m_pPlayer);
 			m_iState = STATE_IDLE_SEC;

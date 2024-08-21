@@ -1080,6 +1080,43 @@ PS_OUT PS_HexaHit(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_BlackHoleRing(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+	if (Color.a < 0.1f) discard;
+
+	Color.a = Color.r;
+	Color.rgb = g_Color;
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_BlackHoleRing_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	if (Color.a < 0.1f) discard;
+	Color.a = Color.r;
+	Color.rgb = g_Color;
+	Color.a *= g_BloomPower;
+
+	Out.vColor = Color;
+	return Out;
+}
+
+
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -1428,7 +1465,7 @@ technique11 DefaultTechnique
 	pass DefaultPass	//25Pass
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DS_Particle, 0);
+		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_CYLINDER();
@@ -1441,7 +1478,7 @@ technique11 DefaultTechnique
 	pass DefaultBloomPass	//26Pass
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DS_Particle, 0);
+		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_CYLINDER();
@@ -1568,6 +1605,33 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_HexaHit();
 	}
+		
+	pass BlackHoleRing		//36Pass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BlackHoleRing();
+	}
+
+	pass BlackHoleRing_Bloom		//37Pass
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BlackHoleRing_Bloom();
+	}
+
 		
 }
 

@@ -113,6 +113,7 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_ACKBAR, L"Layer_Monster");
+	initLoader->Save_TriggerStart(LEVEL_ACKBAR, L"Layer_Trigger");
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
@@ -133,11 +134,9 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 		m_pGameInstance->LightOff(0);
 	}
 
-	m_pGameInstance->Update_LightPos(0,
-		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, 
-			TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_State(CTransform::STATE_POSITION));
+	
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -152,7 +151,7 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 	}
 
 	SetWindowText(g_hWnd, TEXT("LEVEL ACKBAR"));
-//#endif
+#endif
 
 	if (m_pGameInstance->Key_Down(DIK_F6))
 	{

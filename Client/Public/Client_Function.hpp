@@ -6,6 +6,7 @@
 #include <vector>
 #include <fstream>
 #include <tchar.h>
+#include <filesystem>
 
 
 //using namespace std;
@@ -39,6 +40,18 @@ namespace Client
 		return wstrname;
 		
 
+	}
+
+
+	inline void Delete_File()
+	{
+		for(auto& p : g__Exit_Delete_FileList)
+		{
+			std::filesystem::remove(p);
+			
+		}
+		
+		g__Exit_Delete_FileList.clear();
 	}
 
 }

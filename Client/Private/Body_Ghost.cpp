@@ -212,6 +212,11 @@ void CBody_Ghost::Change_Animation(_float fTimeDelta)
 		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
 		m_pWeapon->Set_Active(false);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CGhost::STATE_HIT)
 	{

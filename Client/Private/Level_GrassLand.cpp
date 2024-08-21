@@ -128,6 +128,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
+	initLoader->Save_TriggerStart(LEVEL_GRASSLAND, L"Layer_Trigger");
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
@@ -139,7 +140,10 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
+
 //#ifdef _DEBUG
+
+#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -251,7 +255,7 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 
 	}
 	SetWindowText(g_hWnd, TEXT("GrassLand 레벨임"));
-//#endif
+#endif
 }
 
 void CLevel_GrassLand::Late_Tick(_float fTimeDelta)

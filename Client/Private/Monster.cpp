@@ -32,6 +32,7 @@ HRESULT CMonster::Initialize(void * pArg)
 	pDesc->fRotationPerSec = XMConvertToRadians(360.f);
 
 	m_eLevel = pDesc->eLevel;
+	m_bPlayerIsFront = pDesc->bPlayerIsFront;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;

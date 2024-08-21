@@ -38,6 +38,9 @@ private:
 
 	HRESULT ReLoad_Monster(const _tchar* pFilePath);
 
+	void Set_Volume();
+
+
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;
 

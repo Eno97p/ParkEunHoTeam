@@ -16,6 +16,10 @@ BEGIN(Client)
 
 class CPlayer final : public CLandObject
 {
+public:
+
+
+
 #define	CLONEDELAY 0.15f
 #define BUTTONCOOLTIME 0.5f
 #define JUMPCOOLTIME 0.3f
@@ -209,8 +213,8 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	//_float m_fMaxHp = 10.f;
-	_float m_fMaxHp = 1000.f;
+	_float m_fMaxHp = 10.f;
+	//_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
 	_float m_fMaxHp = 300.f;
@@ -266,9 +270,6 @@ private:
 	_bool m_bSpecialAttackShake = false;
 	_bool m_bSpecialAttackZoom = false;
 
-
-private:
-	CGameObject* HexaShieldText = nullptr;
 	_float		m_GrassBlowInterval = 1.f;
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

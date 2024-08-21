@@ -850,6 +850,9 @@
     <Filter Include="02.GameObjects\07. UI\Portal\Text">
       <UniqueIdentifier>{cacc585b-f8a6-4a0f-b297-81cbec8c3953}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FireFly">
+      <UniqueIdentifier>{b9c70525-f0af-4338-8b43-63230e55c9cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1841,6 +1844,32 @@
     <ClInclude Include="..\Public\UI_PortalPic.h">
       <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h" />
+    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h" />
+    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
+    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
+    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h">
+      <Filter>02.GameObjects\06.Effect\FireFly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2778,6 +2807,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_PortalPic.cpp">
       <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp">
+      <Filter>02.GameObjects\06.Effect\FireFly</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

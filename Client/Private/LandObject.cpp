@@ -24,6 +24,11 @@ HRESULT CLandObject::Initialize(void * pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
+
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
 	//LANDOBJ_DESC*		pLandObjDesc = (LANDOBJ_DESC*)pArg;
 
 	//m_pTerrainTransform = pLandObjDesc->pTerrainTransform;
@@ -33,8 +38,6 @@ HRESULT CLandObject::Initialize(void * pArg)
 	//Safe_AddRef(m_pTerrainVIBuffer);
 
 
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
 
 	return S_OK;
 }

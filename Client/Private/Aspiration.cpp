@@ -31,6 +31,9 @@ HRESULT CAspiration::Initialize(void* pArg)
 
 	m_pTransformCom->Scaling(3.f, 3.f, 3.f);
 
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandThree.ogg"), SOUND_MONSTER);
+
 	return S_OK;
 }
 

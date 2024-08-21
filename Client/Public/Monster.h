@@ -21,6 +21,7 @@ public:
 	typedef struct Mst_Desc : public LANDOBJ_DESC
 	{
 		LEVEL		eLevel = LEVEL::LEVEL_END;
+		_bool bPlayerIsFront = false;
 	}MST_DESC;
 
 protected:
@@ -59,7 +60,7 @@ protected:
 
 	_bool m_bDead = false;
 	_float m_fDeadDelay = 2.f;
-	_float	m_fLengthFromPlayer = 0.f;
+	_float	m_fLengthFromPlayer = 100.f;
 	_bool m_bIsLocked = false;
 	_bool m_bPlayerIsFront = false;
 	_float m_fDegreeBetweenPlayerAndMonster = 180.f;

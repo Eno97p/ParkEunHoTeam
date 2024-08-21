@@ -23,6 +23,14 @@
 
 #include "BlastWall.h"
 #include"CInitLoader.h"
+
+
+
+
+ vector< CMap_Element::MAP_ELEMENT_DESC> vecMapElementDesc;
+
+
+
 CLevel_Jugglas::CLevel_Jugglas(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -116,12 +124,24 @@ HRESULT CLevel_Jugglas::Initialize()
 	//});
 
 
-	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
-	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
-	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_BlastWall");
+
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
+
+
+
+
+
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
+	initLoader->Save_Start(LEVEL_JUGGLAS, L"Layer_Monster");
+	initLoader->Save_BlastWallStart(LEVEL_JUGGLAS, L"Layer_BlastWall");
+	initLoader->Save_TriggerStart(LEVEL_JUGGLAS, L"Layer_Trigger");
+
+
+	
+
+
 
 	return S_OK;
 }
@@ -130,7 +150,11 @@ void CLevel_Jugglas::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
+
 //#ifdef _DEBUG
+
+#ifdef _DEBUG
+
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -167,7 +191,7 @@ void CLevel_Jugglas::Tick(_float fTimeDelta)
 	//}
 
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
-//#endif
+#endif
 }
 
 void CLevel_Jugglas::Late_Tick(_float fTimeDelta)
@@ -508,6 +532,11 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 	// 모델 종류별로 월드 매트릭스를 저장할 맵
 	map<wstring, vector<_float4x4*>> modelMatrices;
 
+	_uint iTriggerCount = 0;
+
+
+	
+	
 
 	// 생성된 객체 로드
 	while (true)
@@ -529,9 +558,24 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 
 			pDesc.mWorldMatrix = WorldMatrix;
 			pDesc.TriggerType = iTriggerType;
+			
+			if (iTriggerCount++ < 2)
+			{
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_NonDeleteTrigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+					return E_FAIL;
 
-			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
-				return E_FAIL;
+				
+				
+				
+
+			}
+			
+
 		}
 		else if (strcmp(szName, "Prototype_GameObject_Trap") == 0)
 		{

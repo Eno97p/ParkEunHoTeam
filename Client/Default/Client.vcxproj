@@ -294,6 +294,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireEffect.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillarEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\FirePillar_Bottom.h" />
@@ -610,6 +611,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Electronic.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FireEffect.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\FirePillar_Bottom.cpp" />

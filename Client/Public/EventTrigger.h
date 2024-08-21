@@ -32,8 +32,9 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	_bool isSceneChange() { return m_bSceneChange; }
 
+	_bool isSceneChange() { return m_bSceneChange; }
+	virtual _uint Get_TriggerType() { return m_eTRIGState; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

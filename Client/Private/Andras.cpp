@@ -14,6 +14,7 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "CutSceneCamera.h"
 
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -612,8 +613,11 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
 			m_fKickSwordDelay = 100.f;
+
+			m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Init_AndrasQTECutScene();
 		}
 
 		if (m_fLengthFromPlayer > 3.f)
@@ -815,14 +819,20 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		case 4:
 			//LaserAttack
 			m_iState = STATE_LASERATTACK;
+			m_iState = STATE_KICKATTACK;
+
 			break;
 		case 5:
 			//BabylonAttack
 			m_iState = STATE_BABYLONATTACK;
+			m_iState = STATE_KICKATTACK;
+
 			break;
 		case 6:
 			//ShootingStarAttack
 			m_iState = STATE_SHOOTINGSTARATTACK;
+			m_iState = STATE_KICKATTACK;
+
 			break;
 		}
 		return SUCCESS;

@@ -257,7 +257,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					// FOG_DESC 적용 (구체적인 적용 방법은 m_pGameInstance의 구현에 따라 다를 수 있음)
 					m_pGameInstance->Set_FogOption(fogDesc);
 
-					m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
+					//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
 
 					// 보스 석상 소환
 					const _float4x4 statueMatrices[3] = {

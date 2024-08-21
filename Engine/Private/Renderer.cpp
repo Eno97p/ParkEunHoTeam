@@ -12,8 +12,8 @@
 #include "CRenderWorker.h"
 
 
-_uint      g_iSizeX = 1280;
-_uint      g_iSizeY = 720;
+_uint      g_iSizeX = 8192;
+_uint      g_iSizeY = 4608;
 
 #define HBAO_Plus
 
@@ -1202,47 +1202,46 @@ void CRenderer::Render_HBAO()
     InputData.DepthData.Viewport.Height = 720.0f;
 
     // AO 파라미터 설정
-    GFSDK_SSAO_Parameters Params;
-    static bool isMaxEffect = false;
 
-    if (KEY_TAP(DIK_9))
-    {
-        isMaxEffect = !isMaxEffect;
-    }
+    //static bool isMaxEffect = false;
 
-    if (isMaxEffect)
-    {
-        // 최대 효과 설정
-        Params.Radius = 5.0f;
-        Params.Bias = 0.1f;
-        Params.SmallScaleAO = 2.0f;
-        Params.LargeScaleAO = 2.0f;
-        Params.PowerExponent = 4.0f;
-    }
-    else
-    {
-        // 최소 효과 설정
-        Params.Radius = 0.5f;
-        Params.Bias = 0.5f;
-        Params.SmallScaleAO = 0.5f;
-        Params.LargeScaleAO = 0.5f;
-        Params.PowerExponent = 1.0f;
-    }
+    //if (KEY_TAP(DIK_9))
+    //{
+    //    isMaxEffect = !isMaxEffect;
+    //}
 
+    //if (isMaxEffect)
+    //{
+    //    // 최대 효과 설정
+    //    Params.Radius = 5.0f;
+    //    Params.Bias = 0.1f;
+    //    Params.SmallScaleAO = 2.0f;
+    //    Params.LargeScaleAO = 2.0f;
+    //    Params.PowerExponent = 4.0f;
+    //}
+    //else
+    //{
+    //    // 최소 효과 설정
+    //    Params.Radius = 0.5f;
+    //    Params.Bias = 0.5f;
+    //    Params.SmallScaleAO = 0.5f;
+    //    Params.LargeScaleAO = 0.5f;
+    //    Params.PowerExponent = 1.0f;
+    //}
 
    
     // 공통 설정
-    Params.StepCount = GFSDK_SSAO_STEP_COUNT_4;
-    Params.DepthStorage = GFSDK_SSAO_FP16_VIEW_DEPTHS;
-    Params.DepthClampMode = GFSDK_SSAO_CLAMP_TO_EDGE;
-    Params.EnableDualLayerAO = false;
+   // m_Params.StepCount = GFSDK_SSAO_STEP_COUNT_4;
+   // m_Params.DepthStorage = GFSDK_SSAO_FP16_VIEW_DEPTHS;
+   // m_Params.DepthClampMode = GFSDK_SSAO_CLAMP_TO_EDGE;
+   // m_Params.EnableDualLayerAO = false;
     
 
 
     // Blur 설정
-    Params.Blur.Enable = true;
-    Params.Blur.Radius = GFSDK_SSAO_BLUR_RADIUS_4;
-    Params.Blur.Sharpness = 16.0f;
+   // m_Params.Blur.Enable = true;
+    //m_Params.Blur.Radius = GFSDK_SSAO_BLUR_RADIUS_4;
+  // m_Params.Blur.Sharpness = 16.0f;
 
 
     GFSDK_SSAO_Output_D3D11 Output;
@@ -1250,7 +1249,7 @@ void CRenderer::Render_HBAO()
     Output.pRenderTargetView = m_pGameInstance->Get_RTV(TEXT("Target_HBAO"));
     Output.Blend.Mode = GFSDK_SSAO_OVERWRITE_RGB;
 
-    GFSDK_SSAO_Status status = m_pSSAOContext->RenderAO(m_pContext, InputData, Params, Output);
+    GFSDK_SSAO_Status status = m_pSSAOContext->RenderAO(m_pContext, InputData, m_Params, Output);
 
 
 
@@ -2177,6 +2176,11 @@ void CRenderer::ClearRenderThreadPool()
     }
 }
 
+void CRenderer::Set_HBAOParams(GFSDK_SSAO_Parameters params)
+{
+    m_Params = params;
+}
+
 void CRenderer::ProcessByThread(DWORD dwThreadIndex)
 {
     ID3D11DeviceContext* pDeferredContext = m_DeferredContexts[dwThreadIndex];
@@ -2306,10 +2310,10 @@ void CRenderer::Render_Debug()
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 
 
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
-    m_pGameInstance->Render_RTDebug(TEXT("MRT_HBAO"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_Reflection"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_ReflectionResult"), m_pShader, m_pVIBuffer);
+    //m_pGameInstance->Render_RTDebug(TEXT("MRT_HBAO"), m_pShader, m_pVIBuffer);
 
 
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_Mirror"), m_pShader, m_pVIBuffer);

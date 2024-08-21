@@ -18,7 +18,7 @@ public:
 	typedef struct WEAPON_DESC : public CPartObject::PARTOBJ_DESC
 	{
 		const _float4x4*			pCombinedTransformationMatrix;
-
+		_float3						vOffset = { 0.f,0.f,0.f };
 	}WEAPON_DESC;
 
 protected:
@@ -27,7 +27,7 @@ protected:
 	virtual ~CWeapon() = default;
 
 public:
-	virtual void Set_Active(_bool isActive = true) {};
+	virtual void Set_Active(_bool isActive = true);
 	void Generate_Trail(_int iIndex);
 
 	_bool Get_Active() { return m_bIsActive; }

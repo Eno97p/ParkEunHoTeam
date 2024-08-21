@@ -10,7 +10,7 @@
 #include "EffectManager.h"
 
 #include "UIGroup_BossHP.h"
-
+#include "TransitionCamera.h"
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -123,7 +123,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			if (m_eColltype == CCollider::COLL_START)
 			{
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
@@ -181,7 +181,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
-	m_vInitialPos = { -450.f , 56.f , -3.f, 1.f };
+	m_vInitialPos = {-429.212f, 50.232f, -3.151f, 1.f};
 	CPhysXComponent_Character::ControllerDesc		PhysXDesc;
 	PhysXDesc.pTransform = m_pTransformCom;
 	PhysXDesc.fJumpSpeed = 10.f;
@@ -199,6 +199,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx_Charater"),
 		TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 		return E_FAIL;
+
 
 	if (FAILED(Add_BehaviorTree()))
 		return E_FAIL;
@@ -414,6 +415,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -421,6 +423,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -428,6 +431,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount++;
 		}
@@ -442,6 +446,7 @@ void CBoss_Juggulus::Spawn_Flame(_float fTimeDelta)
 		{
 			_float4 fPos;
 			XMStoreFloat4(&fPos, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+			fPos.y = 68.f;
 			EFFECTMGR->Generate_FirePillar(fPos);
 			m_iFlameCount = 0;
 			m_fFlameSpawnTime = FLAMESPAWNTIME;
@@ -453,6 +458,13 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
 	if (0.f >= m_fCurHp)
 	{
+		if (!m_bDeadSound)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Dead.ogg"), SOUND_MONSTER);
+			m_bDeadSound = true;
+		}
+
 		m_iState = STATE_DEAD;
 
 		if (m_isAnimFinished)
@@ -490,6 +502,8 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 			vPos.m128_f32[1] += 15.f;
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Phase2.ogg"), SOUND_MONSTER);
 		}
 
 		m_iState = STATE_NEXTPHASE;
@@ -551,9 +565,60 @@ NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
 
 	if (m_iState == STATE_GROGGY)
 	{
+		if (!m_bGroggyCamChange)
+		{
+			m_bGroggyCamChange = true;
+
+			//ÄÆ¾À Æ®·»Áö¼Ç
+			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+			pTCDesc.fFovy = XMConvertToRadians(60.f);
+			pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+			pTCDesc.fNear = 0.1f;
+			pTCDesc.fFar = 3000.f;
+
+			pTCDesc.fSpeedPerSec = 40.f;
+			pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+			pTCDesc.iStartCam = CAM_SIDEVIEW;
+			pTCDesc.iEndCam = CAM_THIRDPERSON;
+			pTCDesc.fTransitionTime = 1.f;
+			if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+			{
+				MSG_BOX("FAILED to Add Transition Cam");
+			}
+
+			m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+
+		}
+
 		m_fGroggyTime -= fTimeDelta;
+
 		if (m_fGroggyTime < 0.f)
 		{
+			m_bGroggyCamChange = false;
+
+			//ÄÆ¾À Æ®·»Áö¼Ç
+			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+			pTCDesc.fFovy = XMConvertToRadians(60.f);
+			pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+			pTCDesc.fNear = 0.1f;
+			pTCDesc.fFar = 3000.f;
+
+			pTCDesc.fSpeedPerSec = 40.f;
+			pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+			
+			pTCDesc.iStartCam = CAM_THIRDPERSON;
+			pTCDesc.iEndCam = CAM_SIDEVIEW;
+			pTCDesc.fTransitionTime = 1.f;
+			if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+			{
+				MSG_BOX("FAILED to Add Transition Cam");
+			}
+
+			m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+
 			for (_uint i = 0; i < STATUECOUNT; i++)
 			{
 				m_pBossStatues[i]->Set_Active(true);
@@ -734,7 +799,7 @@ NodeStates CBoss_Juggulus::TornadoAttack(_float fTimeDelta)
 			_float4 TorPos;
 			XMStoreFloat4(&TorPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			TorPos.x += 43.f;
-			TorPos.y -= 3.f;
+			TorPos.y = 68.f;
 			TorPos.z += 4.f;
 			EFFECTMGR->Generate_Tornado(0, TorPos, m_pPlayer);
 			m_iState = STATE_IDLE_SEC;

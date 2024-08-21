@@ -117,6 +117,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\FakeWall.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\FallPlatform.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\ForkLift.cpp"
 
 
@@ -309,6 +312,12 @@
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\Hedgehog.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\HexaHit.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\HexaShield.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\LazerCast.cpp"
 
 
@@ -393,6 +402,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\UIGroup_DropItem.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\UIGroup_Level.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UIGroup_Map.cpp"
 
 
@@ -450,6 +462,12 @@
 #include "E:\3D_ShatteredNew\Client\Private\UI_ItemIcon.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\UI_LevelBG.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_Level_TextBox.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UI_LogoFlow.cpp"
 
 
@@ -490,6 +508,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_QTE_Score.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_QTE_Shine.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_RedDot.cpp"

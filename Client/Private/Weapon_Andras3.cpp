@@ -156,6 +156,17 @@ HRESULT CWeapon_Andras3::Render_LightDepth()
 	return S_OK;
 }
 
+void CWeapon_Andras3::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Attack2.ogg"), SOUND_MONSTER);
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
+}
+
 HRESULT CWeapon_Andras3::Add_Components()
 {
 	/* For.Com_Collider */

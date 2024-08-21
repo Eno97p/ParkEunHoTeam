@@ -268,6 +268,10 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         ImGui::Separator();
         ImGui::Checkbox("Water Edit", &m_bWaterWindow);
         ImGui::Spacing();
+
+        ImGui::Separator();
+        ImGui::Checkbox("HBAO Edit", &m_bHBAOWindow);
+        ImGui::Spacing();
         ImGui::End();
     }
 
@@ -350,6 +354,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bWaterWindow)
     {
         Water_Editor();
+    } 
+    
+    if (m_bHBAOWindow)
+    {
+        HBAO_Editor();
     }
 
     if (m_bShowDecalTextureWindow)
@@ -2609,6 +2618,88 @@ void CImgui_Manager::Water_Editor()
             ImGui::End();
         }
     }
+}
+
+void CImgui_Manager::HBAO_Editor()
+{
+    ImGui::Begin("HBAO+ Settings", &m_bHBAOWindow);
+
+    static GFSDK_SSAO_Parameters params = {};
+    static bool autoUpdate = false;
+
+    ImGui::Text("HBAO+ Params");
+
+    bool paramsChanged = false;
+
+    // Radius
+    if (ImGui::SliderFloat("Radius", &params.Radius, 0.1f, 10.0f))
+        paramsChanged = true;
+
+    // Bias
+    if (ImGui::SliderFloat("Bias", &params.Bias, 0.0f, 0.5f))
+        paramsChanged = true;
+
+    // Small Scale AO
+    if (ImGui::SliderFloat("Small Scale AO", &params.SmallScaleAO, 0.0f, 2.0f))
+        paramsChanged = true;
+
+    // Large Scale AO
+    if (ImGui::SliderFloat("Large Scale AO", &params.LargeScaleAO, 0.0f, 2.0f))
+        paramsChanged = true;
+
+    // Power Exponent
+    if (ImGui::SliderFloat("Power Exponent", &params.PowerExponent, 1.0f, 4.0f))
+        paramsChanged = true;
+
+    // Step Count
+    const char* stepCounts[] = { "4", "6", "8" };
+    int stepCount = static_cast<int>(params.StepCount);
+    if (ImGui::Combo("Step Count", &stepCount, stepCounts, IM_ARRAYSIZE(stepCounts)))
+    {
+        params.StepCount = static_cast<GFSDK_SSAO_StepCount>(stepCount);
+        paramsChanged = true;
+    }
+
+    // Enable Dual Layer AO
+    bool enableDualLayerAO = (params.EnableDualLayerAO != 0);
+    if (ImGui::Checkbox("Enable Dual Layer AO", &enableDualLayerAO))
+    {
+        params.EnableDualLayerAO = enableDualLayerAO ? 1 : 0;
+        paramsChanged = true;
+    }
+
+    // Blur 설정
+    ImGui::Text("Blur Settings");
+    bool blurEnable = (params.Blur.Enable != 0);
+    if (ImGui::Checkbox("Enable Blur", &blurEnable))
+    {
+        params.Blur.Enable = blurEnable ? 1 : 0;
+        paramsChanged = true;
+    }
+
+    if (blurEnable)
+    {
+        const char* blurRadii[] = { "2", "4", "8" };
+        int blurRadius = static_cast<int>(params.Blur.Radius);
+        if (ImGui::Combo("Blur Radius", &blurRadius, blurRadii, IM_ARRAYSIZE(blurRadii)))
+        {
+            params.Blur.Radius = static_cast<GFSDK_SSAO_BlurRadius>(blurRadius);
+            paramsChanged = true;
+        }
+
+        if (ImGui::SliderFloat("Blur Sharpness", &params.Blur.Sharpness, 0.0f, 32.0f))
+            paramsChanged = true;
+    }
+
+    // 오토 업데이트 체크박스
+    ImGui::Checkbox("Auto Update", &autoUpdate);
+
+    if (ImGui::Button("Apply") || (autoUpdate && paramsChanged))
+    {
+        m_pGameInstance->Set_HBAOParams(params);
+    }
+
+    ImGui::End();
 }
 
 void CImgui_Manager::Delete_Obj()

@@ -3998,10 +3998,114 @@ void CImguiMgr::PhysX_Particle_Tool(_bool* Open)
 	{
 		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
 	}
+
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_PhysX(effectname, Desc);
+		}
+	}
+
+
+
 	ImGui::End();
+}
 
+HRESULT CImguiMgr::Store_PhysX(char* Name, CParticle_PhysX::PARTICLE_PHYSXDESC desc)
+{
+	string sName = Name;
+	shared_ptr<CParticle_PhysX::PARTICLE_PHYSXDESC> StockValue = make_shared<CParticle_PhysX::PARTICLE_PHYSXDESC>(desc);
+	m_PhysX.emplace_back(StockValue);
+	PhysXNames.emplace_back(sName);
+	return S_OK;
+}
 
+void CImguiMgr::PhysX_ListBox(CParticle_PhysX::PARTICLE_PHYSXDESC* PhysX)
+{
+#pragma region exception
+	if (m_PhysX.size() < 1)
+		return;
 
+	if (m_PhysX.size() != PhysXNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("PhysX_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("PhysX_List", list_box_size))
+	{
+		for (int i = 0; i < PhysXNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(PhysXNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+	if (current_item >= 0 && current_item < PhysXNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CParticle_PhysX::PARTICLE_PHYSXDESC* Desc = m_PhysX[current_item].get();
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Particle_PhsyX"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*PhysX = *m_PhysX[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_PhysX[current_item] = make_shared<CParticle_PhysX::PARTICLE_PHYSXDESC>(*PhysX);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_PhysX[current_item].reset();
+			m_PhysX.erase(m_PhysX.begin() + current_item);
+			PhysXNames.erase(PhysXNames.begin() + current_item);
+
+			if (current_item >= m_PhysX.size())
+				current_item = m_PhysX.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_PhysX)
+				iter.reset();
+			m_PhysX.clear();
+			PhysXNames.clear();
+			current_item = 0;
+		}
+	}
+
+	ImGui::End();
 }
 
 void CImguiMgr::Hedgehog_Tool(_bool* Open)

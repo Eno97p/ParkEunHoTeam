@@ -31,7 +31,7 @@ public:
 public:
 	_uint Get_ShaderPath() { return m_iShaderPath; }
 	void Set_ShaderPath(_uint iIdx) {  m_iShaderPath = iIdx; }
-
+	void Set_CloudSpeed(_float speed) { m_fCloudSpeed = speed; }
 public:
 	void Set_Colors(_float3 cloudColor, _float4 lightDiffuseColor) {
 		m_vCloudColor = cloudColor; 
@@ -60,7 +60,7 @@ private:
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
 
 	_uint m_iShaderPath = 0;
-public:
+private:
 	// 구름 관련 변수들
 	float m_fCloudDensity = 2.007605f;
 	float m_fCloudScale = 0.000381f;

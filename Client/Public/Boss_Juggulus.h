@@ -54,6 +54,7 @@ private:
 	_bool							m_isHandAnimFinished = { false };
 	_bool							m_isHandTwoAnimFinished = { false };
 	_bool							m_isHandThreeAnimFinished = { false };
+	_bool							m_bDeadSound = false;
 	CBossStatue* m_pBossStatues[STATUECOUNT] = { nullptr };
 	_float m_fGroggyTime = 10.f;
 
@@ -71,6 +72,8 @@ private:
 	_float m_fFlameSpawnTime = FLAMESPAWNTIME;
 	_uint m_iFlameCount = 0;
 
+	//For Groggy State Camera Change
+	_bool m_bGroggyCamChange = false;
 private:
 	HRESULT				Add_Components();
 	HRESULT				Add_PartObjects();

@@ -40,6 +40,8 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 	m_fPlayerY = XMVectorGetY(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 
 	m_pJuggulus = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Boss")).front());
+
+	Particle = EFFECTMGR->Generate_Particle(95, _float4(gameObjDesc.mWorldMatrix._41, gameObjDesc.mWorldMatrix._42, gameObjDesc.mWorldMatrix._43, 1.f), this);
 	return S_OK;
 }
 
@@ -60,6 +62,8 @@ void CCircleSphere::Tick(_float fTimeDelta)
 	{
 		if (!m_bLookatPlayer)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Sphere.ogg"), SOUND_MONSTER);
 			m_pTransformCom->Set_Speed(40.f);
 			m_pTransformCom->LookAt(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_bLookatPlayer = true;
@@ -73,7 +77,10 @@ void CCircleSphere::Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(14, vStartPos);
 			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 			m_pGameInstance->Erase(this);
+			m_pGameInstance->Erase(Particle);
 		}
 	}
 }
@@ -116,7 +123,10 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 				EFFECTMGR->Generate_Particle(14, vStartPos);
 				EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 				// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 				m_pGameInstance->Erase(this);
+				m_pGameInstance->Erase(Particle);
 			}
 
 		}
@@ -133,7 +143,10 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(14, vStartPos);
 			EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 			m_pGameInstance->Erase(this);
+			m_pGameInstance->Erase(Particle);
 		}
 	}
 

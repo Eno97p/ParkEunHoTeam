@@ -453,6 +453,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Ch_Upgrade_OkBtn.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Cinematic.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\Client\Private\UI_Dash.cpp"
 
 

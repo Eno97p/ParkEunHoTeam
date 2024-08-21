@@ -244,6 +244,11 @@ void CBody_Yantari::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 24;
 		fAnimSpeed = 0.8f;
 		m_pModelCom->Set_LerpTime(1.3);
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+		}
 	}
 	else if (*m_pState == CYantari::STATE_REVIVE)
 	{

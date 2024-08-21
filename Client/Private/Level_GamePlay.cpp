@@ -112,6 +112,8 @@ HRESULT CLevel_GamePlay::Initialize()
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
 
+	Set_Volume();
+
 	return S_OK;
 }
 
@@ -951,6 +953,11 @@ HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CLevel_GamePlay::Set_Volume()
+{
+	m_pGameInstance->SetChannelVolume(SOUND_MONSTER05, 0.5f);
 }
 
 CLevel_GamePlay * CLevel_GamePlay::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

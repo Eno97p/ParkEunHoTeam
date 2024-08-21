@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "Player.h"
+#include "Malkhel.h"
 
 
 CWeapon_Malkhel::CWeapon_Malkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -76,7 +77,7 @@ void CWeapon_Malkhel::Tick(_float fTimeDelta)
 		}
 	}
 
-	Generate_Trail(3);
+	Generate_Trail(8);
 }
 
 void CWeapon_Malkhel::Late_Tick(_float fTimeDelta)
@@ -162,6 +163,25 @@ HRESULT CWeapon_Malkhel::Render_LightDepth()
 	}
 
 	return S_OK;
+}
+
+void CWeapon_Malkhel::Set_Active(_bool isActive)
+{
+	if (m_bIsActive == false && isActive == true)
+	{
+		if (*m_pState == CMalkhel::STATE_ATTACK2)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack2.ogg"), SOUND_MONSTER);
+		}
+		else if (*m_pState == CMalkhel::STATE_ATTACK3)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
+		}
+		m_GenerateTrail = true;
+	}
+	m_bIsActive = isActive;
 }
 
 HRESULT CWeapon_Malkhel::Add_Components()

@@ -352,6 +352,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn.h" />
     <ClInclude Include="..\Public\UI_Ch_UpgradeBtn_Select.h" />
     <ClInclude Include="..\Public\UI_Ch_Upgrade_OkBtn.h" />
+    <ClInclude Include="..\Public\UI_Cinematic.h" />
     <ClInclude Include="..\Public\UI_Dash.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
@@ -664,6 +665,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn.cpp" />
     <ClCompile Include="..\Private\UI_Ch_UpgradeBtn_Select.cpp" />
     <ClCompile Include="..\Private\UI_Ch_Upgrade_OkBtn.cpp" />
+    <ClCompile Include="..\Private\UI_Cinematic.cpp" />
     <ClCompile Include="..\Private\UI_Dash.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />

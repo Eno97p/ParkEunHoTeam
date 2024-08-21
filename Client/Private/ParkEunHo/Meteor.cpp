@@ -49,6 +49,9 @@ HRESULT CMeteor::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Meteor.ogg"), SOUND_EFFECT);
+
 	return S_OK;
 }
 
@@ -75,6 +78,8 @@ void CMeteor::Tick(_float fTimeDelta)
 			m_pPlayer->PlayerHit(10);
 		}
 
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_MeteorExplode.ogg"), SOUND_EFFECT, 0.f, 0.5f);
 		EFFECTMGR->Generate_Particle(65, m_OwnDesc->vTargetPos);
 		_vector vLook = XMVectorSetY(m_pTransformCom->Get_State(CTransform::STATE_LOOK), 0.f);
 		EFFECTMGR->Generate_Particle(66, m_OwnDesc->vTargetPos, nullptr, XMVectorZero(), 0.f, vLook);

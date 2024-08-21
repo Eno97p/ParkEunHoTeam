@@ -9,10 +9,12 @@
 #include "Weapon_Andras.h"
 #include "RushSword.h"
 #include "EffectManager.h"
+#include "Particle.h"
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "HexaShield.h"
 
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -50,7 +52,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -64,7 +66,12 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_iState = STATE_IDLE;
 
 	m_bPlayerIsFront = true;
-
+	_float4 vstartPos;
+	XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	CGameObject* Oura = EFFECTMGR->Generate_Particle(94, vstartPos, this);
+	m_Particles.emplace_back(Oura);
+	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
+	m_Particles.emplace_back(Oura2);
 	return S_OK;
 }
 
@@ -76,6 +83,11 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		if (m_fDeadDelay < 0.f)
 		{
 			m_pGameInstance->Erase(this);
+			for (auto& iter : m_Particles)
+			{
+				static_cast<CParticle*>(iter)->Set_Delete();
+			}
+			m_Particles.clear();
 		}
 	}
 
@@ -86,8 +98,6 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 
 void CAndras::Tick(_float fTimeDelta)
 {
-	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
 		m_bTrigger = true;
@@ -130,13 +140,13 @@ void CAndras::Tick(_float fTimeDelta)
 
 void CAndras::Late_Tick(_float fTimeDelta)
 {
+	m_pPhysXCom->Late_Tick(fTimeDelta);
+	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);
 	}
-
-	m_pPhysXCom->Late_Tick(fTimeDelta);
 
 	m_pUI_HP->Late_Tick(fTimeDelta);
 
@@ -350,6 +360,11 @@ NodeStates CAndras::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
+			HexaShieldText = nullptr;
+		}
 		if (m_isAnimFinished)
 		{
 			if (!m_bDead)
@@ -378,8 +393,17 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 	{
-		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		if (HexaShieldText == nullptr)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER05);
+		}
+		else
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_HitShield.ogg"), SOUND_MONSTER);
+		}
+		
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -568,14 +592,25 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			XMMATRIX rotationMatrix = XMMatrixRotationY(XMConvertToRadians(45.0f));
 
-			for (_uint i = 0; i < 8; i++)
+			if (!m_bPhase2)
 			{
 				XMStoreFloat4(&fDir, vDir);
 				EFFECTMGR->Generate_GroundSlash(fPos, fDir);
-				vDir = XMVector3Transform(vDir, rotationMatrix);
-				vDir.m128_f32[3] = 0.f;
 			}
+			else
+			{
+				for (_uint i = 0; i < 8; i++)
+				{
+					XMStoreFloat4(&fDir, vDir);
+					EFFECTMGR->Generate_GroundSlash(fPos, fDir);
+					vDir = XMVector3Transform(vDir, rotationMatrix);
+					vDir.m128_f32[3] = 0.f;
+				}
+			}
+			
 			m_bSlash = false;
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_GroundAttack_Start.ogg"), SOUND_MONSTER);
 		}
 
 		if (m_isAnimFinished)
@@ -594,14 +629,14 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 	if (m_iState == STATE_KICKATTACK)
 	{
 		m_fKickSwordDelay -= fTimeDelta;
-		if (m_fKickSwordDelay < 0.f)
+		if (m_fKickSwordDelay < 0.f)	
 		{
 			_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, 5.f, 0.f, 0.f);
 			CPartObject::PARTOBJ_DESC pDesc;
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
+			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
 			m_fKickSwordDelay = 100.f;
 		}
 
@@ -644,6 +679,8 @@ NodeStates CAndras::LaserAttack(_float fTimeDelta)
 	{
 		if (!m_bLaser)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_LaserCharge.ogg"), SOUND_EFFECT);
 			_float4 vStartPosition;
 			XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			vStartPosition.y += 1.f;
@@ -707,6 +744,8 @@ NodeStates CAndras::BabylonAttack(_float fTimeDelta)
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
+			pDesc.bSound = m_bRushSwordSound;
+			m_bRushSwordSound = !m_bRushSwordSound;
 			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
 		}
 
@@ -750,6 +789,8 @@ NodeStates CAndras::ShootingStarAttack(_float fTimeDelta)
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
+			pDesc.bSound = m_bRushSwordSound;
+			m_bRushSwordSound = !m_bRushSwordSound;
 			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Sword"), TEXT("Prototype_GameObject_Weapon_RushSword"), &pDesc);
 		}
 
@@ -773,47 +814,61 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 	{
 		m_fTurnDelay = 0.5f;
 		_uint i;
-		if (m_iPhase == 1)
+		if (!m_bPhase2)
+		{
+			i = RandomInt(0, 2);
+			switch (i)
+			{
+			case 0:
+				//Attack
+				m_iState = STATE_DASHRIGHT;
+				break;
+			case 1:
+				//SprintAttack
+				m_iState = STATE_SPRINTATTACK;
+				break;
+			case 2:
+				//GroundAttack
+				m_iState = STATE_GROUNDATTACK;
+				break;
+			}
+		}
+		else
 		{
 			i = RandomInt(0, 6);
+			switch (i)
+			{
+			case 0:
+				//Attack
+				m_iState = STATE_DASHRIGHT;
+				break;
+			case 1:
+				//SprintAttack
+				m_iState = STATE_SPRINTATTACK;
+				break;
+			case 2:
+				//GroundAttack
+				m_iState = STATE_GROUNDATTACK;
+				break;
+			case 3:
+				//KickAttack
+				m_iState = STATE_KICKATTACK;
+				break;
+			case 4:
+				//LaserAttack
+				m_iState = STATE_LASERATTACK;
+				break;
+			case 5:
+				//BabylonAttack
+				m_iState = STATE_BABYLONATTACK;
+				break;
+			case 6:
+				//ShootingStarAttack
+				m_iState = STATE_SHOOTINGSTARATTACK;
+				break;
+			}
 		}
-		else if (m_iPhase == 2)
-		{
-			i = RandomInt(0, 6);
-		}
-
-		// 거리에 따라 패턴 다르게 할것
-		switch (i)
-		{
-		case 0:
-			//Attack
-			m_iState = STATE_DASHRIGHT;
-			break;
-		case 1:
-			//SprintAttack
-			m_iState = STATE_SPRINTATTACK;
-			break;
-		case 2:
-			//GroundAttack
-			m_iState = STATE_GROUNDATTACK;
-			break;
-		case 3:
-			//KickAttack
-			m_iState = STATE_KICKATTACK;
-			break;
-		case 4:
-			//LaserAttack
-			m_iState = STATE_LASERATTACK;
-			break;
-		case 5:
-			//BabylonAttack
-			m_iState = STATE_BABYLONATTACK;
-			break;
-		case 6:
-			//ShootingStarAttack
-			m_iState = STATE_SHOOTINGSTARATTACK;
-			break;
-		}
+		m_iState = STATE_KICKATTACK;
 		return SUCCESS;
 	}
 
@@ -867,6 +922,25 @@ void CAndras::Add_Hp(_int iValue)
 	{
 		m_iState = STATE_DEAD;
 	}
+	else if (m_fCurHp <= m_fMaxHp * 0.5f && !m_bPhase2)
+	{
+		Phase_Two();
+	}
+
+	if (m_bPhase2)
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
+		}
+	}
+}
+
+void CAndras::Phase_Two()
+{
+	m_fCurHp = m_fMaxHp * 0.5f;
+	m_bPhase2 = true;
+	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 }
 
 CAndras* CAndras::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -897,10 +971,14 @@ CGameObject* CAndras::Clone(void* pArg)
 
 void CAndras::Free()
 {
+
+
 	__super::Free();
 
 	Safe_Release(m_pPhysXCom);
 	Safe_Release(m_pBehaviorCom);
+
+
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);

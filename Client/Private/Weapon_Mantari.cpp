@@ -255,7 +255,7 @@ void CWeapon_Mantari::Set_Active(_bool isActive)
 		else
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_CircleAttack.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_CircleAttack.ogg"), SOUND_MONSTER, 0.3f);
 		}
 		m_GenerateTrail = true;
 	}

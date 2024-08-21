@@ -85,8 +85,11 @@ void CParticleMesh::Priority_Tick(_float fTimeDelta)
 
 void CParticleMesh::Tick(_float fTimeDelta)
 {
-	if (m_InstModelCom->Check_Instance_Dead())
+	if (m_InstModelCom->Check_Instance_Dead() || m_Delete == true)
+	{
 		m_pGameInstance->Erase(this);
+		return;
+	}
 	if (m_pTarget != nullptr)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTarget->Get_State(CTransform::STATE_POSITION));

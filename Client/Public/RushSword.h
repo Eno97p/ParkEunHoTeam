@@ -41,6 +41,7 @@ private:
 	_float m_fShootDelay = 1.f;
 	_float m_fHeight;
 	_uint m_iMeshNum;
+	CGameObject* pParticle = nullptr;
 
 public:
 	static CRushSword* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -207,7 +207,9 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_Meteor(vStartPosition);
 		//EFFECTMGR->Generate_Needle(vStartPosition);
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
-		HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+		//HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+		EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
+		
 		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}
 

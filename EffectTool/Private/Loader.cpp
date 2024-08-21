@@ -85,6 +85,14 @@
 #include "HexaShield.h"
 #include "HexaHit.h"
 
+#include "FireFlyCube.h"
+
+#pragma region BLACKHOLE
+#include "BlackHole.h"
+#include "BlackSphere.h"
+#include "BlackHole_Ring.h"
+#pragma endregion BLACKHOLE
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -511,6 +519,11 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/HexaShield/HexaShield_Mk3.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BlackHoleRing"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/BlackHole/BlackHole_Ring.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 #pragma region SHADER
@@ -810,6 +823,22 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_HexaHit"),
 		CHexaHit::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_FireFly"),
+		CFireFlyCube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlackHole"),
+		CBlackHole::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlackSphere"),
+		CBlackSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlackHoleRing"),
+		CBlackHole_Ring::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

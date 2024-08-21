@@ -56,8 +56,11 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 void CLevel_Loading::Tick(_float fTimeDelta)
 {
-	if(LEVEL_LOGO != m_eNextLevel)
-		m_pUI_Manager->Render_UIGroup(true, "Loading");
+	if (LEVEL_LOGO != m_eNextLevel)
+	{
+		m_pUI_Manager->Render_UIGroup(true, "Loading"); // 여기 갔을 때는 왜....ㅠㅠ
+
+	}
 	m_pUI_Manager->Tick(fTimeDelta);
 
 	if (true == m_pLoader->is_Finished())
@@ -79,6 +82,7 @@ void CLevel_Loading::Tick(_float fTimeDelta)
 			case LEVEL_GAMEPLAY:
 				m_pUI_Manager->Render_UIGroup(false, "Loading");
 				m_pUI_Manager->Resset_Player();
+				// 여기서 Loading의 Circle이 가지고 있는 값을 분명 변경해줬는데 왜... 다음 Loading으로 가면..
 				dynamic_cast<CUIGroup_Loading*>(m_pUI_Manager->Get_UIGroup("Loading"))->Setting_Data();
 				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, CLevel_GamePlay::Create(m_pDevice, m_pContext))))
 					return;

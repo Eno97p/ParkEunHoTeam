@@ -55,6 +55,8 @@ HRESULT CKickSword::Initialize(void* pArg)
 	_float fDegree = XMConvertToDegrees(acos(XMVectorGetX(XMVector3Dot(vPlayerLook, vDir))));
 
 	m_bIsActive = true;
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("RushStart.ogg"), SOUND_EFFECT);
 
 	return S_OK;
 }

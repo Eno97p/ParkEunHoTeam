@@ -64,7 +64,7 @@ void CBossStatue::Tick(_float fTimeDelta)
 	if (m_eColltype == CCollider::COLL_START)
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
 		m_bActive = false;
 	}
 }

@@ -104,7 +104,8 @@ HRESULT CAndrasLazer::Add_Child_Effects()
 		TEXT("Prototype_GameObject_Andras_Screw"), &m_OwnDesc->ScrewDesc);
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_AndrasLazer"),
 		TEXT("Prototype_GameObject_AndrasRain"), &m_OwnDesc->RainDesc);
-
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Andras_LaserShoot.ogg"), SOUND_EFFECT);
 	return S_OK;
 }
 

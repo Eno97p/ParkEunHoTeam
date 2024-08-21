@@ -98,6 +98,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Monster");
 	initLoader->Save_Start(LEVEL_ANDRASARENA, L"Layer_Boss");
+	initLoader->Save_TriggerStart(LEVEL_ANDRASARENA, L"Layer_Trigger");
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
@@ -118,7 +119,7 @@ void CLevel_AndrasArena::Tick(_float fTimeDelta)
 		Add_FadeInOut(true);
 	}
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -166,7 +167,7 @@ void CLevel_AndrasArena::Tick(_float fTimeDelta)
 
 	}
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
-//#endif
+#endif
 }
 
 void CLevel_AndrasArena::Late_Tick(_float fTimeDelta)

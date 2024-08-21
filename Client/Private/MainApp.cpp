@@ -306,7 +306,8 @@ HRESULT CMainApp::Initialize()
 
 
 	
-
+	//종료시 파일 삭제
+	std::atexit(Client::Delete_File);
 	
 
 	return S_OK;
@@ -352,8 +353,12 @@ HRESULT CMainApp::Render()
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->Render_ImGui())) return E_FAIL;);		//프로파일링 하기 위해 Draw다음으로 옮김
 
+//#ifdef _DEBUG
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_HeirofLight15"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f))))
 		return E_FAIL;
+//#endif // _DEBUG
+
+	
 
 	IMGUI_EXEC(if (FAILED(m_pImGuiMgr->End_ImGui())) return E_FAIL;);
 

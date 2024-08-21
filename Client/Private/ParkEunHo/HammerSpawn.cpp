@@ -31,6 +31,9 @@ HRESULT CHammerSpawn::Initialize(void* pArg)
 	if (FAILED(Add_Child_Effects()))
 		return E_FAIL;
 
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HammerSpawn.ogg"), SOUND_MONSTER);
+
 	return S_OK;
 }
 

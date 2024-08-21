@@ -43,7 +43,7 @@ private:
 	class CUI_QTE_Ring*		m_pRing = { nullptr };
 	class CUI_QTE_Score*	m_pScore = { nullptr };
 
-	SCORE_TYPE				m_eScoreType = { SCORE_END };
+	SCORE_TYPE				m_eScoreType = { SCORE_BAD };
 
 private:
 	HRESULT	Add_Components();

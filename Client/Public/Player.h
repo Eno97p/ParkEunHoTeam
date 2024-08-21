@@ -256,9 +256,6 @@ private:
 	_bool m_bSpecialAttackShake = false;
 	_bool m_bSpecialAttackZoom = false;
 
-
-private:
-	CGameObject* HexaShieldText = nullptr;
 	_float		m_GrassBlowInterval = 1.f;
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);

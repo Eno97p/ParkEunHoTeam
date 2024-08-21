@@ -52,6 +52,9 @@ HRESULT CElectronic::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_Lightning.ogg"), SOUND_EFFECT);
+
 	return S_OK;
 }
 

@@ -70,6 +70,8 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 		m_fDisolveValue -= fTimeDelta * 3.f;
 		if (m_fDisolveValue < 0.f)
 		{
+			//m_pGameInstance->Disable_Echo();
+			//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 			m_eDisolveType = TYPE_INCREASE;
 		}
 		break;
@@ -79,8 +81,7 @@ void CJuggulus_HandOne::Tick(_float fTimeDelta)
 
 	Change_Animation(fTimeDelta);
 
-
-		m_pBehaviorCom->Update(fTimeDelta);
+	m_pBehaviorCom->Update(fTimeDelta);
 
 	m_pHitColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 	m_pAttackColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -248,6 +249,8 @@ NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 
 	if (m_eDisolveType == TYPE_IDLE && m_iState != STATE_CHASE)
 	{
+		//m_pGameInstance->Disable_Echo();
+		//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 		m_eDisolveType = TYPE_DECREASE;
 	}
 
@@ -259,7 +262,9 @@ NodeStates CJuggulus_HandOne::Chase(_float fTimeDelta)
 	if (m_iState == STATE_CHASE && m_eDisolveType != TYPE_DECREASE)
 	{
 		_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-		vPlayerPos.m128_f32[1] -= 46.5f;
+
+		// 높이값 하드코딩
+		vPlayerPos.m128_f32[1] = 21.5f;
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
 		m_fAttackDelay -= fTimeDelta;
 		{
@@ -314,6 +319,8 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				{
 					m_fAttackDelay = 2.f;
 					m_eDisolveType = TYPE_DECREASE;
+					//m_pGameInstance->Disable_Echo();
+					//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 				}
 				else if (m_iAttackCount == 3)
 				{
@@ -332,9 +339,10 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				else
 				{
 					_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-					vPlayerPos.m128_f32[1] -= 46.5f;
+					vPlayerPos.m128_f32[1] = 21.5f;
 					m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPlayerPos);
 					m_iPastAnimIndex = 6;
+					m_fColliderActiveTime = 0.5f;
 				}
 				return SUCCESS;
 			}

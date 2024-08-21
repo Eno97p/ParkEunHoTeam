@@ -61,6 +61,7 @@ private:
 	NodeStates Backstep(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
+	void Phase_Two();
 
 private:
 	vector<class CGameObject*>					m_PartObjects;
@@ -75,6 +76,7 @@ private:
 	_bool	m_bTrigger = false;
 	_bool m_bDashBack = false;
 	_bool m_bLaser = false;
+	_bool m_bPhase2 = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fChasingDelay = 0.5f;
@@ -87,10 +89,10 @@ private:
 	_float m_fKickAttackDelay = 2.f;
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
+	_bool m_bRushSwordSound = true;
 
-	_uint m_iPhase = 1;
-
-
+private:
+	CGameObject* HexaShieldText = nullptr;
 
 public:
 	static CAndras* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

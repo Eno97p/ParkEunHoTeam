@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "EffectManager.h"
+#include "Particle.h"
 
 
 CRushSword::CRushSword(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -50,7 +51,7 @@ HRESULT CRushSword::Initialize(void* pArg)
 	_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	vLook.m128_f32[1] = 0.f;
 	EFFECTMGR->Generate_Particle(45, fPos, nullptr, XMVectorZero(), 0.f, vLook);
-
+	pParticle = EFFECTMGR->Generate_Particle(96, fPos, this);
 	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 	_vector vPlayerLook = pPlayerTransform->Get_State(CTransform::STATE_LOOK);
 	_vector vDir = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -86,6 +87,7 @@ void CRushSword::Priority_Tick(_float fTimeDelta)
 	}
 	if (m_fDisolveValue < 0.f)
 	{
+		static_cast<CParticle*>(pParticle)->Set_Delete();
 		m_pGameInstance->Erase(this);
 	}
 }
@@ -100,10 +102,15 @@ void CRushSword::Tick(_float fTimeDelta)
 	}
 	else if (m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[1] <= m_fHeight)
 	{
-		if (m_eDisolveType != TYPE_DECREASE && m_bSound)
+
+		if (m_eDisolveType != TYPE_DECREASE)
 		{
-			//m_pGameInstance->Disable_Echo();
-			//m_pGameInstance->Play_Effect_Sound(TEXT("RushEnd.ogg"), SOUND_EFFECT);
+			_float4 pParticlePos;
+			XMStoreFloat4(&pParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(97, pParticlePos);
+			EFFECTMGR->Generate_Particle(98, pParticlePos);
+			EFFECTMGR->Generate_Particle(99, pParticlePos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
+
 		}
 		m_eDisolveType = TYPE_DECREASE;
 	}

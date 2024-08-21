@@ -22,6 +22,8 @@
 #include "GroundSlash.h"
 #include "HammerSpawn.h"
 #include "HexaShield.h"
+#include "FireFlyCube.h"
+#include "BlackHole.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -192,6 +194,15 @@ private:
 	void Shield_Tool(_bool* Open);
 	HRESULT Save_Shield(CHexaShield::HEXASHIELD* pShield);
 	HRESULT Load_Shield(CHexaShield::HEXASHIELD* pShield);
+
+private:
+	void FireFly_Tool(_bool* Open);
+	HRESULT Save_FireFly(CFireFlyCube::FIREFLYCUBE* pFireFly);
+	HRESULT Load_FireFly(CFireFlyCube::FIREFLYCUBE* pFireFly);
+
+private:
+	void BlackHole_Tool(_bool* Open);
+
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 

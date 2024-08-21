@@ -181,6 +181,9 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\AndrasSword4.h" />
     <ClInclude Include="..\Public\AndrasSword5.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\public\BlackHole.h" />
+    <ClInclude Include="..\Public\BlackHole_Ring.h" />
+    <ClInclude Include="..\Public\BlackSphere.h" />
     <ClInclude Include="..\Public\Charge_Ribbon.h" />
     <ClInclude Include="..\Public\Charge_Vane.h" />
     <ClInclude Include="..\Public\Distortion_Effect.h" />
@@ -188,6 +191,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\ElectricCylinder.h" />
     <ClInclude Include="..\public\Electronic.h" />
     <ClInclude Include="..\public\FireEffect.h" />
+    <ClInclude Include="..\public\FireFlyCube.h" />
     <ClInclude Include="..\public\FirePillar.h" />
     <ClInclude Include="..\Public\FirePillarEffect.h" />
     <ClInclude Include="..\Public\FirePillar_Bottom.h" />
@@ -265,12 +269,16 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\AndrasSword4.cpp" />
     <ClCompile Include="..\Private\AndrasSword5.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\private\BlackHole.cpp" />
+    <ClCompile Include="..\Private\BlackHole_Ring.cpp" />
+    <ClCompile Include="..\Private\BlackSphere.cpp" />
     <ClCompile Include="..\Private\Charge_Ribbon.cpp" />
     <ClCompile Include="..\Private\Charge_Vane.cpp" />
     <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ElectricCylinder.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />
     <ClCompile Include="..\private\FireEffect.cpp" />
+    <ClCompile Include="..\private\FireFlyCube.cpp" />
     <ClCompile Include="..\private\FirePillar.cpp" />
     <ClCompile Include="..\Private\FirePillarEffect.cpp" />
     <ClCompile Include="..\Private\FirePillar_Bottom.cpp" />

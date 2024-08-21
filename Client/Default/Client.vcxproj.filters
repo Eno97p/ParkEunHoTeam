@@ -838,6 +838,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\PartObject\JugglusHammerSpawn">
       <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\FireFly">
+      <UniqueIdentifier>{b9c70525-f0af-4338-8b43-63230e55c9cc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1804,6 +1807,9 @@
     <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
+    <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h">
+      <Filter>02.GameObjects\06.Effect\FireFly</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2732,6 +2738,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_Cinematic.cpp">
       <Filter>02.GameObjects\07. UI\Cinematic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp">
+      <Filter>02.GameObjects\06.Effect\FireFly</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

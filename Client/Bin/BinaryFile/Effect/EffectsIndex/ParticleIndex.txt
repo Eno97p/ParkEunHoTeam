@@ -94,3 +94,11 @@
 93. ShieldHit2
 94. AndrasOura
 95. JugglusSphereFire
+96. AndrasSwordFire
+97. AndrasSwordHit
+98. AndrasSwordHit2
+99. AndrasSwordHitRing
+100. PlayerWalkOverWater
+101. FireFlyLoop0
+102. FireFlyLoop1
+103. BlackHoleBehind

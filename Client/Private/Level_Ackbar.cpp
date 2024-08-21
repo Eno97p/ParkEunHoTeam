@@ -144,9 +144,7 @@ void CLevel_Ackbar::Tick(_float fTimeDelta)
 		m_pGameInstance->LightOff(0);
 	}
 
-	m_pGameInstance->Update_LightPos(0,
-		dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ACKBAR, 
-			TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_State(CTransform::STATE_POSITION));
+	
 
 #ifdef _DEBUG
 	//카메라 전환 ~ 키

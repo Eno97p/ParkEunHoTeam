@@ -205,6 +205,38 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 	m_pGameInstance->Add_DebugComponent(m_pPhysXCom);
 #endif
+
+
+	if (m_pGameInstance->Key_Down(DIK_H))
+	{
+		_float4 vStartPosition, playerLook;
+		XMStoreFloat4(&vStartPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		XMStoreFloat4(&playerLook, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		//EFFECTMGR->Generate_Meteor(vStartPosition);
+		//EFFECTMGR->Generate_Needle(vStartPosition);
+		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
+		//HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+		EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
+		
+		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD8))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
+		}
+	}
+	if (m_pGameInstance->Key_Down(DIK_NUMPAD9))
+	{
+		if (HexaShieldText != nullptr)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
+			HexaShieldText = nullptr;
+		}
+	}
+
 }
 
 HRESULT CPlayer::Render()

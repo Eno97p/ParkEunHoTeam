@@ -15,6 +15,7 @@
 #include "GroundSlash.h"
 #include "HammerSpawn.h"
 #include "HexaShield.h"
+#include "FireFlyCube.h"
 BEGIN(Client)
 class CEffectManager final : public CBase
 {
@@ -46,6 +47,7 @@ public:
 	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
 
 	CGameObject* Generate_HexaShield(const _float4x4* BindMat);	//CHexaShield로 캐스팅해서 맞을땐 Set_Shield_Hit() 호출 , 삭제할땐  Set_Delete()호출
+	HRESULT Generate_FireFly(const _float4x4* BindMat);		//Player 월드행렬 주소 넣으면 됨
 
 private:		//Load Values
 	HRESULT Load_Trails();
@@ -63,6 +65,7 @@ private:		//Load Values
 	HRESULT Load_GroundSlash();
 	HRESULT Load_HammerSpawn();
 	HRESULT Load_HexaShield();
+	HRESULT Load_FireFly();
 
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
@@ -86,6 +89,7 @@ private:
 	shared_ptr<CGroundSlash::GROUNDSLASH>						m_GroundSlash;
 	shared_ptr<CHammerSpawn::HAMMERSPAWN>						m_HammerSpawn;
 	shared_ptr<CHexaShield::HEXASHIELD>							m_HexaShield;
+	shared_ptr<CFireFlyCube::FIREFLYCUBE>						m_FireFly;
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

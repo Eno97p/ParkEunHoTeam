@@ -7,6 +7,11 @@
 #include "UI_Activate.h"
 #include "UI_FadeInOut.h"
 
+
+
+
+
+
 CSavePoint::CSavePoint(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice, pContext)
 {
@@ -125,12 +130,13 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 
 			
 			auto futures = m_pGameInstance->AddWork([this, eCurLevel]() {
-				Engine::Save_Data(L"../Bin/DataFiles/SavePoint.dat", true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), eCurLevel);
+				Engine::Save_Data(L"../Bin/DataFiles/SavePoint.bin", true, m_pTransformCom->Get_State(CTransform::STATE_POSITION), eCurLevel);
+				
 			});
 			
 			if (futures.wait_for(chrono::milliseconds(1000)) == future_status::ready)
 			{
-
+				Client::g__Exit_Delete_FileList.insert(L"../Bin/DataFiles/SavePoint.bin");
 				int tes = 0;
 				//작업이 끝났을 때 불림
 			}

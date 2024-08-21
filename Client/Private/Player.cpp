@@ -56,6 +56,14 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
+
+
+
+	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
+
+
+
+
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
 	return S_OK;
@@ -486,15 +494,25 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 					m_pPhysXCom->Set_Position(XMVectorSet(m_InitialPosition.x, m_InitialPosition.y, m_InitialPosition.z, 1.0f));	//플레이어 위치 이동
 				}
 
+				//플레이어가 죽으면 저장 시킬 데이터 저장
+				//Engine::Save_Data(L"../Bin/DataFiles/PlayerInfo.dat",true,);
+				//이후 다시 태어날 떄 불러올 수 있도록
+
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
-				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");		//지워야할 Layer
 
 
 				CInitLoader<LEVEL, const wchar_t*>* InitLoader = new CInitLoader<LEVEL, const wchar_t*>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
+				InitLoader->Load_TriggerStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");
+				InitLoader->Load_BlastWallStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");
+
+
+
 				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevel(), L"Layer_BlastWall");                                                                                                                                                                              
 
 

@@ -220,9 +220,11 @@ void CUI_MenuBtn::Open_MenuPage()
 	case Client::CUI_MenuBtn::MENU_CH:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Menu_Ch");
 		dynamic_cast<CUIGroup_Ch_Upgrade*>(CUI_Manager::GetInstance()->Get_UIGroup("Ch_Upgrade"))->Resset_OriginData();
+		CUI_Manager::GetInstance()->Set_RedDot_Rend(false);
 		break;
 	case Client::CUI_MenuBtn::MENU_MAP:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Map");
+		CUI_Manager::GetInstance()->Set_RedDot_Rend(false);
 		break;
 	case Client::CUI_MenuBtn::MENU_WEAPON:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Weapon");
@@ -231,7 +233,6 @@ void CUI_MenuBtn::Open_MenuPage()
 	{
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Inventory");
 
-		// Inventory의 경우에는 그런데 Weapon의 경우에는 좀 다름... 
 		if (nullptr != m_pRedDot)
 		{
 			Safe_Release(m_pRedDot);
@@ -242,14 +243,13 @@ void CUI_MenuBtn::Open_MenuPage()
 	}
 	case Client::CUI_MenuBtn::MENU_SET:
 		CUI_Manager::GetInstance()->Set_MenuPage(true, "Setting");
+		CUI_Manager::GetInstance()->Set_RedDot_Rend(false);
 		break;
 	default:
-		break;
+		return;
 	}
 
 	CUI_Manager::GetInstance()->Set_MenuPageOpen();
-
-
 }
 
 HRESULT CUI_MenuBtn::Create_RedDot()
@@ -278,6 +278,12 @@ HRESULT CUI_MenuBtn::Delete_RedDot()
 	m_pRedDot = nullptr;
 
 	return S_OK;
+}
+
+void CUI_MenuBtn::Set_RedDot_Rend(_bool isRend)
+{
+	if(nullptr != m_pRedDot)
+		m_pRedDot->Set_Rend(isRend);
 }
 
 CUI_MenuBtn* CUI_MenuBtn::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

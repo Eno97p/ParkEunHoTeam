@@ -457,6 +457,12 @@ HRESULT CUI_Manager::Delete_RedDot_Slot(_bool isInv)
 	return S_OK;
 }
 
+void CUI_Manager::Set_RedDot_Rend(_bool isRend)
+{
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	dynamic_cast<CUIGroup_Menu*>((*menu).second)->Set_RedDot_Rend(isRend);
+}
+
 void CUI_Manager::Create_QTE()
 {
 	CQTE::GAMEOBJECT_DESC pQteDesc{};
@@ -541,6 +547,7 @@ void CUI_Manager::Key_Input()
 				if (isChOpen)
 				{
 					(*character).second->Set_RenderOnAnim(false);
+					Set_RedDot_Rend(true);
 				}
 				else if (isInvOpen)
 				{
@@ -569,10 +576,12 @@ void CUI_Manager::Key_Input()
 				else if (isMapOpen)
 				{
 					(*mapPage).second->Set_RenderOnAnim(false);
+					Set_RedDot_Rend(true);
 				}
 				else if (isSettingOpen)
 				{
 					(*setting).second->Set_RenderOnAnim(false);
+					Set_RedDot_Rend(true);
 				}
 				else
 				{

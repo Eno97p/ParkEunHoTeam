@@ -43,7 +43,9 @@ private:
 	class CUI_QTE_Ring*		m_pRing = { nullptr };
 	class CUI_QTE_Score*	m_pScore = { nullptr };
 
-	SCORE_TYPE				m_eScoreType = { SCORE_BAD };
+
+	SCORE_TYPE				m_eScoreType = { SCORE_BAD }; // 이거 디폴트값을 BAD로 해보기? >>> 테스트 필요
+
 
 private:
 	HRESULT	Add_Components();

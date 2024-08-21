@@ -34,6 +34,20 @@ public:
 #define BRISDELAY 0.05f
 
 public:
+	typedef struct Player_Status_Data // 다음 Level로 넘어갈 때 저장되어야 하는 Player 스탯 데이터
+	{
+		_bool		isReviveFadeing;
+		_uint		iLevel;
+		_uint		iVitalityLv;
+		_uint		iStaminaLv;
+		_uint		iStrenghtLv;
+		_uint		iMysticismLv;
+		_uint		iKnowledgeLv;
+		_uint		iPhysicalDmg;
+		_uint		iEtherDmg;
+	}PLAYER_STATUS_DATA;
+
+public:
 	enum PART { PART_BODY, PART_WEAPON, PART_END };
 	enum STATE {
 		STATE_IDLE, STATE_FIGHTIDLE, STATE_WALK, STATE_LOCKON_STRAIGHT, STATE_LOCKON_BACKWARD, STATE_LOCKON_LEFT, STATE_LOCKON_RIGHT, STATE_RUN, STATE_JUMPSTART, STATE_DOUBLEJUMPSTART, STATE_JUMP, STATE_LAND,

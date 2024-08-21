@@ -18,6 +18,9 @@ private:
 	virtual ~CUI_RedDot() = default;
 
 public:
+	void			Set_Rend(_bool isRend) { m_isRend = isRend; }
+
+public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
 	virtual void	Priority_Tick(_float fTimeDelta) override;
@@ -26,6 +29,8 @@ public:
 	virtual HRESULT	Render() override;
 
 private:
+	_bool					m_isRend = { true };
+
 	UISORT_PRIORITY			m_eUISort = { SORT_END };
 
 private:

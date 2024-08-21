@@ -36,8 +36,6 @@ private:
 	HRESULT Load_Data_Effects();
 
 	void Load_Lights(const wstring& strLightFile);
-
-	HRESULT	Add_FadeInOut(_bool isDissolve);
 	
 private:
 	CUI_Manager* m_pUI_Manager = nullptr;

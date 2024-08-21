@@ -150,16 +150,11 @@ void CLevel_Jugglas::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		Add_FadeInOut(false);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K))
-	{
-		Add_FadeInOut(true);
-	}
+
+//#ifdef _DEBUG
 
 #ifdef _DEBUG
+
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
 	//카메라 전환 ~ 키
@@ -844,22 +839,6 @@ void CLevel_Jugglas::Load_Lights()
 	//MSG_BOX("Lights Data Load");
 #endif
 	return;
-}
-
-HRESULT CLevel_Jugglas::Add_FadeInOut(_bool isDissolve)
-{
-	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = false;
-	if(isDissolve)
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
-	else
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
-
-	return S_OK;
 }
 
 CLevel_Jugglas * CLevel_Jugglas::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)

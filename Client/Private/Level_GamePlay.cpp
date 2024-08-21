@@ -120,17 +120,6 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 {
 	m_pUI_Manager->Tick(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		Add_FadeInOut(false);
-	}
-	else if (m_pGameInstance->Key_Down(DIK_K))
-	{
-		Add_FadeInOut(true);
-	}
-
-
-	
 
 
 #ifdef _DEBUG
@@ -948,22 +937,6 @@ HRESULT CLevel_GamePlay::ReLoad_Monster(const _tchar* pFilePath)
 					return E_FAIL;
 			}
 		}
-
-	return S_OK;
-}
-
-HRESULT CLevel_GamePlay::Add_FadeInOut(_bool isDissolve)
-{
-	CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
-
-	pDesc.isFadeIn = false;
-	if(isDissolve)
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_DISSOLVE;
-	else
-		pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
-
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
-		return E_FAIL;
 
 	return S_OK;
 }

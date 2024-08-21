@@ -155,6 +155,17 @@ void CLevel_AndrasArena::Tick(_float fTimeDelta)
 	//	return;
 	//}
 
+
+	if (m_pGameInstance->Key_Down(DIK_P))
+	{
+			m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_MainCamera())->Set_CutSceneIdx(2);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_MainCamera())->Play_CutScene();
+
+			dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Monster"), TEXT("Com_PhysX")))->Set_Position({ 91.6f, 11.f, 89.3f, 1.f });
+			dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_ANDRASARENA, TEXT("Layer_Monster"), TEXT("Com_Transform")))->Set_State(CTransform::STATE_POSITION, { 91.6f, 11.f, 89.3f, 1.f });
+
+	}
 	SetWindowText(g_hWnd, TEXT("게임플레이레벨임"));
 #endif
 }

@@ -841,6 +841,15 @@
     <Filter Include="02.GameObjects\07. UI\ArrowSign">
       <UniqueIdentifier>{107d2d39-54af-4c08-8413-cd90aff513ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Portal">
+      <UniqueIdentifier>{6f98949e-8174-4b4e-86f5-3ce01587c691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Portal\Pic">
+      <UniqueIdentifier>{6679d443-51f6-4f90-aecb-6f6ad38af090}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Portal\Text">
+      <UniqueIdentifier>{cacc585b-f8a6-4a0f-b297-81cbec8c3953}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1826,6 +1835,12 @@
     <ClInclude Include="..\Public\UI_ArrowSign.h">
       <Filter>02.GameObjects\07. UI\ArrowSign</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_Portal.h">
+      <Filter>02.GameObjects\07. UI\Portal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_PortalPic.h">
+      <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2757,6 +2772,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_ArrowSign.cpp">
       <Filter>02.GameObjects\07. UI\ArrowSign</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_Portal.cpp">
+      <Filter>02.GameObjects\07. UI\Portal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PortalPic.cpp">
+      <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

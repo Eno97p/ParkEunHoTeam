@@ -408,6 +408,9 @@
 #include "C:\Real3DProject\Client\Private\UIGroup_Map.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_Portal.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_Script.cpp"
 
 
@@ -502,6 +505,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_PortalPic.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_QTE_Btn.cpp"

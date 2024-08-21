@@ -188,6 +188,13 @@
 #include "UIGroup_Level.h"
 #pragma endregion Level
 
+#pragma region Portal
+#include "UI_PortalPic.h"
+
+
+#include "UIGroup_Portal.h"
+#pragma endregion Portal
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -1606,6 +1613,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_ArrowSign"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/ArrowSign.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalPic */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PortalPic/PortalPic_%d.png"), 4))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalText */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalText"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PortalPic/Portal_Text.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2289,6 +2306,19 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Level::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Level
+
+#pragma region Portal
+	/* For.Prototype_GameObject_UI_PortalPic*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PortalPic"),
+		CUI_PortalPic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_UIGroup_Portal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Portal"),
+		CUIGroup_Portal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion Portal
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

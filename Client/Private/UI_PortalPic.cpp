@@ -1,7 +1,6 @@
 #include "UI_PortalPic.h"
 
 #include "GameInstance.h"
-#include "Player.h"
 
 CUI_PortalPic::CUI_PortalPic(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CUI{ pDevice, pContext }
@@ -30,6 +29,7 @@ HRESULT CUI_PortalPic::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), pDesc->fAngle);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pDesc->vPos);
 
 	//Setting_Pos();
@@ -51,7 +51,7 @@ void CUI_PortalPic::Late_Tick(_float fTimeDelta)
 {
 	//m_pTransformCom->BillBoard(); // »©µµ µÇ³ª?
 
-	m_pTransformCom->Set_Scale(4.2f, 6.f, 4.5f);
+	m_pTransformCom->Set_Scale(3.7f, 6.f, 4.5f);
 
 	CGameInstance::GetInstance()->Add_UI(this, FIRST);
 }
@@ -81,9 +81,11 @@ HRESULT CUI_PortalPic::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic"), // Prototype_Component_Texture_UI_PortalPic
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+
+	// Prototype_Component_Texture_UI_PortalPic_Dissolve
 
 	return S_OK;
 }

@@ -515,20 +515,27 @@ void CUI_Manager::Setting_Cinematic()
 
 void CUI_Manager::Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc)
 {
-	// 여기까지는 pDesc가 괜찮았거든
 	m_vecPortal.emplace_back(dynamic_cast<CUIGroup_Portal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Portal"), pDesc)));
-	// 위에 오류 잇나바~ 
 }
 
 void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
 {
 	vector<CUIGroup_Portal*>::iterator portal = m_vecPortal.begin();
 
-	for (size_t i = 0; i < m_vecDash.size(); ++i)
+	for (size_t i = 0; i < m_vecPortal.size(); ++i)
 	{
-		Safe_Release(*portal);
-		m_vecPortal.erase(portal);
-		++portal;
+		// 여기서 Pic이 있는 녀석인지 체크하고? 
+		if ((*portal)->Get_isPic())
+		{
+			((*portal)->Set_isDeadDissolve());
+
+			/*if()*/
+		}
+		else
+		{
+			Safe_Release(*portal);
+			portal = m_vecPortal.erase(portal);
+		}
 	}
 }
 

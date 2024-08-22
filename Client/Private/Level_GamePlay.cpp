@@ -123,6 +123,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	pDesc.ePortalLevel = LEVEL_GRASSLAND;
 	pDesc.isPic = true;
 	pDesc.iPicNum = 3;
+	pDesc.fAngle = 190.f;
 	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
 	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);
 

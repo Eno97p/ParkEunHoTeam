@@ -14,6 +14,7 @@ public:
 	{
 		_bool		isPic;
 		_uint		iPicNum;
+		_float		fAngle;
 		_vector		vPos;
 		LEVEL		ePortalLevel;
 	}UIGROUP_PORTAL_DESC;
@@ -22,6 +23,10 @@ private:
 	CUIGroup_Portal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUIGroup_Portal(const CUIGroup_Portal& rhs);
 	virtual ~CUIGroup_Portal() = default;
+
+public:
+	_bool			Get_isPic();
+	void			Set_isDeadDissolve();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -36,7 +41,7 @@ private:
 	class CUI_PortalText*	m_pText = { nullptr };
 
 private:
-	HRESULT					Create_UI(_bool isPic, _uint iPicNum, _vector vPos);
+	HRESULT					Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos);
 
 public:
 	static CUIGroup_Portal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

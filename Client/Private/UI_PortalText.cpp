@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "Player.h"
+
 CUI_PortalText::CUI_PortalText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{ pDevice, pContext }
 {
@@ -36,7 +38,7 @@ HRESULT CUI_PortalText::Initialize(void* pArg)
 
 	Setting_Position();
 
-	Setting_Text(pDesc->eLevel);
+	Setting_Text(pDesc->ePortalLevel);
 
 	m_isRend = true;
 
@@ -49,7 +51,7 @@ void CUI_PortalText::Priority_Tick(_float fTimeDelta)
 
 void CUI_PortalText::Tick(_float fTimeDelta)
 {
-	// 플레이어와 Pick의 위치를 계산해서 일정 거리 내에 들어왔을 때 m_isRend를 true로 바꿔주기
+	Check_Distance();
 }
 
 void CUI_PortalText::Late_Tick(_float fTimeDelta)
@@ -116,38 +118,46 @@ void CUI_PortalText::Setting_Text(LEVEL ePortalLevel)
 {
 	switch (ePortalLevel)
 	{
-	case Client::LEVEL_GAMEPLAY:
+	case Client::LEVEL_ACKBAR:
 		m_fFontX = 50.f;
 		m_fText = TEXT("Go To Ackbar");
-	case Client::LEVEL_ACKBAR:
+		break;
+	case Client::LEVEL_JUGGLAS:
 		m_fFontX = 100.f;
 		m_fText = TEXT("Go To Shamra's Grotto");
-	case Client::LEVEL_JUGGLAS:
+		break;
+	case Client::LEVEL_GRASSLAND:
 		m_fFontX = 80.f;
 		m_fText = TEXT("Go To Limbo Plains");
-	case Client::LEVEL_GRASSLAND:
+		break;
+	case Client::LEVEL_ANDRASARENA:
 		m_fFontX = 110.f;
 		m_fText = TEXT("Go To King's Whilderness");
+		break;
 	default:
 		m_fText = TEXT("");
+		break;
 	}
 }
 
 void CUI_PortalText::Check_Distance()
 {
-	// m_vTargetPos
+	// Player와의 거리 계산
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
+	//Safe_AddRef(m_pPlayerTransform);
 
-	//// Player와의 거리 계산
+	_vector vBetween = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vTargetPos;
+	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
 
-	//list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
-	//CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
-	////Safe_AddRef(m_pPlayerTransform);
-
-
-	//_vector vBetween = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
-
-	//return ACTIVATE_DISTANCE >= fDistance;
+	if (10.f >= fDistance)
+	{
+		m_isRend = true;
+	}
+	else
+	{
+		m_isRend = false;
+	}
 }
 
 CUI_PortalText* CUI_PortalText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

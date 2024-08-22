@@ -15,6 +15,19 @@ CUIGroup_Portal::CUIGroup_Portal(const CUIGroup_Portal& rhs)
 {
 }
 
+_bool CUIGroup_Portal::Get_isPic()
+{
+	if (m_pPic == nullptr)
+		return false;
+	else
+		return true;
+}
+
+void CUIGroup_Portal::Set_isDeadDissolve()
+{
+	m_pPic->Set_DeadDissolve();
+}
+
 HRESULT CUIGroup_Portal::Initialize_Prototype()
 {
 	return S_OK;
@@ -27,7 +40,7 @@ HRESULT CUIGroup_Portal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->vPos))) // pDesc 가 제대로 전달이 안 됐네!!!!!!!
+	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->fAngle, pDesc->vPos)))
 		return E_FAIL;
 
 	return S_OK;
@@ -60,11 +73,12 @@ HRESULT CUIGroup_Portal::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _vector vPos)
+HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos)
 {
 	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
 	pTextDesc.eLevel = LEVEL_STATIC;
 	pTextDesc.vPos = vPos;
+	pTextDesc.ePortalLevel = LEVEL_GRASSLAND;
 
 	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pTextDesc));
 	if (nullptr == m_pText)
@@ -75,6 +89,7 @@ HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _vector vPos)
 		CUI_PortalPic::UI_PORTALPIC_DESC pPicDesc{};
 		pPicDesc.eLevel = LEVEL_STATIC;
 		pPicDesc.iPicNum = iPicNum;
+		pPicDesc.fAngle = fAngle;
 		pPicDesc.vPos = vPos;
 
 		m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pPicDesc));

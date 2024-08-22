@@ -396,7 +396,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 		if (HexaShieldText == nullptr)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER05);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 		else
 		{
@@ -869,6 +869,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			}
 		}
 		m_iState = STATE_SPRINTATTACK;
+
 		return SUCCESS;
 	}
 

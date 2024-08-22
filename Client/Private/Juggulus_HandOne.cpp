@@ -226,7 +226,7 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 	{
 	case CCollider::COLL_START:
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		_float4 ParticlePs = XM3TO4(m_pHitColliderCom->Get_Center());
 		EFFECTMGR->Generate_Particle(1, ParticlePs, nullptr);
 		EFFECTMGR->Generate_Particle(2, ParticlePs, nullptr);
@@ -319,8 +319,8 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				{
 					m_fAttackDelay = 2.f;
 					m_eDisolveType = TYPE_DECREASE;
-					//m_pGameInstance->Disable_Echo();
-					//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
 				}
 				else if (m_iAttackCount == 3)
 				{

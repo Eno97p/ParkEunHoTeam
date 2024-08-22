@@ -524,18 +524,20 @@ void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
 
 	for (size_t i = 0; i < m_vecPortal.size(); ++i)
 	{
-		// 여기서 Pic이 있는 녀석인지 체크하고? 
-		if ((*portal)->Get_isPic())
-		{
-			((*portal)->Set_isDeadDissolve());
+		//// 여기서 Pic이 있는 녀석인지 체크하고? 
+		//if ((*portal)->Get_isPic())
+		//{
+		//	((*portal)->Set_isDeadDissolve());
 
-			/*if()*/
-		}
-		else
-		{
-			Safe_Release(*portal);
-			portal = m_vecPortal.erase(portal);
-		}
+		//	/*if()*/
+		//}
+		//else
+		//{
+		//	Safe_Release(*portal);
+		//	portal = m_vecPortal.erase(portal);
+		//}
+		Safe_Release(*portal);
+		portal = m_vecPortal.erase(portal); 
 	}
 }
 

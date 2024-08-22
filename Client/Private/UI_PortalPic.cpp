@@ -43,13 +43,10 @@ void CUI_PortalPic::Priority_Tick(_float fTimeDelta)
 
 void CUI_PortalPic::Tick(_float fTimeDelta)
 {
-	//Setting_Pos();
-	// 사진의 회전값 같은 것도 넣어주어야 할 수 있ㅇ겠음~~~~~~~~~~~~~!!!!!!!!! 일단 되는지부터 확인하고
 }
 
 void CUI_PortalPic::Late_Tick(_float fTimeDelta)
 {
-	//m_pTransformCom->BillBoard(); // 빼도 되나?
 
 	m_pTransformCom->Set_Scale(3.7f, 6.f, 4.5f);
 
@@ -61,7 +58,7 @@ HRESULT CUI_PortalPic::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(0); // 0
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 

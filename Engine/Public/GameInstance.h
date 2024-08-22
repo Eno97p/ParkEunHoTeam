@@ -60,7 +60,9 @@ public: /* For.Level_Manager */
 	HRESULT Delete_CurrentLevel();
 	_uint Get_CurrentLevel();			//현재 레벨 받아오기
 	_uint Get_CurrentLevelIndex();		//현재 레벨 인덱스 받아오기
-	void Set_NextLevel(_uint iNextLevel);			//현재 레벨 받아오기
+	_uint Get_PrevLevelIndex();			//이전 레벨 인덱스 받아오기
+	void Set_NextLevel(_uint iNextLevel);			
+
 public: /* For.Object_Manager */
 	HRESULT Add_Prototype(const wstring& strPrototypeTag, class CGameObject* pPrototype);
 	HRESULT Add_CloneObject(_uint iLevelIndex, const wstring& strLayerTag, const wstring& strPrototypeTag, void* pArg = nullptr);

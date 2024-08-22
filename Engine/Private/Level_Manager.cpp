@@ -28,6 +28,7 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	if (nullptr == pNewLevel)
 		return E_FAIL;
 
+	m_iPrevLevelIndex = m_iLevelIndex;
 
 	/* 기존레벨의 자원을 삭제한다. */
 	if(nullptr != m_pCurrentLevel)

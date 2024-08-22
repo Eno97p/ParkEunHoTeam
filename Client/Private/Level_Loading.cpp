@@ -36,9 +36,10 @@ typedef unsigned (__stdcall* _beginthreadex_proc_type)(void*);
 
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 {
+	m_pUI_Manager->SetPrevLevel(m_eNextLevel);
+
 	m_eNextLevel = eNextLevel;
 	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
-	
 
 
 	/* 로딩씬에 뭔가를 보여주려한다면 그 보여주기위한 객체들을 생성한다. (백그라운드 + 로딩바 + 폰트) */

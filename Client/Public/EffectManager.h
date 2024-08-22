@@ -16,6 +16,7 @@
 #include "HammerSpawn.h"
 #include "HexaShield.h"
 #include "FireFlyCube.h"
+#include "BlackHole.h"
 BEGIN(Client)
 class CEffectManager final : public CBase
 {
@@ -45,6 +46,7 @@ public:
 	HRESULT Generate_Needle(const _float4 vStartPos);
 	HRESULT Generate_GroundSlash(const _float4 vStartPos, const _float4 vDirection);
 	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
+	HRESULT Generate_BlackHole(const _int iIndex, const _float4 vStartPos);
 
 	CGameObject* Generate_HexaShield(const _float4x4* BindMat);	//CHexaShield로 캐스팅해서 맞을땐 Set_Shield_Hit() 호출 , 삭제할땐  Set_Delete()호출
 	HRESULT Generate_FireFly(const _float4x4* BindMat);		//Player 월드행렬 주소 넣으면 됨
@@ -59,6 +61,7 @@ private:		//Load Values
 	HRESULT Load_Heals();
 	HRESULT Load_Lazers();
 	HRESULT Load_Swing();
+	HRESULT Load_BlackHole();
 	HRESULT Load_Meteor();
 	HRESULT Load_FirePillar();
 	HRESULT Load_Needle();
@@ -66,6 +69,7 @@ private:		//Load Values
 	HRESULT Load_HammerSpawn();
 	HRESULT Load_HexaShield();
 	HRESULT Load_FireFly();
+
 
 	HRESULT Ready_GameObjects();
 	HRESULT	Add_Texture_Prototype(const wstring& path, const wstring& name);
@@ -82,6 +86,7 @@ private:
 	vector<shared_ptr<CHealEffect::HEALEFFECT>>					m_Heals;
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>>	m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>				m_Swings;
+	vector<shared_ptr<CBlackHole::BLACKHOLE>>					m_BlackHoles;
 
 	shared_ptr<CMeteor::METEOR_DESC>							m_Meteor;
 	shared_ptr<CFirePillar::FIREPILLAR>							m_FirePillar;

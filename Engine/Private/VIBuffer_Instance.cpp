@@ -1588,6 +1588,50 @@ void CVIBuffer_Instance::Initial_RandomOffset(CVIBuffer_Terrain* pTerrain)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
+void CVIBuffer_Instance::Initial_InsideCircle(float radius, _float3 pivot)
+{
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	XMVECTOR pivotVector = XMLoadFloat3(&pivot);
+	XMVectorSetW(pivotVector, 1.f);
+
+	for (size_t i = 0; i < m_iNumInstance; i++)
+	{
+		// 중심에 더 많은 인스턴스가 생성되도록 확률 분포 조정
+		float u = RandomFloat(0.f, 1.f);
+		float v = RandomFloat(0.f, 1.f);
+		float randomRadius = radius * pow(u, 2); // 제곱을 사용하여 중심 쪽으로 치우치게 함
+		float randomAngle = v * XM_2PI;
+
+		XMVECTOR newPosition = XMVectorSet(
+			pivot.x + randomRadius * cos(randomAngle),
+			pivot.y,
+			pivot.z + randomRadius * sin(randomAngle),
+			1.0f
+		);
+
+		// 새 위치 저장
+		XMStoreFloat4(&pVertices[i].vTranslation, newPosition);
+
+		// 회전 적용 (y축 기준 랜덤 회전)
+		XMMATRIX rotationMatrix = XMMatrixRotationY(XMConvertToRadians(RandomFloat(0.f, 360.f)));
+		XMVECTOR right = XMLoadFloat4(&pVertices[i].vRight);
+		XMVECTOR up = XMLoadFloat4(&pVertices[i].vUp);
+		XMVECTOR look = XMLoadFloat4(&pVertices[i].vLook);
+
+		right = XMVector3TransformNormal(right, rotationMatrix);
+		up = XMVector3TransformNormal(up, rotationMatrix);
+		look = XMVector3TransformNormal(look, rotationMatrix);
+
+		XMStoreFloat4(&pVertices[i].vRight, XMVector3Normalize(right) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vUp, XMVector3Normalize(up) * m_pSize[i]);
+		XMStoreFloat4(&pVertices[i].vLook, XMVector3Normalize(look) * m_pSize[i]);
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
 void CVIBuffer_Instance::Culling_Instance(const _float3& cameraPosition, _float maxRenderDistance)
 {
 	

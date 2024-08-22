@@ -41,6 +41,15 @@ HRESULT CDurgaSword::Initialize(void* pArg)
 void CDurgaSword::Priority_Tick(_float fTimeDelta)
 {
 	if (*m_pCurWeapon != CPlayer::WEAPON_DURGASWORD) return;
+
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK3)
+	{
+		m_fDamage = 100.f;
+	}
+	else
+	{
+		m_fDamage = 10.f;
+	}
 }
 
 void CDurgaSword::Tick(_float fTimeDelta)
@@ -89,8 +98,7 @@ void CDurgaSword::Tick(_float fTimeDelta)
 	Generate_Trail(1);
 
 	if (*m_pState == CPlayer::STATE_JUMPATTACK || *m_pState == CPlayer::STATE_JUMPATTACK_LAND ||
-		*m_pState == CPlayer::STATE_SPECIALATTACK || *m_pState == CPlayer::STATE_SPECIALATTACK2 ||
-		*m_pState == CPlayer::STATE_SPECIALATTACK3 || *m_pState == CPlayer::STATE_SPECIALATTACK4 ||
+		*m_pState == CPlayer::STATE_SPECIALATTACK3 ||
 		*m_pState == CPlayer::STATE_RCHARGEATTACK || *m_pState == CPlayer::STATE_RUNLATTACK1 ||
 		*m_pState == CPlayer::STATE_RUNLATTACK2 || *m_pState == CPlayer::STATE_ROLL || *m_pState == CPlayer::STATE_DASH ||
 		*m_pState == CPlayer::STATE_DASH_FRONT || *m_pState == CPlayer::STATE_DASH_BACK || *m_pState == CPlayer::STATE_DASH_LEFT ||

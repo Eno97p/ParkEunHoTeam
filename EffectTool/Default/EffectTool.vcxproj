@@ -183,6 +183,8 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\BlackHole.h" />
     <ClInclude Include="..\Public\BlackHole_Ring.h" />
+    <ClInclude Include="..\Public\BlackHole_Ring_Bill.h" />
+    <ClInclude Include="..\public\BlackHorizon.h" />
     <ClInclude Include="..\Public\BlackSphere.h" />
     <ClInclude Include="..\Public\Charge_Ribbon.h" />
     <ClInclude Include="..\Public\Charge_Vane.h" />
@@ -271,6 +273,8 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\BlackHole.cpp" />
     <ClCompile Include="..\Private\BlackHole_Ring.cpp" />
+    <ClCompile Include="..\Private\BlackHole_Ring_Bill.cpp" />
+    <ClCompile Include="..\private\BlackHorizon.cpp" />
     <ClCompile Include="..\Private\BlackSphere.cpp" />
     <ClCompile Include="..\Private\Charge_Ribbon.cpp" />
     <ClCompile Include="..\Private\Charge_Vane.cpp" />

@@ -9,6 +9,7 @@
 #include "TransitionCamera.h"
 #include "CutSceneCamera.h"
 
+#include "UI_Manager.h"
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
@@ -95,15 +96,81 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				pDesc.isLevelChange = true;
 				pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
 
-				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
+				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"));
 				if (objs.empty())
 				{
 					{
-						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
 							return;
 					}
 				}
+
+				// Portal UI Á¦°Å
+				CUI_Manager::GetInstance()->Delete_PortalUI();
 			}
+			else if (m_eTRIGState == TRIG_SCENE_CHANGE_FOR_ACKBAR)
+			{
+				m_bSceneChange = true;
+				CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+				pDesc.isFadeIn = false;
+				pDesc.isLevelChange = true;
+				pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+				pDesc.eNetLevel = LEVEL_ACKBAR;
+				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"));
+				if (objs.empty())
+				{
+					{
+						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+							return;
+					}
+				}
+
+
+			}
+			else if (m_eTRIGState == TRIG_SCENE_CHANGE_FOR_JUGGLAS)
+			{
+				m_bSceneChange = true;
+				CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+				pDesc.isFadeIn = false;
+				pDesc.isLevelChange = true;
+				pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+				pDesc.eNetLevel = LEVEL_JUGGLAS;
+				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"));
+				if (objs.empty())
+				{
+					{
+						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+							return;
+					}
+				}
+
+
+
+			}
+			else if (m_eTRIGState == TRIG_SCENE_CHANGE_FOR_ANDRASARENA)
+			{
+				m_bSceneChange = true;
+				CUI_FadeInOut::UI_FADEINOUT_DESC pDesc{};
+
+				pDesc.isFadeIn = false;
+				pDesc.isLevelChange = true;
+				pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
+				pDesc.eNetLevel = LEVEL_ANDRASARENA;
+				list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"));
+				if (objs.empty())
+				{
+					{
+						if (FAILED(m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevelIndex(), TEXT("Layer_UI"), TEXT("Prototype_GameObject_UI_FadeInOut"), &pDesc)))
+							return;
+					}
+				}
+
+
+
+			}
+
 			else
 			{
 				switch (m_eTRIGState)

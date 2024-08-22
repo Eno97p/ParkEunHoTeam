@@ -3,6 +3,8 @@
 #include "Base.h"
 #include "Client_Defines.h"
 
+#include "UIGroup_Portal.h"
+
 BEGIN(Engine)
 class CGameInstance;
 END
@@ -73,6 +75,20 @@ public:
 	// Cinematic
 	void				Setting_Cinematic();
 
+
+	// Portal
+	void				Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc);
+	void				Delete_PortalUI(_bool isBackPortal = false);
+
+
+
+	// For.LEVEL //PSW
+	void SetVisitLevel(LEVEL eLevel) { m_VsitLevel.insert(eLevel); }
+	_bool isVisitLevel(LEVEL eLevel) { return { m_VsitLevel.find(eLevel) != m_VsitLevel.end() }; }
+	void SetPrevLevel(LEVEL eLevel) { m_PrevLevel = eLevel; }
+	LEVEL GetPrevLevel() { return m_PrevLevel; }
+
+
 private:
 	_bool								m_isKeyActivate = { true }; // 키보드와의 상호작용 활성화 여부
 	_bool								m_isShopOn = { false }; // 상점 활성화 여부
@@ -87,7 +103,13 @@ private:
 	class CUI_FadeInOut*				m_pFadeOut = { nullptr };
 	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
 	class CUI_Cinematic*				m_pCinematic = { nullptr };
+	vector<class CUIGroup_Portal*>		m_vecPortal;
 
+
+
+private:	/*For. VisitLevel*/	//Add. PSW
+	set<LEVEL>							m_VsitLevel = { LEVEL_END };
+	LEVEL								m_PrevLevel = LEVEL_END;
 private:
 	HRESULT		Create_UI();
 

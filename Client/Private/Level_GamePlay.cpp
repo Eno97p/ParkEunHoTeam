@@ -33,6 +33,9 @@
 
 #include "EffectManager.h"
 #include"CInitLoader.h"
+
+#include "UIGroup_Portal.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -109,9 +112,22 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
-	initLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
+
+	CInitLoader<LEVEL, const wchar_t*>* initTriggerLoader = new CInitLoader<LEVEL, const wchar_t*>(&initTriggerLoader);
+	initTriggerLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
 
 	Set_Volume();
+
+
+	// Portal
+	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.ePortalLevel = LEVEL_GRASSLAND;
+	pDesc.isPic = true;
+	pDesc.iPicNum = 3;
+	pDesc.fAngle = 190.f;
+	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
+	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);
 
 	return S_OK;
 }

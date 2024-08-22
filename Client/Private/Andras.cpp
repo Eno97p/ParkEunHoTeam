@@ -14,6 +14,7 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "CutSceneCamera.h"
 #include "HexaShield.h"
 
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -396,7 +397,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 		if (HexaShieldText == nullptr)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER05);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 		else
 		{
@@ -404,7 +405,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_HitShield.ogg"), SOUND_MONSTER);
 		}
 		
-		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
 			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
@@ -611,6 +612,10 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			m_bSlash = false;
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_GroundAttack_Start.ogg"), SOUND_MONSTER);
+
+			//카메라 연출
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(0.772f, 0.057f, 0.019f, 100.f);
 		}
 
 		if (m_isAnimFinished)
@@ -636,8 +641,13 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
 			m_fKickSwordDelay = 100.f;
+
+
+			m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Init_AndrasQTECutScene();
+
 		}
 
 		if (m_fLengthFromPlayer > 3.f)
@@ -687,6 +697,10 @@ NodeStates CAndras::LaserAttack(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(51, vStartPosition);
 			EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 			m_bLaser = true;
+
+			//카메라 연출
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(2.f, 0.01f, 0.019f, 100.f);
 		}
 		
 		if (m_isAnimFinished)
@@ -868,7 +882,8 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			}
 		}
-		m_iState = STATE_KICKATTACK;
+		m_iState = STATE_SPRINTATTACK;
+
 		return SUCCESS;
 	}
 

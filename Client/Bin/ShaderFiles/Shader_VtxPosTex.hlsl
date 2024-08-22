@@ -5,6 +5,9 @@ matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_Texture;
 texture2D	g_DepthTexture;
 
+float3		g_Color;
+float		g_BloomPower;
+
 struct VS_IN
 {
 	float3		vPosition : POSITION;
@@ -145,6 +148,51 @@ PS_OUT PS_MAIN_SOFTEFFECT(PS_IN_SOFTEFFECT In)
 	return Out;
 }
 
+PS_OUT PS_SOFTEFFECT_COLORMAP(PS_IN_SOFTEFFECT In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	/* 화면 전체기준의 현재 픽셀이 그려져야하는 텍스쳐 좌표. */
+	float2		vTexcoord;
+
+	vTexcoord.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vTexcoord.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
+
+	vector			vOldDepthDesc = g_DepthTexture.Sample(PointSampler, vTexcoord);
+
+	Color.a = Color.a * saturate(vOldDepthDesc.y * 3000.f - In.vProjPos.w);
+	if (Color.a == 0.f) discard;
+	Color.rgb = g_Color;
+	Out.vColor = Color;
+
+	return Out;
+}
+
+PS_OUT PS_SOFTEFFECT_COLORMAP_BLOOM(PS_IN_SOFTEFFECT In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	/* 화면 전체기준의 현재 픽셀이 그려져야하는 텍스쳐 좌표. */
+	float2		vTexcoord;
+
+	vTexcoord.x = (In.vProjPos.x / In.vProjPos.w) * 0.5f + 0.5f;
+	vTexcoord.y = (In.vProjPos.y / In.vProjPos.w) * -0.5f + 0.5f;
+
+	vector			vOldDepthDesc = g_DepthTexture.Sample(PointSampler, vTexcoord);
+
+	Color.a = Color.a * saturate(vOldDepthDesc.y * 3000.f - In.vProjPos.w);
+	if (Color.a == 0.f) discard;
+	Color.rgb = g_Color;
+	Color.a *= g_BloomPower;
+	Out.vColor = Color;
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -205,5 +253,36 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_ITEM_BLOOM();
 	}
+
+
+	pass SoftEffect_Color			//Pass4
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend , float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN_SOFTEFFECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_SOFTEFFECT_COLORMAP();
+	}
+
+	pass SoftEffect_Color_Bloom		//Pass5
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend , float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+		VertexShader = compile vs_5_0 VS_MAIN_SOFTEFFECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_SOFTEFFECT_COLORMAP_BLOOM();
+	}
+
+	
 }
 

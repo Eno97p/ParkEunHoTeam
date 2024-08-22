@@ -41,6 +41,15 @@ HRESULT CPretorianSword::Initialize(void* pArg)
 void CPretorianSword::Priority_Tick(_float fTimeDelta)
 {
 	if (*m_pCurWeapon != CPlayer::WEAPON_PRETORIANSWORD) return;
+
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK4)
+	{
+		m_fDamage = 30.f;
+	}
+	else
+	{
+		m_fDamage = 8.f;
+	}
 }
 
 void CPretorianSword::Tick(_float fTimeDelta)

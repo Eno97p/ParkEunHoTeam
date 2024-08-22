@@ -290,7 +290,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
-	if (m_pUI_Manager->GetPrevLevel() == LEVEL_GRASSLAND)
+	if (m_pUI_Manager->GetPrevLevel() == LEVEL_JUGGLAS)
 	{
 		//블러드문 세팅 1 : 라이트
 		m_pGameInstance->LightOff_All();

@@ -1867,7 +1867,7 @@ void CRenderer::Render_GodRay()
 
     m_pVIBuffer->Render();
 
-    m_pGameInstance->End_MRT();
+    m_pGameInstance->End_MRT(); 
 
     m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"));
 

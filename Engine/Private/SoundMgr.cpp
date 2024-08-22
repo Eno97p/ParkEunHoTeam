@@ -32,12 +32,12 @@ HRESULT CSoundMgr::Initialize()
 		return E_FAIL;
 
 	for (auto& iter : m_fVolume)
-		iter = 0.5f;
+		iter = 1.f;
 	//LoadSoundFile();
 	return S_OK;
 }
 
-void CSoundMgr::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch)
+void CSoundMgr::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch, _float fVolume, _bool bPlayAgainstPlaying)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
 	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
@@ -49,13 +49,16 @@ void CSoundMgr::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float 
 	if (iter == m_mapSound.end())
 		return;
 
-	FMOD_BOOL bPlay = FALSE;
-	_uint StartPosition = static_cast<_uint>(fPosition * 1000);
-	FMOD_System_PlaySound(m_pSystem, iter->second, m_pMasterGroup, TRUE, &m_pChannelArr[eID]);
-	FMOD_Channel_SetPitch(m_pChannelArr[eID], fPitch);
-	FMOD_Channel_SetVolume(m_pChannelArr[eID], m_fVolume[eID]);
-	FMOD_Channel_SetPosition(m_pChannelArr[eID], StartPosition, FMOD_TIMEUNIT_MS);
-	FMOD_Channel_SetPaused(m_pChannelArr[eID], FALSE);
+	FMOD_BOOL play = FALSE;
+	if (FMOD_Channel_IsPlaying(m_pChannelArr[eID], &play) != bPlayAgainstPlaying)
+	{
+		_uint StartPosition = static_cast<_uint>(fPosition * 1000);
+		FMOD_System_PlaySound(m_pSystem, iter->second, m_pMasterGroup, TRUE, &m_pChannelArr[eID]);
+		FMOD_Channel_SetPitch(m_pChannelArr[eID], fPitch);
+		FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
+		FMOD_Channel_SetPosition(m_pChannelArr[eID], StartPosition, FMOD_TIMEUNIT_MS);
+		FMOD_Channel_SetPaused(m_pChannelArr[eID], FALSE);
+	}
 	FMOD_System_Update(m_pSystem);
 }
 
@@ -118,9 +121,11 @@ void CSoundMgr::Sound_Pause(CHANNELID eID, _bool bPause)
 
 void CSoundMgr::SetChannelVolume(CHANNELID eID, float fVolume)
 {
-	FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
+	m_fVolume[eID] = fVolume;
 
-	FMOD_System_Update(m_pSystem);
+	/*FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
+
+	FMOD_System_Update(m_pSystem);*/
 }
 
 void CSoundMgr::Set_Effect_Volume(_float fVolume)

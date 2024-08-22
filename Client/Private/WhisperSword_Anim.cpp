@@ -40,6 +40,15 @@ HRESULT CWhisperSword_Anim::Initialize(void* pArg)
 void CWhisperSword_Anim::Priority_Tick(_float fTimeDelta)
 {
 	if (*m_pCurWeapon != CPlayer::WEAPON_ELISH) return;
+
+	if (*m_pState == CPlayer::STATE_SPECIALATTACK)
+	{
+		m_fDamage = 200.f;
+	}
+	else
+	{
+		m_fDamage = 15.f;
+	}
 }
 
 void CWhisperSword_Anim::Tick(_float fTimeDelta)
@@ -305,7 +314,7 @@ void CWhisperSword_Anim::Set_Active(_bool isActive)
 {
 	if (m_bIsActive == false && isActive == true)
 	{
-		if (*m_pState != CPlayer::STATE_SPECIALATTACK)
+		//if (*m_pState != CPlayer::STATE_SPECIALATTACK)
 		{
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Slash.ogg"), SOUND_PLAYER);

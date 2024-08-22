@@ -90,7 +90,7 @@ void CYantari::Tick(_float fTimeDelta)
 		{
 			m_bPlayerIsFront = true;
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 	}
 	else
@@ -384,7 +384,7 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER05);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_HitVoice.ogg"), SOUND_MONSTER);
 		m_bPlayerIsFront = true;
 		m_fChasingDelay = 0.5f;
@@ -414,7 +414,7 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 		if (!m_bPlayerIsFront)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 			m_bPlayerIsFront = true;
 		}
 

@@ -123,7 +123,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			if (m_eColltype == CCollider::COLL_START)
 			{
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
+				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
@@ -660,6 +660,11 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 	}
 
 	_int iRand = RandomInt(0, 4);
+	if (iRand != 0)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
+	}
 	switch (iRand)
 	{
 	case 0:

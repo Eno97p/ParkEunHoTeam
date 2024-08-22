@@ -9,12 +9,11 @@
 #include "Clone.h"
 #include "Body_Player.h"
 
-#include"CHitReport.h"
+#include "CHitReport.h"
 #include "EffectManager.h"
 #include "ThirdPersonCamera.h"
 #include "CHoverBoard.h"
 #include "Monster.h"
-
 
 #include "UI_FadeInOut.h"
 #include"CInitLoader.h"
@@ -389,7 +388,7 @@ void CPlayer::Parry_Succeed()
 	m_fSlowDelay = 0.f;
 	fSlowValue = 0.2f;
 	m_pGameInstance->Disable_Echo();
-	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT);
+	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT, 0.f);
 }
 
 void CPlayer::Pull_Status()
@@ -599,8 +598,8 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 	{
 		if (!m_bSound)
 		{
-			/*m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);*/
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
 			m_bSound = true;
 		}
 
@@ -1919,7 +1918,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		m_iState != STATE_DASH_LEFT && m_iState != STATE_DASH_RIGHT)
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Roll.ogg"), SOUND_EFFECT);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Roll.ogg"), SOUND_EFFECT, 0.f, 1.f, 1.f);
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);

@@ -279,6 +279,9 @@
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\FireEffect.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\FireFlyCube.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\FirePillar.cpp"
 
 
@@ -408,6 +411,9 @@
 #include "C:\3D_TeamProj\Client\Private\UIGroup_Map.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\UIGroup_Portal.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UIGroup_Script.cpp"
 
 
@@ -430,6 +436,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_AeonsLost.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_ArrowSign.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Broken.cpp"
@@ -499,6 +508,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_PortalPic.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_QTE_Btn.cpp"

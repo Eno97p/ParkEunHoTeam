@@ -340,8 +340,10 @@ NodeStates CLegionnaire_Gun::Hit(_float fTimedelta)
 		m_bSound = false;
 		m_bPlayerIsFront = true;
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Hit.ogg"), SOUND_MONSTER05);
+		
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Legionnaire_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
+
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
 			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);

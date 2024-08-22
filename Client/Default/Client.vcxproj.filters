@@ -1831,6 +1831,9 @@
     <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_PortalText.h">
+      <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClInclude>
@@ -2810,6 +2813,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PortalText.cpp">
+      <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\BlackSphere.cpp">
       <Filter>02.GameObjects\06.Effect\BlackHole</Filter>

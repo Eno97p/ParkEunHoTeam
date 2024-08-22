@@ -28,13 +28,13 @@ HRESULT CCutSceneCamera::Initialize(void* pArg)
 
     m_KeyFrames = pDesc->KeyFrames;
 
-   Load_CameraKeyFrames();
-   Set_CutSceneIdx(0);
+    Load_CameraKeyFrames();
+    Set_CutSceneIdx(0);
 
-   vector<CCamera::CameraKeyFrame> vec;
+    vector<CCamera::CameraKeyFrame> vec;
 
     Add_CutScene(m_AllCutScenes[SCENE_MANTARI]);
-    
+
     return S_OK;
 }
 
@@ -42,12 +42,26 @@ void CCutSceneCamera::Priority_Tick(_float fTimeDelta)
 {
 
 }
+
 void CCutSceneCamera::Tick(_float fTimeDelta)
 {
     fTimeDelta /= fSlowValue;
-    
+
     if (!m_bCamActivated || m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
         return;
+
+    list<CGameObject*> qte = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_QTESword"));
+    if (qte.empty())
+    {
+        m_pProjectileMatrix = nullptr;
+    }
+
+    // 투사체가 사라졌는지 확인
+    if (m_iCurrentCutSceneIdx == SCENE_ANDRAS_PROJECTILE && !m_pProjectileMatrix)
+    {
+        EndCutScene();
+        return;
+    }
 
     vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[m_iCurrentCutSceneIdx];
 
@@ -109,23 +123,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             float t = (totalDuration > 0) ? m_fKeyFrameTime / totalDuration : 1.0f;
 
             // 속도 변화 로직 적용
-            float speedMultiplier = 1.0f;
-            float prevSpeedMultiplier = 1.0f;
-
-            for (const auto& [changeTime, changeSpeed, smoothOffset] : currentKeyFrame.speedChanges)
-            {
-                if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
-                {
-                    float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
-                    speedMultiplier = prevSpeedMultiplier + (changeSpeed - prevSpeedMultiplier) * lerpT;
-                    break;
-                }
-                else if (t >= changeTime + smoothOffset)
-                {
-                    prevSpeedMultiplier = changeSpeed;
-                    speedMultiplier = changeSpeed;
-                }
-            }
+            float speedMultiplier = CalculateSpeedMultiplier(currentKeyFrame, t);
 
             // 부드러운 이징 적용
             t = EaseInOutCubic(t);
@@ -134,69 +132,78 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
             _matrix matCurrent, matTarget;
 
-            if (m_iCurrentCutSceneIdx == SCENE_ANDRAS_PROJECTILE && currentKeyFrame.bTrackProjectile)
+            bool projectileDisappeared = false;
+
+            // 현재 키프레임에 대한 처리
+            if (m_iCurrentCutSceneIdx == SCENE_ANDRAS_PROJECTILE &&
+                (currentKeyFrame.bTrackProjectile || m_iCurrentKeyFrame == 2))
             {
-                matCurrent = CalculateCameraMatrixFromProjectile(*m_pProjectileMatrix, *m_pPlayerMatrix, currentKeyFrame.offset, currentKeyFrame.lookOffset);
+                if (m_pProjectileMatrix && m_pPlayerMatrix)
+                {
+                    matCurrent = CalculateCameraMatrixFromProjectile(*m_pProjectileMatrix, *m_pPlayerMatrix, currentKeyFrame.offset, currentKeyFrame.lookOffset);
+                }
+                else
+                {
+                    projectileDisappeared = true;
+                }
             }
             else
             {
                 matCurrent = XMLoadFloat4x4(&currentKeyFrame.matWorld);
             }
 
-            if (m_iCurrentCutSceneIdx == SCENE_ANDRAS_PROJECTILE && nextKeyFrame.bTrackProjectile)
+            // 다음 키프레임에 대한 처리
+            if (m_iCurrentCutSceneIdx == SCENE_ANDRAS_PROJECTILE &&
+                (nextKeyFrame.bTrackProjectile || m_iCurrentKeyFrame == 1))
             {
-                matTarget = CalculateCameraMatrixFromProjectile(*m_pProjectileMatrix, *m_pPlayerMatrix, nextKeyFrame.offset, nextKeyFrame.lookOffset);
+                if (m_pProjectileMatrix && m_pPlayerMatrix)
+                {
+                    matTarget = CalculateCameraMatrixFromProjectile(*m_pProjectileMatrix, *m_pPlayerMatrix, nextKeyFrame.offset, nextKeyFrame.lookOffset);
+                }
+                else
+                {
+                    projectileDisappeared = true;
+                }
             }
             else
             {
                 matTarget = XMLoadFloat4x4(&nextKeyFrame.matWorld);
             }
+            _matrix matLerpedWorld;
 
-            // 행렬 구면 선형 보간
-            _matrix matLerpedWorld = XMMatrixSlerp(matCurrent, matTarget, t);
+            if (projectileDisappeared)
+            {
+                // 투사체가 사라진 경우, 즉시 다음 키프레임으로 전환
+                m_iCurrentKeyFrame++;
+                m_fKeyFrameTime = 0.0f;
 
-            // 핸드헬드 카메라 스타일의 셰이킹 적용
-            static float timeAccumulator = 0.0f;
-            timeAccumulator += fTimeDelta;
+                // 다음 키프레임이 존재하는 경우 그 키프레임의 행렬을 사용
+                if (m_iCurrentKeyFrame < currentCutScene.size())
+                {
+                    matLerpedWorld = XMLoadFloat4x4(&currentCutScene[m_iCurrentKeyFrame].matWorld);
+                }
+                else
+                {
+                    // 마지막 키프레임이었다면 컷신 종료
+                    m_bAnimationFinished = true;
+                    return;
+                }
+            }
+            else
+            {
+                // 정상적인 경우의 행렬 보간
+                matLerpedWorld = XMMatrixSlerp(matCurrent, matTarget, t);
 
-            // 다중 주파수 노이즈 생성
-            float noise_low1 = PerlinNoise(timeAccumulator * 0.3f, 0, 2, 0.5f);
-            float noise_low2 = PerlinNoise(0, timeAccumulator * 0.3f, 2, 0.5f);
-            float noise_mid1 = PerlinNoise(timeAccumulator * 1.0f, 0, 4, 0.5f);
-            float noise_mid2 = PerlinNoise(0, timeAccumulator * 1.0f, 4, 0.5f);
-            float noise_high1 = PerlinNoise(timeAccumulator * 4.0f, 0, 4, 0.5f);
-            float noise_high2 = PerlinNoise(0, timeAccumulator * 4.0f, 4, 0.5f);
-
-            // 시간에 따른 강도 변화
-            float intensityVariation = (sinf(timeAccumulator * 0.05f) + 1.0f) * 0.5f;
-
-            // 위치 셰이킹 적용
-            float shakeX = (noise_low1 * 0.6f + noise_mid1 * 0.3f + noise_high1 * 0.1f) * 0.03f * intensityVariation;
-            float shakeY = (noise_low2 * 0.6f + noise_mid2 * 0.3f + noise_high2 * 0.1f) * 0.02f * intensityVariation;
-            float shakeZ = (noise_mid1 * 0.7f + noise_high1 * 0.3f) * 0.01f * intensityVariation;
-
-            _vector shakeOffset = XMVectorSet(shakeX, shakeY, shakeZ, 0.0f);
-            matLerpedWorld.r[3] = XMVectorAdd(matLerpedWorld.r[3], shakeOffset);
-
-            // 회전 셰이킹 적용
-            float rotX = (noise_low1 * 0.7f + noise_mid1 * 0.3f) * 0.005f * intensityVariation;
-            float rotY = (noise_low2 * 0.7f + noise_mid2 * 0.3f) * 0.005f * intensityVariation;
-            float rotZ = (noise_mid1 * 0.8f + noise_high1 * 0.2f) * 0.003f * intensityVariation;
-
-            _matrix rotShake = XMMatrixRotationRollPitchYaw(rotX, rotY, rotZ);
-            matLerpedWorld = XMMatrixMultiply(matLerpedWorld, rotShake);
-
-            // 부드러운 카메라 움직임을 위한 추가 보간
-            static _matrix prevMatrix = matLerpedWorld;
-            float smoothFactor = 0.1f + 0.05f * intensityVariation;
-            matLerpedWorld = XMMatrixSlerp(prevMatrix, matLerpedWorld, smoothFactor);
-            prevMatrix = matLerpedWorld;
+                // 셰이킹 및 추가 보간 ...
+                ApplyShaking(matLerpedWorld, fTimeDelta);
+            }
 
             // 보간된 월드 행렬 설정
             m_pTransformCom->Set_WorldMatrix(matLerpedWorld);
 
             // 보간된 시야각 설정
-            _float fLerpedFovy = XMConvertToRadians(XMConvertToDegrees(currentKeyFrame.fFovy) + (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t);
+            _float fLerpedFovy = XMConvertToRadians(XMConvertToDegrees(currentKeyFrame.fFovy) +
+                (XMConvertToDegrees(nextKeyFrame.fFovy) - XMConvertToDegrees(currentKeyFrame.fFovy)) * t);
             Set_Fovy(fLerpedFovy);
 
             if (t >= 1.0f)
@@ -214,7 +221,69 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
     __super::Tick(fTimeDelta);
 }
-    
+// 속도 계산을 위한 보조 함수
+float CCutSceneCamera::CalculateSpeedMultiplier(const CameraKeyFrame& keyFrame, float t)
+{
+    float speedMultiplier = 1.0f;
+    float prevSpeedMultiplier = 1.0f;
+
+    for (const auto& [changeTime, changeSpeed, smoothOffset] : keyFrame.speedChanges)
+    {
+        if (t >= changeTime - smoothOffset && t < changeTime + smoothOffset)
+        {
+            float lerpT = (t - (changeTime - smoothOffset)) / (2.0f * smoothOffset);
+            speedMultiplier = prevSpeedMultiplier + (changeSpeed - prevSpeedMultiplier) * lerpT;
+            break;
+        }
+        else if (t >= changeTime + smoothOffset)
+        {
+            prevSpeedMultiplier = changeSpeed;
+            speedMultiplier = changeSpeed;
+        }
+    }
+
+    return speedMultiplier;
+}
+
+// 셰이킹 적용을 위한 보조 함수
+void CCutSceneCamera::ApplyShaking(_matrix& matLerpedWorld, float fTimeDelta)
+{
+    static float timeAccumulator = 0.0f;
+    timeAccumulator += fTimeDelta;
+
+    // 다중 주파수 노이즈 생성
+    float noise_low1 = PerlinNoise(timeAccumulator * 0.3f, 0, 2, 0.5f);
+    float noise_low2 = PerlinNoise(0, timeAccumulator * 0.3f, 2, 0.5f);
+    float noise_mid1 = PerlinNoise(timeAccumulator * 1.0f, 0, 4, 0.5f);
+    float noise_mid2 = PerlinNoise(0, timeAccumulator * 1.0f, 4, 0.5f);
+    float noise_high1 = PerlinNoise(timeAccumulator * 4.0f, 0, 4, 0.5f);
+    float noise_high2 = PerlinNoise(0, timeAccumulator * 4.0f, 4, 0.5f);
+
+    // 시간에 따른 강도 변화
+    float intensityVariation = (sinf(timeAccumulator * 0.05f) + 1.0f) * 0.5f;
+
+    // 위치 셰이킹 적용
+    float shakeX = (noise_low1 * 0.6f + noise_mid1 * 0.3f + noise_high1 * 0.1f) * 0.03f * intensityVariation;
+    float shakeY = (noise_low2 * 0.6f + noise_mid2 * 0.3f + noise_high2 * 0.1f) * 0.02f * intensityVariation;
+    float shakeZ = (noise_mid1 * 0.7f + noise_high1 * 0.3f) * 0.01f * intensityVariation;
+
+    _vector shakeOffset = XMVectorSet(shakeX, shakeY, shakeZ, 0.0f);
+    matLerpedWorld.r[3] = XMVectorAdd(matLerpedWorld.r[3], shakeOffset);
+
+    // 회전 셰이킹 적용
+    float rotX = (noise_low1 * 0.7f + noise_mid1 * 0.3f) * 0.005f * intensityVariation;
+    float rotY = (noise_low2 * 0.7f + noise_mid2 * 0.3f) * 0.005f * intensityVariation;
+    float rotZ = (noise_mid1 * 0.8f + noise_high1 * 0.2f) * 0.003f * intensityVariation;
+
+    _matrix rotShake = XMMatrixRotationRollPitchYaw(rotX, rotY, rotZ);
+    matLerpedWorld = XMMatrixMultiply(matLerpedWorld, rotShake);
+
+    // 부드러운 카메라 움직임을 위한 추가 보간
+    static _matrix prevMatrix = matLerpedWorld;
+    float smoothFactor = 0.1f + 0.05f * intensityVariation;
+    matLerpedWorld = XMMatrixSlerp(prevMatrix, matLerpedWorld, smoothFactor);
+    prevMatrix = matLerpedWorld;
+}
 
 // 부드러운 이징 함수
 float CCutSceneCamera::EaseInOutCubic(float t)
@@ -272,7 +341,7 @@ void CCutSceneCamera::Load_CameraKeyFrames()
             ReadFile(hFile, &keyFrame.fFar, sizeof(float), &dwByte, nullptr);
 
             // 속도 변화 정보 로드
-             _uint iSpeedChangeCount = 0;
+            _uint iSpeedChangeCount = 0;
             ReadFile(hFile, &iSpeedChangeCount, sizeof(_uint), &dwByte, nullptr);
             for (_uint k = 0; k < iSpeedChangeCount; ++k)
             {
@@ -303,7 +372,7 @@ void CCutSceneCamera::Set_CutSceneIdx(_uint idx)
     m_iCurrentKeyFrame = 0;
     m_fKeyFrameTime = 0.0f;
     m_bAnimationFinished = false;
-    
+
     vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[idx];
 
     if (currentCutScene.size() < 2)  // 최소 2개의 키프레임이 필요합니다.
@@ -520,6 +589,7 @@ void CCutSceneCamera::Clear_CutScenes()
 
 void CCutSceneCamera::Init_AndrasQTECutScene()
 {
+    m_bPaused = false;
     vector<CameraKeyFrame> andrasQTECutScene;
     float currentTime = 0.0f;
 
@@ -533,32 +603,34 @@ void CCutSceneCamera::Init_AndrasQTECutScene()
     {
         CameraKeyFrame keyFrame;
         keyFrame.fTime = currentTime;
-        _vector bossPosition = { m_pAndrasMatrix->_41, m_pAndrasMatrix->_42 + 2.0f, m_pAndrasMatrix->_43, 1.f }; // y 위치를 5 올림
+        _vector bossPosition = { m_pAndrasMatrix->_41, m_pAndrasMatrix->_42 + 1.5f, m_pAndrasMatrix->_43, 1.f };
         _vector playerPosition = { m_pPlayerMatrix->_41, m_pPlayerMatrix->_42, m_pPlayerMatrix->_43, 1.f };
         _vector toPlayer = XMVector3Normalize(playerPosition - bossPosition);
 
-        _vector cameraPosition = bossPosition + toPlayer * 3.0f;
+        _vector cameraPosition = bossPosition + toPlayer * 5.0f;
         cameraPosition = XMVectorSetY(cameraPosition, XMVectorGetY(bossPosition) + 1.7f);
 
         _vector lookAt = bossPosition;
-        _matrix viewMatrix = XMMatrixLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+        _matrix viewMatrix = SafeLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
         XMStoreFloat4x4(&keyFrame.matWorld, XMMatrixInverse(nullptr, viewMatrix));
-        keyFrame.fFovy = XMConvertToRadians(10.0f);
-        keyFrame.speedChanges.emplace_back(0.0f, 1.0f, 2.f);
+        keyFrame.fFovy = XMConvertToRadians(40.0f);
+        keyFrame.speedChanges.emplace_back(0.165f, 2.1f, 0.3f);
+        keyFrame.speedChanges.emplace_back(0.741f, 1.f, 0.3f);
         andrasQTECutScene.push_back(keyFrame);
-        currentTime += 1.0f;
+        currentTime += 0.8f;
     }
 
     // 2. 클로즈업 유지
     {
         CameraKeyFrame keyFrame = andrasQTECutScene.back();
         keyFrame.fTime = currentTime;
-        keyFrame.fFovy = XMConvertToRadians(25.0f);
+        keyFrame.fFovy = XMConvertToRadians(80.0f);
 
         keyFrame.speedChanges.clear();
-        keyFrame.speedChanges.emplace_back(0.0f, 0.5f, 0.2f);
+        keyFrame.speedChanges.emplace_back(0.165f, 2.1f, 0.3f);
+        keyFrame.speedChanges.emplace_back(0.741f, 1.f, 0.3f);
         andrasQTECutScene.push_back(keyFrame);
-        currentTime += 1.0f;
+        currentTime += 1.5f;
     }
 
     // 3. 투사체로 전환 시작
@@ -566,17 +638,24 @@ void CCutSceneCamera::Init_AndrasQTECutScene()
         CameraKeyFrame keyFrame;
         keyFrame.fTime = currentTime;
         _vector projectilePosition = { m_pProjectileMatrix->_41, m_pProjectileMatrix->_42, m_pProjectileMatrix->_43, 1.f };
-        _vector bossPosition = { m_pAndrasMatrix->_41, m_pAndrasMatrix->_42 + 5.0f, m_pAndrasMatrix->_43, 1.f }; // y 위치를 5 올림
+        _vector bossPosition = { m_pAndrasMatrix->_41, m_pAndrasMatrix->_42 + 3.0f, m_pAndrasMatrix->_43, 1.f }; // y 위치를 3으로 조정
+        _vector playerPosition = { m_pPlayerMatrix->_41, m_pPlayerMatrix->_42, m_pPlayerMatrix->_43, 1.f };
+
         _vector midPoint = (projectilePosition + bossPosition) * 0.5f;
         _vector toProjectile = XMVector3Normalize(projectilePosition - bossPosition);
-        _vector cameraPosition = midPoint + XMVector3Cross(toProjectile, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)) * 5.0f + XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f);
-        _vector lookAt = midPoint;
-        _matrix viewMatrix = XMMatrixLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+        _vector toPlayer = XMVector3Normalize(playerPosition - bossPosition);
+
+        // 보스와 플레이어 사이의 중간 지점에서 약간 위쪽으로 카메라 위치 조정
+        _vector cameraPosition = midPoint + XMVector3Cross(toProjectile, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)) * 3.0f + XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f);
+        _vector lookAt = midPoint + toProjectile * 2.0f; // 투사체 방향으로 약간 앞을 바라보도록
+
+        _matrix viewMatrix = SafeLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
         XMStoreFloat4x4(&keyFrame.matWorld, XMMatrixInverse(nullptr, viewMatrix));
-        keyFrame.fFovy = XMConvertToRadians(50.0f);
-        keyFrame.speedChanges.emplace_back(0.0f, 1.0f, 0.3f);
+        keyFrame.fFovy = XMConvertToRadians(70.0f); // FOV를 좀 더 낮게 조정
+        keyFrame.speedChanges.emplace_back(0.165f, 4.f, 0.3f);
+        keyFrame.speedChanges.emplace_back(0.741f, 1.f, 0.3f);
         andrasQTECutScene.push_back(keyFrame);
-        currentTime += 0.5f;
+        currentTime += 0.6f;
     }
 
     // 4. 투사체 추적 (플레이어를 점진적으로 화면에 포함)
@@ -584,19 +663,38 @@ void CCutSceneCamera::Init_AndrasQTECutScene()
         CameraKeyFrame keyFrame;
         keyFrame.fTime = currentTime;
         keyFrame.bTrackProjectile = true;
-        keyFrame.offset = XMFLOAT3(0.0f, 1.0f, -5.0f);
-        keyFrame.lookOffset = XMFLOAT3(0.0f, 0.0f, 2.0f);
-        keyFrame.fFovy = XMConvertToRadians(60.0f);
-        keyFrame.speedChanges.emplace_back(0.0f, 1.5f, 0.2f);
-        andrasQTECutScene.push_back(keyFrame);
-        currentTime += 100.0f;  // 첫 번째 단계 시간 감소
 
-        // 중간 단계 추가 (플레이어 쪽으로 카메라 이동)
-        keyFrame.fTime = currentTime;
-        keyFrame.offset = XMFLOAT3(0.0f, 2.0f, -7.0f);  // 카메라를 뒤로 이동
-        keyFrame.lookOffset = XMFLOAT3(0.0f, -1.0f, 1.0f);  // 시선을 약간 아래로
+        _vector vProjectilePos = XMLoadFloat4((_float4*)&m_pProjectileMatrix->_41);
+        _vector vPlayerPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->_41);
+        _vector vMidPoint = (vProjectilePos + vPlayerPos) * 0.5f;
+        _vector vProjectileDir = XMVector3Normalize(vProjectilePos - vPlayerPos);
+
+        _vector vUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+        _vector vRight = XMVector3Cross(vProjectileDir, vUp);
+
+        // 카메라 위치를 투사체 뒤쪽으로 조정
+        _vector vCameraOffset = -vProjectileDir * 4.0f + vUp * 1.5f + vRight * 1.0f;
+        XMStoreFloat3(&keyFrame.offset, vCameraOffset);
+
+        // 시선은 투사체 앞쪽을 향하도록
+        _vector vLookOffset = vProjectileDir * 2.0f;
+        XMStoreFloat3(&keyFrame.lookOffset, vLookOffset);
+
+        keyFrame.fFovy = XMConvertToRadians(80.0f); // FOV를 조금 더 넓게 조정
+        keyFrame.speedChanges.emplace_back(0.3f, 0.24f, 0.3f);
+        keyFrame.speedChanges.emplace_back(0.887f, 1.f, 0.3f);
         andrasQTECutScene.push_back(keyFrame);
-        currentTime += 1.0f;
+        currentTime += 1.f;
+
+        // 중간 단계 추가 (플레이어 쪽으로 카메라 점진적 이동)
+        keyFrame.fTime = currentTime;
+        vCameraOffset = -vProjectileDir * 3.0f + vUp * 2.0f + vRight * 0.5f;
+        XMStoreFloat3(&keyFrame.offset, vCameraOffset);
+        vLookOffset = vProjectileDir * 1.5f + vUp * 0.5f;
+        XMStoreFloat3(&keyFrame.lookOffset, vLookOffset);
+        keyFrame.fFovy = XMConvertToRadians(85.0f);
+        andrasQTECutScene.push_back(keyFrame);
+        currentTime += 2.0f;
     }
 
     // 5. 플레이어의 뒤에서 투사체와 플레이어를 동시에 화면에 보이게 함w a
@@ -610,34 +708,125 @@ void CCutSceneCamera::Init_AndrasQTECutScene()
         _vector cameraPosition = playerPosition - direction * 7.0f + XMVectorSet(0.0f, 5.0f, 0.0f, 0.0f);
         _vector lookAt = (playerPosition + projectilePosition) * 0.5f + XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f);
 
-        _matrix viewMatrix = XMMatrixLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+        _matrix viewMatrix = SafeLookAtLH(cameraPosition, lookAt, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
         XMStoreFloat4x4(&keyFrame.matWorld, XMMatrixInverse(nullptr, viewMatrix));
-        keyFrame.fFovy = XMConvertToRadians(70.0f);
-        keyFrame.speedChanges.emplace_back(0.0f, 0.5f, 0.3f);
+        keyFrame.fFovy = XMConvertToRadians(30.0f);
+        keyFrame.speedChanges.emplace_back(0.165f, 2.1f, 0.3f);
+        keyFrame.speedChanges.emplace_back(0.741f, 1.f, 0.3f);
+
         andrasQTECutScene.push_back(keyFrame);
-        currentTime += 1.5f;
+        currentTime += 5.f;
     }
 
     m_AllCutScenes[SCENE_ANDRAS_PROJECTILE] = andrasQTECutScene;
     Set_CutSceneIdx(SCENE_ANDRAS_PROJECTILE);
 }
-// CalculateCameraMatrixFromProjectile 함수 수정
+
 _matrix CCutSceneCamera::CalculateCameraMatrixFromProjectile(const _float4x4& fromMatrix, const _float4x4& toMatrix, const _float3& offset, const _float3& lookOffset)
 {
-    _vector vFrom = XMLoadFloat4x4(&fromMatrix).r[3];
-    _vector vTo = XMLoadFloat4x4(&toMatrix).r[3];
+    _vector vFrom = { fromMatrix._41, fromMatrix._42, fromMatrix._43, 1.f };  // 투사체 위치
+    _vector vTo = { toMatrix._41, toMatrix._42, toMatrix._43, 1.f };  // 플레이어 위치
+    _vector vDirection = XMVector3Normalize(vTo - vFrom);
+
+    // vDirection이 0 벡터인 경우 처리
+    if (XMVector3Equal(vDirection, XMVectorZero()))
+    {
+        vDirection = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+    }
+
+    _vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+    _vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vDirection));
+
+    // vRight가 0 벡터인 경우 처리
+    if (XMVector3Equal(vRight, XMVectorZero()))
+    {
+        vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(1.f, 0.f, 0.f, 0.f), vDirection));
+    }
+
+    _vector vUp = XMVector3Cross(vDirection, vRight);
+
+    // vUp이 0 벡터인 경우 처리
+    if (XMVector3Equal(vUp, XMVectorZero()))
+    {
+        vUp = vWorldUp;
+        vDirection = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+    }
 
     _vector vOffset = XMLoadFloat3(&offset);
     _vector vLookOffset = XMLoadFloat3(&lookOffset);
 
-    _vector vPos = XMVectorAdd(vFrom, vOffset);
-    _vector vLook = XMVectorAdd(vTo, vLookOffset);
+    _vector vCameraPos = vFrom + vRight * XMVectorGetX(vOffset) + vUp * XMVectorGetY(vOffset) + vDirection * XMVectorGetZ(vOffset);
+    _vector vLookAt = vFrom + vRight * XMVectorGetX(vLookOffset) + vUp * XMVectorGetY(vLookOffset) + vDirection * XMVectorGetZ(vLookOffset);
 
-    _vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+    // 카메라 위치와 시선 방향이 같아지는 문제 해결
+    _vector vCameraToLook = vLookAt - vCameraPos;
+    if (XMVector3LengthSq(vCameraToLook).m128_f32[0] < 0.0001f)  // 거의 0에 가까운 경우
+    {
+        // 카메라를 약간 뒤로 이동
+        vCameraPos = vLookAt - vDirection * 0.1f;  // 0.1f는 최소 거리, 필요에 따라 조정 가능
+    }
 
-    _matrix matView = XMMatrixLookAtLH(vPos, vLook, vUp);
+    _matrix matView = SafeLookAtLH(vCameraPos, vLookAt, vUp);
+    XMVECTOR det;
+    _matrix matInvView = XMMatrixInverse(&det, matView);
 
-    return XMMatrixInverse(nullptr, matView);
+    if (XMVectorGetX(det) == 0.0f)
+    {
+        // 오류 처리: 기본 뷰 행렬 반환
+        return XMMatrixIdentity();
+    }
+
+    return matInvView;
+}
+
+_matrix CCutSceneCamera::SafeLookAtLH(_vector cameraPosition, _vector lookAt, _vector upDirection)
+{
+    // 카메라 위치와 lookAt 지점 사이의 거리 계산
+    _vector direction = XMVectorSubtract(lookAt, cameraPosition);
+    float distance = XMVectorGetX(XMVector3Length(direction));
+
+    // 최소 허용 거리 (이 값은 필요에 따라 조정 가능)
+    const float MIN_DISTANCE = 0.5f;
+
+    if (distance < MIN_DISTANCE)
+    {
+        // 카메라 위치와 lookAt 지점이 너무 가까운 경우
+        // lookAt 지점을 카메라 전방으로 약간 이동
+        _vector forward = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+        lookAt = XMVectorAdd(cameraPosition, XMVectorScale(forward, MIN_DISTANCE));
+    }
+
+    // 수정된 lookAt 지점으로 뷰 행렬 생성
+    return XMMatrixLookAtLH(cameraPosition, lookAt, upDirection);
+}
+
+void CCutSceneCamera::EndCutScene()
+{
+    m_bAnimationFinished = true;
+    m_bPaused = true;
+
+    // 컷신 종료 시 필요한 추가 처리
+    CUI_Manager::GetInstance()->Setting_Cinematic();
+
+    // 메인 카메라로 전환
+    m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+
+    // 필요한 경우 트랜지션 카메라 설정
+    CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+    pTCDesc.fFovy = XMConvertToRadians(60.f);
+    pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+    pTCDesc.fNear = 0.1f;
+    pTCDesc.fFar = 3000.f;
+    pTCDesc.fSpeedPerSec = 40.f;
+    pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+    pTCDesc.iStartCam = CAM_CUTSCENE;
+    pTCDesc.iEndCam = CAM_THIRDPERSON;
+    pTCDesc.fTransitionTime = 1.f;
+
+    if (FAILED(m_pGameInstance->Add_Camera(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+    {
+        MSG_BOX("Failed to add transition camera");
+    }
 }
 
 CCutSceneCamera* CCutSceneCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -735,28 +924,28 @@ else if (m_pGameInstance->Key_Down(DIK_DOWN))
 {
     m_fDebugRevolveTime -= 0.5f;
 }*/
-    ////줌인
-    //if (m_pGameInstance->Key_Down(DIK_Z))
-    //    m_bZoomIn = true;
-    //else
-    //    m_bZoomIn = false;
+////줌인
+//if (m_pGameInstance->Key_Down(DIK_Z))
+//    m_bZoomIn = true;
+//else
+//    m_bZoomIn = false;
 
-    ////공전
-    //if (m_pGameInstance->Key_Down(DIK_X))
-    //    m_bRevolution360 = true;
-    //else
-    //    m_bRevolution360 = false;
+////공전
+//if (m_pGameInstance->Key_Down(DIK_X))
+//    m_bRevolution360 = true;
+//else
+//    m_bRevolution360 = false;
 
-    ////각도
-    //if (m_pGameInstance->Key_Down(DIK_C))
-    //    m_bTiltAdjust = true;
-    //else
-    //    m_bTiltAdjust = false;
+////각도
+//if (m_pGameInstance->Key_Down(DIK_C))
+//    m_bTiltAdjust = true;
+//else
+//    m_bTiltAdjust = false;
 
-    ////높이체인지
-    //if (m_pGameInstance->Key_Down(DIK_V))
-    //    m_bHeightChange = true;
-    //else
-    //    m_bHeightChange = false;
+////높이체인지
+//if (m_pGameInstance->Key_Down(DIK_V))
+//    m_bHeightChange = true;
+//else
+//    m_bHeightChange = false;
 
 }

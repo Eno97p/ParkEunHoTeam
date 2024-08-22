@@ -294,7 +294,7 @@ NodeStates CGhost::Hit(_float fTimeDelta)
 	{
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->Play_Effect_Sound(TEXT("Ghost_Hit.ogg"), SOUND_MONSTER05);
-		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
 			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);

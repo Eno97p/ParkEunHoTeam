@@ -672,6 +672,8 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
         static float LeafCol[3] = { 0.0f, 0.0f, 0.0f };
 
+        static _int count = 10000;
+
         static float BillboardFactor = 0.f;
         static float ElasticityFactor = 0.f;
         static float PlaneOffset = 0.15f;
@@ -696,6 +698,9 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
 
             if (item_current == 0)
             {
+                ImGui::SliderInt("Grass Plane Count", &count, 1000, 100000);
+                m_iGrassCount = count;
+
                 ImGui::SliderFloat("Billboard Factor", &BillboardFactor, 0.f, 1.f, "%.3f");
                 m_fBillboardFactor = BillboardFactor;
 

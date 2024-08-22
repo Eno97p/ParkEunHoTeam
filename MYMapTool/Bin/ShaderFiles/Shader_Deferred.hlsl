@@ -1479,7 +1479,7 @@ PS_OUT PS_GODRAY(PS_IN In)
     float initialDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord).r;
 
     // 레이 마칭 루프
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         currentTexCoord -= deltaTexCoord;
 

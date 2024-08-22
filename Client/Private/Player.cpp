@@ -366,6 +366,10 @@ void CPlayer::PlayerHit(_float fValue, _bool bSlowHit)
 	}
 	Add_Hp(-fValue * m_fShield);
 
+	//카메라 연출
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Shake_Camera(0.62f, 0.01f, 0.013f, 34.736f);
+
 	CUI_Manager::GetInstance()->Set_ScreenBloodRend(true);
 }
 
@@ -440,7 +444,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 		m_iState = STATE_REVIVE;
 		Add_Hp(m_fMaxHp);
 
-		m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+		//m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -2444,6 +2448,12 @@ void CPlayer::Update_Weapon(wstring wstrTextureName)
 
 void CPlayer::KnockBack(_vector vDir, _float fTimeDelta)
 {
+	m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+	//카메라 연출
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Shake_Camera(1.53f, 0.243f, 0.117f, 76.038f);
+	pThirdPersonCamera->Zoom(45.f, 0.05f, 2.0f);
+
 	_float3 fScale = m_pTransformCom->Get_Scaled();
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(vUp, vDir));

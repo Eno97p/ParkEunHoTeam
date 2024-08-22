@@ -27,6 +27,8 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
 	virtual void Tick(_float fTimeDelta) override;
+	float CalculateSpeedMultiplier(const CameraKeyFrame& keyFrame, float t);
+	void ApplyShaking(_matrix& matLerpedWorld, float fTimeDelta);
 	float EaseInOutCubic(float t);
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
@@ -114,6 +116,9 @@ public:
 	//_float4x4 CalculateCameraMatrix(_matrix fromMatrix, _matrix toMatrix, const _float3& offset, const _float3& lookOffset);
 	_matrix CalculateCameraMatrixFromProjectile(const _float4x4& fromMatrix, const _float4x4& toMatrix, const _float3& offset, const _float3& lookOffset);
 	void Set_SlowMo(_bool b) { m_bSlowmo = b; }
+	_matrix SafeLookAtLH(_vector cameraPosition, _vector lookAt, _vector upDirection);
+	void EndCutScene();
+
 private: // FOR CAMERA ANIMATIOn
 	_uint m_iCutSceneIdx = 0;
 	vector<CameraKeyFrame> m_KeyFrames;
@@ -193,3 +198,4 @@ public:
 };
 
 END
+

@@ -868,7 +868,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			}
 		}
-		m_iState = STATE_KICKATTACK;
+		m_iState = STATE_SPRINTATTACK;
 		return SUCCESS;
 	}
 

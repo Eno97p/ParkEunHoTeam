@@ -391,6 +391,12 @@ _uint CGameInstance::Get_CurrentLevelIndex()
 	return m_pLevel_Manager->Get_CurrentLevelIndex();
 }
 
+_uint CGameInstance::Get_PrevLevelIndex()
+{
+	return m_pLevel_Manager->Get_PrevLevelIndex();
+
+}
+
 
 void CGameInstance::Set_NextLevel(_uint iNextLevel)
 {

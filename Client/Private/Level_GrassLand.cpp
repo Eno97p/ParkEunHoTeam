@@ -48,27 +48,14 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
-	CRenderer::FOG_DESC fogDesc{};
-	fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
-	fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
-	fogDesc.fFogRange = 7788.5;
-	fogDesc.fFogHeightFalloff = 0.0f;
-	fogDesc.fFogGlobalDensity = 1.0f;
-	fogDesc.fFogTimeOffset = 1.154f;
-	fogDesc.fFogTimeOffset2 = 3.462f;
-	fogDesc.fNoiseIntensity = 1.731f;
-	fogDesc.fNoiseIntensity2 = 1.923f;
-	fogDesc.fNoiseSize = 0.000481f;
-	fogDesc.fNoiseSize2 = 0.000481f;
-	fogDesc.fFogBlendFactor = 0.284f;
-	m_pGameInstance->Set_FogOption(fogDesc);
+	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;
 
 	//m_pGameInstance->Set_ReflectionWave(0.693f, 0.1f, 13.743f, 7.5f, 0);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
-
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+	if (FAILED(Ready_Fog()))
 		return E_FAIL;
 
 
@@ -126,13 +113,18 @@ HRESULT CLevel_GrassLand::Initialize()
 
 
 
-	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
-	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
-	initLoader->Save_TriggerStart(LEVEL_GRASSLAND, L"Layer_Trigger");
+	
 
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
 
+
+
+	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
+	initLoader->Save_Start(LEVEL_GRASSLAND, L"Layer_Monster");
+
+	CInitLoader<LEVEL, const wchar_t*>* initTriggerLoader = new CInitLoader<LEVEL, const wchar_t*>(&initTriggerLoader);
+	initTriggerLoader->Save_TriggerStart(LEVEL_GRASSLAND, L"Layer_Trigger");
 	return S_OK;
 }
 
@@ -195,63 +187,7 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 			}
 		}
 
-		//블러드문 세팅 1 : 라이트
-		m_pGameInstance->LightOff_All();
-
-		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
-
-		//블러드문 세팅 2 : 포그
-		CRenderer::FOG_DESC fogDesc{};
-		fogDesc.vFogColor = {0.431f, 0.f, 0.f, 1.f };
-		fogDesc.vFogColor2 = { 0.127f, 0.127f, 0.127f, 1.f };
-		fogDesc.fFogRange = 2307.7;
-		fogDesc.fFogHeightFalloff = 0.0f;
-		fogDesc.fFogGlobalDensity = 0.7f;
-		fogDesc.fFogTimeOffset = 17.163f;
-		fogDesc.fFogTimeOffset2 = 8.365f;
-		fogDesc.fNoiseIntensity = 2.365f;
-		fogDesc.fNoiseIntensity2 =2.164f;
-		fogDesc.fNoiseSize = 0.001443f;
-		fogDesc.fNoiseSize2 = 0.002404f;
-		fogDesc.fFogBlendFactor = 0.49f;
-		m_pGameInstance->Set_FogOption(fogDesc);
-
-		//블러드문 세팅 3 : 라군
-		CLagoon::LAGOON_DESC lagoonDesc{};
-		lagoonDesc.vLightPosition = { -286.f, 500.f, -224.132f, 1.f };
-		lagoonDesc.fLightRange = 1000.f;
-		lagoonDesc.vLightDiffuse = { 196.f / 255.f, 0.f, 0.f,1.f };
-		lagoonDesc.vLightAmbient = { 102.f / 255.f, 102.f / 255.f, 102.f / 255.f,1.f };
-		lagoonDesc.vLightSpecular = { 174.f / 255.f, 15.f/ 255.f, 15.f / 255.f,1.f };
-		lagoonDesc.vMtrlSpecular = { 1.f, 1.f ,1.f,1.f };
-		lagoonDesc.fBloomThreshold = 0.8f;
-		lagoonDesc.fBloomIntensity = 1.f;
-		lagoonDesc.fFlowSpeed = 0.721f;
-		lagoonDesc.fNormalStrength0 = 0.33f;
-		lagoonDesc.fNormalStrength1 = 0.33f;
-		lagoonDesc.fNormalStrength2 = 0.33f;
-		lagoonDesc.fFresnelStrength = 0.5f;
-		lagoonDesc.fRoughness = 0.163f;
-		lagoonDesc.fWaterAlpha = 0.445f;
-		lagoonDesc.fWaterDepth = 0.1f;
-		lagoonDesc.fCausticStrength = 0.f;
-
-		list<CGameObject*> lagoon = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND,TEXT("Layer_Lagoon"));
-		dynamic_cast<CLagoon*>(lagoon.front())->Set_LagoonDesc(lagoonDesc);
-
-		//블러드문 세팅 4 : 클라우드
-		list<CGameObject*> cloud = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Cloud"));
-		CCloud* thecloud = dynamic_cast<CCloud*>(cloud.front());
-		thecloud->Set_Colors({1.f, 0.f, 0.029f}, { 0.632f, 0.f, 0.f, 1.f });
-		thecloud->Set_CloudSpeed(0.4f);
-
-		//블러드문 세팅 5 : 스카이박스
-		CSky* sky = dynamic_cast<CSky*>(m_pGameInstance->Get_Object(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), 1));
-		sky->Set_SkyTex(5);
-
-		//블러드문 세팅 5 : 블러드문
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_BackGround_Moon"))))
-			return;
+	
 
 	}
 	SetWindowText(g_hWnd, TEXT("GrassLand 레벨임"));
@@ -348,6 +284,91 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 		 return E_FAIL;
 
 	 m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+
+	return S_OK;
+}
+
+HRESULT CLevel_GrassLand::Ready_Fog()
+{
+	if (m_pUI_Manager->GetPrevLevel() == LEVEL_GRASSLAND)
+	{
+		//블러드문 세팅 1 : 라이트
+		m_pGameInstance->LightOff_All();
+
+		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
+
+		//블러드문 세팅 2 : 포그
+		CRenderer::FOG_DESC fogDesc{};
+		fogDesc.vFogColor = { 0.431f, 0.f, 0.f, 1.f };
+		fogDesc.vFogColor2 = { 0.127f, 0.127f, 0.127f, 1.f };
+		fogDesc.fFogRange = 2307.7;
+		fogDesc.fFogHeightFalloff = 0.0f;
+		fogDesc.fFogGlobalDensity = 0.7f;
+		fogDesc.fFogTimeOffset = 17.163f;
+		fogDesc.fFogTimeOffset2 = 8.365f;
+		fogDesc.fNoiseIntensity = 2.365f;
+		fogDesc.fNoiseIntensity2 = 2.164f;
+		fogDesc.fNoiseSize = 0.001443f;
+		fogDesc.fNoiseSize2 = 0.002404f;
+		fogDesc.fFogBlendFactor = 0.49f;
+		m_pGameInstance->Set_FogOption(fogDesc);
+
+		//블러드문 세팅 3 : 라군
+		CLagoon::LAGOON_DESC lagoonDesc{};
+		lagoonDesc.vLightPosition = { -286.f, 500.f, -224.132f, 1.f };
+		lagoonDesc.fLightRange = 1000.f;
+		lagoonDesc.vLightDiffuse = { 196.f / 255.f, 0.f, 0.f,1.f };
+		lagoonDesc.vLightAmbient = { 102.f / 255.f, 102.f / 255.f, 102.f / 255.f,1.f };
+		lagoonDesc.vLightSpecular = { 174.f / 255.f, 15.f / 255.f, 15.f / 255.f,1.f };
+		lagoonDesc.vMtrlSpecular = { 1.f, 1.f ,1.f,1.f };
+		lagoonDesc.fBloomThreshold = 0.8f;
+		lagoonDesc.fBloomIntensity = 1.f;
+		lagoonDesc.fFlowSpeed = 0.721f;
+		lagoonDesc.fNormalStrength0 = 0.33f;
+		lagoonDesc.fNormalStrength1 = 0.33f;
+		lagoonDesc.fNormalStrength2 = 0.33f;
+		lagoonDesc.fFresnelStrength = 0.5f;
+		lagoonDesc.fRoughness = 0.163f;
+		lagoonDesc.fWaterAlpha = 0.445f;
+		lagoonDesc.fWaterDepth = 0.1f;
+		lagoonDesc.fCausticStrength = 0.f;
+
+		list<CGameObject*> lagoon = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Lagoon"));
+		dynamic_cast<CLagoon*>(lagoon.front())->Set_LagoonDesc(lagoonDesc);
+
+		//블러드문 세팅 4 : 클라우드
+		list<CGameObject*> cloud = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Cloud"));
+		CCloud* thecloud = dynamic_cast<CCloud*>(cloud.front());
+		thecloud->Set_Colors({ 1.f, 0.f, 0.029f }, { 0.632f, 0.f, 0.f, 1.f });
+		thecloud->Set_CloudSpeed(0.4f);
+
+		//블러드문 세팅 5 : 스카이박스
+		CSky* sky = dynamic_cast<CSky*>(m_pGameInstance->Get_Object(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), 1));
+		sky->Set_SkyTex(5);
+
+		//블러드문 세팅 5 : 블러드문
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_BackGround_Moon"))))
+			return E_FAIL;
+	}
+	else
+	{
+		CRenderer::FOG_DESC fogDesc{};
+		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
+		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
+		fogDesc.fFogRange = 7788.5;
+		fogDesc.fFogHeightFalloff = 0.0f;
+		fogDesc.fFogGlobalDensity = 1.0f;
+		fogDesc.fFogTimeOffset = 1.154f;
+		fogDesc.fFogTimeOffset2 = 3.462f;
+		fogDesc.fNoiseIntensity = 1.731f;
+		fogDesc.fNoiseIntensity2 = 1.923f;
+		fogDesc.fNoiseSize = 0.000481f;
+		fogDesc.fNoiseSize2 = 0.000481f;
+		fogDesc.fFogBlendFactor = 0.284f;
+		m_pGameInstance->Set_FogOption(fogDesc);
+	}
+
+
 
 	return S_OK;
 }

@@ -271,14 +271,14 @@ void CPhysX::Tick(_float fTimeDelta)
 
 	if (!resultFetched)
 	{
-		//MSG_BOX("Failed To Fetch Result");
+		MSG_BOX("Failed To Fetch Result");
 		return;
 	}
 
 	PxCudaContext* pCudaContext =  m_pCudaContextManager->getCudaContext();
 	if(pCudaContext->isInAbortMode())
 	{
-		//MSG_BOX("Failed To Fetch Result");
+		MSG_BOX("Failed To Fetch Result");
 		return;
 	}
 

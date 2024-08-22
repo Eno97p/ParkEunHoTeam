@@ -14,9 +14,11 @@ public:
 	enum FADE_TYPE { TYPE_ALPHA, TYPE_DISSOLVE, TYPE_END };
 	typedef struct UI_FadeInOut_Desc : public UI_DESC
 	{
+		FADE_TYPE	eFadeType;
+		LEVEL       eNetLevel;
 		_bool		isFadeIn;
 		_bool		isLevelChange;
-		FADE_TYPE	eFadeType;
+
 	}UI_FADEINOUT_DESC;
 
 private:
@@ -44,6 +46,7 @@ private:
 	_float				m_fAlphaTimerMul = { 0.f };
 
 	FADE_TYPE			m_eFadeType = { TYPE_END };
+	LEVEL				m_eNetLevel = { LEVEL_STATIC };
 
 	CTexture*				m_pDisolveTextureCom = nullptr;
 	class CUI_Memento*		m_pMemento = { nullptr };

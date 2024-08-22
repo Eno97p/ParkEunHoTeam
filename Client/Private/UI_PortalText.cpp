@@ -19,6 +19,10 @@ HRESULT CUI_PortalText::Initialize_Prototype()
 
 HRESULT CUI_PortalText::Initialize(void* pArg)
 {
+	UI_PORTALTEXT_DESC* pDesc = static_cast<UI_PORTALTEXT_DESC*>(pArg);
+
+	m_vTargetPos = pDesc->vPos;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -32,6 +36,8 @@ HRESULT CUI_PortalText::Initialize(void* pArg)
 
 	Setting_Position();
 
+	Setting_Text(pDesc->eLevel);
+
 	m_isRend = true;
 
 	return S_OK;
@@ -43,6 +49,7 @@ void CUI_PortalText::Priority_Tick(_float fTimeDelta)
 
 void CUI_PortalText::Tick(_float fTimeDelta)
 {
+	// 플레이어와 Pick의 위치를 계산해서 일정 거리 내에 들어왔을 때 m_isRend를 true로 바꿔주기
 }
 
 void CUI_PortalText::Late_Tick(_float fTimeDelta)
@@ -60,10 +67,10 @@ HRESULT CUI_PortalText::Render()
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), Setting_Text(), _float2(m_fX - m_fFontX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_fText, _float2(m_fX - m_fFontX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), Setting_Text(), _float2(m_fX - m_fFontX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), m_fText, _float2(m_fX - m_fFontX, m_fY - 10.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	return S_OK;
@@ -105,27 +112,42 @@ HRESULT CUI_PortalText::Bind_ShaderResources()
 	return S_OK;
 }
 
-wstring CUI_PortalText::Setting_Text()
+void CUI_PortalText::Setting_Text(LEVEL ePortalLevel)
 {
-	LEVEL eCurrentLevel = static_cast<LEVEL>(CGameInstance::GetInstance()->Get_CurrentLevel());
-
-	switch (eCurrentLevel)
+	switch (ePortalLevel)
 	{
 	case Client::LEVEL_GAMEPLAY:
 		m_fFontX = 50.f;
-		return TEXT("Go To Ackbar");
+		m_fText = TEXT("Go To Ackbar");
 	case Client::LEVEL_ACKBAR:
 		m_fFontX = 100.f;
-		return TEXT("Go To Shamra's Grotto");
+		m_fText = TEXT("Go To Shamra's Grotto");
 	case Client::LEVEL_JUGGLAS:
 		m_fFontX = 80.f;
-		return TEXT("Go To Limbo Plains");
+		m_fText = TEXT("Go To Limbo Plains");
 	case Client::LEVEL_GRASSLAND:
 		m_fFontX = 110.f;
-		return TEXT("Go To King's Whilderness"); // 요기는 두 개 처리해줘야함 분기처리 할 것
+		m_fText = TEXT("Go To King's Whilderness");
 	default:
-		return TEXT("");
+		m_fText = TEXT("");
 	}
+}
+
+void CUI_PortalText::Check_Distance()
+{
+	// m_vTargetPos
+
+	//// Player와의 거리 계산
+
+	//list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	//CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
+	////Safe_AddRef(m_pPlayerTransform);
+
+
+	//_vector vBetween = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
+
+	//return ACTIVATE_DISTANCE >= fDistance;
 }
 
 CUI_PortalText* CUI_PortalText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -9,6 +9,7 @@
 #include "TransitionCamera.h"
 #include "CutSceneCamera.h"
 
+#include "UI_Manager.h"
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
@@ -103,6 +104,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 							return;
 					}
 				}
+
+				// Portal UI Á¦°Å
+				CUI_Manager::GetInstance()->Delete_PortalUI();
 			}
 			else
 			{

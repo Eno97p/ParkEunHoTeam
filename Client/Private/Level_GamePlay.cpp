@@ -33,6 +33,9 @@
 
 #include "EffectManager.h"
 #include"CInitLoader.h"
+
+#include "UIGroup_Portal.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -113,7 +116,15 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	Set_Volume();
 
-	CUI_Manager::GetInstance()->Create_PortalUI();
+
+	// Portal
+	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.ePortalLevel = LEVEL_GRASSLAND;
+	pDesc.isPic = true;
+	pDesc.iPicNum = 3;
+	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
+	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);
 
 	return S_OK;
 }

@@ -21,7 +21,6 @@
 #include "UIGroup_Ch_Upgrade.h"
 #include "UIGroup_BuffTimer.h"
 #include "UIGroup_Level.h"
-#include "UIGroup_Portal.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -141,6 +140,9 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pCinematic)
 		m_pCinematic->Tick(fTimeDelta);
+
+	for (auto& pPortal : m_vecPortal)
+		pPortal->Tick(fTimeDelta);
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -171,6 +173,9 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pCinematic)
 		m_pCinematic->Late_Tick(fTimeDelta);
+
+	for (auto& pPortal : m_vecPortal)
+		pPortal->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -508,37 +513,23 @@ void CUI_Manager::Setting_Cinematic()
 	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
 }
 
-void CUI_Manager::Create_PortalUI(_bool isBackPortal)
+void CUI_Manager::Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc)
 {
-	if (!isBackPortal)
-	{
-		CUIGroup::UIGROUP_DESC pDesc{};
-		pDesc.eLevel = LEVEL_STATIC;
-
-		m_mapUIGroup.insert({ "Portal", dynamic_cast<CUIGroup_Portal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Portal"), &pDesc)) });
-
-	}
-	else
-	{
-		// 초원에 설치될 AckBar로 가는 BackPortal의 경우에는 예외적으로 다르게 처리해주는 수밖에! (key값 다르게 해서)
-	}
+	// 여기까지는 pDesc가 괜찮았거든
+	m_vecPortal.emplace_back(dynamic_cast<CUIGroup_Portal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Portal"), pDesc)));
+	// 위에 오류 잇나바~ 
 }
 
 void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
 {
-	if (isBackPortal)
-	{
-		if (m_mapUIGroup.find("Portal") != m_mapUIGroup.end()) // 값이 있으면
-		{
-			Safe_Release((*m_mapUIGroup.find("Portal")).second);
-			m_mapUIGroup.erase("Portal");
-		}
-	}
-	else
-	{
+	vector<CUIGroup_Portal*>::iterator portal = m_vecPortal.begin();
 
+	for (size_t i = 0; i < m_vecDash.size(); ++i)
+	{
+		Safe_Release(*portal);
+		m_vecPortal.erase(portal);
+		++portal;
 	}
-
 }
 
 void CUI_Manager::Key_Input()
@@ -737,6 +728,9 @@ void CUI_Manager::Free()
 
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
+
+	for (auto& pPortal : m_vecPortal)
+		Safe_Release(pPortal);
 	
 	Safe_Release(m_pCinematic);
 	Safe_Release(m_pFadeIn);

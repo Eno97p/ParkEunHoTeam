@@ -22,10 +22,12 @@ HRESULT CUIGroup_Portal::Initialize_Prototype()
 
 HRESULT CUIGroup_Portal::Initialize(void* pArg)
 {
+	UIGROUP_PORTAL_DESC* pDesc = static_cast<UIGROUP_PORTAL_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_UI()))
+	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->vPos))) // pDesc 가 제대로 전달이 안 됐네!!!!!!!
 		return E_FAIL;
 
 	return S_OK;
@@ -37,7 +39,6 @@ void CUIGroup_Portal::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Portal::Tick(_float fTimeDelta)
 {
-	// Level 단위에서 생성? UI Manager의 함수 호출해서 생성하고 트리거와 충돌 시 제거 함수를 호출해서 없애주기
 	if (nullptr != m_pPic)
 		m_pPic->Tick(fTimeDelta);
 
@@ -59,18 +60,27 @@ HRESULT CUIGroup_Portal::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Portal::Create_UI()
+HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _vector vPos)
 {
-	CUI::UI_DESC pDesc{};
-	pDesc.eLevel = LEVEL_STATIC;
+	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
+	pTextDesc.eLevel = LEVEL_STATIC;
+	pTextDesc.vPos = vPos;
 
-	m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pDesc));
-	if (nullptr == m_pPic)
-		return E_FAIL;
-
-	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pDesc));
+	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pTextDesc));
 	if (nullptr == m_pText)
 		return E_FAIL;
+
+	if (isPic) // Pic이 있는 경우
+	{
+		CUI_PortalPic::UI_PORTALPIC_DESC pPicDesc{};
+		pPicDesc.eLevel = LEVEL_STATIC;
+		pPicDesc.iPicNum = iPicNum;
+		pPicDesc.vPos = vPos;
+
+		m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pPicDesc));
+		if (nullptr == m_pPic)
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

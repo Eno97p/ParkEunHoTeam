@@ -28,7 +28,6 @@ HRESULT CUI_ArrowSign::Initialize(void* pArg)
 		return E_FAIL;
 
 	_vector vPos = pDesc->vPos;
-	//vPos.m128_f32[0] += 5.f;
 	vPos.m128_f32[1] += 5.5f;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
@@ -67,7 +66,7 @@ HRESULT CUI_ArrowSign::Render()
 
 	return S_OK;
 }
-
+ 
 HRESULT CUI_ArrowSign::Add_Components()
 {
 	/* For. Com_VIBuffer */

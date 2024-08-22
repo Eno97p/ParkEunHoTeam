@@ -6,6 +6,13 @@ BEGIN(Client)
 
 class CUI_PortalText final : public CUI
 {
+public:
+	typedef struct UI_PortalText_Desc : public UI_DESC
+	{
+		_vector vPos;
+		LEVEL	ePortalLevel;
+	}UI_PORTALTEXT_DESC;
+
 private:
 	CUI_PortalText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CUI_PortalText(const CUI_PortalText& rhs);
@@ -22,12 +29,15 @@ public:
 private:
 	_bool			m_isRend = { false };
 	_float			m_fFontX = { 0.f };
+	_vector			m_vTargetPos;
+	wstring			m_fText;
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
 
-	wstring	Setting_Text();
+	void	Setting_Text(LEVEL ePortalLevel);
+	void	Check_Distance();
 
 public:
 	static CUI_PortalText*	Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

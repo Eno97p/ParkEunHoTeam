@@ -62,10 +62,10 @@ HRESULT CGrass::Initialize(void* pArg)
 		return E_FAIL;
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 	//
-	CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer")));
-	m_pVIBufferCom->Initial_RotateY();
-	m_pVIBufferCom->Setup_Onterrain(pTerrain);
-	m_pVIBufferCom->Initial_RandomOffset(pTerrain);
+	//CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_Terrain"), TEXT("Com_VIBuffer")));
+	m_pVIBufferCom->Initial_InsideCircle(CImgui_Manager::GetInstance()->Get_GlobalColorPicker().z * 255.f, m_vPivotPos);
+	//m_pVIBufferCom->Setup_Onterrain(pTerrain);
+	//m_pVIBufferCom->Initial_RandomOffset(pTerrain);
 
 
 	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
@@ -155,10 +155,10 @@ HRESULT CGrass::Add_Components(void* pArg)
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	ZeroMemory(&InstanceDesc, sizeof InstanceDesc);
 
-	InstanceDesc.iNumInstance = 1000000;
+	InstanceDesc.iNumInstance = CImgui_Manager::GetInstance()->Get_GrassCount();
 	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
 	InstanceDesc.vPivotPos = m_vPivotPos;
-	InstanceDesc.vRange = _float3(500.0f, 0.f, 500.0f);
+	InstanceDesc.vRange = _float3(CImgui_Manager::GetInstance()->Get_GlobalColorPicker().z * 255.f, 0.f, CImgui_Manager::GetInstance()->Get_GlobalColorPicker().z * 255.f);
 	InstanceDesc.vSize = _float2(1.f, 5.f);
 	InstanceDesc.vSpeed = _float2(1.f, 7.f);
 	InstanceDesc.vLifeTime = _float2(10.f, 15.f);

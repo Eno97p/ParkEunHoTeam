@@ -274,7 +274,7 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 		if (m_pModelCom->Check_CurDuration(0.01f))
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 	}
 	else if (*m_pState == CMantari::STATE_REVIVE)

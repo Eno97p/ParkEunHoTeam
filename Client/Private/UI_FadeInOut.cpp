@@ -29,6 +29,7 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 	m_isFadeIn = pDesc->isFadeIn;
 	m_isLevelChange = pDesc->isLevelChange;
 	m_eFadeType = pDesc->eFadeType;
+	m_eNetLevel = pDesc->eNetLevel;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -264,16 +265,30 @@ HRESULT CUI_FadeInOut::Create_AeonsLost()
 
 LEVEL CUI_FadeInOut::Check_NextLevel()
 {
-	switch (m_pGameInstance->Get_CurrentLevel())
+	switch (m_pGameInstance->Get_CurrentLevelIndex())
 	{
 	case LEVEL_GAMEPLAY:
-		return LEVEL_ACKBAR;
+		return LEVEL_GRASSLAND;
 	case LEVEL_ACKBAR:
-		return LEVEL_JUGGLAS;
+		return LEVEL_GRASSLAND;
 	case LEVEL_JUGGLAS:
-		return LEVEL_ANDRASARENA;
+		return LEVEL_GRASSLAND;
 	case LEVEL_ANDRASARENA:
 		return LEVEL_GRASSLAND;
+	case LEVEL_GRASSLAND:
+	{
+		if (m_eNetLevel == LEVEL_ACKBAR)
+			return LEVEL_ACKBAR;
+		else if (m_eNetLevel == LEVEL_JUGGLAS)		
+			return LEVEL_JUGGLAS;
+		else if (m_eNetLevel == LEVEL_ANDRASARENA)
+			return LEVEL_ANDRASARENA;
+		else
+		{
+			__debugbreak();
+			return LEVEL_END;
+		}
+	}
 	default:
 		return LEVEL_END;
 	}

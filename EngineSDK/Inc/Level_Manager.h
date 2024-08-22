@@ -28,6 +28,7 @@ public:
 	void Set_NextLevelIndex(_uint iNext) { m_iNextLevelIndex = iNext; }
 	_uint Get_CurrentLevel() { return m_iNextLevelIndex; }
 	_uint Get_CurrentLevelIndex() { return m_iLevelIndex; }
+	_uint Get_PrevLevelIndex() { return m_iPrevLevelIndex; }
 
 private:
 	class CLevel*			m_pCurrentLevel = { nullptr };
@@ -35,6 +36,7 @@ private:
 
 	_uint					m_iLevelIndex = { 0 };
 	_uint					m_iNextLevelIndex = { 0 };
+	_uint					m_iPrevLevelIndex = { 0 };
 
 public:
 	static CLevel_Manager* Create();

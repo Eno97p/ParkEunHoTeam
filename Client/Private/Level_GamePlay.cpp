@@ -112,7 +112,9 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initLoader = new CInitLoader<LEVEL, const wchar_t*>(&initLoader);
 	initLoader->Save_Start(LEVEL_GAMEPLAY, L"Layer_Monster");
-	initLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
+
+	CInitLoader<LEVEL, const wchar_t*>* initTriggerLoader = new CInitLoader<LEVEL, const wchar_t*>(&initTriggerLoader);
+	initTriggerLoader->Save_TriggerStart(LEVEL_GAMEPLAY, L"Layer_Trigger");
 
 	Set_Volume();
 

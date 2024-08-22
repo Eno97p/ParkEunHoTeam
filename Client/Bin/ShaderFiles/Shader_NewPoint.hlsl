@@ -163,16 +163,15 @@ PS_OUT PS_DEFAULT(PS_IN In)
 	vDepthCoord.y = (In.vProjPos.y/ In.vProjPos.w) * -0.5f + 0.5f;
 	vector			vOldDepthDesc = g_DepthTexture.Sample(PointSampler, vDepthCoord);
 
+	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 	if (g_Alpha)
 	{
 		if (Out.vColor.a < 0.1f)
 			discard;
-		//if (Out.vColor.a > 0.5f)
-		//	Out.vColor.a = 0.5f;
 
-		Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
+		Out.vColor.a *= 1- fRatio;
 	}
-	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
+	
 
 	if (g_Color)
 	{

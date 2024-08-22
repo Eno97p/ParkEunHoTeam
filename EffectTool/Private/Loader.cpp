@@ -91,6 +91,8 @@
 #include "BlackHole.h"
 #include "BlackSphere.h"
 #include "BlackHole_Ring.h"
+#include "BlackHole_Ring_Bill.h"
+#include "BlackHorizon.h"
 #pragma endregion BLACKHOLE
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -204,6 +206,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_AndrasRain"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/Andras_0724/AndrasLazer/MyRainTexture.dds"), 1))))
 		return E_FAIL;
+
+	//HorizonTexture
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_GradiantTex"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Effects/Opacity/CircleGradient.dds"), 1))))
+		return E_FAIL;
+
 
 #pragma endregion TEXTURE
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트를 로딩 중 입니다."));
@@ -522,7 +530,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BlackHoleRing"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/BlackHole/BlackHole_Ring.fbx", PreTransformMatrix))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_BlackHoleRing2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/BlackHole/BlackHole_Ring2.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion MODEL
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -839,6 +849,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlackHoleRing"),
 		CBlackHole_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_BlackHoleRing_Bill"),
+		CBlackHole_Ring_Bill::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Black_Horizon"),
+		CBlackHorizon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

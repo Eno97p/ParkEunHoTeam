@@ -611,6 +611,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Andras_0724/AndrasLazer/MyRainTexture.dds"), 1))))
 		return E_FAIL;
 
+	//HorizonTexture
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_GradiantTex"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Opacity/CircleGradient.dds"), 1))))
+		return E_FAIL;
+
 #pragma endregion TEXTURE
 #pragma region Component
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
@@ -850,6 +855,14 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_HexaShield_MK2"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HexaShield/HexaShield_Mk3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//ºí·¢È¦
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BlackHoleRing"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/BlackHole/BlackHole_Ring.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BlackHoleRing2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/BlackHole/BlackHole_Ring2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL

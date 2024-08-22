@@ -391,6 +391,12 @@ _uint CGameInstance::Get_CurrentLevelIndex()
 	return m_pLevel_Manager->Get_CurrentLevelIndex();
 }
 
+_uint CGameInstance::Get_PrevLevelIndex()
+{
+	return m_pLevel_Manager->Get_PrevLevelIndex();
+
+}
+
 
 void CGameInstance::Set_NextLevel(_uint iNextLevel)
 {
@@ -873,9 +879,9 @@ PxControllerManager* CGameInstance::GetControllerManager()
 }
 
 
-void CGameInstance::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch)
+void CGameInstance::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch, _float fVolume, _bool bPlayAgainstPlaying)
 {
-	m_pSound_Manager->Play_Effect_Sound(pSoundKey, eID, fPosition, fPitch);
+	m_pSound_Manager->Play_Effect_Sound(pSoundKey, eID, fPosition, fPitch, fVolume, bPlayAgainstPlaying);
 }
 
 void CGameInstance::PlayBGM(const TCHAR* pSoundKey)

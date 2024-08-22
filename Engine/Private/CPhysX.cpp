@@ -150,10 +150,10 @@ HRESULT CPhysX::Initialize()
 	}
 
 
-	//m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-	//PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
+	m_pMaterial = m_pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
+	PxRigidStatic* groundPlane = PxCreatePlane(*m_pPhysics, PxPlane(0, 1, 0, 0), *m_pMaterial);
 
-	//m_pScene->addActor(*groundPlane);
+	m_pScene->addActor(*groundPlane);
 
 
 	if (!PxInitExtensions(*m_pPhysics, m_pPvd))
@@ -271,14 +271,14 @@ void CPhysX::Tick(_float fTimeDelta)
 
 	if (!resultFetched)
 	{
-		//MSG_BOX("Failed To Fetch Result");
+		MSG_BOX("Failed To Fetch Result");
 		return;
 	}
 
 	PxCudaContext* pCudaContext =  m_pCudaContextManager->getCudaContext();
 	if(pCudaContext->isInAbortMode())
 	{
-		//MSG_BOX("Failed To Fetch Result");
+		MSG_BOX("Failed To Fetch Result");
 		return;
 	}
 

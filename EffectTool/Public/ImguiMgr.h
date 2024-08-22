@@ -202,7 +202,10 @@ private:
 
 private:
 	void BlackHole_Tool(_bool* Open);
-
+	HRESULT Store_BlackHole(char* Name, CBlackHole::BLACKHOLE desc);
+	void BlackHole_ListBox(CBlackHole::BLACKHOLE* BlackHole);
+	HRESULT Save_BlackHole();
+	HRESULT Load_BlackHole();
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -243,6 +246,7 @@ private:
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>			m_Swings;
 	vector<shared_ptr<CParticle_PhysX::PARTICLE_PHYSXDESC>> m_PhysX;
+	vector<shared_ptr<CBlackHole::BLACKHOLE>>				m_BlackHole;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -255,7 +259,7 @@ private:
 	vector<string> LazerNames;
 	vector<string> SwingNames;
 	vector<string> PhysXNames;
-
+	vector<string> BlackHoleNames;
 
 private:
 	vector<string> ModelName;

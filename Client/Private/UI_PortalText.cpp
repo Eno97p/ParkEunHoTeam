@@ -56,8 +56,10 @@ void CUI_PortalText::Tick(_float fTimeDelta)
 
 void CUI_PortalText::Late_Tick(_float fTimeDelta)
 {
-	if(m_isRend)
+	if (m_isRend) {
 		CGameInstance::GetInstance()->Add_UI(this, FIRST);
+		
+	}
 }
 
 HRESULT CUI_PortalText::Render()

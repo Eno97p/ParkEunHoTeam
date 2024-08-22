@@ -166,7 +166,8 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	{
 		CLevel* level = CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR);
    		m_pGameInstance->Scene_Change(LEVEL_LOADING, level);
-	
+		
+		CUI_Manager::GetInstance()->Delete_PortalUI(); // 디버그용
 	}
 
 	/*list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));

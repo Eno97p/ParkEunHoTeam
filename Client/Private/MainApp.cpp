@@ -1645,6 +1645,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic_Dissolve"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/T_SpiralErode.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalPic_Opacity */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic_Opacity"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/T_ErodeClouds.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture

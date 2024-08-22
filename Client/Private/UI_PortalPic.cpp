@@ -43,6 +43,9 @@ void CUI_PortalPic::Priority_Tick(_float fTimeDelta)
 
 void CUI_PortalPic::Tick(_float fTimeDelta)
 {
+	m_fOpacityTimer += fTimeDelta;
+	if (10.f <= m_fOpacityTimer)
+		m_fOpacityTimer = 0.f;
 }
 
 void CUI_PortalPic::Late_Tick(_float fTimeDelta)
@@ -50,7 +53,9 @@ void CUI_PortalPic::Late_Tick(_float fTimeDelta)
 
 	m_pTransformCom->Set_Scale(3.7f, 6.f, 4.5f);
 
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	//CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
+	CGameInstance::GetInstance()->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 }
 
 HRESULT CUI_PortalPic::Render()
@@ -58,7 +63,19 @@ HRESULT CUI_PortalPic::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(0); // 0
+	m_pShaderCom->Begin(14); // 0
+	m_pVIBufferCom->Bind_Buffers();
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CUI_PortalPic::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	m_pShaderCom->Begin(15); // 0
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
@@ -82,7 +99,12 @@ HRESULT CUI_PortalPic::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	// Prototype_Component_Texture_UI_PortalPic_Dissolve
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_OpacityTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
+	// Prototype_Component_Texture_UI_PortalPic_Dissolve // 
 
 	return S_OK;
 }
@@ -98,6 +120,12 @@ HRESULT CUI_PortalPic::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", m_iPicNum)))
+		return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_OpacityTex", 2)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowTime", &m_fOpacityTimer, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -165,4 +193,6 @@ CGameObject* CUI_PortalPic::Clone(void* pArg)
 void CUI_PortalPic::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDisolveTextureCom);
 }

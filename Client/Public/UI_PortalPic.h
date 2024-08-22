@@ -33,10 +33,12 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Render_Bloom() override;
 
 private:
 	_bool			m_isDeadDissolve = { false };
 	_uint			m_iPicNum = { 0 };
+	_float			m_fOpacityTimer = { 0.f };
 
 	CTexture*		m_pDisolveTextureCom = nullptr;
 

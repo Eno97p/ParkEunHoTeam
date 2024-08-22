@@ -418,6 +418,12 @@
     <ClInclude Include="..\Public\BlackHole_Ring.h">
       <Filter>Objects\02. Effects\20. BlackHole</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BlackHorizon.h">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BlackHole_Ring_Bill.h">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -664,6 +670,12 @@
       <Filter>Objects\02. Effects\20. BlackHole</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BlackHole_Ring.cpp">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BlackHorizon.cpp">
+      <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BlackHole_Ring_Bill.cpp">
       <Filter>Objects\02. Effects\20. BlackHole</Filter>
     </ClCompile>
   </ItemGroup>

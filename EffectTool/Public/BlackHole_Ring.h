@@ -14,7 +14,7 @@ class CBlackHole_Ring final : public CBlendObject
 public:
 	typedef struct BLACKHOLE_RING
 	{
-		_float3 vMinSize = { 1.f,1.f,1.f };
+		_float3 vMinSize = { 0.01f,0.01f,0.01f };
 		_float3 vMaxSize = { 1.f,1.f,1.f };
 		_float fBloomPower = 1.f;
 		_float fUVSpeed = 1.f;

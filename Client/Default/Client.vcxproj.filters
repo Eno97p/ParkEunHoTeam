@@ -265,9 +265,6 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Mantari\Body">
       <UniqueIdentifier>{ee45d660-7f32-4363-847c-96719c561cec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\FrameTexture">
-      <UniqueIdentifier>{07a20ad7-ecc3-45f4-a797-3ac0038191c5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Legionnaire">
       <UniqueIdentifier>{c8ce4180-2eb0-477f-9fed-2e8b5705abf9}</UniqueIdentifier>
     </Filter>
@@ -673,9 +670,6 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Malkhel">
       <UniqueIdentifier>{d0eaf09d-66ea-4aa9-956a-e8f4b61b7ad5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Lazer">
-      <UniqueIdentifier>{4c7c1a8b-9bfb-4a9b-a478-191b118e2218}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\Tornado">
       <UniqueIdentifier>{182b1577-a31a-4fd3-b2f8-b88ff8baa5eb}</UniqueIdentifier>
     </Filter>
@@ -766,15 +760,6 @@
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\07. Moon">
       <UniqueIdentifier>{96512c81-6708-42a4-8f4f-8730331d4a1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Needle">
-      <UniqueIdentifier>{2e3253bd-568f-4ec8-8537-feba25eb4f7d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\GroundSlash">
-      <UniqueIdentifier>{0072fe49-26b2-4135-8270-0b52067b9006}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\JugglusHammerSpawn">
-      <UniqueIdentifier>{548536ab-9129-4bad-9bbd-e92cb3194193}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Juggulus\Pattern\FirePillar">
       <UniqueIdentifier>{3fe135e0-966c-4312-a9dd-908386476d9c}</UniqueIdentifier>
     </Filter>
@@ -852,6 +837,12 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\FireFly">
       <UniqueIdentifier>{b9c70525-f0af-4338-8b43-63230e55c9cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\BlackHole">
+      <UniqueIdentifier>{786a5b3a-e4b8-4d68-84e0-fc744e512576}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Needle">
+      <UniqueIdentifier>{d5708efc-1646-4bb1-a32b-f547317b5546}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1763,12 +1754,6 @@
     <ClInclude Include="..\Public\BackGround_Moon.h">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
-      <Filter>02.GameObjects\06.Effect\Needle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h">
-      <Filter>02.GameObjects\06.Effect\Needle</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\GroundSlash.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\GroundSlash</Filter>
     </ClInclude>
@@ -1869,6 +1854,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BlackSphere.h">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BlackHole.h">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BlackHole_Ring.h">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BlackHole_Ring_Bill.h">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BlackHorizon.h">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2751,12 +2757,6 @@
     <ClCompile Include="..\Private\BackGround_Moon.cpp">
       <Filter>02.GameObjects\01.Terrain\Map_Element\07. Moon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
-      <Filter>02.GameObjects\06.Effect\Needle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp">
-      <Filter>02.GameObjects\06.Effect\Needle</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\GroundSlash.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\GroundSlash</Filter>
     </ClCompile>
@@ -2810,6 +2810,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\FireFlyCube.cpp">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BlackSphere.cpp">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BlackHole.cpp">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BlackHole_Ring.cpp">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BlackHole_Ring_Bill.cpp">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BlackHorizon.cpp">
+      <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4567,11 +4567,11 @@ void CImguiMgr::BlackHole_Tool(_bool* Open)
 	static CBlackHole::BLACKHOLE Desc{};
 
 	ImGui::InputFloat4("StartPos", reinterpret_cast<float*>(&Desc.vStartPos));
+	ImGui::InputFloat("StartDelay", &Desc.vStartDelay);
 	if (ImGui::CollapsingHeader("Sphere"))
 	{
 		ImGui::InputFloat3("Sphere_MinSize", reinterpret_cast<float*>(&Desc.SphereDesc.fMinSize));
 		ImGui::InputFloat3("Sphere_MaxSize", reinterpret_cast<float*>(&Desc.SphereDesc.fMaxSize));
-		ImGui::InputFloat("Sphere_StartDelay", &Desc.SphereDesc.fStartdelay);
 		ImGui::ColorEdit3("Sphere_Color", reinterpret_cast<float*>(&Desc.SphereDesc.fColor));
 	}
 
@@ -4580,29 +4580,251 @@ void CImguiMgr::BlackHole_Tool(_bool* Open)
 		ImGui::InputFloat3("Ring_MinSize", reinterpret_cast<float*>(&Desc.RingDesc.vMinSize));
 		ImGui::InputFloat3("Ring_MaxSize", reinterpret_cast<float*>(&Desc.RingDesc.vMaxSize));
 		ImGui::InputFloat("UV_Speed", &Desc.RingDesc.fUVSpeed);
-		ImGui::InputFloat("Ring_StartDelay", &Desc.RingDesc.fStartdelay);
 		ImGui::ColorEdit3("Ring_Color", reinterpret_cast<float*>(&Desc.RingDesc.vColor));
 		ImGui::ColorEdit3("Ring_BloomColor", reinterpret_cast<float*>(&Desc.RingDesc.vBloomColor));
 		ImGui::InputFloat("Ring_BloomPower", &Desc.RingDesc.fBloomPower);
 		ImGui::InputFloat("Ring_RotAngle", &Desc.RingDesc.fRotAngle);
 	}
 
+	if (ImGui::CollapsingHeader("Ring_Billboard"))
+	{
+		ImGui::InputFloat3("Ring_Bill_MinSize", reinterpret_cast<float*>(&Desc.RingBill.vMinSize));
+		ImGui::InputFloat3("Ring_Bill_MaxSize", reinterpret_cast<float*>(&Desc.RingBill.vMaxSize));
+	}
+	if (ImGui::CollapsingHeader("Horizon"))
+	{
+		ImGui::InputFloat3("Horizon_MinSize", reinterpret_cast<float*>(&Desc.HorizonDesc.vMinSize));
+		ImGui::InputFloat3("Horizon_MaxSize", reinterpret_cast<float*>(&Desc.HorizonDesc.vMaxSize));
+		ImGui::ColorEdit3("Horizon_Color", reinterpret_cast<float*>(&Desc.HorizonDesc.vColor));
+		ImGui::ColorEdit3("Horizon_BloomColor", reinterpret_cast<float*>(&Desc.HorizonDesc.vBloomColor));
+		ImGui::InputFloat("Horizon_BloomPower", &Desc.HorizonDesc.fBloomPower);
+	}
 #pragma region BUTTONS
 	if (ImGui::Button("Generate", ButtonSize))
 	{
 		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
-			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), &Desc);
+			TEXT("Layer_BlackHole"), TEXT("Prototype_GameObject_BlackHole"), &Desc);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Erase", ButtonSize))
 	{
-		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BlackHole"));
+	}
+
+	if (ImGui::Button("Extinct_BlackHole", ButtonSize))
+	{
+		CGameObject* BlackHole = m_pGameInstance->Get_Object(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BlackHole"));
+		if (BlackHole != nullptr)
+		{
+			static_cast<CBlackHole*>(BlackHole)->Set_Delete_BlackHole();
+		}
+	}
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_BlackHole(effectname, Desc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_BlackHole()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_BlackHole()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
 	}
 
 #pragma endregion BUTTONS
 
+	BlackHole_ListBox(&Desc);
 
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_BlackHole(char* Name, CBlackHole::BLACKHOLE desc)
+{
+	string sName = Name;
+	shared_ptr<CBlackHole::BLACKHOLE> StockValue = make_shared<CBlackHole::BLACKHOLE>(desc);
+	m_BlackHole.emplace_back(StockValue);
+	BlackHoleNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::BlackHole_ListBox(CBlackHole::BLACKHOLE* BlackHole)
+{
+#pragma region exception
+	if (m_BlackHole.size() < 1)
+		return;
+
+	if (m_BlackHole.size() != BlackHoleNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("BlackHole_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("BlackHole_List", list_box_size))
+	{
+		for (int i = 0; i < BlackHoleNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(BlackHoleNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+
+	if (current_item >= 0 && current_item < BlackHoleNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			CBlackHole::BLACKHOLE* Desc = m_BlackHole[current_item].get();
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_BlackHole"), TEXT("Prototype_GameObject_BlackHole"), Desc);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*BlackHole = *m_BlackHole[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_BlackHole[current_item] = make_shared<CBlackHole::BLACKHOLE>(*BlackHole);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_BlackHole[current_item].reset();
+			m_BlackHole.erase(m_BlackHole.begin() + current_item);
+			BlackHoleNames.erase(BlackHoleNames.begin() + current_item);
+
+			if (current_item >= m_BlackHole.size())
+				current_item = m_BlackHole.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_BlackHole)
+				iter.reset();
+			m_BlackHole.clear();
+			BlackHoleNames.clear();
+			current_item = 0;
+		}
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_BlackHole()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/BlackHole.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_BlackHole.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_BlackHole)
+	{
+		file.write((char*)iter.get(), sizeof(CBlackHole::BLACKHOLE));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/BlackHoles.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : BlackHoleNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/BlackHoles.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < BlackHoleNames.size(); ++i)
+	{
+		NumberFile << i << ". " << BlackHoleNames[i] << std::endl;
+	}
+	NumberFile.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_BlackHole()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/BlackHole.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_BlackHole)
+		iter.reset();
+	m_BlackHole.clear();
+	BlackHoleNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CBlackHole::BLACKHOLE readFile{};
+		inFile.read((char*)&readFile, sizeof(CBlackHole::BLACKHOLE));
+		shared_ptr<CBlackHole::BLACKHOLE> StockValue = make_shared<CBlackHole::BLACKHOLE>(readFile);
+		m_BlackHole.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/BlackHoles.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		BlackHoleNames.emplace_back(str);
+	}
+	NameFile.close();
+
+	return S_OK;
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

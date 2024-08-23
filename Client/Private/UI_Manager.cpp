@@ -498,6 +498,9 @@ void CUI_Manager::Create_QTE()
 
 _bool CUI_Manager::Delete_QTE()
 {
+	if (nullptr == m_pQTE)
+		return false; // 이렇게 하면 될지;
+
 	_bool isSuccess = m_pQTE->Check_ResultScore();
 
 	Safe_Release(m_pQTE);

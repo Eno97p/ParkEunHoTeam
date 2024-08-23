@@ -567,6 +567,11 @@ NodeStates CPlayer::Knockback(_float fTimeDelta)
 {
 	if (m_iState == STATE_KNOCKBACK)
 	{
+		_float4 vParticlePos;
+		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		vParticlePos.y += 1.f;
+		EFFECTMGR->Generate_Particle(117, vParticlePos);
+		EFFECTMGR->Generate_Distortion(1, vParticlePos);
 		if (m_pPhysXCom->Get_IsJump())
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);

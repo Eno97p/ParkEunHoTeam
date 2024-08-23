@@ -114,6 +114,7 @@ public:
 		m_bIsCloaking = true;
 		Add_Mp(-10.f);
 	}
+	void			Set_isBuffState(_bool isBuffState) { m_isBuffState = isBuffState; }
 
 	Player_Status_Data Get_PlayerStatusData() { return m_tPlayerStatusData; }
 
@@ -260,6 +261,7 @@ private:
 
 
 #pragma region Buff 관련 Data
+	_bool		m_isBuffState = { false };
 	_float		m_fShield = { 1.f }; // 쉴드 값
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값

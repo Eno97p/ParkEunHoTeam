@@ -2101,7 +2101,7 @@ NodeStates CPlayer::UseItem(_float fTimeDelta)
 
 NodeStates CPlayer::Buff(_float fTimeDelta)
 {
-	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
+	if (m_isBuffState && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
 		m_pGameInstance->Disable_Echo();
@@ -2119,6 +2119,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
+			m_isBuffState = false;
 			return SUCCESS;
 		}
 		else

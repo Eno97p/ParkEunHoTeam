@@ -166,7 +166,7 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	{
 		CLevel* level = CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR);
    		m_pGameInstance->Scene_Change(LEVEL_LOADING, level);
-	
+		CUI_Manager::GetInstance()->Delete_PortalUI();
 	}
 
 	/*list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
@@ -474,7 +474,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 97.312f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 - 5.f, landObjDesc.mWorldMatrix._43, 1.f };

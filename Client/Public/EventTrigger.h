@@ -12,6 +12,7 @@ END
 
 BEGIN(Client)
 
+
 class CEventTrigger final : public CMap_Element
 {
 public:

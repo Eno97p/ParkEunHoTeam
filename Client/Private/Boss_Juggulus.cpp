@@ -95,7 +95,19 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	Check_AnimFinished();
 
-	m_pBehaviorCom->Update(fTimeDelta);
+	if (m_pGameInstance->Get_DIKeyState(DIK_N))
+	{
+		if (!m_bTrigger)
+		{
+			Add_Hands();
+		}
+		m_bTrigger = true;
+	}
+
+	if (m_bTrigger)
+	{
+		m_pBehaviorCom->Update(fTimeDelta);
+	}
 
 	if (!m_bDead)
 	{
@@ -169,6 +181,31 @@ void CBoss_Juggulus::Add_Hp(_int iValue)
 	}
 }
 
+void CBoss_Juggulus::Add_Hands()
+{
+	// Juggulus Body
+	CPartObject::PARTOBJ_DESC PartDesc{};
+	PartDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	PartDesc.fSpeedPerSec = 0.f;
+	PartDesc.fRotationPerSec = 0.f;
+	PartDesc.pState = &m_iState;
+	PartDesc.eLevel = m_eLevel;
+	PartDesc.pCurHp = &m_fCurHp;
+	PartDesc.pMaxHp = &m_fMaxHp;
+
+	// Hand One
+	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
+	m_PartObjects.emplace("Hand_One", pHandOne);
+
+	// Hand Two
+	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
+	m_PartObjects.emplace("Hand_Two", pHandTwo);
+
+	// Hand Three
+	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
+	m_PartObjects.emplace("Hand_Three", pHandThree);
+}
+
 HRESULT CBoss_Juggulus::Add_Components()
 {
 	/* For.Com_Collider */
@@ -218,33 +255,11 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 	PartDesc.eLevel = m_eLevel;
 	PartDesc.pCurHp = &m_fCurHp;
 	PartDesc.pMaxHp = &m_fMaxHp;
-	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//PartDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
-	//PartDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
-	//PartDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Juggulus"), &PartDesc);
 	if (nullptr == pBody)
 		return E_FAIL;
 	m_PartObjects.emplace("Body", pBody);
-
-	// Hand One
-	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
-	if (nullptr == pHandOne)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_One", pHandOne);
-
-	// Hand Two
-	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
-	if (nullptr == pHandTwo)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_Two", pHandTwo);
-
-	// Hand Three
-	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
-	if (nullptr == pHandThree)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_Three", pHandThree);
 
 	return S_OK;
 }

@@ -547,7 +547,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				//이후 다시 태어날 떄 불러올 수 있도록
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
-				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");		//지워야할 Layer

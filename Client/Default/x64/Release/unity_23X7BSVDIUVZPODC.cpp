@@ -456,6 +456,9 @@
 #include "C:\Real3DProject\Client\Private\UI_ArrowSign.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_BossShield.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_Broken.cpp"
 
 
@@ -484,6 +487,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_HUDEffect.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_ItemIcon.cpp"

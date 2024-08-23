@@ -431,6 +431,24 @@ void CTransform::Set_LookingAt(_fvector vLook)
 }
 
 
+HRESULT CTransform::Floating_Y(_float fTimeDelta, _float fFloatSpeed, _float fFloatRange, _vector vOriginPos)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+
+	// 시간에 따라 변화하는 위치 계산
+	_float fOffset = fFloatRange * sinf(fFloatSpeed * m_fFloatTime);
+
+	// Y축 위치 변경
+	vPosition = XMVectorSetY(vPosition, XMVectorGetY(vOriginPos) + fOffset);
+
+	Set_State(STATE_POSITION, vPosition);
+
+	// 누적 시간 업데이트
+	m_fFloatTime += fTimeDelta;
+
+	return S_OK;
+}
+
 
 CTransform * CTransform::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {

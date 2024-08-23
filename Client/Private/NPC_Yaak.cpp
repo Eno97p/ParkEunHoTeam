@@ -33,10 +33,10 @@ HRESULT CNPC_Yaak::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
-	_matrix vMat = { 1, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			-6.245, 337.545f, 415.339f, 1.f };
+	_matrix vMat = { 1.5f, 0.f, 0.f, 0.f,
+			0.f, 1.5f, 0.f, 0.f,
+			0.f, 0.f, 1.5f, 0.f,
+			-20.782, 353.590f, 412.717f, 1.f };
 
 	m_pTransformCom->Set_WorldMatrix(vMat);
 

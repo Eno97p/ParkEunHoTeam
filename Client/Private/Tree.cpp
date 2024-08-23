@@ -315,6 +315,10 @@ HRESULT CTree::Bind_ShaderResources()
 	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))
 		return E_FAIL;*/
 
+	_float fCamFar = m_pGameInstance->Get_MainCamera()->Get_Far();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fCamFar", &fCamFar, sizeof(_float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

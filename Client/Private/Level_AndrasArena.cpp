@@ -23,6 +23,8 @@
 #include"CInitLoader.h"
 #include "Grass.h"
 #include "Tree.h"
+#include "EffectManager.h"
+
 CLevel_AndrasArena::CLevel_AndrasArena(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -55,7 +57,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_AndrasArena.bin"));
 
-	Load_Data_Effects();
+	//Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -109,11 +111,23 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initTriggerLoader = new CInitLoader<LEVEL, const wchar_t*>(&initTriggerLoader);
 	initTriggerLoader->Save_TriggerStart(LEVEL_ANDRASARENA, L"Layer_Trigger");
+
+
+	
+
 	return S_OK;
+
+
 }
 
 void CLevel_AndrasArena::Tick(_float fTimeDelta)
 {
+	if(m_pGameInstance->Key_Down(DIK_P))
+	{
+		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
+		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+	}
+
 	m_pUI_Manager->Tick(fTimeDelta);
 
 
@@ -200,7 +214,7 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Camera(const wstring & strLayerTag)
 	CameraDesc.fFovy = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 10000.f;
 	CameraDesc.fSpeedPerSec = 20.f;
 	CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);	
 
@@ -217,7 +231,7 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
 	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pTPCDesc.fNear = 0.1f;
-	 pTPCDesc.fFar = 3000.f;
+	 pTPCDesc.fFar = 10000.f;
 
 	 pTPCDesc.fSpeedPerSec = 40.f;
 	 pTPCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -235,7 +249,7 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
 	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pCSCdesc.fNear = 0.1f;
-	 pCSCdesc.fFar = 3000.f;
+	 pCSCdesc.fFar = 10000.f;
 
 	 pCSCdesc.fSpeedPerSec = 40.f;
 	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -253,7 +267,7 @@ HRESULT CLevel_AndrasArena::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pSVCDesc.fFovy = XMConvertToRadians(60.f);
 	 pSVCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pSVCDesc.fNear = 0.1f;
-	 pSVCDesc.fFar = 3000.f;
+	 pSVCDesc.fFar = 10000.f;
 
 	 pSVCDesc.fSpeedPerSec = 40.f;
 	 pSVCDesc.fRotationPerSec = XMConvertToRadians(90.f);

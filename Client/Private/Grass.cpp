@@ -51,6 +51,7 @@ HRESULT CGrass::Initialize(void* pArg)
 		instanceDesc.WorldMats = gd->WorldMats;
 		instanceDesc.iNumInstance = gd->iInstanceCount;
 		m_pVIBufferCom->Ready_Instance_ForGrass(instanceDesc);
+		m_iLODPlaneCount1 = 3;
 	}
 
 

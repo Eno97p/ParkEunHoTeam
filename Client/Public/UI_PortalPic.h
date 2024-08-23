@@ -24,7 +24,9 @@ private:
 	virtual ~CUI_PortalPic() = default;
 
 public:
-	void			Set_DeadDissolve() { m_isDeadDissolve = true; }
+	//void			Set_DeadDissolve() { m_isDeadDissolve = true; }
+	void			Set_FadeOut() { m_isFadeIn = false; }
+	_bool			Get_isFadeEnd() { return m_isFadeEnd; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -33,12 +35,17 @@ public:
 	virtual void	Tick(_float fTimeDelta) override;
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
+	virtual HRESULT Render_Bloom() override;
 
 private:
-	_bool			m_isDeadDissolve = { false };
+	_bool			m_isFadeIn = { true };
+	_bool			m_isFadeEnd = { false };
 	_uint			m_iPicNum = { 0 };
+	_float			m_fOpacityTimer = { 0.f };
+	_float			m_fDisolveValue = { 0.f };
 
-	CTexture*		m_pDisolveTextureCom = nullptr;
+	CTexture* m_pOpacityTextureCom = { nullptr };
+	CTexture* m_pDisolveTextureCom = { nullptr };
 
 private:
 	HRESULT	Add_Components();

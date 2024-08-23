@@ -844,6 +844,12 @@
     <Filter Include="02.GameObjects\06.Effect\Needle">
       <UniqueIdentifier>{d5708efc-1646-4bb1-a32b-f547317b5546}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect">
+      <UniqueIdentifier>{ea913c6d-9ef8-48a9-b0ad-ef09216bf474}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Shield">
+      <UniqueIdentifier>{54c1cae6-48f7-401d-b11f-753322af8e3a}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. BackGround_Rock">
       <UniqueIdentifier>{c2477c4b-9154-4fc9-87a6-290578101688}</UniqueIdentifier>
     </Filter>
@@ -1858,6 +1864,12 @@
     <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_HUDEffect.h">
+      <Filter>02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BossShield.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2816,6 +2828,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Yantari\Pattern\Needle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_HUDEffect.cpp">
+      <Filter>02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossShield.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

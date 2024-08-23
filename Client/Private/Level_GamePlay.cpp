@@ -123,7 +123,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.ePortalLevel = LEVEL_GRASSLAND;
-	pDesc.isPic = true;
+	pDesc.isPic = false;
 	pDesc.iPicNum = 3;
 	pDesc.fAngle = 190.f;
 	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
@@ -166,7 +166,9 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	{
 		CLevel* level = CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR);
    		m_pGameInstance->Scene_Change(LEVEL_LOADING, level);
-		CUI_Manager::GetInstance()->Delete_PortalUI();
+		
+		CUI_Manager::GetInstance()->Delete_PortalUI(); // 디버그용
+		
 	}
 
 	/*list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));

@@ -19,7 +19,11 @@ public:
 	virtual void	Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT	Render() override;
 
+	void	Create_UI(_bool isSkill);
+
 private:
+	class CUI_HUDEffect*		m_pEffect = { nullptr };
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();

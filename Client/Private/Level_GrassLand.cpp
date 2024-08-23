@@ -177,19 +177,7 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_P))
 	{
-		list<CGameObject*> pes = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Passive_Element"));
-
-		for (auto pe : pes)
-		{
-			CPassive_Element* pPassiveElement = dynamic_cast<CPassive_Element*>(pe);
-			if (pPassiveElement == nullptr)
-				continue;
-
-			if (pPassiveElement->Get_isHiddenObject())
-			{
-				pPassiveElement->Discover_HiddenObject();
-			}
-		}
+	
 
 	
 

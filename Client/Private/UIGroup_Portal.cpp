@@ -23,9 +23,9 @@ _bool CUIGroup_Portal::Get_isPic()
 		return true;
 }
 
-void CUIGroup_Portal::Set_isDeadDissolve()
+void CUIGroup_Portal::Set_FadeOut()
 {
-	m_pPic->Set_DeadDissolve();
+	m_pPic->Set_FadeOut();
 }
 
 HRESULT CUIGroup_Portal::Initialize_Prototype()
@@ -53,7 +53,15 @@ void CUIGroup_Portal::Priority_Tick(_float fTimeDelta)
 void CUIGroup_Portal::Tick(_float fTimeDelta)
 {
 	if (nullptr != m_pPic)
+	{
 		m_pPic->Tick(fTimeDelta);
+
+		if (m_pPic->Get_isFadeEnd())
+		{
+			// 지워져야 함
+			m_isFadeEnd = true;
+		}
+	}
 
 	if (nullptr != m_pText)
 		m_pText->Tick(fTimeDelta);

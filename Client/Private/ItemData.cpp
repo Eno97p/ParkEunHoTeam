@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Inventory.h"
 #include "UI_Manager.h"
+#include "EffectManager.h"
 
 #include "UIGroup_Inventory.h"
 #include "UIGroup_InvSub.h"
@@ -67,10 +68,6 @@ HRESULT CItemData::Render()
 
 void CItemData::Use_Item(_uint iInvenIdx)
 {
-	// 호버보드나 Firefly 같은 특정 아이템들은 사용 시 Inventory 포함한 메뉴들이 싹 꺼져야 할 거 같음
-	// 나머지는 그냥 써지는(적용되는) 식으로
-
-
 	switch (m_eItemName)
 	{
 	case Client::CItemData::ITEMNAME_CATALYST:
@@ -89,11 +86,17 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		break;
 	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
+	{
+
 		break;
+	}
 	case Client::CItemData::ITEMNAME_FIREFLY:
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
+		CEffectManager::GetInstance()->Generate_FireFly(pPlayerTransform->Get_WorldFloat4x4());
 		break;
-	case Client::CItemData::ITEMNAME_WHISPERER:
-		break;
+	}
 	case Client::CItemData::ITEMNAME_BUFF1:
 	{
 		Apply_UseCount(iInvenIdx);
@@ -165,6 +168,28 @@ void CItemData::Apply_UseCount(_uint iInvenIdx)
 		// Slot들 땡겨오기
 		dynamic_cast<CUIGroup_Inventory*>(CUI_Manager::GetInstance()->Get_UIGroup("Inventory"))->Update_Inventory(iInvenIdx);
 		dynamic_cast<CUIGroup_Quick*>(CUI_Manager::GetInstance()->Get_UIGroup("Quick"))->Update_Inventory(iInvenIdx);
+	}
+}
+
+void CItemData::Use_Skill()
+{
+	switch (m_eItemName)
+	{
+	case Client::CItemData::ITEMNAME_OPH:
+	{
+
+		break;
+	}
+	case Client::CItemData::ITEMNAME_AKSHA:
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+
+		pPlayer->Set_Cloaking();
+		break;
+	}
+	default:
+		break;
 	}
 }
 
@@ -349,8 +374,6 @@ void CItemData::Set_Item_Data()
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Firefly");
 		break;
 	}
-	case Client::CItemData::ITEMNAME_WHISPERER:
-		break;
 	default:
 		break;
 	}

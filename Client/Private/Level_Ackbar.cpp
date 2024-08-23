@@ -25,6 +25,9 @@
 #include"BlastWall.h"
 #include"CInitLoader.h"
 
+
+#include"EventTrigger.h"
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -60,6 +63,9 @@ HRESULT CLevel_Ackbar::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_LandObjects()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Trigger()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Item()))
@@ -331,6 +337,28 @@ HRESULT CLevel_Ackbar::Ready_LandObjects()
 	//Npc
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Valnir"))))
 		return E_FAIL;
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_Ackbar::Ready_Layer_Trigger()
+{
+	_float4x4 WorldMatrix;
+	//For . GrassLand
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(225.1f, 3.71f, -151.766f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
+
+
 
 
 	return S_OK;

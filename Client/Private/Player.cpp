@@ -32,6 +32,11 @@ CPlayer::CPlayer(const CPlayer& rhs)
 HRESULT CPlayer::Initialize_Prototype()
 {
 
+
+	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
+
+
+
 	return S_OK;
 }
 
@@ -56,10 +61,30 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 
+	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
+	if (LoadPlayerData)
+	{
+		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;
+		m_iLevel = *get<0>(*LoadPlayerData).iLevel;
+		m_iVitalityLv = *get<0>(*LoadPlayerData).iVitalityLv;
+		m_iStaminaLv = *get<0>(*LoadPlayerData).iStaminaLv;
+		m_iStrenghtLv = *get<0>(*LoadPlayerData).iStrenghtLv;
+		m_iMysticismLv = *get<0>(*LoadPlayerData).iMysticismLv;
+		m_iKnowledgeLv = *get<0>(*LoadPlayerData).iKnowledgeLv;
+		m_iPhysicalDmg = *get<0>(*LoadPlayerData).iPhysicalDmg;
+		m_iEtherDmg = *get<0>(*LoadPlayerData).iEtherDmg;
 
+	}
 
-	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
-
+	m_tPlayerStatusData.isReviveFadeing = &m_isReviveFadeing;
+	m_tPlayerStatusData.iLevel = &m_iLevel;
+	m_tPlayerStatusData.iVitalityLv = &m_iVitalityLv;
+	m_tPlayerStatusData.iStaminaLv = &m_iStaminaLv;
+	m_tPlayerStatusData.iStrenghtLv = &m_iStrenghtLv;
+	m_tPlayerStatusData.iMysticismLv = &m_iMysticismLv;
+	m_tPlayerStatusData.iKnowledgeLv = &m_iKnowledgeLv;
+	m_tPlayerStatusData.iPhysicalDmg = &m_iPhysicalDmg;
+	m_tPlayerStatusData.iEtherDmg = &m_iEtherDmg;
 
 
 

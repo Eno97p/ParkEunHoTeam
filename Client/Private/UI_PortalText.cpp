@@ -51,7 +51,7 @@ void CUI_PortalText::Priority_Tick(_float fTimeDelta)
 
 void CUI_PortalText::Tick(_float fTimeDelta)
 {
-	Check_Distance();
+	//Check_Distance();
 }
 
 void CUI_PortalText::Late_Tick(_float fTimeDelta)

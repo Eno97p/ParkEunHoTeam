@@ -39,11 +39,13 @@ private:
 	_float					m_fHPRatio = { 0.f };
 
 	vector<CUI*>			m_vecUI;
+	class CUI_BossShield*	m_pShield = { nullptr };
 
 	BOSSUI_NAME				m_eBossUIName = { BOSSUI_END };
 
 private:
 	HRESULT					Create_UI();
+	void					Create_Shield();
 
 public:
 	static CUIGroup_BossHP*		Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

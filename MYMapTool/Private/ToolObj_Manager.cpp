@@ -236,7 +236,10 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_Juggulus"),
                 TEXT("Prototype_Component_Model_Chaudron"),
         TEXT("Prototype_Component_Model_SkeletalChain"),
-        TEXT("Prototype_Component_Model_BossStatue")
+        TEXT("Prototype_Component_Model_BossStatue"),
+        TEXT("Prototype_Component_Model_Malkhel"),
+        TEXT("Prototype_Component_Model_Andras"),
+        TEXT("Prototype_Component_Model_Npc_Yaak")
 
     };
 
@@ -319,7 +322,23 @@ void CToolObj_Manager::Initialize()
                         TEXT("Prototype_Component_Model_GrassLand_Arch"),
                         TEXT("Prototype_Component_Model_Meteore"),
                         TEXT("Prototype_Component_Model_Mountain_Card"),
-                        TEXT("Prototype_Component_Model_Mountain_BackGround")
+                        TEXT("Prototype_Component_Model_Mountain_BackGround"),
+         TEXT("Prototype_Component_Model_AndrasArena_Deco"),
+
+        //Weapons
+         TEXT("Prototype_Component_Model_Catharsis"),
+         TEXT("Prototype_Component_Model_Cendres"),
+         TEXT("Prototype_Component_Model_CorruptedSword"),
+         TEXT("Prototype_Component_Model_DurgaSword"),
+         TEXT("Prototype_Component_Model_IceBlade"),
+         TEXT("Prototype_Component_Model_Lughan"),
+         TEXT("Prototype_Component_Model_NaruehSword"),
+         TEXT("Prototype_Component_Model_PretorianSword"),
+         TEXT("Prototype_Component_Model_RadamantheSword"),
+         TEXT("Prototype_Component_Model_SitraSword"),
+         TEXT("Prototype_Component_Model_ValnirSword"),
+         TEXT("Prototype_Component_Model_VeilleurSword"),
+
                  
     };
 
@@ -341,7 +360,8 @@ void CToolObj_Manager::Initialize()
         TEXT("Prototype_Component_Model_TreasureChest"),
         TEXT("Prototype_Component_Model_BasicCube"), // ±¸¸§
          TEXT("Prototype_Component_Model_Mountain_Card"),
-         TEXT("Prototype_Component_Model_Mountain_Card")
+         TEXT("Prototype_Component_Model_Mountain_Card"),
+
     };
 }
 
@@ -496,6 +516,14 @@ const char* CToolObj_Manager::Setting_ObjName(_int iLayerIdx, _int iSelectIdx)
             return "Prototype_GameObject_BossDeco";
         case 8:
             return "Prototype_GameObject_BossStatue";
+        case 9:
+            return "Prototype_GameObject_Malkhel";
+        case 10:
+            return "Prototype_GameObject_Andras";
+        case 11:
+            return "Prototype_GameObject_Andras";
+        case 12:
+            return "Prototype_GameObject_NPC_Yaak";
         default:
             break;
         }

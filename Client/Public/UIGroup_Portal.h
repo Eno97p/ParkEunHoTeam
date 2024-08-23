@@ -26,7 +26,8 @@ private:
 
 public:
 	_bool			Get_isPic();
-	void			Set_isDeadDissolve();
+	void			Set_FadeOut();
+	_bool			Get_isFadeEnd() { return m_isFadeEnd; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -37,6 +38,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	_bool					m_isFadeEnd = { false };
+
 	class CUI_PortalPic*	m_pPic = { nullptr };
 	class CUI_PortalText*	m_pText = { nullptr };
 

@@ -155,6 +155,9 @@
     <Filter Include="Objects\02. Effects\20. BlackHole">
       <UniqueIdentifier>{39bd8142-f0a3-461a-bae7-40693890fd94}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\05. Monster\CutSceneAndras">
+      <UniqueIdentifier>{6b90bec7-07ff-403d-8c6f-3b2a77f37d35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Imgui\imconfig.h">
@@ -424,6 +427,9 @@
     <ClInclude Include="..\Public\BlackHole_Ring_Bill.h">
       <Filter>Objects\02. Effects\20. BlackHole</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutSceneAndras.h">
+      <Filter>Objects\05. Monster\CutSceneAndras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -677,6 +683,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\BlackHole_Ring_Bill.cpp">
       <Filter>Objects\02. Effects\20. BlackHole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutSceneAndras.cpp">
+      <Filter>Objects\05. Monster\CutSceneAndras</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

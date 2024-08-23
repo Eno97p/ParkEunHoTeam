@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "UI_HUDEffect.h"
+
 CUI_WeaponSlotBG::CUI_WeaponSlotBG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI{pDevice, pContext}
 {
@@ -41,11 +43,24 @@ void CUI_WeaponSlotBG::Priority_Tick(_float fTimeDelta)
 
 void CUI_WeaponSlotBG::Tick(_float fTimeDelta)
 {
+	if (nullptr != m_pEffect)
+	{
+		m_pEffect->Tick(fTimeDelta);
+
+		if (m_pEffect->Get_isDead())
+		{
+			Safe_Release(m_pEffect);
+			m_pEffect = nullptr;
+		}
+	}
 }
 
 void CUI_WeaponSlotBG::Late_Tick(_float fTimeDelta)
 {
 	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+
+	if (nullptr != m_pEffect)
+		m_pEffect->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_WeaponSlotBG::Render()
@@ -96,6 +111,30 @@ HRESULT CUI_WeaponSlotBG::Bind_ShaderResources()
 	return S_OK;
 }
 
+void CUI_WeaponSlotBG::Create_UI(_bool isSkill)
+{
+	if (m_pEffect != nullptr)
+		return;
+
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.fSizeX = 100.f;
+	pDesc.fSizeY = 100.f;
+
+	if (isSkill)
+	{
+		pDesc.fX = 140.f;
+		pDesc.fY = (g_iWinSizeY >> 1) + 220.f;
+	}
+	else
+	{
+		pDesc.fX = 190.f;
+		pDesc.fY = (g_iWinSizeY >> 1) + 270.f;
+	}
+
+	m_pEffect = dynamic_cast<CUI_HUDEffect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_HUDEffect"), &pDesc));
+}
+
 CUI_WeaponSlotBG* CUI_WeaponSlotBG::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUI_WeaponSlotBG* pInstance = new CUI_WeaponSlotBG(pDevice, pContext);
@@ -125,4 +164,6 @@ CGameObject* CUI_WeaponSlotBG::Clone(void* pArg)
 void CUI_WeaponSlotBG::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pEffect);
 }

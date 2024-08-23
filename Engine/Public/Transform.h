@@ -103,6 +103,10 @@ public:
 	void BillBoard_Y();		
 	void BillBoard_Z();
 	void Set_LookingAt(_fvector vLook);
+
+public:
+	HRESULT Floating_Y(_float fTimeDelta, _float fFloatSpeed, _float fFloatRange, _vector vOriginPos); //무중력 떠다니기
+
 private:
 	//void Update_WorldMatrix();
 
@@ -124,6 +128,8 @@ private:
 	_float					m_fRotationPerSec = { 0.0f };
 
 	Transform_Editable_Desc			m_OutDesc;
+
+	_float					m_fFloatTime = 0.f;
 public:
 	static CTransform* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CComponent* Clone(void* pArg) override;

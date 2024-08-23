@@ -47,6 +47,7 @@ public:
 	_vector Get_CamLook();
 	_bool Get_Activate() { return m_bCamActivated; }
 
+	_float Get_Far() { return m_fFar; }
 	void Set_CamDesc(CAMERA_DESC* desc)
 	{
 		m_fFovy = desc->fFovy;

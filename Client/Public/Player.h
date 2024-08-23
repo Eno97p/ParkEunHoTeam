@@ -36,15 +36,15 @@ public:
 public:
 	typedef struct Player_Status_Data // 다음 Level로 넘어갈 때 저장되어야 하는 Player 스탯 데이터
 	{
-		_bool		isReviveFadeing;
-		_uint		iLevel;
-		_uint		iVitalityLv;
-		_uint		iStaminaLv;
-		_uint		iStrenghtLv;
-		_uint		iMysticismLv;
-		_uint		iKnowledgeLv;
-		_uint		iPhysicalDmg;
-		_uint		iEtherDmg;
+		_bool*		isReviveFadeing=nullptr;
+		_uint*		iLevel=nullptr;
+		_uint*		iVitalityLv=nullptr;
+		_uint*		iStaminaLv=nullptr;
+		_uint*		iStrenghtLv=nullptr;
+		_uint*		iMysticismLv=nullptr;
+		_uint*		iKnowledgeLv=nullptr;
+		_uint*		iPhysicalDmg=nullptr;
+		_uint*		iEtherDmg = nullptr;
 	}PLAYER_STATUS_DATA;
 
 public:
@@ -110,6 +110,12 @@ public:
 	void			Set_PhysicalDmg(_int iValue) { m_iPhysicalDmg += iValue; }
 	_uint			Get_EtherDmg() { return m_iEtherDmg; }
 	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
+	void			Set_Cloaking(){
+		m_bIsCloaking = true;
+		Add_Mp(-10.f);
+	}
+
+	Player_Status_Data Get_PlayerStatusData() { return m_tPlayerStatusData; }
 
 	void			Pull_Status(); // HP / Stamina / MP 를 Pull
 	void			Update_LvData();
@@ -258,11 +264,14 @@ private:
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값
 #pragma endregion Buff 관련 Data
+
+
+
 #pragma region 비동기 로드 Data
 	_bool m_bIsLoadStart = false;
 	_vector m_vDest = {};
 	LEVEL m_eCurLevel = LEVEL_END;
-
+	Player_Status_Data m_tPlayerStatusData = {};
 
 #pragma endregion 비동기 로드 Data
 
@@ -271,6 +280,9 @@ private:
 	_bool m_bSpecialAttackZoom = false;
 
 	_float		m_GrassBlowInterval = 1.f;
+
+
+
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

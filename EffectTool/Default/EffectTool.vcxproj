@@ -188,6 +188,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\BlackSphere.h" />
     <ClInclude Include="..\Public\Charge_Ribbon.h" />
     <ClInclude Include="..\Public\Charge_Vane.h" />
+    <ClInclude Include="..\Public\CutSceneAndras.h" />
     <ClInclude Include="..\Public\Distortion_Effect.h" />
     <ClInclude Include="..\Public\Effect_Define.h" />
     <ClInclude Include="..\Public\ElectricCylinder.h" />
@@ -278,6 +279,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\BlackSphere.cpp" />
     <ClCompile Include="..\Private\Charge_Ribbon.cpp" />
     <ClCompile Include="..\Private\Charge_Vane.cpp" />
+    <ClCompile Include="..\Private\CutSceneAndras.cpp" />
     <ClCompile Include="..\Private\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ElectricCylinder.cpp" />
     <ClCompile Include="..\private\Electronic.cpp" />

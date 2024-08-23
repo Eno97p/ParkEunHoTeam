@@ -345,6 +345,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Activate.h" />
     <ClInclude Include="..\Public\UI_AeonsLost.h" />
     <ClInclude Include="..\Public\UI_ArrowSign.h" />
+    <ClInclude Include="..\Public\UI_BossShield.h" />
     <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_BuffTimer.h" />
     <ClInclude Include="..\Public\UI_BuffTimer_Bar.h" />
@@ -355,6 +356,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Cinematic.h" />
     <ClInclude Include="..\Public\UI_Dash.h" />
     <ClInclude Include="..\Public\UI_DropItemBG.h" />
+    <ClInclude Include="..\Public\UI_HUDEffect.h" />
     <ClInclude Include="..\Public\UI_ItemIcon.h" />
     <ClInclude Include="..\Public\UI_LevelBG.h" />
     <ClInclude Include="..\Public\UI_Level_TextBox.h" />
@@ -668,6 +670,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Activate.cpp" />
     <ClCompile Include="..\Private\UI_AeonsLost.cpp" />
     <ClCompile Include="..\Private\UI_ArrowSign.cpp" />
+    <ClCompile Include="..\Private\UI_BossShield.cpp" />
     <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp" />
@@ -678,6 +681,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Cinematic.cpp" />
     <ClCompile Include="..\Private\UI_Dash.cpp" />
     <ClCompile Include="..\Private\UI_DropItemBG.cpp" />
+    <ClCompile Include="..\Private\UI_HUDEffect.cpp" />
     <ClCompile Include="..\Private\UI_ItemIcon.cpp" />
     <ClCompile Include="..\Private\UI_LevelBG.cpp" />
     <ClCompile Include="..\Private\UI_Level_TextBox.cpp" />

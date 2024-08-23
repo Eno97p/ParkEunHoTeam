@@ -166,9 +166,8 @@ PS_OUT PS_DEFAULT(PS_IN In)
 	float fRatio = In.vLifeTime.y / In.vLifeTime.x;
 	if (g_Alpha)
 	{
-		if (Out.vColor.a < 0.1f)
+		if (Out.vColor.a == 0.f)
 			discard;
-
 		Out.vColor.a *= 1- fRatio;
 	}
 	

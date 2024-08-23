@@ -60,7 +60,7 @@ HRESULT CImguiMgr::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pConte
 	ModelName.emplace_back("Wander");
 	ModelName.emplace_back("Andras");
 	ModelName.emplace_back("HoverBoard");
-
+	ModelName.emplace_back("AndrasCut");
 	for (auto& iter : bShow)
 		iter = false;
 
@@ -138,6 +138,9 @@ void CImguiMgr::Model_Change()
 				break;
 			case 2:		//HoverBoard
 				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_HoverBoard"));
+				break;
+			case 3:
+				m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("LayerDummy"), TEXT("Prototype_GameObject_CutSceneAndras"));
 				break;
 			default:
 				break;

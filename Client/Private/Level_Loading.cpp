@@ -21,6 +21,8 @@
 
 #include "UI_FadeInOut.h"
 
+#include "Player.h"
+
 CLevel_Loading::CLevel_Loading(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -36,7 +38,19 @@ typedef unsigned (__stdcall* _beginthreadex_proc_type)(void*);
 
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 {
-	m_pUI_Manager->SetPrevLevel(m_eNextLevel);
+	LEVEL ePrevLevel = (LEVEL)CGameInstance::GetInstance()->Get_CurrentLevelIndex();
+	m_pUI_Manager->SetPrevLevel(ePrevLevel);
+
+	list<CGameObject*> 	pList = m_pGameInstance->Get_GameObjects_Ref(ePrevLevel, TEXT("Layer_Player"));
+	if (!pList.empty())
+	{
+		auto pPlayer = dynamic_cast<CPlayer*>(pList.front());
+		if(pPlayer != nullptr)
+			Engine::Save_Data(L"../Bin/DataFiles/PlayerData.bin", true, pPlayer->Get_PlayerStatusData());
+		Client::g__Exit_Delete_FileList.insert(L"../Bin/DataFiles/PlayerData.bin");
+	}
+
+
 
 	m_eNextLevel = eNextLevel;
 	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);

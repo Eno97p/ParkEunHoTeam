@@ -604,13 +604,17 @@ void CUI_Slot::Render_Font()
 
 		if (SLOT_WEAPON == m_eSlotType)
 		{
-			// Level
-			vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
-			for (size_t i = 0; i < m_iSlotIdx; ++i)
-				++weapon;
-			if (0 < (*weapon)->Get_Level())
+			// Weapon의 경우에만 해야함 Skill의 경우에는 X
+			if (CUIGroup_Weapon::TAB_L == dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Get_TabType())
 			{
-				wstrTitle = m_wszItemName + TEXT("   + ") + to_wstring((*weapon)->Get_Level());
+				// Level
+				vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+				for (size_t i = 0; i < m_iSlotIdx; ++i)
+					++weapon;
+				if (0 < (*weapon)->Get_Level())
+				{
+					wstrTitle = m_wszItemName + TEXT("   + ") + to_wstring((*weapon)->Get_Level());
+				}
 			}
 		}
 

@@ -2730,18 +2730,7 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_RuinsPilar"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/RuinsPilar/RuinsPilar.fbx", PreTransformMatrix))))
-
 		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_TutorialDecoStructure"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/TutorialMap/TutorialDecoStructure.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_MetalGrid"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/MetalGrid/MetalGrid.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-
 
 
 
@@ -2817,46 +2806,11 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/LightProps/Light_TorchB.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	//FACADE
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade1.fbx", PreTransformMatrix))))
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_AndrasArena_Deco"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/AndrasArena/AndrasArena_Deco/AndrasArena_Deco.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade2.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade3"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade3.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade4"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade4.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade5"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade5.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade6"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade6.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade7"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade7.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade8"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade8.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade9"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade9.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ANDRASARENA, TEXT("Prototype_Component_Model_Facade10"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Facade/Facade10.fbx", PreTransformMatrix))))
-		return E_FAIL;
 
 
 #pragma endregion   DECO ELEMENTS
@@ -3117,6 +3071,7 @@ HRESULT CLoader::Loading_For_AndrasArenaLevel()
 		return E_FAIL;
 
 	//lstrcpy(m_szLoadingText, TEXT("LEVEL JUGGLAS"));
+
 
 	return S_OK;
 }
@@ -4026,9 +3981,6 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Collider"),
 		CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-
 
 
 	return S_OK;

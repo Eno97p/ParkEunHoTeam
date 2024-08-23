@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
+#include "UI_BossShield.h"
 
 CUIGroup_BossHP::CUIGroup_BossHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -129,6 +130,13 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	return S_OK;
 }
 
+void CUIGroup_BossHP::Create_Shield()
+{
+	// Prototype_GameObject_UI_BossShield
+
+
+}
+
 CUIGroup_BossHP* CUIGroup_BossHP::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUIGroup_BossHP* pInstance = new CUIGroup_BossHP(pDevice, pContext);
@@ -161,4 +169,6 @@ void CUIGroup_BossHP::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	Safe_Release(m_pShield);
 }

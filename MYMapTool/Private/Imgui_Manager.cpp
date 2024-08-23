@@ -533,7 +533,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     case LAYER_MONSTER:
     {
         const char* items_Monster[] = { "test", "MANTARI", "Legionnaire_Gun", "Ghost", "Homonculus", "Boss Juggulus", 
-           "Chaudron", "SkeletalChain", "Boss Statue"
+           "Chaudron", "SkeletalChain", "Boss Statue", "Boss Malkhel",  "Boss Andras", "Yaak"
 
         };
         ImGui::ListBox("###Obj", &item_current, items_Monster, IM_ARRAYSIZE(items_Monster)); // item_current 변수에 선택 값 저장
@@ -598,7 +598,19 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "Meteore",
             "Mountain Card",
             "Mountain BackGround",
-
+            "AndrasArena_Deco",
+            "wp1",
+            "wp2",
+            "wp3",
+            "wp4",
+            "wp5",
+            "wp6",
+            "wp7",
+            "wp8",
+            "wp9",
+            "wp10",
+            "wp11",
+            "wp12",
 
 
         };
@@ -617,7 +629,10 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
     {
         const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER",  "Jugglas_Room2_Spawn",  "Jugglas_Room3_Spawn", "Viewchange 3 to Side", "Viewchange Side to 3",
             "Ascend Elevator", "Descend Elevator", "Scene Change",  "Viewchange 3 to Boss Side",
-            "STAGE1_LightsOn" };
+           "scene change ackbar ", "scene change jugglas", "scene change andras",
+            "CUTSCENE GRASSLAND", "CUTSCENE malkhel", "cutscene jugglus", "cutscene andras"
+
+        };
         ImGui::ListBox("###Obj", &item_current, items_Trigger, IM_ARRAYSIZE(items_Trigger)); // item_current 변수에 선택 값 저장
         break;
     }

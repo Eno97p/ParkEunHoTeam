@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Inventory.h"
 #include "UI_Manager.h"
+#include "EffectManager.h"
 
 #include "UIGroup_Inventory.h"
 #include "UIGroup_InvSub.h"
@@ -89,11 +90,17 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		break;
 	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
+	{
+
 		break;
+	}
 	case Client::CItemData::ITEMNAME_FIREFLY:
+	{
+		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+		CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
+		CEffectManager::GetInstance()->Generate_FireFly(pPlayerTransform->Get_WorldFloat4x4());
 		break;
-	case Client::CItemData::ITEMNAME_WHISPERER:
-		break;
+	}
 	case Client::CItemData::ITEMNAME_BUFF1:
 	{
 		Apply_UseCount(iInvenIdx);
@@ -349,8 +356,6 @@ void CItemData::Set_Item_Data()
 		m_wszTexture = TEXT("Prototype_Component_Texture_Icon_Firefly");
 		break;
 	}
-	case Client::CItemData::ITEMNAME_WHISPERER:
-		break;
 	default:
 		break;
 	}

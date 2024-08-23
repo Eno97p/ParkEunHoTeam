@@ -90,7 +90,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	// Skill
 	Add_Skill(CItemData::ITEMNAME_OPH);
-	//Add_Skill(CItemData::ITEMNAME_AKSHA);
+	Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
 	//Add_DropItem(CItem::ITEM_ESSENCE);
@@ -108,6 +108,8 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//
 	//for(size_t i = 0; i < 5; ++i)
 	//	Add_Item(CItemData::ITEMNAME_CATALYST);
+
+	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
 
 	return S_OK;
 }

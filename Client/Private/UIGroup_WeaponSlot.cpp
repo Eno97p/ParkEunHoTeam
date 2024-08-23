@@ -137,6 +137,13 @@ void CUIGroup_WeaponSlot::Reset_SlotIdx(SLOT_TYPE eSlotType)
     }
 }
 
+void CUIGroup_WeaponSlot::Create_HUDEffect(_bool isSkill)
+{
+    vector<CUI*>::iterator slot = m_vecUI.begin();
+
+    dynamic_cast<CUI_WeaponSlotBG*>(*slot)->Create_UI(isSkill);
+}
+
 HRESULT CUIGroup_WeaponSlot::Create_UI()
 {
     // WeaponSlot BG
@@ -275,6 +282,9 @@ void CUIGroup_WeaponSlot::Key_Input()
                 ++quickaccess;
 
             (*quickaccess).second->Use_Item((*quickaccess).first); // 해당 아이템 사용
+
+            // Effect
+            Create_HUDEffect(false);
         }
     }
     else if (m_pGameInstance->Key_Down(DIK_K))
@@ -288,9 +298,11 @@ void CUIGroup_WeaponSlot::Key_Input()
                 if ((*skill)->Get_TextureName() == m_pSkillSlot->Get_TextureName())
                 {
                     // Skill의 경우 사용할 때 불러야 하는 함수를 추가해야 함
+                    (*skill)->Use_Skill();
 
+                    // Effect
+                    Create_HUDEffect(true);
 
-                    int i = 1;
                     break;
                 }
                 else

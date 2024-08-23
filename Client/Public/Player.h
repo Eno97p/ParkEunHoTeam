@@ -110,6 +110,10 @@ public:
 	void			Set_PhysicalDmg(_int iValue) { m_iPhysicalDmg += iValue; }
 	_uint			Get_EtherDmg() { return m_iEtherDmg; }
 	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
+	void			Set_Cloaking(){
+		m_bIsCloaking = true;
+		Add_Mp(-10.f);
+	}
 
 	void			Pull_Status(); // HP / Stamina / MP ¸¦ Pull
 	void			Update_LvData();

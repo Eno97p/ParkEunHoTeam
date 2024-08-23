@@ -74,6 +74,7 @@ public:
 
 	void			Use_Item(_uint iInvenIdx);
 	void			Apply_UseCount(_uint iInvenIdx);
+	void			Use_Skill();
 
 private:
 	_bool					m_isEquip = { false };

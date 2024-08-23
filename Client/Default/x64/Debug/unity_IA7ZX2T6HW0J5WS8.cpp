@@ -486,6 +486,9 @@
 #include "C:\Real3DProject\Client\Private\UI_DropItemBG.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_HUDEffect.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_ItemIcon.cpp"
 
 

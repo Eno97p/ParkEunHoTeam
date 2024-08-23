@@ -44,6 +44,7 @@
 #include "UI_WeaponSlotBG.h"
 #include "UI_WeaponSlot.h"
 #include "UI_Slot_EquipSign.h"
+#include "UI_HUDEffect.h"
 #include "UIGroup_WeaponSlot.h"
 #pragma endregion WeaponSlot
 
@@ -984,6 +985,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_WeaponSlotBG"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUD_WeaponSlotBG.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_HUDEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_HUDEffect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUDEffect.png"), 1))))
+		return E_FAIL;
 #pragma endregion WeaponSlot
 #pragma endregion HUD
 
@@ -1771,6 +1777,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_WeaponSlot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_WeaponSlot"),
 		CUI_WeaponSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_HUDEffect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HUDEffect"),
+		CUI_HUDEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_WeaponSlot*/

@@ -64,7 +64,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
 	if (LoadPlayerData)
 	{
-		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;
+		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
 		m_iLevel = *get<0>(*LoadPlayerData).iLevel;
 		m_iVitalityLv = *get<0>(*LoadPlayerData).iVitalityLv;
 		m_iStaminaLv = *get<0>(*LoadPlayerData).iStaminaLv;
@@ -547,7 +547,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				//이후 다시 태어날 떄 불러올 수 있도록
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
-				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");		//지워야할 Layer

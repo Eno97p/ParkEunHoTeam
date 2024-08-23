@@ -258,6 +258,21 @@
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasScrew.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\BlackHole.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\BlackHole_Ring.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\BlackHole_Ring_Bill.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\BlackHorizon.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\BlackSphere.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\Charge_Ribbon.cpp"
 
 
@@ -511,6 +526,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_PortalPic.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_PortalText.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_QTE_Btn.cpp"

@@ -526,8 +526,6 @@ NodeStates CMalkhel::Attack3(_float fTimeDelta)
 		{
 			m_fTrippleAttack = TRIPPLEATTACK;
 			m_iTrippleAttackCount--;
-			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
 		}
 		if (m_fTrippleAttack < TRIPPLEATTACK && m_fTrippleAttack > TRIPPLEATTACK * 0.5f)
 		{
@@ -725,6 +723,7 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				break;
 			}
 		}
+		m_iState = STATE_ATTACK3;
 		return SUCCESS;
 	}
 }

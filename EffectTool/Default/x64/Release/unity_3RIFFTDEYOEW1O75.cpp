@@ -80,6 +80,9 @@
 #include "C:\NewRepo\EffectTool\Private\Charge_Vane.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\CutSceneAndras.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Distortion_Effect.cpp"
 
 

@@ -95,6 +95,8 @@
 #include "BlackHorizon.h"
 #pragma endregion BLACKHOLE
 
+#include "CutSceneAndras.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -337,7 +339,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Andras_0724/Andras.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
-
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Cut"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../../Client/Bin/Resources/Models/Andras_0724/AndrasCutScene.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 	//Andras_Swords
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Sword1"),
@@ -858,6 +862,12 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_Black_Horizon"),
 		CBlackHorizon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//AndrasCut
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CutSceneAndras"),
+		CutSceneAndras::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion PROTOTYPE_CLASS
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 	m_isFinished = true;

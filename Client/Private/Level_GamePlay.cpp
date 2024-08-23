@@ -123,7 +123,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.ePortalLevel = LEVEL_GRASSLAND;
-	pDesc.isPic = false;
+	pDesc.isPic = true;
 	pDesc.iPicNum = 3;
 	pDesc.fAngle = 190.f;
 	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
@@ -476,7 +476,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Monster(const wstring& strLayerTag)
 	landObjDesc.mWorldMatrix._42 = 528.f;
 	landObjDesc.mWorldMatrix._43 = 97.312f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Mantari"), &landObjDesc)))
 		return E_FAIL;
 
 	_float4 GrassPos = { landObjDesc.mWorldMatrix._41,landObjDesc.mWorldMatrix._42 - 5.f, landObjDesc.mWorldMatrix._43, 1.f };

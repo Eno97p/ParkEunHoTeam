@@ -241,8 +241,8 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
 		//HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 		//EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
-		vStartPosition.y += 10.f;
-		EFFECTMGR->Generate_BlackHole(1, vStartPosition);
+		vStartPosition.y += 5.f;
+		EFFECTMGR->Generate_BlackHole(0, vStartPosition);
 
 		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}

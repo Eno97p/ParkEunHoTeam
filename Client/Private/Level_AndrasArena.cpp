@@ -57,7 +57,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_AndrasArena.bin"));
 
-	//Load_Data_Effects();
+	Load_Data_Effects();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");

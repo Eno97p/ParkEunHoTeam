@@ -94,12 +94,12 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	//test
 	//Add_DropItem(CItem::ITEM_ESSENCE);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF1);
-	Add_DropItem(CItem::ITEM_BUFF2);
-	Add_DropItem(CItem::ITEM_BUFF3);
-	Add_DropItem(CItem::ITEM_BUFF4);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF1);
+	//Add_DropItem(CItem::ITEM_BUFF2);
+	//Add_DropItem(CItem::ITEM_BUFF3);
+	//Add_DropItem(CItem::ITEM_BUFF4);
 	//Add_DropItem(CItem::ITEM_UPGRADE1);
 	//Add_DropItem(CItem::ITEM_UPGRADE1);
 	//Add_DropItem(CItem::ITEM_ESSENCE);
@@ -109,7 +109,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//for(size_t i = 0; i < 5; ++i)
 	//	Add_Item(CItemData::ITEMNAME_CATALYST);
 
-	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
+	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
 
 	return S_OK;
 }

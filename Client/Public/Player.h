@@ -128,6 +128,8 @@ public:
 	void			Set_HPBuff(_bool isOn) { if (isOn) m_fHPBuff = 1.5f; else m_fHPBuff = 1.f; }
 	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
 
+	void			Generate_HoverBoard();
+
 private:
 	HRESULT Add_Nodes();
 
@@ -151,7 +153,7 @@ private:
 	NodeStates LAttack(_float fTimeDelta);
 	_bool CanBackAttack();
 	NodeStates RAttack(_float fTimeDelta);
-	void Generate_HoverBoard();
+	// void Generate_HoverBoard();
 	NodeStates Slide(_float fTimeDelta);
 	NodeStates Dash(_float fTimeDelta);
 	NodeStates Jump(_float fTimeDelta);

@@ -87,6 +87,8 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
 	{
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Generate_HoverBoard();
 
 		break;
 	}

@@ -1651,7 +1651,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_R) && m_fButtonCooltime == 0.f && !m_bRided)
+	if (/*m_pGameInstance->Get_DIKeyState(DIK_R) && */m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1681,7 +1681,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		return COOLING;
 	}
 
-	Generate_HoverBoard();
+	//Generate_HoverBoard();
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_F) && m_fButtonCooltime == 0.f && m_pHoverBoard)
 	{

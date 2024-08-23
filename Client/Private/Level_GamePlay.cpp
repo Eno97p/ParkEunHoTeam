@@ -123,7 +123,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
 	pDesc.eLevel = LEVEL_STATIC;
 	pDesc.ePortalLevel = LEVEL_GRASSLAND;
-	pDesc.isPic = true;
+	pDesc.isPic = false;
 	pDesc.iPicNum = 3;
 	pDesc.fAngle = 190.f;
 	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);

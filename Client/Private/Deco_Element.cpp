@@ -22,17 +22,20 @@ HRESULT CDeco_Element::Initialize_Prototype()
 HRESULT CDeco_Element::Initialize(void* pArg)
 {
 
+    CTransform::TRANSFORM_DESC td{};
+    td.fRotationPerSec = XMConvertToRadians(3.f);
+    td.fSpeedPerSec = 30.f;
 
-    if (FAILED(__super::Initialize(pArg)))
+    if (FAILED(__super::Initialize(&td)))
         return E_FAIL;
 
 
-
+    
 
 
     MAP_ELEMENT_DESC* desc = (MAP_ELEMENT_DESC*)(pArg);
-     m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
-
+    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&desc->mWorldMatrix));
+    m_vOriginPos = { desc->mWorldMatrix.m[3][0], desc->mWorldMatrix.m[3][1], desc->mWorldMatrix.m[3][2], 1.f };
     if (FAILED(Add_Components((MAP_ELEMENT_DESC*)(pArg))))
         return E_FAIL;
 
@@ -53,13 +56,14 @@ HRESULT CDeco_Element::Initialize(void* pArg)
 
 }
 
-void CDeco_Element::Priority_Tick(_float fTimeDelta)
-{
-}
-
 
 void CDeco_Element::Late_Tick(_float fTimeDelta)
 {
+    if (m_bRotateObj)
+    {
+        m_pTransformCom->Floating_Y(fTimeDelta, 1.5f, 70.f, m_vOriginPos);
+        m_pTransformCom->Turn(m_vRotateAxis, fTimeDelta * m_fRotateOffset);
+    }
     //FOR CULLING
     //_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
     //if (!m_bNoCullElement)
@@ -182,8 +186,18 @@ HRESULT CDeco_Element::Add_Components(MAP_ELEMENT_DESC* desc)
     {
         m_bNoCullElement = true;
     }
+    else if (desc->wstrModelName == TEXT("Prototype_Component_Model_AndrasArena_Deco"))
+    {
+        m_bRotateObj = true;
+
+        if (desc->mWorldMatrix.m[0][0] == -0.5f)
+        {
+            m_fRotateOffset = 0.5f;
+            m_vRotateAxis = { 0.f, -1.f, 0.f, 0.f };
+        }
+    }
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMesh"),
+    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxMapElement"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
@@ -209,6 +223,9 @@ HRESULT CDeco_Element::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
+    _float fCamFar = m_pGameInstance->Get_MainCamera()->Get_Far();
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fCamFar", &fCamFar, sizeof(_float))))
+        return E_FAIL;
 
     return S_OK;
 }

@@ -101,6 +101,9 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
+		////ºí·¢È¦ »ý¼º
+		//_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
+		//EFFECTMGR->Generate_BlackHole(1, vStartPosition);
 		m_bTrigger = true;
 	}
 
@@ -882,7 +885,6 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			}
 		}
-		m_iState = STATE_SPRINTATTACK;
 
 		return SUCCESS;
 	}
@@ -939,7 +941,10 @@ void CAndras::Add_Hp(_int iValue)
 	}
 	else if (m_fCurHp <= m_fMaxHp * 0.5f && !m_bPhase2)
 	{
-		Phase_Two();
+		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
+		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+		//Phase_Two();
 	}
 
 	if (m_bPhase2)

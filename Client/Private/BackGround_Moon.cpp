@@ -32,7 +32,7 @@ HRESULT CBackGround_Moon::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_Scale(1000.f, 1000.f, 1.f);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-4130.f, 4788.3f, 5495.383, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(1695.958f, 6004.3f, 7175.976, 1.f));
 
 	CARD_DESC* cardDesc = (CARD_DESC*)pArg;
 

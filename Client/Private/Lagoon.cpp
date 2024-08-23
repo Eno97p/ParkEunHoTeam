@@ -384,8 +384,8 @@ HRESULT CLagoon::Add_Components(void* pArg)
 
 	PxPhysics* pPhysics = m_pGameInstance->GetPhysics();
 	PxMaterial* pMaterial = pPhysics->createMaterial(0.5f, 0.5f, 0.5f);
-	PxRigidStatic* groundPlane = PxCreatePlane(*pPhysics, PxPlane(0, 1, 0, -300), *pMaterial);
-	m_pGameInstance->GetScene()->addActor(*groundPlane);
+	m_pgroundPlane = PxCreatePlane(*pPhysics, PxPlane(0, 1, 0, -300), *pMaterial);
+	m_pGameInstance->GetScene()->addActor(*m_pgroundPlane);
 
 	return S_OK;
 }
@@ -436,6 +436,9 @@ void CLagoon::Free()
 	__super::Free();
 	for (auto& texture : m_pTexture)
 		Safe_Release(texture);
+
+	Safe_physX_Release(m_pgroundPlane);
+	
 	//Safe_Release(m_pModelCom);
 	//Safe_Release(m_pShaderCom);
 }

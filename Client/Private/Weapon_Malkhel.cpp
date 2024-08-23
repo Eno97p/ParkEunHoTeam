@@ -174,11 +174,6 @@ void CWeapon_Malkhel::Set_Active(_bool isActive)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack2.ogg"), SOUND_MONSTER);
 		}
-		else if (*m_pState == CMalkhel::STATE_ATTACK3)
-		{
-			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
-		}
 		m_GenerateTrail = true;
 	}
 	m_bIsActive = isActive;

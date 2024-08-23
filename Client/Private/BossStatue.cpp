@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Weapon.h"
+#include "EffectManager.h"
 
 #include "UI_ArrowSign.h"
 
@@ -70,6 +71,9 @@ void CBossStatue::Tick(_float fTimeDelta)
 	{
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05, 0.f, 1.f, 0.3f);
+		_float4 fPos;
+		XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		EFFECTMGR->Generate_Lightning(2, fPos);
 		m_bActive = false;
 	}
 

@@ -132,6 +132,8 @@ private:
 	_vector m_vTargetPos;
 	_float m_fAccTime = 0.f;
 
+
+	PxRigidStatic* m_pgroundPlane = nullptr;
 private:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

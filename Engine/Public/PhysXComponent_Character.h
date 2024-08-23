@@ -81,6 +81,7 @@ public:
 	_float Get_CurrentJumpSpeed() { return m_fCurrentY_Velocity; }
 	_float Get_LengthFromGround();
 	void Set_Gravity(_bool bGravity = true) { m_bGravity = bGravity; }
+	_bool Get_Gravity() { return m_bGravity; }
 
 
 	PxController* Get_Controller() { return m_pController; }

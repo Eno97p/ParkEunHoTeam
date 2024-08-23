@@ -67,6 +67,8 @@ void CBlackHole_Ring_Bill::Tick(_float fTimeDelta)
 		_vector ResultSize = XMVectorLerp(Maxsize, Minsize, t);
 		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
 	}
+	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);
 }
 
 void CBlackHole_Ring_Bill::Late_Tick(_float fTimeDelta)

@@ -162,6 +162,16 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active(false);
 		}
+		if (m_pModelCom->Check_CurDuration(0.35f) || m_pModelCom->Check_CurDuration(0.6f) || m_pModelCom->Check_CurDuration(0.85f))
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
+			_vector vPos = XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f);
+			_vector vLook = XMVectorSet(m_pParentMatrix->_31, m_pParentMatrix->_32, m_pParentMatrix->_33, 0.f);
+			_float4 fPos;
+			XMStoreFloat4(&fPos, vPos + 2.f * vLook);
+			EFFECTMGR->Generate_Lightning(1, fPos);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK4)
 	{
@@ -209,6 +219,13 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 5;
+		if (m_pModelCom->Check_CurDuration(0.01f))
+		{
+			_float4 fPos = _float4(m_pParentMatrix->_41, m_pParentMatrix->_42 + 2.f, m_pParentMatrix->_43, 1.f);
+			_vector vLook = XMVectorSet(m_pParentMatrix->_31, m_pParentMatrix->_32, m_pParentMatrix->_33, 0.f);
+			EFFECTMGR->Generate_Particle(68, fPos, nullptr, XMVectorZero(), 0.f, vLook);
+			EFFECTMGR->Generate_Particle(69, fPos, nullptr, XMVectorZero(), 0.f, vLook);
+		}
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK7)
 	{

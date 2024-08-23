@@ -27,6 +27,8 @@ private:
 	HRESULT Ready_Layer_Effect(const wstring& strLayerTag);
 	HRESULT Ready_Layer_BackGround(const wstring& strLayerTag);
 	HRESULT Ready_LandObjects();
+	HRESULT Ready_Layer_Trigger();
+
 	HRESULT Ready_Item();
 	HRESULT Ready_Layer_Player(const wstring& strLayerTag);
 	HRESULT Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc);

@@ -3,7 +3,9 @@
 #include "TransitionCamera.h"
 #include "EventTrigger.h"
 #include "Boss_Juggulus.h"
+#include "Andras.h"
 #include"UI_Manager.h"
+
 CCutSceneCamera::CCutSceneCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CCamera{ pDevice, pContext }
 {
@@ -94,6 +96,11 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")))->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
         }
         break;
+        case SCENE_ANDRAS_PHASE2:
+        {
+            dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front())->Phase_Two();
+        }
+            break;
         default:
         {
         }

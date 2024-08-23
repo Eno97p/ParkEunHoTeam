@@ -34,6 +34,7 @@
 #include "Cloud.h"
 #include "Sky.h"
 
+#include"EventTrigger.h"
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -58,6 +59,8 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Fog()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Trigger()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Grass(TEXT("Layer_Grass"))))
 		return E_FAIL;
@@ -68,6 +71,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
+
 
 	Load_Data_Effects();
 
@@ -290,7 +294,8 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
-	if (m_pUI_Manager->GetPrevLevel() == LEVEL_JUGGLAS)
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_JUGGLAS)
 	{
 		//블러드문 세팅 1 : 라이트
 		m_pGameInstance->LightOff_All();
@@ -367,6 +372,41 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
 	}
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
+{
+	_float4x4 WorldMatrix;
+	
+	//For . Ackbar
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(189.1f, 350.7f, 637.5f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE_FOR_ACKBAR;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
+	//For .Jugglas
+	{
+
+
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-1277.1f, 426.0f, -210.f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE_FOR_JUGGLAS;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
 
 
 
@@ -476,11 +516,41 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	pLandObjDesc->mWorldMatrix._42 = 3.5f;
 	pLandObjDesc->mWorldMatrix._43 = -2.4f;
 	pLandObjDesc->mWorldMatrix._44 = 1.f;*/
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_GAMEPLAY)
+	{
+		pLandObjDesc->mWorldMatrix._41 = 936.1f;
+		pLandObjDesc->mWorldMatrix._42 = 548.1f;
+		pLandObjDesc->mWorldMatrix._43 = 464.9f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+	else if (ePreLevel == LEVEL_ACKBAR)
+	{
+		pLandObjDesc->mWorldMatrix._41 = 205.7f;
+		pLandObjDesc->mWorldMatrix._42 = 346.8f;
+		pLandObjDesc->mWorldMatrix._43 = 605.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
 
-	pLandObjDesc->mWorldMatrix._41 = 500.f;
-	pLandObjDesc->mWorldMatrix._42 = 346.995f;
-	pLandObjDesc->mWorldMatrix._43 = 500.f;
-	pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+	else if (ePreLevel == LEVEL_JUGGLAS)
+	{
+		pLandObjDesc->mWorldMatrix._41 = -1188.f;
+		pLandObjDesc->mWorldMatrix._42 = 426.f;
+		pLandObjDesc->mWorldMatrix._43 = -200.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	
+	}
+
+	else
+	{
+
+		pLandObjDesc->mWorldMatrix._41 = 500.f;
+		pLandObjDesc->mWorldMatrix._42 = 346.995f;
+		pLandObjDesc->mWorldMatrix._43 = 500.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+
+
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;

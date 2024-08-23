@@ -43,6 +43,7 @@ public:
 	HRESULT Add_Components();
 	HRESULT Add_PartObjects();
 	_bool Intersect(PART ePartObjID, const wstring& strComponetTag, CCollider* pTargetCollider);
+	void Phase_Two();
 
 private:
 	HRESULT Add_Nodes();
@@ -61,7 +62,6 @@ private:
 	NodeStates Backstep(_float fTimeDelta);
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
-	void Phase_Two();
 
 private:
 	vector<class CGameObject*>					m_PartObjects;

@@ -86,6 +86,7 @@
 #include "UIGroup_MonsterHP.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
+#include "UI_BossShield.h"
 #include "UIGroup_BossHP.h"
 #pragma endregion Monster
 
@@ -1289,6 +1290,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHPBar"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHPBar.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_BossShield */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossShield"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossShield.png"), 1)))) // dds 변환 필요
+		return E_FAIL;
 #pragma endregion Monster
 
 #pragma region Script
@@ -1971,6 +1977,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_BossHPBar*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossHPBar"),
 		CUI_BossHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BossShield*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossShield"),
+		CUI_BossShield::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_BossHP*/

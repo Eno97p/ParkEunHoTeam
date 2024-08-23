@@ -8,6 +8,7 @@
 #include "UI_Activate.h"
 #include "UIGroup_Script.h"
 #include "ItemData.h"
+#include "Passive_Element.h"
 
 CNPC_Yaak::CNPC_Yaak(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CNpc{ pDevice, pContext }
@@ -148,6 +149,19 @@ void CNPC_Yaak::Key_Input()
 
 			CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_HOVERBOARD);
 
+			list<CGameObject*> pes = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Passive_Element"));
+
+			for (auto pe : pes)
+			{
+				CPassive_Element* pPassiveElement = dynamic_cast<CPassive_Element*>(pe);
+				if (pPassiveElement == nullptr)
+					continue;
+
+				if (pPassiveElement->Get_isHiddenObject())
+				{
+					pPassiveElement->Discover_HiddenObject();
+				}
+			}
 			break;
 		}
 		case 0:

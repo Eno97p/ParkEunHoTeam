@@ -847,6 +847,9 @@
     <Filter Include="02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect">
       <UniqueIdentifier>{ea913c6d-9ef8-48a9-b0ad-ef09216bf474}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Shield">
+      <UniqueIdentifier>{54c1cae6-48f7-401d-b11f-753322af8e3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1861,6 +1864,9 @@
     <ClInclude Include="..\Public\UI_HUDEffect.h">
       <Filter>02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_BossShield.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2822,6 +2828,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_HUDEffect.cpp">
       <Filter>02.GameObjects\07. UI\HUD\WeaponSlot\BG\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossShield.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

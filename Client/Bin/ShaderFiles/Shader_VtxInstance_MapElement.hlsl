@@ -15,7 +15,7 @@ texture2D g_BlurTexture;
 float g_DisolveValue = 1.f;
 float g_TexcoordY = 1.f;
 float4 g_fColor = { 1.f, 1.f, 1.f, 1.f };
-
+float g_fCamFar = 3000.f;
 bool g_bDiffuse = false;
 bool g_bNormal = false;
 bool g_bSpecular = false;
@@ -165,7 +165,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
@@ -222,7 +222,7 @@ PS_OUT PS_TILING(PS_IN In)
     if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, vTilingTexcoord);

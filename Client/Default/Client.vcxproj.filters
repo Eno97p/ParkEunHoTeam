@@ -849,6 +849,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Shield">
       <UniqueIdentifier>{54c1cae6-48f7-401d-b11f-753322af8e3a}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. BackGround_Rock">
+      <UniqueIdentifier>{c2477c4b-9154-4fc9-87a6-290578101688}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

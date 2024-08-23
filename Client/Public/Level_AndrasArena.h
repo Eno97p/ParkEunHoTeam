@@ -42,6 +42,8 @@ private:
 	_uint m_iMainCameraIdx = 0;
 	_uint m_iCamSize = 0;
 //#endif
+private:
+	_bool m_bGenerateBlackHole = false;
 
 public:
 	static CLevel_AndrasArena* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -25,7 +25,7 @@ bool g_bRoughness = false;
 bool g_bMetalic = false;
 bool g_MotionBlur = false;
 
-
+float g_fCamFar = 3000.f;
 //바람 시뮬레이션용
 float g_fTime;
 float3 g_vWindDirection;
@@ -220,7 +220,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
@@ -273,7 +273,7 @@ PS_OUT PS_TILING(PS_IN In)
     if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, vTilingTexcoord);
@@ -328,7 +328,7 @@ PS_OUT PS_LEAF(PS_IN In)
     }
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
@@ -395,7 +395,7 @@ PS_OUT PS_TRUNK(PS_IN In)
     if (g_bDiffuse) Out.vDiffuse = (vDiffuse * 0.7f) + 0.1f;
 
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
     if (g_bSpecular) Out.vSpecular = vSpecular;
 
     vector vEmissive = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);

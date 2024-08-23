@@ -113,3 +113,6 @@
 112. BackBlackHoleLoop1
 113. BackBlackHoleLoop2
 114. BackBlackHoleLoop3
+115. AndrasDie
+116. GroundSlashHit
+117. AndrasKick

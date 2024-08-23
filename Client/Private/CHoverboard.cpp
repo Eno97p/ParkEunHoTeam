@@ -119,7 +119,19 @@ void CHoverboard::Tick(_float fTimeDelta)
 	m_bIsMoving = (KEY_HOLD(DIK_W) || KEY_HOLD(DIK_S));
 	if (m_bIsMoving)
 	{
-	
+		if (m_bIsBoost)
+		{
+			m_pGameInstance->Set_MotionBlur(true);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Hoverboard_Dash.ogg"), SOUND_HOVERBOARD_DASH, 0.f, 1.f, 0.5f, false);
+		}
+		else
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD_DASH);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Hoverboard.ogg"), SOUND_HOVERBOARD, 0.f, 1.f, 0.5f, false);
+		}
 		steerResponse->maxResponse = XMConvertToRadians(45.f); // ¿ø·¡ °ª 
 		steerResponse->wheelResponseMultipliers[0] = 1.0f;
 		steerResponse->wheelResponseMultipliers[1] = 1.0f;
@@ -141,23 +153,20 @@ void CHoverboard::Tick(_float fTimeDelta)
 
 	}
 
-	if (m_bIsBoost)
-	{
-		m_pGameInstance->Set_MotionBlur(true);
-	}
-
 	if (KEY_TAP(DIK_LSHIFT))
 	{
 		if (m_bIsBoost)
 		{
 			m_bIsBoost = false;
-
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Hoverboard_BoostOff.ogg"), SOUND_EFFECT);
 			CUI_Manager::GetInstance()->Set_Dash(false);
 		}
 		else
 		{
 			m_bIsBoost = true;
-
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Hoverboard_Boost.ogg"), SOUND_EFFECT);
 			// UI Dash On
 			CUI_Manager::GetInstance()->Set_Dash(true);
 		}

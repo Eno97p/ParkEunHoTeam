@@ -145,10 +145,14 @@ void CUI_PortalText::Setting_Text(LEVEL ePortalLevel)
 void CUI_PortalText::Check_Distance()
 {
 	// Player와의 거리 계산
-	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
-	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
-	//Safe_AddRef(m_pPlayerTransform);
 
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+
+	if (PlayerList.empty())
+		return;
+
+	CTransform* pPlayerTransform = dynamic_cast<CTransform*>(dynamic_cast<CPlayer*>(PlayerList.front())->Get_Component(TEXT("Com_Transform")));
+	
 	_vector vBetween = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vTargetPos;
 	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
 

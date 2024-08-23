@@ -423,16 +423,15 @@ PS_OUT PS_PORTALPIC(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	//float2 Center = float2(0.5f, 0.5f);
 	float2 uv = In.vTexcoord;
 
 	uv.x += g_fFlowTime * 0.1f;
 
-	//float2 MovedUV = RadialShear(uv, Center, g_RadialStrength, 0.f);
-
 	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
-	//vector vNoise = g_DesolveTexture.Sample(LinearSampler, uv);
 	vector vOpacity = g_OpacityTex.Sample(LinearSampler, uv);
+	vector vDissolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	float dissolveValue = (vDissolve.r + vDissolve.g + vDissolve.b) / 3.f;
 
 	if (In.vTexcoord.y <= 0.5) {
 		Color.a *= (In.vTexcoord.y) *2.0;
@@ -443,8 +442,27 @@ PS_OUT PS_PORTALPIC(PS_IN In)
 
 	Out.vColor = Color;
 
+	if (!g_bIsFadeIn)
+	{
+		if ((g_DisolveValue - dissolveValue) < 0.05f)
+		{
+			Out.vColor = Color;
+			return Out;
+		}
+		else if (dissolveValue < g_DisolveValue)
+		{
+			discard;
+		}
+		else
+		{
+			Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+			Out.vColor.a = Color.a;
+		}
+	}
+
 	return Out;
 }
+
 PS_OUT PS_PORTALPIC_Bloom(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
@@ -681,10 +699,6 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_PORTALPIC_Bloom();
-	}
-
-
-
-		
+	}	
 }
 

@@ -64,7 +64,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
 	if (LoadPlayerData)
 	{
-		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;
+		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
 		m_iLevel = *get<0>(*LoadPlayerData).iLevel;
 		m_iVitalityLv = *get<0>(*LoadPlayerData).iVitalityLv;
 		m_iStaminaLv = *get<0>(*LoadPlayerData).iStaminaLv;

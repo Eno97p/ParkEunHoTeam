@@ -412,9 +412,9 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
 		return E_FAIL;
 	
-	savePointDesc.vPosition = _float3(93.f, 521.f, 98.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
-		return E_FAIL;
+	//savePointDesc.vPosition = _float3(93.f, 521.f, 98.f);
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+	//	return E_FAIL;
 
 
 

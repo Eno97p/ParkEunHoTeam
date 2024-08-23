@@ -24,7 +24,7 @@
 #include "BlastWall.h"
 #include"CInitLoader.h"
 
-
+#include"EventTrigger.h"
 
 
  vector< CMap_Element::MAP_ELEMENT_DESC> vecMapElementDesc;
@@ -69,6 +69,8 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
+	if (FAILED(Ready_Layer_Trigger()))
+			return E_FAIL;
 	
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -335,6 +337,29 @@ HRESULT CLevel_Jugglas::Ready_Layer_Effect(const wstring & strLayerTag)
 	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Explosion"))))
 	//		return E_FAIL;
 	//}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
+{
+
+
+	_float4x4 WorldMatrix;
+	//For . GrassLand
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-269.1f, 5.11f, 43.f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
+
+
 
 	return S_OK;
 }

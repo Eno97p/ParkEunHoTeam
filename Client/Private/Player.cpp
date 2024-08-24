@@ -143,7 +143,7 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 		m_bIsCloaking = false;
 	}
 
-	//Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
+	Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
 }
 
 void CPlayer::Tick(_float fTimeDelta)

@@ -287,7 +287,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring & strLayerTag)
 
 	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
 	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	 pTPCDesc.fNear = 0.1f;
+	 pTPCDesc.fNear = 1.f;
 	 pTPCDesc.fFar = 3000.f;
 
 	 pTPCDesc.fSpeedPerSec = 40.f;

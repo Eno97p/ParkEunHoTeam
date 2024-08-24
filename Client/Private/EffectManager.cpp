@@ -459,7 +459,7 @@ HRESULT CEffectManager::Generate_WellCylinder(const _float4x4* BindMat)
 {
 	CWellCylinder::WELLCYLINDER* Desc = m_WellCylinder.get();
 	Desc->ParentMatrix = BindMat;
-	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Effect"),
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevelIndex(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_WellCylinder"), Desc);
 	return S_OK;
 }

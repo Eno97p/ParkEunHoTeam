@@ -501,7 +501,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 		m_iState = STATE_REVIVE;
 		Add_Hp(m_fMaxHp);
 
-		//m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+		m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
@@ -1679,7 +1679,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 void CPlayer::Generate_HoverBoard()
 {
 
-	/*if (m_pGameInstance->Get_DIKeyState(DIK_R) && m_fButtonCooltime == 0.f && !m_bRided)
+	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) && m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1698,7 +1698,7 @@ void CPlayer::Generate_HoverBoard()
 		m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"), m_pHoverBoard);
 		m_pHoverBoardTransform = dynamic_cast<CTransform*>(m_pHoverBoard->Get_Component(TEXT("Com_Transform")));
 		m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_INCREASE);
-	}*/
+	}
 }
 
 NodeStates CPlayer::Slide(_float fTimeDelta)
@@ -1709,7 +1709,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		return COOLING;
 	}
 
-	//Generate_HoverBoard();
+	Generate_HoverBoard();
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_F) && m_fButtonCooltime == 0.f && m_pHoverBoard)
 	{

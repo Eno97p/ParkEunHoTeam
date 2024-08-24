@@ -110,8 +110,14 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 	if (!m_bChestOpened)
 	{
 		CComponent* pComponent = m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_Transform"));
-		_vector vPlayerPos = dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION);
-		_vector vSavePointPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_vector vPlayerPos;
+		_vector vSavePointPos;
+		if (pComponent)
+		{
+
+			vPlayerPos = dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION);
+			vSavePointPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		}
 
 		if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 5.0f))
 		{

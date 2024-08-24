@@ -390,7 +390,7 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = -200.f;
-	landObjDesc.mWorldMatrix._42 = -20.f;
+	landObjDesc.mWorldMatrix._42 = -25.f;
 	landObjDesc.mWorldMatrix._43 = 0.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))

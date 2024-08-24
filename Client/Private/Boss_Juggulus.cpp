@@ -58,7 +58,6 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
 	m_pUI_HP->Set_Rend(true);
 
-
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
 	_uint i = 0;
 	for (auto iter : StatueList)

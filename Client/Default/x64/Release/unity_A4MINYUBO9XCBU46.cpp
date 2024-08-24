@@ -456,6 +456,9 @@
 #include "C:\3D_TeamProj\Client\Private\UI_ArrowSign.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\UI_BossShield.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UI_Broken.cpp"
 
 
@@ -484,6 +487,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_DropItemBG.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_HUDEffect.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_ItemIcon.cpp"

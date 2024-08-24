@@ -59,10 +59,31 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BezierCurve.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\BlackHole.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BlackHole_Ring.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BlackHole_Ring_Bill.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\BlackHorizon.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\BlackSphere.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Charge_Ribbon.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Charge_Vane.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\CutSceneAndras.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Distortion_Effect.cpp"
@@ -75,6 +96,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\FireEffect.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\FireFlyCube.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\FirePillar.cpp"
@@ -107,6 +131,15 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\HelixCast.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\HexaHit.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\HexaShield.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\HoverBoard.cpp"
 
 
@@ -134,6 +167,9 @@
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Loader.cpp"
 
 
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\MagicCast.cpp"
+
+
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Main.cpp"
 
 
@@ -153,6 +189,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\NeedleSpawner.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\NewAspiration.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\private\Particle.cpp"
@@ -219,6 +258,9 @@
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\Weapon.cpp"
+
+
+#include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\WellCylinder.cpp"
 
 
 #include "C:\Git\3D_TeamProject_Master\3D_TeamProj\EffectTool\Private\WhisperSword_Anim.cpp"

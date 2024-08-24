@@ -59,6 +59,23 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	m_pUI_HP->Set_Rend(true);
 
 
+
+
+	// 보스 석상 소환
+	const _float4x4 statueMatrices[STATUECOUNT] = {
+		{ 0.f, 0.f, -1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -410.189f, 67.966f, -2.195f, 1.f },
+		{ -0.91f, 0.f, -0.415f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.415f, 0.f, -0.91f, 0.f, -420.326f, 67.976f, -17.686f, 1.f },
+		{ 0.845f, 0.f, -0.536f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.536f, 0.f, 0.845f, 0.f, -420.068f, 67.932f, 13.209f, 1.f }
+	};
+
+	for (const auto& matrix : statueMatrices)
+	{
+		CMap_Element::MAP_ELEMENT_DESC StatueDesc{};
+		StatueDesc.mWorldMatrix = matrix;
+		m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+	}
+
+
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
 	_uint i = 0;
 	for (auto iter : StatueList)
@@ -95,7 +112,11 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	Check_AnimFinished();
 
-	m_pBehaviorCom->Update(fTimeDelta);
+
+	if (m_bTrigger)
+	{
+		m_pBehaviorCom->Update(fTimeDelta);
+	}
 
 	if (!m_bDead)
 	{
@@ -123,7 +144,7 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 			if (m_eColltype == CCollider::COLL_START)
 			{
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05);
+				m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 				Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 			}
 		}
@@ -167,6 +188,40 @@ void CBoss_Juggulus::Add_Hp(_int iValue)
 	{
 		m_iState = STATE_DEAD;
 	}
+}
+
+void CBoss_Juggulus::Add_Hands()
+{
+	// Juggulus Body
+	CPartObject::PARTOBJ_DESC PartDesc{};
+	PartDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	PartDesc.fSpeedPerSec = 0.f;
+	PartDesc.fRotationPerSec = 0.f;
+	PartDesc.pState = &m_iState;
+	PartDesc.eLevel = m_eLevel;
+	PartDesc.pCurHp = &m_fCurHp;
+	PartDesc.pMaxHp = &m_fMaxHp;
+
+	// Hand One
+	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
+	m_PartObjects.emplace("Hand_One", pHandOne);
+
+	// Hand Two
+	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
+	m_PartObjects.emplace("Hand_Two", pHandTwo);
+
+	// Hand Three
+	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
+	m_PartObjects.emplace("Hand_Three", pHandThree);
+}
+
+void CBoss_Juggulus::Juggulus_Activate()
+{
+	if (!m_bTrigger)
+	{
+		Add_Hands();
+	}
+	m_bTrigger = true;
 }
 
 HRESULT CBoss_Juggulus::Add_Components()
@@ -218,33 +273,11 @@ HRESULT CBoss_Juggulus::Add_PartObjects()
 	PartDesc.eLevel = m_eLevel;
 	PartDesc.pCurHp = &m_fCurHp;
 	PartDesc.pMaxHp = &m_fMaxHp;
-	//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//PartDesc.mWorldMatrix._41 = XMVectorGetX(vPos);
-	//PartDesc.mWorldMatrix._42 = XMVectorGetY(vPos);
-	//PartDesc.mWorldMatrix._43 = XMVectorGetZ(vPos);
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Juggulus"), &PartDesc);
 	if (nullptr == pBody)
 		return E_FAIL;
 	m_PartObjects.emplace("Body", pBody);
-
-	// Hand One
-	CGameObject* pHandOne = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandOne"), &PartDesc);
-	if (nullptr == pHandOne)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_One", pHandOne);
-
-	// Hand Two
-	CGameObject* pHandTwo = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandTwo"), &PartDesc);
-	if (nullptr == pHandTwo)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_Two", pHandTwo);
-
-	// Hand Three
-	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
-	if (nullptr == pHandThree)
-		return E_FAIL;
-	m_PartObjects.emplace("Hand_Three", pHandThree);
 
 	return S_OK;
 }
@@ -492,6 +525,9 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
+			m_pGameInstance->Get_MainCamera()->Zoom(120.f, 0.4f, 1000.f);
+
+
 			// 손 삭제, 몬스터 삭제
 			Safe_Release((*m_PartObjects.find("Hand_One")).second);
 			Safe_Release((*m_PartObjects.find("Hand_Two")).second);
@@ -532,6 +568,8 @@ NodeStates CBoss_Juggulus::CreateHammer(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			m_pGameInstance->Get_MainCamera()->Zoom(60.f, 0.3f, 0.1f);
+
 			m_ePhase = PHASE_TWO;
 			m_iState = STATE_IDLE_SEC;
 		}
@@ -660,6 +698,11 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 	}
 
 	_int iRand = RandomInt(0, 4);
+	if (iRand != 0)
+	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
+	}
 	switch (iRand)
 	{
 	case 0:

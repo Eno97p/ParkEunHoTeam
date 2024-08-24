@@ -30,6 +30,7 @@ public:
 	_bool										m_bReviving = false;
 	_bool										m_bChasing = true;
 	_bool										m_bHit = false;
+	_bool	m_bTrigger = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fChasingDelay = 0.5f;
@@ -44,7 +45,8 @@ public:
 	virtual void Late_Tick(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void Add_Hp(_int iValue) override;
-
+	void Add_Hands();
+	void Juggulus_Activate();
 private:
 	_bool							m_isHammerCreate = { false };
 	_bool							m_isAttackDone = { true };

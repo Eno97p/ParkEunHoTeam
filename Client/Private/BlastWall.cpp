@@ -124,6 +124,8 @@ void CBlastWall::Tick(_float fTimeDelta)
 					EFFECTMGR->Generate_Particle(56, ParticlePos, nullptr, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
 					EFFECTMGR->Generate_Particle(56, ParticlePos);
 					Broken_Wall();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("wavHit3.ogg"), SOUND_EFFECT);
 					m_bIsHit = true;
 
 					break;
@@ -181,10 +183,10 @@ HRESULT CBlastWall::Render()
 
 		m_pModelCom->Render(i);
 	}
-//#pragma region 모션블러
-//	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
-//	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
-//#pragma endregion 모션블러
+#pragma region 모션블러
+	m_PrevWorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	m_PrevViewMatrix = *m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW);
+#pragma endregion 모션블러
 	return S_OK;
 
 }
@@ -244,15 +246,15 @@ HRESULT CBlastWall::Bind_ShaderResources()
 	//	return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
-//#pragma region 모션블러
-//	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
-//		return E_FAIL;
-//	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
-//		return E_FAIL;
-//	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
-//	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
-//		return E_FAIL;
-//#pragma endregion 모션블러
+#pragma region 모션블러
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevWorldMatrix", &m_PrevWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
+		return E_FAIL;
+	_bool bMotionBlur = m_pGameInstance->Get_MotionBlur() || m_bMotionBlur;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+		return E_FAIL;
+#pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 

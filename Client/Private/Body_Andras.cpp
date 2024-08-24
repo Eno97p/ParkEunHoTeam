@@ -44,8 +44,11 @@ void CBody_Andras::Priority_Tick(_float fTimeDelta)
 	switch (m_eDisolveType)
 	{
 	case TYPE_DECREASE:
-		m_fDisolveValue -= fTimeDelta * 0.5f;
+	{
+		m_fDisolveValue -= fTimeDelta * 0.2f;
+		EFFECTMGR->Generate_Particle(115, _float4(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f));
 		break;
+	}
 	default:
 		break;
 	}
@@ -535,7 +538,7 @@ HRESULT CBody_Andras::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
-	_float4 fDisolveColor = _float4(1.f, 1.f, 1.f, 1.f);
+	_float4 fDisolveColor = _float4(1.f, 0.5f, 0.f, 1.f);
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveColor", &fDisolveColor, sizeof(_float4))))
 		return E_FAIL;
 

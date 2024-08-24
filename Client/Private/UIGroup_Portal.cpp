@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "UI_PortalPic.h"
+#include "UI_PortalText.h"
 
 CUIGroup_Portal::CUIGroup_Portal(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -14,6 +15,19 @@ CUIGroup_Portal::CUIGroup_Portal(const CUIGroup_Portal& rhs)
 {
 }
 
+_bool CUIGroup_Portal::Get_isPic()
+{
+	if (m_pPic == nullptr)
+		return false;
+	else
+		return true;
+}
+
+void CUIGroup_Portal::Set_FadeOut()
+{
+	m_pPic->Set_FadeOut();
+}
+
 HRESULT CUIGroup_Portal::Initialize_Prototype()
 {
 	return S_OK;
@@ -21,10 +35,12 @@ HRESULT CUIGroup_Portal::Initialize_Prototype()
 
 HRESULT CUIGroup_Portal::Initialize(void* pArg)
 {
+	UIGROUP_PORTAL_DESC* pDesc = static_cast<UIGROUP_PORTAL_DESC*>(pArg);
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_UI()))
+	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->fAngle, pDesc->vPos)))
 		return E_FAIL;
 
 	return S_OK;
@@ -36,15 +52,28 @@ void CUIGroup_Portal::Priority_Tick(_float fTimeDelta)
 
 void CUIGroup_Portal::Tick(_float fTimeDelta)
 {
-	// Level 단위에서 생성? UI Manager의 함수 호출해서 생성하고 트리거와 충돌 시 제거 함수를 호출해서 없애주기
 	if (nullptr != m_pPic)
+	{
 		m_pPic->Tick(fTimeDelta);
+
+		if (m_pPic->Get_isFadeEnd())
+		{
+			// 지워져야 함
+			m_isFadeEnd = true;
+		}
+	}
+
+	if (nullptr != m_pText)
+		m_pText->Tick(fTimeDelta);
 }
 
 void CUIGroup_Portal::Late_Tick(_float fTimeDelta)
 {
 	if (nullptr != m_pPic)
 		m_pPic->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pText)
+		m_pText->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUIGroup_Portal::Render()
@@ -52,14 +81,29 @@ HRESULT CUIGroup_Portal::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Portal::Create_UI()
+HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos)
 {
+	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
+	pTextDesc.eLevel = LEVEL_STATIC;
+	pTextDesc.vPos = vPos;
+	pTextDesc.ePortalLevel = LEVEL_GRASSLAND;
 
-	// Prototype_GameObject_UI_PortalPic
+	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pTextDesc));
+	if (nullptr == m_pText)
+		return E_FAIL;
 
+	if (isPic) // Pic이 있는 경우
+	{
+		CUI_PortalPic::UI_PORTALPIC_DESC pPicDesc{};
+		pPicDesc.eLevel = LEVEL_STATIC;
+		pPicDesc.iPicNum = iPicNum;
+		pPicDesc.fAngle = fAngle;
+		pPicDesc.vPos = vPos;
 
-
-
+		m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pPicDesc));
+		if (nullptr == m_pPic)
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
@@ -94,5 +138,6 @@ void CUIGroup_Portal::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pText);
 	Safe_Release(m_pPic);
 }

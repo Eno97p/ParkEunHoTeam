@@ -14,7 +14,10 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "CutSceneCamera.h"
 #include "HexaShield.h"
+
+#include "UIGroup_BossHP.h"
 
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -72,12 +75,15 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_Particles.emplace_back(Oura);
 	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
 	m_Particles.emplace_back(Oura2);
+
+	m_fDeadDelay = 5.f;
+
 	return S_OK;
 }
 
 void CAndras::Priority_Tick(_float fTimeDelta)
 {
-	if (m_fDeadDelay < 2.f)
+	if (m_fDeadDelay < 5.f)
 	{
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
@@ -100,6 +106,7 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
+		
 		m_bTrigger = true;
 	}
 
@@ -132,6 +139,7 @@ void CAndras::Tick(_float fTimeDelta)
 	m_pPhysXCom->Tick(fTimeDelta);
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_ShieldRatio(m_fCurShield / m_fMaxShield);
 	m_pUI_HP->Tick(fTimeDelta);
 
 	if (m_bIsLocked)
@@ -396,7 +404,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 		if (HexaShieldText == nullptr)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER05);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 		else
 		{
@@ -404,7 +412,7 @@ NodeStates CAndras::Hit(_float fTimeDelta)
 			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_HitShield.ogg"), SOUND_MONSTER);
 		}
 		
-		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
 			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
@@ -596,9 +604,11 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			{
 				XMStoreFloat4(&fDir, vDir);
 				EFFECTMGR->Generate_GroundSlash(fPos, fDir);
+				
 			}
 			else
 			{
+				EFFECTMGR->Generate_Particle(116, fPos);
 				for (_uint i = 0; i < 8; i++)
 				{
 					XMStoreFloat4(&fDir, vDir);
@@ -611,6 +621,10 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			m_bSlash = false;
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Andras_GroundAttack_Start.ogg"), SOUND_MONSTER);
+
+			//카메라 연출
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(0.772f, 0.057f, 0.019f, 100.f);
 		}
 
 		if (m_isAnimFinished)
@@ -636,8 +650,13 @@ NodeStates CAndras::KickAttack(_float fTimeDelta)
 			pDesc.mWorldMatrix._41 = vPos.m128_f32[0];
 			pDesc.mWorldMatrix._42 = vPos.m128_f32[1];
 			pDesc.mWorldMatrix._43 = vPos.m128_f32[2];
-			m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
+			m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_QTESword"), TEXT("Prototype_GameObject_Weapon_KickSword"), &pDesc);
 			m_fKickSwordDelay = 100.f;
+
+
+			m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Init_AndrasQTECutScene();
+
 		}
 
 		if (m_fLengthFromPlayer > 3.f)
@@ -687,6 +706,10 @@ NodeStates CAndras::LaserAttack(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(51, vStartPosition);
 			EFFECTMGR->Generate_Lazer(0, m_pTransformCom->Get_WorldFloat4x4());
 			m_bLaser = true;
+
+			//카메라 연출
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(2.f, 0.01f, 0.019f, 100.f);
 		}
 		
 		if (m_isAnimFinished)
@@ -825,10 +848,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			}
@@ -844,10 +871,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(4, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			case 3:
@@ -856,6 +887,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 4:
 				//LaserAttack
+				EFFECTMGR->Generate_Magic_Cast(1, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_LASERATTACK;
 				break;
 			case 5:
@@ -864,11 +896,12 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 6:
 				//ShootingStarAttack
+				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_SHOOTINGSTARATTACK;
 				break;
 			}
 		}
-		m_iState = STATE_SPRINTATTACK;
+
 		return SUCCESS;
 	}
 
@@ -917,14 +950,30 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
-	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurShield > 0) // 쉴드가 있는 경우에는 쉴드 피격 처리
+	{
+		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
+	}
+	else if ((m_fCurHp <= m_fMaxHp * 0.5f) && !m_bPhase2) // 쉴드 생성 전에 값 넘어가지 않도록 임의로 예외 처리
+	{
+		m_fCurHp = m_fMaxHp * 0.5f;
+		return;
+	}
+	else
+	{
+		m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	}
+
 	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
 	}
 	else if (m_fCurHp <= m_fMaxHp * 0.5f && !m_bPhase2)
 	{
-		Phase_Two();
+		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
+		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+		//Phase_Two();
 	}
 
 	if (m_bPhase2)
@@ -941,6 +990,10 @@ void CAndras::Phase_Two()
 	m_fCurHp = m_fMaxHp * 0.5f;
 	m_bPhase2 = true;
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+
+	// 쉴드 UI 및 값 생성
+	m_fCurShield = 50.f;
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 
 CAndras* CAndras::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

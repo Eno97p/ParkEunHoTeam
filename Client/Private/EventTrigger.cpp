@@ -9,9 +9,11 @@
 #include "TransitionCamera.h"
 #include "CutSceneCamera.h"
 
+#include "UI_Manager.h"
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
+#include "Boss_Juggulus.h"
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -45,9 +47,10 @@ HRESULT CEventTrigger::Initialize(void* pArg)
 		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
 		//m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
 
-		_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
-
+		//_vector vPos = XMLoadFloat4x4(&pDesc->mWorldMatrix).r[3];
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->mWorldMatrix));
+		
 		//TRIGGER STATE SET
 		m_eTRIGState = (TRIGGER_TYPE)pDesc->TriggerType;
 	}
@@ -103,6 +106,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 							return;
 					}
 				}
+
+				// Portal UI 제거
+				CUI_Manager::GetInstance()->Delete_PortalUI();
 			}
 			else if (m_eTRIGState == TRIG_SCENE_CHANGE_FOR_ACKBAR)
 			{
@@ -322,19 +328,19 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					//m_pGameInstance->Erase(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Passive_Element"), 8));
 
-					// 보스 석상 소환
-					const _float4x4 statueMatrices[3] = {
-						{ 0.f, 0.f, -1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -410.189f, 67.966f, -2.195f, 1.f },
-						{ -0.91f, 0.f, -0.415f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.415f, 0.f, -0.91f, 0.f, -420.326f, 67.976f, -17.686f, 1.f },
-						{ 0.845f, 0.f, -0.536f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.536f, 0.f, 0.845f, 0.f, -420.068f, 67.932f, 13.209f, 1.f }
-					};
+					//// 보스 석상 소환
+					//const _float4x4 statueMatrices[3] = {
+					//	{ 0.f, 0.f, -1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -410.189f, 67.966f, -2.195f, 1.f },
+					//	{ -0.91f, 0.f, -0.415f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.415f, 0.f, -0.91f, 0.f, -420.326f, 67.976f, -17.686f, 1.f },
+					//	{ 0.845f, 0.f, -0.536f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.536f, 0.f, 0.845f, 0.f, -420.068f, 67.932f, 13.209f, 1.f }
+					//};
 
-					for (const auto& matrix : statueMatrices)
-					{
-						CMap_Element::MAP_ELEMENT_DESC StatueDesc{};
-						StatueDesc.mWorldMatrix = matrix;
-						m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
-					}
+					//for (const auto& matrix : statueMatrices)
+					//{
+					//	CMap_Element::MAP_ELEMENT_DESC StatueDesc{};
+					//	StatueDesc.mWorldMatrix = matrix;
+					//	m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+					//}
 
 					// 보스 소환
 					auto pElevator = dynamic_cast<CElevator*>(m_pGameInstance->Get_Object(LEVEL_JUGGLAS, TEXT("Layer_Active_Element"), 0));
@@ -376,6 +382,41 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_SIDEVIEW;
+					pTCDesc.fTransitionTime = 1.f;
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+
+					list<CGameObject*> juggulus = m_pGameInstance->Get_GameObjects_Ref(LEVEL_JUGGLAS, TEXT("Layer_Boss"));
+
+					if (!juggulus.empty())
+					{
+						dynamic_cast<CBoss_Juggulus*>(juggulus.front())->Juggulus_Activate();
+
+					}
+				}
+				break;
+				case TRIG_CUTSCENE_MALKHEL:
+				{
+					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_BLOODMOON);
+
+					//컷씬 트렌지션
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
 					pTCDesc.iEndCam = CAM_CUTSCENE;
 					pTCDesc.fTransitionTime = 1.f;
 					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
@@ -386,9 +427,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
 
-
 				}
-				break;
+					break;
 				default:
 					break;
 				}

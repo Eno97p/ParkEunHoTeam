@@ -3,6 +3,8 @@
 #include "Base.h"
 #include "Client_Defines.h"
 
+#include "UIGroup_Portal.h"
+
 BEGIN(Engine)
 class CGameInstance;
 END
@@ -74,6 +76,11 @@ public:
 	void				Setting_Cinematic();
 
 
+	// Portal
+	void				Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc);
+	void				Delete_PortalUI(_bool isBackPortal = false);
+
+
 
 	// For.LEVEL //PSW
 	void SetVisitLevel(LEVEL eLevel) { m_VsitLevel.insert(eLevel); }
@@ -96,6 +103,7 @@ private:
 	class CUI_FadeInOut*				m_pFadeOut = { nullptr };
 	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
 	class CUI_Cinematic*				m_pCinematic = { nullptr };
+	vector<class CUIGroup_Portal*>		m_vecPortal;
 
 
 

@@ -23,6 +23,7 @@ private:
 
 public:
 	void			Set_Ratio(_float fRatio) { m_fHPRatio = fRatio; }
+	void			Set_ShieldRatio(_float fRatio) { m_fShieldRatio = fRatio; }
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -34,11 +35,15 @@ public:
 
 	void			Rend_Damage(_int iValue);
 
+	void			Create_Shield();
+
 private:
 	_uint					m_iDamage = { 0 }; // 누적 데미지
 	_float					m_fHPRatio = { 0.f };
+	_float					m_fShieldRatio = { 0.f };
 
 	vector<CUI*>			m_vecUI;
+	class CUI_BossShield*	m_pShield = { nullptr };
 
 	BOSSUI_NAME				m_eBossUIName = { BOSSUI_END };
 

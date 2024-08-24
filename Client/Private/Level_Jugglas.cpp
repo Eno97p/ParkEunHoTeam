@@ -24,9 +24,9 @@
 #include "BlastWall.h"
 #include"CInitLoader.h"
 
+#include"EventTrigger.h"
 
-
-
+#include "SavePoint.h"
  vector< CMap_Element::MAP_ELEMENT_DESC> vecMapElementDesc;
 
 
@@ -69,6 +69,8 @@ HRESULT CLevel_Jugglas::Initialize()
 
 	if (FAILED(Ready_LandObjects()))
 		return E_FAIL;
+	if (FAILED(Ready_Layer_Trigger()))
+			return E_FAIL;
 	
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -339,6 +341,29 @@ HRESULT CLevel_Jugglas::Ready_Layer_Effect(const wstring & strLayerTag)
 	return S_OK;
 }
 
+HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
+{
+
+
+	_float4x4 WorldMatrix;
+	//For . GrassLand
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-255.159f, 4.27f, 27.176f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
+
+
+
+	return S_OK;
+}
+
 HRESULT CLevel_Jugglas::Ready_Layer_BackGround(const wstring & strLayerTag)
 {
 	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))
@@ -365,7 +390,7 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 
 	CLandObject::LANDOBJ_DESC landObjDesc;
 	landObjDesc.mWorldMatrix._41 = -200.f;
-	landObjDesc.mWorldMatrix._42 = -20.f;
+	landObjDesc.mWorldMatrix._42 = -25.f;
 	landObjDesc.mWorldMatrix._43 = 0.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
@@ -453,6 +478,17 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 			return E_FAIL;
 	}
 	
+
+
+
+
+
+	CSavePoint::_tagSavePoint_Desc savePointDesc;
+	savePointDesc.vPosition = _float3(-236, 4.25f, 8.204f);
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+		return E_FAIL;
+
 
 
 	//Npc

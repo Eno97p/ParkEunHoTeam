@@ -80,7 +80,7 @@ public:
 	_uint Get_LODPlaneCount3() const { return m_iLODPlaneCount3; }
 	_float3 Get_LeafCol() { return m_LeafCol; }
 	_bool Get_TreeBloom() { return m_bTreeBloom; }
-
+	_int Get_GrassCount() { return m_iGrassCount; }
 
 	_uint Get_SkyIdx() { return m_iSkyBoxIdx; }
 
@@ -230,6 +230,7 @@ private:
 	_uint			 m_iLODPlaneCount2 = 0;
 	_uint			 m_iLODPlaneCount3 = 0;
 
+	_int				m_iGrassCount = { 0 };
 
 	_float				m_fBillboardFactor = { 0.f };
 	_float				m_fElasticityFactor = { 0.f};

@@ -14,7 +14,7 @@ texture2D g_EmissiveTexture;
 //FOR DISSOLVE
 texture2D	g_NoiseTexture;
 float		g_fAccTime;
-
+float		g_fCamFar = 3000.f;
 
 vector		g_vCamPosition;
 
@@ -185,7 +185,7 @@ PS_OUT PS_MAIN(PS_IN In)
 	vNormal = mul(vNormal, WorldMatrix);
 	if (g_bDiffuse) Out.vDiffuse = vDiffuse;
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
 	if (g_bSpecular) Out.vSpecular = vSpecular;
 
 	// 디퓨즈 맵을 사용하여 러프니스 계산
@@ -275,7 +275,7 @@ PS_OUT PS_DISSOLVE(PS_IN In)
 
 	Out.vDiffuse = vDiffuse/* * 0.9f*/;
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
 	Out.vSpecular = g_vMtrlSpecular;
 
 	//Out.vEmissive = 0.5f;
@@ -393,7 +393,7 @@ PS_OUT PS_CARD(PS_IN In)
 	vNormal = mul(vNormal, WorldMatrix);
 
 	Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 1.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fCamFar, 0.0f, 1.f);
 
 	return Out;
 }
@@ -535,7 +535,7 @@ technique11 DefaultTechnique
 		pass Moon_8
 	{
 		SetRasterizerState(RS_NoCull);
-		SetDepthStencilState(DSS_None_Test_None_Write, 0);
+		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		VertexShader = compile vs_5_0 VS_MAIN();

@@ -9,12 +9,11 @@
 #include "Clone.h"
 #include "Body_Player.h"
 
-#include"CHitReport.h"
+#include "CHitReport.h"
 #include "EffectManager.h"
 #include "ThirdPersonCamera.h"
 #include "CHoverBoard.h"
 #include "Monster.h"
-
 
 #include "UI_FadeInOut.h"
 #include"CInitLoader.h"
@@ -32,6 +31,11 @@ CPlayer::CPlayer(const CPlayer& rhs)
 
 HRESULT CPlayer::Initialize_Prototype()
 {
+
+
+	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
+
+
 
 	return S_OK;
 }
@@ -57,9 +61,31 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 
+	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
+
+	if (LoadPlayerData)
+	{
+		//m_isReviveFadeing = get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
+		m_iLevel = get<0>(*LoadPlayerData).iLevel;
+		m_iVitalityLv = get<0>(*LoadPlayerData).iVitalityLv;
+		m_iStaminaLv = get<0>(*LoadPlayerData).iStaminaLv;
+		m_iStrenghtLv = get<0>(*LoadPlayerData).iStrenghtLv;
+		m_iMysticismLv = get<0>(*LoadPlayerData).iMysticismLv;
+		m_iKnowledgeLv = get<0>(*LoadPlayerData).iKnowledgeLv;
+		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
+		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
 
 
-	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
+	}
+	//m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
+	m_tPlayerStatusData.iLevel = m_iLevel;
+	m_tPlayerStatusData.iVitalityLv =m_iVitalityLv;
+	m_tPlayerStatusData.iStaminaLv = m_iStaminaLv;
+	m_tPlayerStatusData.iStrenghtLv = m_iStrenghtLv;
+	m_tPlayerStatusData.iMysticismLv = m_iMysticismLv;
+	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
+	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
+	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 
 
 
@@ -119,7 +145,7 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 		m_bIsCloaking = false;
 	}
 
-	//Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
+	Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
 }
 
 void CPlayer::Tick(_float fTimeDelta)
@@ -216,8 +242,11 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_Needle(vStartPosition);
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
 		//HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
-		EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
-		
+		//EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
+		//vStartPosition.y += 5.f;
+		//EFFECTMGR->Generate_BlackHole(0, vStartPosition);
+		EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
+
 		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}
 
@@ -366,6 +395,10 @@ void CPlayer::PlayerHit(_float fValue, _bool bSlowHit)
 	}
 	Add_Hp(-fValue * m_fShield);
 
+	//카메라 연출
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Shake_Camera(0.62f, 0.01f, 0.013f, 34.736f);
+
 	CUI_Manager::GetInstance()->Set_ScreenBloodRend(true);
 }
 
@@ -385,7 +418,35 @@ void CPlayer::Parry_Succeed()
 	m_fSlowDelay = 0.f;
 	fSlowValue = 0.2f;
 	m_pGameInstance->Disable_Echo();
-	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT);
+	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT, 0.f);
+}
+
+CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
+{
+
+	//m_isReviveFadeing = get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
+	//m_iLevel = get<0>(*LoadPlayerData).iLevel;
+	//m_iVitalityLv = get<0>(*LoadPlayerData).iVitalityLv;
+	//m_iStaminaLv = get<0>(*LoadPlayerData).iStaminaLv;
+	//m_iStrenghtLv = get<0>(*LoadPlayerData).iStrenghtLv;
+	//m_iMysticismLv = get<0>(*LoadPlayerData).iMysticismLv;
+	//m_iKnowledgeLv = get<0>(*LoadPlayerData).iKnowledgeLv;
+	//m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
+	//m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
+
+
+	m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
+	m_tPlayerStatusData.iLevel = m_iLevel;
+	m_tPlayerStatusData.iVitalityLv = m_iVitalityLv;
+	m_tPlayerStatusData.iStaminaLv = m_iStaminaLv;
+	m_tPlayerStatusData.iStrenghtLv = m_iStrenghtLv;
+	m_tPlayerStatusData.iMysticismLv = m_iMysticismLv;
+	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
+	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
+	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
+
+
+	return m_tPlayerStatusData;
 }
 
 void CPlayer::Pull_Status()
@@ -517,7 +578,8 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				//이후 다시 태어날 떄 불러올 수 있도록
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
-				//m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");			//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Statue");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");		//지워야할 Layer
@@ -525,7 +587,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				CInitLoader<LEVEL, const wchar_t*>* InitLoader = new CInitLoader<LEVEL, const wchar_t*>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");
-				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
+				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
 				InitLoader->Load_TriggerStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");
 				InitLoader->Load_BlastWallStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");
 
@@ -547,8 +609,6 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				m_isReviveFadeing = false;
 			}
-
-			return SUCCESS;
 		}
 		return RUNNING;
 	}
@@ -562,6 +622,7 @@ NodeStates CPlayer::Knockback(_float fTimeDelta)
 {
 	if (m_iState == STATE_KNOCKBACK)
 	{
+
 		if (m_pPhysXCom->Get_IsJump())
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
@@ -595,8 +656,8 @@ NodeStates CPlayer::Hit(_float fTimeDelta)
 	{
 		if (!m_bSound)
 		{
-			/*m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);*/
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("PlayerHit.ogg"), SOUND_PLAYER);
 			m_bSound = true;
 		}
 
@@ -953,7 +1014,7 @@ NodeStates CPlayer::SpecialAttack(_float fTimeDelta)
 
 NodeStates CPlayer::Special1(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1065,7 +1126,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 
 NodeStates CPlayer::Special2(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1131,7 +1192,7 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 
 NodeStates CPlayer::Special3(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1209,9 +1270,8 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 
 NodeStates CPlayer::Special4(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
-
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1227,7 +1287,6 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		{
 			m_fSpecialAttack += fTimeDelta;
 		}
-		fSlowValue = 0.1f;
 	}
 
 	if (m_fSpecialAttack != 0.f)
@@ -1245,10 +1304,13 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		m_iState = STATE_SPECIALATTACK4;
 		if (m_fSpecialAttack >= 0.1f)
 		{
-			
-			fSlowValue = 1.f;
+			fSlowValue = 1.f;	
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
+		}
+		else
+		{
+			fSlowValue = 0.1f;
 		}
 		if (m_bAnimFinished)
 		{
@@ -1616,14 +1678,15 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_R) && m_fButtonCooltime == 0.f && !m_bRided)
+
+	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) && m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		_vector vRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 		_vector vLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 		_vector vUp = m_pTransformCom->Get_State(CTransform::STATE_UP);
-		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f + 1.f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
+		_float3 fPos = _float3(vPos.m128_f32[0] + vLook.m128_f32[0] * 3.f, vPos.m128_f32[1] + vLook.m128_f32[1] * 3.f + 0.5f, vPos.m128_f32[2] + vLook.m128_f32[2] * 3.f);
 		CHoverboard::HoverboardInfo hoverboardInfo;
 		hoverboardInfo.vPosition = fPos;
 		hoverboardInfo.vRight = _float3(vRight.m128_f32[0], vRight.m128_f32[1], vRight.m128_f32[2]);
@@ -1656,6 +1719,8 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 			m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_DECREASE);
 			m_pHoverBoard = nullptr;
 			m_pHoverBoardTransform = nullptr;
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD);
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD_DASH);
 		}
 		m_bRiding = !m_bRiding;
 		m_bJumping = true;
@@ -1915,7 +1980,7 @@ NodeStates CPlayer::Roll(_float fTimeDelta)
 		m_iState != STATE_DASH_LEFT && m_iState != STATE_DASH_RIGHT)
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Roll.ogg"), SOUND_EFFECT);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Roll.ogg"), SOUND_EFFECT, 0.f, 1.f, 1.f);
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);
@@ -2066,7 +2131,7 @@ NodeStates CPlayer::UseItem(_float fTimeDelta)
 
 NodeStates CPlayer::Buff(_float fTimeDelta)
 {
-	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
+	if (m_isBuffState && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
 		m_pGameInstance->Disable_Echo();
@@ -2084,6 +2149,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
+			m_isBuffState = false;
 			return SUCCESS;
 		}
 		else
@@ -2444,6 +2510,19 @@ void CPlayer::Update_Weapon(wstring wstrTextureName)
 
 void CPlayer::KnockBack(_vector vDir, _float fTimeDelta)
 {
+	_float4 vParticlePos;
+	XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	EFFECTMGR->Generate_Particle(120, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	vParticlePos.y += 1.f;
+	EFFECTMGR->Generate_Particle(121, vParticlePos);
+	EFFECTMGR->Generate_Distortion(1, vParticlePos);
+
+	m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
+	//카메라 연출
+	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+	pThirdPersonCamera->Shake_Camera(1.53f, 0.243f, 0.117f, 76.038f);
+	pThirdPersonCamera->Zoom(45.f, 0.05f, 2.0f);
+
 	_float3 fScale = m_pTransformCom->Get_Scaled();
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	m_pTransformCom->Set_State(CTransform::STATE_RIGHT, XMVector3Cross(vUp, vDir));

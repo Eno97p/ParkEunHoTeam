@@ -90,7 +90,7 @@ void CYantari::Tick(_float fTimeDelta)
 		{
 			m_bPlayerIsFront = true;
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 	}
 	else
@@ -384,11 +384,11 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER05);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_HitVoice.ogg"), SOUND_MONSTER);
 		m_bPlayerIsFront = true;
 		m_fChasingDelay = 0.5f;
-		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
 			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
@@ -414,7 +414,7 @@ NodeStates CYantari::Hit(_float fTimeDelta)
 		if (!m_bPlayerIsFront)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 			m_bPlayerIsFront = true;
 		}
 
@@ -656,13 +656,13 @@ NodeStates CYantari::Detect(_float fTimeDelta)
 	}
 	else if (m_fLengthFromPlayer > JUMPATTACKRANGE)
 	{
-		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_iState = STATE_WALKFRONT;
+		m_iState = STATE_DASHATTACK;
 		return SUCCESS;
 	}
 	else if (m_fLengthFromPlayer > ATTACKRANGE)
 	{
-		m_iState = STATE_DASHATTACK;
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_iState = STATE_WALKFRONT;
 		return SUCCESS;
 	}
 	else

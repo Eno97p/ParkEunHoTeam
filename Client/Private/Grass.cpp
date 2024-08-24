@@ -38,13 +38,24 @@ HRESULT CGrass::Initialize(void* pArg)
 
 
 	GRASS_DESC* gd = static_cast<GRASS_DESC*>(pArg);
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_GRASSLAND)
+	{
+		CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+		m_pVIBufferCom->Initial_RotateY();
+		m_pVIBufferCom->Setup_Onterrain(pTerrain);
+		m_pVIBufferCom->Initial_RandomOffset(pTerrain);
+	}
+	else
+	{
+		CVIBuffer_Instance::INSTANCE_MAP_DESC instanceDesc{};
+		instanceDesc.WorldMats = gd->WorldMats;
+		instanceDesc.iNumInstance = gd->iInstanceCount;
+		m_pVIBufferCom->Ready_Instance_ForGrass(instanceDesc);
+		m_iLODPlaneCount1 = 3;
+	}
 
-	CVIBuffer_Terrain* pTerrain = dynamic_cast<CVIBuffer_Terrain*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
-	m_pVIBufferCom->Initial_RotateY();
-	m_pVIBufferCom->Setup_Onterrain(pTerrain);
-	m_pVIBufferCom->Initial_RandomOffset(pTerrain);
 
-	
+
 
 	m_vTopCol = gd->vTopCol;
 	m_vBotCol = gd->vBotCol;
@@ -56,6 +67,7 @@ HRESULT CGrass::Initialize(void* pArg)
 	m_vTopCol.y -= randFloat;
 	m_vTopCol.z -= randFloat;
 
+	
 	
 	
 	return S_OK;
@@ -93,8 +105,8 @@ void CGrass::Priority_Tick(_float fTimeDelta)
 void CGrass::Tick(_float fTimeDelta)
 {
 
-	_float3 camPos;
-	XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
+	//_float3 camPos;
+	//XMStoreFloat3(&camPos, m_pGameInstance->Get_CamPosition());
 	//m_pVIBufferCom->Culling_Instance(camPos, 500.f);
 
 
@@ -141,15 +153,33 @@ HRESULT CGrass::Add_Components(void* pArg)
 	/* For.Prototype_Component_VIBuffer_Instance_Point*/
 	ZeroMemory(&InstanceDesc, sizeof InstanceDesc);
 
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_GRASSLAND)
+	{
+		InstanceDesc.iNumInstance = desc->iInstanceCount;
+		InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
+		InstanceDesc.vPivotPos = m_vPivotPos;
+		InstanceDesc.vRange = _float3(500.0f, 0.f, 500.0f);
+		InstanceDesc.vSize = _float2(1.f, 5.f);
+		InstanceDesc.vSpeed = _float2(1.f, 7.f);
+		InstanceDesc.vLifeTime = _float2(10.f, 15.f);
+		InstanceDesc.isLoop = true;
+	}
+	else
+	{
+		InstanceDesc.iNumInstance = 1;
+		InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
+		InstanceDesc.vPivotPos = m_vPivotPos;
+		InstanceDesc.vRange = _float3(500.0f, 0.f, 500.0f);
+		InstanceDesc.vSize = _float2(1.f, 5.f);
+		InstanceDesc.vSpeed = _float2(1.f, 7.f);
+		InstanceDesc.vLifeTime = _float2(10.f, 15.f);
+		InstanceDesc.isLoop = true;
 
-	InstanceDesc.iNumInstance = desc->iInstanceCount;
-	InstanceDesc.vOffsetPos = _float3(0.0f, 0.f, 0.0f);
-	InstanceDesc.vPivotPos = m_vPivotPos;
-	InstanceDesc.vRange = _float3(500.0f, 0.f, 500.0f);
-	InstanceDesc.vSize = _float2(1.f, 5.f);
-	InstanceDesc.vSpeed = _float2(1.f, 7.f);
-	InstanceDesc.vLifeTime = _float2(10.f, 15.f);
-	InstanceDesc.isLoop = true;
+		m_fBillboardFactor = 0.25f;
+		m_fElasticityFactor = 0.5f;
+		m_fWindStrength *= 0.8f;
+	}
+
 
 	/* For.Com_VIBuffer */
 	if (FAILED(CGameObject::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),

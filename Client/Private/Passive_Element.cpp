@@ -2,7 +2,7 @@
 #include "..\Public\Passive_Element.h"
 
 #include "GameInstance.h"
-
+#include "Camera.h"
 
 CPassive_Element::CPassive_Element(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMap_Element{ pDevice, pContext }
@@ -269,7 +269,13 @@ HRESULT CPassive_Element::Bind_ShaderResources()
     _bool bMotionBlur = m_pGameInstance->Get_MotionBlur();
     if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
         return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
+        return E_FAIL;
 #pragma endregion 모션블러
+
+    _float fCamFar = m_pGameInstance->Get_MainCamera()->Get_Far();
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fCamFar", &fCamFar, sizeof(_float))))
+        return E_FAIL;
 
     return S_OK;
 }

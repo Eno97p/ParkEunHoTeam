@@ -44,7 +44,10 @@ public:
 		_uint		iMysticismLv;
 		_uint		iKnowledgeLv;
 		_uint		iPhysicalDmg;
-		_uint		iEtherDmg;
+		_uint		iEtherDmg  ;
+
+		Player_Status_Data() = default;
+		
 	}PLAYER_STATUS_DATA;
 
 public:
@@ -110,6 +113,13 @@ public:
 	void			Set_PhysicalDmg(_int iValue) { m_iPhysicalDmg += iValue; }
 	_uint			Get_EtherDmg() { return m_iEtherDmg; }
 	void			Set_EtherDmg(_int iValue) { m_iEtherDmg += iValue; }
+	void			Set_Cloaking(){
+		m_bIsCloaking = true;
+		Add_Mp(-10.f);
+	}
+	void			Set_isBuffState(_bool isBuffState) { m_isBuffState = isBuffState; }
+
+	Player_Status_Data Get_PlayerStatusData();
 
 	void			Pull_Status(); // HP / Stamina / MP 를 Pull
 	void			Update_LvData();
@@ -120,6 +130,8 @@ public:
 	void			Set_Shield(_bool isOn) { if (isOn) m_fShield = 0.4f; else m_fShield = 1.f; }
 	void			Set_HPBuff(_bool isOn) { if (isOn) m_fHPBuff = 1.5f; else m_fHPBuff = 1.f; }
 	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
+
+	void			Generate_HoverBoard();
 
 private:
 	HRESULT Add_Nodes();
@@ -144,7 +156,7 @@ private:
 	NodeStates LAttack(_float fTimeDelta);
 	_bool CanBackAttack();
 	NodeStates RAttack(_float fTimeDelta);
-	void Generate_HoverBoard();
+	// void Generate_HoverBoard();
 	NodeStates Slide(_float fTimeDelta);
 	NodeStates Dash(_float fTimeDelta);
 	NodeStates Jump(_float fTimeDelta);
@@ -213,7 +225,7 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	_float m_fMaxHp = 10.f;
+	_float m_fMaxHp = 100.f;
 	//_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
@@ -254,15 +266,19 @@ private:
 
 
 #pragma region Buff 관련 Data
+	_bool		m_isBuffState = { false };
 	_float		m_fShield = { 1.f }; // 쉴드 값
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값
 #pragma endregion Buff 관련 Data
+
+
+
 #pragma region 비동기 로드 Data
 	_bool m_bIsLoadStart = false;
 	_vector m_vDest = {};
 	LEVEL m_eCurLevel = LEVEL_END;
-
+	Player_Status_Data m_tPlayerStatusData = {};
 
 #pragma endregion 비동기 로드 Data
 
@@ -271,6 +287,9 @@ private:
 	_bool m_bSpecialAttackZoom = false;
 
 	_float		m_GrassBlowInterval = 1.f;
+
+
+
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

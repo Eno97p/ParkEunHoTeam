@@ -10,7 +10,7 @@ private:
 public:
     HRESULT Initialize();
 public:
-    void Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch);
+    void Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float fPosition, _float fPitch, _float fVolume = 0.5f, _bool bPlayAgainstPlaying = true);
     void PlayBGM(const TCHAR* pSoundKey);            //일반 BGM 재생
     void PlaySubBGM(const TCHAR* pSoundKey);         //서브 BGM 재생
     void StopAll();

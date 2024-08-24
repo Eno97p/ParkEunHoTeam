@@ -33,6 +33,9 @@
 
 #include "EffectManager.h"
 #include"CInitLoader.h"
+
+#include "UIGroup_Portal.h"
+
 CLevel_GamePlay::CLevel_GamePlay(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -115,6 +118,17 @@ HRESULT CLevel_GamePlay::Initialize()
 
 	Set_Volume();
 
+
+	// Portal
+	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.ePortalLevel = LEVEL_GRASSLAND;
+	pDesc.isPic = true;
+	pDesc.iPicNum = 3;
+	pDesc.fAngle = 190.f;
+	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
+	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);
+
 	return S_OK;
 }
 
@@ -152,7 +166,9 @@ void CLevel_GamePlay::Tick(_float fTimeDelta)
 	{
 		CLevel* level = CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ACKBAR);
    		m_pGameInstance->Scene_Change(LEVEL_LOADING, level);
-	
+		
+		CUI_Manager::GetInstance()->Delete_PortalUI(); // 디버그용
+		
 	}
 
 	/*list<CGameObject*> objs = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GAMEPLAY, TEXT("Layer_UI"));
@@ -396,9 +412,9 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
 		return E_FAIL;
 	
-	savePointDesc.vPosition = _float3(93.f, 521.f, 98.f);
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
-		return E_FAIL;
+	//savePointDesc.vPosition = _float3(93.f, 521.f, 98.f);
+	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+	//	return E_FAIL;
 
 
 

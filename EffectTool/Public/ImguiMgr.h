@@ -24,6 +24,8 @@
 #include "HexaShield.h"
 #include "FireFlyCube.h"
 #include "BlackHole.h"
+#include "WellCylinder.h"
+#include "MagicCast.h"
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -202,7 +204,22 @@ private:
 
 private:
 	void BlackHole_Tool(_bool* Open);
+	HRESULT Store_BlackHole(char* Name, CBlackHole::BLACKHOLE desc);
+	void BlackHole_ListBox(CBlackHole::BLACKHOLE* BlackHole);
+	HRESULT Save_BlackHole();
+	HRESULT Load_BlackHole();
 
+private:
+	void WellCylinder_Tool(_bool* Open);
+	HRESULT Save_WellCylinder(CWellCylinder::WELLCYLINDER* WellCylinder);
+	HRESULT Load_WellCylinder(CWellCylinder::WELLCYLINDER* WellCylinder);
+
+private:
+	void Magic_Cast_Tool(_bool* Open);
+	HRESULT Store_MagicCast(char* Name, CMagicCast::MAGIC_CAST desc);
+	void Magic_Cast_ListBox(CMagicCast::MAGIC_CAST* Magic);
+	HRESULT Save_MagicCast();
+	HRESULT Load_MagicCast();
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -243,6 +260,8 @@ private:
 	vector<shared_ptr<CAndrasLazer::ANDRAS_LAZER_TOTALDESC>> m_Lazers;
 	vector<shared_ptr<CSwingEffect::SWINGEFFECT>>			m_Swings;
 	vector<shared_ptr<CParticle_PhysX::PARTICLE_PHYSXDESC>> m_PhysX;
+	vector<shared_ptr<CBlackHole::BLACKHOLE>>				m_BlackHole;
+	vector<shared_ptr<CMagicCast::MAGIC_CAST>>				m_MagicCast;
 
 	vector<string> ParticleNames;
 	vector<string> TrailEffectsNames;
@@ -255,7 +274,8 @@ private:
 	vector<string> LazerNames;
 	vector<string> SwingNames;
 	vector<string> PhysXNames;
-
+	vector<string> BlackHoleNames;
+	vector<string> MagicCastNames;
 
 private:
 	vector<string> ModelName;

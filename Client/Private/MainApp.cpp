@@ -44,6 +44,7 @@
 #include "UI_WeaponSlotBG.h"
 #include "UI_WeaponSlot.h"
 #include "UI_Slot_EquipSign.h"
+#include "UI_HUDEffect.h"
 #include "UIGroup_WeaponSlot.h"
 #pragma endregion WeaponSlot
 
@@ -85,6 +86,7 @@
 #include "UIGroup_MonsterHP.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
+#include "UI_BossShield.h"
 #include "UIGroup_BossHP.h"
 #pragma endregion Monster
 
@@ -190,8 +192,7 @@
 
 #pragma region Portal
 #include "UI_PortalPic.h"
-
-
+#include "UI_PortalText.h"
 #include "UIGroup_Portal.h"
 #pragma endregion Portal
 
@@ -570,7 +571,7 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 44))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Desolve/Noise%d.dds"), 46))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_SwordTrail"),
@@ -610,6 +611,11 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_AndrasRain"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Andras_0724/AndrasLazer/MyRainTexture.dds"), 1))))
+		return E_FAIL;
+
+	//HorizonTexture
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_GradiantTex"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Opacity/CircleGradient.dds"), 1))))
 		return E_FAIL;
 
 #pragma endregion TEXTURE
@@ -744,7 +750,15 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_Andras_HelixCast"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/HelixCast/HelixCast.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/HelixCast/NewHelixCast.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BezierCurve"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/HelixCast/BezierCurve.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_NewAspiration"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Andras_0724/HelixCast/NewAspriation.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(90.f));
@@ -851,6 +865,14 @@ HRESULT CMainApp::Ready_Prototype_For_Effects()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_HexaShield_MK2"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/HexaShield/HexaShield_Mk3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	//블랙홀
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BlackHoleRing"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/BlackHole/BlackHole_Ring.fbx", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Model_BlackHoleRing2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/BlackHole/BlackHole_Ring2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL
@@ -971,6 +993,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_HUD_WeaponSlotBG */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_HUD_WeaponSlotBG"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUD_WeaponSlotBG.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_HUDEffect */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_HUDEffect"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/HUD/WeaponSlot/HUDEffect.png"), 1))))
 		return E_FAIL;
 #pragma endregion WeaponSlot
 #pragma endregion HUD
@@ -1270,6 +1297,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	/* Prototype_Component_Texture_UI_BossHPBar */
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossHPBar"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossHPBar.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_BossShield */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossShield"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossShield.png"), 1)))) // dds 변환 필요
 		return E_FAIL;
 #pragma endregion Monster
 
@@ -1628,6 +1660,16 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalText"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PortalPic/Portal_Text.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalPic_Dissolve */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic_Dissolve"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/T_SpiralErode.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PortalPic_Opacity */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic_Opacity"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/T_ErodeClouds.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -1749,6 +1791,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_WeaponSlot*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_WeaponSlot"),
 		CUI_WeaponSlot::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_HUDEffect*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_HUDEffect"),
+		CUI_HUDEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_WeaponSlot*/
@@ -1938,6 +1985,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_BossHPBar*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossHPBar"),
 		CUI_BossHPBar::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BossShield*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossShield"),
+		CUI_BossShield::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_BossHP*/
@@ -2318,6 +2370,10 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUI_PortalPic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_UI_PortalText*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PortalText"),
+		CUI_PortalText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* For.Prototype_GameObject_UIGroup_Portal*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_Portal"),

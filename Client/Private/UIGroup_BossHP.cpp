@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UI_BossHP.h"
 #include "UI_BossHPBar.h"
+#include "UI_BossShield.h"
 
 CUIGroup_BossHP::CUIGroup_BossHP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUIGroup{ pDevice, pContext }
@@ -63,12 +64,19 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		if (nullptr != m_pShield)
+			m_pShield->Tick(fTimeDelta);
 	}
 
 	vector<CUI*>::iterator hp = m_vecUI.begin();
 	dynamic_cast<CUI_BossHP*>(*hp)->Set_Ratio(m_fHPRatio);
 
+	if(nullptr != m_pShield)
+		m_pShield->Set_Ratio(m_fShieldRatio);
+
 	//m_isRend = true;
+	// Shield에 대한 비율 갱신도 필요함
 }
 
 void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)
@@ -77,6 +85,9 @@ void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		if (nullptr != m_pShield)
+			m_pShield->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -129,6 +140,17 @@ HRESULT CUIGroup_BossHP::Create_UI()
 	return S_OK;
 }
 
+void CUIGroup_BossHP::Create_Shield()
+{
+	if (nullptr != m_pShield)
+		return;
+
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_pShield = dynamic_cast<CUI_BossShield*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossShield"), &pDesc));
+}
+
 CUIGroup_BossHP* CUIGroup_BossHP::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CUIGroup_BossHP* pInstance = new CUIGroup_BossHP(pDevice, pContext);
@@ -161,4 +183,6 @@ void CUIGroup_BossHP::Free()
 
 	for (auto& pUI : m_vecUI)
 		Safe_Release(pUI);
+
+	Safe_Release(m_pShield);
 }

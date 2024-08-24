@@ -102,14 +102,14 @@ void CKickSword::Tick(_float fTimeDelta)
 			fSlowValue = 1.f;
 			dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_SlowMo(false);
 
-		//	if (!CUI_Manager::GetInstance()->Delete_QTE())
+			if (!CUI_Manager::GetInstance()->Delete_QTE())
 			{
 				m_pPlayer->PlayerHit(10, true);
 			}
-		/*	else
+			else
 			{
 				m_pAndras->KickStop();
-			}*/
+			}
 		}
 		else
 		{
@@ -121,7 +121,7 @@ void CKickSword::Tick(_float fTimeDelta)
 			_float fLengthFromAndras = XMVectorGetX(XMVector3Length(vAndrasPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 			_bool StartSlowMo = false;
 
-			if (fLengthFromAndras < 7.f)
+			if (fLengthFromAndras < 5.1f)
 			{
 				StartSlowMo = true;
 			}
@@ -130,7 +130,7 @@ void CKickSword::Tick(_float fTimeDelta)
 			{
 				if (fSlowValue != 0.01f && !StartSlowMo)
 				{
-					//CUI_Manager::GetInstance()->Create_QTE();
+					CUI_Manager::GetInstance()->Create_QTE();
 				}
 				fSlowValue = 0.01f;
 				//dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_SlowMo(true);
@@ -141,6 +141,9 @@ void CKickSword::Tick(_float fTimeDelta)
 			}
 		}
 	}
+
+	m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+
 }
 
 void CKickSword::Late_Tick(_float fTimeDelta)

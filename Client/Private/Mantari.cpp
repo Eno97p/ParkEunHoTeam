@@ -92,7 +92,7 @@ void CMantari::Tick(_float fTimeDelta)
 		{
 			m_bPlayerIsFront = true;
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 	}
 	else
@@ -371,7 +371,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER05);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_HitVoice.ogg"), SOUND_MONSTER, 0.3f);
 		m_fChasingDelay = 0.5f;
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_MainCamera());
@@ -400,7 +400,7 @@ NodeStates CMantari::Hit(_float fTimeDelta)
 		if (!m_bPlayerIsFront)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Mantari_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 			m_bPlayerIsFront = true;
 		}
 
@@ -624,13 +624,13 @@ NodeStates CMantari::Detect(_float fTimeDelta)
 	}
 	else if (m_fLengthFromPlayer > JUMPATTACKRANGE)
 	{
-		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_iState = STATE_WALKFRONT;
+		m_iState = STATE_JUMPATTACK;
 		return SUCCESS;
 	}
 	else if (m_fLengthFromPlayer > ATTACKRANGE)
 	{
-		m_iState = STATE_JUMPATTACK;
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_iState = STATE_WALKFRONT;
 		return SUCCESS;
 	}
 	else

@@ -4,6 +4,7 @@ matrix		g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D	g_Texture;
 texture2D	g_MaskTexture;
 texture2D	g_DisolveTexture;
+texture2D	g_OpacityTex;
 
 bool		g_bIsFadeIn;
 float		g_fAlphaTimer;
@@ -418,11 +419,83 @@ PS_OUT PS_GLITCH(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_PORTALPIC(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_fFlowTime * 0.1f;
+
+	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, uv);
+	vector vDissolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+
+	float dissolveValue = (vDissolve.r + vDissolve.g + vDissolve.b) / 3.f;
+
+	if (In.vTexcoord.y <= 0.5) {
+		Color.a *= (In.vTexcoord.y) *2.0;
+	}
+
+	if (Color.r < vOpacity.r)
+		Color.rgb += 0.1f;
+
+	Out.vColor = Color;
+
+	if (!g_bIsFadeIn)
+	{
+		if ((g_DisolveValue - dissolveValue) < 0.05f)
+		{
+			Out.vColor = Color;
+			return Out;
+		}
+		else if (dissolveValue < g_DisolveValue)
+		{
+			discard;
+		}
+		else
+		{
+			Out.vColor.rgb = float3(0.f, 0.f, 0.f);
+			Out.vColor.a = Color.a;
+		}
+	}
+
+	return Out;
+}
+
+PS_OUT PS_PORTALPIC_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+
+	float2 uv = In.vTexcoord;
+
+	uv.x += g_fFlowTime * 0.1f;
+
+
+	vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+	vector vOpacity = g_OpacityTex.Sample(LinearSampler, uv);
+
+	if (In.vTexcoord.y <= 0.5) {
+		Color.a *= (In.vTexcoord.y) * 2.0;
+	}
+
+	if (Color.r < vOpacity.r)
+		Color.rgb += 0.1f;
+
+	Color.a *= 0.3f;
+
+	Out.vColor = Color;
+
+	return Out;
+}
+
 technique11 DefaultTechnique
 {
 	pass DefaultPass_0
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_NoCull); // RS_NoCull   RS_Default
 		SetDepthStencilState(DSS_Default, 0);
 		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -601,5 +674,31 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_GLITCH();
 	}
+
+	pass PortalPic_14
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_PORTALPIC();
+	}
+
+	pass PortalPic_15
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_PORTALPIC_Bloom();
+	}	
 }
 

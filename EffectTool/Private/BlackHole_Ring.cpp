@@ -110,6 +110,7 @@ HRESULT CBlackHole_Ring::Render_Bloom()
 	return S_OK;
 }
 
+
 void CBlackHole_Ring::Set_BlackHole_Dead()
 {
 	m_DeadDelay = m_AccTime + m_OwnDesc->fStartdelay;

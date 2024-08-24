@@ -140,6 +140,23 @@ void CUI_Manager::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pCinematic)
 		m_pCinematic->Tick(fTimeDelta);
+
+	for (auto& pPortal : m_vecPortal)
+	{
+		pPortal->Tick(fTimeDelta);
+	}
+
+	vector<CUIGroup_Portal*>::iterator portal = m_vecPortal.begin();
+	for (size_t i = 0; i < m_vecPortal.size(); ++i)
+	{
+		if ((*portal)->Get_isFadeEnd())
+		{
+			Safe_Release(*portal);
+			portal = m_vecPortal.erase(portal);
+		}
+		else
+			++portal;
+	}
 }
 
 void CUI_Manager::Late_Tick(_float fTimeDelta)
@@ -170,6 +187,9 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pCinematic)
 		m_pCinematic->Late_Tick(fTimeDelta);
+
+	for (auto& pPortal : m_vecPortal)
+		pPortal->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -478,6 +498,9 @@ void CUI_Manager::Create_QTE()
 
 _bool CUI_Manager::Delete_QTE()
 {
+	if (nullptr == m_pQTE)
+		return false; // 이렇게 하면 될지;
+
 	_bool isSuccess = m_pQTE->Check_ResultScore();
 
 	Safe_Release(m_pQTE);
@@ -505,6 +528,35 @@ void CUI_Manager::Create_LevelUI()
 void CUI_Manager::Setting_Cinematic()
 {
 	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
+
+	if (!m_pCinematic->Get_isBigAnim()) // 시네마틱 시작
+		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(false);
+	else
+		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(true);
+}
+
+void CUI_Manager::Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc)
+{
+	m_vecPortal.emplace_back(dynamic_cast<CUIGroup_Portal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Portal"), pDesc)));
+}
+
+void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
+{
+	vector<CUIGroup_Portal*>::iterator portal = m_vecPortal.begin();
+
+	for (size_t i = 0; i < m_vecPortal.size(); ++i)
+	{
+		// 여기서 Pic이 있는 녀석인지 체크하고? 
+		if ((*portal)->Get_isPic())
+		{
+			((*portal)->Set_FadeOut());
+		}
+		else
+		{
+			Safe_Release(*portal);
+			portal = m_vecPortal.erase(portal);
+		}
+	}
 }
 
 void CUI_Manager::Key_Input()
@@ -703,6 +755,9 @@ void CUI_Manager::Free()
 
 	for (auto& pDash : m_vecDash)
 		Safe_Release(pDash);
+
+	for (auto& pPortal : m_vecPortal)
+		Safe_Release(pPortal);
 	
 	Safe_Release(m_pCinematic);
 	Safe_Release(m_pFadeIn);

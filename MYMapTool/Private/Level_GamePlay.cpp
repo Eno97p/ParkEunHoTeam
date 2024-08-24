@@ -628,7 +628,7 @@ HRESULT CLevel_GamePlay::Load_Data_PhysX()
 
 HRESULT CLevel_GamePlay::Save_Data_Effects()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_GrassLand_Effects.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -739,7 +739,7 @@ HRESULT CLevel_GamePlay::Save_Data_Effects()
 
 HRESULT CLevel_GamePlay::Load_Data_Effects()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_GrassLand_Effects.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/EffectsData/Stage_Juggulas_Effects.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;

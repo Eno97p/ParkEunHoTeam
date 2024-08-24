@@ -47,8 +47,6 @@ protected:
 	_bool							m_bGenerageTrail = false;
 	_float							m_fDamage = 0.f;
 
-
-
 protected:
 	_bool							m_GenerateTrail = false;
 public:

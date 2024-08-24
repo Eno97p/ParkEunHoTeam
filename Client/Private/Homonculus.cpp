@@ -87,7 +87,7 @@ void CHomonculus::Tick(_float fTimeDelta)
 		{
 			m_bPlayerIsFront = true;
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		}
 	}
 	else
@@ -329,7 +329,7 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 	case CCollider::COLL_START:
 	{
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Hit.ogg"), SOUND_MONSTER05);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Hit.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 		if (m_pPlayer->Get_State() != CPlayer::STATE_SPECIALATTACK)
 		{
@@ -355,7 +355,7 @@ NodeStates CHomonculus::Hit(_float fTimeDelta)
 		if (!m_bPlayerIsFront)
 		{
 			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER);
+			m_pGameInstance->Play_Effect_Sound(TEXT("Homonculus_Aggro.ogg"), SOUND_MONSTER, 0.f, 1.f, 0.3f);
 			m_bPlayerIsFront = true;
 		}
 

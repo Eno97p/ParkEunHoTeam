@@ -34,6 +34,7 @@
 #include "Cloud.h"
 #include "Sky.h"
 
+#include"EventTrigger.h"
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -58,6 +59,8 @@ HRESULT CLevel_GrassLand::Initialize()
 	if (FAILED(Ready_Fog()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Layer_Trigger()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Grass(TEXT("Layer_Grass"))))
 		return E_FAIL;
@@ -68,6 +71,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		return E_FAIL;
 
 	Load_LevelData(TEXT("../Bin/MapData/Stage_GrassLand.bin"));
+
 
 	Load_Data_Effects();
 
@@ -173,19 +177,7 @@ void CLevel_GrassLand::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_P))
 	{
-		list<CGameObject*> pes = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Passive_Element"));
-
-		for (auto pe : pes)
-		{
-			CPassive_Element* pPassiveElement = dynamic_cast<CPassive_Element*>(pe);
-			if (pPassiveElement == nullptr)
-				continue;
-
-			if (pPassiveElement->Get_isHiddenObject())
-			{
-				pPassiveElement->Discover_HiddenObject();
-			}
-		}
+	
 
 	
 
@@ -257,7 +249,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
 	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pCSCdesc.fNear = 0.1f;
-	 pCSCdesc.fFar = 3000.f;
+	 pCSCdesc.fFar = 10000.f;
 
 	 pCSCdesc.fSpeedPerSec = 40.f;
 	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -290,7 +282,8 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
-	if (m_pUI_Manager->GetPrevLevel() == LEVEL_GRASSLAND)
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_JUGGLAS)
 	{
 		//블러드문 세팅 1 : 라이트
 		m_pGameInstance->LightOff_All();
@@ -367,6 +360,41 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
 	}
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
+{
+	_float4x4 WorldMatrix;
+	
+	//For . Ackbar
+	{
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(189.1f, 350.7f, 637.5f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE_FOR_ACKBAR;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
+	//For .Jugglas
+	{
+		
+
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixScaling(3.f, 3.f, 3.f) * XMMatrixTranslation(-1489.268f, 446.0f, -180.f));
+		CMap_Element::MAP_ELEMENT_DESC pDesc{};
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE_FOR_JUGGLAS;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+			return E_FAIL;
+	}
+
 
 
 
@@ -476,11 +504,41 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	pLandObjDesc->mWorldMatrix._42 = 3.5f;
 	pLandObjDesc->mWorldMatrix._43 = -2.4f;
 	pLandObjDesc->mWorldMatrix._44 = 1.f;*/
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_GAMEPLAY)
+	{
+		pLandObjDesc->mWorldMatrix._41 = 936.1f;
+		pLandObjDesc->mWorldMatrix._42 = 548.1f;
+		pLandObjDesc->mWorldMatrix._43 = 464.9f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+	else if (ePreLevel == LEVEL_ACKBAR)
+	{
+		pLandObjDesc->mWorldMatrix._41 = 205.7f;
+		pLandObjDesc->mWorldMatrix._42 = 346.8f;
+		pLandObjDesc->mWorldMatrix._43 = 605.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
 
-	pLandObjDesc->mWorldMatrix._41 = 500.f;
-	pLandObjDesc->mWorldMatrix._42 = 346.995f;
-	pLandObjDesc->mWorldMatrix._43 = 500.f;
-	pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+	else if (ePreLevel == LEVEL_JUGGLAS)
+	{
+		pLandObjDesc->mWorldMatrix._41 = -1188.f;
+		pLandObjDesc->mWorldMatrix._42 = 426.f;
+		pLandObjDesc->mWorldMatrix._43 = -200.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	
+	}
+
+	else
+	{
+
+		pLandObjDesc->mWorldMatrix._41 = 500.f;
+		pLandObjDesc->mWorldMatrix._42 = 346.995f;
+		pLandObjDesc->mWorldMatrix._43 = 500.f;
+		pLandObjDesc->mWorldMatrix._44 = 1.f;
+	}
+
+
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Player"), pLandObjDesc)))
 		return E_FAIL;
@@ -497,47 +555,21 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 
 HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_JUGGLAS)
+	{
+		CLandObject::LANDOBJ_DESC landObjDesc;
+		landObjDesc.mWorldMatrix._41 = 165.712f;
+		landObjDesc.mWorldMatrix._42 = 528.f;
+		landObjDesc.mWorldMatrix._43 = 97.312f;
+		landObjDesc.mWorldMatrix._44 = 1.f;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
+			return E_FAIL;
 
-	CLandObject::LANDOBJ_DESC landObjDesc;
-	landObjDesc.mWorldMatrix._41 = 165.712f;
-	landObjDesc.mWorldMatrix._42 = 528.f;
-	landObjDesc.mWorldMatrix._43 = 97.312f;
-	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
-		return E_FAIL;
+	}
 
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-	//		return E_FAIL;
-	//}0
+	
 
-	// 테스트 위해 임의로 생성
-	/*CMonster::MST_DESC* pDesc = static_cast<CMonster::MST_DESC*>(pLandObjDesc);
-
-	pDesc->eLevel = LEVEL_GRASSLAND;*/
-
-	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
-	//	return E_FAIL;
-
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
-	//	return E_FAIL;
-	//
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
-	//	return E_FAIL;
-
-
-
-	////for (size_t i = 0; i < 5; i++)
-	//{
-
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
-	//}
 
 	return S_OK;
 }

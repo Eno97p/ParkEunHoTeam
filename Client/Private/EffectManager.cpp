@@ -105,6 +105,22 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_FireFly");
 		return E_FAIL;
 	}
+	if (FAILED(Load_BlackHole()))
+	{
+		MSG_BOX("FAILED_Load_BlackHole");
+		return E_FAIL;
+	}
+	if (FAILED(Load_WellCylinder()))
+	{
+		MSG_BOX("FAILED_Load_WellCylinder");
+		return E_FAIL;
+	}
+	if (FAILED(Load_Magic_Cast()))
+	{
+		MSG_BOX("FAILED_Load_Magic_Cast");
+		return E_FAIL;
+	}
+
 	
 	return S_OK;
 }
@@ -182,7 +198,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pPoint->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pPoint->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pPoint);
 		return pPoint;
 		break;
@@ -199,7 +215,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pMesh->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pMesh->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pMesh);
 		return pMesh;
 		break;
@@ -216,7 +232,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pRect->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pRect->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pRect);
 		return pRect;
 		break;
@@ -300,6 +316,23 @@ HRESULT CEffectManager::Generate_HealEffect(const _int iIndex, const _float4x4* 
 	return S_OK;
 }
 
+HRESULT CEffectManager::Generate_Magic_Cast(const _int iIndex, const _float4x4* BindMat)
+{
+	if (iIndex >= m_MagicCast.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CMagicCast::MAGIC_CAST* pDesc = m_MagicCast[iIndex].get();
+		pDesc->ParentMatrix = BindMat;
+		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Magic_Cast"), pDesc);
+	}
+	return S_OK;
+}
+
 HRESULT CEffectManager::Generate_Lazer(const _int iIndex, const _float4x4* BindMat)
 {
 	if (iIndex >= m_Lazers.size())
@@ -378,6 +411,58 @@ HRESULT CEffectManager::Generate_HammerSpawn(const _float4 vStartPos)
 	Desc->vStartPos = vStartPos;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
 		TEXT("Layer_Effect"), TEXT("Prototype_GameObject_HammerSpawn"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_BlackHole(const _int iIndex, const _float4 vStartPos , const _uint Level)
+{
+	if (iIndex >= m_BlackHoles.size())
+	{
+		MSG_BOX("없는 인덱스임");
+		return S_OK;
+	}
+	else
+	{
+		CBlackHole::BLACKHOLE* Desc = m_BlackHoles[iIndex].get();
+		Desc->vStartPos = vStartPos;
+		LEVEL eLevel =(LEVEL)CGameInstance::GetInstance()->Get_CurrentLevelIndex();
+		CGameInstance::GetInstance()->Add_CloneObject(Level, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), Desc);
+		//CGameInstance::GetInstance()->CreateObject(Level,
+		//	TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), Desc);
+
+		if (iIndex == 0)
+		{
+			Generate_Particle(103, vStartPos);
+			Generate_Particle(104, vStartPos);
+			Generate_Particle(106, vStartPos);
+			Generate_Particle(107, vStartPos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
+			Generate_Particle(108, vStartPos);
+			Generate_Particle(109, vStartPos);
+			Generate_Distortion(6, vStartPos);
+
+
+			_float4 vLastPos = vStartPos;
+			vLastPos.y -= 3.f;
+			Generate_Particle(105, vLastPos);
+		}
+		else
+		{
+			Generate_Particle(111, vStartPos);
+			Generate_Particle(112, vStartPos);
+			Generate_Particle(113, vStartPos);
+			Generate_Particle(114, vStartPos);
+		}
+
+	}
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_WellCylinder(const _float4x4* BindMat)
+{
+	CWellCylinder::WELLCYLINDER* Desc = m_WellCylinder.get();
+	Desc->ParentMatrix = BindMat;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevelIndex(), TEXT("Layer_Effect"),
+		TEXT("Prototype_GameObject_WellCylinder"), Desc);
 	return S_OK;
 }
 
@@ -692,6 +777,31 @@ HRESULT CEffectManager::Load_Swing()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_BlackHole()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/BlackHole.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CBlackHole::BLACKHOLE readFile{};
+		inFile.read((char*)&readFile, sizeof(CBlackHole::BLACKHOLE));
+		shared_ptr<CBlackHole::BLACKHOLE> StockValue = make_shared<CBlackHole::BLACKHOLE>(readFile);
+		m_BlackHoles.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	return S_OK;
+}
+
 HRESULT CEffectManager::Load_Meteor()
 {
 	string finalPath = "../Bin/BinaryFile/Effect/Meteor.Bin";
@@ -811,6 +921,48 @@ HRESULT CEffectManager::Load_FireFly()
 	inFile.read((char*)m_FireFly.get(), sizeof(CFireFlyCube::FIREFLYCUBE));
 	inFile.close();
 	m_FireFly->ParentMatrix = nullptr;
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_WellCylinder()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/WellCylinder.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_WellCylinder = make_shared<CWellCylinder::WELLCYLINDER>();
+	inFile.read((char*)m_WellCylinder.get(), sizeof(CWellCylinder::WELLCYLINDER));
+	inFile.close();
+	return S_OK;
+}
+
+HRESULT CEffectManager::Load_Magic_Cast()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/MagicCast.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CMagicCast::MAGIC_CAST readFile{};
+		inFile.read((char*)&readFile, sizeof(CMagicCast::MAGIC_CAST));
+		shared_ptr<CMagicCast::MAGIC_CAST> StockValue = make_shared<CMagicCast::MAGIC_CAST>(readFile);
+		StockValue->ParentMatrix = nullptr;
+		m_MagicCast.emplace_back(StockValue);
+	}
+	inFile.close();
+
 	return S_OK;
 }
 
@@ -991,6 +1143,48 @@ HRESULT CEffectManager::Ready_GameObjects()
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_FireFly"),
 		CFireFlyCube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_BlackHole"),
+		CBlackHole::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_BlackSphere"),
+		CBlackSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_BlackHoleRing"),
+		CBlackHole_Ring::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_BlackHoleRing_Bill"),
+		CBlackHole_Ring_Bill::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Black_Horizon"),
+		CBlackHorizon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_WellCylinder"),
+		CWellCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//MagicCast
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_Magic_Cast"),
+		CMagicCast::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_HelixCast"),
+		CHelixCast::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_BezierCurve"),
+		CBezierCurve::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_NewAspiration"),
+		CNewAspiration::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

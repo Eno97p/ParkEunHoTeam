@@ -30,7 +30,7 @@ HRESULT CFallPlatform::Initialize(void* pArg)
 
 	GAMEOBJECT_DESC gameObjDesc = *(GAMEOBJECT_DESC*)pArg;
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(gameObjDesc.mWorldMatrix._41, gameObjDesc.mWorldMatrix._42, gameObjDesc.mWorldMatrix._43, 1.f)); //초기 위치 설정))
-	m_pTransformCom->Set_Scale(1000.f, 1.f, 1000.f);
+	m_pTransformCom->Set_Scale(1000.f, 10.f, 1000.f);
 
 
 	if (FAILED(Add_Components()))

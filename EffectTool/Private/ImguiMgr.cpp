@@ -280,11 +280,14 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("Texture_FileSystem", &bShow[0]);
 	if (bShow[0] == true)
 		Load_Texture();
+
 	ImGui::Checkbox("Particle_Tool", &bShow[1]);
 	if (bShow[1] == true)
 	{
 		EffectTool_Rework();
 	}
+
+
 	ImGui::Checkbox("Trail_Tool", &bShow[2]);
 	if (bShow[2] == true)
 	{
@@ -375,10 +378,20 @@ void CImguiMgr::Visible_Data()
 	ImGui::Checkbox("FireFly_Tool", &bShow[21]);
 	if (bShow[21] == true)
 		FireFly_Tool(&bShow[21]);
-	
+
 	ImGui::Checkbox("BlackHole_Tool", &bShow[22]);
 	if (bShow[22] == true)
 		BlackHole_Tool(&bShow[22]);
+	
+	ImGui::Checkbox("WellCylinder_Tool", &bShow[23]);
+	if (bShow[23] == true)
+		WellCylinder_Tool(&bShow[23]);
+
+	ImGui::Checkbox("Magic_Cast_Tool", &bShow[24]);
+	if (bShow[24] == true)
+		Magic_Cast_Tool(&bShow[24]);
+
+	
 	
 
 	if(ImGui::Button("Change_Camera"))
@@ -569,8 +582,8 @@ void CImguiMgr::EffectTool_Rework()
 		{
 			if (parentsDesc.DesolveNum < 0)
 				parentsDesc.DesolveNum = 0;
-			if (parentsDesc.DesolveNum > 42)
-				parentsDesc.DesolveNum = 42;
+			if (parentsDesc.DesolveNum > 45)
+				parentsDesc.DesolveNum = 45;
 		}
 		ImGui::ColorEdit3("DesolveColor", reinterpret_cast<float*>(&parentsDesc.vDesolveColor));
 		ImGui::InputFloat("DesolveLength", &parentsDesc.fDesolveLength);
@@ -4828,6 +4841,343 @@ HRESULT CImguiMgr::Load_BlackHole()
 	NameFile.close();
 
 	return S_OK;
+}
+
+void CImguiMgr::WellCylinder_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("WellCylinder_Editor", Open);
+	static CWellCylinder::WELLCYLINDER Desc{};
+
+	ImGui::InputFloat3("Size", reinterpret_cast<float*>(&Desc.vSize));
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.fColor));
+	ImGui::ColorEdit3("Bloom_Color", reinterpret_cast<float*>(&Desc.BloomColor));
+	ImGui::InputFloat("Bloom_Power", &Desc.fBloomPower);
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (TrailMat == nullptr)
+			MSG_BOX("행렬을 대입해주세요");
+		else
+		{
+			Desc.ParentMatrix = TrailMat;
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Effect"), TEXT("Prototype_GameObject_WellCylinder"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_WellCylinder(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_WellCylinder(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_WellCylinder(CWellCylinder::WELLCYLINDER* WellCylinder)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/WellCylinder.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)WellCylinder, sizeof(CWellCylinder::WELLCYLINDER));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_WellCylinder(CWellCylinder::WELLCYLINDER* WellCylinder)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/WellCylinder.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)WellCylinder, sizeof(CWellCylinder::WELLCYLINDER));
+	inFile.close();
+	return S_OK;
+}
+
+void CImguiMgr::Magic_Cast_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("Magic_Cast_Editor", Open);
+	static CMagicCast::MAGIC_CAST Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fMaxLifeTime);
+	ImGui::InputFloat2("ThreadRatio", reinterpret_cast<float*>(&Desc.fThreadRatio));
+	ImGui::InputFloat("SlowStrength", &Desc.fSlowStrength);
+
+	if (ImGui::CollapsingHeader("Helix_Cast"))
+	{
+		ImGui::Checkbox("IsHelixOn", &Desc.isHelix);
+		ImGui::InputFloat3("Helix_Size", reinterpret_cast<float*>(&Desc.HelixDesc.vSize));
+		ImGui::ColorEdit3("Helix_Color", reinterpret_cast<float*>(&Desc.HelixDesc.fColor));
+		ImGui::ColorEdit3("Helix_BloomColor", reinterpret_cast<float*>(&Desc.HelixDesc.BloomColor));
+		ImGui::InputFloat("Helix_BloomPower", &Desc.HelixDesc.fBloomPower);
+	}
+
+	if (ImGui::CollapsingHeader("Bezier_Curve"))
+	{
+		ImGui::Checkbox("IsBezier", &Desc.isBezierCurve);
+		ImGui::InputFloat3("Bezier_Size", reinterpret_cast<float*>(&Desc.BezierDesc.vSize));
+		ImGui::ColorEdit3("Bezier_Color", reinterpret_cast<float*>(&Desc.BezierDesc.fColor));
+		ImGui::ColorEdit3("Bezier_BloomColor", reinterpret_cast<float*>(&Desc.BezierDesc.BloomColor));
+		ImGui::InputFloat("Bezier_BloomPower", &Desc.BezierDesc.fBloomPower);
+		ImGui::InputFloat("Bezier_RotSpeed", &Desc.BezierDesc.fRotSpeed);
+
+	}
+
+	if (ImGui::CollapsingHeader("Aspiration"))
+	{
+		ImGui::Checkbox("IsAspiration", &Desc.isAspiration);
+		ImGui::InputFloat3("Asp_Size", reinterpret_cast<float*>(&Desc.AspDesc.vSize));
+		ImGui::InputFloat3("Asp_Offset", reinterpret_cast<float*>(&Desc.AspDesc.vOffset));
+		ImGui::ColorEdit3("Asp_Color", reinterpret_cast<float*>(&Desc.AspDesc.fColor));
+		ImGui::ColorEdit3("Asp_BloomColor", reinterpret_cast<float*>(&Desc.AspDesc.BloomColor));
+		ImGui::InputFloat("Asp_BloomPower", &Desc.AspDesc.fBloomPower);
+	}
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		if (TrailMat == nullptr)
+			MSG_BOX("행렬을 대입해주세요");
+		else
+		{
+			Desc.ParentMatrix = TrailMat;
+			m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+				TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Magic_Cast"), &Desc);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+	static char effectname[256] = "";
+	ImGui::SetNextItemWidth(150.f);
+	ImGui::InputText("Name", effectname, IM_ARRAYSIZE(effectname));
+	ImGui::SameLine();
+	if (ImGui::Button("Store", ImVec2(50.f, 30.f)))
+	{
+		if (effectname[0] == '\0')
+		{
+			MSG_BOX("이름을 입력해주세요");
+		}
+		else
+		{
+			Store_MagicCast(effectname, Desc);
+		}
+	}
+
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_MagicCast()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_MagicCast()))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
+	Magic_Cast_ListBox(&Desc);
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Store_MagicCast(char* Name, CMagicCast::MAGIC_CAST desc)
+{
+	string sName = Name;
+	shared_ptr<CMagicCast::MAGIC_CAST> StockValue = make_shared<CMagicCast::MAGIC_CAST>(desc);
+	m_MagicCast.emplace_back(StockValue);
+	MagicCastNames.emplace_back(sName);
+	return S_OK;
+}
+
+void CImguiMgr::Magic_Cast_ListBox(CMagicCast::MAGIC_CAST* Magic)
+{
+#pragma region exception
+	if (m_MagicCast.size() < 1)
+		return;
+
+	if (m_MagicCast.size() != MagicCastNames.size())
+	{
+		MSG_BOX("Size Error");
+		return;
+	}
+
+	ImGui::Begin("Magic_List Box Header");
+	ImVec2 list_box_size = ImVec2(-1, 200);
+	ImVec2 ButtonSize = { 100,30 };
+	static int current_item = 0;
+#pragma endregion exception
+#pragma region LISTBOX
+	if (ImGui::BeginListBox("Magic_List", list_box_size))
+	{
+		for (int i = 0; i < MagicCastNames.size(); ++i)
+		{
+			const bool is_selected = (current_item == i);
+			if (ImGui::Selectable(MagicCastNames[i].c_str(), is_selected))
+			{
+				current_item = i;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+#pragma endregion LISTBOX
+
+	if (current_item >= 0 && current_item < MagicCastNames.size())
+	{
+		if (ImGui::Button("Generate", ButtonSize))
+		{
+			if (TrailMat == nullptr)
+				MSG_BOX("행렬 대입해주세요");
+			else
+			{
+				CMagicCast::MAGIC_CAST* Desc = m_MagicCast[current_item].get();
+				Desc->ParentMatrix = TrailMat;
+				m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(),
+					TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Magic_Cast"), Desc);
+			}
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Load this", ButtonSize))
+		{
+			*Magic = *m_MagicCast[current_item].get();
+			ImGui::End();
+			return;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit", ButtonSize))
+		{
+			m_MagicCast[current_item] = make_shared<CMagicCast::MAGIC_CAST>(*Magic);
+		}
+
+		if (ImGui::Button("Erase", ButtonSize))
+		{
+			m_MagicCast[current_item].reset();
+			m_MagicCast.erase(m_MagicCast.begin() + current_item);
+			MagicCastNames.erase(MagicCastNames.begin() + current_item);
+
+			if (current_item >= m_MagicCast.size())
+				current_item = m_MagicCast.size() - 1;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Erase All", ButtonSize))
+		{
+			for (auto& iter : m_MagicCast)
+				iter.reset();
+			m_MagicCast.clear();
+			MagicCastNames.clear();
+			current_item = 0;
+		}
+	}
+
+	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_MagicCast()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/MagicCast.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	_uint iSize = m_MagicCast.size();
+	file.write((char*)&iSize, sizeof(_uint));
+	for (auto& iter : m_MagicCast)
+	{
+		file.write((char*)iter.get(), sizeof(CMagicCast::MAGIC_CAST));
+	}
+	file.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/MagicCast.bin";
+	ofstream Text(TexPath, ios::out);
+	for (auto& iter : MagicCastNames)
+	{
+		_uint strlength = iter.size();
+		Text.write((char*)&strlength, sizeof(_uint));
+		Text.write(iter.c_str(), strlength);
+	}
+	Text.close();
+
+	string IndexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/MagicCast.txt";
+	std::ofstream NumberFile(IndexPath);
+	for (size_t i = 0; i < MagicCastNames.size(); ++i)
+	{
+		NumberFile << i << ". " << MagicCastNames[i] << std::endl;
+	}
+	NumberFile.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_MagicCast()
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/MagicCast.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (auto& iter : m_MagicCast)
+		iter.reset();
+	m_MagicCast.clear();
+	MagicCastNames.clear();
+
+	_uint iSize = 0;
+	inFile.read((char*)&iSize, sizeof(_uint));
+	for (int i = 0; i < iSize; ++i)
+	{
+		CMagicCast::MAGIC_CAST readFile{};
+		inFile.read((char*)&readFile, sizeof(CMagicCast::MAGIC_CAST));
+		shared_ptr<CMagicCast::MAGIC_CAST> StockValue = make_shared<CMagicCast::MAGIC_CAST>(readFile);
+		StockValue->ParentMatrix = nullptr;
+		m_MagicCast.emplace_back(StockValue);
+	}
+	inFile.close();
+
+	string TexPath = "../../Client/Bin/BinaryFile/Effect/EffectsIndex/MagicCast.bin";
+	ifstream NameFile(TexPath);
+	if (!NameFile.good())
+		return E_FAIL;
+	if (!NameFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	for (_uint i = 0; i < iSize; ++i)
+	{
+		_uint length;
+		NameFile.read((char*)&length, sizeof(_uint));
+		string str(length, '\0');
+		NameFile.read(&str[0], length);
+		MagicCastNames.emplace_back(str);
+	}
+	NameFile.close();
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

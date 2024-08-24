@@ -266,8 +266,10 @@ HRESULT CPassive_Element::Bind_ShaderResources()
 #pragma region 모션블러
     if (FAILED(m_pShaderCom->Bind_Matrix("g_PrevViewMatrix", &m_PrevViewMatrix)))
         return E_FAIL;
-    _bool bMotionBlur = false;// m_pGameInstance->Get_MotionBlur();
+    _bool bMotionBlur = m_pGameInstance->Get_MotionBlur();
     if (FAILED(m_pShaderCom->Bind_RawValue("g_MotionBlur", &bMotionBlur, sizeof(_bool))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_float4(), sizeof(_float4))))
         return E_FAIL;
 #pragma endregion 모션블러
 

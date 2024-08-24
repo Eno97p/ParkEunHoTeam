@@ -29,7 +29,6 @@ private:
 	_float				m_fPastRatio = 1.f;
 	_float				m_fHudRatio = 0.55f;
 	_float				m_fDamageTimer = { 0.f };
-	wstring				m_wstrDamage;
 
 	class CMonster* m_pMonster = { nullptr }; // Boss·Î º¯°æ
 

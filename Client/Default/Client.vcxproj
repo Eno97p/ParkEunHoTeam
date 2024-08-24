@@ -282,6 +282,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Npc_Valnir.h" />
     <ClInclude Include="..\Public\NPC_Yaak.h" />
     <ClInclude Include="..\Public\ParkEunHo\AndrasHead.h" />
+    <ClInclude Include="..\Public\ParkEunHo\BezierCurve.h" />
     <ClInclude Include="..\Public\ParkEunHo\BlackHole.h" />
     <ClInclude Include="..\Public\ParkEunHo\BlackHole_Ring.h" />
     <ClInclude Include="..\Public\ParkEunHo\BlackHole_Ring_Bill.h" />
@@ -305,12 +306,15 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Heal_Spiral.h" />
     <ClInclude Include="..\Public\ParkEunHo\Hedgehog.h" />
+    <ClInclude Include="..\Public\ParkEunHo\HelixCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\HexaHit.h" />
     <ClInclude Include="..\Public\ParkEunHo\HexaShield.h" />
+    <ClInclude Include="..\Public\ParkEunHo\MagicCast.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Core.h" />
     <ClInclude Include="..\Public\ParkEunHo\Meteor_Wind.h" />
     <ClInclude Include="..\Public\ParkEunHo\NeedleSpawner.h" />
+    <ClInclude Include="..\Public\ParkEunHo\NewAspiration.h" />
     <ClInclude Include="..\Public\ParkEunHo\Rock_Ground.h" />
     <ClInclude Include="..\Public\ParkEunHo\SwingEffect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Swing_Spiral.h" />
@@ -318,6 +322,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\TornadoWind.h" />
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Ring.h" />
     <ClInclude Include="..\Public\ParkEunHo\Tornado_Root.h" />
+    <ClInclude Include="..\Public\ParkEunHo\WellCylinder.h" />
     <ClInclude Include="..\Public\QTE.h" />
     <ClInclude Include="..\Public\RotateGate.h" />
     <ClInclude Include="..\Public\RushSword.h" />
@@ -604,6 +609,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\AndrasLazer_Cylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasRain.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\AndrasScrew.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\BezierCurve.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\BlackHole.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\BlackHole_Ring.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\BlackHole_Ring_Bill.cpp" />
@@ -628,13 +634,16 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Heal_Spiral.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Hedgehog.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\HelixCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\HexaHit.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\HexaShield.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\LazerCast.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\MagicCast.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Meteor_Wind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\NeedleSpawner.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\NewAspiration.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Rock_Ground.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ShieldSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\SwingEffect.cpp" />
@@ -643,6 +652,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\TornadoWind.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Ring.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Tornado_Root.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\WellCylinder.cpp" />
     <ClCompile Include="..\Private\QTE.cpp" />
     <ClCompile Include="..\Private\RotateGate.cpp" />
     <ClCompile Include="..\Private\RushSword.cpp" />

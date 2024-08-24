@@ -338,6 +338,7 @@ void CToolObj_Manager::Initialize()
          TEXT("Prototype_Component_Model_SitraSword"),
          TEXT("Prototype_Component_Model_ValnirSword"),
          TEXT("Prototype_Component_Model_VeilleurSword"),
+         TEXT("Prototype_Component_Model_WarpGate")
 
                  
     };

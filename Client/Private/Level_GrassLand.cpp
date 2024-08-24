@@ -384,9 +384,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 
 	//For .Jugglas
 	{
+		
 
-
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-1277.1f, 426.0f, -210.f));
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixScaling(3.f, 3.f, 3.f) * XMMatrixTranslation(-1489.268f, 446.0f, -180.f));
 		CMap_Element::MAP_ELEMENT_DESC pDesc{};
 		pDesc.mWorldMatrix = WorldMatrix;
 		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE_FOR_JUGGLAS;
@@ -555,47 +555,21 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 
 HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandObject::LANDOBJ_DESC* pLandObjDesc)
 {
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_JUGGLAS)
+	{
+		CLandObject::LANDOBJ_DESC landObjDesc;
+		landObjDesc.mWorldMatrix._41 = 165.712f;
+		landObjDesc.mWorldMatrix._42 = 528.f;
+		landObjDesc.mWorldMatrix._43 = 97.312f;
+		landObjDesc.mWorldMatrix._44 = 1.f;
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
+			return E_FAIL;
 
-	CLandObject::LANDOBJ_DESC landObjDesc;
-	landObjDesc.mWorldMatrix._41 = 165.712f;
-	landObjDesc.mWorldMatrix._42 = 528.f;
-	landObjDesc.mWorldMatrix._43 = 97.312f;
-	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
-		return E_FAIL;
+	}
 
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Monster"), pLandObjDesc)))
-	//		return E_FAIL;
-	//}0
+	
 
-	// 테스트 위해 임의로 생성
-	/*CMonster::MST_DESC* pDesc = static_cast<CMonster::MST_DESC*>(pLandObjDesc);
-
-	pDesc->eLevel = LEVEL_GRASSLAND;*/
-
-	// Prototype_GameObject_Boss_Juggulus   Prototype_GameObject_Ghost    Prototype_GameObject_Legionnaire_Gun
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Legionnaire_Gun"), pLandObjDesc)))
-	//	return E_FAIL;
-
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Ghost"), pLandObjDesc)))
-	//	return E_FAIL;
-	//
-
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Homonculus"), pLandObjDesc)))
-	//	return E_FAIL;
-
-
-
-	////for (size_t i = 0; i < 5; i++)
-	//{
-
-		//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Mantari"), pLandObjDesc)))
-		//	return E_FAIL;
-	//}
 
 	return S_OK;
 }

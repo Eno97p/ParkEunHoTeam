@@ -115,4 +115,9 @@
 114. BackBlackHoleLoop3
 115. AndrasDie
 116. GroundSlashHit
-117. AndrasKick
+117. LimboWellLeaf
+118. LimboWellRemindRing
+119. LimboWellRemindSpread
+120. AndrasKick
+121. AndrasKick2
+122. LenzFlairPattern

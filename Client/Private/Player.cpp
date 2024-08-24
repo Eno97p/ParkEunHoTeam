@@ -62,6 +62,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
+
 	if (LoadPlayerData)
 	{
 		//m_isReviveFadeing = get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
@@ -74,9 +75,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
 		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
 
-	}
 
-	//m_tPlayerStatusData.isReviveFadeing = &m_isReviveFadeing;
+	}
+	//m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
 	m_tPlayerStatusData.iLevel = m_iLevel;
 	m_tPlayerStatusData.iVitalityLv =m_iVitalityLv;
 	m_tPlayerStatusData.iStaminaLv = m_iStaminaLv;
@@ -85,6 +86,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
+
 
 
 
@@ -606,8 +608,6 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				m_isReviveFadeing = false;
 			}
-
-			return SUCCESS;
 		}
 		return RUNNING;
 	}
@@ -1017,7 +1017,7 @@ NodeStates CPlayer::SpecialAttack(_float fTimeDelta)
 
 NodeStates CPlayer::Special1(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1129,7 +1129,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 
 NodeStates CPlayer::Special2(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1195,7 +1195,7 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 
 NodeStates CPlayer::Special3(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
@@ -1273,9 +1273,8 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 
 NodeStates CPlayer::Special4(_float fTimeDelta)
 {
-	if ((GetKeyState(VK_LBUTTON) & 0x8000) && (GetKeyState(VK_RBUTTON) & 0x8000))
+	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
-
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1291,7 +1290,6 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		{
 			m_fSpecialAttack += fTimeDelta;
 		}
-		fSlowValue = 0.1f;
 	}
 
 	if (m_fSpecialAttack != 0.f)
@@ -1309,10 +1307,13 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 		m_iState = STATE_SPECIALATTACK4;
 		if (m_fSpecialAttack >= 0.1f)
 		{
-			
-			fSlowValue = 1.f;
+			fSlowValue = 1.f;	
 			// 스테미나 조절할 것
 			Add_Stamina(-10.f);
+		}
+		else
+		{
+			fSlowValue = 0.1f;
 		}
 		if (m_bAnimFinished)
 		{
@@ -1680,7 +1681,8 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-	if (/*m_pGameInstance->Get_DIKeyState(DIK_R) && */m_fButtonCooltime == 0.f && !m_bRided)
+
+	/*if (m_pGameInstance->Get_DIKeyState(DIK_R) && m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1699,7 +1701,7 @@ void CPlayer::Generate_HoverBoard()
 		m_pGameInstance->CreateObject_Self(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Vehicle"), m_pHoverBoard);
 		m_pHoverBoardTransform = dynamic_cast<CTransform*>(m_pHoverBoard->Get_Component(TEXT("Com_Transform")));
 		m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_INCREASE);
-	}
+	}*/
 }
 
 NodeStates CPlayer::Slide(_float fTimeDelta)
@@ -1720,6 +1722,8 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 			m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_DECREASE);
 			m_pHoverBoard = nullptr;
 			m_pHoverBoardTransform = nullptr;
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD);
+			m_pGameInstance->StopSound(SOUND_HOVERBOARD_DASH);
 		}
 		m_bRiding = !m_bRiding;
 		m_bJumping = true;

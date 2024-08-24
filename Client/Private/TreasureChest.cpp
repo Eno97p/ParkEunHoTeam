@@ -77,6 +77,13 @@ HRESULT CTreasureChest::Initialize(void* pArg)
 
 void CTreasureChest::Priority_Tick(_float fTimeDelta)
 {
+
+	_float fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_pGameInstance->Get_PlayerPos())));
+	if(m_pGameInstance->Key_Down(DIK_F) && fLengthFromPlayer < 5.f)
+	{
+		m_bChestOpened = true;
+	}
+
 }
 
 void CTreasureChest::Tick(_float fTimeDelta)

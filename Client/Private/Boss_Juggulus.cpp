@@ -76,8 +76,6 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	}
 
 
-
-
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
 	_uint i = 0;
 	for (auto iter : StatueList)

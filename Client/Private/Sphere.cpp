@@ -55,10 +55,19 @@ HRESULT CSphere::Initialize(void* pArg)
 
 void CSphere::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
 }
 
 void CSphere::Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
+
 	m_pTransformCom->Go_Straight(fTimeDelta);
 
 	_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
@@ -79,6 +88,11 @@ void CSphere::Tick(_float fTimeDelta)
 
 void CSphere::Late_Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
+
 	_float4 fPos;
 	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	if (m_pGameInstance->Get_MoveShadow())

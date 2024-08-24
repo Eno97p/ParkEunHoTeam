@@ -11,6 +11,7 @@ texture2D g_RoughnessTexture;
 texture2D g_MetalicTexture;
 texture2D g_DisolveTexture;
 texture2D g_BlurTexture;
+float4 g_vCamPosition;
 
 float g_DisolveValue = 1.f;
 float g_TexcoordY = 1.f;
@@ -90,7 +91,9 @@ VS_OUT VS_MAIN(VS_IN In)
 
     float2 ndcMotion = projNormal.xy * motionAlongNormal;
 
-    Out.vVelocity = ndcMotion * -0.15f;  // 스케일 조정
+    float fLength = sqrt(dot(g_vCamPosition - In.vTranslation, g_vCamPosition - In.vTranslation));
+
+    Out.vVelocity = ndcMotion * -2.f / fLength;  // 스케일 조정
 
     return Out;
 }

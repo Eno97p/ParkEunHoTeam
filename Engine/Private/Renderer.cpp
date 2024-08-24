@@ -453,9 +453,9 @@ HRESULT CRenderer::Initialize()
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Depth"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
-    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_GodRay"), currentX, currentY, targetWidth, targetHeight)))
-    //    return E_FAIL;
-    //currentX += targetWidth + gap;
+    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_GodRay"), currentX, currentY, targetWidth, targetHeight)))
+        return E_FAIL;
+    currentX += targetWidth + gap;
     //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_LightDepth"), currentX, currentY, targetWidth, targetHeight)))
     //    return E_FAIL;
     //currentX += targetWidth + gap;
@@ -463,21 +463,21 @@ HRESULT CRenderer::Initialize()
     //   return E_FAIL;
     //currentX += targetWidth + gap;
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
-       return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Mirror"), currentX, currentY, targetWidth, targetHeight)))
+    //   return E_FAIL;
+    //currentX += targetWidth + gap;
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_Reflection"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_ReflectionResult"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
-    if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_HBAO"), currentX, currentY, targetWidth, targetHeight)))
-        return E_FAIL;
-    currentX += targetWidth + gap;
+    //if (FAILED(m_pGameInstance->Ready_RTDebug(TEXT("Target_HBAO"), currentX, currentY, targetWidth, targetHeight)))
+    //    return E_FAIL;
+    //currentX += targetWidth + gap;
 
 
 
@@ -1901,10 +1901,7 @@ void CRenderer::Render_Final()
 {
     m_pGameInstance->Begin_MRT(TEXT("MRT_LUT"));
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_DistortionTexture");
-    if (m_pGameInstance->Get_CurrentLevel() == 5)
-    {
-        m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_GodRayTexture");
-    }
+
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Bloom3"), m_pShader, "g_ResultTexture");
     //m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BlurY"), m_pShader, "g_BlurTexture");
     m_pLUTTex->Bind_ShaderResource(m_pShader, "g_LUTTexture", 0);
@@ -1933,6 +1930,10 @@ void CRenderer::Render_Final()
 
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LUT"), m_pShader, "g_ResultTexture");
     m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Velocity"), m_pShader, "g_EffectTexture");
+    if (m_pGameInstance->Get_CurrentLevel() == ENGINE_JUGGLAS)
+    {
+        m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GodRay"), m_pShader, "g_GodRayTexture");
+    }
 
     m_pVIBuffer->Bind_Buffers();
 
@@ -2305,7 +2306,7 @@ void CRenderer::Render_Debug()
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer);
 
-    //m_pGameInstance->Render_RTDebug(TEXT("MRT_GodRay"), m_pShader, m_pVIBuffer);
+    m_pGameInstance->Render_RTDebug(TEXT("MRT_GodRay"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_Decal"), m_pShader, m_pVIBuffer);
     //m_pGameInstance->Render_RTDebug(TEXT("MRT_LUT"), m_pShader, m_pVIBuffer);
 

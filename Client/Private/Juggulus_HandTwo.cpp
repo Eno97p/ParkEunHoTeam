@@ -240,14 +240,14 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 			{
 				
 				CMonster::MST_DESC		LandObjDesc{}; 
-				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_Transform")));
-				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(LEVEL_GAMEPLAY, TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
+				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
+				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));
 				_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 				LandObjDesc.mWorldMatrix._41 = XMVectorGetX(vPos) + 15.f;
 				LandObjDesc.mWorldMatrix._42 = XMVectorGetY(vPos) + 53.f;
 				LandObjDesc.mWorldMatrix._43 = XMVectorGetZ(vPos) + 10.f;
 				LandObjDesc.bPlayerIsFront = true;
-				m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Homonculus"), &LandObjDesc);
+				m_pGameInstance->Add_CloneObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"), TEXT("Prototype_GameObject_Homonculus"), &LandObjDesc);
 				//m_pGameInstance->Disable_Echo();
 				//m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandAppear.ogg"), SOUND_MONSTER);
 				m_eDisolveType = TYPE_DECREASE;

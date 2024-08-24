@@ -67,7 +67,7 @@ void CBossStatue::Tick(_float fTimeDelta)
 		m_eColltype = m_pColliderCom->Intersect(pPlayerWeapon->Get_Collider());
 	}
 
-	if (m_eColltype == CCollider::COLL_START)
+	if (m_eColltype == CCollider::COLL_START && m_bActive)
 	{
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->Play_Effect_Sound(TEXT("Hit.ogg"), SOUND_MONSTER05, 0.f, 1.f, 0.3f);

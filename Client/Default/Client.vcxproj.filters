@@ -847,6 +847,15 @@
     <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Shield">
       <UniqueIdentifier>{54c1cae6-48f7-401d-b11f-753322af8e3a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. BackGround_Rock">
+      <UniqueIdentifier>{c2477c4b-9154-4fc9-87a6-290578101688}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.SavePoint\WellCylinder">
+      <UniqueIdentifier>{6b398394-c81b-4ac4-b5a5-eb40d6bc14ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\MagicCast">
+      <UniqueIdentifier>{7d0457d3-3f0f-4e30-861a-c8b186831b92}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1784,43 +1793,11 @@
     <ClInclude Include="..\Public\UI_PortalPic.h">
       <Filter>02.GameObjects\07. UI\Portal\Pic</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h" />
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h" />
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h" />
-    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h" />
-    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h" />
-    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h" />
-    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h" />
-    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\FireFlyCube.h">
       <Filter>02.GameObjects\06.Effect\FireFly</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UI_PortalText.h">
       <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Base.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasLazer_Cylinder.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
@@ -1863,6 +1840,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_BossShield.h">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\WellCylinder.h">
+      <Filter>02.GameObjects\10.SavePoint\WellCylinder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\BezierCurve.h">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\HelixCast.h">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\NewAspiration.h">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\MagicCast.h">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2828,6 +2820,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_BossShield.cpp">
       <Filter>02.GameObjects\07. UI\Monster\BossHP\Shield</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\WellCylinder.cpp">
+      <Filter>02.GameObjects\10.SavePoint\WellCylinder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\MagicCast.cpp">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\NewAspiration.cpp">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\BezierCurve.cpp">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\HelixCast.cpp">
+      <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

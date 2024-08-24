@@ -44,8 +44,11 @@ void CBody_Andras::Priority_Tick(_float fTimeDelta)
 	switch (m_eDisolveType)
 	{
 	case TYPE_DECREASE:
-		m_fDisolveValue -= fTimeDelta * 0.5f;
+	{
+		m_fDisolveValue -= fTimeDelta * 0.2f;
+		EFFECTMGR->Generate_Particle(115, _float4(m_WorldMatrix._41, m_WorldMatrix._42, m_WorldMatrix._43, 1.f));
 		break;
+	}
 	default:
 		break;
 	}

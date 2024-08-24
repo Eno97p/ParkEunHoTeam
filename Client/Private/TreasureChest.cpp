@@ -251,7 +251,7 @@ void CTreasureChest::Drop_Item()
 		CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_DURGASWORD);
 		break;
 	case Client::CTreasureChest::TREASURE_CLOAKING: // Å¬·ÎÅ· È¹µæ
-		CInventory::GetInstance()->Add_Item(CItemData::ITEMNAME_AKSHA);
+		CInventory::GetInstance()->Add_Skill(CItemData::ITEMNAME_AKSHA);
 		break;
 	default:
 		break;

@@ -64,27 +64,27 @@ HRESULT CPlayer::Initialize(void* pArg)
 	auto LoadPlayerData = Engine::Load_Data<Player_Status_Data>(L"../Bin/DataFiles/PlayerData.bin");
 	if (LoadPlayerData)
 	{
-		m_isReviveFadeing = *get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
-		m_iLevel = *get<0>(*LoadPlayerData).iLevel;
-		m_iVitalityLv = *get<0>(*LoadPlayerData).iVitalityLv;
-		m_iStaminaLv = *get<0>(*LoadPlayerData).iStaminaLv;
-		m_iStrenghtLv = *get<0>(*LoadPlayerData).iStrenghtLv;
-		m_iMysticismLv = *get<0>(*LoadPlayerData).iMysticismLv;
-		m_iKnowledgeLv = *get<0>(*LoadPlayerData).iKnowledgeLv;
-		m_iPhysicalDmg = *get<0>(*LoadPlayerData).iPhysicalDmg;
-		m_iEtherDmg = *get<0>(*LoadPlayerData).iEtherDmg;
+		//m_isReviveFadeing = get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
+		m_iLevel = get<0>(*LoadPlayerData).iLevel;
+		m_iVitalityLv = get<0>(*LoadPlayerData).iVitalityLv;
+		m_iStaminaLv = get<0>(*LoadPlayerData).iStaminaLv;
+		m_iStrenghtLv = get<0>(*LoadPlayerData).iStrenghtLv;
+		m_iMysticismLv = get<0>(*LoadPlayerData).iMysticismLv;
+		m_iKnowledgeLv = get<0>(*LoadPlayerData).iKnowledgeLv;
+		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
+		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
 
 	}
 
-	m_tPlayerStatusData.isReviveFadeing = &m_isReviveFadeing;
-	m_tPlayerStatusData.iLevel = &m_iLevel;
-	m_tPlayerStatusData.iVitalityLv = &m_iVitalityLv;
-	m_tPlayerStatusData.iStaminaLv = &m_iStaminaLv;
-	m_tPlayerStatusData.iStrenghtLv = &m_iStrenghtLv;
-	m_tPlayerStatusData.iMysticismLv = &m_iMysticismLv;
-	m_tPlayerStatusData.iKnowledgeLv = &m_iKnowledgeLv;
-	m_tPlayerStatusData.iPhysicalDmg = &m_iPhysicalDmg;
-	m_tPlayerStatusData.iEtherDmg = &m_iEtherDmg;
+	//m_tPlayerStatusData.isReviveFadeing = &m_isReviveFadeing;
+	m_tPlayerStatusData.iLevel = m_iLevel;
+	m_tPlayerStatusData.iVitalityLv =m_iVitalityLv;
+	m_tPlayerStatusData.iStaminaLv = m_iStaminaLv;
+	m_tPlayerStatusData.iStrenghtLv = m_iStrenghtLv;
+	m_tPlayerStatusData.iMysticismLv = m_iMysticismLv;
+	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
+	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
+	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 
 
 
@@ -418,6 +418,34 @@ void CPlayer::Parry_Succeed()
 	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT, 0.f);
 }
 
+CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
+{
+
+	//m_isReviveFadeing = get<0>(*LoadPlayerData).isReviveFadeing;		//만약 여기서 터지면  L"../Bin/DataFiles/PlayerData.bin" 들어가서 지우고 다시 키셈 
+	//m_iLevel = get<0>(*LoadPlayerData).iLevel;
+	//m_iVitalityLv = get<0>(*LoadPlayerData).iVitalityLv;
+	//m_iStaminaLv = get<0>(*LoadPlayerData).iStaminaLv;
+	//m_iStrenghtLv = get<0>(*LoadPlayerData).iStrenghtLv;
+	//m_iMysticismLv = get<0>(*LoadPlayerData).iMysticismLv;
+	//m_iKnowledgeLv = get<0>(*LoadPlayerData).iKnowledgeLv;
+	//m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
+	//m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
+
+
+	m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
+	m_tPlayerStatusData.iLevel = m_iLevel;
+	m_tPlayerStatusData.iVitalityLv = m_iVitalityLv;
+	m_tPlayerStatusData.iStaminaLv = m_iStaminaLv;
+	m_tPlayerStatusData.iStrenghtLv = m_iStrenghtLv;
+	m_tPlayerStatusData.iMysticismLv = m_iMysticismLv;
+	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
+	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
+	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
+
+
+	return m_tPlayerStatusData;
+}
+
 void CPlayer::Pull_Status()
 {
 	m_fCurHp = m_fMaxHp;
@@ -547,7 +575,8 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				//이후 다시 태어날 떄 불러올 수 있도록
 
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");		//지워야할 Layer
-				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");		//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");			//지워야할 Layer
+				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Statue");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Effect");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");		//지워야할 Layer
 				m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");		//지워야할 Layer
@@ -555,7 +584,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 
 				CInitLoader<LEVEL, const wchar_t*>* InitLoader = new CInitLoader<LEVEL, const wchar_t*>(&InitLoader);
 				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Monster");
-				InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
+				//InitLoader->Load_Start((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Boss");
 				InitLoader->Load_TriggerStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_Trigger");
 				InitLoader->Load_BlastWallStart((LEVEL)m_pGameInstance->Get_CurrentLevelIndex(), L"Layer_BlastWall");
 

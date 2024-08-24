@@ -82,8 +82,8 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 
 	
 	pCloneObject->Set_ProtoTypeTag(strPrototypeTag);
-
-	CLayer*				pLayer = Find_Layer(iLevelIndex, strLayerTag);
+	_uint iCurLevel = CGameInstance::GetInstance()->Get_CurrentLevel();
+	CLayer*				pLayer = Find_Layer(iCurLevel, strLayerTag);
 
 	/* 아직 추가할려고하는 레이어가 없었따?!! */
 	/* 레이어를 생성해서 추가하믄되겄다. */
@@ -92,7 +92,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 		pLayer = CLayer::Create();
 		pLayer->Add_GameObject(pCloneObject);	
 
-		m_pLayers[iLevelIndex].emplace(strLayerTag, pLayer);
+		m_pLayers[iCurLevel].emplace(strLayerTag, pLayer);
 		m_iNumLayers++;
 	}
 	/* 내가 추가할려가하ㅡㄴㄴ 레이어가 있었다!!  */

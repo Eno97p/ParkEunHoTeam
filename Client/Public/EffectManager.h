@@ -49,7 +49,7 @@ public:
 	HRESULT Generate_Needle(const _float4 vStartPos);
 	HRESULT Generate_GroundSlash(const _float4 vStartPos, const _float4 vDirection);
 	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
-	HRESULT Generate_BlackHole(const _int iIndex, const _float4 vStartPos);
+	HRESULT Generate_BlackHole(const _int iIndex, const _float4 vStartPos, const _uint Level);
 	HRESULT Generate_WellCylinder(const _float4x4* BindMat);
 
 

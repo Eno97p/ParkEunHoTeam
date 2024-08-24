@@ -106,9 +106,7 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
-		////ºí·¢È¦ »ý¼º
-		//_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
-		//EFFECTMGR->Generate_BlackHole(1, vStartPosition);
+		
 		m_bTrigger = true;
 	}
 

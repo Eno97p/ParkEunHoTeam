@@ -198,7 +198,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pPoint->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pPoint->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pPoint);
 		return pPoint;
 		break;
@@ -215,7 +215,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pMesh->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pMesh->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pMesh);
 		return pMesh;
 		break;
@@ -232,7 +232,7 @@ CGameObject* CEffectManager::Generate_Particle(const _int iIndex,
 			pRect->Set_Rotation(fRadians, vAxis);
 		if (!XMVector4Equal(vLook, XMVectorZero()))
 			pRect->AdJustLook(vLook);
-		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevel(),
+		CGameInstance::GetInstance()->CreateObject_Self(CGameInstance::GetInstance()->Get_CurrentLevelIndex(),
 			TEXT("Layer_Effect"), pRect);
 		return pRect;
 		break;
@@ -414,7 +414,7 @@ HRESULT CEffectManager::Generate_HammerSpawn(const _float4 vStartPos)
 	return S_OK;
 }
 
-HRESULT CEffectManager::Generate_BlackHole(const _int iIndex, const _float4 vStartPos)
+HRESULT CEffectManager::Generate_BlackHole(const _int iIndex, const _float4 vStartPos , const _uint Level)
 {
 	if (iIndex >= m_BlackHoles.size())
 	{
@@ -425,8 +425,10 @@ HRESULT CEffectManager::Generate_BlackHole(const _int iIndex, const _float4 vSta
 	{
 		CBlackHole::BLACKHOLE* Desc = m_BlackHoles[iIndex].get();
 		Desc->vStartPos = vStartPos;
-		CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevel(),
-			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), Desc);
+		LEVEL eLevel =(LEVEL)CGameInstance::GetInstance()->Get_CurrentLevelIndex();
+		CGameInstance::GetInstance()->Add_CloneObject(Level, TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), Desc);
+		//CGameInstance::GetInstance()->CreateObject(Level,
+		//	TEXT("Layer_Effect"), TEXT("Prototype_GameObject_BlackHole"), Desc);
 
 		if (iIndex == 0)
 		{

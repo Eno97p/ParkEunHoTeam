@@ -241,8 +241,9 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_GroundSlash(vStartPosition, playerLook);
 		//HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 		//EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
-		vStartPosition.y += 5.f;
-		EFFECTMGR->Generate_BlackHole(0, vStartPosition);
+		//vStartPosition.y += 5.f;
+		//EFFECTMGR->Generate_BlackHole(0, vStartPosition);
+		EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
 
 		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}
@@ -592,11 +593,7 @@ NodeStates CPlayer::Knockback(_float fTimeDelta)
 {
 	if (m_iState == STATE_KNOCKBACK)
 	{
-		_float4 vParticlePos;
-		XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		vParticlePos.y += 1.f;
-		EFFECTMGR->Generate_Particle(117, vParticlePos);
-		EFFECTMGR->Generate_Distortion(1, vParticlePos);
+
 		if (m_pPhysXCom->Get_IsJump())
 		{
 			m_pPhysXCom->Go_BackWard(fTimeDelta);
@@ -2479,6 +2476,13 @@ void CPlayer::Update_Weapon(wstring wstrTextureName)
 
 void CPlayer::KnockBack(_vector vDir, _float fTimeDelta)
 {
+	_float4 vParticlePos;
+	XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	EFFECTMGR->Generate_Particle(120, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	vParticlePos.y += 1.f;
+	EFFECTMGR->Generate_Particle(121, vParticlePos);
+	EFFECTMGR->Generate_Distortion(1, vParticlePos);
+
 	m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 	//카메라 연출
 	CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);

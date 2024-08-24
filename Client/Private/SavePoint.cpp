@@ -6,6 +6,7 @@
 
 #include "UI_Activate.h"
 #include "UI_FadeInOut.h"
+#include "EffectManager.h"
 
 
 
@@ -46,8 +47,8 @@ HRESULT CSavePoint::Initialize(void* pArg)
 	if(FAILED(Create_Activate()))
 		return E_FAIL;
 
-
-
+	EFFECTMGR->Generate_WellCylinder(m_pTransformCom->Get_WorldFloat4x4());
+	EFFECTMGR->Generate_Particle(117, _float4(pDesc->vPosition.x, pDesc->vPosition.y, pDesc->vPosition.z, 1.0f));
 	return S_OK;
 }
 
@@ -115,6 +116,13 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 		m_pActivateUI->Late_Tick(fTimeDelta);
 		if (KEY_TAP(DIK_F))
 		{
+
+			_float4 vParticlePos;
+			XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(119, vParticlePos);
+			vParticlePos.y += 1.f;
+			EFFECTMGR->Generate_Particle(118, vParticlePos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
+
 			CUI_FadeInOut::UI_FADEINOUT_DESC pDesc = {};
 			pDesc.isFadeIn = false; // true
 			pDesc.eFadeType = CUI_FadeInOut::TYPE_ALPHA;
@@ -154,6 +162,7 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.0f))
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 
 #ifdef _DEBUG
 
@@ -187,6 +196,32 @@ HRESULT CSavePoint::Render()
 
 		m_pModelCom->Render(i);
 	}
+
+
+
+
+
+	return S_OK;
+}
+
+HRESULT CSavePoint::Render_Bloom()
+{
+	if (FAILED(Bind_ShaderResources()))
+		return E_FAIL;
+
+	_uint iNummeshCount = m_pModelCom->Get_NumMeshes();
+
+
+		m_pShaderCom->Unbind_SRVs();
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", 0, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+
+
+		m_pShaderCom->Begin(12);
+
+		m_pModelCom->Render(0);
 
 
 

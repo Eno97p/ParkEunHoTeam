@@ -73,12 +73,15 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_Particles.emplace_back(Oura);
 	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
 	m_Particles.emplace_back(Oura2);
+
+	m_fDeadDelay = 5.f;
+
 	return S_OK;
 }
 
 void CAndras::Priority_Tick(_float fTimeDelta)
 {
-	if (m_fDeadDelay < 2.f)
+	if (m_fDeadDelay < 5.f)
 	{
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
@@ -600,9 +603,11 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			{
 				XMStoreFloat4(&fDir, vDir);
 				EFFECTMGR->Generate_GroundSlash(fPos, fDir);
+				
 			}
 			else
 			{
+				EFFECTMGR->Generate_Particle(116, fPos);
 				for (_uint i = 0; i < 8; i++)
 				{
 					XMStoreFloat4(&fDir, vDir);
@@ -842,10 +847,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			}
@@ -861,10 +870,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(4, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			case 3:
@@ -873,6 +886,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 4:
 				//LaserAttack
+				EFFECTMGR->Generate_Magic_Cast(1, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_LASERATTACK;
 				break;
 			case 5:
@@ -881,6 +895,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 6:
 				//ShootingStarAttack
+				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_SHOOTINGSTARATTACK;
 				break;
 			}

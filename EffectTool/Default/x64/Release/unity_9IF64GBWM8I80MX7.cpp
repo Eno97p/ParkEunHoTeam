@@ -59,6 +59,9 @@
 #include "C:\NewRepo\EffectTool\Private\BackGround.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\BezierCurve.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\BlackHole.cpp"
 
 
@@ -128,6 +131,9 @@
 #include "C:\NewRepo\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\HelixCast.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\HexaHit.cpp"
 
 
@@ -161,6 +167,9 @@
 #include "C:\NewRepo\EffectTool\Private\Loader.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\MagicCast.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Main.cpp"
 
 
@@ -180,6 +189,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\NeedleSpawner.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\NewAspiration.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\Particle.cpp"
@@ -246,6 +258,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\Weapon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\WellCylinder.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\WhisperSword_Anim.cpp"

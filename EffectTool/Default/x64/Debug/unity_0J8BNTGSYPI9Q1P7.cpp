@@ -80,6 +80,9 @@
 #include "C:\NewRepo\EffectTool\Private\Charge_Vane.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\CutSceneAndras.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Distortion_Effect.cpp"
 
 
@@ -243,6 +246,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\Weapon.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\WellCylinder.cpp"
 
 
 #include "C:\NewRepo\EffectTool\Private\WhisperSword_Anim.cpp"

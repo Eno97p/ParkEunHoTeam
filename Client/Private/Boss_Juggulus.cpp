@@ -58,6 +58,24 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
 	m_pUI_HP->Set_Rend(true);
 
+
+
+
+	// 보스 석상 소환
+	const _float4x4 statueMatrices[STATUECOUNT] = {
+		{ 0.f, 0.f, -1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, -410.189f, 67.966f, -2.195f, 1.f },
+		{ -0.91f, 0.f, -0.415f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.415f, 0.f, -0.91f, 0.f, -420.326f, 67.976f, -17.686f, 1.f },
+		{ 0.845f, 0.f, -0.536f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.536f, 0.f, 0.845f, 0.f, -420.068f, 67.932f, 13.209f, 1.f }
+	};
+
+	for (const auto& matrix : statueMatrices)
+	{
+		CMap_Element::MAP_ELEMENT_DESC StatueDesc{};
+		StatueDesc.mWorldMatrix = matrix;
+		m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Statue"), TEXT("Prototype_GameObject_BossStatue"), &StatueDesc);
+	}
+
+
 	list<CGameObject*> StatueList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Statue"));
 	_uint i = 0;
 	for (auto iter : StatueList)

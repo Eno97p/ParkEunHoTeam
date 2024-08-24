@@ -238,6 +238,7 @@ NodeStates CJuggulus_HandTwo::Spawn(_float fTimeDelta)
 		{
 			if (m_eDisolveType == TYPE_IDLE)
 			{
+				
 				CMonster::MST_DESC		LandObjDesc{}; 
 				LandObjDesc.pTerrainTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BackGround"), TEXT("Com_Transform")));
 				LandObjDesc.pTerrainVIBuffer = dynamic_cast<CVIBuffer*>(m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_BackGround"), TEXT("Com_VIBuffer")));

@@ -26,7 +26,7 @@
 
 #include"EventTrigger.h"
 
-
+#include "SavePoint.h"
  vector< CMap_Element::MAP_ELEMENT_DESC> vecMapElementDesc;
 
 
@@ -348,7 +348,7 @@ HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
 	_float4x4 WorldMatrix;
 	//For . GrassLand
 	{
-		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-269.1f, 5.11f, 43.f));
+		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-255.159f, 4.27f, 27.176f));
 		CMap_Element::MAP_ELEMENT_DESC pDesc{};
 
 		pDesc.mWorldMatrix = WorldMatrix;
@@ -478,6 +478,17 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 			return E_FAIL;
 	}
 	
+
+
+
+
+
+	CSavePoint::_tagSavePoint_Desc savePointDesc;
+	savePointDesc.vPosition = _float3(-236, 4.25f, 8.204f);
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+		return E_FAIL;
+
 
 
 	//Npc

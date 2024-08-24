@@ -87,6 +87,8 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	}
 	case Client::CItemData::ITEMNAME_HOVERBOARD:
 	{
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Generate_HoverBoard();
 
 		break;
 	}
@@ -101,24 +103,40 @@ void CItemData::Use_Item(_uint iInvenIdx)
 	{
 		Apply_UseCount(iInvenIdx);
 		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff0"));
+		
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF2:
 	{
 		Apply_UseCount(iInvenIdx);
 		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff1"));
+		
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF3:
 	{
 		Apply_UseCount(iInvenIdx);
 		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff2"));
+		
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+
 		break;
 	}
 	case Client::CItemData::ITEMNAME_BUFF4:
 	{
 		Apply_UseCount(iInvenIdx);
 		dynamic_cast<CUIGroup_BuffTimer*>(CUI_Manager::GetInstance()->Get_UIGroup("BuffTimer"))->Create_BuffTimer(TEXT("Prototype_Component_Texture_Icon_Item_Buff3"));
+		
+		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		
 		break;
 	}
 	case Client::CItemData::ITEMNAME_ESSENCE:

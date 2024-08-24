@@ -92,8 +92,14 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         {
         case 1:
         {
-            dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_PhysX")))->Set_Position({ -450.f , 56.f , -3.f, 1.f });
-            dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")))->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
+            CPhysXComponent_Character* pBossCom = dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_PhysX")));
+            if(pBossCom)
+                pBossCom->Set_Position({ -450.f , 56.f , -3.f, 1.f });
+            
+            CTransform* pBossTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")));
+            if (pBossTransform)
+				pBossTransform->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
+           
         }
         break;
         case SCENE_ANDRAS_PHASE2:

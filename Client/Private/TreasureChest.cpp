@@ -1,5 +1,9 @@
 #include "TreasureChest.h"
 #include "GameInstance.h"
+#include "Inventory.h"
+#include "Item.h"
+
+#include "UI_Activate.h"
 
 CTreasureChest::CTreasureChest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CActive_Element(pDevice, pContext)
@@ -65,16 +69,21 @@ HRESULT CTreasureChest::Initialize(void* pArg)
 
 	m_pModelCom->Play_Animation(0.001);
 
+	if (FAILED(Create_Activate()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CTreasureChest::Priority_Tick(_float fTimeDelta)
 {
+
 	_float fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_pGameInstance->Get_PlayerPos())));
 	if(m_pGameInstance->Key_Down(DIK_F) && fLengthFromPlayer < 5.f)
 	{
 		m_bChestOpened = true;
 	}
+
 }
 
 void CTreasureChest::Tick(_float fTimeDelta)
@@ -84,6 +93,8 @@ void CTreasureChest::Tick(_float fTimeDelta)
 		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, false));
 		m_pModelCom->Play_Animation(fTimeDelta, false);
 	}
+	else
+		m_pActivateUI->Tick(fTimeDelta);
 }
 
 void CTreasureChest::Late_Tick(_float fTimeDelta)
@@ -95,6 +106,25 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 	//DECAL
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
+
+	if (!m_bChestOpened)
+	{
+		CComponent* pComponent = m_pGameInstance->Get_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_Transform"));
+		_vector vPlayerPos = dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION);
+		_vector vSavePointPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 5.0f))
+		{
+			if (m_pGameInstance->Key_Down(DIK_F))
+			{
+				m_bChestOpened = true;
+
+				Drop_Item();
+			}
+
+			m_pActivateUI->Late_Tick(fTimeDelta);
+		}
+	}
 }
 
 HRESULT CTreasureChest::Render()
@@ -205,6 +235,36 @@ HRESULT CTreasureChest::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CTreasureChest::Create_Activate()
+{
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	m_pActivateUI = dynamic_cast<CUI_Activate*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Activate"), &pDesc));
+	if (nullptr == m_pActivateUI)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CTreasureChest::Drop_Item()
+{
+	switch (m_eTreasureState)
+	{
+	case Client::CTreasureChest::TREASURE_NORMAL: // ·£´ýÇÑ ¾ÆÀÌÅÛ È¹µæ
+		CInventory::GetInstance()->Add_DropItem(static_cast<CItem::ITEM_NAME>(rand() % CItem::ITEM_END));
+		break;
+	case Client::CTreasureChest::TREASURE_EPIC: // ¹«±â È¹µæ
+		CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_DURGASWORD);
+		break;
+	case Client::CTreasureChest::TREASURE_CLOAKING: // Å¬·ÎÅ· È¹µæ
+		CInventory::GetInstance()->Add_Skill(CItemData::ITEMNAME_AKSHA);
+		break;
+	default:
+		break;
+	}
+}
+
 CTreasureChest* CTreasureChest::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CTreasureChest* pInstance = new CTreasureChest(pDevice, pContext);
@@ -234,4 +294,6 @@ CGameObject* CTreasureChest::Clone(void* pArg)
 void CTreasureChest::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pActivateUI);
 }

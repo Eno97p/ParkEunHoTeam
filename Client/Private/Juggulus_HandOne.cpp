@@ -297,9 +297,9 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 
 	if (m_fColliderActiveTime < 0.f)
 	{
-		_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
+		/*_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
 		_float4 vStartPos = { vGetCenter.x,vGetCenter.y,vGetCenter.z, 1.f };
-		EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+		EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);*/
 		m_bIsActive = true;
 		m_fColliderActiveTime = 0.5f;
 	}
@@ -310,6 +310,16 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 		{
 			if (m_eDisolveType == TYPE_IDLE)
 			{
+				if (m_iAttackCount == 0)
+				{
+					_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
+					_float4 vStartPos = { vGetCenter.x,vGetCenter.y ,vGetCenter.z, 1.f };
+					EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
+					m_bIsActive = true;
+				}
+
 				if (m_fDamageTime == 3.f)
 				{
 					m_iAttackCount++;
@@ -319,8 +329,6 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				{
 					m_fAttackDelay = 2.f;
 					m_eDisolveType = TYPE_DECREASE;
-					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
 				}
 				else if (m_iAttackCount == 3)
 				{
@@ -352,8 +360,10 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 				m_fColliderActiveTime = 0.5f;
 			}
 		}
-		else if (m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0)
+		else if (m_eDisolveType == TYPE_IDLE && m_iState == STATE_ATTACK && m_iAttackCount != 0 && !m_bIsActive)
 		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
 			_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
 			_float4 vStartPos = { vGetCenter.x,vGetCenter.y ,vGetCenter.z, 1.f };
 			EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);

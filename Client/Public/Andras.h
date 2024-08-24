@@ -30,6 +30,9 @@ private:
 	virtual ~CAndras() = default;
 
 public:
+	_float			Get_ShieldRatio() { return m_fCurShield / m_fMaxShield; }
+
+public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Tick(_float fTimeDelta) override;
@@ -90,6 +93,11 @@ private:
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
 	_bool m_bRushSwordSound = true;
+
+#pragma region Shield 
+	_float m_fMaxShield = 50.f;
+	_float m_fCurShield = 0.f;
+#pragma endregion Shield
 
 private:
 	CGameObject* HexaShieldText = nullptr;

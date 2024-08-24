@@ -47,11 +47,21 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 
 void CCircleSphere::Priority_Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
+
 	m_fShootDelay -= fTimeDelta;
 }
 
 void CCircleSphere::Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
+
 	m_pTransformCom->Go_Straight(fTimeDelta);
 	if (m_fShootDelay > 0.f)
 	{
@@ -87,6 +97,11 @@ void CCircleSphere::Tick(_float fTimeDelta)
 
 void CCircleSphere::Late_Tick(_float fTimeDelta)
 {
+	if (!m_pJuggulus)
+	{
+		return;
+	}
+
 	_float4 fPos;
 	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	if (m_pGameInstance->Get_MoveShadow())

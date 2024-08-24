@@ -17,6 +17,8 @@
 #include "CutSceneCamera.h"
 #include "HexaShield.h"
 
+#include "UIGroup_BossHP.h"
+
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -73,12 +75,15 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_Particles.emplace_back(Oura);
 	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
 	m_Particles.emplace_back(Oura2);
+
+	m_fDeadDelay = 5.f;
+
 	return S_OK;
 }
 
 void CAndras::Priority_Tick(_float fTimeDelta)
 {
-	if (m_fDeadDelay < 2.f)
+	if (m_fDeadDelay < 5.f)
 	{
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
@@ -101,9 +106,7 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
-		////블랙홀 생성
-		//_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
-		//EFFECTMGR->Generate_BlackHole(1, vStartPosition);
+		
 		m_bTrigger = true;
 	}
 
@@ -136,6 +139,7 @@ void CAndras::Tick(_float fTimeDelta)
 	m_pPhysXCom->Tick(fTimeDelta);
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_ShieldRatio(m_fCurShield / m_fMaxShield);
 	m_pUI_HP->Tick(fTimeDelta);
 
 	if (m_bIsLocked)
@@ -600,9 +604,11 @@ NodeStates CAndras::GroundAttack(_float fTimeDelta)
 			{
 				XMStoreFloat4(&fDir, vDir);
 				EFFECTMGR->Generate_GroundSlash(fPos, fDir);
+				
 			}
 			else
 			{
+				EFFECTMGR->Generate_Particle(116, fPos);
 				for (_uint i = 0; i < 8; i++)
 				{
 					XMStoreFloat4(&fDir, vDir);
@@ -842,10 +848,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			}
@@ -861,10 +871,14 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 1:
 				//SprintAttack
+				_float4 vParticlePos;
+				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
 			case 2:
 				//GroundAttack
+				EFFECTMGR->Generate_Magic_Cast(4, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
 			case 3:
@@ -873,6 +887,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 4:
 				//LaserAttack
+				EFFECTMGR->Generate_Magic_Cast(1, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_LASERATTACK;
 				break;
 			case 5:
@@ -881,6 +896,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			case 6:
 				//ShootingStarAttack
+				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_SHOOTINGSTARATTACK;
 				break;
 			}
@@ -934,7 +950,20 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
-	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurShield > 0) // 쉴드가 있는 경우에는 쉴드 피격 처리
+	{
+		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
+	}
+	else if ((m_fCurHp <= m_fMaxHp * 0.5f) && !m_bPhase2) // 쉴드 생성 전에 값 넘어가지 않도록 임의로 예외 처리
+	{
+		m_fCurHp = m_fMaxHp * 0.5f;
+		return;
+	}
+	else
+	{
+		m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	}
+
 	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
@@ -961,6 +990,10 @@ void CAndras::Phase_Two()
 	m_fCurHp = m_fMaxHp * 0.5f;
 	m_bPhase2 = true;
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+
+	// 쉴드 UI 및 값 생성
+	m_fCurShield = 50.f;
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 
 CAndras* CAndras::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

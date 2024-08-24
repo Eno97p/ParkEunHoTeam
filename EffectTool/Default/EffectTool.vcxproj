@@ -181,6 +181,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\AndrasSword4.h" />
     <ClInclude Include="..\Public\AndrasSword5.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\BezierCurve.h" />
     <ClInclude Include="..\public\BlackHole.h" />
     <ClInclude Include="..\Public\BlackHole_Ring.h" />
     <ClInclude Include="..\Public\BlackHole_Ring_Bill.h" />
@@ -205,6 +206,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Heal_Ribbon.h" />
     <ClInclude Include="..\Public\Heal_Spiral.h" />
     <ClInclude Include="..\public\Hedgehog.h" />
+    <ClInclude Include="..\Public\HelixCast.h" />
     <ClInclude Include="..\Public\HexaHit.h" />
     <ClInclude Include="..\Public\HexaShield.h" />
     <ClInclude Include="..\Public\HoverBoard.h" />
@@ -216,6 +218,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\public\LineTest.h" />
     <ClInclude Include="..\Public\Loader.h" />
+    <ClInclude Include="..\public\MagicCast.h" />
     <ClInclude Include="..\Public\Main.h" />
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\Map_Flat.h" />
@@ -223,6 +226,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Meteor_Core.h" />
     <ClInclude Include="..\Public\Meteor_Wind.h" />
     <ClInclude Include="..\Public\NeedleSpawner.h" />
+    <ClInclude Include="..\Public\NewAspiration.h" />
     <ClInclude Include="..\public\Particle.h" />
     <ClInclude Include="..\Public\ParticleMesh.h" />
     <ClInclude Include="..\Public\Particle_PhysX.h" />
@@ -245,6 +249,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Public\Tornado_Ring.h" />
     <ClInclude Include="..\Public\Tornado_Root.h" />
     <ClInclude Include="..\Public\Weapon.h" />
+    <ClInclude Include="..\Public\WellCylinder.h" />
     <ClInclude Include="..\Public\WhisperSword_Anim.h" />
     <ClInclude Include="EffectTool.h" />
     <ClInclude Include="framework.h" />
@@ -272,6 +277,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\AndrasSword4.cpp" />
     <ClCompile Include="..\Private\AndrasSword5.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\BezierCurve.cpp" />
     <ClCompile Include="..\private\BlackHole.cpp" />
     <ClCompile Include="..\Private\BlackHole_Ring.cpp" />
     <ClCompile Include="..\Private\BlackHole_Ring_Bill.cpp" />
@@ -295,6 +301,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Heal_Ribbon.cpp" />
     <ClCompile Include="..\Private\Heal_Spiral.cpp" />
     <ClCompile Include="..\private\Hedgehog.cpp" />
+    <ClCompile Include="..\Private\HelixCast.cpp" />
     <ClCompile Include="..\Private\HexaHit.cpp" />
     <ClCompile Include="..\Private\HexaShield.cpp" />
     <ClCompile Include="..\Private\HoverBoard.cpp" />
@@ -306,6 +313,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\private\LineTest.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
+    <ClCompile Include="..\private\MagicCast.cpp" />
     <ClCompile Include="..\Private\Main.cpp" />
     <ClCompile Include="..\Private\Map.cpp" />
     <ClCompile Include="..\Private\Map_Flat.cpp" />
@@ -313,6 +321,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Meteor_Core.cpp" />
     <ClCompile Include="..\Private\Meteor_Wind.cpp" />
     <ClCompile Include="..\Private\NeedleSpawner.cpp" />
+    <ClCompile Include="..\Private\NewAspiration.cpp" />
     <ClCompile Include="..\private\Particle.cpp" />
     <ClCompile Include="..\Private\ParticleMesh.cpp" />
     <ClCompile Include="..\Private\Particle_PhysX.cpp" />
@@ -335,6 +344,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Private\Tornado_Ring.cpp" />
     <ClCompile Include="..\Private\Tornado_Root.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
+    <ClCompile Include="..\Private\WellCylinder.cpp" />
     <ClCompile Include="..\Private\WhisperSword_Anim.cpp" />
     <ClCompile Include="EffectTool.cpp" />
   </ItemGroup>

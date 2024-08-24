@@ -105,7 +105,7 @@ void CFireFlyCube::Tick(_float fTimeDelta)
 		_float t = (m_fLifeTimeRatio - Threadhold) / (1.0f - m_fLifeTimeRatio);
 		t = max(0.f, min(t, 1.f));
 		_vector Maxsize = XMLoadFloat3(&m_OwnDesc->fMaxSize);
-		_vector MinSize = XMVectorZero();
+		_vector MinSize = XMLoadFloat3(&m_OwnDesc->fMinSize);
 		_vector ResultSize = XMVectorLerp(Maxsize, MinSize, t);
 		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
 	}

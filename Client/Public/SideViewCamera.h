@@ -43,7 +43,7 @@ public:
     void Set_BossScene(bool bBossScene)
     {
         m_bBossScene = bBossScene; 
-        Set_Fovy(XMConvertToRadians(75.f));
+        Set_Fovy(XMConvertToRadians(80.f));
     
     }
 private:

@@ -46,7 +46,7 @@ public:
 	virtual HRESULT Render() override;
 	virtual void Add_Hp(_int iValue) override;
 	void Add_Hands();
-
+	void Juggulus_Activate();
 private:
 	_bool							m_isHammerCreate = { false };
 	_bool							m_isAttackDone = { true };

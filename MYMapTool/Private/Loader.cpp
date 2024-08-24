@@ -685,6 +685,9 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/AndrasArena/AndrasArena_Deco/AndrasArena_Deco.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_WarpGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/WarpGate/WarpGate.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion  STAGE 1 PASSIVE ELEMENTS
 

@@ -1463,7 +1463,7 @@ PS_OUT PS_GODRAY(PS_IN In)
     float exposure = 0.3f;       // 노출 값
     float decay = 0.98f;          // 감쇠 값
     float density = 0.001f;        // 밀도 값
-    float weight = 0.02f;         // 가중치 값
+    float weight = 0.1f;         // 가중치 값
 
     //특정 방향으로만 빛을 내보내기 위한 방향 벡터
     float2 desiredDirection = normalize(float2(FloorPosition.x - lightPosition.x, FloorPosition.y - lightPosition.y));
@@ -1479,7 +1479,7 @@ PS_OUT PS_GODRAY(PS_IN In)
     float initialDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord).r;
 
     // 레이 마칭 루프
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         currentTexCoord -= deltaTexCoord;
 

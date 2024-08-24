@@ -624,13 +624,13 @@ NodeStates CMantari::Detect(_float fTimeDelta)
 	}
 	else if (m_fLengthFromPlayer > JUMPATTACKRANGE)
 	{
-		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
-		m_iState = STATE_WALKFRONT;
+		m_iState = STATE_JUMPATTACK;
 		return SUCCESS;
 	}
 	else if (m_fLengthFromPlayer > ATTACKRANGE)
 	{
-		m_iState = STATE_JUMPATTACK;
+		m_pTransformCom->TurnToTarget(fTimeDelta, m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
+		m_iState = STATE_WALKFRONT;
 		return SUCCESS;
 	}
 	else

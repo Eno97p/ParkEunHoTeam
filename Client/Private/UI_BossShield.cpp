@@ -25,10 +25,10 @@ HRESULT CUI_BossShield::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
-	m_fX = (g_iWinSizeX >> 1) + 46.f;
+	
+	m_fX = (g_iWinSizeX >> 1) + 207.f; // 46.f
 	m_fY = g_iWinSizeY - 92.f;
-	m_fSizeX = 1265.3f; // 2048
+	m_fSizeX = 632.65f; // 2048    1265.3f
 	m_fSizeY = 16.f; // 128
 
 	Setting_Position();
@@ -72,14 +72,6 @@ HRESULT CUI_BossShield::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
-		return E_FAIL;
-
 	m_pShaderCom->Begin(2);
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
@@ -118,6 +110,14 @@ HRESULT CUI_BossShield::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_CurrentRatio"), &m_fCurrentRatio, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_PastRatio"), &m_fPastRatio, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue(("g_HudRatio"), &m_fHudRatio, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;

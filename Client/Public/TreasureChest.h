@@ -42,10 +42,15 @@ private:
 
 	_bool m_bChestOpened = false;
 
+	class CUI_Activate* m_pActivateUI = { nullptr };
+
 private:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
+	HRESULT	Create_Activate();
+
+	void	Drop_Item();
 
 private:
 	_uint m_iTest = 0;

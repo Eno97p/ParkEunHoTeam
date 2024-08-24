@@ -163,8 +163,6 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 
 HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 {
-	// 여기는 아직 RedDot 안 들어간 거 같은데 ?
-
 	if (eItemName == CItemData::ITEMNAME_CATALYST)
 	{
 		CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pDropItemDesc{};
@@ -240,6 +238,17 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	// RedDot
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecWeapon.size() - 1);
+
+	//// UI 출력 >>>> 이거 Item에 맞춰 놔가지고 ... 
+	//CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+	//pUIDesc.eLevel = LEVEL_STATIC;
+
+	//vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
+	//for (size_t i = 0; i < m_vecWeapon.size() - 1; ++i)
+	//	++weapon;
+	//pUIDesc.eItemName = (*weapon)->Get_ItemName();
+	//pUIDesc.wszTextureName = (*weapon)->Get_TextureName();
+	//m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	return S_OK;
 }

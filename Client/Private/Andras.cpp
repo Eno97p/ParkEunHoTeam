@@ -17,6 +17,8 @@
 #include "CutSceneCamera.h"
 #include "HexaShield.h"
 
+#include "UIGroup_BossHP.h"
+
 CAndras::CAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -139,6 +141,7 @@ void CAndras::Tick(_float fTimeDelta)
 	m_pPhysXCom->Tick(fTimeDelta);
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_Ratio((m_fCurHp / m_fMaxHp));
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Set_ShieldRatio(m_fCurShield / m_fMaxShield);
 	m_pUI_HP->Tick(fTimeDelta);
 
 	if (m_bIsLocked)
@@ -949,7 +952,20 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
-	m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	if (m_fCurShield > 0) // 쉴드가 있는 경우에는 쉴드 피격 처리
+	{
+		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
+	}
+	else if ((m_fCurHp <= m_fMaxHp * 0.5f) && !m_bPhase2) // 쉴드 생성 전에 값 넘어가지 않도록 임의로 예외 처리
+	{
+		m_fCurHp = m_fMaxHp * 0.5f;
+		return;
+	}
+	else
+	{
+		m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
+	}
+
 	if (m_fCurHp == 0)
 	{
 		m_iState = STATE_DEAD;
@@ -976,6 +992,10 @@ void CAndras::Phase_Two()
 	m_fCurHp = m_fMaxHp * 0.5f;
 	m_bPhase2 = true;
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
+
+	// 쉴드 UI 및 값 생성
+	m_fCurShield = 50.f;
+	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 
 CAndras* CAndras::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

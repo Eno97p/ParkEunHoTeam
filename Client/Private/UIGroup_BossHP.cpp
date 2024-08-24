@@ -64,12 +64,19 @@ void CUIGroup_BossHP::Tick(_float fTimeDelta)
 		}
 		if (isRender_End)
 			m_isRend = false;
+
+		if (nullptr != m_pShield)
+			m_pShield->Tick(fTimeDelta);
 	}
 
 	vector<CUI*>::iterator hp = m_vecUI.begin();
 	dynamic_cast<CUI_BossHP*>(*hp)->Set_Ratio(m_fHPRatio);
 
+	if(nullptr != m_pShield)
+		m_pShield->Set_Ratio(m_fShieldRatio);
+
 	//m_isRend = true;
+	// Shield에 대한 비율 갱신도 필요함
 }
 
 void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)
@@ -78,6 +85,9 @@ void CUIGroup_BossHP::Late_Tick(_float fTimeDelta)
 	{
 		for (auto& pUI : m_vecUI)
 			pUI->Late_Tick(fTimeDelta);
+
+		if (nullptr != m_pShield)
+			m_pShield->Late_Tick(fTimeDelta);
 	}
 }
 
@@ -132,9 +142,13 @@ HRESULT CUIGroup_BossHP::Create_UI()
 
 void CUIGroup_BossHP::Create_Shield()
 {
-	// Prototype_GameObject_UI_BossShield
+	if (nullptr != m_pShield)
+		return;
 
+	CUI::UI_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
 
+	m_pShield = dynamic_cast<CUI_BossShield*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_BossShield"), &pDesc));
 }
 
 CUIGroup_BossHP* CUIGroup_BossHP::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

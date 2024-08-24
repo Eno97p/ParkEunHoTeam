@@ -1410,6 +1410,11 @@ HRESULT CLoader::Loading_For_AckbarLevel()
 #pragma endregion  STAGE 1 PASSIVE ELEMENTS
 
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_ACKBAR, TEXT("Prototype_Component_Model_WarpGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/WarpGate/WarpGate.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 #pragma region  DECO ELEMENTS
 	//STAGE 1 DECO ELEMENTS
 	//Box, Crate
@@ -2062,6 +2067,11 @@ HRESULT CLoader::Loading_For_JugglasLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/RasSamrahCastle/RasSamrahCastle5.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_JUGGLAS, TEXT("Prototype_Component_Model_WarpGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/WarpGate/WarpGate.fbx", PreTransformMatrix))))
+		return E_FAIL;
 
 #pragma endregion  JUGGLAS PASSIVE ELEMENTS
 
@@ -3947,6 +3957,11 @@ HRESULT CLoader::Loading_For_GrassLandLevel()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_Well"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/Stage_1/Well/Well.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GRASSLAND, TEXT("Prototype_Component_Model_WarpGate"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/WarpGate/WarpGate.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 

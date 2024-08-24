@@ -117,6 +117,7 @@ public:
 		m_bIsCloaking = true;
 		Add_Mp(-10.f);
 	}
+	void			Set_isBuffState(_bool isBuffState) { m_isBuffState = isBuffState; }
 
 	Player_Status_Data Get_PlayerStatusData();
 
@@ -129,6 +130,8 @@ public:
 	void			Set_Shield(_bool isOn) { if (isOn) m_fShield = 0.4f; else m_fShield = 1.f; }
 	void			Set_HPBuff(_bool isOn) { if (isOn) m_fHPBuff = 1.5f; else m_fHPBuff = 1.f; }
 	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
+
+	void			Generate_HoverBoard();
 
 private:
 	HRESULT Add_Nodes();
@@ -153,7 +156,7 @@ private:
 	NodeStates LAttack(_float fTimeDelta);
 	_bool CanBackAttack();
 	NodeStates RAttack(_float fTimeDelta);
-	void Generate_HoverBoard();
+	// void Generate_HoverBoard();
 	NodeStates Slide(_float fTimeDelta);
 	NodeStates Dash(_float fTimeDelta);
 	NodeStates Jump(_float fTimeDelta);
@@ -263,6 +266,7 @@ private:
 
 
 #pragma region Buff 관련 Data
+	_bool		m_isBuffState = { false };
 	_float		m_fShield = { 1.f }; // 쉴드 값
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값

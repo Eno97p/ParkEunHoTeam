@@ -498,6 +498,9 @@ void CUI_Manager::Create_QTE()
 
 _bool CUI_Manager::Delete_QTE()
 {
+	if (nullptr == m_pQTE)
+		return false; // 이렇게 하면 될지;
+
 	_bool isSuccess = m_pQTE->Check_ResultScore();
 
 	Safe_Release(m_pQTE);
@@ -525,6 +528,11 @@ void CUI_Manager::Create_LevelUI()
 void CUI_Manager::Setting_Cinematic()
 {
 	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
+
+	if (!m_pCinematic->Get_isBigAnim()) // 시네마틱 시작
+		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(false);
+	else
+		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(true);
 }
 
 void CUI_Manager::Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc)

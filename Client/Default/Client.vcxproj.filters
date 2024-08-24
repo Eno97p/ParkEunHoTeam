@@ -463,9 +463,6 @@
     <Filter Include="02.GameObjects\07. UI\ScreenBlood">
       <UniqueIdentifier>{4f88ec85-50f1-4c31-b5fc-488ee688f4c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\01.Item\FireFly">
-      <UniqueIdentifier>{26e2c42c-deab-47f8-9319-d80ada91fc6e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\07. UI\Slot\EquipSign">
       <UniqueIdentifier>{a9a7e6a4-767e-4b96-ba1a-0593e10b2e48}</UniqueIdentifier>
     </Filter>
@@ -849,9 +846,6 @@
     </Filter>
     <Filter Include="02.GameObjects\07. UI\Monster\BossHP\Shield">
       <UniqueIdentifier>{54c1cae6-48f7-401d-b11f-753322af8e3a}</UniqueIdentifier>
-	</Filter>
-    <Filter Include="02.GameObjects\01.Terrain\Map_Element\01. Active_Element\09. BackGround_Rock">
-      <UniqueIdentifier>{c2477c4b-9154-4fc9-87a6-290578101688}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

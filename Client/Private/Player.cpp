@@ -143,7 +143,7 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 		m_bIsCloaking = false;
 	}
 
-	//Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
+	Update_LvData(); // UI에 출력하기 위해 Lv에 따라 Data들을 갱신하는 함수
 }
 
 void CPlayer::Tick(_float fTimeDelta)
@@ -1680,7 +1680,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_R) && m_fButtonCooltime == 0.f && !m_bRided)
+	if (/*m_pGameInstance->Get_DIKeyState(DIK_R) && */m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1710,7 +1710,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		return COOLING;
 	}
 
-	Generate_HoverBoard();
+	//Generate_HoverBoard();
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_F) && m_fButtonCooltime == 0.f && m_pHoverBoard)
 	{
@@ -2130,7 +2130,7 @@ NodeStates CPlayer::UseItem(_float fTimeDelta)
 
 NodeStates CPlayer::Buff(_float fTimeDelta)
 {
-	if (GetKeyState('X') & 0x8000 && m_iState != STATE_BUFF)
+	if (m_isBuffState && m_iState != STATE_BUFF)
 	{
 		m_iState = STATE_BUFF;
 		m_pGameInstance->Disable_Echo();
@@ -2148,6 +2148,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 		if (m_bAnimFinished)
 		{
 			m_iState = STATE_IDLE;
+			m_isBuffState = false;
 			return SUCCESS;
 		}
 		else

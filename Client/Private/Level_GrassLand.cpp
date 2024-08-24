@@ -249,7 +249,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 	 pCSCdesc.fFovy = XMConvertToRadians(60.f);
 	 pCSCdesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	 pCSCdesc.fNear = 0.1f;
-	 pCSCdesc.fFar = 3000.f;
+	 pCSCdesc.fFar = 10000.f;
 
 	 pCSCdesc.fSpeedPerSec = 40.f;
 	 pCSCdesc.fRotationPerSec = XMConvertToRadians(90.f);

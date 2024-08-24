@@ -13,6 +13,7 @@
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
 
+#include "Boss_Juggulus.h"
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -380,7 +381,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
 
 					pTCDesc.iStartCam = CAM_THIRDPERSON;
-					pTCDesc.iEndCam = CAM_CUTSCENE;
+					pTCDesc.iEndCam = CAM_SIDEVIEW;
 					pTCDesc.fTransitionTime = 1.f;
 					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
 					{
@@ -390,7 +391,13 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
 
+					list<CGameObject*> juggulus = m_pGameInstance->Get_GameObjects_Ref(LEVEL_JUGGLAS, TEXT("Layer_Boss"));
 
+					if (!juggulus.empty())
+					{
+						dynamic_cast<CBoss_Juggulus*>(juggulus.front())->Juggulus_Activate();
+
+					}
 				}
 				break;
 				case TRIG_CUTSCENE_MALKHEL:

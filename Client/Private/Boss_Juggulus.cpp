@@ -95,14 +95,6 @@ void CBoss_Juggulus::Tick(_float fTimeDelta)
 
 	Check_AnimFinished();
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_N))
-	{
-		if (!m_bTrigger)
-		{
-			Add_Hands();
-		}
-		m_bTrigger = true;
-	}
 
 	if (m_bTrigger)
 	{
@@ -204,6 +196,15 @@ void CBoss_Juggulus::Add_Hands()
 	// Hand Three
 	CGameObject* pHandThree = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Juggulus_HandThree"), &PartDesc);
 	m_PartObjects.emplace("Hand_Three", pHandThree);
+}
+
+void CBoss_Juggulus::Juggulus_Activate()
+{
+	if (!m_bTrigger)
+	{
+		Add_Hands();
+	}
+	m_bTrigger = true;
 }
 
 HRESULT CBoss_Juggulus::Add_Components()
@@ -507,6 +508,9 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
+			m_pGameInstance->Get_MainCamera()->Zoom(120.f, 0.4f, 1000.f);
+
+
 			// 손 삭제, 몬스터 삭제
 			Safe_Release((*m_PartObjects.find("Hand_One")).second);
 			Safe_Release((*m_PartObjects.find("Hand_Two")).second);
@@ -547,6 +551,8 @@ NodeStates CBoss_Juggulus::CreateHammer(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			m_pGameInstance->Get_MainCamera()->Zoom(60.f, 0.3f, 0.1f);
+
 			m_ePhase = PHASE_TWO;
 			m_iState = STATE_IDLE_SEC;
 		}

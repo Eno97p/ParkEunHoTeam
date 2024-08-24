@@ -35,6 +35,22 @@ CLevel_AndrasArena::CLevel_AndrasArena(ID3D11Device * pDevice, ID3D11DeviceConte
 
 HRESULT CLevel_AndrasArena::Initialize()
 {
+
+	CRenderer::FOG_DESC fogDesc{};
+	fogDesc.vFogColor = { 226.f / 255.f, 181.f / 255.f, 124.f / 255.f, 1.f };
+	fogDesc.vFogColor2 = { 1.f,  135.f / 255.f, 0.f, 1.f };
+	fogDesc.fFogRange = 5625.0f;
+	fogDesc.fFogHeightFalloff = 0.0f;
+	fogDesc.fFogGlobalDensity = 1.f;
+	fogDesc.fFogTimeOffset = 1.442f;
+	fogDesc.fFogTimeOffset2 = 3.317f;
+	fogDesc.fNoiseIntensity = 0.481f;
+	fogDesc.fNoiseIntensity2 = 3.077f;
+	fogDesc.fNoiseSize = 0.001442f;
+	fogDesc.fNoiseSize2 = 0.000962f;
+	fogDesc.fFogBlendFactor = 0.150f;
+	m_pGameInstance->Set_FogOption(fogDesc);
+
 	//m_pGameInstance->Set_FogOption({ 0.367f, 0.254f, 0.200f, 1.f }, 460, 1.f, 0.1f, 10.f, 0.53f, 0.1f);
 
 	if (FAILED(Ready_Lights()))

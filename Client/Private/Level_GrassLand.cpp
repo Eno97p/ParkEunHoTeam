@@ -566,6 +566,8 @@ HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandO
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
 			return E_FAIL;
 
+
+
 	}
 
 	

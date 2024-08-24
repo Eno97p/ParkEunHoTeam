@@ -36,15 +36,18 @@ public:
 public:
 	typedef struct Player_Status_Data // 다음 Level로 넘어갈 때 저장되어야 하는 Player 스탯 데이터
 	{
-		_bool*		isReviveFadeing=nullptr;
-		_uint*		iLevel=nullptr;
-		_uint*		iVitalityLv=nullptr;
-		_uint*		iStaminaLv=nullptr;
-		_uint*		iStrenghtLv=nullptr;
-		_uint*		iMysticismLv=nullptr;
-		_uint*		iKnowledgeLv=nullptr;
-		_uint*		iPhysicalDmg=nullptr;
-		_uint*		iEtherDmg = nullptr;
+		_bool		isReviveFadeing;
+		_uint		iLevel;
+		_uint		iVitalityLv;
+		_uint		iStaminaLv;
+		_uint		iStrenghtLv;
+		_uint		iMysticismLv;
+		_uint		iKnowledgeLv;
+		_uint		iPhysicalDmg;
+		_uint		iEtherDmg  ;
+
+		Player_Status_Data() = default;
+		
 	}PLAYER_STATUS_DATA;
 
 public:
@@ -116,7 +119,7 @@ public:
 	}
 	void			Set_isBuffState(_bool isBuffState) { m_isBuffState = isBuffState; }
 
-	Player_Status_Data Get_PlayerStatusData() { return m_tPlayerStatusData; }
+	Player_Status_Data Get_PlayerStatusData();
 
 	void			Pull_Status(); // HP / Stamina / MP 를 Pull
 	void			Update_LvData();
@@ -222,8 +225,8 @@ private:
 #pragma region 플레이어 스탯
 
 #ifdef _DEBUG
-	//_float m_fMaxHp = 10.f;
-	_float m_fMaxHp = 1000.f;
+	_float m_fMaxHp = 100.f;
+	//_float m_fMaxHp = 1000.f;
 #else
 	//_float m_fMaxHp = 300.f;
 	_float m_fMaxHp = 300.f;

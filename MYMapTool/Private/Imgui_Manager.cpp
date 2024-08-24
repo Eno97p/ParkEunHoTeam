@@ -611,6 +611,7 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
             "wp10",
             "wp11",
             "wp12",
+            "WarpGate"
 
 
         };

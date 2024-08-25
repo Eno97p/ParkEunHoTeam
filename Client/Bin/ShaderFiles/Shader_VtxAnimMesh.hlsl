@@ -27,6 +27,8 @@ bool g_bRoughness = false;
 bool g_bMetalic = false;
 bool g_MotionBlur = false;
 
+float3 EyeColor;
+float g_EyeRatio;   //For Andras CutScene
 /* 이 메시에게 영향을 주는 뼈들. */
 matrix		g_BoneMatrices[512];
 
@@ -561,6 +563,40 @@ PS_OUT_COLOR PS_CLOAKING(PS_IN In)
 	return Out;
 }
 
+
+PS_OUT_COLOR PS_ANDRASEYE(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (vDiffuse.r < 0.7f)
+	{
+		float3 vDefaultColor = vDiffuse.rgb;
+		Out.vColor.rgb = lerp(vDefaultColor, EyeColor, g_EyeRatio);
+	}
+ 
+	Out.vColor = vDiffuse;
+
+	return Out;
+}
+
+
+PS_OUT_COLOR PS_ANDRAS_BLOOM(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+	vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+	if (vDiffuse.r > 0.7f)
+		discard;
+
+	Out.vColor.rgb = lerp(vDiffuse.rgb, EyeColor, g_EyeRatio);
+	Out.vColor.a = lerp(0.f, 2.f, g_EyeRatio);
+	Out.vColor *= 10.f;
+	return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
@@ -745,4 +781,35 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_CLOAKING();
 	}
+
+
+	pass AndrasEyePass_13
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ANDRASEYE();
+	}
+
+
+	pass AndrasEyePass_Bloom_14
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_ANDRAS_BLOOM();
+	}
+
+
+		
 }

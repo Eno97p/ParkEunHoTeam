@@ -14,7 +14,7 @@ public:
 	{
 		_float3 vSize = { 1.5f,1.f,1.5f };
 		_float3 vEndSized = { 0.f,1.f,0.f };
-		_float3 vOffset = { 0.f,0.f,2.f };
+		_float3 vOffset = { 0.f,0.f,0.f };
 		_float3 fColor = { 1.f,1.f,1.f };
 		_float3 BloomColor = { 1.f,1.f,1.f };
 		_float fBloomPower = 1.f;

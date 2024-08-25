@@ -169,6 +169,7 @@ call Copy_EffectTool.bat</Command>
     <ClInclude Include="..\Imgui\imstb_textedit.h" />
     <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\Andras.h" />
+    <ClInclude Include="..\Public\AndrasCylinder.h" />
     <ClInclude Include="..\public\AndrasHead.h" />
     <ClInclude Include="..\public\AndrasLazer.h" />
     <ClInclude Include="..\public\AndrasLazer_Base.h" />
@@ -265,6 +266,7 @@ call Copy_EffectTool.bat</Command>
     <ClCompile Include="..\Imgui\imgui_tables.cpp" />
     <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\Andras.cpp" />
+    <ClCompile Include="..\Private\AndrasCylinder.cpp" />
     <ClCompile Include="..\private\AndrasHead.cpp" />
     <ClCompile Include="..\private\AndrasLazer.cpp" />
     <ClCompile Include="..\private\AndrasLazer_Base.cpp" />

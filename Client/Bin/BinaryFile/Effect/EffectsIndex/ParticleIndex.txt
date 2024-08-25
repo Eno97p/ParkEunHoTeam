@@ -127,3 +127,6 @@
 126. AndrasCutRing
 127. AndrasCutExplosion
 128. AndrasCutSnow
+129. AndrasArenaBlow
+130. JugglusShieldBreak
+131. Cloud

@@ -385,6 +385,10 @@ NodeStates CMalkhel::Teleport(_float fTimeDelta)
 		_float3 fScale = m_pTransformCom->Get_Scaled();
 		if (!m_bTeleport)
 		{
+			_float4 vParticlePos;
+			XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Magic_Cast(3, m_pTransformCom->Get_WorldFloat4x4());
+			EFFECTMGR->Generate_Distortion(8, vParticlePos);
 			m_pTransformCom->Set_Scale(fScale.x - fTimeDelta * 5.f, fScale.y - fTimeDelta * 5.f, fScale.z - fTimeDelta * 5.f);
 			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 10.f, 0.f, 0.f));
 			if (m_pTransformCom->Get_Scaled().x < 0.1f)

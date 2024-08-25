@@ -6,3 +6,5 @@
 5. Damage
 6. BlackHoleSpawn
 7. BlackHoleLoop
+8. MalkelTeleport
+9. JugglusHand

@@ -293,7 +293,6 @@ private:
 	_float		m_GrassBlowInterval = 1.f;
 
 
-
 private:
 	void OnShapeHit(const PxControllerShapeHit& hit);
 	void OnControllerHit(const PxControllersHit& hit);

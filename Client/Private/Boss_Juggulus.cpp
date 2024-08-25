@@ -656,6 +656,9 @@ NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
 		if (!m_bGroggyCamChange)
 		{
 			m_bGroggyCamChange = true;
+			_float4 ShieldBreakPos;
+			XMStoreFloat4(&ShieldBreakPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(130, ShieldBreakPos);
 
 			//ÄÆ¾À Æ®·»Áö¼Ç
 			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};

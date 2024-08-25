@@ -69,7 +69,7 @@ private:
 
 public:
 	void Activate_Andras() { m_bTrigger = true; }
-	void Init_Trail();
+
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	vector<class CGameObject*>					m_Particles;

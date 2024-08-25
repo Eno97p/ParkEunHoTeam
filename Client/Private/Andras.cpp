@@ -531,6 +531,11 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 		
 		if (m_isAnimFinished)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			vDashPos.y += 1.f;
+			EFFECTMGR->Generate_Distortion(5, vDashPos);
+			EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_iState = STATE_DASHLEFT;
 		}
@@ -556,6 +561,11 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			vDashPos.y += 1.f;
+			EFFECTMGR->Generate_Distortion(5, vDashPos);
+			EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_iState = STATE_DASHRIGHT;
 		}
@@ -853,10 +863,15 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		m_fTurnDelay = 0.5f;
 		if (!m_bPhase2)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			switch (m_iPastState)
 			{
 			case STATE_GROUNDATTACK:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			case STATE_DASHRIGHT:
@@ -873,6 +888,9 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			default:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}
@@ -880,11 +898,16 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		}
 		else
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			switch (m_iPastState)
 			{
 			case STATE_SHOOTINGSTARATTACK:
 				//Attack
 				m_iState = STATE_DASHRIGHT;
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
 			case STATE_DASHRIGHT:
 				//SprintAttack
@@ -919,6 +942,9 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			default:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}

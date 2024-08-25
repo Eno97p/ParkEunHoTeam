@@ -62,6 +62,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Teleport.ogg"), SOUND_MONSTER);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	if (*m_pState == CMalkhel::STATE_IDLE)
 	{
@@ -69,10 +70,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 12;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHLEFT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 15;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
@@ -81,10 +83,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHRIGHT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 16;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
@@ -93,10 +96,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHFRONT)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 14;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
@@ -105,10 +109,11 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_DASHBACK)
 	{
-		AnimDesc.isLoop = false;
+		AnimDesc.isLoop = true;
 		AnimDesc.iAnimIndex = 13;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
@@ -117,6 +122,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Dash.ogg"), SOUND_MONSTER);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK1)
 	{
@@ -124,6 +130,8 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 0;
+		m_pWeapon->Set_Active(false);
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK2)
 	{
@@ -131,7 +139,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 1;
-		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f))
+		if (m_pModelCom->Get_Ratio_Betwin(0.45f, 0.8f) && m_bAttacking)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -139,6 +147,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active(false);
 		}
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK3)
 	{
@@ -146,15 +155,15 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 2;
-		if (m_pModelCom->Get_Ratio_Betwin(0.25f, 0.35f))
+		if (m_pModelCom->Get_Ratio_Betwin(0.3f, 0.4f))
 		{
 			m_pWeapon->Set_Active();
 		}
-		else if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.6f))
+		else if (m_pModelCom->Get_Ratio_Betwin(0.55f, 0.65f))
 		{
 			m_pWeapon->Set_Active();
 		}
-		else if (m_pModelCom->Get_Ratio_Betwin(0.75f, 0.85f))
+		else if (m_pModelCom->Get_Ratio_Betwin(0.8f, 0.9f))
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -172,6 +181,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			XMStoreFloat4(&fPos, vPos + 2.f * vLook);
 			EFFECTMGR->Generate_Lightning(1, fPos);
 		}
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK4)
 	{
@@ -192,6 +202,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack4.ogg"), SOUND_MONSTER);
 		}
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK5)
 	{
@@ -199,7 +210,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		m_pModelCom->Set_LerpTime(1.3);
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 4;
-		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f))
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.8f) && m_bAttacking)
 		{
 			m_pWeapon->Set_Active();
 		}
@@ -212,6 +223,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack4.ogg"), SOUND_MONSTER);
 		}
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK6)
 	{
@@ -226,6 +238,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(68, fPos, nullptr, XMVectorZero(), 0.f, vLook);
 			EFFECTMGR->Generate_Particle(69, fPos, nullptr, XMVectorZero(), 0.f, vLook);
 		}
+		m_pWeapon->Set_Active(false);
 	}
 	else if (*m_pState == CMalkhel::STATE_ATTACK7)
 	{
@@ -241,6 +254,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		{
 			m_pWeapon->Set_Active(false);
 		}
+		m_bAttacking = true;
 	}
 	else if (*m_pState == CMalkhel::STATE_DEAD)
 	{
@@ -270,6 +284,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 
 	if (m_bAnimFinished)
 	{
+		m_bAttacking = false;
 		m_pWeapon->Set_Active(false);
 	}
 

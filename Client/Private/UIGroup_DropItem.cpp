@@ -26,8 +26,11 @@ HRESULT CUIGroup_DropItem::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (FAILED(Create_UI(pDesc->eItemName, pDesc->wszTextureName, pDesc->isItem, pDesc->isWeapon)))
-        return E_FAIL;
+    if (pDesc->isRend)
+    {
+        if (FAILED(Create_UI(pDesc->eItemName, pDesc->wszTextureName, pDesc->isItem, pDesc->isWeapon)))
+            return E_FAIL;
+    }
 
     return S_OK;
 }

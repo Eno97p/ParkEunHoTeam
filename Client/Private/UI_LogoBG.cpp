@@ -49,7 +49,7 @@ void CUI_LogoBG::Tick(_float fTimeDelta)
 
 void CUI_LogoBG::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, FIRST);
+	CGameInstance::GetInstance()->Add_UI(this, SECOND);
 }
 
 HRESULT CUI_LogoBG::Render()

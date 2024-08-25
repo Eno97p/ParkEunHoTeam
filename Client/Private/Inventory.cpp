@@ -72,7 +72,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// 게임 처음 시작 시 기본적으로 가지고 있는 아이템 
 	// Weapon에 추가
 	
-	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD); 
+	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD, false); 
 
 	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD); 
 	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD);
@@ -89,7 +89,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
 	// Skill
-	Add_Skill(CItemData::ITEMNAME_OPH);
+	Add_Skill(CItemData::ITEMNAME_OPH, false);
 	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
@@ -220,7 +220,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	return S_OK;
 }
 
-HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
+HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName, _bool isRend)
 {
 	CItemData::ITEMDATA_DESC pDesc{};
 	pDesc.isDropTem = false;
@@ -247,13 +247,14 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	pUIDesc.wszTextureName = (*weapon)->Get_TextureName();
 	pUIDesc.isItem = false;
 	pUIDesc.isWeapon = true;
+	pUIDesc.isRend = isRend;
 
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	return S_OK;
 }
 
-HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
+HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName, _bool isRend)
 {
 	CItemData::ITEMDATA_DESC pDesc{};
 
@@ -277,6 +278,7 @@ HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
 	pUIDesc.wszTextureName = (*skill)->Get_TextureName();
 	pUIDesc.isItem = false;
 	pUIDesc.isWeapon = false;
+	pUIDesc.isRend = isRend;
 
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 

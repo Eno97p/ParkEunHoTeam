@@ -31,7 +31,7 @@ private:
 	CCollider* m_pColliderCom = { nullptr };
 	CCollider::COLLTYPE m_eColltype = CCollider::COLL_NOCOLL;
 	class CPlayer* m_pPlayer = { nullptr };
-	_bool m_bActive = true;
+	_bool m_bActive = false;
 
 	class CUI_ArrowSign*	m_pSignUI = { nullptr };
 

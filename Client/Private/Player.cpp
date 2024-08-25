@@ -317,6 +317,7 @@ HRESULT CPlayer::Add_PartObjects()
 	BodyDesc.pCanCombo = &m_bCanCombo;
 	BodyDesc.pIsCloaking = &m_bIsCloaking;
 	BodyDesc.pCurWeapon = &m_iCurWeapon;
+	BodyDesc.pOnWater = &m_bOnWater;
 
 	CGameObject* pBody = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Body_Player"), &BodyDesc);
 	if (nullptr == pBody)
@@ -1016,6 +1017,16 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
+		if (m_fCurMp < 50.f)
+		{
+			return FAILURE;
+		}
+		if (m_iState != STATE_SPECIALATTACK)
+		{
+			m_fSpecialAttack += fTimeDelta;
+			Add_Mp(-50);
+		}
+		
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1030,10 +1041,7 @@ NodeStates CPlayer::Special1(_float fTimeDelta)
 			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
-		if (m_iState != STATE_SPECIALATTACK)
-		{
-			m_fSpecialAttack += fTimeDelta;
-		}
+		
 	}
 
 	if (m_fSpecialAttack != 0.f)
@@ -1128,6 +1136,16 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
+		if (m_fCurMp < 50.f)
+		{
+			return FAILURE;
+		}
+		if (m_iState != STATE_SPECIALATTACK2)
+		{
+			Add_Mp(-50);
+			m_fSpecialAttack += fTimeDelta;
+		}
+
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1141,10 +1159,6 @@ NodeStates CPlayer::Special2(_float fTimeDelta)
 		{
 			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
-		}
-		if (m_iState != STATE_SPECIALATTACK2)
-		{
-			m_fSpecialAttack += fTimeDelta;
 		}
 	}
 
@@ -1194,6 +1208,23 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
+		if (m_fCurMp < 50.f)
+		{
+			return FAILURE;
+		}
+		if (m_iState != STATE_SPECIALATTACK3)
+		{
+			Add_Mp(-50);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Special3_Charge.ogg"), SOUND_EFFECT, 0.f, 0.8f);
+			_float4 vParticlepos;
+			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
+			EFFECTMGR->Generate_Particle(53, vParticlepos, this);
+			EFFECTMGR->Generate_Swing(0, m_pTransformCom->Get_WorldFloat4x4());
+			m_fSpecialAttack += fTimeDelta;
+		}
+		
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1206,17 +1237,6 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		{
 			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
-		}
-		if (m_iState != STATE_SPECIALATTACK3)
-		{
-			m_pGameInstance->Disable_Echo();
-			m_pGameInstance->Play_Effect_Sound(TEXT("Special3_Charge.ogg"), SOUND_EFFECT, 0.f, 0.8f);
-			_float4 vParticlepos;
-			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
-			EFFECTMGR->Generate_Particle(53, vParticlepos, this);
-			EFFECTMGR->Generate_Swing(0, m_pTransformCom->Get_WorldFloat4x4());
-			m_fSpecialAttack += fTimeDelta;
 		}
 	}
 
@@ -1272,6 +1292,16 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_R))
 	{
+		if (m_fCurMp < 50.f)
+		{
+			return FAILURE;
+		}
+		if (m_iState != STATE_SPECIALATTACK4)
+		{
+			Add_Mp(-50);
+			m_fSpecialAttack += fTimeDelta;
+		}
+
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
@@ -1283,10 +1313,7 @@ NodeStates CPlayer::Special4(_float fTimeDelta)
 			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
-		if (m_iState != STATE_SPECIALATTACK4)
-		{
-			m_fSpecialAttack += fTimeDelta;
-		}
+		
 	}
 
 	if (m_fSpecialAttack != 0.f)
@@ -1444,7 +1471,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 			static_cast<CPartObject*>(m_PartObjects[m_iCurWeapon + 1])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Weapon = true;
 		}
-		if (!m_bRAttacking)
+		if (!m_bRAttacking && m_fRChargeAttack < 0.3f)
 		{
 			m_fRChargeAttack += fTimeDelta;
 		}
@@ -1474,6 +1501,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 	if (m_fRChargeAttack != 0.f)
 	{
+		m_fRChargeAttack += fTimeDelta;
 		if (m_fRChargeAttack >= 0.3f)
 		{
 			if (m_bStaminaCanDecrease)
@@ -1488,21 +1516,22 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 
 				_vector vDir = XMLoadFloat4(&CThirdPersonCamera::m_vLockedTargetPos) - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 				vDir.m128_f32[1] = 0.f;
-
-				_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
-				_vector vUp = XMVector3Cross(vDir, vRight);
-
 				_float fLength = XMVectorGetX(XMVector3Length(vDir));
 
-				vDir = XMVector3Normalize(vDir);
-				m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
-				m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
-				m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
-				m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
-				m_pPhysXCom->Go_Straight(fTimeDelta * fLength);
-				if (fLength < 1.f)
+				if (fLength > 20.f || fLength < 1.f || m_fRChargeAttack > 0.6f)
 				{
 					m_bChase = false;
+				}
+				else
+				{
+					_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vDir);
+					_vector vUp = XMVector3Cross(vDir, vRight);
+					vDir = XMVector3Normalize(vDir);
+					m_pTransformCom->Set_State(CTransform::STATE_RIGHT, vRight);
+					m_pTransformCom->Set_State(CTransform::STATE_UP, vUp);
+					m_pTransformCom->Set_State(CTransform::STATE_LOOK, vDir);
+					m_pTransformCom->Set_Scale(fScale.x, fScale.y, fScale.z);
+					m_pPhysXCom->Go_Straight(fTimeDelta * fLength);
 				}
 			}
 		}

@@ -18,6 +18,7 @@ public:
 	typedef struct BODY_DESC : public CPartObject::PARTOBJ_DESC
 	{
 		const _bool* pIsCloaking;
+		const _bool* pOnWater;
 	}BODY_DESC;
 
 private:
@@ -44,6 +45,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	const _bool* m_pIsCloaking = false;
+	const _bool* m_pOnWater = { nullptr };
 
 	_bool m_bAnimFinished = false;
 	_uint m_iPastAnimIndex = 0;

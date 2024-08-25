@@ -132,6 +132,7 @@ public:
 	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
 
 	void			Generate_HoverBoard();
+	void			OnWater(_bool bOnWater) { m_bOnWater = bOnWater; }
 
 private:
 	HRESULT Add_Nodes();
@@ -174,7 +175,7 @@ private:
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	_uint										m_iState = { 0 };
-	_uint										m_iCurWeapon = { WEAPON_DURGASWORD };
+	_uint										m_iCurWeapon = { WEAPON_RADAMANTHESWORD };
 	class CPhysXComponent_Character* m_pPhysXCom = { nullptr };
 	CBehaviorTree* m_pBehaviorCom = { nullptr };
 	_float										m_fButtonCooltime = 0.f;
@@ -200,6 +201,7 @@ private:
 	_bool										m_bRiding = false;
 	_bool										m_bRided = false;
 	_bool										m_bChase = true;
+	_bool										m_bOnWater = false;
 #pragma endregion 상태제어 bool변수
 
 	_float										m_fFightIdle = 0.f;

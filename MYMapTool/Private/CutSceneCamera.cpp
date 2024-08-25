@@ -194,6 +194,51 @@ float CCutSceneCamera::Get_AnimationProgress() const
     return (currentTime - currentCutScene.front().fTime) / totalDuration;
 }
 
+void CCutSceneCamera::Pop_CutScene(_uint iIndex)
+{
+    if (iIndex >= m_AllCutScenes.size())
+    {
+        // 잘못된 인덱스에 대한 예외 처리
+        MSG_BOX("Invalid CutScene index in Pop_CutScene");
+        return;
+    }
+
+    // 해당 인덱스의 컷씬 제거
+    m_AllCutScenes.erase(m_AllCutScenes.begin() + iIndex);
+
+    // 현재 재생 중인 컷씬이 제거된 경우 처리
+    if (m_iCurrentCutSceneIdx == iIndex)
+    {
+        // 현재 재생 중인 컷씬이 마지막 컷씬이었다면
+        if (m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
+        {
+            m_iCurrentCutSceneIdx = 0;  // 첫 번째 컷씬으로 리셋
+            m_iCurrentKeyFrame = 0;
+            m_fKeyFrameTime = 0.0f;
+            m_bAnimationFinished = true;
+            m_bPaused = true;
+        }
+        // 그렇지 않다면 다음 컷씬으로 이동
+        else
+        {
+            m_iCurrentKeyFrame = 0;
+            m_fKeyFrameTime = 0.0f;
+            m_bAnimationFinished = false;
+            m_bPaused = false;
+        }
+    }
+    // 제거된 컷씬이 현재 재생 중인 컷씬 이전에 있었다면 인덱스 조정
+    else if (m_iCurrentCutSceneIdx > iIndex)
+    {
+        m_iCurrentCutSceneIdx--;
+    }
+
+    // 모든 컷씬이 제거된 경우
+    if (m_AllCutScenes.empty())
+    {
+        Clear_CutScenes();
+    }
+}
 const vector<CCutSceneCamera::CameraKeyFrame>& CCutSceneCamera::Get_CutScene(_uint iIndex) const
 {
     if (iIndex >= m_AllCutScenes.size())

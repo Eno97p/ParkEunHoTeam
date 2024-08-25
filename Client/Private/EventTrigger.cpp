@@ -416,11 +416,46 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					}
 				}
 				break;
+				case TRIG_CUTSCENE_GRASSLAND:
+				{
+					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_GRASSLAND_HANGAROUND);
+
+					//ÄÆ¾À Æ®·»Áö¼Ç
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_CUTSCENE;
+					pTCDesc.fTransitionTime = 2.f;
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_GRASSLAND, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+
+					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+
+			
+				}
+				break;
 				case TRIG_CUTSCENE_MALKHEL:
 				{
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Malkhel.mp3"));
+
+					//ÇÃ·¹ÀÌ¾î ÄÆ¾ÀÀ§Ä¡·Î
+					CPhysXComponent_Character* playerTrans = dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_Player"), TEXT("Com_PhysX")));
+					playerTrans->Set_Position(XMVectorSet(-460.111f, 350.980f, -503.035f, 1.f));
+
 					//Ç® »èÁ¦
 					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Grass"));
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_BLOODMOON);
@@ -497,6 +532,15 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 				}
 					break;
+
+				case TRIG_RACING_START:
+				{
+				}
+				break;
+				case TRIG_RACING_WIN:
+				{
+				}
+				break;
 				default:
 					break;
 				}

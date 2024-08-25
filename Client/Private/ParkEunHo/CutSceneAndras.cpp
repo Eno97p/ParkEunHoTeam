@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "CutSceneCamera.h"
 CutSceneAndras::CutSceneAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -224,6 +225,8 @@ HRESULT CutSceneAndras::Bind_BloomResources()
 
 HRESULT CutSceneAndras::Add_Child_Effects()
 {
+	dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->StartIntenseShaking(2.f, 2.5f);
+
 	m_pGameInstance->Disable_Echo();
 	m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Phase2.mp3"), SOUND_EFFECT, 0.f, 1.f, 1.f);
 

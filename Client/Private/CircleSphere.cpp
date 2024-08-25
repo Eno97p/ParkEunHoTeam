@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "EffectManager.h"
 #include "Monster.h"
+#include "SideViewCamera.h"
 
 CCircleSphere::CCircleSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -92,6 +93,9 @@ void CCircleSphere::Tick(_float fTimeDelta)
 			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 			m_pGameInstance->Erase(this);
 			m_pGameInstance->Erase(Particle);
+
+			dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
+
 		}
 	}
 }
@@ -143,6 +147,8 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 				m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 				m_pGameInstance->Erase(this);
 				m_pGameInstance->Erase(Particle);
+				dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
+
 			}
 
 		}
@@ -163,6 +169,8 @@ void CCircleSphere::Late_Tick(_float fTimeDelta)
 			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 			m_pGameInstance->Erase(this);
 			m_pGameInstance->Erase(Particle);
+			dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.5f, 0.25f);
+
 		}
 	}
 

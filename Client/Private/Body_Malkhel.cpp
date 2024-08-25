@@ -5,6 +5,7 @@
 #include "Malkhel.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
 
 CBody_Malkhel::CBody_Malkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -173,6 +174,9 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 		}
 		if (m_pModelCom->Check_CurDuration(0.35f) || m_pModelCom->Check_CurDuration(0.6f) || m_pModelCom->Check_CurDuration(0.85f))
 		{
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
+
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Malkhel_Attack3.ogg"), SOUND_MONSTER);
 			_vector vPos = XMVectorSet(m_pParentMatrix->_41, m_pParentMatrix->_42, m_pParentMatrix->_43, 1.f);

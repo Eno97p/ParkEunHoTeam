@@ -9,7 +9,10 @@ class CCutSceneCamera final : public CCamera
 {
 public:
 	enum class CAMERA_PHASE {CAMERA_FOLLOW = 0, CAMERA_REVOLUTION, CAMERA_RETURN, CAMERA_ZOOMIN, CAMERA_END};
-	enum CUTSCENE_IDX {SCENE_MANTARI, SCENE_JUGGULAS, SCENE_ANDRAS_PHASE2, SCENE_ANDRAS_PROJECTILE, SCENE_BLOODMOON, SCENE_ANDRAS_DEAD };
+	enum CUTSCENE_IDX {
+		SCENE_MANTARI, SCENE_JUGGULAS, SCENE_ANDRAS_PHASE2, SCENE_ANDRAS_PROJECTILE, SCENE_BLOODMOON, 
+		  SCENE_MALKHEL_DESCEND, SCENE_GRASSLAND_HANGAROUND, SCENE_ANDRAS_DEAD
+	};
 public:
 	
 	typedef struct CUTSCENECAMERA_DESC : public CCamera::CAMERA_DESC
@@ -119,6 +122,11 @@ public:
 	_matrix SafeLookAtLH(_vector cameraPosition, _vector lookAt, _vector upDirection);
 	void EndCutScene();
 
+public:
+	void StartIntenseShaking(float duration, float strength);
+
+
+
 private: // FOR CAMERA ANIMATIOn
 	_uint m_iCutSceneIdx = 0;
 	vector<CameraKeyFrame> m_KeyFrames;
@@ -141,6 +149,18 @@ private:
 	_bool		m_bActivatePick = false;
 	_vector		m_vLerpPos = { 0.f, };
 	class CGameObject* m_pTarget = nullptr;			//타깃
+
+	//
+private:
+	bool m_bIntenseShaking = false;
+	float m_fIntenseShakeDuration = 0.0f;
+	float m_fIntenseShakeTimer = 0.0f;
+	float m_fIntenseShakeStrength = 1.0f;
+	float m_fNormalShakeStrength = 0.1f;
+private:
+	float m_fIntenseShakeFrequency = 250.0f;  // 강한 셰이킹의 주파수
+	float m_fNormalShakeFrequency = 4.0f;    // 일반 셰이킹의 주파수
+
 
 private:
 	_float4 vEye;

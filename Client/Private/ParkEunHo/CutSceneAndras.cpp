@@ -224,6 +224,9 @@ HRESULT CutSceneAndras::Bind_BloomResources()
 
 HRESULT CutSceneAndras::Add_Child_Effects()
 {
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->Play_Effect_Sound(TEXT("Andras_Phase2.mp3"), SOUND_EFFECT, 0.f, 1.f, 1.f);
+
 	_float4 ParticlePos;
 	XMStoreFloat4(&ParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 

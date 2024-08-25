@@ -558,6 +558,19 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		{
 			if (!m_isReviveFadeing)
 			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_JUGGLAS)
+				{
+					list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
+					if (!fallPlatforms.empty())
+					{
+						CGameObject* fallPlatform = fallPlatforms.front();
+						CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
+						_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
+						fallPos.m128_f32[1] = -25.f;
+						fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
+					}
+				}
+
 				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
 
 				m_isReviveFadeing = true;

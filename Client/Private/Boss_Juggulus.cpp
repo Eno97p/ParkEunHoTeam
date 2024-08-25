@@ -96,6 +96,15 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
+			list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
+			if (!fallPlatforms.empty())
+			{
+				CGameObject* fallPlatform = fallPlatforms.front();
+				CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
+				_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
+				fallPos.m128_f32[1] = -25.f;
+				fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
+			}
 			m_pGameInstance->Erase(this);
 		}
 	}
@@ -230,7 +239,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(3.f, 15.f, 1.5f);
+	ColliderDesc.vExtents = _float3(3.f, 15.f, 3.f);
 	ColliderDesc.vCenter = _float3(5.f, ColliderDesc.vExtents.y - 15.f, 1.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),

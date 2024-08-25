@@ -56,7 +56,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 500.f;
+	m_fMaxHp = 50.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -88,24 +88,44 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		}
 	}
 
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Priority_Tick(fTimeDelta);
+	if (!m_bTrigger)
+	{
+		if (m_bPhase2)
+		{
+			m_fCutSceneWaitDelay -= fTimeDelta;
+		}
+		if (m_fCutSceneWaitDelay < 4.f)
+		{
+			m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		}
+		if (m_fCutSceneWaitDelay < 2.f)
+		{
+			m_bTrigger = true;
+		}
+	}
+	else
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Priority_Tick(fTimeDelta);
+	}
+	
 	m_isAnimFinished = dynamic_cast<CBody_Andras*>(m_PartObjects.front())->Get_AnimFinished();
 }
 
 void CAndras::Tick(_float fTimeDelta)
 {
-
 	if (m_bTrigger)
 	{
 		m_pBehaviorCom->Update(fTimeDelta);
+
+		if (!m_bDead)
+		{
+			for (auto& pPartObject : m_PartObjects)
+				pPartObject->Tick(fTimeDelta);
+		}
 	}
 
-	if (!m_bDead)
-	{
-		for (auto& pPartObject : m_PartObjects)
-			pPartObject->Tick(fTimeDelta);
-	}
+	
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -889,7 +909,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(90.f, 0.5f, 1000.f);
 				m_iState = STATE_SHOOTINGSTARATTACK;
-				break;\
+				break;
 			default:
 				//Attack
 				m_iState = STATE_DASHRIGHT;
@@ -971,7 +991,8 @@ void CAndras::Add_Hp(_int iValue)
 	else if (m_fCurHp <= 0.f && !m_bPhase2)
 	{
 		m_bPhase2 = true;
-		//m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		m_bTrigger = false;
+		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 0.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
 		EFFECTMGR->Generate_CutSceneAndras(_float4(91.746f, 10.3f, 89.789f, 1.f));

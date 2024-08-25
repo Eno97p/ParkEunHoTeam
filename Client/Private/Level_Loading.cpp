@@ -50,7 +50,9 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 		Client::g__Exit_Delete_FileList.insert(L"../Bin/DataFiles/PlayerData.bin");
 	}
 
-
+	m_pGameInstance->StopAll();
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
 
 	m_eNextLevel = eNextLevel;
 	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);
@@ -64,7 +66,6 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);
 	if (nullptr == m_pLoader)
 		return E_FAIL;
-	
 
 	return S_OK;
 }

@@ -435,6 +435,9 @@
 #include "C:\Real3DProject\Client\Private\Tree.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_BossText.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_BuffTimer.cpp"
 
 
@@ -481,6 +484,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_BossShield.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossTextBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossTextBox.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Broken.cpp"

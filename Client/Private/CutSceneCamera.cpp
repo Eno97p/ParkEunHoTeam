@@ -91,7 +91,11 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
         switch (m_iCurrentCutSceneIdx)
         {
-        case 1:
+        case SCENE_MANTARI:
+            // UI BossText 持失
+            CUI_Manager::GetInstance()->Create_BossText(true);
+            break;
+        case SCENE_JUGGULAS:
         {
             CPhysXComponent_Character* pBossCom = dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_PhysX")));
             if(pBossCom)
@@ -100,7 +104,9 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             CTransform* pBossTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")));
             if (pBossTransform)
 				pBossTransform->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
-           
+
+            // UI BossText 持失
+            CUI_Manager::GetInstance()->Create_BossText(true);
         }
         break;
         case SCENE_ANDRAS_PHASE2:

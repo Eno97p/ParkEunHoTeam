@@ -88,6 +88,9 @@ public:
 	void				Delete_PhaseChange(_bool isFadeIn);
 	_bool				Get_isPhaseChange_AnimEnd(_bool isFadeIn);
 
+	// BossText
+	void				Create_BossText(_bool isCreateText);
+
 
 	// For.LEVEL //PSW
 	void SetVisitLevel(LEVEL eLevel) { m_VsitLevel.insert(eLevel); }

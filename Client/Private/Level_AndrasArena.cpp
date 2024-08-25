@@ -534,7 +534,7 @@ HRESULT CLevel_AndrasArena::Load_LevelData(const _tchar* pFilePath)
 			}
 		}
 
-
+		
 
 	}
 

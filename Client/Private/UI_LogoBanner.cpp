@@ -74,7 +74,7 @@ void CUI_LogoBanner::Tick(_float fTimeDelta)
 
 void CUI_LogoBanner::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, SECOND);
+	CGameInstance::GetInstance()->Add_UI(this, THIRD);
 }
 
 HRESULT CUI_LogoBanner::Render()

@@ -91,7 +91,7 @@ float g_fTexH = 720.0f;
 int     g_BlurNum = 1;
 
 int g_TestBool;
-
+float g_fFar;
 //HBAO
 texture2D g_HBAOTexture;
 
@@ -710,19 +710,15 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     float distanceFog1 = baseFog * noiseSample1;
     float distanceFog2 = baseFog * noiseSample2;
 
-    // 높이 기반 안개 계산
-    float heightFactor = 0.05;
-    float fogFactor1 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
-        (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
-    float fogFactor2 = heightFactor * exp(-g_vCamPosition.y * g_fFogHeightFalloff) *
-        (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
+    //float fogFactor1 = (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
+    //float fogFactor2 = (1.0 - exp(-distanceToCamera * fogDirection.y * g_fFogHeightFalloff)) / (fogDirection.y + 0.001);
 
-    fogFactor1 = saturate(fogFactor1);
-    fogFactor2 = saturate(fogFactor2);
+    //fogFactor1 = saturate(fogFactor1);
+    //fogFactor2 = saturate(fogFactor2);
 
     // 거리 기반 안개와 높이 기반 안개 결합
-    float combinedFog1 = max(distanceFog1, fogFactor1) * g_fFogGlobalDensity;
-    float combinedFog2 = max(distanceFog2, fogFactor2) * g_fFogGlobalDensity;
+    float combinedFog1 = distanceFog1 * g_fFogGlobalDensity;
+    float combinedFog2 = distanceFog2 * g_fFogGlobalDensity;
 
     // 최종 안개 팩터 계산
     float finalFogFactor1 = saturate(combinedFog1);
@@ -1479,7 +1475,7 @@ PS_OUT PS_GODRAY(PS_IN In)
     float initialDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord).r;
 
     // 레이 마칭 루프
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         currentTexCoord -= deltaTexCoord;
 

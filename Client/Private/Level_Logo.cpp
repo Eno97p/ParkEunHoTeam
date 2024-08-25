@@ -17,6 +17,23 @@ HRESULT CLevel_Logo::Initialize()
 {
 	m_pUI_Manager->Render_UIGroup(true, "Logo");
 
+	//GFSDK_SSAO_Parameters params = {};
+	//params.Radius = 6.0f;
+	//params.Bias = 0.203f;
+	//params.SmallScaleAO = 1.442f;
+	//params.LargeScaleAO = 1.015f;
+	//params.PowerExponent = 2.753f;
+	//_int stepCount = 6;
+	//params.StepCount = static_cast<GFSDK_SSAO_StepCount>(stepCount);
+
+	//params.Blur.Enable = 1;
+
+	//_int blurRadius = 6;
+	//params.Blur.Radius = static_cast<GFSDK_SSAO_BlurRadius>(blurRadius);
+	//params.Blur.Sharpness = 0.0f;
+
+	//m_pGameInstance->Set_HBAOParams(params);
+
 	return S_OK;
 }
 

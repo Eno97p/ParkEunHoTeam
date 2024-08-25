@@ -72,7 +72,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	// 게임 처음 시작 시 기본적으로 가지고 있는 아이템 
 	// Weapon에 추가
 	
-	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD); 
+	Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD, false); 
 
 	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD); 
 	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD);
@@ -89,11 +89,11 @@ HRESULT CInventory::Initialize_DefaultItem()
 	dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true);
 
 	// Skill
-	Add_Skill(CItemData::ITEMNAME_OPH);
-	Add_Skill(CItemData::ITEMNAME_AKSHA);
+	Add_Skill(CItemData::ITEMNAME_OPH, false);
+	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
-	Add_DropItem(CItem::ITEM_ESSENCE);
+	//Add_DropItem(CItem::ITEM_ESSENCE);
 	//Add_DropItem(CItem::ITEM_BUFF1);
 	//Add_DropItem(CItem::ITEM_BUFF1);
 	//Add_DropItem(CItem::ITEM_BUFF1);
@@ -135,7 +135,6 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			pDesc.eDropItemName = eItemType;
 			m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-
 			CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
 
 			// Quick의 InvSlot에도 ItemIcon 출력해주어야 함
@@ -150,6 +149,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 				++item;
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
+			pUIDesc.isItem = true;
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 		
 			// RedDot 추가
@@ -178,6 +178,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 
 				pDropItemDesc.eItemName = (*item)->Get_ItemName();
 				pDropItemDesc.wszTextureName = (*item)->Get_TextureName();
+				pDropItemDesc.isItem = true;
 				m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pDropItemDesc);
 
 				return S_OK;
@@ -219,7 +220,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	return S_OK;
 }
 
-HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
+HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName, _bool isRend)
 {
 	CItemData::ITEMDATA_DESC pDesc{};
 	pDesc.isDropTem = false;
@@ -235,9 +236,7 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecWeapon.size() - 1);
 
-
-
-	// UI 출력 >>>> 이거 Item에 맞춰 놔가지고 ... 로직 좀 바꿔야함
+	// DropItem UI 출력
 	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
 	pUIDesc.eLevel = LEVEL_STATIC;
 
@@ -248,13 +247,14 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	pUIDesc.wszTextureName = (*weapon)->Get_TextureName();
 	pUIDesc.isItem = false;
 	pUIDesc.isWeapon = true;
+	pUIDesc.isRend = isRend;
 
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	return S_OK;
 }
 
-HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
+HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName, _bool isRend)
 {
 	CItemData::ITEMDATA_DESC pDesc{};
 
@@ -267,8 +267,20 @@ HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecSkill.size() - 1, true);
 
+	// DropItem UI 출력
+	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+	pUIDesc.eLevel = LEVEL_STATIC;
 
-	// 
+	vector<CItemData*>::iterator skill = m_vecSkill.begin();
+	for (size_t i = 0; i < m_vecSkill.size() - 1; ++i)
+		++skill;
+	pUIDesc.eItemName = (*skill)->Get_ItemName();
+	pUIDesc.wszTextureName = (*skill)->Get_TextureName();
+	pUIDesc.isItem = false;
+	pUIDesc.isWeapon = false;
+	pUIDesc.isRend = isRend;
+
+	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	return S_OK;
 }
@@ -446,10 +458,11 @@ _bool CInventory::Check_Overlab(CItem::ITEM_NAME eItemType)
 			// UI DropItem 출력
 			pUIDesc.eItemName = (*item)->Get_ItemName();
 			pUIDesc.wszTextureName = (*item)->Get_TextureName();
+			pUIDesc.isItem = true;
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 			// Slot에 RedDot 생성
-			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn // 해주는데 왜 안 생기지!
+			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true);
 			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, i);
 
 			return true;

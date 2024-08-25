@@ -86,8 +86,11 @@ void CTreasureChest::Tick(_float fTimeDelta)
 		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, false));
 		m_pModelCom->Play_Animation(fTimeDelta, false);
 
-		//if(m_pModelCom->Get_AnimFinished())
-		//	Drop_Item();
+		if (!m_bReward && m_pModelCom->Get_AnimFinished())
+		{
+			Drop_Item();
+			m_bReward = true;
+		}
 	}
 	else
 		m_pActivateUI->Tick(fTimeDelta);
@@ -114,7 +117,7 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 			vPlayerPos = dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION);
 			vSavePointPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-			if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 5.0f))
+			if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 2.0f)) // 5.f
 			{
 				if (m_pGameInstance->Key_Down(DIK_F))
 				{
@@ -122,7 +125,8 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 					XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 					EFFECTMGR->Generate_Particle(124, vParticlePos);
 					m_bChestOpened = true;
-
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->Play_Effect_Sound(TEXT("OpenChest.ogg"), SOUND_EFFECT);
 					Drop_Item();
 				}
 

@@ -6,6 +6,7 @@
 #include "ComputeShader_Texture.h"
 #include "ComputeShader_Buffer.h"
 #include "BlendObject.h"
+#include "Camera.h"
 #include "VIBuffer_Rect.h"
 #include "RenderTarget.h"
 
@@ -1419,6 +1420,19 @@ void CRenderer::Render_DeferredResult()
 
     if (FAILED(m_pShader->Bind_RawValue("g_fFogBlendFactor", &m_fFogBlendFactor, sizeof(_float))))
         return;
+
+    //_float fFarNow;
+    //vector<CCamera*> cams = m_pGameInstance->Get_Cameras();
+    //if (!cams.empty())
+    //{
+    //    fFarNow = cams.front()->Get_Far();
+    //    if (FAILED(m_pShader->Bind_RawValue("g_fFar", &fFarNow, sizeof(_float))))
+    //        return;
+    //}
+
+   
+
+
 
     //  _float4 vLightPos= _float4(100.0f, 70.0f, 5.0f, 1.0f);
     //  if (FAILED(m_pShader->Bind_RawValue("g_vLightPos", &vLightPos, sizeof(_float4))))

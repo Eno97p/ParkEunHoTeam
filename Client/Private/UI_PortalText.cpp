@@ -156,7 +156,7 @@ void CUI_PortalText::Check_Distance()
 	_vector vBetween = pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_vTargetPos;
 	_float fDistance = XMVectorGetX(XMVector4Length(vBetween));
 
-	if (10.f >= fDistance)
+	if (15.f >= fDistance)
 	{
 		m_isRend = true;
 	}

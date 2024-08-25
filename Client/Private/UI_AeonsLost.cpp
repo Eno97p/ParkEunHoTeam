@@ -159,4 +159,6 @@ CGameObject* CUI_AeonsLost::Clone(void* pArg)
 void CUI_AeonsLost::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDisolveTextureCom);
 }

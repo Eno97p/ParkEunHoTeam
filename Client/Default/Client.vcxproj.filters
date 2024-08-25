@@ -859,6 +859,9 @@
     <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel">
       <UniqueIdentifier>{66b32cba-f4da-441c-bbc2-b3fca24e9678}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\PhaseChange">
+      <UniqueIdentifier>{e212648a-4bd4-4978-9b0c-5d8f5333c44c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1847,6 +1850,15 @@
     <ClInclude Include="..\Public\ParkEunHo\CutSceneAndras.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_PhaseChange.h">
+      <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasCylinder.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\AndrasSphere.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2828,6 +2840,15 @@
       <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\CutSceneAndras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PhaseChange.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasCylinder.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\AndrasSphere.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClCompile>
   </ItemGroup>

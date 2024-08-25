@@ -42,7 +42,7 @@ void CTransitionCamera::Tick(_float fTimeDelta)
     float t = min(m_fTransitionTime / m_fTotalTransitionTime, 1.0f);
 
     vector<CCamera*> cams = (m_pGameInstance->Get_Cameras());
-
+    
     // 월드 행렬 보간
     _matrix srcMat = dynamic_cast<CTransform*>(cams[m_iStartCam]->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix();
     _matrix dstMat = dynamic_cast<CTransform*>(cams[m_iEndCam]->Get_Component(TEXT("Com_Transform")))->Get_WorldMatrix();

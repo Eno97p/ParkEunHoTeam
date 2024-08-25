@@ -41,6 +41,7 @@ private:
 	_vector m_vTargetPos;
 
 	_bool m_bChestOpened = false;
+	_bool m_bReward = { false };
 
 	class CUI_Activate* m_pActivateUI = { nullptr };
 

@@ -97,6 +97,7 @@ private:
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
 	_bool m_bRushSwordSound = true;
+	_float m_fTriggerDelay = 0.0f;
 
 #pragma region Shield 
 	_float m_fMaxShield = 100.f;

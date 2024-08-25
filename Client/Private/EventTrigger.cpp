@@ -403,7 +403,16 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					if (!juggulus.empty())
 					{
 						dynamic_cast<CBoss_Juggulus*>(juggulus.front())->Juggulus_Activate();
+					}
 
+					list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
+					if (!fallPlatforms.empty())
+					{
+						CGameObject* fallPlatform = fallPlatforms.front();
+						CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
+						_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
+						fallPos.m128_f32[1] = 50.f;
+						fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
 					}
 				}
 				break;

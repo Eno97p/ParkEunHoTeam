@@ -217,8 +217,8 @@ HRESULT CLevel_GamePlay::Ready_Light()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Terrain(const wstring& strLayerTag)
 {
-    if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
-        return E_FAIL;
+    //if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
+    //    return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
         return E_FAIL;
@@ -286,7 +286,7 @@ HRESULT CLevel_GamePlay::Ready_Layer_Camera(const wstring& strLayerTag)
     pDesc.fFovy = XMConvertToRadians(60.f);
     pDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
     pDesc.fNear = 0.1f;
-    pDesc.fFar = 10000.f;
+    pDesc.fFar = 3000.f;
 
     pDesc.fSpeedPerSec = 40.f;
     pDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -879,7 +879,7 @@ HRESULT CLevel_GamePlay::Save_Data_Decals()
 
 HRESULT CLevel_GamePlay::Load_Data_Decals()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Tutorial_Decals.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == hFile)
         return E_FAIL;

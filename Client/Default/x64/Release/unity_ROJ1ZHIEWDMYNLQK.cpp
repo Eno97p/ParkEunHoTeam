@@ -240,6 +240,9 @@
 #include "C:\3D_TeamProj\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasCylinder.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasHead.cpp"
 
 
@@ -256,6 +259,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\ParkEunHo\AndrasSphere.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\ParkEunHo\BezierCurve.cpp"
@@ -547,6 +553,9 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_PhaseChange.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_PortalPic.cpp"

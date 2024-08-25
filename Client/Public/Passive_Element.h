@@ -26,7 +26,12 @@ public:
 
 public:
 	_bool Get_isHiddenObject() { return m_bHiddenObject; }
-	void Discover_HiddenObject() { m_bHiddenObject = false; }
+	void Set_Disolve(_bool Disolve) { m_Disolve = Disolve; }
+	void Discover_HiddenObject() {
+		m_bHiddenObject = false; 
+		m_Disolve = true;
+	
+	}
 
 private:
 	vector<CPhysXComponent*> m_pPhysXCom = { nullptr };
@@ -39,12 +44,14 @@ private:
 
 private:
 	_bool			m_bHiddenObject = false;
+	_bool			m_Disolve = false;
 private:
 	_float4x4 m_PrevViewMatrix;
 private:
 		vector<_float4x4*> m_WorldMats;
 
-
+		CTexture* m_pDisolveTextureCom = nullptr;
+		_float m_fDisolveValue = 0.f;
 public:
 	static CPassive_Element* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

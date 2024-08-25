@@ -18,7 +18,7 @@ CShader::CShader(const CShader & rhs)
 		Safe_AddRef(pInputLayout);
 }
 
-HRESULT CShader::Initialize_Prototype(const wstring & strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint iNumElements)
+HRESULT CShader::Initialize_Prototype(const wstring & strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint iNumElements, _bool IsOptimization)
 {
 	//
 	_uint		iHlslFlag = { 0 };
@@ -26,7 +26,14 @@ HRESULT CShader::Initialize_Prototype(const wstring & strShaderFilePath, const D
 #ifdef _DEBUG
 	iHlslFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-	iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL3; //D3DCOMPILE_OPTIMIZATION_LEVEL1;
+	//iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL3; 
+	//iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL1;
+	//iHlslFlag = D3DCOMPILE_SKIP_OPTIMIZATION;
+	if(IsOptimization)
+		iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL3;
+	else
+		iHlslFlag = D3DCOMPILE_SKIP_OPTIMIZATION;
+
 #endif	
 
 	if (FAILED(D3DX11CompileEffectFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, iHlslFlag, 0, m_pDevice, &m_pEffect, nullptr)))
@@ -207,11 +214,11 @@ HRESULT CShader::Unbind_SRVs()
 	return S_OK;
 }
 
-CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint iNumElements)
+CShader * CShader::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext, const wstring & strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint iNumElements, _bool IsOptimization)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(strShaderFilePath, pElement, iNumElements)))
+	if (FAILED(pInstance->Initialize_Prototype(strShaderFilePath, pElement, iNumElements, IsOptimization)))
 	{
 		MSG_BOX("Failed To Created : CShader");
 		Safe_Release(pInstance);

@@ -225,6 +225,8 @@ private:
 
 private:
 	void Andras_CutScene_Tool(_bool* Open);
+	HRESULT Save_CutScene(CutSceneAndras::CUTSCENEANDRAS* Cut);
+	HRESULT Load_CutScene(CutSceneAndras::CUTSCENEANDRAS* Cut);
 
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);

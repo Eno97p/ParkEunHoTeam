@@ -245,12 +245,19 @@ HRESULT CutSceneAndras::Add_Child_Effects()
 	m_OwnDesc->AndrasPillar.fSlowStrength = m_OwnDesc->Cylinder.fSlowStrength;
 	m_OwnDesc->AndrasPillar.vOffset = m_OwnDesc->Cylinder.vOffset;
 
+	m_OwnDesc->SphereDesc.ParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	m_OwnDesc->SphereDesc.vOffset = m_OwnDesc->Cylinder.vOffset;
+
+
 
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_DefaultCylinder"), &m_OwnDesc->Cylinder);
 
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_AndrasPillar"), &m_OwnDesc->AndrasPillar);
+
+	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
+		TEXT("Prototype_GameObject_AndrasSphere"), &m_OwnDesc->SphereDesc);
 
 	return S_OK;
 }

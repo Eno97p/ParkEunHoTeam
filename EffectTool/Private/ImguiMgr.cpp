@@ -5218,10 +5218,20 @@ void CImguiMgr::Andras_CutScene_Tool(_bool* Open)
 		ImGui::ColorEdit3("Andras_BColor", reinterpret_cast<float*>(&Desc.AndrasPillar.BloomColor));
 		ImGui::InputFloat("Andras_BloomPower", &Desc.AndrasPillar.fBloomPower);
 		ImGui::InputFloat("Andras_UVSpeed", &Desc.AndrasPillar.fUVSpeed);
-
-
-
 	}
+
+	if (ImGui::CollapsingHeader("AndrasSphere"))
+	{
+		ImGui::InputFloat("Sphere_LifeTime", &Desc.SphereDesc.fMaxLifeTime);
+		ImGui::InputFloat3("Sphere_Pillar_Size", reinterpret_cast<float*>(&Desc.SphereDesc.vSize));
+		ImGui::InputFloat3("Sphere_Pillar_EndSize", reinterpret_cast<float*>(&Desc.SphereDesc.vEndSized));
+		ImGui::InputFloat("Sphere_BloomPower", &Desc.SphereDesc.fBloomPower);
+		ImGui::InputFloat("Sphere_UVSpeed", &Desc.SphereDesc.fUVSpeed);
+		ImGui::InputFloat2("Sphere_Thread", reinterpret_cast<float*>(&Desc.SphereDesc.fThreadRatio));
+		ImGui::InputFloat("Sphere_SlowStrength", &Desc.SphereDesc.fSlowStrength);
+		ImGui::InputFloat("Sphere_Oppacity", &Desc.SphereDesc.OppacityPower);
+	}
+
 
 
 	if (ImGui::Button("Generate", ButtonSize))
@@ -5236,7 +5246,47 @@ void CImguiMgr::Andras_CutScene_Tool(_bool* Open)
 	}
 
 
+	if (ImGui::Button("Save", ButtonSize))
+	{
+		if (FAILED(Save_CutScene(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load", ButtonSize))
+	{
+		if (FAILED(Load_CutScene(&Desc)))
+			MSG_BOX("FAILED");
+		else
+			MSG_BOX("SUCCEED");
+	}
+
 	ImGui::End();
+}
+
+HRESULT CImguiMgr::Save_CutScene(CutSceneAndras::CUTSCENEANDRAS* Cut)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/AndrasCutScene.Bin";
+	ofstream file(finalPath, ios::out | ios::binary);
+	file.write((char*)Cut, sizeof(CutSceneAndras::CUTSCENEANDRAS));
+	file.close();
+	return S_OK;
+}
+
+HRESULT CImguiMgr::Load_CutScene(CutSceneAndras::CUTSCENEANDRAS* Cut)
+{
+	string finalPath = "../../Client/Bin/BinaryFile/Effect/AndrasCutScene.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	inFile.read((char*)Cut, sizeof(CutSceneAndras::CUTSCENEANDRAS));
+	inFile.close();
+	return S_OK;
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

@@ -73,7 +73,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
     if (m_bAnimationFinished || m_bPaused)
     {
         // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
-        /*CUI_Manager::GetInstance()->Setting_Cinematic();*/
+        CUI_Manager::GetInstance()->Setting_Cinematic();
         //컷씬 트렌지션
         CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
@@ -819,7 +819,7 @@ void CCutSceneCamera::EndCutScene()
     m_bPaused = true;
 
     // 컷신 종료 시 필요한 추가 처리
-    CUI_Manager::GetInstance()->Setting_Cinematic();
+    //CUI_Manager::GetInstance()->Setting_Cinematic();
 
     // 메인 카메라로 전환
     m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);

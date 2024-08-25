@@ -60,6 +60,8 @@ void CPassive_Element::Late_Tick(_float fTimeDelta)
     //else 
     if(!m_bHiddenObject)
     {
+        if(m_fDisolveValue <1.0f)
+            m_fDisolveValue += fTimeDelta * 0.5f;
         m_pGameInstance->Add_RenderObject(CRenderer::RENDER_MIRROR, this);
         m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
         if (m_iShaderPath != 3)
@@ -214,6 +216,17 @@ HRESULT CPassive_Element::Add_Components(MAP_ELEMENT_DESC* desc)
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
+    if (m_bHiddenObject)
+    {
+        /* For.Com_Texture */
+        if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+            TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+            return E_FAIL;
+    }
+    else
+    {
+		m_fDisolveValue = 1.f;
+	}
 
     //PHYSX COM 배열
     // wstrModelName을 수정하여 physxName 생성
@@ -277,6 +290,18 @@ HRESULT CPassive_Element::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_fCamFar", &fCamFar, sizeof(_float))))
         return E_FAIL;
 
+    if (m_pDisolveTextureCom)
+    {
+        if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 7)))
+            return E_FAIL;
+    }
+
+
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+        return E_FAIL;
+
+
     return S_OK;
 }
 
@@ -321,7 +346,7 @@ void CPassive_Element::Free()
         m_pPhysXCom[i] = nullptr;
     }
     m_pPhysXCom.clear();
-
+    Safe_Release(m_pDisolveTextureCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }

@@ -404,6 +404,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_CUTSCENE_MALKHEL:
 				{
+					//Ç® »èÁ¦
+					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Grass"));
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_BLOODMOON);
 
 					//ÄÆ¾À Æ®·»Áö¼Ç

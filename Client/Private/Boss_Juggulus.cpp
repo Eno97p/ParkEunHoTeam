@@ -509,9 +509,9 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 
 			//엘베 하강 트리거 생성
 			CMap_Element::MAP_ELEMENT_DESC pDesc{};
-			_matrix vMat = { 2.f, 0.f, 0.f, 0.f,
+			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
 			0.f, 3.f, 0.f, 0.f,
-			0.f, 0.f, 2.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
 			-310.531f, 69.022f, -1.225f, 1.f };
 			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
 			pDesc.TriggerType = CEventTrigger::TRIG_DESCEND_ELEVATOR;

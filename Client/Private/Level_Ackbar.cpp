@@ -496,6 +496,31 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
 				return E_FAIL;
 		}
+		else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pChestDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pChestDesc.wstrLayer = wszLayer;
+			pChestDesc.wstrModelName = wszModelName;
+			pChestDesc.mWorldMatrix = WorldMatrix;
+			pChestDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_TreasureChest"), TEXT("Prototype_GameObject_TreasureChest"), &pChestDesc)))
+				return E_FAIL;
+		}
 		else
 		{
 			ReadFile(hFile, szLayer, sizeof(char) * MAX_PATH, &dwByte, nullptr);

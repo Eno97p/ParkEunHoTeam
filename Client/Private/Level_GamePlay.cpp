@@ -407,7 +407,7 @@ HRESULT CLevel_GamePlay::Ready_LandObjects()
 
 
 	CSavePoint::_tagSavePoint_Desc savePointDesc;
-	savePointDesc.vPosition = _float3(75.f, 523.f, 98.f);
+	savePointDesc.vPosition = _float3(66.899f, 521.f, 97.272f);
 
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"),&savePointDesc)))
 		return E_FAIL;

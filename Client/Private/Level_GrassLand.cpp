@@ -522,9 +522,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	}
 	else if (ePreLevel == LEVEL_JUGGLAS)
 	{
-		pLandObjDesc->mWorldMatrix._41 = -1188.f;
-		pLandObjDesc->mWorldMatrix._42 = 426.f;
-		pLandObjDesc->mWorldMatrix._43 = -200.f;
+		pLandObjDesc->mWorldMatrix._41 = -519.281f;
+		pLandObjDesc->mWorldMatrix._42 = 347.304f;
+		pLandObjDesc->mWorldMatrix._43 = -415.195f;
 		pLandObjDesc->mWorldMatrix._44 = 1.f;
 	
 	}

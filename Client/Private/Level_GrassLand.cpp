@@ -397,8 +397,8 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 0;
 		pUIDesc.fAngle = 100.f; // 190
-		pUIDesc.vPos = XMVectorSet(189.1f, 355.7f, 637.5f, 1.f); // 225.1f, 7.71f, -151.766f
-		pUIDesc.fScale = _float2(5.f, 10.f);
+		pUIDesc.vPos = XMVectorSet(189.9f, 355.7f, 638.f, 1.f); // 225.1f, 7.71f, -151.766f
+		pUIDesc.fScale = _float2(7.5f, 9.f);
 		//CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
 	}
 
@@ -413,6 +413,18 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
 			return E_FAIL;
+
+		// Portal UI
+		CUIGroup_Portal::UIGROUP_PORTAL_DESC pUIDesc{};
+		pUIDesc.eLevel = LEVEL_STATIC;
+		pUIDesc.ePortalLevel = LEVEL_JUGGLAS;
+		pUIDesc.isPic = true;
+		pUIDesc.iPicNum = 1; // 1
+		pUIDesc.fAngle = 190.f; // 140 > 150
+		pUIDesc.vPos = XMVectorSet(-1489.268f, 470.f, -180.f, 1.f); // -1489.268f, 446.0f, -180.f
+		pUIDesc.fScale = _float2(28.f, 35.f);
+		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
+
 	}
 
 

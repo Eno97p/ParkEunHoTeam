@@ -85,6 +85,8 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 			XMStoreFloat4(&SpawnPos, vStartPosition - playerLook);
 			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
 
+			// Portal 생성해줄 것
+
 			//씬 전환 트리거 생성
 			CMap_Element::MAP_ELEMENT_DESC pDesc{};
 			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,

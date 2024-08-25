@@ -369,6 +369,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_VIEWCHANGE_TTOBS:
 				{
+					m_pGameInstance->StopAll();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Juggulus.mp3"));
 
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(1);
 					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
@@ -406,6 +409,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_CUTSCENE_MALKHEL:
 				{
+					m_pGameInstance->StopAll();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Malkhel.mp3"));
 					//钱 昏力
 					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Grass"));
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_BLOODMOON);
@@ -447,7 +453,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					pTCDesc.fFovy = XMConvertToRadians(60.f);
 					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 					pTCDesc.fNear = 0.1f;
-					pTCDesc.fFar = 3000.f;
+					pTCDesc.fFar = m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Get_Far();
 
 					pTCDesc.fSpeedPerSec = 40.f;
 					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -473,6 +479,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 						andras->Activate_Andras();
 					}
 
+					m_pGameInstance->StopAll();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Andras.mp3"), 0.3f);
 					//喉发圈 积己
 					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
 					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);

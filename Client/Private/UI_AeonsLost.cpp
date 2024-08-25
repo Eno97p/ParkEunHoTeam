@@ -42,11 +42,20 @@ void CUI_AeonsLost::Priority_Tick(_float fTimeDelta)
 void CUI_AeonsLost::Tick(_float fTimeDelta)
 {
 	m_fDeadTimer += fTimeDelta;
-	if (1.f <= m_fDeadTimer) // 1.f
+
+	if (0.8f <= m_fDeadTimer) // 1.f
 	{
-		// 떠 있다가 노이즈 좀 들어가주면서 팍 사라져야 함 >> 노이즈 구현 하고 나서 손댈 지?
-		
-		m_isEnd = true;
+		m_fDisolveValue += fTimeDelta * 0.3f;
+
+		m_fColor -= 0.02f;
+		if (m_fColor <= 0.f)
+			m_fColor = 0.f;
+
+		// 다 지워진 경우 
+		if (0.8f <= m_fDisolveValue)
+		{
+			m_isEnd = true;
+		}
 	}
 }
 
@@ -61,11 +70,11 @@ HRESULT CUI_AeonsLost::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	m_pShaderCom->Begin(8); // 8
+	m_pShaderCom->Begin(4); // 8
 	m_pVIBufferCom->Bind_Buffers();
 	m_pVIBufferCom->Render();
 
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo35"), TEXT("AEONS LOST"), _float2(m_fX - 110.f, m_fY - 40.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo35"), TEXT("AEONS LOST"), _float2(m_fX - 110.f, m_fY - 40.f), XMVectorSet(m_fColor, m_fColor, m_fColor, 1.f))))
 		return E_FAIL;
 
 	return S_OK;
@@ -88,6 +97,11 @@ HRESULT CUI_AeonsLost::Add_Components()
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
+	/* For.Com_DissolveTexture */
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_DissolveTexture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -104,11 +118,14 @@ HRESULT CUI_AeonsLost::Bind_ShaderResources()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlphaTimer", &m_fRenderTimer, sizeof(_float))))
-	//	return E_FAIL;
+	if (FAILED(m_pDisolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DisolveTexture", 29)))
+		return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isRenderOffAnim, sizeof(_bool)))) // m_isRenderOffAnim
-	//	return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bIsFadeIn", &m_isFadeOut, sizeof(_bool))))
+		return E_FAIL;
 
 	return S_OK;
 }

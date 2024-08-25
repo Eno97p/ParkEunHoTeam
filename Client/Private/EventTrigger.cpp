@@ -12,9 +12,11 @@
 #include "UI_Manager.h"
 #include "UI_FadeInOut.h"
 #include "LandObject.h"
+#include "EffectManager.h"
 
 #include "Boss_Juggulus.h"
-#include "EffectManager.h"
+#include "Andras.h"
+#include "Malkhel.h"
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -464,9 +466,17 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					break;
 				case TRIG_CUTSCENE_ANDRAS:
 				{
+					CAndras* andras = dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front());
+
+					if (andras)
+					{
+						andras->Activate_Andras();
+					}
+
 					//ºí·¢È¦ »ý¼º
 					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
 					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
+
 				}
 					break;
 				default:

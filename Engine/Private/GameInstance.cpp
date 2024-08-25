@@ -545,7 +545,7 @@ ID3D11Texture2D* CGameInstance::Get_PrevDepthTex()
 	return m_pRenderer->Get_PrevDepthTex();
 }
 
-void CGameInstance::Set_FogOption(CRenderer::FOG_DESC desc)
+void CGameInstance::Set_FogOption(const CRenderer::FOG_DESC& desc)
 {
 	m_pRenderer->Set_FogOption(desc);
 }

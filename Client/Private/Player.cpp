@@ -1219,6 +1219,10 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 			Add_Mp(-50);
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Special3_Charge.ogg"), SOUND_EFFECT, 0.f, 0.8f);
+
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(90.f, 1.f, 1000.0f);
+
 			_float4 vParticlepos;
 			XMStoreFloat4(&vParticlepos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(52, vParticlepos, this);
@@ -1230,8 +1234,7 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (!m_bDisolved_Yaak)
 		{
-			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
-			pThirdPersonCamera->Zoom(90.f, 2.5f, 10.0f);
+		
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);
 			m_bDisolved_Yaak = true;
 		}
@@ -1264,6 +1267,10 @@ NodeStates CPlayer::Special3(_float fTimeDelta)
 		}
 		if (m_bAnimFinished)
 		{
+
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Zoom(60.f, 0.5f, 0.3f);
+
 			if (m_bRunning)
 			{
 				m_pPhysXCom->Set_Speed(RUNSPEED);

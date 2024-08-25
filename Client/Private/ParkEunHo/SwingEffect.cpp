@@ -63,6 +63,9 @@ void CSwingEffect::Tick(_float fTimeDelta)
 	m_OwnDesc->fLifeTime -= fTimeDelta;
 	if (m_OwnDesc->fLifeTime < 0.f)
 	{
+		CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+		pThirdPersonCamera->Zoom(100.f, 0.03f, 1000.f);
+
 		Add_Child_Effects();
 		m_pGameInstance->Erase(this);
 

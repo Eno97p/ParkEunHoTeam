@@ -57,7 +57,7 @@ void CTransitionCamera::Tick(_float fTimeDelta)
         m_bTransitionFinished = true;
         if ((CAMERA_INDEX)m_iEndCam == CAM_CUTSCENE)
         {
-            CUI_Manager::GetInstance()->Setting_Cinematic();
+           CUI_Manager::GetInstance()->Setting_Cinematic();
             dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Play_CutScene();
         }
         m_pGameInstance->Set_MainCamera(m_iEndCam);

@@ -48,7 +48,7 @@ private:
 	FADE_TYPE			m_eFadeType = { TYPE_END };
 	LEVEL				m_eNetLevel = { LEVEL_STATIC };
 
-	CTexture*				m_pDisolveTextureCom = nullptr;
+	CTexture*				m_pDisolveTextureCom = { nullptr };
 	class CUI_Memento*		m_pMemento = { nullptr };
 	class CUI_AeonsLost*	m_pAeonsLost = { nullptr };
 

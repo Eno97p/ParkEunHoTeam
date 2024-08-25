@@ -40,9 +40,6 @@ void CQTE::Tick(_float fTimeDelta)
 	for (auto& pBtn : m_vecBtn)
 		pBtn->Tick(fTimeDelta);
 
-
-	// 체크하고 없애는 코드 필요 > 추후 Andras와 연결 필요
-
 	if (Check_End())
 	{
 		//Check_ResultScore();
@@ -117,7 +114,7 @@ _bool CQTE::Check_End()
 	for (size_t i = 0; i < m_vecBtn.size() - 1; ++i)
 		++btn;
 
-	if ((*btn)->Get_isScore()) // 마지막 Btn의 점수가 났다면
+	if ((*btn)->Get_isScore()) // 마지막 Btn의 점수가 났다면 >> 이렇게 하면 안 되...나 잠시만 아니 이게 맞지 >> 버튼 끝나고 다음 버튼으로 바로 안 가서 뭄ㄴ제인거같으
 		return true;
 	else
 		return false;

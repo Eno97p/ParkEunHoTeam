@@ -42,10 +42,19 @@ void CUI_BossHP::Priority_Tick(_float fTimeDelta)
 
 void CUI_BossHP::Tick(_float fTimeDelta)
 {
+	// 기존의 피보다 늘어났을 때에도 적용이 되어야 하는데 그게 안 되어 있음!
 	if (m_fCurrentRatio < m_fPastRatio)
 	{
 		m_fPastRatio -= fTimeDelta * 0.2f;
 		if (m_fCurrentRatio > m_fPastRatio)
+		{
+			m_fPastRatio = m_fCurrentRatio;
+		}
+	}
+	else if (m_fCurrentRatio > m_fPastRatio)
+	{
+		m_fPastRatio += fTimeDelta * 0.2f;
+		if (m_fCurrentRatio < m_fPastRatio)
 		{
 			m_fPastRatio = m_fCurrentRatio;
 		}

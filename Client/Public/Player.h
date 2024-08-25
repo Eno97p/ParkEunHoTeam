@@ -46,6 +46,8 @@ public:
 		_uint		iPhysicalDmg;
 		_uint		iEtherDmg  ;
 
+		_float		fCurHP;
+
 		Player_Status_Data() = default;
 		
 	}PLAYER_STATUS_DATA;

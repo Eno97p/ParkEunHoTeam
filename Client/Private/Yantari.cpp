@@ -8,6 +8,7 @@
 #include "Body_Yantari.h"
 #include "Weapon_Yantari.h"
 #include "EffectManager.h"
+#include "UI_Manager.h"
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
@@ -367,6 +368,9 @@ NodeStates CYantari::Dead(_float fTimeDelta)
 				m_fDeadDelay -= 0.001f;
 
 				Reward_Soul(true);
+
+				// UI BossText »ý¼º
+				CUI_Manager::GetInstance()->Create_BossText(false);
 			}
 		}
 		return RUNNING;

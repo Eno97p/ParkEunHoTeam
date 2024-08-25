@@ -484,6 +484,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 
 HRESULT CUI_Slot::Pull_ItemIcon(_bool isEquip, wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
 {
+	// !!!!!!!!!!!!!!!!!!! 여기서 뭔가 예외 처리가 잘못 되었는지 한번씩 안 당겨질 때가 있는?
+
 	// 다음 Slot의 정보를 현재 Slot에 담는 함수
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -644,8 +646,12 @@ void CUI_Slot::Render_Font()
 void CUI_Slot::Rend_Count()
 {
 	// m_iSlotIdx를 활용 
-
+	
+	// >>> 여기서 터짐
 	CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+
+	if (nullptr == pItem)
+		return;
 	//CItemData* pItem = CInventory::GetInstance()->Get_ItemData_ByName(m_wszItemName);
 
 	_uint iCount = pItem->Get_Count();

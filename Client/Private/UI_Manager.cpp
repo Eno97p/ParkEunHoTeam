@@ -21,6 +21,7 @@
 #include "UIGroup_Ch_Upgrade.h"
 #include "UIGroup_BuffTimer.h"
 #include "UIGroup_Level.h"
+#include "UIGroup_BossText.h"
 
 #include "UI_ScreenBlood.h"
 #include "UI_Broken.h"
@@ -288,6 +289,25 @@ void CUI_Manager::Resset_Player()
 	// Player를 참조 중인 녀석들의 값을 초기화
 	map<string, CUIGroup*>::iterator hud = m_mapUIGroup.find("HUD_State");
 	dynamic_cast<CUIGroup_State*>((*hud).second)->Resset_Player();
+}
+
+_bool CUI_Manager::Get_isUIOpen()
+{
+	// UI가 켜져있는지 활성화에 대한 여부를 반환하는 함수
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade");
+
+	_bool isMenuOpen = (*menu).second->Get_Rend();
+	_bool isQuickOpen = (*quick).second->Get_Rend();
+	_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
+	_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
+
+	if (isMenuOpen || isQuickOpen || isChUpgradeOpen || isUpgradeOpen)
+		return true;
+	else
+		return false;
 }
 
 HRESULT CUI_Manager::Initialize()
@@ -657,6 +677,23 @@ _bool CUI_Manager::Get_isPhaseChange_AnimEnd(_bool isFadeIn)
 	}
 }
 
+void CUI_Manager::Create_BossText(_bool isCreateText)
+{
+	if (m_mapUIGroup.find("BossText") != m_mapUIGroup.end()) // 값이 있으면
+	{
+		// erase를 해야 할듯
+		Safe_Release((*m_mapUIGroup.find("BossText")).second);
+		m_mapUIGroup.erase("BossText");
+	}
+
+	// UI BossText를 생성
+	CUIGroup_BossText::UIGROUP_BOSSTEXT_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.isCreateText = isCreateText;
+
+	m_mapUIGroup.insert({"BossText", dynamic_cast<CUIGroup_BossText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_BossText"), &pDesc)) });
+}
+
 void CUI_Manager::Key_Input()
 {
 	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?
@@ -839,7 +876,8 @@ void CUI_Manager::Key_Input()
 	// Test 키보드로 테스트
 	if (m_pGameInstance->Key_Down(DIK_J))
 	{
-		Setting_Cinematic(true); // 없애기 (FadeIn 하기) > true
+		//Setting_Cinematic(true); // 없애기 (FadeIn 하기) > true
+		Create_BossText(false);
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "Juggulus_HandTwo.h"
 #include "Juggulus_HandThree.h"
 #include "EffectManager.h"
+#include "UI_Manager.h"
 
 #include "UIGroup_BossHP.h"
 #include "TransitionCamera.h"
@@ -513,6 +514,9 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 		{
 			Reward_Soul(true);
 
+			// UI BossText 积己
+			CUI_Manager::GetInstance()->Create_BossText(false);
+
 			//郡海 窍碍 飘府芭 积己
 			CMap_Element::MAP_ELEMENT_DESC pDesc{};
 			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
@@ -551,6 +555,7 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 			}
 
 			m_pGameInstance->Erase(this);
+
 		}
 		return RUNNING;
 	}

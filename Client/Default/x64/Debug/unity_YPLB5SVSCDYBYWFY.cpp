@@ -240,6 +240,9 @@
 #include "C:\Real3DProject\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasCylinder.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasHead.cpp"
 
 
@@ -256,6 +259,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasSphere.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\BezierCurve.cpp"
@@ -429,6 +435,9 @@
 #include "C:\Real3DProject\Client\Private\Tree.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UIGroup_BossText.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UIGroup_BuffTimer.cpp"
 
 
@@ -475,6 +484,12 @@
 
 
 #include "C:\Real3DProject\Client\Private\UI_BossShield.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossTextBG.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\UI_BossTextBox.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\UI_Broken.cpp"

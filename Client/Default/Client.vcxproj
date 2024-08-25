@@ -338,6 +338,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\Trap.h" />
     <ClInclude Include="..\Public\TreasureChest.h" />
     <ClInclude Include="..\Public\Tree.h" />
+    <ClInclude Include="..\Public\UIGroup_BossText.h" />
     <ClInclude Include="..\Public\UIGroup_BuffTimer.h" />
     <ClInclude Include="..\Public\UIGroup_Ch_Upgrade.h" />
     <ClInclude Include="..\Public\UIGroup_DropItem.h" />
@@ -354,6 +355,8 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_AeonsLost.h" />
     <ClInclude Include="..\Public\UI_ArrowSign.h" />
     <ClInclude Include="..\Public\UI_BossShield.h" />
+    <ClInclude Include="..\Public\UI_BossTextBG.h" />
+    <ClInclude Include="..\Public\UI_BossTextBox.h" />
     <ClInclude Include="..\Public\UI_Broken.h" />
     <ClInclude Include="..\Public\UI_BuffTimer.h" />
     <ClInclude Include="..\Public\UI_BuffTimer_Bar.h" />
@@ -672,6 +675,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\Trap.cpp" />
     <ClCompile Include="..\Private\TreasureChest.cpp" />
     <ClCompile Include="..\Private\Tree.cpp" />
+    <ClCompile Include="..\Private\UIGroup_BossText.cpp" />
     <ClCompile Include="..\Private\UIGroup_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UIGroup_Ch_Upgrade.cpp" />
     <ClCompile Include="..\Private\UIGroup_DropItem.cpp" />
@@ -688,6 +692,8 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_AeonsLost.cpp" />
     <ClCompile Include="..\Private\UI_ArrowSign.cpp" />
     <ClCompile Include="..\Private\UI_BossShield.cpp" />
+    <ClCompile Include="..\Private\UI_BossTextBG.cpp" />
+    <ClCompile Include="..\Private\UI_BossTextBox.cpp" />
     <ClCompile Include="..\Private\UI_Broken.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer.cpp" />
     <ClCompile Include="..\Private\UI_BuffTimer_Bar.cpp" />

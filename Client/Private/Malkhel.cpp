@@ -9,11 +9,13 @@
 #include "Weapon_Malkhel.h"
 #include "RushSword.h"
 #include "EffectManager.h"
+#include "UI_Manager.h"
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
 #include "EventTrigger.h"
+#include "UIGroup_Portal.h"
 
 CMalkhel::CMalkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -87,6 +89,14 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 			SpawnPos.y += 10.f;
 
 			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
+
+			// Portal UI
+			CUIGroup_Portal::UIGROUP_PORTAL_DESC pUIDesc{};
+			pUIDesc.eLevel = LEVEL_STATIC;
+			pUIDesc.ePortalLevel = LEVEL_ANDRASARENA;
+			pUIDesc.isPic = false;
+			pUIDesc.vPos = XMVectorSet(SpawnPos.x, SpawnPos.y, SpawnPos.z, 1.f); // -1489.268f, 446.0f, -180.f
+			CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
 
 			//纠 傈券 飘府芭 积己
 			CMap_Element::MAP_ELEMENT_DESC pDesc{};
@@ -323,6 +333,9 @@ NodeStates CMalkhel::Dead(_float fTimeDelta)
 				m_fDeadDelay -= 0.001f;
 
 				Reward_Soul(true);
+
+				// UI BossText 积己
+				CUI_Manager::GetInstance()->Create_BossText(false);
 			}
 		}
 		return RUNNING;

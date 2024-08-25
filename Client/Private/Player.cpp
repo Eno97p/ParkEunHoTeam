@@ -2192,7 +2192,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 		m_iState = STATE_BUFF;
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->Play_Effect_Sound(TEXT("Heal.ogg"), SOUND_PLAYER);
-		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
+		EFFECTMGR->Generate_HealEffect(m_iBuffNum, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);

@@ -51,7 +51,10 @@ HRESULT CBossDeco::Initialize(void* pArg)
 
 void CBossDeco::Priority_Tick(_float fTimeDelta)
 {
-
+	if(m_bDissolve)
+	{
+		m_fDisolveValue -= fTimeDelta * 0.4f;
+	}
 }
 
 void CBossDeco::Tick(_float fTimeDelta)
@@ -106,7 +109,7 @@ HRESULT CBossDeco::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
 			return E_FAIL;
 		
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(m_iShaderPath);
 
 		m_pModelCom->Render(i);
 	}
@@ -139,6 +142,13 @@ HRESULT CBossDeco::Render_Bloom()
 		m_pModelCom->Render(0);
 }
 
+void CBossDeco::Play_DeadAnimation()
+{
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, true));
+	m_bDissolve = true;
+	m_iShaderPath = 7;
+}
+
 HRESULT CBossDeco::Add_Components(MAP_ELEMENT_DESC* desc)
 {
 	
@@ -167,6 +177,13 @@ HRESULT CBossDeco::Add_Components(MAP_ELEMENT_DESC* desc)
 	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Physx"),
 	//	TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXCom), &PhysXDesc)))
 	//	return E_FAIL;
+
+
+	/* For.Com_Texture */
+	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Desolve16"),
+		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pDisolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -186,6 +203,9 @@ HRESULT CBossDeco::Bind_ShaderResources()
 		return E_FAIL;
 #pragma endregion 모션블러
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_DisolveValue", &m_fDisolveValue, sizeof(_float))))
 		return E_FAIL;
 
 	/*if (FAILED(m_pNoiseCom->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 7)))
@@ -223,5 +243,5 @@ CGameObject* CBossDeco::Clone(void* pArg)
 void CBossDeco::Free()
 {
 	__super::Free();
-	
+	Safe_Release(m_pDisolveTextureCom);
 }

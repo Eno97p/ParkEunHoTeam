@@ -105,8 +105,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
 			pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")) * fSlowValue);
-            pMainApp->Render();
          
+            pMainApp->Render();
 			fTimeAcc = 0.f;
      
 		}

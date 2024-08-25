@@ -82,7 +82,7 @@ HRESULT CObject_Manager::Add_CloneObject(_uint iLevelIndex, const wstring & strL
 
 	
 	pCloneObject->Set_ProtoTypeTag(strPrototypeTag);
-	_uint iCurLevel = CGameInstance::GetInstance()->Get_CurrentLevelIndex();
+	
 	CLayer*				pLayer = Find_Layer(iLevelIndex, strLayerTag);
 
 	/* 아직 추가할려고하는 레이어가 없었따?!! */

@@ -1719,8 +1719,6 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 			m_pHoverBoard->Set_DisolveType(CHoverboard::TYPE_DECREASE);
 			m_pHoverBoard = nullptr;
 			m_pHoverBoardTransform = nullptr;
-			m_pGameInstance->StopSound(SOUND_HOVERBOARD);
-			m_pGameInstance->StopSound(SOUND_HOVERBOARD_DASH);
 		}
 		m_bRiding = !m_bRiding;
 		m_bJumping = true;

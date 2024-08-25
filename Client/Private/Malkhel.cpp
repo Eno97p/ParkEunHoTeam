@@ -13,6 +13,7 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "EventTrigger.h"
 
 CMalkhel::CMalkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -77,6 +78,23 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
+			_vector vStartPosition, playerLook;
+			vStartPosition =  m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			playerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 10.f;
+			_float4 SpawnPos;
+			XMStoreFloat4(&SpawnPos, vStartPosition - playerLook);
+			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
+
+			//씬 전환 트리거 생성
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			SpawnPos.x, SpawnPos.y, SpawnPos.z, 1.f };
+			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+			pDesc.TriggerType = CEventTrigger::TRIG_SCENE_CHANGE_FOR_ANDRASARENA;
+			m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc);
+
 			m_pGameInstance->Erase(this);
 		}
 	}

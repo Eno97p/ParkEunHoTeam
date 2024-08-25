@@ -39,6 +39,8 @@ HRESULT CJuggulus_Hammer::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
+	Generate_Trail(10);
+
 	return S_OK;
 }
 

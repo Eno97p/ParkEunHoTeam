@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "Particle.h"
 CutSceneAndras::CutSceneAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -67,7 +68,15 @@ void CutSceneAndras::Tick(_float fTimeDelta)
 		m_EyechangeRatio = max(0.f, min(m_EyechangeRatio, 1.f));
 
 		if (!m_EyeChanged)
+		{
+			_float4 vstartPos;
+			XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			CGameObject* Oura = EFFECTMGR->Generate_Particle(94, vstartPos, this);
+			m_Particles.emplace_back(Oura);
+			CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+			m_Particles.emplace_back(Oura2);
 			m_EyeChanged = true;
+		}
 	}
 	else if (m_AccTime >= m_OwnDesc->EyeChangeBetwin.y)
 	{
@@ -253,6 +262,9 @@ HRESULT CutSceneAndras::Add_Child_Effects()
 	m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_AndrasSphere"), &m_OwnDesc->SphereDesc);
 
+
+
+
 	return S_OK;
 }
 
@@ -287,4 +299,11 @@ void CutSceneAndras::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+
+	for (auto& iter : m_Particles)
+	{
+		static_cast<CParticle*>(iter)->Set_Target(nullptr);
+		static_cast<CParticle*>(iter)->Set_Delete();
+	}
+	m_Particles.clear();
 }

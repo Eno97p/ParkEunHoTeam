@@ -315,6 +315,7 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 					_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
 					_float4 vStartPos = { vGetCenter.x,vGetCenter.y ,vGetCenter.z, 1.f };
 					EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+					EFFECTMGR->Generate_Distortion(9, vStartPos);
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
 					m_bIsActive = true;
@@ -367,6 +368,7 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 			_float3 vGetCenter = m_pAttackColliderCom->Get_Center();
 			_float4 vStartPos = { vGetCenter.x,vGetCenter.y ,vGetCenter.z, 1.f };
 			EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+			EFFECTMGR->Generate_Distortion(9, vStartPos);
 			m_bIsActive = true;
 		}
 

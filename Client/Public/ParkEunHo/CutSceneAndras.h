@@ -51,6 +51,9 @@ private:
 	_bool	m_EyeChanged = false;
 	_bool	m_EffectSpawned = false;
 
+private:
+	vector<class CGameObject*>					m_Particles;
+
 public:
 	HRESULT Add_Components();
 	HRESULT Bind_ShaderResources();

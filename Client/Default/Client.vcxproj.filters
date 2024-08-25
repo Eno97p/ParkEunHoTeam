@@ -1850,6 +1850,9 @@
     <ClInclude Include="..\Public\ParkEunHo\CutSceneAndras.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UI_PhaseChange.h">
+      <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -2832,6 +2835,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\CutSceneAndras.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_PhaseChange.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

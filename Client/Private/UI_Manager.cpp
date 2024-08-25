@@ -28,6 +28,7 @@
 #include "QTE.h"
 #include "UI_FadeInOut.h"
 #include "UI_Cinematic.h"
+#include "UI_PhaseChange.h"
 #include "Camera.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
@@ -138,6 +139,23 @@ void CUI_Manager::Tick(_float fTimeDelta)
 			m_pFadeIn->Tick(fTimeDelta);
 	}
 
+	if (nullptr != m_pPhaseChangeOut)
+	{
+		if (m_pPhaseChangeOut->Get_isFadeAnimEnd())
+			Delete_PhaseChange(false);
+		else
+			m_pPhaseChangeOut->Tick(fTimeDelta);
+	}
+
+	if (nullptr != m_pPhaseChangeIn)
+	{
+		if (m_pPhaseChangeIn->Get_isFadeAnimEnd())
+			Delete_PhaseChange(true);
+		else
+			m_pPhaseChangeIn->Tick(fTimeDelta);
+	}
+
+
 	if (nullptr != m_pCinematic)
 		m_pCinematic->Tick(fTimeDelta);
 
@@ -190,6 +208,12 @@ void CUI_Manager::Late_Tick(_float fTimeDelta)
 
 	for (auto& pPortal : m_vecPortal)
 		pPortal->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pPhaseChangeIn)
+		m_pPhaseChangeIn->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pPhaseChangeOut)
+		m_pPhaseChangeOut->Late_Tick(fTimeDelta);
 }
 
 void CUI_Manager::Render_UIGroup(_bool isRender, string strKey)
@@ -576,6 +600,63 @@ void CUI_Manager::Delete_PortalUI(_bool isBackPortal)
 	}
 }
 
+void CUI_Manager::Create_PhaseChange(_bool isFadeIn)
+{
+	CUI_PhaseChange::UI_PHASECHANGE_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+
+	if (isFadeIn)
+	{
+		if (nullptr != m_pPhaseChangeIn)
+			return;
+
+		pDesc.isFadeIn = true;
+
+		m_pPhaseChangeIn = dynamic_cast<CUI_PhaseChange*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PhaseChange"), &pDesc));
+	}
+	else
+	{
+		if (nullptr != m_pPhaseChangeOut)
+			return;
+
+		pDesc.isFadeIn = false;
+
+		m_pPhaseChangeOut = dynamic_cast<CUI_PhaseChange*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PhaseChange"), &pDesc));
+	}
+}
+
+void CUI_Manager::Delete_PhaseChange(_bool isFadeIn)
+{
+	if (isFadeIn)
+	{
+		Safe_Release(m_pPhaseChangeIn);
+		m_pPhaseChangeIn = nullptr;
+	}
+	else
+	{
+		Safe_Release(m_pPhaseChangeOut);
+		m_pPhaseChangeOut = nullptr;
+	}
+}
+
+_bool CUI_Manager::Get_isPhaseChange_AnimEnd(_bool isFadeIn)
+{
+	if (isFadeIn)
+	{
+		if (nullptr == m_pPhaseChangeIn)
+			return false;
+		else
+			return m_pPhaseChangeIn->Get_isFadeAnimEnd();
+	}
+	else
+	{
+		if (nullptr == m_pPhaseChangeOut)
+			return false;
+		else
+			return m_pPhaseChangeOut->Get_isFadeAnimEnd();
+	}
+}
+
 void CUI_Manager::Key_Input()
 {
 	// m_isShopOn에 대한 분기 처리 해야 하지 않을지?
@@ -776,6 +857,8 @@ void CUI_Manager::Free()
 	for (auto& pPortal : m_vecPortal)
 		Safe_Release(pPortal);
 	
+	Safe_Release(m_pPhaseChangeIn);
+	Safe_Release(m_pPhaseChangeOut);
 	Safe_Release(m_pCinematic);
 	Safe_Release(m_pFadeIn);
 	Safe_Release(m_pFadeOut);

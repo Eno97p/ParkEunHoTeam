@@ -549,6 +549,9 @@
 #include "C:\Real3DProject\Client\Private\UI_MonsterHPBar.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\UI_PhaseChange.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\UI_PortalPic.cpp"
 
 

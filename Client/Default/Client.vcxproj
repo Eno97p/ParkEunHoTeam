@@ -376,6 +376,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\UI_Memento.h" />
     <ClInclude Include="..\Public\UI_MenuAlphaBG.h" />
     <ClInclude Include="..\Public\UI_MonsterHPBar.h" />
+    <ClInclude Include="..\Public\UI_PhaseChange.h" />
     <ClInclude Include="..\Public\UI_PortalPic.h" />
     <ClInclude Include="..\Public\UI_PortalText.h" />
     <ClInclude Include="..\Public\UI_QTE_Btn.h" />
@@ -707,6 +708,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\UI_Memento.cpp" />
     <ClCompile Include="..\Private\UI_MenuAlphaBG.cpp" />
     <ClCompile Include="..\Private\UI_MonsterHPBar.cpp" />
+    <ClCompile Include="..\Private\UI_PhaseChange.cpp" />
     <ClCompile Include="..\Private\UI_PortalPic.cpp" />
     <ClCompile Include="..\Private\UI_PortalText.cpp" />
     <ClCompile Include="..\Private\UI_QTE_Btn.cpp" />

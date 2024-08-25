@@ -95,7 +95,7 @@ private:
 	_bool m_bRushSwordSound = true;
 
 #pragma region Shield 
-	_float m_fMaxShield = 50.f;
+	_float m_fMaxShield = 100.f;
 	_float m_fCurShield = 0.f;
 #pragma endregion Shield
 

@@ -561,7 +561,7 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 		return COOLING;
 	}
 
-	if (50.f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
+	if (m_fMaxHp * 0.5f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
@@ -586,6 +586,10 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 
 		if (m_isAnimFinished)
 		{
+			for (_uint i = 0; i < STATUECOUNT; i++)
+			{
+				m_pBossStatues[i]->Set_Active(true);
+			}
 			m_iState = STATE_CREATE_HAMMER;
 		}
 		return RUNNING;

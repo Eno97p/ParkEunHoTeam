@@ -369,7 +369,7 @@ NodeStates CMalkhel::Teleport(_float fTimeDelta)
 		if (!m_bTeleport)
 		{
 			m_pTransformCom->Set_Scale(fScale.x - fTimeDelta * 5.f, fScale.y - fTimeDelta * 5.f, fScale.z - fTimeDelta * 5.f);
-			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 10.f, 0.f, 0.f));
 			if (m_pTransformCom->Get_Scaled().x < 0.1f)
 			{
 				m_pGameInstance->Disable_Echo();
@@ -396,7 +396,7 @@ NodeStates CMalkhel::Teleport(_float fTimeDelta)
 		else
 		{
 			m_pTransformCom->Set_Scale(fScale.x + fTimeDelta * 5.f, fScale.y + fTimeDelta * 5.f, fScale.z + fTimeDelta * 5.f);
-			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMVectorSet(0.f, fTimeDelta * 10.f, 0.f, 0.f));
 			if (m_pTransformCom->Get_Scaled().x > 1.5f)
 			{
 				m_pTransformCom->Set_Scale(1.5f, 1.5f, 1.5f);

@@ -61,6 +61,16 @@ void CLightning::Tick(_float fTimeDelta)
 		XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		vPos.y -= 10.f;
 		EFFECTMGR->Generate_Lightning(0, vPos);
+
+		_matrix vMatrix = m_pTransformCom->Get_WorldMatrix();
+		vMatrix.r[3].m128_f32[1] -= 10.f;
+		m_pColliderCom->Tick(vMatrix);
+
+		if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+		{
+			m_pPlayer->PlayerHit(10);
+		}
+
 		m_pGameInstance->Erase(this);
 	}
 }

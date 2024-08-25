@@ -240,6 +240,9 @@
 #include "C:\Real3DProject\Client\Private\NPC_Yaak.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasCylinder.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasHead.cpp"
 
 
@@ -256,6 +259,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasSphere.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\BezierCurve.cpp"

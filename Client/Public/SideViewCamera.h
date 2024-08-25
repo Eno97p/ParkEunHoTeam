@@ -46,6 +46,19 @@ public:
         Set_Fovy(XMConvertToRadians(80.f));
     
     }
+
+public:
+    void Shake_Camera(_float duration, _float intensity)
+    {
+        m_fShakeTime = duration; 
+        m_fShakeAccTime = 0.f;
+        m_fIntensity = intensity; 
+    }
+    _float RandomFloat(_float min, _float max);
+
+private:
+    void Shaking();
+
 private:
     _float      m_fSensor = { 0.0f };
     CTransform* m_pPlayerTrans = { nullptr };
@@ -59,14 +72,11 @@ private:
     _float m_fLookAtOffset = 1.0f;    // 카메라가 바라보는 위치의 오프셋
     _float m_fFollowSpeed = 5.0f;     // 카메라 추적 속도
 
-    bool m_bIsShaking = false;
-    _float m_fShakeDuration = 0.5f;
-    _float m_fShakeTimer = 0.0f;
-    _float m_fShakeIntensity = 0.1f;
-    _float m_fShakeInterval = 0.05f;
-    _float m_fShakeIntervalTimer = 0.0f;
-    _float4 m_vShakeStart = { 0.f, 0.f, 0.f, 1.f };
-    _float4 m_vShakeTarget = { 0.f, 0.f, 0.f, 1.f };
+private:
+    _float m_fShakeTime = 0.f;
+    _float m_fShakeAccTime = 0.f;
+    _float m_fIntensity = 0.1f;  // 셰이킹 강도
+    _bool m_bLockWidth = false;  // 가로 방향 셰이킹 잠금 여부
 
 private:
     bool m_bBossScene = false;
@@ -80,7 +90,6 @@ public:
 	static CSideViewCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
-	void Shaking();
 	void Key_Input(_float fTimeDelta);
 };
 

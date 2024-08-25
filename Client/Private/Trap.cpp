@@ -3,6 +3,7 @@
 
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "SideViewCamera.h"
 
 CTrap::CTrap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
@@ -110,6 +111,8 @@ void CTrap::Late_Tick(_float fTimeDelta)
 	if (m_eColltype == CCollider::COLL_START)
 	{
 		m_pPlayer->PlayerHit(10);
+		dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.25f, 0.2f);
+
 	}
 
 	if (m_pGameInstance->isIn_WorldFrustum(m_ColliderMat.r[3], 10.f))

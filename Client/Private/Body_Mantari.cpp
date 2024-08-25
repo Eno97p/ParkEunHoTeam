@@ -5,6 +5,7 @@
 #include "Mantari.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "ThirdPersonCamera.h"
 
 CBody_Mantari::CBody_Mantari(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
@@ -214,6 +215,8 @@ void CBody_Mantari::Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(42, PartPos);
 			EFFECTMGR->Generate_Particle(43, PartPos);
 			
+			CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
+			pThirdPersonCamera->Shake_Camera(0.23f, 0.01f, 0.03f, 72.f);
 		}
 
 

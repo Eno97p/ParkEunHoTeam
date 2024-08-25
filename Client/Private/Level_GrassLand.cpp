@@ -46,15 +46,47 @@ CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 HRESULT CLevel_GrassLand::Initialize()
 {
-	if (FAILED(Ready_Fog()))
-		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
+	if (ePreLevel == LEVEL_JUGGLAS)
+	{
+		//블러드문 세팅 1 : 라이트
+		m_pGameInstance->LightOff_All();
+
+		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
+
+		//블러드문 세팅 2 : 포그
+		CRenderer::FOG_DESC fogDesc{};
+		fogDesc.vFogColor = { 0.431f, 0.f, 0.f, 1.f };
+		fogDesc.vFogColor2 = { 0.127f, 0.127f, 0.127f, 1.f };
+		fogDesc.fFogRange = 2307.7;
+		fogDesc.fFogHeightFalloff = 0.0f;
+		fogDesc.fFogGlobalDensity = 0.7f;
+		fogDesc.fFogTimeOffset = 17.163f;
+		fogDesc.fFogTimeOffset2 = 8.365f;
+		fogDesc.fNoiseIntensity = 2.365f;
+		fogDesc.fNoiseIntensity2 = 2.164f;
+		fogDesc.fNoiseSize = 0.001443f;
+		fogDesc.fNoiseSize2 = 0.002404f;
+		fogDesc.fFogBlendFactor = 0.49f;
+		m_pGameInstance->Set_FogOption(fogDesc);
+
+	}
+	else
+	{
+		if (FAILED(Ready_Lights()))
+			return E_FAIL;
+	}
+
+
+
+
 
 	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Fog()))
+		return E_FAIL;
 	//m_pGameInstance->Set_ReflectionWave(0.693f, 0.1f, 13.743f, 7.5f, 0);
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
@@ -199,7 +231,7 @@ void CLevel_GrassLand::Late_Tick(_float fTimeDelta)
 HRESULT CLevel_GrassLand::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
-
+	
  	Load_Lights(L"../Bin/MapData/LightsData/GrassLand_Lights.dat");
 
 	return S_OK;
@@ -236,7 +268,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
 	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	 pTPCDesc.fNear = 0.3f;
+	 pTPCDesc.fNear = 0.1f;
 	 pTPCDesc.fFar = 10000.f;
 
 	 pTPCDesc.fSpeedPerSec = 40.f;
@@ -291,27 +323,6 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
 	if (ePreLevel == LEVEL_JUGGLAS)
 	{
-		//블러드문 세팅 1 : 라이트
-		m_pGameInstance->LightOff_All();
-
-		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
-
-		//블러드문 세팅 2 : 포그
-		CRenderer::FOG_DESC fogDesc{};
-		fogDesc.vFogColor = { 0.431f, 0.f, 0.f, 1.f };
-		fogDesc.vFogColor2 = { 0.127f, 0.127f, 0.127f, 1.f };
-		fogDesc.fFogRange = 2307.7;
-		fogDesc.fFogHeightFalloff = 0.0f;
-		fogDesc.fFogGlobalDensity = 0.7f;
-		fogDesc.fFogTimeOffset = 17.163f;
-		fogDesc.fFogTimeOffset2 = 8.365f;
-		fogDesc.fNoiseIntensity = 2.365f;
-		fogDesc.fNoiseIntensity2 = 2.164f;
-		fogDesc.fNoiseSize = 0.001443f;
-		fogDesc.fNoiseSize2 = 0.002404f;
-		fogDesc.fFogBlendFactor = 0.49f;
-		m_pGameInstance->Set_FogOption(fogDesc);
-
 		//블러드문 세팅 3 : 라군
 		CLagoon::LAGOON_DESC lagoonDesc{};
 		lagoonDesc.vLightPosition = { -286.f, 500.f, -224.132f, 1.f };
@@ -579,9 +590,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Monster(const wstring& strLayerTag, CLandO
 	if (ePreLevel == LEVEL_JUGGLAS)
 	{
 		CLandObject::LANDOBJ_DESC landObjDesc;
-		landObjDesc.mWorldMatrix._41 = 165.712f;
-		landObjDesc.mWorldMatrix._42 = 528.f;
-		landObjDesc.mWorldMatrix._43 = 97.312f;
+		landObjDesc.mWorldMatrix._41 = -85.098f;
+		landObjDesc.mWorldMatrix._42 = 400.f;
+		landObjDesc.mWorldMatrix._43 = -262.199f;
 		landObjDesc.mWorldMatrix._44 = 1.f;
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Malkhel"), &landObjDesc)))
 			return E_FAIL;

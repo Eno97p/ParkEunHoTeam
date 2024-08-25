@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "CutSceneCamera.h"
 CutSceneAndras::CutSceneAndras(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -224,6 +225,7 @@ HRESULT CutSceneAndras::Bind_BloomResources()
 
 HRESULT CutSceneAndras::Add_Child_Effects()
 {
+	dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->StartIntenseShaking(2.f, 2.5f);
 	_float4 ParticlePos;
 	XMStoreFloat4(&ParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 

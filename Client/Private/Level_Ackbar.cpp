@@ -28,6 +28,9 @@
 
 #include"EventTrigger.h"
 
+
+#include "SavePoint.h"
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -337,6 +340,18 @@ HRESULT CLevel_Ackbar::Ready_LandObjects()
 	//Npc
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Npc"), TEXT("Prototype_GameObject_Npc_Valnir"))))
 		return E_FAIL;
+
+
+
+
+
+	CSavePoint::_tagSavePoint_Desc savePointDesc;
+	savePointDesc.vPosition = _float3(-17.661, 9.068f, -42.096f);
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+		return E_FAIL;
+
+
 
 
 	return S_OK;

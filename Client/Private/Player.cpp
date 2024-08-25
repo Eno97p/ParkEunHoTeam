@@ -520,7 +520,7 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 
 NodeStates CPlayer::Dead(_float fTimeDelta)
 {
-
+	
 	if (m_iState == STATE_DEAD)
 	{
 		//죽었을 때 한 번만 비동기 실행

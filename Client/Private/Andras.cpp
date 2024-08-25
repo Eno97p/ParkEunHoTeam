@@ -116,13 +116,20 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_bTrigger)
 	{
-		m_pBehaviorCom->Update(fTimeDelta);
 
-		if (!m_bDead)
+		m_fTriggerDelay += fTimeDelta;
+		if (m_fTriggerDelay > 4.0f)
 		{
-			for (auto& pPartObject : m_PartObjects)
-				pPartObject->Tick(fTimeDelta);
+
+			m_pBehaviorCom->Update(fTimeDelta);
+			if (!m_bDead)
+			{
+				for (auto& pPartObject : m_PartObjects)
+					pPartObject->Tick(fTimeDelta);
+			}
+			//m_fTriggerDelay = 0.f;
 		}
+
 	}
 
 	

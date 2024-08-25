@@ -33,6 +33,7 @@ public:
 	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
 	void				Set_isShopOn(_bool isOn) { m_isShopOn = isOn; }
+	_bool				Get_isUIOpen();
 
 public:
 	HRESULT				Initialize();

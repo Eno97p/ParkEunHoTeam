@@ -290,6 +290,25 @@ void CUI_Manager::Resset_Player()
 	dynamic_cast<CUIGroup_State*>((*hud).second)->Resset_Player();
 }
 
+_bool CUI_Manager::Get_isUIOpen()
+{
+	// UI가 켜져있는지 활성화에 대한 여부를 반환하는 함수
+	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
+	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");
+	map<string, CUIGroup*>::iterator ch_upgrade = m_mapUIGroup.find("Ch_Upgrade");
+	map<string, CUIGroup*>::iterator upgrade = m_mapUIGroup.find("Upgrade");
+
+	_bool isMenuOpen = (*menu).second->Get_Rend();
+	_bool isQuickOpen = (*quick).second->Get_Rend();
+	_bool isChUpgradeOpen = (*ch_upgrade).second->Get_Rend();
+	_bool isUpgradeOpen = (*upgrade).second->Get_Rend();
+
+	if (isMenuOpen || isQuickOpen || isChUpgradeOpen || isUpgradeOpen)
+		return true;
+	else
+		return false;
+}
+
 HRESULT CUI_Manager::Initialize()
 {
 	if (FAILED(Create_UI()))

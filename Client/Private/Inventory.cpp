@@ -109,7 +109,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//for(size_t i = 0; i < 5; ++i)
 	//	Add_Item(CItemData::ITEMNAME_CATALYST);
 
-	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
+	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
 
 	return S_OK;
 }

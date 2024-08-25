@@ -11,9 +11,10 @@ public:
 	typedef struct UI_DropItemBG_Desc : public UI_DESC
 	{
 		//_bool is >> 추후 분기처리 위한 데이터 추가해줄 것
+		_bool					isItem;
+		_bool					isWeapon;
 		CItemData::ITEM_NAME	eItemName;
 		wstring wstrTextureName;
-		//wstring wstrItemNameText;
 	}UI_DROPITEM_DESC;
 
 private:

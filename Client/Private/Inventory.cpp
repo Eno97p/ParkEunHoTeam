@@ -93,7 +93,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
-	//Add_DropItem(CItem::ITEM_ESSENCE);
+	Add_DropItem(CItem::ITEM_ESSENCE);
 	//Add_DropItem(CItem::ITEM_BUFF1);
 	//Add_DropItem(CItem::ITEM_BUFF1);
 	//Add_DropItem(CItem::ITEM_BUFF1);
@@ -109,7 +109,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//for(size_t i = 0; i < 5; ++i)
 	//	Add_Item(CItemData::ITEMNAME_CATALYST);
 
-	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
+	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
 
 	return S_OK;
 }
@@ -153,7 +153,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 			m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 		
 			// RedDot 추가
-			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true); // Menu Btn // 해주는데 왜 안 생기지!
+			CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(true);
 			CUI_Manager::GetInstance()->Create_RedDot_Slot(true, m_vecItem.size() - 1); // Slot
 		}
 	}
@@ -203,6 +203,7 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 		++item;
 	pUIDesc.eItemName = (*item)->Get_ItemName();
 	pUIDesc.wszTextureName = (*item)->Get_TextureName();
+	pUIDesc.isItem = true;
 	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	// UI도
@@ -225,11 +226,6 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	pDesc.eItemName = eItemName;
 	m_vecWeapon.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	// UI 출력
-	// 그니까 새로 Weapon을 받았을 때 > 그 후에 바로 Weapon Page를 켰을 때
-	// ItemIcon이 Slot에 들어가 있어야 해서 밑의 코드를 넣은 거
-	// 그러면 이 함수 그대로 써도 될 거 같운데 ㅇㅇ Skill은 Tab 할 때만 바꾸고 (!!!!!추후 실제로 테스트해보고 주석 지우기)
-
 	CUI_Manager::GetInstance()->Update_Weapon_Add(); 
 
 	// Upgrade Page에도 weapon 추가
@@ -239,16 +235,21 @@ HRESULT CInventory::Add_Weapon(CItemData::ITEM_NAME eItemName)
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecWeapon.size() - 1);
 
-	//// UI 출력 >>>> 이거 Item에 맞춰 놔가지고 ... 
-	//CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
-	//pUIDesc.eLevel = LEVEL_STATIC;
 
-	//vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
-	//for (size_t i = 0; i < m_vecWeapon.size() - 1; ++i)
-	//	++weapon;
-	//pUIDesc.eItemName = (*weapon)->Get_ItemName();
-	//pUIDesc.wszTextureName = (*weapon)->Get_TextureName();
-	//m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+
+	// UI 출력 >>>> 이거 Item에 맞춰 놔가지고 ... 로직 좀 바꿔야함
+	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+	pUIDesc.eLevel = LEVEL_STATIC;
+
+	vector<CItemData*>::iterator weapon = m_vecWeapon.begin();
+	for (size_t i = 0; i < m_vecWeapon.size() - 1; ++i)
+		++weapon;
+	pUIDesc.eItemName = (*weapon)->Get_ItemName();
+	pUIDesc.wszTextureName = (*weapon)->Get_TextureName();
+	pUIDesc.isItem = false;
+	pUIDesc.isWeapon = true;
+
+	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
 
 	return S_OK;
 }
@@ -265,6 +266,9 @@ HRESULT CInventory::Add_Skill(CItemData::ITEM_NAME eItemName)
 	// RedDot
 	CUI_Manager::GetInstance()->Create_RedDot_MenuBtn(false);
 	CUI_Manager::GetInstance()->Create_RedDot_Slot(false, m_vecSkill.size() - 1, true);
+
+
+	// 
 
 	return S_OK;
 }

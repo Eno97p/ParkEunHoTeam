@@ -74,7 +74,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		m_iKnowledgeLv = get<0>(*LoadPlayerData).iKnowledgeLv;
 		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
 		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
-
+		m_fCurHp = get<0>(*LoadPlayerData).fCurHP;
 
 	}
 	//m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
@@ -86,7 +86,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
-
+	m_tPlayerStatusData.fCurHP = m_fCurHp;
 
 
 
@@ -444,7 +444,7 @@ CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
 	m_tPlayerStatusData.iKnowledgeLv = m_iKnowledgeLv;
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
-
+	m_tPlayerStatusData.fCurHP = m_fCurHp;
 
 	return m_tPlayerStatusData;
 }
@@ -1678,7 +1678,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-
+	// >>> 디버깅 용이라 현재는 아이템 사용 X 나중에 Key 관련 부분 지우고 Tick마다 호출 막아야 함 <<<
 	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) && m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;

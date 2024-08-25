@@ -96,7 +96,7 @@ void CKickSword::Tick(_float fTimeDelta)
 
 		// 몬스터 무기와 플레이어 충돌처리
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
-		if (m_eColltype == CCollider::COLL_START)
+		if (m_eColltype == CCollider::COLL_START || (CUI_Manager::GetInstance()->Get_isQTEAlive() && CUI_Manager::GetInstance()->Check_End_QTE()))
 		{
 			m_eDisolveType = TYPE_DECREASE;
 			fSlowValue = 1.f;
@@ -126,7 +126,7 @@ void CKickSword::Tick(_float fTimeDelta)
 				StartSlowMo = true;
 			}
 
-			if (fLengthFromPlayer < 5.f || StartSlowMo)
+			if (fLengthFromPlayer < 8.f || StartSlowMo) // 
 			{
 				if (fSlowValue != 0.01f && !StartSlowMo)
 				{
@@ -141,9 +141,6 @@ void CKickSword::Tick(_float fTimeDelta)
 			}
 		}
 	}
-
-	m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
-
 }
 
 void CKickSword::Late_Tick(_float fTimeDelta)

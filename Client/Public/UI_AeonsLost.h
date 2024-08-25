@@ -2,6 +2,10 @@
 
 #include "UI.h"
 
+BEGIN(Engine)
+class CTexture;
+END
+
 BEGIN(Client)
 
 class CUI_AeonsLost final : public CUI
@@ -24,7 +28,12 @@ public:
 
 private:
 	_bool			m_isEnd = { false };
+	_bool			m_isFadeOut = { true };
 	_float			m_fDeadTimer = { 0.f };
+	_float			m_fDisolveValue = { 0.f };
+	_float			m_fColor = { 1.f };
+
+	CTexture*		m_pDisolveTextureCom = { nullptr };
 
 private:
 	HRESULT	Add_Components();

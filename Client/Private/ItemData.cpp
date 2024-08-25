@@ -80,8 +80,10 @@ void CItemData::Use_Item(_uint iInvenIdx)
 
 		// 체력 회복
 		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
-		pPlayer->Add_Hp(100.f);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Add_Hp(100.f);
+
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_BuffNum(0);
 
 		break;
 	}
@@ -106,6 +108,7 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		
 		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
 		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_BuffNum(1);
 
 		break;
 	}
@@ -116,6 +119,7 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		
 		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
 		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_BuffNum(2);
 
 		break;
 	}
@@ -126,6 +130,7 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		
 		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
 		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_BuffNum(3);
 
 		break;
 	}
@@ -136,6 +141,7 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		
 		list<CGameObject*> PlayerList = CGameInstance::GetInstance()->Get_GameObjects_Ref(CGameInstance::GetInstance()->Get_CurrentLevel(), TEXT("Layer_Player"));
 		dynamic_cast<CPlayer*>(PlayerList.front())->Set_isBuffState(true);
+		dynamic_cast<CPlayer*>(PlayerList.front())->Set_BuffNum(4);
 		
 		break;
 	}

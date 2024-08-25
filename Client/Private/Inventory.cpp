@@ -22,8 +22,15 @@ CInventory::CInventory()
 CItemData* CInventory::Get_ItemData(_uint iSlotIdx)
 {
 	vector<CItemData*>::iterator item = m_vecItem.begin();
+
+	if (m_vecItem.size() <= iSlotIdx)
+		return nullptr;
+
 	for (size_t i = 0; i < iSlotIdx; ++i)
+	{
 		++item;
+
+	}
 
 	return (*item);
 }

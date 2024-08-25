@@ -19,6 +19,7 @@
 #include "BlackHole.h"
 #include "WellCylinder.h"
 #include "MagicCast.h"
+#include "CutSceneAndras.h"
 BEGIN(Client)
 class CEffectManager final : public CBase
 {
@@ -51,6 +52,7 @@ public:
 	HRESULT Generate_HammerSpawn(const _float4 vStartPos);
 	HRESULT Generate_BlackHole(const _int iIndex, const _float4 vStartPos, const _uint Level);
 	HRESULT Generate_WellCylinder(const _float4x4* BindMat);
+	HRESULT Generate_CutSceneAndras(const _float4 vStartPos);
 
 
 	CGameObject* Generate_HexaShield(const _float4x4* BindMat);	//CHexaShield로 캐스팅해서 맞을땐 Set_Shield_Hit() 호출 , 삭제할땐  Set_Delete()호출
@@ -76,6 +78,7 @@ private:		//Load Values
 	HRESULT Load_FireFly();
 	HRESULT	Load_WellCylinder();
 	HRESULT Load_Magic_Cast();
+	HRESULT Load_CutSceneAndras();
 
 
 	HRESULT Ready_GameObjects();
@@ -104,6 +107,7 @@ private:
 	shared_ptr<CHexaShield::HEXASHIELD>							m_HexaShield;
 	shared_ptr<CFireFlyCube::FIREFLYCUBE>						m_FireFly;
 	shared_ptr<CWellCylinder::WELLCYLINDER>						m_WellCylinder;
+	shared_ptr<CutSceneAndras::CUTSCENEANDRAS>					m_CutSceneAndras;
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

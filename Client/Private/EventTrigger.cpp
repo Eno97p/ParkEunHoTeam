@@ -465,7 +465,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				case TRIG_CUTSCENE_ANDRAS:
 				{
 					//ºí·¢È¦ »ý¼º
-					_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
+					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
 					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
 				}
 					break;

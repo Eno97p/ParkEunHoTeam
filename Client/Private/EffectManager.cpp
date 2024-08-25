@@ -120,7 +120,11 @@ HRESULT CEffectManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
 		MSG_BOX("FAILED_Load_Magic_Cast");
 		return E_FAIL;
 	}
-
+	if (FAILED(Load_CutSceneAndras()))
+	{
+		MSG_BOX("FAILED_Load_CutSceneAndras");
+		return E_FAIL;
+	}
 	
 	return S_OK;
 }
@@ -463,6 +467,15 @@ HRESULT CEffectManager::Generate_WellCylinder(const _float4x4* BindMat)
 	Desc->ParentMatrix = BindMat;
 	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevelIndex(), TEXT("Layer_Effect"),
 		TEXT("Prototype_GameObject_WellCylinder"), Desc);
+	return S_OK;
+}
+
+HRESULT CEffectManager::Generate_CutSceneAndras(const _float4 vStartPos)
+{
+	CutSceneAndras::CUTSCENEANDRAS* Desc = m_CutSceneAndras.get();
+	Desc->vPosition = vStartPos;
+	CGameInstance::GetInstance()->CreateObject(CGameInstance::GetInstance()->Get_CurrentLevelIndex(), TEXT("Layer_Effect"),
+		TEXT("Prototype_GameObject_CutSceneAndras"), Desc);
 	return S_OK;
 }
 
@@ -966,6 +979,22 @@ HRESULT CEffectManager::Load_Magic_Cast()
 	return S_OK;
 }
 
+HRESULT CEffectManager::Load_CutSceneAndras()
+{
+	string finalPath = "../Bin/BinaryFile/Effect/AndrasCutScene.Bin";
+	ifstream inFile(finalPath, std::ios::binary);
+	if (!inFile.good())
+		return E_FAIL;
+	if (!inFile.is_open()) {
+		MSG_BOX("Failed To Open File");
+		return E_FAIL;
+	}
+	m_CutSceneAndras = make_shared<CutSceneAndras::CUTSCENEANDRAS>();
+	inFile.read((char*)m_CutSceneAndras.get(), sizeof(CutSceneAndras::CUTSCENEANDRAS));
+	inFile.close();
+	return S_OK;
+}
+
 HRESULT CEffectManager::Ready_GameObjects()
 {
 	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_ParticleMesh"),
@@ -1185,6 +1214,17 @@ HRESULT CEffectManager::Ready_GameObjects()
 		CNewAspiration::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_CutSceneAndras"),
+		CutSceneAndras::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_AndrasPillar"),
+		CAndrasCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::GetInstance()->Add_Prototype(TEXT("Prototype_GameObject_AndrasSphere"),
+		CAndrasSphere::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

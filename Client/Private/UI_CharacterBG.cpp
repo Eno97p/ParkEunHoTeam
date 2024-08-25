@@ -164,7 +164,7 @@ void CUI_CharacterBG::Render_Text()
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStamina, _float2(fFirstColX + 280.f, fFirstRowX + 30.f), Check_Difference(ABILITY_STAMINA))))
 		return;
-	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STRENGHT"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo15"), TEXT("STRENGTH"), _float2(fFirstColX, fFirstRowX + 60.f), XMVectorSet(1.f, 1.f, 1.f, 1.f))))
 		return;
 	if (FAILED(m_pGameInstance->Render_Font(TEXT("Font_Cardo17"), m_wstrStrenght, _float2(fFirstColX + 280.f, fFirstRowX + 60.f), Check_Difference(ABILITY_STRENGHT))))
 		return;

@@ -472,6 +472,11 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					{
 						andras->Activate_Andras();
 					}
+
+					//ºí·¢È¦ »ý¼º
+					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
+					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
+
 				}
 					break;
 				default:

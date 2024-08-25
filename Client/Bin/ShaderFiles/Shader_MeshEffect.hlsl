@@ -1115,6 +1115,41 @@ PS_OUT PS_BlackHoleRing_Bloom(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_AndrasSphere(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	if (Color.r < g_OpacityPower)
+		discard;
+
+
+	Out.vColor = Color;
+	return Out;
+}
+
+PS_OUT PS_AndrasSphere_Bloom(PS_IN In)
+{
+	PS_OUT		Out = (PS_OUT)0;
+
+	float2 uv = In.vTexcoord;
+	uv.x += g_CurTime * g_Speed;
+
+	vector Color = g_Texture.Sample(LinearSampler, uv);
+
+	if (Color.r < g_OpacityPower)
+		discard;
+
+	Color.a = g_BloomPower;
+
+	Out.vColor = Color;
+	return Out;
+}
+
 
 
 technique11 DefaultTechnique
@@ -1631,6 +1666,33 @@ technique11 DefaultTechnique
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_BlackHoleRing_Bloom();
 	}
+
+	pass AndrasSphere		//38Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_AndrasSphere();
+	}
+
+	pass AndrasSphere_Bloom		//39Pass
+	{
+		SetRasterizerState(RS_NoCull);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_CYLINDER();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_AndrasSphere_Bloom();
+	}
+
 
 		
 }

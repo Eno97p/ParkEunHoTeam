@@ -44,6 +44,9 @@
 #include "C:\NewRepo\EffectTool\Private\AndrasScrew.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\AndrasSphere.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\AndrasSword1.cpp"
 
 

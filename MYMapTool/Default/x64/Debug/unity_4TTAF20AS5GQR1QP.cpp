@@ -20,13 +20,22 @@
 #include "C:\NewRepo\MYMapTool\Private\BackGround.cpp"
 
 
+#include "C:\NewRepo\MYMapTool\Private\BackGround_Card.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\Private\BackGround_Moon.cpp"
+
+
 #include "C:\NewRepo\MYMapTool\Private\Body_Player.cpp"
 
 
 #include "C:\NewRepo\MYMapTool\Private\CutSceneCamera.cpp"
 
 
-#include "C:\NewRepo\MYMapTool\private\DecalBox.cpp"
+#include "C:\NewRepo\MYMapTool\Private\Decal.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\private\Cloud.cpp"
 
 
 #include "C:\NewRepo\MYMapTool\Private\Default_Camera.cpp"
@@ -69,6 +78,9 @@
 
 
 #include "C:\NewRepo\MYMapTool\Private\imgui_widgets.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\Private\Lagoon.cpp"
 
 
 #include "C:\NewRepo\MYMapTool\Private\LandObject.cpp"
@@ -119,7 +131,16 @@
 #include "C:\NewRepo\MYMapTool\Private\ToolObj_Manager.cpp"
 
 
-#include "C:\NewRepo\MYMapTool\private\TrapMace.cpp"
+#include "C:\NewRepo\MYMapTool\Private\TransitionCamera.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\Private\Trap.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\Private\TreasureChest.cpp"
+
+
+#include "C:\NewRepo\MYMapTool\Private\Tree.cpp"
 
 
 #include "C:\NewRepo\MYMapTool\Private\TutorialMapBridge.cpp"

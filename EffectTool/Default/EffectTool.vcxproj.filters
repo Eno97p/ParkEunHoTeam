@@ -457,6 +457,9 @@
     <ClInclude Include="..\Public\AndrasCylinder.h">
       <Filter>Objects\05. Monster\CutSceneAndras</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AndrasSphere.h">
+      <Filter>Objects\05. Monster\CutSceneAndras</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Imgui\imgui.cpp">
@@ -730,6 +733,9 @@
       <Filter>Objects\02. Effects\22. Casting\Effects</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AndrasCylinder.cpp">
+      <Filter>Objects\05. Monster\CutSceneAndras</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AndrasSphere.cpp">
       <Filter>Objects\05. Monster\CutSceneAndras</Filter>
     </ClCompile>
   </ItemGroup>

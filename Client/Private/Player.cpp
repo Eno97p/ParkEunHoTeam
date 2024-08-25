@@ -245,7 +245,9 @@ void CPlayer::Late_Tick(_float fTimeDelta)
 		//EFFECTMGR->Generate_FireFly(m_pTransformCom->Get_WorldFloat4x4());
 		//vStartPosition.y += 5.f;
 		//EFFECTMGR->Generate_BlackHole(0, vStartPosition);
-		EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
+		//EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
+
+		EFFECTMGR->Generate_CutSceneAndras(vStartPosition);
 
 		//EFFECTMGR->Generate_HammerSpawn(vStartPosition);
 	}

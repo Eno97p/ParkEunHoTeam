@@ -12,8 +12,9 @@ texture2D g_MetalicTexture;
 texture2D g_DisolveTexture;
 texture2D g_BlurTexture;
 float4 g_vCamPosition;
+float g_DisolveValue;
 
-float g_DisolveValue = 1.f;
+float4 g_DisolveColor = float4(0.f, 1.f, 1.f, 1.f);
 float g_TexcoordY = 1.f;
 float4 g_fColor = { 1.f, 1.f, 1.f, 1.f };
 float g_fCamFar = 3000.f;
@@ -153,6 +154,31 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT)0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+
+    vector vDisolve = g_DisolveTexture.Sample(LinearSampler, In.vTexcoord);
+    float fDisolve = (vDisolve.r + vDisolve.g + vDisolve.b) / 3.f;
+
+    // 디졸브 효과 적용
+    if (fDisolve >(1.0f- g_DisolveValue))
+    {
+        // 이미 나타난 부분
+        Out.vDiffuse = vDiffuse;
+    }
+    else if (fDisolve > (1.0 - g_DisolveValue - 0.1f)) // 경계 부분
+    {
+        float edge = (fDisolve - (1.0 - g_DisolveValue - 0.1f)) / 0.1f;
+        Out.vDiffuse = lerp(g_DisolveColor, vDiffuse, edge);
+    }
+    else
+    {
+        // 아직 나타나지 않은 부분
+        discard;
+    }
+   
+
+
+
     if (vDiffuse.a < 0.1f)
         discard;
 
@@ -177,6 +203,7 @@ PS_OUT PS_MAIN(PS_IN In)
     if (g_bEmissive) Out.vEmissive = vEmissive;
     if (g_bRoughness) Out.vRoughness = vRoughness;
     if (g_bMetalic) Out.vMetalic = vMetalic;
+
 
     if (g_MotionBlur)
     {

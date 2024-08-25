@@ -3,6 +3,7 @@
 #include "Effect_Define.h"
 #include "DefaultCylinder.h"
 #include "AndrasCylinder.h"
+#include "AndrasSphere.h"
 BEGIN(Engine)
 class CShader;
 class CModel;
@@ -22,6 +23,7 @@ public:
 		_float	fStartEffect = 8.f;
 		CDefaultCylinder::DEFAULTCYLINDER Cylinder{};
 		CAndrasCylinder::ANDRASCYLINDER AndrasPillar{};
+		CAndrasSphere::ANDRASSPHERE SphereDesc{};
 	};
 
 private:

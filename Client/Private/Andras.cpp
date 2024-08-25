@@ -959,6 +959,8 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
+	// !!!!!!!!!!!!! 현재 쉴드 다 깎이고 나서 HP가 풀피 UI가 아닌 문제가 이씅ㅁ !!!!!!!!!!!
+
 	if (HexaShieldText) // 쉴드가 있는 경우에는 쉴드 피격 처리
 	{
 		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
@@ -1001,7 +1003,7 @@ void CAndras::Phase_Two()
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 
 	// 쉴드 UI 및 값 생성
-	m_fCurShield = 50.f;
+	m_fCurShield = m_fMaxShield;
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 

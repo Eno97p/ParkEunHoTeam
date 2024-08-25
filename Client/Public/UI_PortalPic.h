@@ -15,6 +15,7 @@ public:
 	{
 		_uint	iPicNum;
 		_float	fAngle;
+		_float2	fScale;
 		_vector vPos;
 	}UI_PORTALPIC_DESC;
 
@@ -43,6 +44,7 @@ private:
 	_uint			m_iPicNum = { 0 };
 	_float			m_fOpacityTimer = { 0.f };
 	_float			m_fDisolveValue = { 0.f };
+	_float2			m_fScale;
 
 	CTexture* m_pOpacityTextureCom = { nullptr };
 	CTexture* m_pDisolveTextureCom = { nullptr };

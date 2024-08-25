@@ -56,7 +56,7 @@ HRESULT CUI_FadeInOut::Initialize(void* pArg)
 
 	if (!m_isLevelChange && m_isFadeIn && m_eFadeType == TYPE_ALPHA)
 		Create_Memento();
-	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE) // FadeIn이 여러 개 생성되네~~~
+	else if (m_isFadeIn && m_eFadeType == TYPE_DISSOLVE)
 		Create_AeonsLost();
 	
 

@@ -82,6 +82,10 @@ public:
 	void				Create_PortalUI(CUIGroup_Portal::UIGROUP_PORTAL_DESC* pDesc);
 	void				Delete_PortalUI(_bool isBackPortal = false);
 
+	// PhaseChange
+	void				Create_PhaseChange(_bool isFadeIn);
+	void				Delete_PhaseChange(_bool isFadeIn);
+	_bool				Get_isPhaseChange_AnimEnd(_bool isFadeIn);
 
 
 	// For.LEVEL //PSW
@@ -106,7 +110,8 @@ private:
 	class CUI_FadeInOut*				m_pFadeIn = { nullptr };
 	class CUI_Cinematic*				m_pCinematic = { nullptr };
 	vector<class CUIGroup_Portal*>		m_vecPortal;
-
+	class CUI_PhaseChange*				m_pPhaseChangeIn = { nullptr };
+	class CUI_PhaseChange*				m_pPhaseChangeOut = { nullptr };
 
 
 private:	/*For. VisitLevel*/	//Add. PSW

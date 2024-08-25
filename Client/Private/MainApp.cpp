@@ -214,6 +214,7 @@
 #include "UI_AeonsLost.h"
 #include "UI_Cinematic.h"
 #include "UI_ArrowSign.h"
+#include "UI_PhaseChange.h"
 #pragma endregion UI
 
 #pragma region EFFECT
@@ -1686,6 +1687,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PortalPic_Opacity"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effects/Noise/T_ErodeClouds.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_PhaseChange */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PhaseChange"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PhaseChange.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2461,6 +2467,11 @@ HRESULT CMainApp::Ready_Prototype_UI()
 	/* For.Prototype_GameObject_UI_ArrowSign*/
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_ArrowSign"),
 		CUI_ArrowSign::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_PhaseChange*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_PhaseChange"),
+		CUI_PhaseChange::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion ETC
 

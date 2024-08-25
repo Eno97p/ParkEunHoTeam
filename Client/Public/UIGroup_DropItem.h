@@ -14,6 +14,7 @@ class CUIGroup_DropItem final : public CUIGroup
 public:
 	typedef struct UIGroup_DropItem_Desc : public UIGROUP_DESC
 	{
+		_bool					isRend = { true };
 		_bool					isItem;
 		_bool					isWeapon;
 		CItemData::ITEM_NAME	eItemName;

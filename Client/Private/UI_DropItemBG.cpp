@@ -38,7 +38,10 @@ HRESULT CUI_DropItemBG::Initialize(void* pArg)
 		}
 		else
 		{
-			
+			vector<CItemData*>::iterator skill = CInventory::GetInstance()->Get_Skills()->begin();
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_SkillSize() - 1; ++i)
+				++skill;
+			m_wstrItemName = (*skill)->Get_ItemNameText();
 		}
 	}
 

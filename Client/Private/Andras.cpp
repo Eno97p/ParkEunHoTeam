@@ -10,6 +10,7 @@
 #include "RushSword.h"
 #include "EffectManager.h"
 #include "Particle.h"
+#include "UI_Manager.h"
 
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
@@ -992,6 +993,9 @@ void CAndras::Phase_Two()
 	m_fCurShield = m_fMaxShield;
 
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
+
+	// FadeOut »ý¼º
+	CUI_Manager::GetInstance()->Create_PhaseChange(false);
 }
 
 CAndras* CAndras::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

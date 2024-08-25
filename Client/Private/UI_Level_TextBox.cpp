@@ -151,7 +151,7 @@ wstring CUI_Level_TextBox::Setting_Text()
 		return TEXT("LIMBO PLAINS");
 	case Client::LEVEL_GRASSLAND:
 		m_fFontX = 220.f;
-		return TEXT("WHILDERNESS OF THE KING");
+		return TEXT("WILDERNESS OF THE KING");
 	default:
 		return TEXT("");
 	}

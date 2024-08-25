@@ -49,8 +49,8 @@ public:
 	HRESULT	Initialize_DefaultItem();
 	HRESULT	Add_DropItem(CItem::ITEM_NAME eItemType);
 	HRESULT Add_Item(CItemData::ITEM_NAME eItemName);
-	HRESULT Add_Weapon(CItemData::ITEM_NAME eItemName);
-	HRESULT	Add_Skill(CItemData::ITEM_NAME eItemName);
+	HRESULT Add_Weapon(CItemData::ITEM_NAME eItemName, _bool isRend = true);
+	HRESULT	Add_Skill(CItemData::ITEM_NAME eItemName, _bool isRend = true);
 	HRESULT	Add_QuickAccess(CItemData* pItemData, _int iInvenIdx);
 	HRESULT	Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx);
 	HRESULT	Add_EquipSkill(CItemData* pItemData, _uint iEquipSlotIdx);

@@ -47,7 +47,7 @@ void CUI_LogoTitle::Tick(_float fTimeDelta)
 
 void CUI_LogoTitle::Late_Tick(_float fTimeDelta)
 {
-	CGameInstance::GetInstance()->Add_UI(this, THIRD);
+	CGameInstance::GetInstance()->Add_UI(this, FOURTH);
 }
 
 HRESULT CUI_LogoTitle::Render()

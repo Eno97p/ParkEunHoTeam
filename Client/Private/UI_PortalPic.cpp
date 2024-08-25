@@ -22,6 +22,7 @@ HRESULT CUI_PortalPic::Initialize(void* pArg)
 	UI_PORTALPIC_DESC* pDesc = static_cast<UI_PORTALPIC_DESC*>(pArg);
 
 	m_iPicNum = pDesc->iPicNum;
+	m_fScale = pDesc->fScale;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -59,7 +60,7 @@ void CUI_PortalPic::Tick(_float fTimeDelta)
 void CUI_PortalPic::Late_Tick(_float fTimeDelta)
 {
 
-	m_pTransformCom->Set_Scale(3.7f, 6.f, 4.5f);
+	m_pTransformCom->Set_Scale(m_fScale.x, m_fScale.y, 4.5f); // 3.7f, 6.f, 4.5f
 
 	CGameInstance::GetInstance()->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
 	CGameInstance::GetInstance()->Add_RenderObject(CRenderer::RENDER_BLOOM, this);

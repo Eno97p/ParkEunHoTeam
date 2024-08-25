@@ -43,7 +43,7 @@ void CBlackHole_Ring_Bill::Tick(_float fTimeDelta)
 {
 	if (Erase)
 		return;
-	m_AccTime += fTimeDelta;
+	m_AccTime += 0.016f;
 
 	if (m_AccTime <= m_OwnDesc->fStartdelay && !m_SetDead)
 	{

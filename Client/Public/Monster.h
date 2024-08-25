@@ -66,6 +66,7 @@ protected:
 	_float m_fDegreeBetweenPlayerAndMonster = 180.f;
 
 	_uint							m_iState = { 0 };
+	_uint m_iPastState = { 0 };
 
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };

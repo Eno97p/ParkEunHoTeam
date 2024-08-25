@@ -609,7 +609,7 @@ HRESULT CLevel_GamePlay::Load_LevelData(const _tchar* pFilePath)
 			}
 		}
 	
-
+		
 	
 	}
 

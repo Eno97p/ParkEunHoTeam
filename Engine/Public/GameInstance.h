@@ -56,8 +56,6 @@ public: /* For.Timer_Manager */
 
 public: /* For.Level_Manager */
 	HRESULT Open_Level(_uint iLevelIndex, class CLevel* pNewLevel);
-	HRESULT Set_CurrentLevel(_uint iLevelIndex, class CLevel* pNewLevel);
-	HRESULT Delete_CurrentLevel();
 	_uint Get_CurrentLevel();			//현재 레벨 받아오기
 	_uint Get_CurrentLevelIndex();		//현재 레벨 인덱스 받아오기
 	_uint Get_PrevLevelIndex();			//이전 레벨 인덱스 받아오기

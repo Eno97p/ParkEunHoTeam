@@ -43,33 +43,6 @@ HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 	return S_OK;
 }
 
-HRESULT CLevel_Manager::Set_CurrentLevel(_uint iLevelIndex, CLevel* pNewLevel)
-{
-
-	if (nullptr == pNewLevel)
-		return E_FAIL;
-
-	m_pCurrentLevel = pNewLevel;
-
-	m_iLevelIndex = iLevelIndex;
-
-
-
-
-	return S_OK;
-}
-
-HRESULT CLevel_Manager::Delete_CurrentLevel()
-{
-	/* 기존레벨의 자원을 삭제한다. */
-	if (nullptr != m_pCurrentLevel)
-		m_pGameInstance->Clear_Resources(m_iLevelIndex);
-
-	Safe_Release(m_pCurrentLevel);
-
-	return S_OK;
-}
-
 CLevel_Manager * CLevel_Manager::Create()
 {
 	CLevel_Manager*		pInstance = new CLevel_Manager();

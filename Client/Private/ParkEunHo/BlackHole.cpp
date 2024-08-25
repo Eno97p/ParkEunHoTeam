@@ -48,6 +48,7 @@ void CBlackHole::Tick(_float fTimeDelta)
 		if (fLifeTime > m_OwnDesc->HorizonDesc.fStartdelay)
 			m_pGameInstance->Erase(this);
 	}
+
 }
 
 void CBlackHole::Late_Tick(_float fTimeDelta)

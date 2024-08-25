@@ -1,6 +1,8 @@
 #include "FirePillar.h"
 #include "GameInstance.h"
 #include "EffectManager.h"
+#include "SideViewCamera.h"
+
 CFirePillar::CFirePillar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
@@ -77,6 +79,9 @@ HRESULT CFirePillar::Add_Components()
 
 HRESULT CFirePillar::Add_Child_Effects()
 {
+
+	dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(1.f, 0.2f);
+
 	_float4 vStartParticle;
 	XMStoreFloat4(&vStartParticle, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	EFFECTMGR->Generate_Particle(74, vStartParticle);

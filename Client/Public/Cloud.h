@@ -59,7 +59,7 @@ private:
 
 	_float3 m_vPivotPos = { 0.f, 0.f, 0.f };
 
-	_uint m_iShaderPath = 0;
+	_uint m_iShaderPath = 2;
 private:
 	// 구름 관련 변수들
 	float m_fCloudDensity = 2.007605f;

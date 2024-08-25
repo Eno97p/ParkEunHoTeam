@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Weapon.h"
 #include "EffectManager.h"
+#include "SideViewCamera.h"
 CJuggulus_HandOne::CJuggulus_HandOne(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CPartObject{ pDevice, pContext }
 {
@@ -232,6 +233,7 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(2, ParticlePs, nullptr);
 		EFFECTMGR->Generate_Particle(7, ParticlePs);
 		Add_Hp(-10);
+		dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
 		break;
 	default:
 		break;
@@ -319,6 +321,8 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_HandOne.ogg"), SOUND_MONSTER);
 					m_bIsActive = true;
+
+					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.5f, 0.2f);
 				}
 
 				if (m_fDamageTime == 3.f)
@@ -370,6 +374,8 @@ NodeStates CJuggulus_HandOne::Attack(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(21, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
 			EFFECTMGR->Generate_Distortion(9, vStartPos);
 			m_bIsActive = true;
+
+			dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.5f, 0.2f);
 		}
 
 		return RUNNING;

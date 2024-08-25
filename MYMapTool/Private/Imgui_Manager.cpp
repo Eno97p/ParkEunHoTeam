@@ -631,7 +631,8 @@ void CImgui_Manager::Setting_ObjListBox(_int iLayerIdx)
         const char* items_Trigger[] = { "Tutorial_BOSS_ENCOUNTER",  "Jugglas_Room2_Spawn",  "Jugglas_Room3_Spawn", "Viewchange 3 to Side", "Viewchange Side to 3",
             "Ascend Elevator", "Descend Elevator", "Scene Change",  "Viewchange 3 to Boss Side",
            "scene change ackbar ", "scene change jugglas", "scene change andras",
-            "CUTSCENE GRASSLAND", "CUTSCENE malkhel", "cutscene jugglus", "cutscene andras"
+            "CUTSCENE GRASSLAND", "CUTSCENE malkhel", "cutscene jugglus", "cutscene andras",
+            "Racing Start", "Racing Win"
 
         };
         ImGui::ListBox("###Obj", &item_current, items_Trigger, IM_ARRAYSIZE(items_Trigger)); // item_current 변수에 선택 값 저장
@@ -1318,6 +1319,11 @@ void CImgui_Manager::Camera_Editor()
         {
             pCutSceneCamera->Stop_CutScene();
         }
+        ImGui::SameLine();
+        if (ImGui::Button("Pop CutScene"))
+        {
+            pCutSceneCamera->Pop_CutScene(selectedCutScene);
+        }
 
         // 현재 재생 중인 컷신 정보
         ImGui::Text("Current CutScene: %d", pCutSceneCamera->Get_CutSceneIdx());
@@ -1397,7 +1403,7 @@ void CImgui_Manager::Camera_Editor()
             {
                 CCamera::CameraKeyFrame& keyFrame = m_vCameraKeyFrames[selectedKeyFrame];
 
-                ImGui::SliderFloat("Time", &keyFrame.fTime, 0.0f, 10.0f);
+                ImGui::SliderFloat("Time", &keyFrame.fTime, 0.0f, 20.0f);
                 float fovDegrees = XMConvertToDegrees(keyFrame.fFovy);
                 if (ImGui::SliderFloat("FOV", &fovDegrees, 1.0f, 179.0f))
                 {
@@ -1622,7 +1628,7 @@ void CImgui_Manager::Load_CameraKeyFrames()
     ReadFile(hFile, &iCutSceneCount, sizeof(_uint), &dwByte, nullptr);
 
     // 기존 컷씬 클리어
-    pCutSceneCamera->Clear_CutScenes();
+   // pCutSceneCamera->Clear_CutScenes();
 
     // 각 컷씬의 키프레임 로드
     for (_uint i = 0; i < iCutSceneCount; ++i)

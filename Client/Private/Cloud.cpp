@@ -299,7 +299,7 @@ HRESULT CCloud::Render_Reflection()
 			return E_FAIL;
 
 
-		m_pShaderCom->Begin(2);	//최적화 안된버전 2 , 최적화된 버전 3
+		m_pShaderCom->Begin(m_iShaderPath);	//최적화 안된버전 2 , 최적화된 버전 3
 		m_pModelCom->Render(i);
 	}
 

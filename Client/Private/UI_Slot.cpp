@@ -123,6 +123,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("SFX_UI_New_Button.wav"), SOUND_UI);
+
 		if (nullptr != m_pItemIcon || SLOT_QUICK == m_eSlotType)
 		{
 			Click_BtnEvent();

@@ -240,6 +240,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\NPC_Yaak.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\AndrasCylinder.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\AndrasHead.cpp"
 
 
@@ -256,6 +259,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\AndrasScrew.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\AndrasSphere.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\ParkEunHo\BezierCurve.cpp"
@@ -547,6 +553,9 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_MonsterHPBar.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_PhaseChange.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_PortalPic.cpp"

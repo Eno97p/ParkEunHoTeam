@@ -6,7 +6,7 @@
 #include "EffectManager.h"
 
 #include "Monster.h"
-
+#include "SideViewCamera.h"
 
 CSphere::CSphere(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -82,6 +82,8 @@ void CSphere::Tick(_float fTimeDelta)
 		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 		EFFECTMGR->Generate_Particle(14, vStartPos);
 		EFFECTMGR->Generate_Particle(15, vStartPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+		dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
+
 		m_pGameInstance->Erase(this);
 	}
 	EFFECTMGR->Generate_Particle(90, vStartPos,nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
@@ -128,6 +130,8 @@ void CSphere::Late_Tick(_float fTimeDelta)
 				m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
 				EFFECTMGR->Generate_Particle(14, fPos);
 				EFFECTMGR->Generate_Particle(15, fPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+				dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
+
 				m_pGameInstance->Erase(this);
 			}
 
@@ -151,6 +155,8 @@ void CSphere::Late_Tick(_float fTimeDelta)
 			// ¿©±â¼­ Æø¹ß ÀÌÆåÆ® Àç»ý
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_SphereExplode.ogg"), SOUND_EFFECT);
+			dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
+
 			m_pGameInstance->Erase(this);
 		}
 	}

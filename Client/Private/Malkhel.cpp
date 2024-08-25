@@ -83,6 +83,9 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 			playerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 10.f;
 			_float4 SpawnPos;
 			XMStoreFloat4(&SpawnPos, vStartPosition - playerLook);
+			
+			SpawnPos.y += 10.f;
+
 			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
 
 			//씬 전환 트리거 생성

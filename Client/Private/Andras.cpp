@@ -906,6 +906,8 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}
+			//m_iState = STATE_KICKATTACK;
+
 			m_iPastState = m_iState;
 		}
 

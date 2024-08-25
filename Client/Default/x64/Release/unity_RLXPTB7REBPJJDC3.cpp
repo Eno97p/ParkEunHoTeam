@@ -258,6 +258,9 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\AndrasScrew.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\BezierCurve.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\BlackHole.cpp"
 
 
@@ -330,6 +333,9 @@
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Hedgehog.cpp"
 
 
+#include "C:\Real3DProject\Client\Private\ParkEunHo\HelixCast.cpp"
+
+
 #include "C:\Real3DProject\Client\Private\ParkEunHo\HexaHit.cpp"
 
 
@@ -337,6 +343,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\LazerCast.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\MagicCast.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Meteor.cpp"
@@ -349,6 +358,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\NeedleSpawner.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\NewAspiration.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Rock_Ground.cpp"
@@ -373,6 +385,9 @@
 
 
 #include "C:\Real3DProject\Client\Private\ParkEunHo\Tornado_Root.cpp"
+
+
+#include "C:\Real3DProject\Client\Private\ParkEunHo\WellCylinder.cpp"
 
 
 #include "C:\Real3DProject\Client\Private\QTE.cpp"

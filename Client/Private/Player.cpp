@@ -1678,8 +1678,8 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 
 void CPlayer::Generate_HoverBoard()
 {
-
-	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) || m_fButtonCooltime == 0.f && !m_bRided)
+	// >>> 디버깅 용이라 현재는 아이템 사용 X 나중에 Key 관련 부분 지우고 Tick마다 호출 막아야 함 <<<
+	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) && m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

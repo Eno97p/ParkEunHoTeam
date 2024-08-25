@@ -24,6 +24,7 @@ public:
 	virtual HRESULT Render() override;
 
 	_bool		Check_ResultScore();
+	_bool		Check_End();
 
 private:
 	_bool						m_isEnd = { false };
@@ -33,8 +34,6 @@ private:
 	HRESULT Create_QteBtn();
 
 	void	Start_BtnEvent();
-	_bool	Check_End();
-
 
 public:
 	static CQTE*			Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

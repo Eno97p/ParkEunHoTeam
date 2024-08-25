@@ -30,7 +30,8 @@ public:
 	virtual HRESULT Render_Bloom() override;
 
 
-
+public:
+	void Play_DeadAnimation();
 
 
 private:
@@ -45,6 +46,12 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 
 	_matrix m_ColliderMat = XMMatrixIdentity();
+
+	_float m_fDisolveValue = 1.f;
+	CTexture* m_pDisolveTextureCom = nullptr;
+	_bool m_bDissolve = false;
+	_uint m_iShaderPath = 0;
+
 private:
 	HRESULT Add_Components(MAP_ELEMENT_DESC* desc);
 	HRESULT Bind_ShaderResources();

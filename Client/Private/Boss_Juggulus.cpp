@@ -11,6 +11,9 @@
 
 #include "UIGroup_BossHP.h"
 #include "TransitionCamera.h"
+#include "EventTrigger.h"
+#include "BossDeco.h"
+
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -503,6 +506,43 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 		if (m_isAnimFinished)
 		{
 			Reward_Soul(true);
+
+			//엘베 하강 트리거 생성
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+			_matrix vMat = { 2.f, 0.f, 0.f, 0.f,
+			0.f, 3.f, 0.f, 0.f,
+			0.f, 0.f, 2.f, 0.f,
+			-310.531f, 69.022f, -1.225f, 1.f };
+			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+			pDesc.TriggerType = CEventTrigger::TRIG_DESCEND_ELEVATOR;
+
+			(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc));
+
+			//카메라 전환
+			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+			pTCDesc.fFovy = XMConvertToRadians(60.f);
+			pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+			pTCDesc.fNear = 0.1f;
+			pTCDesc.fFar = 3000.f;
+
+			pTCDesc.fSpeedPerSec = 40.f;
+			pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+			pTCDesc.iStartCam = CAM_SIDEVIEW;
+			pTCDesc.iEndCam = CAM_THIRDPERSON;
+			pTCDesc.fTransitionTime = 0.7f;
+
+			if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+			{
+				MSG_BOX("FAILED");
+			}
+
+			//보스데코 떨구기
+			list<CGameObject*> bossDecos = m_pGameInstance->Get_GameObjects_Ref(LEVEL_JUGGLAS, TEXT("Layer_BossDeco"));
+			for (auto& bossDeco : bossDecos)
+			{
+				dynamic_cast<CBossDeco*>(bossDeco)->Play_DeadAnimation();
+			}
 
 			m_pGameInstance->Erase(this);
 		}

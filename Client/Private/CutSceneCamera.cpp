@@ -81,7 +81,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         pTCDesc.fFovy = XMConvertToRadians(60.f);
         pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
         pTCDesc.fNear = 0.1f;
-        pTCDesc.fFar = 10000.f;
+        pTCDesc.fFar = m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Get_Far();
 
         pTCDesc.fSpeedPerSec = 40.f;
         pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -107,6 +107,8 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         {
             dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front())->Phase_Two();
         }
+            break;
+        case SCENE_BLOODMOON:
             break;
         default:
         {

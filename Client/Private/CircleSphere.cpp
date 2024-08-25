@@ -47,8 +47,9 @@ HRESULT CCircleSphere::Initialize(void* pArg)
 
 void CCircleSphere::Priority_Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
+		m_pGameInstance->Erase(this);
 		return;
 	}
 
@@ -57,7 +58,7 @@ void CCircleSphere::Priority_Tick(_float fTimeDelta)
 
 void CCircleSphere::Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
 		return;
 	}
@@ -97,7 +98,7 @@ void CCircleSphere::Tick(_float fTimeDelta)
 
 void CCircleSphere::Late_Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
 		return;
 	}

@@ -130,6 +130,10 @@ HRESULT CLevel_Ackbar::Initialize()
 	// UI Manaver로 UI Level 생성하기
 	CUI_Manager::GetInstance()->Create_LevelUI();
 
+	m_pGameInstance->StopAll();
+	m_pGameInstance->Disable_Echo();
+	m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
+
 	return S_OK;
 }
 

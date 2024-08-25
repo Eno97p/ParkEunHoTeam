@@ -9,7 +9,7 @@ END
 BEGIN(Client)
 class CElectricCylinder final : public CWeapon
 {
-#define HITCOOLTIME 0.1f;
+#define HITCOOLTIME 0.2f;
 
 public:
 	typedef struct ANDRAS_ELECTRIC_DESC

@@ -51,7 +51,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 500.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -619,7 +619,7 @@ NodeStates CMalkhel::Attack6(_float fTimeDelta)
 		{
 			m_fSpawnCoolTime = METEORCOOLTIME;
 			_vector vPlayerPos = m_pPlayerTransform->Get_State(CTransform::STATE_POSITION);
-			_vector vRandomDir = XMVectorSet(RandomFloat(-3.f, 3.f), 0.f, RandomFloat(-3.f, 3.f), 0.f);
+			_vector vRandomDir = XMVectorSet(RandomFloat(-10.f, 10.f), 0.f, RandomFloat(-10.f, 10.f), 0.f);
 			_float4 vPos;
 			XMStoreFloat4(&vPos, vPlayerPos - vRandomDir);
 			EFFECTMGR->Generate_Meteor(vPos);
@@ -685,9 +685,6 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				break;
 			}
 			case STATE_ATTACK6:
-				m_iState = STATE_ATTACK7;
-				break;
-			case STATE_ATTACK7:
 				m_iState = STATE_TELEPORT;
 				break;
 			default:
@@ -704,9 +701,15 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_ATTACK1;
 				break;
 			case STATE_ATTACK1:
+				m_iState = STATE_DASHBACK;
+				break;
+			case STATE_DASHBACK:
 				m_iState = STATE_ATTACK2;
 				break;
 			case STATE_ATTACK2:
+				m_iState = STATE_DASHLEFT;
+				break;
+			case STATE_DASHLEFT:
 				m_iState = STATE_ATTACK3;
 				break;
 			case STATE_ATTACK3:
@@ -719,24 +722,15 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 			{
 
 				m_fSpawnCoolTime = 0.f;
-				m_iState = STATE_ATTACK6;
+				m_iState = STATE_DASHRIGHT;
 				CThirdPersonCamera* pThirdPersonCamera = dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]);
 				pThirdPersonCamera->Zoom(60.f, 0.13f, 0.602f);
 				break;
 			}
-			case STATE_ATTACK6:
-				m_iState = STATE_ATTACK7;
-				break;
-			case STATE_ATTACK7:
-				m_iState = STATE_DASHBACK;
-				break;
-			case STATE_DASHBACK:
-				m_iState = STATE_DASHLEFT;
-				break;
-			case STATE_DASHLEFT:
-				m_iState = STATE_DASHRIGHT;
-				break;
 			case STATE_DASHRIGHT:
+				m_iState = STATE_ATTACK6;
+				break;
+			case STATE_ATTACK6:
 				m_iState = STATE_TELEPORT;
 				break;
 			default:

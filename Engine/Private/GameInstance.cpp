@@ -870,9 +870,9 @@ void CGameInstance::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _fl
 	m_pSound_Manager->Play_Effect_Sound(pSoundKey, eID, fPosition, fPitch, fVolume, bPlayAgainstPlaying);
 }
 
-void CGameInstance::PlayBGM(const TCHAR* pSoundKey)
+void CGameInstance::PlayBGM(const TCHAR* pSoundKey, _float fVolume)
 {
-	m_pSound_Manager->PlayBGM(pSoundKey);
+	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
 }
 
 void CGameInstance::StopAll()

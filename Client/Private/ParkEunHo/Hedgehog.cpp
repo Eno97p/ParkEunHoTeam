@@ -92,7 +92,7 @@ void CHedgehog::Tick(_float fTimeDelta)
 		RingPos.y += 1.f;
 		EFFECTMGR->Generate_Particle(77, RingPos, nullptr, XMVectorSet(1.f,0.f,0.f,0.f), 90.f);
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Yantari_Needle.ogg"), SOUND_EFFECT);
+		m_pGameInstance->Play_Effect_Sound(TEXT("Yantari_Needle.ogg"), SOUND_EFFECT, 0.f, 1.f, 0.1f);
 	}
 
 	if (m_fLifeTimeRatio > m_OwnDesc->fThreadRatio.x && m_fLifeTimeRatio < m_OwnDesc->fThreadRatio.y)

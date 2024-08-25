@@ -294,10 +294,7 @@ void CBody_Malkhel::Tick(_float fTimeDelta)
 void CBody_Malkhel::Late_Tick(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
-	if (m_pGameInstance->Get_MoveShadow())
-	{
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_SHADOWOBJ, this);
-	}
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_REFLECTION, this);
 
 #ifdef _DEBUG
 	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -338,34 +335,62 @@ HRESULT CBody_Malkhel::Render()
 	return S_OK;
 }
 
-HRESULT CBody_Malkhel::Render_LightDepth()
+HRESULT CBody_Malkhel::Render_Reflection()
 {
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	_float4x4		ViewMatrix, ProjMatrix;
+	_float4x4 ViewMatrix;
+	const _float4x4* matCam = m_pGameInstance->Get_Transform_float4x4_Inverse(CPipeLine::D3DTS_VIEW);
 
-	_float4 fPos = m_pGameInstance->Get_PlayerPos();
+	// 원래 뷰 행렬 로드
+	XMMATRIX mOriginalView = XMLoadFloat4x4(matCam);
 
-	/* 광원 기준의 뷰 변환행렬. */
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(fPos.x, fPos.y + 10.f, fPos.z - 10.f, 1.f), XMVectorSet(fPos.x, fPos.y, fPos.z, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 3000.f));
+	// 카메라 위치 추출
+	XMVECTOR vCamPos = XMVector3Transform(XMVectorZero(), mOriginalView);
+
+	// 바닥 평면의 높이 (예: Y = 0)
+	float floorHeight = 300.f;
+
+	// 반사된 카메라 위치 계산 (Y 좌표만 반전)
+	XMVECTOR vReflectedCamPos = vCamPos;
+	vReflectedCamPos = XMVectorSetY(vReflectedCamPos, 2 * floorHeight - XMVectorGetY(vCamPos));
+
+	// 카메라 방향 벡터 추출
+	XMVECTOR vCamLook = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 0, 1, 0), mOriginalView) - vCamPos);
+	XMVECTOR vCamUp = XMVector3Normalize(XMVector3Transform(XMVectorSet(0, 1, 0, 0), mOriginalView) - vCamPos);
+
+	// 반사된 카메라 방향 벡터 계산
+	XMVECTOR vReflectedCamLook = XMVectorSetY(vCamLook, -XMVectorGetY(vCamLook));
+	XMVECTOR vReflectedCamUp = XMVectorSetY(vCamUp, -XMVectorGetY(vCamUp));
+
+	// 반사된 뷰 행렬 생성
+	XMMATRIX mReflectedView = XMMatrixLookToLH(vReflectedCamPos, vReflectedCamLook, vReflectedCamUp);
+
+	// 변환된 행렬 저장
+	XMStoreFloat4x4(&ViewMatrix, mReflectedView);
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
+		m_pShaderCom->Unbind_SRVs();
+
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(1);
+		if (i <= 1)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularTexture", i, aiTextureType_SPECULAR)))
+				return E_FAIL;
+		}
+
+		m_pShaderCom->Begin(10);
 
 		m_pModelCom->Render(i);
 	}

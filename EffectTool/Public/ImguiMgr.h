@@ -26,6 +26,8 @@
 #include "BlackHole.h"
 #include "WellCylinder.h"
 #include "MagicCast.h"
+#include "CutSceneAndras.h"
+
 BEGIN(Engine)
 class CGameInstance;
 class CTexture;
@@ -220,6 +222,10 @@ private:
 	void Magic_Cast_ListBox(CMagicCast::MAGIC_CAST* Magic);
 	HRESULT Save_MagicCast();
 	HRESULT Load_MagicCast();
+
+private:
+	void Andras_CutScene_Tool(_bool* Open);
+
 private:
 	void CenteredTextColored(const ImVec4& color, const char* text);
 
@@ -245,6 +251,8 @@ private:
 
 private:
 	void Erase_Particle(_int index);
+
+
 
 
 
@@ -281,7 +289,7 @@ private:
 	vector<string> ModelName;
 	_int CurModel = 0;
 
-	_bool bShow[25];
+	_bool bShow[30];
 public:
 	static CImguiMgr* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;

@@ -2,7 +2,7 @@
 #include "GameInstance.h"
 #include "Inventory.h"
 #include "Item.h"
-
+#include "EffectManager.h"
 #include "UI_Activate.h"
 
 CTreasureChest::CTreasureChest(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -118,6 +118,9 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 			{
 				if (m_pGameInstance->Key_Down(DIK_F))
 				{
+					_float4 vParticlePos;
+					XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+					EFFECTMGR->Generate_Particle(124, vParticlePos);
 					m_bChestOpened = true;
 
 					Drop_Item();

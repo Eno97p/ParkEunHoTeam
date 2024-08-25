@@ -79,6 +79,8 @@ void CHoverboard::Priority_Tick(_float fTimeDelta)
 		break;
 	case TYPE_DECREASE:
 		m_fDisolveValue -= fTimeDelta * 5.f;
+		m_pGameInstance->StopSound(SOUND_HOVERBOARD);
+		m_pGameInstance->StopSound(SOUND_HOVERBOARD_DASH);
 		if (m_fDisolveValue < 0.f)
 		{
 			//카메라 fov 복구

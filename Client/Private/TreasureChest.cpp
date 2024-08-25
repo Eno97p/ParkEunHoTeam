@@ -114,7 +114,7 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 			vPlayerPos = dynamic_cast<CTransform*>(pComponent)->Get_State(CTransform::STATE_POSITION);
 			vSavePointPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-			if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 5.0f))
+			if (fabs(XMVectorGetX(XMVector4Length(vPlayerPos - vSavePointPos)) < 2.0f)) // 5.f
 			{
 				if (m_pGameInstance->Key_Down(DIK_F))
 				{

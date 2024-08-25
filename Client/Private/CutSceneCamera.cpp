@@ -108,6 +108,16 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front())->Phase_Two();
         }
             break;
+        case SCENE_BLOODMOON:
+        {
+            CAndras* andras = dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front());
+
+            if (andras)
+            {
+                andras->Activate_Andras();
+            }
+        }
+            break;
         default:
         {
         }

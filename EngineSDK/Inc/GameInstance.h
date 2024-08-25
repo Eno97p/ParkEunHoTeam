@@ -111,7 +111,7 @@ public:
 	ID3D11Texture2D* Get_PrevDepthTex();
 
 	//이민영 추가 240727 2106PM
-	void Set_FogOption(CRenderer::FOG_DESC desc);
+	void Set_FogOption(const CRenderer::FOG_DESC& desc);
 	_vector Get_FogColor();
 
 	//이민영 추가 240811 2114PM

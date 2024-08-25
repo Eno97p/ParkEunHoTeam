@@ -104,10 +104,6 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 
 void CAndras::Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_N))
-	{
-		m_bTrigger = true;
-	}
 
 	if (m_bTrigger)
 	{
@@ -818,6 +814,8 @@ NodeStates CAndras::ShootingStarAttack(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(60.f, 0.5f, 0.1f);
+
 			m_fSpawnCoolTime = SPAWNCOOLTIME;
 			m_iState = STATE_IDLE;
 			m_fSpawnDelay = 2.f;
@@ -898,6 +896,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			case STATE_BABYLONATTACK:
 				//ShootingStarAttack
 				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
+				m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(90.f, 0.5f, 1000.f);
 				m_iState = STATE_SHOOTINGSTARATTACK;
 				break;\
 			default:

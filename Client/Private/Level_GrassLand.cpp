@@ -46,6 +46,9 @@ CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext *
 
 HRESULT CLevel_GrassLand::Initialize()
 {
+	if (FAILED(Ready_Fog()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
 
@@ -56,8 +59,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	//if (FAILED(Ready_Layer_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
-	if (FAILED(Ready_Fog()))
-		return E_FAIL;
+
 
 	if (FAILED(Ready_Layer_Trigger()))
 		return E_FAIL;
@@ -231,7 +233,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 	 pTPCDesc.fFovy = XMConvertToRadians(60.f);
 	 pTPCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	 pTPCDesc.fNear = 0.1f;
+	 pTPCDesc.fNear = 0.3f;
 	 pTPCDesc.fFar = 10000.f;
 
 	 pTPCDesc.fSpeedPerSec = 40.f;
@@ -348,15 +350,15 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 		CRenderer::FOG_DESC fogDesc{};
 		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
 		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
-		fogDesc.fFogRange = 7788.5;
+		fogDesc.fFogRange = 2300.f;
 		fogDesc.fFogHeightFalloff = 0.0f;
-		fogDesc.fFogGlobalDensity = 1.0f;
+		fogDesc.fFogGlobalDensity = 0.9f;
 		fogDesc.fFogTimeOffset = 1.154f;
 		fogDesc.fFogTimeOffset2 = 3.462f;
 		fogDesc.fNoiseIntensity = 1.731f;
 		fogDesc.fNoiseIntensity2 = 1.923f;
-		fogDesc.fNoiseSize = 0.000481f;
-		fogDesc.fNoiseSize2 = 0.000481f;
+		fogDesc.fNoiseSize = 0.001f;
+		fogDesc.fNoiseSize2 = 0.001f;
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
 	}

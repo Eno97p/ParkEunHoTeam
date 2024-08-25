@@ -66,6 +66,8 @@ private:
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
 
+public:
+	void Activate_Andras() { m_bTrigger = true; }
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	vector<class CGameObject*>					m_Particles;

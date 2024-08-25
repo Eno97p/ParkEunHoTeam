@@ -106,10 +106,6 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 
 void CMalkhel::Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_N))
-	{
-		m_bTrigger = true;
-	}
 
 	if (m_bTrigger)
 	{

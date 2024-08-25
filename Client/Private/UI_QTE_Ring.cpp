@@ -24,9 +24,9 @@ HRESULT CUI_QTE_Ring::Initialize(void* pArg)
 	m_eRingType = pDesc->eRingType;
 
 	if (pDesc->isDuo)
-		m_fSpeed = 10.f;
+		m_fSpeed = 18.f; // 10
 	else
-		m_fSpeed = 13.f; // 더 빠르게
+		m_fSpeed = 22.f; // 13
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -47,10 +47,12 @@ void CUI_QTE_Ring::Priority_Tick(_float fTimeDelta)
 
 void CUI_QTE_Ring::Tick(_float fTimeDelta)
 {
+	//fTimeDelta *= fSlowValue;
+
 	if (m_isAnimOn)
 	{
 		m_fRenderTimer += fTimeDelta;
-
+		 
 		Render_Animation(fTimeDelta, 1.f);
 
 		if (m_isRenderAnimFinished)
@@ -77,14 +79,13 @@ void CUI_QTE_Ring::Tick(_float fTimeDelta)
 		{
 			m_eRingState = RS_PERFECT;
 		}
-		else
+		else // fEND보다도 작아졌을 때 BAD로 죽는 처리?
 		{
 			m_eRingState = RS_BAD;
 
 			m_isAnimOn = true;
-			//m_isEnd = true; // end는 나중에 true로 활성화 하는 것으로. 먼저 사라지는 로직이 나와야 함
+			m_isEnd = true;
 		}
-
 	}
 }
 

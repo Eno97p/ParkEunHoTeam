@@ -54,6 +54,7 @@ void CUI_QTE_Btn::Tick(_float fTimeDelta)
 	{
 		if (nullptr != m_pRing)
 		{
+			// Player가 엔터를 눌렀거나 Ring이 
 			if (m_pGameInstance->Key_Down(DIK_RETURN) || m_pRing->Get_End())
 			{
 				Setting_ScoreType();

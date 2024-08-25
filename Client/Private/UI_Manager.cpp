@@ -368,7 +368,7 @@ HRESULT CUI_Manager::Create_FadeInOut_Dissolve(_bool isFadeIn)
 		if (nullptr == m_pFadeIn)
 			return E_FAIL;
 	}
-	else if(!isFadeIn/* && nullptr == m_pFadeIn*/) // 이렇게 해도 여러 게 생성되나바 ㅇㅇ
+	else if(!isFadeIn/* && nullptr == m_pFadeIn*/)
 	{
 		if (nullptr != m_pFadeOut)
 			return S_OK;
@@ -509,6 +509,20 @@ _bool CUI_Manager::Delete_QTE()
 	return isSuccess;
 }
 
+_bool CUI_Manager::Check_End_QTE()
+{
+	return m_pQTE->Check_End();
+}
+
+_bool CUI_Manager::Get_isQTEAlive()
+{
+	// QTE 존재 여부 반환
+	if (nullptr == m_pQTE)
+		return false;
+	else
+		return true;
+}
+
 void CUI_Manager::Create_LevelUI()
 {
 	if (m_mapUIGroup.find("Level") != m_mapUIGroup.end()) // 값이 있으면
@@ -525,11 +539,14 @@ void CUI_Manager::Create_LevelUI()
 	m_mapUIGroup.insert({"Level", dynamic_cast<CUIGroup_Level*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIGroup_Level"), &pDesc))});
 }
 
-void CUI_Manager::Setting_Cinematic()
+void CUI_Manager::Setting_Cinematic(_bool isBigAnim)
 {
-	m_pCinematic->Set_isBigAim(!m_pCinematic->Get_isBigAnim());
+	// true : 시작 / false : 끝 >> 반대??? 헷갈티비
 
-	if (!m_pCinematic->Get_isBigAnim()) // 시네마틱 시작
+	m_pCinematic->Set_isBigAim(isBigAnim);
+
+	// 아래 이거 때문에 QTE시 깜박거리는 듯함!
+	if (!isBigAnim) // 시네마틱 시작
 		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(false);
 	else
 		m_mapUIGroup.find("HUD_WeaponSlot")->second->Set_Rend(true);
@@ -741,7 +758,7 @@ void CUI_Manager::Key_Input()
 	// Test 키보드로 테스트
 	if (m_pGameInstance->Key_Down(DIK_J))
 	{
-		Setting_Cinematic();
+		Setting_Cinematic(true); // 없애기 (FadeIn 하기) > true
 	}
 }
 

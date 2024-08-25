@@ -85,6 +85,9 @@ void CTreasureChest::Tick(_float fTimeDelta)
 	{
 		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(0, false));
 		m_pModelCom->Play_Animation(fTimeDelta, false);
+
+		//if(m_pModelCom->Get_AnimFinished())
+		//	Drop_Item();
 	}
 	else
 		m_pActivateUI->Tick(fTimeDelta);

@@ -697,30 +697,36 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	_int iRand = RandomInt(0, 4);
-	if (iRand != 0)
+	switch (m_iPastState)
 	{
-		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
-	}
-	switch (iRand)
-	{
-	case 0:
+	case STATE_TORNADO_ATTACK:
 		m_iState = STATE_HAMMER_ATTACK;
 		break;
-	case 1:
+	case STATE_HAMMER_ATTACK:
 		m_iState = STATE_SPHERE_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 2:
+	case STATE_SPHERE_ATTACK:
 		m_iState = STATE_FLAME_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 3:
+	case STATE_FLAME_ATTACK:
 		m_iState = STATE_THUNDER_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 4:
+	case STATE_THUNDER_ATTACK:
 		m_iState = STATE_TORNADO_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
+		break;
+	default:
+		m_iState = STATE_HAMMER_ATTACK;
 		break;
 	}
+	m_iPastState = m_iState;
 	return SUCCESS;
 }
 

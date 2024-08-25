@@ -398,6 +398,7 @@ void CCutSceneCamera::Set_CutSceneIdx(_uint idx)
     m_iCurrentKeyFrame = 0;
     m_fKeyFrameTime = 0.0f;
     m_bAnimationFinished = false;
+    m_bPaused  = false;
 
     vector<CameraKeyFrame>& currentCutScene = m_AllCutScenes[idx];
 

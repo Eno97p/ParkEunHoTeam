@@ -970,6 +970,7 @@ void CAndras::Add_Hp(_int iValue)
 	}
 	else if (m_fCurHp <= 0.f && !m_bPhase2)
 	{
+		m_bPhase2 = true;
 		//m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
@@ -977,10 +978,11 @@ void CAndras::Add_Hp(_int iValue)
 	}
 }
 
+
 void CAndras::Phase_Two()
 {
 	m_fCurHp = m_fMaxHp;
-	m_bPhase2 = true;
+
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 	_float4 vstartPos;
 	XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));

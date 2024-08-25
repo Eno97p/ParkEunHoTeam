@@ -45,6 +45,7 @@ public:
 public:
 	HRESULT Add_Components();
 	HRESULT Add_PartObjects();
+	
 	_bool Intersect(PART ePartObjID, const wstring& strComponetTag, CCollider* pTargetCollider);
 	void Phase_Two();
 
@@ -68,6 +69,7 @@ private:
 
 public:
 	void Activate_Andras() { m_bTrigger = true; }
+	void Init_Trail();
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	vector<class CGameObject*>					m_Particles;

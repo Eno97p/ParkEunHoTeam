@@ -92,7 +92,7 @@ void CutSceneAndras::Tick(_float fTimeDelta)
 
 void CutSceneAndras::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONLIGHT, this);
 	if(m_EyeChanged)
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 

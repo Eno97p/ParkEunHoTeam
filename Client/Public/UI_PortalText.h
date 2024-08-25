@@ -29,6 +29,7 @@ public:
 private:
 	_bool			m_isRend = { false };
 	_float			m_fFontX = { 0.f };
+	_float			m_fDistance = { 0.f };
 	_vector			m_vTargetPos;
 	wstring			m_fText;
 

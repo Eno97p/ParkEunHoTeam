@@ -33,6 +33,7 @@ public:
 	void				Set_KeyActivate(_bool isKeyActivate) { m_isKeyActivate = isKeyActivate; }
 
 	void				Set_isShopOn(_bool isOn) { m_isShopOn = isOn; }
+	_bool				Get_isUIOpen();
 
 public:
 	HRESULT				Initialize();
@@ -86,6 +87,9 @@ public:
 	void				Create_PhaseChange(_bool isFadeIn);
 	void				Delete_PhaseChange(_bool isFadeIn);
 	_bool				Get_isPhaseChange_AnimEnd(_bool isFadeIn);
+
+	// BossText
+	void				Create_BossText(_bool isCreateText);
 
 
 	// For.LEVEL //PSW

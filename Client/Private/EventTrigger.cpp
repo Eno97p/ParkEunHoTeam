@@ -17,6 +17,7 @@
 #include "Boss_Juggulus.h"
 #include "Andras.h"
 #include "Malkhel.h"
+
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -529,6 +530,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					//ºí·¢È¦ »ý¼º
 					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
 					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
+
+					CUI_Manager::GetInstance()->Create_BossText(true);
 
 				}
 					break;

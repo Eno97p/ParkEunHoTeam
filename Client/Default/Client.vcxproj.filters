@@ -862,6 +862,15 @@
     <Filter Include="02.GameObjects\07. UI\Monster\PhaseChange">
       <UniqueIdentifier>{e212648a-4bd4-4978-9b0c-5d8f5333c44c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossText">
+      <UniqueIdentifier>{4e8bb720-b753-4ca3-9c71-78ff36bcad24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossText\BG">
+      <UniqueIdentifier>{641a311d-72c4-42c0-b45a-cf1b6305fede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07. UI\Monster\BossText\TextBox">
+      <UniqueIdentifier>{a2370f4d-dfa6-41de-af24-0a5ab26cf954}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1852,12 +1861,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\UI_PhaseChange.h">
       <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasCylinder.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\AndrasSphere.h">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIGroup_BossText.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossText</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BossTextBG.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossText\BG</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_BossTextBox.h">
+      <Filter>02.GameObjects\07. UI\Monster\BossText\TextBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2844,12 +2862,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\UI_PhaseChange.cpp">
       <Filter>02.GameObjects\07. UI\Monster\PhaseChange</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasCylinder.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\AndrasSphere.cpp">
       <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIGroup_BossText.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossText</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossTextBG.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossText\BG</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_BossTextBox.cpp">
+      <Filter>02.GameObjects\07. UI\Monster\BossText\TextBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

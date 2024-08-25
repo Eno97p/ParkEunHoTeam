@@ -196,6 +196,12 @@
 #include "UIGroup_Portal.h"
 #pragma endregion Portal
 
+#pragma region BossText
+#include "UI_BossTextBG.h"
+#include "UI_BossTextBox.h"
+#include "UIGroup_BossText.h"
+#pragma endregion BossText
+
 #include "UI_MenuPageBG.h"
 #include "UI_MenuPageTop.h"
 #include "UI_MenuPage_BGAlpha.h"
@@ -1692,6 +1698,11 @@ HRESULT CMainApp::Ready_Texture_UI()
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_PhaseChange"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/PhaseChange.png"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_UI_BossTextBG */
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_UI_BossTextBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/BossTextBG.png"), 1))))
+		return E_FAIL;
 #pragma endregion ETC
 
 #pragma endregion UI_Texture
@@ -2402,6 +2413,23 @@ HRESULT CMainApp::Ready_Prototype_UI()
 		CUIGroup_Portal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion Portal
+
+#pragma region BossText
+	/* For.Prototype_GameObject_UI_BossTextBG*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossTextBG"),
+		CUI_BossTextBG::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UI_BossTextBox*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UI_BossTextBox"),
+		CUI_BossTextBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIGroup_BossText*/
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_UIGroup_BossText"),
+		CUIGroup_BossText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion BossText
 
 #pragma region ETC
 	/* For.Prototype_GameObject_UIGroup_Inventory*/

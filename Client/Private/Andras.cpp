@@ -398,6 +398,9 @@ NodeStates CAndras::Dead(_float fTimeDelta)
 				m_fDeadDelay -= 0.001f;
 
 				Reward_Soul(true);
+
+				// UI BossText »ý¼º
+				CUI_Manager::GetInstance()->Create_BossText(false);
 			}
 		}
 		return RUNNING;

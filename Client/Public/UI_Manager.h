@@ -68,12 +68,14 @@ public:
 	// QTE
 	void				Create_QTE();
 	_bool				Delete_QTE();
+	_bool				Check_End_QTE();
+	_bool				Get_isQTEAlive();
 
 	// Level
 	void				Create_LevelUI();
 
 	// Cinematic
-	void				Setting_Cinematic();
+	void				Setting_Cinematic(_bool isBigAnim);
 
 
 	// Portal

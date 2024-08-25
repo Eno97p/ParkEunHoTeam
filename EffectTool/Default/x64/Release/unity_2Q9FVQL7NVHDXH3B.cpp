@@ -23,6 +23,9 @@
 #include "C:\NewRepo\EffectTool\Private\Andras.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\AndrasCylinder.cpp"
+
+
 #include "C:\NewRepo\EffectTool\private\AndrasHead.cpp"
 
 
@@ -57,6 +60,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\BackGround.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\BezierCurve.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\BlackHole.cpp"
@@ -128,6 +134,9 @@
 #include "C:\NewRepo\EffectTool\private\Hedgehog.cpp"
 
 
+#include "C:\NewRepo\EffectTool\Private\HelixCast.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\HexaHit.cpp"
 
 
@@ -161,6 +170,9 @@
 #include "C:\NewRepo\EffectTool\Private\Loader.cpp"
 
 
+#include "C:\NewRepo\EffectTool\private\MagicCast.cpp"
+
+
 #include "C:\NewRepo\EffectTool\Private\Main.cpp"
 
 
@@ -180,6 +192,9 @@
 
 
 #include "C:\NewRepo\EffectTool\Private\NeedleSpawner.cpp"
+
+
+#include "C:\NewRepo\EffectTool\Private\NewAspiration.cpp"
 
 
 #include "C:\NewRepo\EffectTool\private\Particle.cpp"

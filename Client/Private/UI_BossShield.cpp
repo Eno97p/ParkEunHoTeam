@@ -26,9 +26,15 @@ HRESULT CUI_BossShield::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 	
-	m_fX = (g_iWinSizeX >> 1) + 207.f; // 46.f
+	// ¹ÝÂÉ°¡¸®
+	//m_fX = (g_iWinSizeX >> 1) + 207.f; // 46.f
+	//m_fY = g_iWinSizeY - 92.f;
+	//m_fSizeX = 632.65f; // 2048    1265.3f
+	//m_fSizeY = 16.f; // 128
+
+	m_fX = (g_iWinSizeX >> 1) + 46.f; // 46.f
 	m_fY = g_iWinSizeY - 92.f;
-	m_fSizeX = 632.65f; // 2048    1265.3f
+	m_fSizeX = 1265.3f; // 2048    1265.3f
 	m_fSizeY = 16.f; // 128
 
 	Setting_Position();

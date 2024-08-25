@@ -72,7 +72,6 @@ void CEventTrigger::Priority_Tick(_float fTimeDelta)
 
 void CEventTrigger::Tick(_float fTimeDelta)
 {
-
 	
 
 //	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -170,8 +169,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					}
 				}
 
-
-
+				list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+				pPlayer->OnWater(false);
 			}
 
 			else
@@ -404,6 +404,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_CUTSCENE_MALKHEL:
 				{
+					//Ç® »èÁ¦
+					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Grass"));
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_BLOODMOON);
 
 					//ÄÆ¾À Æ®·»Áö¼Ç
@@ -428,6 +430,9 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
 
+					list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+					CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+					pPlayer->OnWater(true);
 				}
 					break;
 				case TRIG_CUTSCENE_JUGGULUS:

@@ -20,9 +20,27 @@ HRESULT CUI_DropItemBG::Initialize_Prototype()
 
 HRESULT CUI_DropItemBG::Initialize(void* pArg)
 {
+	// 여길 들어오기 전에 터지네용??
 	UI_DROPITEM_DESC* pDesc = static_cast<UI_DROPITEM_DESC*>(pArg);
 
-	m_wstrItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
+	if (pDesc->isItem)
+	{
+		m_wstrItemName = CInventory::GetInstance()->Get_ItemData(CInventory::GetInstance()->Get_vecItemSize() - 1)->Get_ItemNameText();
+	}
+	else
+	{
+		if (pDesc->isWeapon)
+		{
+			vector<CItemData*>::iterator weapon = CInventory::GetInstance()->Get_Weapons()->begin();
+			for (size_t i = 0; i < CInventory::GetInstance()->Get_WeaponSize()-1; ++i)
+				++weapon;
+			m_wstrItemName = (*weapon)->Get_ItemNameText();
+		}
+		else
+		{
+			
+		}
+	}
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

@@ -36,6 +36,7 @@ private:
 	_uint m_iPastAnimIndex = 0;
 	_float m_fDistortionValue = 0.f;
 	class CWeapon* m_pWeapon = { nullptr };
+	_bool m_bAttacking = false;
 
 public:
 	HRESULT Add_Components();

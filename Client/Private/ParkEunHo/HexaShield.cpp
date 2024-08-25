@@ -47,8 +47,6 @@ void CHexaShield::Priority_Tick(_float fTimeDelta)
 
 void CHexaShield::Tick(_float fTimeDelta)
 {
-
-
 	m_AccTime += fTimeDelta;
 
 	if (m_DesolveStart)

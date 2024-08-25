@@ -106,7 +106,6 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
-		
 		m_bTrigger = true;
 	}
 
@@ -906,9 +905,10 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}
+			//m_iState = STATE_KICKATTACK;
+
 			m_iPastState = m_iState;
 		}
-
 		return SUCCESS;
 	}
 
@@ -957,8 +957,11 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
+	// !!!!!!!!!!!!! 현재 쉴드 다 깎이고 나서 HP가 풀피 UI가 아닌 문제가 이씅ㅁ !!!!!!!!!!!
+
 	if (HexaShieldText) // 쉴드가 있는 경우에는 쉴드 피격 처리
 	{
+		static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
 		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
 		if (m_fCurShield <= 0.f && HexaShieldText)
 		{
@@ -980,15 +983,6 @@ void CAndras::Add_Hp(_int iValue)
 		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
-		Phase_Two();
-	}
-
-	if (m_bPhase2 && m_fCurHp <= m_fMaxHp * 0.5f)
-	{
-		if (HexaShieldText != nullptr)
-		{
-			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
-		}
 	}
 }
 
@@ -999,7 +993,9 @@ void CAndras::Phase_Two()
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 
 	// 쉴드 UI 및 값 생성
-	m_fCurShield = 50.f;
+
+	m_fCurShield = m_fMaxShield;
+
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 

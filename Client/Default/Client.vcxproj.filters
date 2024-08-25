@@ -856,6 +856,9 @@
     <Filter Include="02.GameObjects\06.Effect\MagicCast">
       <UniqueIdentifier>{7d0457d3-3f0f-4e30-861a-c8b186831b92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel">
+      <UniqueIdentifier>{66b32cba-f4da-441c-bbc2-b3fca24e9678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1799,21 +1802,6 @@
     <ClInclude Include="..\Public\UI_PortalText.h">
       <Filter>02.GameObjects\07. UI\Portal\Text</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasRain.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\AndrasScrew.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ElectricCylinder.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\LazerCast.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ParkEunHo\ShieldSphere.h">
-      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\Pattern\Laser</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\BlackSphere.h">
       <Filter>02.GameObjects\06.Effect\BlackHole</Filter>
     </ClInclude>
@@ -1855,6 +1843,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ParkEunHo\MagicCast.h">
       <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ParkEunHo\CutSceneAndras.h">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2835,6 +2826,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ParkEunHo\HelixCast.cpp">
       <Filter>02.GameObjects\06.Effect\MagicCast</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ParkEunHo\CutSceneAndras.cpp">
+      <Filter>02.GameObjects\02.LandObject\02.Monster\Boss\Andras\CutSceneModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

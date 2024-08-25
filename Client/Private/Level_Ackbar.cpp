@@ -28,6 +28,9 @@
 
 #include"EventTrigger.h"
 
+
+#include "SavePoint.h"
+
 CLevel_Ackbar::CLevel_Ackbar(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
 	, m_pUI_Manager(CUI_Manager::GetInstance())
@@ -339,6 +342,18 @@ HRESULT CLevel_Ackbar::Ready_LandObjects()
 		return E_FAIL;
 
 
+
+
+
+	CSavePoint::_tagSavePoint_Desc savePointDesc;
+	savePointDesc.vPosition = _float3(-17.661, 9.068f, -42.096f);
+
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_SavePoint"), TEXT("Prototype_GameObject_SavePoint"), &savePointDesc)))
+		return E_FAIL;
+
+
+
+
 	return S_OK;
 }
 
@@ -494,6 +509,31 @@ HRESULT CLevel_Ackbar::Load_LevelData(const _tchar* pFilePath)
 			pDesc.TriggerType = iTriggerType;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
+				return E_FAIL;
+		}
+		else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pChestDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pChestDesc.wstrLayer = wszLayer;
+			pChestDesc.wstrModelName = wszModelName;
+			pChestDesc.mWorldMatrix = WorldMatrix;
+			pChestDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_ACKBAR, TEXT("Layer_TreasureChest"), TEXT("Prototype_GameObject_TreasureChest"), &pChestDesc)))
 				return E_FAIL;
 		}
 		else

@@ -350,10 +350,10 @@ HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
 	{
 		XMStoreFloat4x4(&WorldMatrix, XMMatrixTranslation(-255.159f, 4.27f, 27.176f));
 		CMap_Element::MAP_ELEMENT_DESC pDesc{};
-
+	
 		pDesc.mWorldMatrix = WorldMatrix;
 		pDesc.TriggerType = CEventTrigger::TRIGGER_TYPE::TRIG_SCENE_CHANGE;
-
+	
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
 			return E_FAIL;
 	}
@@ -692,6 +692,16 @@ HRESULT CLevel_Jugglas::Load_LevelData(const _tchar* pFilePath)
 			else
 			{
 				//for (int i = 0; i < 40; i++)
+				if (wstring(wszName) == TEXT("Prototype_GameObject_BossDeco"))
+				{
+					CMap_Element::MAP_ELEMENT_DESC pDesc{};
+
+					pDesc.mWorldMatrix = WorldMatrix;
+					pDesc.wstrModelName = wszModelName;
+					if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_BossDeco"), wszName, &pDesc)))
+						return E_FAIL;
+				}
+				else
 				{
 					// 다른 객체들은 개별적으로 생성
 					CMap_Element::MAP_ELEMENT_DESC pDesc{};

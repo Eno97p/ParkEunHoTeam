@@ -73,14 +73,15 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
     if (m_bAnimationFinished || m_bPaused)
     {
         // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
-        CUI_Manager::GetInstance()->Setting_Cinematic();
+
+        CUI_Manager::GetInstance()->Setting_Cinematic(true); // ÄÆ¾À ³¡³¯ ¶§
         //ÄÆ¾À Æ®·»Áö¼Ç
         CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 
         pTCDesc.fFovy = XMConvertToRadians(60.f);
         pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
         pTCDesc.fNear = 0.1f;
-        pTCDesc.fFar = 3000.f;
+        pTCDesc.fFar = 10000.f;
 
         pTCDesc.fSpeedPerSec = 40.f;
         pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -819,7 +820,7 @@ void CCutSceneCamera::EndCutScene()
     m_bPaused = true;
 
     // ÄÆ½Å Á¾·á ½Ã ÇÊ¿äÇÑ Ãß°¡ Ã³¸®
-    CUI_Manager::GetInstance()->Setting_Cinematic();
+    CUI_Manager::GetInstance()->Setting_Cinematic(true);
 
     // ¸ÞÀÎ Ä«¸Þ¶ó·Î ÀüÈ¯
     m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);

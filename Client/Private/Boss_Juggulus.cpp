@@ -11,6 +11,9 @@
 
 #include "UIGroup_BossHP.h"
 #include "TransitionCamera.h"
+#include "EventTrigger.h"
+#include "BossDeco.h"
+
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
 {
@@ -504,6 +507,43 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 		{
 			Reward_Soul(true);
 
+			//엘베 하강 트리거 생성
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
+			0.f, 3.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			-310.531f, 69.022f, -1.225f, 1.f };
+			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+			pDesc.TriggerType = CEventTrigger::TRIG_DESCEND_ELEVATOR;
+
+			(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc));
+
+			//카메라 전환
+			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+			pTCDesc.fFovy = XMConvertToRadians(60.f);
+			pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+			pTCDesc.fNear = 0.1f;
+			pTCDesc.fFar = 3000.f;
+
+			pTCDesc.fSpeedPerSec = 40.f;
+			pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+			pTCDesc.iStartCam = CAM_SIDEVIEW;
+			pTCDesc.iEndCam = CAM_THIRDPERSON;
+			pTCDesc.fTransitionTime = 0.7f;
+
+			if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+			{
+				MSG_BOX("FAILED");
+			}
+
+			//보스데코 떨구기
+			list<CGameObject*> bossDecos = m_pGameInstance->Get_GameObjects_Ref(LEVEL_JUGGLAS, TEXT("Layer_BossDeco"));
+			for (auto& bossDeco : bossDecos)
+			{
+				dynamic_cast<CBossDeco*>(bossDeco)->Play_DeadAnimation();
+			}
+
 			m_pGameInstance->Erase(this);
 		}
 		return RUNNING;
@@ -521,7 +561,7 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 		return COOLING;
 	}
 
-	if (50.f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
+	if (m_fMaxHp * 0.5f >= m_fCurHp && PHASE_ONE == m_ePhase) // || m_pGameInstance->Key_Down(DIK_P)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
@@ -546,6 +586,10 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 
 		if (m_isAnimFinished)
 		{
+			for (_uint i = 0; i < STATUECOUNT; i++)
+			{
+				m_pBossStatues[i]->Set_Active(true);
+			}
 			m_iState = STATE_CREATE_HAMMER;
 		}
 		return RUNNING;
@@ -697,30 +741,36 @@ NodeStates CBoss_Juggulus::Select_Pattern(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	_int iRand = RandomInt(0, 4);
-	if (iRand != 0)
+	switch (m_iPastState)
 	{
-		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
-	}
-	switch (iRand)
-	{
-	case 0:
+	case STATE_TORNADO_ATTACK:
 		m_iState = STATE_HAMMER_ATTACK;
 		break;
-	case 1:
+	case STATE_HAMMER_ATTACK:
 		m_iState = STATE_SPHERE_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 2:
+	case STATE_SPHERE_ATTACK:
 		m_iState = STATE_FLAME_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 3:
+	case STATE_FLAME_ATTACK:
 		m_iState = STATE_THUNDER_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
 		break;
-	case 4:
+	case STATE_THUNDER_ATTACK:
 		m_iState = STATE_TORNADO_ATTACK;
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Juggulus_PatternStart.ogg"), SOUND_MONSTER);
+		break;
+	default:
+		m_iState = STATE_HAMMER_ATTACK;
 		break;
 	}
+	m_iPastState = m_iState;
 	return SUCCESS;
 }
 

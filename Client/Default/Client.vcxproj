@@ -290,6 +290,7 @@ call Copy_Client.bat</Command>
     <ClInclude Include="..\Public\ParkEunHo\BlackSphere.h" />
     <ClInclude Include="..\Public\ParkEunHo\Charge_Ribbon.h" />
     <ClInclude Include="..\Public\ParkEunHo\Charge_Vane.h" />
+    <ClInclude Include="..\Public\ParkEunHo\CutSceneAndras.h" />
     <ClInclude Include="..\Public\ParkEunHo\DefaultCylinder.h" />
     <ClInclude Include="..\Public\ParkEunHo\Distortion_Effect.h" />
     <ClInclude Include="..\Public\ParkEunHo\Electronic.h" />
@@ -617,6 +618,7 @@ call Copy_Client.bat</Command>
     <ClCompile Include="..\Private\ParkEunHo\BlackSphere.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Charge_Ribbon.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Charge_Vane.cpp" />
+    <ClCompile Include="..\Private\ParkEunHo\CutSceneAndras.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\DefaultCylinder.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\Distortion_Effect.cpp" />
     <ClCompile Include="..\Private\ParkEunHo\ElectricCylinder.cpp" />

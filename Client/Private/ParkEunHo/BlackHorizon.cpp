@@ -41,28 +41,28 @@ void CBlackHorizon::Tick(_float fTimeDelta)
 {
 	if (Erase)
 		return;
-	m_AccTime += fTimeDelta;
-	if (m_AccTime <= m_OwnDesc->fStartdelay && !m_SetDead)
-	{
-		_float t = m_AccTime / m_OwnDesc->fStartdelay;
-		t = max(0.f, min(t, 1.f));
-		_vector Minsize = XMLoadFloat3(&m_OwnDesc->vMinSize);
-		_vector Maxsize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
-		_vector ResultSize = XMVectorLerp(Minsize, Maxsize, t);
-		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
-	}
-	if (m_SetDead)
-	{
-		if (m_AccTime > m_DeadDelay)
-			Erase = true;
+	m_AccTime += 0.016f;
+	//if (m_AccTime <= m_OwnDesc->fStartdelay && !m_SetDead)
+	//{
+	//	_float t = m_AccTime / m_OwnDesc->fStartdelay;
+	//	t = max(0.f, min(t, 1.f));
+	//	_vector Minsize = XMLoadFloat3(&m_OwnDesc->vMinSize);
+	//	_vector Maxsize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
+	//	_vector ResultSize = XMVectorLerp(Minsize, Maxsize, t);
+	//	m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
+	//}
+	//if (m_SetDead)
+	//{
+	//	if (m_AccTime > m_DeadDelay)
+	//		Erase = true;
 
-		_float t = m_AccTime / m_DeadDelay;
-		t = max(0.f, min(t, 1.f));
-		_vector Maxsize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
-		_vector Minsize = XMVectorZero();
-		_vector ResultSize = XMVectorLerp(Maxsize, Minsize, t);
-		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
-	}
+	//	_float t = m_AccTime / m_DeadDelay;
+	//	t = max(0.f, min(t, 1.f));
+	//	_vector Maxsize = XMLoadFloat3(&m_OwnDesc->vMaxSize);
+	//	_vector Minsize = XMVectorZero();
+	//	_vector ResultSize = XMVectorLerp(Maxsize, Minsize, t);
+	//	m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
+	//}
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);

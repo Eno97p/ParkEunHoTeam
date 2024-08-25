@@ -1088,9 +1088,8 @@ PS_OUT PS_BlackHoleRing(PS_IN In)
 	uv.x += g_CurTime * g_Speed;
 
 	vector Color = g_Texture.Sample(LinearSampler, uv);
-	if (Color.a < 0.1f) discard;
-
 	Color.a = Color.r;
+	if (Color.a < 0.1f) discard;
 	Color.rgb = g_Color;
 
 	Out.vColor = Color;
@@ -1106,8 +1105,9 @@ PS_OUT PS_BlackHoleRing_Bloom(PS_IN In)
 
 	vector Color = g_Texture.Sample(LinearSampler, uv);
 
-	if (Color.a < 0.1f) discard;
+
 	Color.a = Color.r;
+	if (Color.a < 0.1f) discard;
 	Color.rgb = g_Color;
 	Color.a *= g_BloomPower;
 

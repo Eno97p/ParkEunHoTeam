@@ -26,6 +26,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 {
 	BODY_DESC* pDesc = (BODY_DESC*)pArg;
 	m_pIsCloaking = pDesc->pIsCloaking;
+	m_pOnWater = pDesc->pOnWater;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -121,7 +122,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 38; // 44
 		fAnimSpeed = 1.2f;
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_pModelCom->Check_CurDuration(0.3f) || m_pModelCom->Check_CurDuration(0.8f))
+		if (*m_pOnWater && (m_pModelCom->Check_CurDuration(0.3f) || m_pModelCom->Check_CurDuration(0.8f)))
 		{
 			_float4 fPos = _float4(m_pParentMatrix->_41, m_pParentMatrix->_42 + 0.1f, m_pParentMatrix->_43, 1.f);
 			EFFECTMGR->Generate_Particle(100, fPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
@@ -175,7 +176,7 @@ void CBody_Player::Tick(_float fTimeDelta)
 		AnimDesc.iAnimIndex = 42;
 		fAnimSpeed = 1.5f;
 		m_pModelCom->Set_LerpTime(1.2);
-		if (m_pModelCom->Check_CurDuration(0.3f) || m_pModelCom->Check_CurDuration(0.8f))
+		if (*m_pOnWater && (m_pModelCom->Check_CurDuration(0.3f) || m_pModelCom->Check_CurDuration(0.8f)))
 		{
 			_float4 fPos = _float4(m_pParentMatrix->_41, m_pParentMatrix->_42 + 0.1f, m_pParentMatrix->_43, 1.f);
 			EFFECTMGR->Generate_Particle(100, fPos, nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);

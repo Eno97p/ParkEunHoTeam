@@ -522,9 +522,9 @@ HRESULT CLevel_GrassLand::Ready_Layer_Player(const wstring & strLayerTag, CLandO
 	}
 	else if (ePreLevel == LEVEL_JUGGLAS)
 	{
-		pLandObjDesc->mWorldMatrix._41 = -1188.f;
-		pLandObjDesc->mWorldMatrix._42 = 426.f;
-		pLandObjDesc->mWorldMatrix._43 = -200.f;
+		pLandObjDesc->mWorldMatrix._41 = -519.281f;
+		pLandObjDesc->mWorldMatrix._42 = 347.304f;
+		pLandObjDesc->mWorldMatrix._43 = -415.195f;
 		pLandObjDesc->mWorldMatrix._44 = 1.f;
 	
 	}
@@ -686,6 +686,31 @@ HRESULT CLevel_GrassLand::Load_LevelData(const _tchar* pFilePath)
 			pTrapDesc.dStartTimeOffset = dStartTime;
 
 			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trap"), TEXT("Prototype_GameObject_Trap"), &pTrapDesc)))
+				return E_FAIL;
+		}
+		else if (strcmp(szName, "Prototype_GameObject_TreasureChest") == 0)
+		{
+			ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, szModelName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+			ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+			ReadFile(hFile, &eModelType, sizeof(CModel::MODELTYPE), &dwByte, nullptr);
+			ReadFile(hFile, &iTriggerType, sizeof(_uint), &dwByte, nullptr);
+
+			if (0 == dwByte)
+				break;
+
+			CMap_Element::MAP_ELEMENT_DESC pChestDesc{};
+
+			MultiByteToWideChar(CP_ACP, 0, szName, strlen(szName), wszName, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szLayer, strlen(szLayer), wszLayer, MAX_PATH);
+			MultiByteToWideChar(CP_ACP, 0, szModelName, strlen(szModelName), wszModelName, MAX_PATH);
+
+			pChestDesc.wstrLayer = wszLayer;
+			pChestDesc.wstrModelName = wszModelName;
+			pChestDesc.mWorldMatrix = WorldMatrix;
+			pChestDesc.TriggerType = iTriggerType;
+
+			if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_TreasureChest"), TEXT("Prototype_GameObject_TreasureChest"), &pChestDesc)))
 				return E_FAIL;
 		}
 		else

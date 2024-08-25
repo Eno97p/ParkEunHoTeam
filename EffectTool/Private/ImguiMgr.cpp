@@ -391,7 +391,9 @@ void CImguiMgr::Visible_Data()
 	if (bShow[24] == true)
 		Magic_Cast_Tool(&bShow[24]);
 
-	
+	ImGui::Checkbox("AndrasCutsceneTool", &bShow[25]);
+	if (bShow[25] == true)
+		Andras_CutScene_Tool(&bShow[25]);
 	
 
 	if(ImGui::Button("Change_Camera"))
@@ -5178,6 +5180,63 @@ HRESULT CImguiMgr::Load_MagicCast()
 		MagicCastNames.emplace_back(str);
 	}
 	NameFile.close();
+}
+
+void CImguiMgr::Andras_CutScene_Tool(_bool* Open)
+{
+	ImVec2 ButtonSize = { 100.f,30.f };
+	ImGui::Begin("AndrasCutSceneEditor", Open);
+
+	static CutSceneAndras::CUTSCENEANDRAS Desc{};
+
+	ImGui::InputFloat("LifeTime", &Desc.fLifeTime);
+	ImGui::InputFloat("StartEffect", &Desc.fStartEffect);
+	ImGui::InputFloat2("EyeChangeDelay", reinterpret_cast<float*>(&Desc.EyeChangeBetwin));
+	ImGui::InputFloat4("Position", reinterpret_cast<float*>(&Desc.vPosition));
+	ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&Desc.vColor));
+	ImGui::ColorEdit3("BloomColor", reinterpret_cast<float*>(&Desc.vBloomColor));
+
+	if (ImGui::CollapsingHeader("DefaultCylinder"))
+	{
+		ImGui::InputFloat3("Cylinder_Size", reinterpret_cast<float*>(&Desc.Cylinder.vSize));
+		ImGui::InputFloat3("Cylinder_EndSize", reinterpret_cast<float*>(&Desc.Cylinder.vEndSized));
+		ImGui::InputFloat3("Cylinder_Offset", reinterpret_cast<float*>(&Desc.Cylinder.vOffset));
+		ImGui::ColorEdit3("Cylinder_Color", reinterpret_cast<float*>(&Desc.Cylinder.fColor));
+		ImGui::ColorEdit3("Cylinder_BColor", reinterpret_cast<float*>(&Desc.Cylinder.BloomColor));
+		ImGui::InputFloat("Cylinder_BloomPower", &Desc.Cylinder.fBloomPower);
+
+		ImGui::InputFloat("Cylinder_LifeTime", &Desc.Cylinder.fMaxLifeTime);
+		ImGui::InputFloat2("Cylinder_Thread", reinterpret_cast<float*>(&Desc.Cylinder.fThreadRatio));
+		ImGui::InputFloat("Cylinder_SlowStrength", &Desc.Cylinder.fSlowStrength);
+	}
+
+	if (ImGui::CollapsingHeader("AndrasPillar"))
+	{
+		ImGui::InputFloat3("Andras_Pillar_Size", reinterpret_cast<float*>(&Desc.AndrasPillar.vSize));
+		ImGui::InputFloat3("Andras_Pillar_EndSize", reinterpret_cast<float*>(&Desc.AndrasPillar.vEndSized));
+		ImGui::ColorEdit3("Andras_Color", reinterpret_cast<float*>(&Desc.AndrasPillar.fColor));
+		ImGui::ColorEdit3("Andras_BColor", reinterpret_cast<float*>(&Desc.AndrasPillar.BloomColor));
+		ImGui::InputFloat("Andras_BloomPower", &Desc.AndrasPillar.fBloomPower);
+		ImGui::InputFloat("Andras_UVSpeed", &Desc.AndrasPillar.fUVSpeed);
+
+
+
+	}
+
+
+	if (ImGui::Button("Generate", ButtonSize))
+	{
+		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
+			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_CutSceneAndras"), &Desc);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Erase", ButtonSize))
+	{
+		m_pGameInstance->Clear_Layer(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Effect"));
+	}
+
+
+	ImGui::End();
 }
 
 void CImguiMgr::CenteredTextColored(const ImVec4& color, const char* text)

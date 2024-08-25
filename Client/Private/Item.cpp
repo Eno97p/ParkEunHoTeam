@@ -99,7 +99,7 @@ void CItem::Tick(_float fTimeDelta)
 
 	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
 	{
-		CInventory::GetInstance()->Add_DropItem(m_eItemName); // m_eItemName   ITEM_BUFF1
+ 		CInventory::GetInstance()->Add_DropItem(m_eItemName); // m_eItemName   ITEM_BUFF1
 
 		// ¾ÆÀÌÅÛ È¹µæ ·ÎÁ÷
 		m_pGameInstance->Erase(this);

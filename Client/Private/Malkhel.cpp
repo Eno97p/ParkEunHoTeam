@@ -13,6 +13,7 @@
 #include "UIGroup_BossHP.h"
 #include "TargetLock.h"
 #include "ThirdPersonCamera.h"
+#include "EventTrigger.h"
 
 CMalkhel::CMalkhel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -77,6 +78,23 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
+			_vector vStartPosition, playerLook;
+			vStartPosition =  m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			playerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK) * 10.f;
+			_float4 SpawnPos;
+			XMStoreFloat4(&SpawnPos, vStartPosition - playerLook);
+			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
+
+			//씬 전환 트리거 생성
+			CMap_Element::MAP_ELEMENT_DESC pDesc{};
+			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			SpawnPos.x, SpawnPos.y, SpawnPos.z, 1.f };
+			XMStoreFloat4x4(&pDesc.mWorldMatrix, vMat);
+			pDesc.TriggerType = CEventTrigger::TRIG_SCENE_CHANGE_FOR_ANDRASARENA;
+			m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc);
+
 			m_pGameInstance->Erase(this);
 		}
 	}
@@ -369,7 +387,7 @@ NodeStates CMalkhel::Teleport(_float fTimeDelta)
 		if (!m_bTeleport)
 		{
 			m_pTransformCom->Set_Scale(fScale.x - fTimeDelta * 5.f, fScale.y - fTimeDelta * 5.f, fScale.z - fTimeDelta * 5.f);
-			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSet(0.f, fTimeDelta * 10.f, 0.f, 0.f));
 			if (m_pTransformCom->Get_Scaled().x < 0.1f)
 			{
 				m_pGameInstance->Disable_Echo();
@@ -396,7 +414,7 @@ NodeStates CMalkhel::Teleport(_float fTimeDelta)
 		else
 		{
 			m_pTransformCom->Set_Scale(fScale.x + fTimeDelta * 5.f, fScale.y + fTimeDelta * 5.f, fScale.z + fTimeDelta * 5.f);
-			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMVectorSet(0.f, fTimeDelta * 5.f, 0.f, 0.f));
+			m_pPhysXCom->Set_Position(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMVectorSet(0.f, fTimeDelta * 10.f, 0.f, 0.f));
 			if (m_pTransformCom->Get_Scaled().x > 1.5f)
 			{
 				m_pTransformCom->Set_Scale(1.5f, 1.5f, 1.5f);
@@ -645,21 +663,20 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 		}
 		else if (m_fLengthFromPlayer > 5.f)
 		{
-			_uint i = RandomInt(0, 5);
 
-			switch (i)
+			switch (m_iPastState)
 			{
-			case 0:
+			case STATE_TELEPORT:
 				m_fSpawnCoolTime = EXPLODECOOLTIME;
 				m_iState = STATE_ATTACK1;
 				break;
-			case 1:
+			case STATE_ATTACK1:
 				m_iState = STATE_ATTACK4;
 				break;
-			case 2:
+			case STATE_ATTACK4:
 				m_iState = STATE_ATTACK5;
 				break;
-			case 3:
+			case STATE_ATTACK5:
 			{
 				m_fSpawnCoolTime = 0.f;
 				m_iState = STATE_ATTACK6;
@@ -667,37 +684,38 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				pThirdPersonCamera->Zoom(90.f, 1.f, 2.f);
 				break;
 			}
-			case 4:
+			case STATE_ATTACK6:
 				m_iState = STATE_ATTACK7;
 				break;
-			case 5:
+			case STATE_ATTACK7:
 				m_iState = STATE_TELEPORT;
+				break;
+			default:
+				m_iState = STATE_ATTACK5;
 				break;
 			}
 		}
 		else
 		{
-			_uint i = RandomInt(0, 10);
-
-			switch (i)
+			switch (m_iPastState)
 			{
-			case 0:
+			case STATE_TELEPORT:
 				m_fSpawnCoolTime = EXPLODECOOLTIME;
 				m_iState = STATE_ATTACK1;
 				break;
-			case 1:
+			case STATE_ATTACK1:
 				m_iState = STATE_ATTACK2;
 				break;
-			case 2:
+			case STATE_ATTACK2:
 				m_iState = STATE_ATTACK3;
 				break;
-			case 3:
+			case STATE_ATTACK3:
 				m_iState = STATE_ATTACK4;
 				break;
-			case 4:
+			case STATE_ATTACK4:
 				m_iState = STATE_ATTACK5;
 				break;
-			case 5:
+			case STATE_ATTACK5:
 			{
 
 				m_fSpawnCoolTime = 0.f;
@@ -706,24 +724,27 @@ NodeStates CMalkhel::Select_Pattern(_float fTimeDelta)
 				pThirdPersonCamera->Zoom(60.f, 0.13f, 0.602f);
 				break;
 			}
-			case 6:
+			case STATE_ATTACK6:
 				m_iState = STATE_ATTACK7;
 				break;
-			case 7:
+			case STATE_ATTACK7:
 				m_iState = STATE_DASHBACK;
 				break;
-			case 8:
+			case STATE_DASHBACK:
 				m_iState = STATE_DASHLEFT;
 				break;
-			case 9:
+			case STATE_DASHLEFT:
 				m_iState = STATE_DASHRIGHT;
 				break;
-			case 10:
+			case STATE_DASHRIGHT:
 				m_iState = STATE_TELEPORT;
+				break;
+			default:
+				m_iState = STATE_ATTACK2;
 				break;
 			}
 		}
-		m_iState = STATE_ATTACK3;
+		m_iPastState = m_iState;
 		return SUCCESS;
 	}
 }

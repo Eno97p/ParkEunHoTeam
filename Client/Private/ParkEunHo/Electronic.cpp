@@ -77,19 +77,15 @@ void CElectronic::Tick(_float fTimeDelta)
 
 void CElectronic::Late_Tick(_float fTimeDelta)
 {
-	_float4 fPos;
-	XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//_float4 fPos;
+	//XMStoreFloat4(&fPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
-	{
-		m_pPlayer->PlayerHit(10);
-		_matrix Mat = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-		_vector vPos = Mat.r[3];
-		_float4 vStartPos;
-		XMStoreFloat4(&vStartPos, vPos);
-	}
+	//if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
+	//{
+	//	m_pPlayer->PlayerHit(10);
+	//}
 
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLEND, this);

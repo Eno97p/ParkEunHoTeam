@@ -106,7 +106,6 @@ void CAndras::Tick(_float fTimeDelta)
 {
 	if (m_pGameInstance->Get_DIKeyState(DIK_N))
 	{
-		
 		m_bTrigger = true;
 	}
 
@@ -368,11 +367,11 @@ NodeStates CAndras::Dead(_float fTimeDelta)
 {
 	if (m_iState == STATE_DEAD)
 	{
-		if (HexaShieldText != nullptr)
-		{
-			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
-			HexaShieldText = nullptr;
-		}
+		//if (HexaShieldText != nullptr)
+		//{
+		//	static_cast<CHexaShield*>(HexaShieldText)->Set_Delete(); //쉴드삭제할때
+		//	HexaShieldText = nullptr;
+		//}
 		if (m_isAnimFinished)
 		{
 			if (!m_bDead)
@@ -836,72 +835,80 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 	if ((m_iState == STATE_DASHBACK && m_isAnimFinished) || !m_bDashBack)
 	{
 		m_fTurnDelay = 0.5f;
-		_uint i;
 		if (!m_bPhase2)
 		{
-			i = RandomInt(0, 2);
-			switch (i)
+			switch (m_iPastState)
 			{
-			case 0:
+			case STATE_GROUNDATTACK:
 				//Attack
 				m_iState = STATE_DASHRIGHT;
 				break;
-			case 1:
+			case STATE_DASHRIGHT:
 				//SprintAttack
 				_float4 vParticlePos;
 				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
-			case 2:
+			case STATE_SPRINTATTACK:
 				//GroundAttack
 				EFFECTMGR->Generate_Magic_Cast(0, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
-			}
-		}
-		else
-		{
-			i = RandomInt(0, 6);
-			switch (i)
-			{
-			case 0:
+			default:
 				//Attack
 				m_iState = STATE_DASHRIGHT;
 				break;
-			case 1:
+			}
+			m_iPastState = m_iState;
+		}
+		else
+		{
+			switch (m_iPastState)
+			{
+			case STATE_SHOOTINGSTARATTACK:
+				//Attack
+				m_iState = STATE_DASHRIGHT;
+				break;
+			case STATE_DASHRIGHT:
 				//SprintAttack
 				_float4 vParticlePos;
 				XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 				EFFECTMGR->Generate_Particle(122, vParticlePos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_SPRINTATTACK;
 				break;
-			case 2:
+			case STATE_SPRINTATTACK:
 				//GroundAttack
 				EFFECTMGR->Generate_Magic_Cast(4, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_GROUNDATTACK;
 				break;
-			case 3:
+			case STATE_GROUNDATTACK:
 				//KickAttack
 				m_iState = STATE_KICKATTACK;
 				break;
-			case 4:
+			case STATE_KICKATTACK:
 				//LaserAttack
 				EFFECTMGR->Generate_Magic_Cast(1, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_LASERATTACK;
 				break;
-			case 5:
+			case STATE_LASERATTACK:
 				//BabylonAttack
 				m_iState = STATE_BABYLONATTACK;
 				break;
-			case 6:
+			case STATE_BABYLONATTACK:
 				//ShootingStarAttack
 				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_iState = STATE_SHOOTINGSTARATTACK;
+				break;\
+			default:
+				//Attack
+				m_iState = STATE_DASHRIGHT;
 				break;
 			}
-		}
+			//m_iState = STATE_KICKATTACK;
 
+			m_iPastState = m_iState;
+		}
 		return SUCCESS;
 	}
 
@@ -950,49 +957,45 @@ void CAndras::Add_Hp(_int iValue)
 {
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Rend_Damage(iValue);
 
-	if (m_fCurShield > 0) // 쉴드가 있는 경우에는 쉴드 피격 처리
+	// !!!!!!!!!!!!! 현재 쉴드 다 깎이고 나서 HP가 풀피 UI가 아닌 문제가 이씅ㅁ !!!!!!!!!!!
+
+	if (HexaShieldText) // 쉴드가 있는 경우에는 쉴드 피격 처리
 	{
+		static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
 		m_fCurShield = min(m_fMaxShield, max(0, m_fCurShield + iValue));
-	}
-	else if ((m_fCurHp <= m_fMaxHp * 0.5f) && !m_bPhase2) // 쉴드 생성 전에 값 넘어가지 않도록 임의로 예외 처리
-	{
-		m_fCurHp = m_fMaxHp * 0.5f;
-		return;
+		if (m_fCurShield <= 0.f && HexaShieldText)
+		{
+			static_cast<CHexaShield*>(HexaShieldText)->Set_Delete();
+			HexaShieldText = nullptr;
+		}
 	}
 	else
 	{
 		m_fCurHp = min(m_fMaxHp, max(0, m_fCurHp + iValue));
 	}
 
-	if (m_fCurHp == 0)
+	if (m_fCurHp <= 0.f && m_bPhase2)
 	{
 		m_iState = STATE_DEAD;
 	}
-	else if (m_fCurHp <= m_fMaxHp * 0.5f && !m_bPhase2)
+	else if (m_fCurHp <= 0.f && !m_bPhase2)
 	{
 		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
-		//Phase_Two();
-	}
-
-	if (m_bPhase2)
-	{
-		if (HexaShieldText != nullptr)
-		{
-			static_cast<CHexaShield*>(HexaShieldText)->Set_Shield_Hit(); //쉴드끼고 맞을떄
-		}
 	}
 }
 
 void CAndras::Phase_Two()
 {
-	m_fCurHp = m_fMaxHp * 0.5f;
+	m_fCurHp = m_fMaxHp;
 	m_bPhase2 = true;
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
 
 	// 쉴드 UI 및 값 생성
-	m_fCurShield = 50.f;
+
+	m_fCurShield = m_fMaxShield;
+
 	dynamic_cast<CUIGroup_BossHP*>(m_pUI_HP)->Create_Shield();
 }
 

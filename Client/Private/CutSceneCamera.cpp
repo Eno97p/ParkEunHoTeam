@@ -73,7 +73,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
     if (m_bAnimationFinished || m_bPaused)
     {
         // m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
-        CUI_Manager::GetInstance()->Setting_Cinematic();
+        /*CUI_Manager::GetInstance()->Setting_Cinematic();*/
         //ÄÆ¾À Æ®·»Áö¼Ç
         CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
 

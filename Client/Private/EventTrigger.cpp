@@ -14,6 +14,7 @@
 #include "LandObject.h"
 
 #include "Boss_Juggulus.h"
+#include "EffectManager.h"
 CEventTrigger::CEventTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMap_Element(pDevice, pContext)
 {
@@ -427,6 +428,40 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
 
+				}
+					break;
+				case TRIG_CUTSCENE_JUGGULUS:
+				{
+					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_JUGGULAS);
+
+					//ÄÆ¾À Æ®·»Áö¼Ç
+					CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+					pTCDesc.fFovy = XMConvertToRadians(60.f);
+					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+					pTCDesc.fNear = 0.1f;
+					pTCDesc.fFar = 3000.f;
+
+					pTCDesc.fSpeedPerSec = 40.f;
+					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+					pTCDesc.iStartCam = CAM_THIRDPERSON;
+					pTCDesc.iEndCam = CAM_CUTSCENE;
+					pTCDesc.fTransitionTime = 1.f;
+					if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+					{
+						MSG_BOX("FAILED");
+						return;
+					}
+
+					m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+				}
+					break;
+				case TRIG_CUTSCENE_ANDRAS:
+				{
+					//ºí·¢È¦ »ý¼º
+					_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
+					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
 				}
 					break;
 				default:

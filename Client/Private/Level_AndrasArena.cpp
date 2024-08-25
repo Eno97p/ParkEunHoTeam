@@ -115,9 +115,6 @@ HRESULT CLevel_AndrasArena::Initialize()
 
 
 
-	//喉发圈 积己
-	_float4 vStartPosition = { 89.f, 19.000f, 154.856f, 1.f };
-	EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
 
 	// UI Manaver肺 UI Level 积己窍扁
 	CUI_Manager::GetInstance()->Create_LevelUI();

@@ -80,7 +80,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         pTCDesc.fFovy = XMConvertToRadians(60.f);
         pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
         pTCDesc.fNear = 0.1f;
-        pTCDesc.fFar = 3000.f;
+        pTCDesc.fFar = 10000.f;
 
         pTCDesc.fSpeedPerSec = 40.f;
         pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);

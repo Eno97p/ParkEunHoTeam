@@ -56,7 +56,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 500.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -70,12 +70,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	m_iState = STATE_IDLE;
 
 	m_bPlayerIsFront = true;
-	_float4 vstartPos;
-	XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	CGameObject* Oura = EFFECTMGR->Generate_Particle(94, vstartPos, this);
-	m_Particles.emplace_back(Oura);
-	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f,1.f,0.f,0.f), 90.f);
-	m_Particles.emplace_back(Oura2);
+
 
 	m_fDeadDelay = 5.f;
 
@@ -90,11 +85,6 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		if (m_fDeadDelay < 0.f)
 		{
 			m_pGameInstance->Erase(this);
-			for (auto& iter : m_Particles)
-			{
-				static_cast<CParticle*>(iter)->Set_Delete();
-			}
-			m_Particles.clear();
 		}
 	}
 
@@ -105,10 +95,6 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 
 void CAndras::Tick(_float fTimeDelta)
 {
-	if (m_pGameInstance->Get_DIKeyState(DIK_N))
-	{
-		m_bTrigger = true;
-	}
 
 	if (m_bTrigger)
 	{
@@ -819,6 +805,8 @@ NodeStates CAndras::ShootingStarAttack(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(60.f, 0.5f, 0.1f);
+
 			m_fSpawnCoolTime = SPAWNCOOLTIME;
 			m_iState = STATE_IDLE;
 			m_fSpawnDelay = 2.f;
@@ -899,6 +887,7 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 			case STATE_BABYLONATTACK:
 				//ShootingStarAttack
 				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
+				m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(90.f, 0.5f, 1000.f);
 				m_iState = STATE_SHOOTINGSTARATTACK;
 				break;\
 			default:
@@ -981,9 +970,10 @@ void CAndras::Add_Hp(_int iValue)
 	}
 	else if (m_fCurHp <= 0.f && !m_bPhase2)
 	{
-		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		//m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
+		EFFECTMGR->Generate_CutSceneAndras(_float4(91.746f, 10.3f, 89.789f, 1.f));
 	}
 }
 
@@ -992,7 +982,12 @@ void CAndras::Phase_Two()
 	m_fCurHp = m_fMaxHp;
 	m_bPhase2 = true;
 	HexaShieldText = EFFECTMGR->Generate_HexaShield(m_pTransformCom->Get_WorldFloat4x4());
-
+	_float4 vstartPos;
+	XMStoreFloat4(&vstartPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	CGameObject* Oura = EFFECTMGR->Generate_Particle(94, vstartPos, this);
+	m_Particles.emplace_back(Oura);
+	CGameObject* Oura2 = EFFECTMGR->Generate_Particle(94, vstartPos, this, XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	m_Particles.emplace_back(Oura2);
 	// 쉴드 UI 및 값 생성
 
 	m_fCurShield = m_fMaxShield;
@@ -1042,6 +1037,13 @@ void CAndras::Free()
 
 	for (auto& pPartObject : m_PartObjects)
 		Safe_Release(pPartObject);
+
+	for (auto& iter : m_Particles)
+	{
+		static_cast<CParticle*>(iter)->Set_Target(nullptr);
+		static_cast<CParticle*>(iter)->Set_Delete();
+	}
+	m_Particles.clear();
 
 	m_PartObjects.clear();
 }

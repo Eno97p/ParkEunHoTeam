@@ -16,7 +16,7 @@ class CMalkhel final : public CMonster
 {
 #define MALKHELSPEED 15.f
 #define SPAWNCOOLTIME 0.05f
-#define METEORCOOLTIME 0.5f
+#define METEORCOOLTIME 0.25f
 #define EXPLODECOOLTIME 0.9f
 #define TRIPPLEATTACK 1.2f
 #define UPSPEED 5.f
@@ -69,6 +69,8 @@ private:
 	NodeStates Idle(_float fTimeDelta);
 	void Add_Hp(_int iValue);
 
+public:
+	void Activate_Malkhel() { m_bTrigger = true; }
 private:
 	vector<class CGameObject*>					m_PartObjects;
 

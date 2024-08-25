@@ -101,6 +101,9 @@ void CItem::Tick(_float fTimeDelta)
 	{
  		CInventory::GetInstance()->Add_DropItem(m_eItemName); // m_eItemName   ITEM_BUFF1
 
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("GetItem.mp3"), SOUND_EFFECT);
+
 		// ¾ÆÀÌÅÛ È¹µæ ·ÎÁ÷
 		m_pGameInstance->Erase(this);
 	}

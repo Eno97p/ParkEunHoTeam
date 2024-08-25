@@ -55,15 +55,16 @@ HRESULT CSphere::Initialize(void* pArg)
 
 void CSphere::Priority_Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
+		m_pGameInstance->Erase(this);
 		return;
 	}
 }
 
 void CSphere::Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
 		return;
 	}
@@ -88,7 +89,7 @@ void CSphere::Tick(_float fTimeDelta)
 
 void CSphere::Late_Tick(_float fTimeDelta)
 {
-	if (!m_pJuggulus)
+	if (m_pJuggulus->Get_MonsterDead())
 	{
 		return;
 	}

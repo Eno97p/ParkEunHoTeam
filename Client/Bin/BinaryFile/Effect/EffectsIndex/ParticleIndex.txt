@@ -123,3 +123,7 @@
 122. LenzFlairPattern
 123. ItemEffectWhite
 124. BoxOpen
+125. AndrasCutNeedle
+126. AndrasCutRing
+127. AndrasCutExplosion
+128. AndrasCutSnow

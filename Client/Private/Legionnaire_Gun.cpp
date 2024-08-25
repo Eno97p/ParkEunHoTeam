@@ -33,8 +33,8 @@ HRESULT CLegionnaire_Gun::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 1.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_fCurHp = 100.f;
-	m_iState = STATE_IDLE;
+	m_fMaxHp = 100.f;
+	m_fCurHp = m_fMaxHp;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;

@@ -63,7 +63,7 @@ void CSoundMgr::Play_Effect_Sound(const TCHAR* pSoundKey, CHANNELID eID, _float 
 }
 
 
-void CSoundMgr::PlayBGM(const TCHAR* pSoundKey)
+void CSoundMgr::PlayBGM(const TCHAR* pSoundKey, _float fVolume)
 {
 	map<TCHAR*, FMOD_SOUND*>::iterator iter;
 	iter = find_if(m_mapSound.begin(), m_mapSound.end(), [&](auto& iter)->bool
@@ -78,7 +78,7 @@ void CSoundMgr::PlayBGM(const TCHAR* pSoundKey)
 	FMOD_Channel_SetMode(m_pChannelArr[SOUND_BGM], FMOD_LOOP_NORMAL);
 
 	FMOD_Channel_SetPriority(m_pChannelArr[SOUND_BGM], 255);
-	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], m_fVolume[SOUND_BGM]);
+	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], m_fVolume[SOUND_BGM] * fVolume);
 	FMOD_System_Update(m_pSystem);
 }
 

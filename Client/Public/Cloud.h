@@ -74,7 +74,7 @@ private:
 	_float4 m_vLightSpecular = _float4(1.0f, 1.0f, 1.0f, 1.0f);
 	_float4 m_vLightDir = _float4(-1.0f, -1.0f, -1.0f, 0.0f);
 	_float4 m_vLightPosition = {-761.797f, 3494.479f, 856.610, 1.f };
-	float m_fLightRange = 5000.0f;
+	float m_fLightRange = 7000.0f;
 
 	// Sphere Tracing 관련 변수
 	float m_fSphereTracingThreshold = 0.01f;

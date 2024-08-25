@@ -95,7 +95,7 @@
 #include "BlackHorizon.h"
 #pragma endregion BLACKHOLE
 
-#include "CutSceneAndras.h"
+
 
 #include "WellCylinder.h"
 
@@ -106,7 +106,12 @@
 #include "NewAspiration.h"
 #pragma endregion MAGIC_CAST
 
+#pragma region ANDRASCUTSCENE
+#include "CutSceneAndras.h"
 #include "AndrasCylinder.h"
+#include "AndrasSphere.h"
+#pragma endregion ANDRASCUTSCENE
+
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -559,8 +564,14 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/BlackHole/BlackHole_Ring2.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+
+	//AndrasCut
 	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_AndrasPillar"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/Pillar/AndrasPillar.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Model_Andras_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/Andras_0724/Pillar/AndrasSphere.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
 #pragma endregion MODEL
@@ -888,10 +899,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CBlackHorizon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//AndrasCut
-	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CutSceneAndras"),
-		CutSceneAndras::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_WellCylinder"),
 		CWellCylinder::Create(m_pDevice, m_pContext))))
@@ -914,8 +922,17 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 		CNewAspiration::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//AndrasCut
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_CutSceneAndras"),
+		CutSceneAndras::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasPillar"),
 		CAndrasCylinder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(TEXT("Prototype_GameObject_AndrasSphere"),
+		CAndrasSphere::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion PROTOTYPE_CLASS

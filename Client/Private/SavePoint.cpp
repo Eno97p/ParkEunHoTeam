@@ -116,7 +116,8 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 		m_pActivateUI->Late_Tick(fTimeDelta);
 		if (KEY_TAP(DIK_F))
 		{
-
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("SavePoint.mp3"), SOUND_SAVEPOINT);
 			_float4 vParticlePos;
 			XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			EFFECTMGR->Generate_Particle(119, vParticlePos);
@@ -154,9 +155,6 @@ void CSavePoint::Late_Tick(_float fTimeDelta)
 		}
 		
 	}
-
-
-
 
 
 	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.0f))

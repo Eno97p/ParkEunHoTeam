@@ -28,7 +28,7 @@ HRESULT CBlackHole_Ring::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(m_OwnDesc->fRotAngle));
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(m_OwnDesc->fRotAngle));
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);
 	m_pTransformCom->Set_Scale(m_OwnDesc->vMinSize.x, m_OwnDesc->vMinSize.y, m_OwnDesc->vMinSize.z);

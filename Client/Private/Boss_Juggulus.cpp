@@ -55,14 +55,10 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 500.f;
 	m_fCurHp = m_fMaxHp;
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
-	m_pUI_HP->Set_Rend(true);
-
-
-
 
 	// 보스 석상 소환
 	const _float4x4 statueMatrices[STATUECOUNT] = {
@@ -222,6 +218,7 @@ void CBoss_Juggulus::Juggulus_Activate()
 {
 	if (!m_bTrigger)
 	{
+		m_pUI_HP->Set_Rend(true);
 		Add_Hands();
 	}
 	m_bTrigger = true;

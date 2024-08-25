@@ -372,7 +372,16 @@ HRESULT CLevel_Ackbar::Ready_Layer_Trigger()
 			return E_FAIL;
 	}
 
-
+	// Portal UI
+	CUIGroup_Portal::UIGROUP_PORTAL_DESC pDesc{};
+	pDesc.eLevel = LEVEL_STATIC;
+	pDesc.ePortalLevel = LEVEL_GRASSLAND;
+	pDesc.isPic = true;
+	pDesc.iPicNum = 3;
+	pDesc.fAngle = 230.f; // 190
+	pDesc.vPos = XMVectorSet(223.1f, 7.71f, -155.766f, 1.f); // 225.1f, 7.71f, -151.766f
+	pDesc.fScale = _float2(11.f, 19.f);
+	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);
 
 
 

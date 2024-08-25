@@ -40,7 +40,7 @@ HRESULT CUIGroup_Portal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->fAngle, pDesc->vPos)))
+	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->fAngle, pDesc->vPos, pDesc->fScale)))
 		return E_FAIL;
 
 	return S_OK;
@@ -81,7 +81,7 @@ HRESULT CUIGroup_Portal::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos)
+HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos, _float2 fScale)
 {
 	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
 	pTextDesc.eLevel = LEVEL_STATIC;
@@ -99,6 +99,7 @@ HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _v
 		pPicDesc.iPicNum = iPicNum;
 		pPicDesc.fAngle = fAngle;
 		pPicDesc.vPos = vPos;
+		pPicDesc.fScale = fScale;
 
 		m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pPicDesc));
 		if (nullptr == m_pPic)

@@ -43,7 +43,7 @@ void CBlackHole_Ring::Tick(_float fTimeDelta)
 {
 	if (Erase)
 		return;
-	m_AccTime += fTimeDelta;
+	m_AccTime += 0.016f;
 
 	if (m_AccTime <= m_OwnDesc->fStartdelay && !m_SetDead)
 	{
@@ -54,6 +54,8 @@ void CBlackHole_Ring::Tick(_float fTimeDelta)
 		_vector ResultSize = XMVectorLerp(Minsize, Maxsize, t);
 		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
 	}
+
+
 
 	if (m_SetDead)
 	{
@@ -67,6 +69,7 @@ void CBlackHole_Ring::Tick(_float fTimeDelta)
 		_vector ResultSize = XMVectorLerp(Maxsize, Minsize, t);
 		m_pTransformCom->Set_Scale(XMVectorGetX(ResultSize), XMVectorGetY(ResultSize), XMVectorGetZ(ResultSize));
 	}
+
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);

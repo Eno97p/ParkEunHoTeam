@@ -42,7 +42,7 @@ void CBlackSphere::Tick(_float fTimeDelta)
 {
 	if (Erase)
 		return;
-	m_AccTime += fTimeDelta;
+	m_AccTime += 0.016f;
 
 	if (m_AccTime <= m_OwnDesc->fStartdelay && !m_SetDead)			//라이프타임 다하면 삭제
 	{
@@ -69,6 +69,7 @@ void CBlackSphere::Tick(_float fTimeDelta)
 
 	_matrix ParentMat = XMLoadFloat4x4(m_OwnDesc->ParentMatrix);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, ParentMat.r[3]);
+
 }
 
 void CBlackSphere::Late_Tick(_float fTimeDelta)

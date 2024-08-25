@@ -421,7 +421,7 @@ void CPlayer::Parry_Succeed()
 	m_fSlowDelay = 0.f;
 	fSlowValue = 0.2f;
 	m_pGameInstance->Disable_Echo();
-	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.ogg"), SOUND_EFFECT, 0.f);
+	m_pGameInstance->Play_Effect_Sound(TEXT("Parry.mp3"), SOUND_EFFECT, 0.f, 0.7f);
 }
 
 CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
@@ -1751,6 +1751,11 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_F) && m_fButtonCooltime == 0.f && m_pHoverBoard)
 	{
+		if (m_iState != STATE_JUMP)
+		{
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Jump.ogg"), SOUND_PLAYER);
+		}
 		m_iState = STATE_JUMP;
 		if (m_bRiding)
 		{
@@ -1917,6 +1922,8 @@ NodeStates CPlayer::Jump(_float fTimeDelta)
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_SPACE) && m_fJumpCooltime == 0.f && (!m_bJumping || !m_bDoubleJumping) && (m_fCurStamina >= 10.f || m_bStaminaCanDecrease))
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("Jump.ogg"), SOUND_PLAYER);
 		m_bStaminaCanDecrease = true;
 		// 스테미나 조절할 것
 		Add_Stamina(-10.f);

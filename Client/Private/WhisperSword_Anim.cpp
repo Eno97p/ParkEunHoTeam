@@ -319,6 +319,11 @@ void CWhisperSword_Anim::Set_Active(_bool isActive)
 			m_pGameInstance->Disable_Echo();
 			m_pGameInstance->Play_Effect_Sound(TEXT("Slash.ogg"), SOUND_PLAYER);
 		}
+		//else
+		//{
+		//	m_pGameInstance->Disable_Echo();
+		//	m_pGameInstance->Play_Effect_Sound(TEXT("SpecialAttack.mp3"), SOUND_EFFECT, 0.f, 0.8f);
+		//}
 		m_GenerateTrail = true;
 	}
 	m_bIsActive = isActive;

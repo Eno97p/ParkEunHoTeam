@@ -131,6 +131,9 @@ HRESULT CLevel_GrassLand::Initialize()
 
 	CInitLoader<LEVEL, const wchar_t*>* initTriggerLoader = new CInitLoader<LEVEL, const wchar_t*>(&initTriggerLoader);
 	initTriggerLoader->Save_TriggerStart(LEVEL_GRASSLAND, L"Layer_Trigger");
+
+	
+
 	return S_OK;
 }
 
@@ -284,6 +287,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
+	m_pGameInstance->StopAll();
 	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
 	if (ePreLevel == LEVEL_JUGGLAS)
 	{
@@ -361,6 +365,9 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 		fogDesc.fNoiseSize2 = 0.001f;
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
+
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 	}
 
 

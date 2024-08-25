@@ -33,7 +33,8 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 3.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_fCurHp = 100.f;
+	m_fMaxHp = 200.f;
+	m_fCurHp = m_fMaxHp;
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
@@ -527,7 +528,7 @@ NodeStates CHomonculus::Detect(_float fTimeDelta)
 		return FAILURE;
 	}
 
-	if (m_fLengthFromPlayer > DETECTRANGE)
+	if (m_fLengthFromPlayer > DETECTRANGE && m_pGameInstance->Get_CurrentLevelIndex() != LEVEL_JUGGLAS)
 	{
 		m_bPlayerIsFront = false;
 		m_iState = STATE_IDLE;

@@ -42,6 +42,7 @@ public:
 	virtual void Add_Hp(_int iValue) PURE;
 	void Set_Lock(_bool bLock) { m_bIsLocked = bLock; }
 	_bool CanBackAttack();
+	_bool Get_MonsterDead() { return m_bDead; }
 
 public:
 	//FOR LOCKON

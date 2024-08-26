@@ -37,6 +37,8 @@ HRESULT CUIGroup_Portal::Initialize(void* pArg)
 {
 	UIGROUP_PORTAL_DESC* pDesc = static_cast<UIGROUP_PORTAL_DESC*>(pArg);
 
+	m_ePortalLevel = pDesc->ePortalLevel;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -86,7 +88,7 @@ HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _v
 	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
 	pTextDesc.eLevel = LEVEL_STATIC;
 	pTextDesc.vPos = vPos;
-	pTextDesc.ePortalLevel = LEVEL_GRASSLAND;
+	pTextDesc.ePortalLevel = m_ePortalLevel;
 
 	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pTextDesc));
 	if (nullptr == m_pText)

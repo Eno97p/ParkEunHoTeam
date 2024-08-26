@@ -4,6 +4,9 @@
 #include "EventTrigger.h"
 #include "Boss_Juggulus.h"
 #include "Andras.h"
+#include "Malkhel.h"
+#include "Cloud.h"
+
 #include"UI_Manager.h"
 
 CCutSceneCamera::CCutSceneCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -47,6 +50,11 @@ void CCutSceneCamera::Priority_Tick(_float fTimeDelta)
 
 void CCutSceneCamera::Tick(_float fTimeDelta)
 {
+    if (m_pGameInstance->Key_Down(DIK_M))
+    {
+        StartIntenseShaking(2.0f, 0.8f); // 2초 동안 5배 강한 셰이킹 적용
+    }
+
     fTimeDelta /= fSlowValue;
 
     if (!m_bCamActivated || m_AllCutScenes.empty() || m_iCurrentCutSceneIdx >= m_AllCutScenes.size())
@@ -88,10 +96,15 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 
         pTCDesc.iStartCam = CAM_CUTSCENE;
         pTCDesc.iEndCam = CAM_THIRDPERSON;
+        pTCDesc.fTransitionTime = 1.f;
 
         switch (m_iCurrentCutSceneIdx)
         {
-        case 1:
+        case SCENE_MANTARI:
+            // UI BossText 생성
+            CUI_Manager::GetInstance()->Create_BossText(true);
+            break;
+        case SCENE_JUGGULAS:
         {
             CPhysXComponent_Character* pBossCom = dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_PhysX")));
             if(pBossCom)
@@ -100,7 +113,9 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
             CTransform* pBossTransform = dynamic_cast<CTransform*>(m_pGameInstance->Get_Component(LEVEL_JUGGLAS, TEXT("Layer_Boss"), TEXT("Com_Transform")));
             if (pBossTransform)
 				pBossTransform->Set_State(CTransform::STATE_POSITION, { -450.f , 56.f , -3.f, 1.f });
-           
+
+            // UI BossText 생성
+            CUI_Manager::GetInstance()->Create_BossText(true);
         }
         break;
         case SCENE_ANDRAS_PHASE2:
@@ -109,16 +124,21 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         }
             break;
         case SCENE_BLOODMOON:
-
         {
-            CAndras* andras = dynamic_cast<CAndras*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_ANDRASARENA, TEXT("Layer_Monster")).front());
-
-            if (andras)
-            {
-                andras->Activate_Andras();
-            }
+            Set_CutSceneIdx(SCENE_MALKHEL_DESCEND);
+            return;
         }
-
+            break;
+        case SCENE_MALKHEL_DESCEND:
+        {
+            dynamic_cast<CMalkhel*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Monster")).front())->Activate_Malkhel();
+        }
+        break;
+        case SCENE_GRASSLAND_HANGAROUND:
+        {
+            list<CGameObject*> cloud = m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Cloud"));
+            dynamic_cast<CCloud*>(cloud.front())->Set_ShaderPath(3);
+        }
             break;
         default:
         {
@@ -126,7 +146,6 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         break;
         }
 
-        pTCDesc.fTransitionTime = 1.f;
         if (FAILED(m_pGameInstance->Add_Camera(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
         {
             MSG_BOX("FAILED");
@@ -271,46 +290,58 @@ float CCutSceneCamera::CalculateSpeedMultiplier(const CameraKeyFrame& keyFrame, 
     return speedMultiplier;
 }
 
-// 셰이킹 적용을 위한 보조 함수
 void CCutSceneCamera::ApplyShaking(_matrix& matLerpedWorld, float fTimeDelta)
 {
     static float timeAccumulator = 0.0f;
     timeAccumulator += fTimeDelta;
 
-    // 다중 주파수 노이즈 생성
-    float noise_low1 = PerlinNoise(timeAccumulator * 0.3f, 0, 2, 0.5f);
-    float noise_low2 = PerlinNoise(0, timeAccumulator * 0.3f, 2, 0.5f);
-    float noise_mid1 = PerlinNoise(timeAccumulator * 1.0f, 0, 4, 0.5f);
-    float noise_mid2 = PerlinNoise(0, timeAccumulator * 1.0f, 4, 0.5f);
-    float noise_high1 = PerlinNoise(timeAccumulator * 4.0f, 0, 4, 0.5f);
-    float noise_high2 = PerlinNoise(0, timeAccumulator * 4.0f, 4, 0.5f);
+    // 강한 셰이킹 타이머 업데이트
+    if (m_bIntenseShaking)
+    {
+        m_fIntenseShakeTimer += fTimeDelta;
+        if (m_fIntenseShakeTimer >= m_fIntenseShakeDuration)
+        {
+            m_bIntenseShaking = false;
+            m_fIntenseShakeTimer = 0.0f;
+        }
+    }
 
-    // 시간에 따른 강도 변화
-    float intensityVariation = (sinf(timeAccumulator * 0.05f) + 1.0f) * 0.5f;
+    float currentShakeStrength = m_bIntenseShaking ? m_fIntenseShakeStrength : m_fNormalShakeStrength;
+    float currentShakeFrequency = m_bIntenseShaking ? m_fIntenseShakeFrequency : m_fNormalShakeFrequency;
+
+    // 다중 주파수 노이즈 생성 (주파수 조정)
+    float noise_low1 = PerlinNoise(timeAccumulator * currentShakeFrequency * 0.3f, 0, 2, 0.5f);
+    float noise_low2 = PerlinNoise(0, timeAccumulator * currentShakeFrequency * 0.3f, 2, 0.5f);
+    float noise_mid1 = PerlinNoise(timeAccumulator * currentShakeFrequency * 1.0f, 0, 4, 0.5f);
+    float noise_mid2 = PerlinNoise(0, timeAccumulator * currentShakeFrequency * 1.0f, 4, 0.5f);
+    float noise_high1 = PerlinNoise(timeAccumulator * currentShakeFrequency * 4.0f, 0, 4, 0.5f);
+    float noise_high2 = PerlinNoise(0, timeAccumulator * currentShakeFrequency * 4.0f, 4, 0.5f);
+
+    // 시간에 따른 강도 변화 (주파수 조정)
+    float intensityVariation = (sinf(timeAccumulator * currentShakeFrequency * 0.05f) + 1.0f) * 0.5f;
 
     // 위치 셰이킹 적용
-    float shakeX = (noise_low1 * 0.6f + noise_mid1 * 0.3f + noise_high1 * 0.1f) * 0.03f * intensityVariation;
-    float shakeY = (noise_low2 * 0.6f + noise_mid2 * 0.3f + noise_high2 * 0.1f) * 0.02f * intensityVariation;
-    float shakeZ = (noise_mid1 * 0.7f + noise_high1 * 0.3f) * 0.01f * intensityVariation;
+    float shakeX = (noise_low1 * 0.6f + noise_mid1 * 0.3f + noise_high1 * 0.1f) * 0.03f * intensityVariation * currentShakeStrength;
+    float shakeY = (noise_low2 * 0.6f + noise_mid2 * 0.3f + noise_high2 * 0.1f) * 0.02f * intensityVariation * currentShakeStrength;
+    float shakeZ = (noise_mid1 * 0.7f + noise_high1 * 0.3f) * 0.01f * intensityVariation * currentShakeStrength;
 
     _vector shakeOffset = XMVectorSet(shakeX, shakeY, shakeZ, 0.0f);
     matLerpedWorld.r[3] = XMVectorAdd(matLerpedWorld.r[3], shakeOffset);
 
     // 회전 셰이킹 적용
-    float rotX = (noise_low1 * 0.7f + noise_mid1 * 0.3f) * 0.005f * intensityVariation;
-    float rotY = (noise_low2 * 0.7f + noise_mid2 * 0.3f) * 0.005f * intensityVariation;
-    float rotZ = (noise_mid1 * 0.8f + noise_high1 * 0.2f) * 0.003f * intensityVariation;
+    float rotX = (noise_low1 * 0.7f + noise_mid1 * 0.3f) * 0.005f * intensityVariation * currentShakeStrength;
+    float rotY = (noise_low2 * 0.7f + noise_mid2 * 0.3f) * 0.005f * intensityVariation * currentShakeStrength;
+    float rotZ = (noise_mid1 * 0.8f + noise_high1 * 0.2f) * 0.003f * intensityVariation * currentShakeStrength;
 
     _matrix rotShake = XMMatrixRotationRollPitchYaw(rotX, rotY, rotZ);
     matLerpedWorld = XMMatrixMultiply(matLerpedWorld, rotShake);
 
     // 부드러운 카메라 움직임을 위한 추가 보간
     static _matrix prevMatrix = matLerpedWorld;
-    float smoothFactor = 0.1f + 0.05f * intensityVariation;
+    float smoothFactor = m_bIntenseShaking ? 0.3f : (0.1f + 0.05f * intensityVariation);
     matLerpedWorld = XMMatrixSlerp(prevMatrix, matLerpedWorld, smoothFactor);
     prevMatrix = matLerpedWorld;
 }
-
 // 부드러운 이징 함수
 float CCutSceneCamera::EaseInOutCubic(float t)
 {
@@ -854,6 +885,14 @@ void CCutSceneCamera::EndCutScene()
     {
         MSG_BOX("Failed to add transition camera");
     }
+}
+
+void CCutSceneCamera::StartIntenseShaking(float duration, float strength)
+{
+    m_bIntenseShaking = true;
+    m_fIntenseShakeDuration = duration;
+    m_fIntenseShakeTimer = 0.0f;
+    m_fIntenseShakeStrength = strength;
 }
 
 CCutSceneCamera* CCutSceneCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

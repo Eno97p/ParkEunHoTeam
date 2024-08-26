@@ -56,7 +56,7 @@ HRESULT CAndras::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 500.f;
+	m_fMaxHp = 50.f;
 	m_fCurHp = m_fMaxHp;
 	/* 플레이어의 Transform이란 녀석은 파츠가 될 바디와 웨폰의 부모 행렬정보를 가지는 컴포넌트가 될거다. */
 
@@ -88,24 +88,51 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		}
 	}
 
-	for (auto& pPartObject : m_PartObjects)
-		pPartObject->Priority_Tick(fTimeDelta);
+	if (!m_bTrigger)
+	{
+		if (m_bPhase2)
+		{
+			m_fCutSceneWaitDelay -= fTimeDelta;
+		}
+		if (m_fCutSceneWaitDelay < 4.f)
+		{
+			m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		}
+		if (m_fCutSceneWaitDelay < 2.f)
+		{
+			m_bTrigger = true;
+		}
+	}
+	else
+	{
+		for (auto& pPartObject : m_PartObjects)
+			pPartObject->Priority_Tick(fTimeDelta);
+	}
+	
 	m_isAnimFinished = dynamic_cast<CBody_Andras*>(m_PartObjects.front())->Get_AnimFinished();
 }
 
 void CAndras::Tick(_float fTimeDelta)
 {
-
 	if (m_bTrigger)
 	{
-		m_pBehaviorCom->Update(fTimeDelta);
+
+		m_fTriggerDelay += fTimeDelta;
+		if (m_fTriggerDelay > 4.0f)
+		{
+
+			m_pBehaviorCom->Update(fTimeDelta);
+			if (!m_bDead)
+			{
+				for (auto& pPartObject : m_PartObjects)
+					pPartObject->Tick(fTimeDelta);
+			}
+			//m_fTriggerDelay = 0.f;
+		}
+
 	}
 
-	if (!m_bDead)
-	{
-		for (auto& pPartObject : m_PartObjects)
-			pPartObject->Tick(fTimeDelta);
-	}
+	
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -371,6 +398,9 @@ NodeStates CAndras::Dead(_float fTimeDelta)
 				m_fDeadDelay -= 0.001f;
 
 				Reward_Soul(true);
+
+				// UI BossText 생성
+				CUI_Manager::GetInstance()->Create_BossText(false);
 			}
 		}
 		return RUNNING;
@@ -504,6 +534,11 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 		
 		if (m_isAnimFinished)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			vDashPos.y += 1.f;
+			EFFECTMGR->Generate_Distortion(5, vDashPos);
+			EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_iState = STATE_DASHLEFT;
 		}
@@ -529,6 +564,11 @@ NodeStates CAndras::Attack(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			vDashPos.y += 1.f;
+			EFFECTMGR->Generate_Distortion(5, vDashPos);
+			EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 			m_pTransformCom->LookAt_For_LandObject(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION));
 			m_iState = STATE_DASHRIGHT;
 		}
@@ -826,10 +866,15 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		m_fTurnDelay = 0.5f;
 		if (!m_bPhase2)
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			switch (m_iPastState)
 			{
 			case STATE_GROUNDATTACK:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			case STATE_DASHRIGHT:
@@ -846,6 +891,9 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				break;
 			default:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}
@@ -853,11 +901,16 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 		}
 		else
 		{
+			_float4 vDashPos;
+			XMStoreFloat4(&vDashPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 			switch (m_iPastState)
 			{
 			case STATE_SHOOTINGSTARATTACK:
 				//Attack
 				m_iState = STATE_DASHRIGHT;
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				break;
 			case STATE_DASHRIGHT:
 				//SprintAttack
@@ -889,9 +942,12 @@ NodeStates CAndras::Select_Pattern(_float fTimeDelta)
 				EFFECTMGR->Generate_Magic_Cast(2, m_pTransformCom->Get_WorldFloat4x4());
 				m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON]->Zoom(90.f, 0.5f, 1000.f);
 				m_iState = STATE_SHOOTINGSTARATTACK;
-				break;\
+				break;
 			default:
 				//Attack
+				vDashPos.y += 1.f;
+				EFFECTMGR->Generate_Distortion(5, vDashPos);
+				EFFECTMGR->Generate_Particle(12, vDashPos, nullptr, XMVectorZero(), 0.f, m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 				m_iState = STATE_DASHRIGHT;
 				break;
 			}
@@ -971,7 +1027,8 @@ void CAndras::Add_Hp(_int iValue)
 	else if (m_fCurHp <= 0.f && !m_bPhase2)
 	{
 		m_bPhase2 = true;
-		//m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
+		m_bTrigger = false;
+		m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 0.f, 89.789f, 1.f));
 		dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(CCutSceneCamera::SCENE_ANDRAS_PHASE2);
 		m_pGameInstance->Set_MainCamera(CAM_CUTSCENE);
 		EFFECTMGR->Generate_CutSceneAndras(_float4(91.746f, 10.3f, 89.789f, 1.f));

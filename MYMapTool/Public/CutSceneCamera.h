@@ -94,6 +94,7 @@ public:
 	void Set_CutSceneIdx(_uint idx) { m_iCurrentCutSceneIdx = idx; }
 	_uint Get_CutSceneIdx() const { return m_iCurrentCutSceneIdx; }
 	void Add_CutScene(const vector<CameraKeyFrame>& keyFrames) { m_AllCutScenes.push_back(keyFrames); }
+	void Pop_CutScene(_uint iIdx);
 
 	const vector<CameraKeyFrame>& Get_CutScene(_uint iIndex) const;
 	void Set_CutScene(_uint iIndex, const vector<CameraKeyFrame>& keyFrames);

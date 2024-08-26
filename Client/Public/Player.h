@@ -47,6 +47,7 @@ public:
 		_uint		iEtherDmg  ;
 
 		_float		fCurHP;
+		_float      fCurMP;
 
 		Player_Status_Data() = default;
 		
@@ -132,6 +133,7 @@ public:
 	void			Set_Shield(_bool isOn) { if (isOn) m_fShield = 0.4f; else m_fShield = 1.f; }
 	void			Set_HPBuff(_bool isOn) { if (isOn) m_fHPBuff = 1.5f; else m_fHPBuff = 1.f; }
 	void			Set_StaminaBuff(_bool isOn) { if (isOn) m_fStaminaBuff = 0.5f; else m_fStaminaBuff = 1.f; }
+	void			Set_BuffNum(_uint iBuffNum) { m_iBuffNum = iBuffNum; }
 
 	void			Generate_HoverBoard();
 	void			OnWater(_bool bOnWater) { m_bOnWater = bOnWater; }
@@ -271,6 +273,7 @@ private:
 
 #pragma region Buff 관련 Data
 	_bool		m_isBuffState = { false };
+	_uint		m_iBuffNum = { 0 };
 	_float		m_fShield = { 1.f }; // 쉴드 값
 	_float		m_fHPBuff = { 1.f }; // HP 회복 값
 	_float		m_fStaminaBuff = { 1.f }; // 스태미나 감소 값
@@ -291,7 +294,6 @@ private:
 	_bool m_bSpecialAttackZoom = false;
 
 	_float		m_GrassBlowInterval = 1.f;
-
 
 
 private:

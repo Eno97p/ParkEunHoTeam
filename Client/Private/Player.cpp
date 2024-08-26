@@ -75,6 +75,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
 		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
 		m_fCurHp = get<0>(*LoadPlayerData).fCurHP;
+		m_fCurMp = get<0>(*LoadPlayerData).fCurMP;
 
 	}
 	//m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
@@ -87,6 +88,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 	m_tPlayerStatusData.fCurHP = m_fCurHp;
+	m_tPlayerStatusData.fCurMP = m_fCurMp;
 
 
 
@@ -448,6 +450,7 @@ CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 	m_tPlayerStatusData.fCurHP = m_fCurHp;
+	m_tPlayerStatusData.fCurMP = m_fCurMp;
 
 	return m_tPlayerStatusData;
 }
@@ -558,6 +561,19 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		{
 			if (!m_isReviveFadeing)
 			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_JUGGLAS)
+				{
+					list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
+					if (!fallPlatforms.empty())
+					{
+						CGameObject* fallPlatform = fallPlatforms.front();
+						CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
+						_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
+						fallPos.m128_f32[1] = -25.f;
+						fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
+					}
+				}
+
 				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
 
 				m_isReviveFadeing = true;
@@ -2179,7 +2195,7 @@ NodeStates CPlayer::Buff(_float fTimeDelta)
 		m_iState = STATE_BUFF;
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->Play_Effect_Sound(TEXT("Heal.ogg"), SOUND_PLAYER);
-		EFFECTMGR->Generate_HealEffect(0, m_pTransformCom->Get_WorldFloat4x4());
+		EFFECTMGR->Generate_HealEffect(m_iBuffNum, m_pTransformCom->Get_WorldFloat4x4());
 		if (!m_bDisolved_Yaak)
 		{
 			static_cast<CPartObject*>(m_PartObjects[0])->Set_DisolveType(CPartObject::TYPE_DECREASE);

@@ -69,7 +69,7 @@ private:
 
 public:
 	void Activate_Andras() { m_bTrigger = true; }
-	void Init_Trail();
+
 private:
 	vector<class CGameObject*>					m_PartObjects;
 	vector<class CGameObject*>					m_Particles;
@@ -97,6 +97,10 @@ private:
 	_float m_fSpawnDelay = 2.f;
 	_uint m_iZigzag = 0;
 	_bool m_bRushSwordSound = true;
+
+	_float m_fCutSceneWaitDelay = 10.f;
+	_float m_fTriggerDelay = 0.0f;
+
 
 #pragma region Shield 
 	_float m_fMaxShield = 100.f;

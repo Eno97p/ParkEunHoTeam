@@ -123,6 +123,9 @@ void CUI_Slot::Tick(_float fTimeDelta)
 
 	if (m_pGameInstance->Mouse_Down(DIM_LB) && m_isSelect) // Slot이 빈 슬롯이 아니고 사용 or QuickAccess에 등록 가능한 아이템인 경우에만 한하도록 예외 처리 필요
 	{
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->Play_Effect_Sound(TEXT("SFX_UI_New_Button.wav"), SOUND_UI);
+
 		if (nullptr != m_pItemIcon || SLOT_QUICK == m_eSlotType)
 		{
 			Click_BtnEvent();
@@ -481,6 +484,8 @@ HRESULT CUI_Slot::Change_ItemIcon_Skill()
 
 HRESULT CUI_Slot::Pull_ItemIcon(_bool isEquip, wstring wstrTexture, wstring wstrItemName, wstring wstrItemExplain, wstring wstrItemExplain_Quick)
 {
+	// !!!!!!!!!!!!!!!!!!! 여기서 뭔가 예외 처리가 잘못 되었는지 한번씩 안 당겨질 때가 있는?
+
 	// 다음 Slot의 정보를 현재 Slot에 담는 함수
 	CUI_ItemIcon::UI_ITEMICON_DESC pDesc{};
 
@@ -641,8 +646,12 @@ void CUI_Slot::Render_Font()
 void CUI_Slot::Rend_Count()
 {
 	// m_iSlotIdx를 활용 
-
+	
+	// >>> 여기서 터짐
 	CItemData* pItem = CInventory::GetInstance()->Get_ItemData(m_iSlotIdx);
+
+	if (nullptr == pItem)
+		return;
 	//CItemData* pItem = CInventory::GetInstance()->Get_ItemData_ByName(m_wszItemName);
 
 	_uint iCount = pItem->Get_Count();

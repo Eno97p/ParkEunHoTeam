@@ -60,23 +60,29 @@ void CSideViewCamera::Tick(_float fTimeDelta)
     if (m_pPlayerTrans == nullptr)
         return;
 
-    //// 플레이어 위치 얻기
-    //_vector vPlayerPos = m_pPlayerTrans->Get_State(CTransform::STATE_POSITION);
-    //_vector vCamPos = m_pGameInstance->Get_CamPosition();
-
-    // 맵 오브젝트 관련 코드는 그대로 유지
+    if (m_pGameInstance->Key_Down(DIK_M))
+    {
+        m_fShakeTime = 0.5f;  // 셰이킹 지속 시간 (0.5초)
+        m_fShakeAccTime = 0.f;
+        m_fIntensity = 0.1f;  // 셰이킹 강도
+    }
 
     {
         Update_SideViewCam(fTimeDelta);
     }
 
-    // 셰이킹 관련 코드는 그대로 유지
+    if (m_fShakeTime > m_fShakeAccTime)
+    {
+        m_fShakeAccTime += fTimeDelta;
+        Shaking();
+    }
 
     m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&m_vCameraPosition));
     m_pTransformCom->LookAt(XMLoadFloat4(&m_vLookAtPosition));
 
     if (!m_bCamActivated) return;
-     __super::Tick(fTimeDelta);
+
+    __super::Tick(fTimeDelta);
 }
 
 void CSideViewCamera::Late_Tick(_float fTimeDelta)
@@ -157,11 +163,40 @@ void CSideViewCamera::Update_TransitionCam(_float fTimeDelta)
     // Update_TransitionCam 함수 내용은 그대로 유지
 }
 
-void CSideViewCamera::Shaking()
+
+
+_float CSideViewCamera::RandomFloat(_float min, _float max)
 {
-    // Shaking 함수 내용은 그대로 유지
+    return min + static_cast <_float> (rand()) / (static_cast <_float> (RAND_MAX / (max - min)));
 }
 
+void CSideViewCamera::Shaking()
+{
+    _vector vLook;
+    _vector vRight;
+    _vector vUp;
+
+    vLook = XMVector3Normalize(XMLoadFloat4(&m_vLookAtPosition) - XMLoadFloat4(&m_vCameraPosition));
+    vRight = XMVector3Cross(vLook, m_pTransformCom->Get_State(CTransform::STATE_UP));
+    vUp = XMVector3Cross(vLook, vRight);
+
+    // -1.5f ~ 1.5f 사이의 값 구함
+    float offsetY = ((rand() % 100 / 100.0f) * m_fIntensity) - (m_fIntensity * 0.5f);
+    _vector eye = XMLoadFloat4(&m_vCameraPosition);
+    _vector at = XMLoadFloat4(&m_vLookAtPosition);
+    eye += vUp * offsetY;
+    at += vUp * offsetY;
+
+    if (!m_bLockWidth)
+    {
+        float offsetX = ((rand() % 100 / 100.0f) * m_fIntensity) - (m_fIntensity * 0.5f);
+        eye += vRight * offsetX;
+        at += vRight * offsetX;
+    }
+
+    XMStoreFloat4(&m_vCameraPosition, eye);
+    XMStoreFloat4(&m_vLookAtPosition, at);
+}
 void CSideViewCamera::Key_Input(_float fTimeDelta)
 {
     if (m_pGameInstance->Key_Down(DIK_TAB))

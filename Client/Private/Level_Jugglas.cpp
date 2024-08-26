@@ -356,6 +356,17 @@ HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
 	
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc)))
 			return E_FAIL;
+
+		// Portal UI
+		CUIGroup_Portal::UIGROUP_PORTAL_DESC pUIDesc{};
+		pUIDesc.eLevel = LEVEL_STATIC;
+		pUIDesc.ePortalLevel = LEVEL_ACKBAR;
+		pUIDesc.isPic = true;
+		pUIDesc.iPicNum = 3;
+		pUIDesc.fAngle = 110.f; // 100
+		pUIDesc.vPos = XMVectorSet(-256.922f, 25.179f, -185.385f, 1.f); // -256.922f, 22.179f, -185.385f
+		pUIDesc.fScale = _float2(5.5f, 9.f);
+		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
 	}
 
 
@@ -393,7 +404,7 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 	landObjDesc.mWorldMatrix._42 = -25.f;
 	landObjDesc.mWorldMatrix._43 = 0.f;
 	landObjDesc.mWorldMatrix._44 = 1.f;
-	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, TEXT("Layer_GameObjects"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
+	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Platform"), TEXT("Prototype_GameObject_FallPlatform"), &landObjDesc)))
 		return E_FAIL;
 
 	_float3 fPosArray[] = {

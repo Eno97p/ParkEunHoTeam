@@ -555,6 +555,9 @@
 #include "C:\NewRepo\Client\Private\UI_MonsterHPBar.cpp"
 
 
+#include "C:\NewRepo\Client\Private\UI_PhaseChange.cpp"
+
+
 #include "C:\NewRepo\Client\Private\UI_PortalPic.cpp"
 
 

@@ -42,6 +42,8 @@ private:
 	class CUI_PortalPic*	m_pPic = { nullptr };
 	class CUI_PortalText*	m_pText = { nullptr };
 
+	LEVEL					m_ePortalLevel = { LEVEL_END };
+
 private:
 	HRESULT					Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos, _float2 fScale);
 

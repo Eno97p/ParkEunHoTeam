@@ -132,7 +132,7 @@ HRESULT CLevel_AndrasArena::Initialize()
 	initTriggerLoader->Save_TriggerStart(LEVEL_ANDRASARENA, L"Layer_Trigger");
 
 
-	
+	EFFECTMGR->Generate_Particle(129, _float4(91.6f, 10.7f, 90.2f, 1.f));
 
 
 	return S_OK;

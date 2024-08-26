@@ -5,6 +5,7 @@
 
 #include"GameInstance.h"
 #include "EffectManager.h"
+#include "SideViewCamera.h"
 
 CBlastWall::CBlastWall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -127,6 +128,7 @@ void CBlastWall::Tick(_float fTimeDelta)
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->Play_Effect_Sound(TEXT("wavHit3.ogg"), SOUND_EFFECT);
 					m_bIsHit = true;
+					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(1.f, 0.2f);
 
 					break;
 				}

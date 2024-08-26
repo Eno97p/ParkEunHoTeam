@@ -39,6 +39,8 @@ HRESULT CJuggulus_Hammer::Initialize(void* pArg)
 	m_pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
 	Safe_AddRef(m_pPlayer);
 
+	
+
 	return S_OK;
 }
 
@@ -75,6 +77,7 @@ void CJuggulus_Hammer::Tick(_float fTimeDelta)
 			m_pPlayer->PlayerHit(10);
 		}
 	}
+	Generate_Trail(10);
 }
 
 void CJuggulus_Hammer::Late_Tick(_float fTimeDelta)

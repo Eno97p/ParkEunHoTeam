@@ -8,6 +8,7 @@
 #include "Juggulus_HandTwo.h"
 #include "Juggulus_HandThree.h"
 #include "EffectManager.h"
+#include "UI_Manager.h"
 
 #include "UIGroup_BossHP.h"
 #include "TransitionCamera.h"
@@ -96,6 +97,15 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
+			list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
+			if (!fallPlatforms.empty())
+			{
+				CGameObject* fallPlatform = fallPlatforms.front();
+				CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
+				_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
+				fallPos.m128_f32[1] = -25.f;
+				fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
+			}
 			m_pGameInstance->Erase(this);
 		}
 	}
@@ -230,7 +240,7 @@ HRESULT CBoss_Juggulus::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(3.f, 15.f, 1.5f);
+	ColliderDesc.vExtents = _float3(3.f, 15.f, 3.f);
 	ColliderDesc.vCenter = _float3(5.f, ColliderDesc.vExtents.y - 15.f, 1.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
@@ -504,6 +514,9 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 		{
 			Reward_Soul(true);
 
+			// UI BossText 积己
+			CUI_Manager::GetInstance()->Create_BossText(false);
+
 			//郡海 窍碍 飘府芭 积己
 			CMap_Element::MAP_ELEMENT_DESC pDesc{};
 			_matrix vMat = { 1.f, 0.f, 0.f, 0.f,
@@ -542,6 +555,7 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 			}
 
 			m_pGameInstance->Erase(this);
+
 		}
 		return RUNNING;
 	}
@@ -647,6 +661,9 @@ NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
 		if (!m_bGroggyCamChange)
 		{
 			m_bGroggyCamChange = true;
+			_float4 ShieldBreakPos;
+			XMStoreFloat4(&ShieldBreakPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+			EFFECTMGR->Generate_Particle(130, ShieldBreakPos);
 
 			//钠纠 飘坊瘤记
 			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};

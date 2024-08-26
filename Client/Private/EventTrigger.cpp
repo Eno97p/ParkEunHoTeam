@@ -540,7 +540,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->PlayBGM(TEXT("Bazzi_Roll_And_Roll.mp3"), 0.3f);
+					m_pGameInstance->PlayBGM(TEXT("NeedForSpeed.mp3"), 0.3f);
 				}
 				break;
 				case TRIG_RACING_WIN:
@@ -549,7 +549,11 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
-					m_pGameInstance->Play_Effect_Sound(TEXT("Victory.mp3"), SOUND_EFFECT);
+					m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-1.wav"), SOUND_EFFECT);
+					//m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-2.wav"), SOUND_EFFECT);
+					//m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-3.wav"), SOUND_EFFECT);
+					m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-4.wav"), SOUND_EFFECT);
+					m_pGameInstance->Play_Effect_Sound(TEXT("tada-fanfare.mp3"), SOUND_EFFECT, 0.0f, 0.0f,0.8f);
 
 
 					EFFECTMGR->Generate_Particle(135, _float4(-196.f, 579.394f, -866.666f, 1.f));

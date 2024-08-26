@@ -935,6 +935,12 @@ void CGameInstance::Set_Echo_Param(_float delay,  _float wetLevel)
 	m_pSound_Manager->Set_Echo_Param(delay, wetLevel);
 }
 
+void CGameInstance::Set_OffSet(_float fOffSet)
+{
+	m_pSound_Manager->Set_OffSet(fOffSet);
+
+}
+
 HRESULT CGameInstance::Add_UI(CGameObject* ui, UISORT_PRIORITY type)
 {
 	return m_UISorter->Add_UI(ui, type);

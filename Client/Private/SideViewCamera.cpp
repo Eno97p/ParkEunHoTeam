@@ -52,26 +52,23 @@ void CSideViewCamera::Priority_Tick(_float fTimeDelta)
     {
     case SV_UP:
     {
-        m_fBossHeightOffset += fTimeDelta * 5.f;
-        m_fBossZPosition += fTimeDelta * 10.f;
-        if (m_fBossHeightOffset > 35.f)
+        m_fBossHeightOffset += fTimeDelta * 10.f;
+        if (m_fBossHeightOffset > 25.f)
         {
             m_eSideViewState = SV_IDLE;
-            m_fBossHeightOffset = 35.f;
+            m_fBossHeightOffset = 25.f;
             return;
         }
     }
         break;
     case SV_DOWN:
     {
-        m_fBossHeightOffset -= fTimeDelta * 5.f;
-        m_fBossZPosition -= fTimeDelta * 10.f;
+        m_fBossHeightOffset -= fTimeDelta * 15.f;
 
         if (m_fBossHeightOffset <= 8.5f)
         {
             m_fBossHeightOffset = 8.5f;
-            m_fBossZPosition = -7.5f;
-
+            m_vFixedLookAtPosition = { -422.f, 73.f, -5.f, 1.f };
             m_eSideViewState = SV_IDLE;
             return;
         }
@@ -193,6 +190,7 @@ void CSideViewCamera::Update_TransitionCam(_float fTimeDelta)
 
 void CSideViewCamera::Phase_Two_Height_Offset()
 {
+    m_vFixedLookAtPosition.y += 20.f;
     m_eSideViewState = SV_UP;
 }
 

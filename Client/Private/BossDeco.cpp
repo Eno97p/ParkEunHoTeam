@@ -43,6 +43,7 @@ HRESULT CBossDeco::Initialize(void* pArg)
 	}
 	else if (pDesc->wstrModelName == TEXT("Prototype_Component_Model_Chaudron"))
 	{
+		m_bBloom = true;
 		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(3, true));
 	}
 
@@ -72,7 +73,6 @@ void CBossDeco::Late_Tick(_float fTimeDelta)
 	//if (m_pGameInstance->isIn_WorldFrustum(m, 5.f))
 	{
 		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
-		m_pGameInstance->Add_RenderObject(CRenderer::RENDER_BLOOM, this);
 	}
 
 //wd
@@ -137,7 +137,7 @@ HRESULT CBossDeco::Render_Bloom()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", 0, aiTextureType_EMISSIVE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(6);
+		m_pShaderCom->Begin(15);
 
 		m_pModelCom->Render(0);
 }

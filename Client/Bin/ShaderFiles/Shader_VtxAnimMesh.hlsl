@@ -596,6 +596,15 @@ PS_OUT_COLOR PS_ANDRAS_BLOOM(PS_IN In)
 	return Out;
 }
 
+PS_OUT_COLOR PS_BOSSDECO_BLOOM(PS_IN In)
+{
+	PS_OUT_COLOR Out = (PS_OUT_COLOR)0;
+
+	Out.vColor = (143.f/ 255.f, 0.9f, 1.f, 1.f);
+
+	return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -810,6 +819,18 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_ANDRAS_BLOOM();
 	}
 
+		pass BossDeco_Bloom_15
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DSS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_BOSSDECO_BLOOM();
+	}
 
 		
 }

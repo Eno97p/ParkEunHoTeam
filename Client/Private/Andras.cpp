@@ -98,7 +98,7 @@ void CAndras::Priority_Tick(_float fTimeDelta)
 		{
 			m_pPhysXCom->Set_Position(XMVectorSet(91.746f, 11.f, 89.789f, 1.f));
 		}
-		if (m_fCutSceneWaitDelay < 2.f)
+		if (m_fCutSceneWaitDelay < 1.f)
 		{
 			m_bTrigger = true;
 		}

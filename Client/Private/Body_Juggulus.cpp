@@ -215,7 +215,14 @@ void CBody_Juggulus::Change_Animation(_float fTimeDelta)
 	{
 		AnimDesc.isLoop = false;
 		AnimDesc.iAnimIndex = 18;
-		m_pWeapon->Set_Active();
+		if (m_pModelCom->Get_Ratio_Betwin(0.5f, 0.7f))
+		{
+			m_pWeapon->Set_Active();
+		}
+		else
+		{
+			m_pWeapon->Set_Active(false);
+		}
 	}
 	else if (*m_pState == CBoss_Juggulus::STATE_SPHERE_ATTACK)
 	{

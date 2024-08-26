@@ -37,7 +37,6 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 3.f; // ¼öÁ¤ ÇÊ¿ä
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_fCurHp = 100;
 	m_iState = STATE_IDLE_FIRST;
 	m_ePhase = PHASE_ONE;
 
@@ -56,7 +55,7 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 500.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
@@ -501,6 +500,34 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 {
 	if (0.f >= m_fCurHp)
 	{
+		if (m_iState != STATE_DEAD)
+		{
+			m_pPlayer->Set_Position(XMVectorSet(-407.f, 68.f, -1.f, 1.f));
+
+			//ÄÆ¾À Æ®·»Áö¼Ç
+			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
+
+			pTCDesc.fFovy = XMConvertToRadians(60.f);
+			pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+			pTCDesc.fNear = 0.1f;
+			pTCDesc.fFar = 3000.f;
+
+			pTCDesc.fSpeedPerSec = 40.f;
+			pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
+
+			pTCDesc.iStartCam = CAM_THIRDPERSON;
+			pTCDesc.iEndCam = CAM_SIDEVIEW;
+			pTCDesc.fTransitionTime = 1.f;
+			if (FAILED(m_pGameInstance->Add_Camera(LEVEL_JUGGLAS, TEXT("Layer_Camera"), TEXT("Prototype_GameObject_TransitionCamera"), &pTCDesc)))
+			{
+				MSG_BOX("FAILED to Add Transition Cam");
+			}
+
+			m_pGameInstance->Set_MainCamera(CAM_TRANSITION);
+		}
+
+		m_pTransformCom->Go_Up(-fTimedelta * 0.5f);
+
 		if (!m_bDeadSound)
 		{
 			m_pGameInstance->Disable_Echo();
@@ -693,6 +720,8 @@ NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
 		if (m_fGroggyTime < 0.f)
 		{
 			m_bGroggyCamChange = false;
+
+			m_pPlayer->Set_Position(XMVectorSet(-407.f, 68.f, -1.f, 1.f));
 
 			//ÄÆ¾À Æ®·»Áö¼Ç
 			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};

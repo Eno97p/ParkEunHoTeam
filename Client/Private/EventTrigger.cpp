@@ -556,6 +556,12 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					m_pGameInstance->Play_Effect_Sound(TEXT("tada-fanfare.mp3"), SOUND_EFFECT, 0.0f, 0.0f,0.8f);
 
 
+					EFFECTMGR->Generate_Particle(135, _float4(-196.f, 579.394f, -866.666f, 1.f));
+					EFFECTMGR->Generate_Particle(136, _float4(-179.5f, 582.4f, -866.666f, 1.f));
+					EFFECTMGR->Generate_Particle(137, _float4(-165.f, 581.f, -857.f, 1.f));
+					EFFECTMGR->Generate_Particle(138, _float4(-173.f, 594.f, -838.f, 1.f));
+					EFFECTMGR->Generate_Particle(139, _float4(-173.f, 626.f, -853.f, 1.f));
+
 				}
 				break;
 				default:

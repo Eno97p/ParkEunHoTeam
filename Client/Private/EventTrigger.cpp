@@ -538,10 +538,20 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 				case TRIG_RACING_START:
 				{
+					m_pGameInstance->StopAll();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->PlayBGM(TEXT("Bazzi_Roll_And_Roll.mp3"), 0.3f);
 				}
 				break;
 				case TRIG_RACING_WIN:
 				{
+
+					m_pGameInstance->StopAll();
+					m_pGameInstance->Disable_Echo();
+					m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
+					m_pGameInstance->Play_Effect_Sound(TEXT("Victory.mp3"), SOUND_EFFECT);
+
+
 				}
 				break;
 				default:

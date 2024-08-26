@@ -92,6 +92,7 @@ public:
 	void Set_ParriedMonsterFloat4x4(const _float4x4* pMatrix) { m_pParriedMonsterFloat4x4 = pMatrix; }
 	_bool Get_Cloaking() { return m_bIsCloaking; }
 	void Set_Cloaking(_bool bCloaking) { m_bIsCloaking = bCloaking; }
+	void Set_Position(_vector vPosition);
 
 	void			Add_Hp(_float iValue);
 

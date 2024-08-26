@@ -31,7 +31,7 @@ CPlayer::CPlayer(const CPlayer& rhs)
 
 HRESULT CPlayer::Initialize_Prototype()
 {
-
+	
 
 	//만약 저장 시킨 파일이 있다면 해당 데이터로 채워 넣기
 
@@ -99,8 +99,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (CUI_Manager::GetInstance()->Get_isUIOpen())
+	{
+		return;
+	}
 
+	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
@@ -152,6 +156,11 @@ void CPlayer::Priority_Tick(_float fTimeDelta)
 
 void CPlayer::Tick(_float fTimeDelta)
 {
+	if (CUI_Manager::GetInstance()->Get_isUIOpen())
+	{
+		return;
+	}
+
 	Change_Weapon();
 
 	if (m_bRided)
@@ -559,6 +568,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 		m_bIsCloaking = false;
 		if (m_bAnimFinished)
 		{
+			m_pGameInstance->StopAll();
 			if (!m_isReviveFadeing)
 			{
 				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_JUGGLAS)
@@ -2432,6 +2442,11 @@ NodeStates CPlayer::Idle(_float fTimeDelta)
 		m_iState = STATE_IDLE;
 	}
 	return RUNNING;
+}
+
+void CPlayer::Set_Position(_vector vPosition)
+{
+	m_pPhysXCom->Set_Position(vPosition);
 }
 
 void CPlayer::Add_Hp(_float iValue)

@@ -435,6 +435,9 @@
 #include "C:\3D_TeamProj\Client\Private\Tree.cpp"
 
 
+#include "C:\3D_TeamProj\Client\Private\UIGroup_BossText.cpp"
+
+
 #include "C:\3D_TeamProj\Client\Private\UIGroup_BuffTimer.cpp"
 
 
@@ -481,6 +484,12 @@
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_BossShield.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_BossTextBG.cpp"
+
+
+#include "C:\3D_TeamProj\Client\Private\UI_BossTextBox.cpp"
 
 
 #include "C:\3D_TeamProj\Client\Private\UI_Broken.cpp"

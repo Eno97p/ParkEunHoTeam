@@ -48,11 +48,39 @@ HRESULT CSideViewCamera::Initialize(void* pArg)
 
 void CSideViewCamera::Priority_Tick(_float fTimeDelta)
 {
-    // Priority_Tick 함수 내용은 그대로 유지
-    if (m_pGameInstance->Key_Down(DIK_3))
+    switch (m_eSideViewState)
     {
-        m_bBossScene = !m_bBossScene;
+    case SV_UP:
+    {
+        m_fBossHeightOffset += fTimeDelta * 5.f;
+        m_fBossZPosition += fTimeDelta * 10.f;
+        if (m_fBossHeightOffset > 35.f)
+        {
+            m_eSideViewState = SV_IDLE;
+            m_fBossHeightOffset = 35.f;
+            return;
+        }
     }
+        break;
+    case SV_DOWN:
+    {
+        m_fBossHeightOffset -= fTimeDelta * 5.f;
+        m_fBossZPosition -= fTimeDelta * 10.f;
+
+        if (m_fBossHeightOffset <= 8.5f)
+        {
+            m_fBossHeightOffset = 8.5f;
+            m_fBossZPosition = -7.5f;
+
+            m_eSideViewState = SV_IDLE;
+            return;
+        }
+    }
+        break;
+    default:
+        break;
+    }
+
 }
 
 void CSideViewCamera::Tick(_float fTimeDelta)
@@ -161,6 +189,16 @@ void CSideViewCamera::Update_SideViewCam(_float fTimeDelta)
 void CSideViewCamera::Update_TransitionCam(_float fTimeDelta)
 {
     // Update_TransitionCam 함수 내용은 그대로 유지
+}
+
+void CSideViewCamera::Phase_Two_Height_Offset()
+{
+    m_eSideViewState = SV_UP;
+}
+
+void CSideViewCamera::Phase_Two_Back_To_Origin()
+{
+    m_eSideViewState = SV_DOWN;
 }
 
 

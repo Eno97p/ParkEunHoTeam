@@ -26,6 +26,7 @@ public:
     void Disable_Echo();
     void Set_Echo_Param(_float delay, _float wetLevel);
 
+    void Set_OffSet(_float fOffSet) { m_fOffSet = fOffSet; }
 private:
     FMOD_RESULT Load_SoundFile();
     HRESULT Reverb_Setting();
@@ -41,6 +42,8 @@ private:
     FMOD_CHANNELGROUP* m_pBGMGroup = nullptr;
     _float m_fVolume[CHANNELID::MAXCHANNEL];        //채널별 볼륨, 디폴트 0.5f
 
+
+    _float m_fOffSet = 1.f;
 public:
     static CSoundMgr* Create();
     virtual void Free() override;

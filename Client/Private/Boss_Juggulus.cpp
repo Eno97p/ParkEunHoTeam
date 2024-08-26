@@ -14,6 +14,7 @@
 #include "TransitionCamera.h"
 #include "EventTrigger.h"
 #include "BossDeco.h"
+#include "SideViewCamera.h"
 
 CBoss_Juggulus::CBoss_Juggulus(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -603,8 +604,9 @@ NodeStates CBoss_Juggulus::NextPhase(_float fTimedelta)
 	{
 		if (m_iState != STATE_NEXTPHASE)
 		{
-			m_pGameInstance->Get_MainCamera()->Zoom(120.f, 0.4f, 1000.f);
-
+			CSideViewCamera* pSVC = dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW]);
+			pSVC->Phase_Two_Height_Offset();
+			m_pGameInstance->Get_MainCamera()->Zoom(75.f, 0.5f, 10000.f);
 
 			// 손 삭제, 몬스터 삭제
 			Safe_Release((*m_PartObjects.find("Hand_One")).second);
@@ -650,7 +652,9 @@ NodeStates CBoss_Juggulus::CreateHammer(_float fTimeDelta)
 
 		if (m_isAnimFinished)
 		{
-			m_pGameInstance->Get_MainCamera()->Zoom(60.f, 0.3f, 0.1f);
+			m_pGameInstance->Get_MainCamera()->Zoom(60.f, 0.5f, 0.5f);
+			CSideViewCamera* pSVC = dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW]);
+			pSVC->Phase_Two_Back_To_Origin();
 
 			m_ePhase = PHASE_TWO;
 			m_iState = STATE_IDLE_SEC;

@@ -504,6 +504,10 @@ NodeStates CBoss_Juggulus::Dead(_float fTimedelta)
 		if (m_iState != STATE_DEAD)
 		{
 			m_pPlayer->Set_Position(XMVectorSet(-407.f, 68.f, -1.f, 1.f));
+			EFFECTMGR->Generate_Particle(132, _float4(-407.f, 69.f, -1.f, 1.f));
+			EFFECTMGR->Generate_Particle(133, _float4(-407.f, 68.f, -1.f, 1.f), nullptr, XMVectorSet(1.f,0.f,0.f,0.f),90.f );
+			EFFECTMGR->Generate_Particle(134, _float4(-407.f, 68.f, -1.f, 1.f), nullptr, XMVectorSet(1.f,0.f,0.f,0.f),-90.f );
+
 
 			//ÄÆ¾À Æ®·»Áö¼Ç
 			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};
@@ -726,6 +730,9 @@ NodeStates CBoss_Juggulus::Groggy(_float fTimeDelta)
 			m_bGroggyCamChange = false;
 
 			m_pPlayer->Set_Position(XMVectorSet(-407.f, 68.f, -1.f, 1.f));
+			EFFECTMGR->Generate_Particle(132, _float4(-407.f, 69.f, -1.f, 1.f));
+			EFFECTMGR->Generate_Particle(133, _float4(-407.f, 68.f, -1.f, 1.f), nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), 90.f);
+			EFFECTMGR->Generate_Particle(134, _float4(-407.f, 68.f, -1.f, 1.f), nullptr, XMVectorSet(1.f, 0.f, 0.f, 0.f), -90.f);
 
 			//ÄÆ¾À Æ®·»Áö¼Ç
 			CTransitionCamera::TRANSITIONCAMERA_DESC pTCDesc = {};

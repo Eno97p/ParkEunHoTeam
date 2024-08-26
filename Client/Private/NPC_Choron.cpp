@@ -152,7 +152,7 @@ void CNPC_Choron::Key_Input()
 			m_pScriptUI->Set_Rend(false);
 			--m_iDialogCnt;
 
-			CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_DURGASWORD);
+			CInventory::GetInstance()->Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD);
 
 			break;
 		}

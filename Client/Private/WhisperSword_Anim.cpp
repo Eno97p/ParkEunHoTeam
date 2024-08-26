@@ -43,7 +43,7 @@ void CWhisperSword_Anim::Priority_Tick(_float fTimeDelta)
 
 	if (*m_pState == CPlayer::STATE_SPECIALATTACK)
 	{
-		m_fDamage = 200.f;
+		m_fDamage = 100.f;
 	}
 	else
 	{

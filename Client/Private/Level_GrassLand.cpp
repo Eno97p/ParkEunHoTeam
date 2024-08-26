@@ -35,6 +35,7 @@
 #include "Sky.h"
 
 #include"EventTrigger.h"
+#include "Decal.h"
 
 CLevel_GrassLand::CLevel_GrassLand(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CLevel(pDevice, pContext)
@@ -80,7 +81,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		CRenderer::FOG_DESC fogDesc{};
 		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
 		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
-		fogDesc.fFogRange = 2300.f;
+		fogDesc.fFogRange = 5000.f;
 		fogDesc.fFogHeightFalloff = 0.0f;
 		fogDesc.fFogGlobalDensity = 0.9f;
 		fogDesc.fFogTimeOffset = 1.154f;
@@ -92,6 +93,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
 
+		m_pGameInstance->StopAll();
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 	}
@@ -126,6 +128,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 
 	Load_Data_Effects();
+	//Load_Data_Decals();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -337,7 +340,6 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
-	m_pGameInstance->StopAll();
 	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
 	if (ePreLevel == LEVEL_JUGGLAS)
 	{
@@ -460,6 +462,56 @@ HRESULT CLevel_GrassLand::Ready_Layer_Effect(const wstring & strLayerTag)
 	return S_OK;
 }
 
+
+HRESULT CLevel_GrassLand::Load_Data_Decals()
+{
+	const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_GrassLand_Decals.bin";
+	HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (INVALID_HANDLE_VALUE == hFile)
+		return E_FAIL;
+
+	DWORD dwByte(0);
+	_uint iDecalCount = 0;
+	ReadFile(hFile, &iDecalCount, sizeof(_uint), &dwByte, nullptr);
+	if (0 == dwByte)
+	{
+		CloseHandle(hFile);
+		return S_OK; // 파일이 비어있는 경우
+	}
+
+	for (_uint i = 0; i < iDecalCount; ++i)
+	{
+		_char szName[MAX_PATH] = "";
+		_char szLayer[MAX_PATH] = "";
+		_float4x4 WorldMatrix;
+		_uint     decalIdx = 0;
+
+		ReadFile(hFile, szName, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, szLayer, sizeof(_char) * MAX_PATH, &dwByte, nullptr);
+		ReadFile(hFile, &WorldMatrix, sizeof(_float4x4), &dwByte, nullptr);
+		ReadFile(hFile, &decalIdx, sizeof(_uint), &dwByte, nullptr);
+
+		if (0 == dwByte)
+			break;
+
+		CDecal::DECAL_DESC pDesc{};
+
+		pDesc.mWorldMatrix = WorldMatrix;
+		pDesc.iDecalIdx = decalIdx;
+
+		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Decal"), TEXT("Prototype_GameObject_Decal"), &pDesc)))
+			return E_FAIL;
+	}
+
+	CloseHandle(hFile);
+
+
+#ifdef _DEBUG
+	//MSG_BOX("Decal Data Loaded");
+#endif
+	return S_OK;
+
+}
 HRESULT CLevel_GrassLand::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, strLayerTag, TEXT("Prototype_GameObject_Terrain"))))

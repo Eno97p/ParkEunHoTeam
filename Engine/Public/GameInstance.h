@@ -209,6 +209,7 @@ public: // Sound Mgr
 	void Enable_Echo();	//에코 활성화
 	void Disable_Echo();	//에코 비활성화
 	void Set_Echo_Param(_float delay, _float wetLevel); //에코 딜레이(밀리초 단위), 메아리소리 볼륨
+	void Set_OffSet(_float fOffSet); //사운드 오프셋 조절
 public:	//for UISorter 박은호
 	HRESULT Add_UI(class CGameObject* ui, UISORT_PRIORITY type);
 

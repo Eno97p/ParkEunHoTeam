@@ -78,7 +78,7 @@ void CSoundMgr::PlayBGM(const TCHAR* pSoundKey, _float fVolume)
 	FMOD_Channel_SetMode(m_pChannelArr[SOUND_BGM], FMOD_LOOP_NORMAL);
 
 	FMOD_Channel_SetPriority(m_pChannelArr[SOUND_BGM], 255);
-	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], m_fVolume[SOUND_BGM] * fVolume * max(0.0f,m_fOffSet));
+	FMOD_Channel_SetVolume(m_pChannelArr[SOUND_BGM], m_fVolume[SOUND_BGM] * fVolume);
 	FMOD_System_Update(m_pSystem);
 }
 

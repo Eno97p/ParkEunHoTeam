@@ -217,8 +217,8 @@ HRESULT CLevel_GamePlay::Ready_Light()
 
 HRESULT CLevel_GamePlay::Ready_Layer_Terrain(const wstring& strLayerTag)
 {
-    //if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
-    //    return E_FAIL;
+    if(FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Terrain")))) // , &pDesc
+        return E_FAIL;
 
     if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_Sky"))))
         return E_FAIL;
@@ -830,7 +830,7 @@ HRESULT CLevel_GamePlay::Load_Data_Effects()
 
 HRESULT CLevel_GamePlay::Save_Data_Decals()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_GrassLand_Decals.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_WRITE, NULL, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (nullptr == hFile)
         return E_FAIL;
@@ -879,7 +879,7 @@ HRESULT CLevel_GamePlay::Save_Data_Decals()
 
 HRESULT CLevel_GamePlay::Load_Data_Decals()
 {
-    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_Ackbar_Decals.bin";
+    const wchar_t* wszFileName = L"../Bin/MapData/DecalsData/Stage_GrassLand_Decals.bin";
     HANDLE hFile = CreateFile(wszFileName, GENERIC_READ, NULL, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (INVALID_HANDLE_VALUE == hFile)
         return E_FAIL;

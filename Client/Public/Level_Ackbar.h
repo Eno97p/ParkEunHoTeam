@@ -36,6 +36,8 @@ private:
 	HRESULT Load_LevelData(const _tchar* pFilePath);
 	HRESULT Load_Data_Effects();
 
+	HRESULT Load_Data_Decals();
+
 	void Load_Lights();
 
 private:

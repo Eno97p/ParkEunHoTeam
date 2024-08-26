@@ -519,6 +519,18 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 		m_pGameInstance->Set_MainCamera(CAM_THIRDPERSON);
 		if (m_bAnimFinished)
 		{
+			switch (m_pGameInstance->Get_CurrentLevel())
+			{
+			case LEVEL_GAMEPLAY:
+				m_pGameInstance->StopAll();
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
+			case LEVEL_ACKBAR:
+				m_pGameInstance->StopAll();
+				m_pGameInstance->Disable_Echo();
+				m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
+			}
+
 			m_iState = STATE_IDLE;
 			return SUCCESS;
 		}
@@ -559,8 +571,6 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 				}
 				//else	//불러온 데이터가 없을 때는 아래서 처리
 			}
-			
-			
 		}
 
 
@@ -573,15 +583,7 @@ NodeStates CPlayer::Dead(_float fTimeDelta)
 			{
 				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_JUGGLAS)
 				{
-					list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
-					if (!fallPlatforms.empty())
-					{
-						CGameObject* fallPlatform = fallPlatforms.front();
-						CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
-						_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
-						fallPos.m128_f32[1] = -25.f;
-						fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
-					}
+
 				}
 
 				CUI_Manager::GetInstance()->Create_FadeInOut_Dissolve(false); // 내부에서 한 번만 실행되도록 해둠
@@ -1743,7 +1745,7 @@ NodeStates CPlayer::RAttack(_float fTimeDelta)
 void CPlayer::Generate_HoverBoard()
 {
 	// >>> 디버깅 용이라 현재는 아이템 사용 X 나중에 Key 관련 부분 지우고 Tick마다 호출 막아야 함 <<<
-	if (m_pGameInstance->Get_DIKeyState(DIK_DOWN) && m_fButtonCooltime == 0.f && !m_bRided)
+	if (/*m_pGameInstance->Get_DIKeyState(DIK_DOWN) && */m_fButtonCooltime == 0.f && !m_bRided)
 	{
 		m_fButtonCooltime = 0.001f;
 		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1773,7 +1775,7 @@ NodeStates CPlayer::Slide(_float fTimeDelta)
 		return COOLING;
 	}
 
-	Generate_HoverBoard();
+	//Generate_HoverBoard();
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_F) && m_fButtonCooltime == 0.f && m_pHoverBoard)
 	{

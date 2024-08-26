@@ -61,6 +61,15 @@ void CUI_Setting_Sound::Tick(_float fTimeDelta)
 
 	if (nullptr != m_pBar)
 		m_pBar->Tick(fTimeDelta);
+
+	
+	_float fMin = (g_iWinSizeX >> 1) - fRANGE;
+	_float fMax = (g_iWinSizeX >> 1) + fRANGE;
+
+	_float fOffSet = (m_fX - fMin) / (fMax - fMin);
+
+	//m_pGameInstance->SetChannelVolume(SOUND_BGM, fOffSet);
+
 }
 
 void CUI_Setting_Sound::Late_Tick(_float fTimeDelta)

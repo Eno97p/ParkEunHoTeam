@@ -10,7 +10,7 @@ class CSideViewCamera final : public CCamera
 {
 public:
 	enum class CAMERA_PHASE { CAMERA_FOLLOW = 0, CAMERA_REVOLUTION, CAMERA_RETURN, CAMERA_ZOOMIN, CAMERA_END };
-
+    enum SIDEVIEW_STATE { SV_UP, SV_DOWN, SV_IDLE, SV_END };
 public:
 	typedef struct THIRDPERSONCAMERA_DESC : public CCamera::CAMERA_DESC
 	{
@@ -38,6 +38,8 @@ public:
 
 public:
     void Set_CameraHeight(_float fHeight) { m_fHeightOffset = fHeight; }
+    void Phase_Two_Height_Offset();
+    void Phase_Two_Back_To_Origin();
 
 public:
     void Set_BossScene(bool bBossScene)
@@ -85,6 +87,7 @@ private:
     _float m_fBossHeightOffset = 8.5f;
     _float m_fBossZPosition = 12.5f;
     _float4 m_vFixedLookAtPosition = { -422.f, 73.f, -5.f, 1.f };
+    SIDEVIEW_STATE m_eSideViewState = SV_END;
 
 public:
 	static CSideViewCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

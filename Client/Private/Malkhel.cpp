@@ -69,6 +69,7 @@ HRESULT CMalkhel::Initialize(void* pArg)
 	m_bPlayerIsFront = true;
 	
 	m_pTransformCom->Set_Scale(1.5f, 1.5f, 1.5f);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(180.f));
 
 	return S_OK;
 }
@@ -160,7 +161,7 @@ void CMalkhel::Late_Tick(_float fTimeDelta)
 	m_pPhysXCom->Late_Tick(fTimeDelta);
 	m_fLengthFromPlayer = XMVectorGetX(XMVector3Length(m_pPlayerTransform->Get_State(CTransform::STATE_POSITION) - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
+	//if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
 		for (auto& pPartObject : m_PartObjects)
 			pPartObject->Late_Tick(fTimeDelta);

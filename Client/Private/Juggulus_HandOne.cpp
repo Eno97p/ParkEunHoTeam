@@ -412,15 +412,22 @@ HRESULT CJuggulus_HandOne::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_AABB;
-	ColliderDesc.vExtents = _float3(0.8f, 0.3f, 0.8f);
+	ColliderDesc.vExtents = _float3(1.f, 0.3f, 1.f);
 	ColliderDesc.vCenter = _float3(0.f, ColliderDesc.vExtents.y + 15.5f, 0.f);
 
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pHitColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
+	/* For.Com_Collider */
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc2{};
+
+	ColliderDesc2.eType = CCollider::TYPE_AABB;
+	ColliderDesc2.vExtents = _float3(0.5f, 0.3f, 0.5f);
+	ColliderDesc2.vCenter = _float3(0.f, ColliderDesc2.vExtents.y + 15.5f, 0.f);
+
 	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider2"), reinterpret_cast<CComponent**>(&m_pAttackColliderCom), &ColliderDesc)))
+		TEXT("Com_Collider2"), reinterpret_cast<CComponent**>(&m_pAttackColliderCom), &ColliderDesc2)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_BehaviorTree"),

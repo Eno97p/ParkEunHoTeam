@@ -33,7 +33,7 @@ HRESULT CHomonculus::Initialize(void* pArg)
 	pDesc->fSpeedPerSec = 3.f; // 수정 필요
 	pDesc->fRotationPerSec = XMConvertToRadians(90.0f);
 
-	m_fMaxHp = 200.f;
+	m_fMaxHp = 100.f;
 	m_fCurHp = m_fMaxHp;
 
 	if (FAILED(__super::Initialize(pDesc)))

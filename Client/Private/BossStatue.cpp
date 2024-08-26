@@ -78,18 +78,10 @@ void CBossStatue::Tick(_float fTimeDelta)
 	}
 
 	// Sign UI 관련 함수
-	if(!m_bActive)
+	if(m_bActive && nullptr != m_pSignUI)
 	{
-		// Sigh UI 제거
-		if (nullptr != m_pSignUI)
-		{
-			Safe_Release(m_pSignUI);
-			m_pSignUI = nullptr;
-		}
-	}
-
-	if (nullptr != m_pSignUI)
 		m_pSignUI->Tick(fTimeDelta);
+	}
 }
 
 void CBossStatue::Late_Tick(_float fTimeDelta)

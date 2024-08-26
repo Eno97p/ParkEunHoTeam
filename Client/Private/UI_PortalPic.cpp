@@ -33,8 +33,6 @@ HRESULT CUI_PortalPic::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), pDesc->fAngle);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, pDesc->vPos);
 
-	//Setting_Pos();
-
 	return S_OK;
 }
 
@@ -147,39 +145,6 @@ HRESULT CUI_PortalPic::Bind_ShaderResources()
 		return E_FAIL;
 
 	return S_OK;
-}
-
-void CUI_PortalPic::Setting_Pos()
-{
-	LEVEL eCurrentLevel = static_cast<LEVEL>(CGameInstance::GetInstance()->Get_CurrentLevel());
-	_vector vPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-
-	// Level에 따라 위치와 사진 변화
-
-	switch (eCurrentLevel)
-	{
-	case Client::LEVEL_GAMEPLAY:
-		m_iPicNum = 0;
-		vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 190.f);
-		break;
-	case Client::LEVEL_ACKBAR:
-		m_iPicNum = 0;
-		vPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		break;
-	case Client::LEVEL_JUGGLAS:
-		m_iPicNum = 0;
-		vPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		break;
-	case Client::LEVEL_GRASSLAND:
-		m_iPicNum = 0;
-		vPos = XMVectorSet(0.f, 0.f, 0.f, 0.f);
-		break;
-	default:
-		break;
-	}
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 }
 
 CUI_PortalPic* CUI_PortalPic::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

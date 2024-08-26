@@ -76,6 +76,24 @@ HRESULT CLevel_GrassLand::Initialize()
 	{
 		if (FAILED(Ready_Lights()))
 			return E_FAIL;
+
+		CRenderer::FOG_DESC fogDesc{};
+		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
+		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
+		fogDesc.fFogRange = 2300.f;
+		fogDesc.fFogHeightFalloff = 0.0f;
+		fogDesc.fFogGlobalDensity = 0.9f;
+		fogDesc.fFogTimeOffset = 1.154f;
+		fogDesc.fFogTimeOffset2 = 3.462f;
+		fogDesc.fNoiseIntensity = 1.731f;
+		fogDesc.fNoiseIntensity2 = 1.923f;
+		fogDesc.fNoiseSize = 0.001f;
+		fogDesc.fNoiseSize2 = 0.001f;
+		fogDesc.fFogBlendFactor = 0.284f;
+		m_pGameInstance->Set_FogOption(fogDesc);
+
+		m_pGameInstance->Disable_Echo();
+		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 	}
 
 
@@ -360,26 +378,7 @@ HRESULT CLevel_GrassLand::Ready_Fog()
 		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_BackGround"), TEXT("Prototype_GameObject_BackGround_Moon"))))
 			return E_FAIL;
 	}
-	else
-	{
-		CRenderer::FOG_DESC fogDesc{};
-		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
-		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
-		fogDesc.fFogRange = 2300.f;
-		fogDesc.fFogHeightFalloff = 0.0f;
-		fogDesc.fFogGlobalDensity = 0.9f;
-		fogDesc.fFogTimeOffset = 1.154f;
-		fogDesc.fFogTimeOffset2 = 3.462f;
-		fogDesc.fNoiseIntensity = 1.731f;
-		fogDesc.fNoiseIntensity2 = 1.923f;
-		fogDesc.fNoiseSize = 0.001f;
-		fogDesc.fNoiseSize2 = 0.001f;
-		fogDesc.fFogBlendFactor = 0.284f;
-		m_pGameInstance->Set_FogOption(fogDesc);
 
-		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
-	}
 
 
 

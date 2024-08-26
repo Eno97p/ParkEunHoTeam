@@ -33,7 +33,7 @@ HRESULT CRadamantheSword::Initialize(void* pArg)
 	m_pTransformCom->Scaling(0.5f, 0.5f, 0.5f);
 	m_pTransformCom->Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(90.f));
 
-	m_fDamage = 5.f;
+	m_fDamage = 8.f;
 
 	return S_OK;
 }

@@ -415,13 +415,13 @@ HRESULT CLevel_Jugglas::Ready_LandObjects()
 
 	_uint arraySize = sizeof(fPosArray) / sizeof(_float3);
 
-	CItem::ITEM_DESC desc;
-	for (_uint i = 0; i < arraySize; i++)
-	{
-		desc.vPosition = fPosArray[i];
-		if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
-			return E_FAIL;
-	}
+	//CItem::ITEM_DESC desc;
+	//for (_uint i = 0; i < arraySize; i++)
+	//{
+	//	desc.vPosition = fPosArray[i];
+	//	if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_JUGGLAS, TEXT("Layer_Item"), TEXT("Prototype_GameObject_Item"), &desc)))
+	//		return E_FAIL;
+	//}
 
 			 -63.043f, -0.08f, -1.715f 		;	
 			 -73.063f, -10.458f, -2.202f 	;

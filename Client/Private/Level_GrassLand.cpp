@@ -81,7 +81,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		CRenderer::FOG_DESC fogDesc{};
 		fogDesc.vFogColor = { 196.f / 255.f, 233.f / 255.f, 255.f / 255.f, 1.f };
 		fogDesc.vFogColor2 = { 94.f / 255.f, 160.f / 255.f, 255.f / 255.f, 1.f };
-		fogDesc.fFogRange = 2300.f;
+		fogDesc.fFogRange = 5000.f;
 		fogDesc.fFogHeightFalloff = 0.0f;
 		fogDesc.fFogGlobalDensity = 0.9f;
 		fogDesc.fFogTimeOffset = 1.154f;
@@ -93,6 +93,7 @@ HRESULT CLevel_GrassLand::Initialize()
 		fogDesc.fFogBlendFactor = 0.284f;
 		m_pGameInstance->Set_FogOption(fogDesc);
 
+		m_pGameInstance->StopAll();
 		m_pGameInstance->Disable_Echo();
 		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 	}
@@ -127,6 +128,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 
 	Load_Data_Effects();
+	//Load_Data_Decals();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -338,7 +340,6 @@ HRESULT CLevel_GrassLand::Ready_Layer_Camera(const wstring & strLayerTag)
 
 HRESULT CLevel_GrassLand::Ready_Fog()
 {
-	m_pGameInstance->StopAll();
 	LEVEL ePreLevel = m_pUI_Manager->GetPrevLevel();
 	if (ePreLevel == LEVEL_JUGGLAS)
 	{

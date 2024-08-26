@@ -217,7 +217,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_JUGGLAS_SPAWNSECONDROOM:
 				{
-					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Trap"));
+					m_pGameInstance->Clear_Layer(LEVEL_JUGGLAS, TEXT("Layer_Trap"));
 
 					CMap_Element::MAP_ELEMENT_DESC pDesc{};
 					_float4x4* vMat = new _float4x4();
@@ -408,15 +408,6 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 						dynamic_cast<CBoss_Juggulus*>(juggulus.front())->Juggulus_Activate();
 					}
 
-					list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
-					if (!fallPlatforms.empty())
-					{
-						CGameObject* fallPlatform = fallPlatforms.front();
-						CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
-						_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
-						fallPos.m128_f32[1] = 50.f;
-						fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
-					}
 				}
 				break;
 				case TRIG_CUTSCENE_GRASSLAND:
@@ -429,7 +420,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					pTCDesc.fFovy = XMConvertToRadians(60.f);
 					pTCDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 					pTCDesc.fNear = 0.1f;
-					pTCDesc.fFar = 3000.f;
+					pTCDesc.fFar = 10000.f;
 
 					pTCDesc.fSpeedPerSec = 40.f;
 					pTCDesc.fRotationPerSec = XMConvertToRadians(90.f);
@@ -557,12 +548,6 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 					m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-4.wav"), SOUND_EFFECT);
 					m_pGameInstance->Play_Effect_Sound(TEXT("tada-fanfare.mp3"), SOUND_EFFECT, 0.0f, 0.0f,0.8f);
 
-
-					EFFECTMGR->Generate_Particle(135, _float4(-196.f, 579.394f, -866.666f, 1.f));
-					EFFECTMGR->Generate_Particle(136, _float4(-179.5f, 582.4f, -866.666f, 1.f));
-					EFFECTMGR->Generate_Particle(137, _float4(-165.f, 581.f, -857.f, 1.f));
-					EFFECTMGR->Generate_Particle(138, _float4(-173.f, 594.f, -838.f, 1.f));
-					EFFECTMGR->Generate_Particle(139, _float4(-173.f, 626.f, -853.f, 1.f));
 
 				}
 				break;

@@ -56,7 +56,7 @@ HRESULT CBoss_Juggulus::Initialize(void* pArg)
 	if (FAILED(Add_Nodes()))
 		return E_FAIL;
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 300.f;
 	m_fCurHp = m_fMaxHp;
 
 	Create_BossUI(CUIGroup_BossHP::BOSSUI_JUGGULUS);
@@ -97,15 +97,6 @@ void CBoss_Juggulus::Priority_Tick(_float fTimeDelta)
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
-			list<CGameObject*> fallPlatforms = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Platform"));
-			if (!fallPlatforms.empty())
-			{
-				CGameObject* fallPlatform = fallPlatforms.front();
-				CTransform* fallTransform = dynamic_cast<CTransform*>(fallPlatform->Get_Component(TEXT("Com_Transform")));
-				_vector fallPos = fallTransform->Get_State(CTransform::STATE_POSITION);
-				fallPos.m128_f32[1] = -25.f;
-				fallTransform->Set_State(CTransform::STATE_POSITION, fallPos);
-			}
 			m_pGameInstance->Erase(this);
 		}
 	}

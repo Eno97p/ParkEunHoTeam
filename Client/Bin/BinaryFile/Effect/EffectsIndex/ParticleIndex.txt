@@ -130,3 +130,6 @@
 129. AndrasArenaBlow
 130. JugglusShieldBreak
 131. Cloud
+132. PlayerTeleport
+133. PlayerTeleportRing
+134. PlayerTeleportRingring

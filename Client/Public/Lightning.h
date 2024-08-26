@@ -40,6 +40,7 @@ private:
 	CCollider* m_pColliderCom = { nullptr };
 
 	_float m_fLightningDelay = 2.f;
+	CGameObject* Particle = nullptr;
 
 public:
 	HRESULT Add_Components();

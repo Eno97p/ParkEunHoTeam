@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "EffectManager.h"
 #include "Monster.h"
+#include "Particle.h"
 
 CLightning::CLightning(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon{ pDevice, pContext }
@@ -39,6 +40,12 @@ HRESULT CLightning::Initialize(void* pArg)
 	Safe_AddRef(m_pPlayer);
 	m_pPlayerTransform = dynamic_cast<CTransform*>(m_pPlayer->Get_Component(TEXT("Com_Transform")));
 
+
+	_float4 vParticlePos;
+	XMStoreFloat4(&vParticlePos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	Particle = EFFECTMGR->Generate_Particle(131, vParticlePos, this);
+
+
 	return S_OK;
 }
 
@@ -72,7 +79,10 @@ void CLightning::Tick(_float fTimeDelta)
 		}
 
 		m_pGameInstance->Erase(this);
+		static_cast<CParticle*>(Particle)->Set_Target(nullptr);
+		static_cast<CParticle*>(Particle)->Set_Delete();
 	}
+
 }
 
 void CLightning::Late_Tick(_float fTimeDelta)
@@ -215,4 +225,6 @@ void CLightning::Free()
 	Safe_Release(m_pVIBufferCom);
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pColliderCom);
+
+
 }

@@ -232,7 +232,7 @@ NodeStates CJuggulus_HandOne::Hit(_float fTimeDelta)
 		EFFECTMGR->Generate_Particle(1, ParticlePs, nullptr);
 		EFFECTMGR->Generate_Particle(2, ParticlePs, nullptr);
 		EFFECTMGR->Generate_Particle(7, ParticlePs);
-		Add_Hp(-10);
+		Add_Hp(-dynamic_cast<CWeapon*>(m_pPlayer->Get_Weapon())->Get_Damage());
 		dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(0.3f, 0.15f);
 		break;
 	default:

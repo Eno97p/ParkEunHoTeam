@@ -92,6 +92,8 @@ void CTrap::Tick(_float fTimeDelta)
 			EFFECTMGR->Generate_Particle(30, vPartPos);
 			EFFECTMGR->Generate_Particle(42, vPartPos);
 			EFFECTMGR->Generate_Particle(43, vPartPos);
+			m_pGameInstance->Disable_Echo();
+			m_pGameInstance->Play_Effect_Sound(TEXT("Smashing.mp3"), SOUND_EFFECT);
 		}
 	}
 

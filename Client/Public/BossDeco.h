@@ -52,6 +52,8 @@ private:
 	_bool m_bDissolve = false;
 	_uint m_iShaderPath = 0;
 
+	_bool m_bBloom = false;
+
 private:
 	HRESULT Add_Components(MAP_ELEMENT_DESC* desc);
 	HRESULT Bind_ShaderResources();

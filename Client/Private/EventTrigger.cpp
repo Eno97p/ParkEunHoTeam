@@ -217,6 +217,8 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				break;
 				case TRIG_JUGGLAS_SPAWNSECONDROOM:
 				{
+					m_pGameInstance->Clear_Layer(LEVEL_GRASSLAND, TEXT("Layer_Trap"));
+
 					CMap_Element::MAP_ELEMENT_DESC pDesc{};
 					_float4x4* vMat = new _float4x4();
 					XMStoreFloat4x4(vMat, XMMatrixIdentity() * XMMatrixScaling(0.8f, 0.8f, 0.8f));

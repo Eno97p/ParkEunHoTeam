@@ -126,7 +126,7 @@ void CBlastWall::Tick(_float fTimeDelta)
 					EFFECTMGR->Generate_Particle(56, ParticlePos);
 					Broken_Wall();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->Play_Effect_Sound(TEXT("wavHit3.ogg"), SOUND_EFFECT);
+					m_pGameInstance->Play_Effect_Sound(TEXT("BlastWall.mp3"), SOUND_EFFECT);
 					m_bIsHit = true;
 					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Shake_Camera(1.f, 0.2f);
 

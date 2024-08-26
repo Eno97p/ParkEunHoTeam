@@ -127,7 +127,7 @@ void CTreasureChest::Late_Tick(_float fTimeDelta)
 					m_bChestOpened = true;
 					m_pGameInstance->Disable_Echo();
 					m_pGameInstance->Play_Effect_Sound(TEXT("OpenChest.ogg"), SOUND_EFFECT);
-					Drop_Item();
+					//Drop_Item();
 				}
 
 				m_pActivateUI->Late_Tick(fTimeDelta);

@@ -132,6 +132,9 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
         case SCENE_MALKHEL_DESCEND:
         {
             dynamic_cast<CMalkhel*>(m_pGameInstance->Get_GameObjects_Ref(LEVEL_GRASSLAND, TEXT("Layer_Monster")).front())->Activate_Malkhel();
+
+            // UI BossText »ý¼º
+            CUI_Manager::GetInstance()->Create_BossText(true);
         }
         break;
         case SCENE_GRASSLAND_HANGAROUND:

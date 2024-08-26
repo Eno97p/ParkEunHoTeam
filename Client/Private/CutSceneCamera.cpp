@@ -52,7 +52,7 @@ void CCutSceneCamera::Tick(_float fTimeDelta)
 {
     if (m_pGameInstance->Key_Down(DIK_M))
     {
-        StartIntenseShaking(2.0f, 0.8f); // 2초 동안 5배 강한 셰이킹 적용
+        StartIntenseShaking(2.0f, 5.f); // 2초 동안 5배 강한 셰이킹 적용
     }
 
     fTimeDelta /= fSlowValue;

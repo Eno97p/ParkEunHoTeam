@@ -1,5 +1,6 @@
 #include "NeedleSpawner.h"
 #include "GameInstance.h"
+#include "ThirdPersonCamera.h"
 
 CNeedleSpawner::CNeedleSpawner(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CBlendObject(pDevice, pContext)
@@ -60,6 +61,7 @@ void CNeedleSpawner::Tick(_float fTimeDelta)
 
 	if (m_fLifeTimeRatio > m_OwnDesc->SpawnTiming && !Spawned)
 	{
+		dynamic_cast<CThirdPersonCamera*>(m_pGameInstance->Get_Cameras()[CAM_THIRDPERSON])->Shake_Camera(0.3f, 0.01f, 0.01f, 80.f);
 		m_pGameInstance->CreateObject(m_pGameInstance->Get_CurrentLevel(),
 			TEXT("Layer_Effect"), TEXT("Prototype_GameObject_Hedgehog"), &m_OwnDesc->ChildDesc);
 		Spawned = true;

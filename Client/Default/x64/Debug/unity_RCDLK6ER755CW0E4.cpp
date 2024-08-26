@@ -435,6 +435,9 @@
 #include "E:\3D_ShatteredNew\Client\Private\Tree.cpp"
 
 
+#include "E:\3D_ShatteredNew\Client\Private\UIGroup_BossText.cpp"
+
+
 #include "E:\3D_ShatteredNew\Client\Private\UIGroup_BuffTimer.cpp"
 
 
@@ -481,6 +484,12 @@
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_BossShield.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_BossTextBG.cpp"
+
+
+#include "E:\3D_ShatteredNew\Client\Private\UI_BossTextBox.cpp"
 
 
 #include "E:\3D_ShatteredNew\Client\Private\UI_Broken.cpp"

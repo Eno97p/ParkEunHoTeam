@@ -47,6 +47,7 @@ public:
 		_uint		iEtherDmg  ;
 
 		_float		fCurHP;
+		_float      fCurMP;
 
 		Player_Status_Data() = default;
 		

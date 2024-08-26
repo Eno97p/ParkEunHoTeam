@@ -75,6 +75,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		m_iPhysicalDmg = get<0>(*LoadPlayerData).iPhysicalDmg;
 		m_iEtherDmg = get<0>(*LoadPlayerData).iEtherDmg;
 		m_fCurHp = get<0>(*LoadPlayerData).fCurHP;
+		m_fCurMp = get<0>(*LoadPlayerData).fCurMP;
 
 	}
 	//m_tPlayerStatusData.isReviveFadeing = m_isReviveFadeing;
@@ -87,6 +88,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 	m_tPlayerStatusData.fCurHP = m_fCurHp;
+	m_tPlayerStatusData.fCurMP = m_fCurMp;
 
 
 
@@ -448,6 +450,7 @@ CPlayer::Player_Status_Data CPlayer::Get_PlayerStatusData()
 	m_tPlayerStatusData.iPhysicalDmg = m_iPhysicalDmg;
 	m_tPlayerStatusData.iEtherDmg = m_iEtherDmg;
 	m_tPlayerStatusData.fCurHP = m_fCurHp;
+	m_tPlayerStatusData.fCurMP = m_fCurMp;
 
 	return m_tPlayerStatusData;
 }

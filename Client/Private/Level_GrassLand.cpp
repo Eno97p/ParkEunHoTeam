@@ -410,7 +410,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.fAngle = 100.f; // 190
 		pUIDesc.vPos = XMVectorSet(189.9f, 355.7f, 638.f, 1.f); // 225.1f, 7.71f, -151.766f
 		pUIDesc.fScale = _float2(7.5f, 9.f);
-		//CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
+		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
 	}
 
 	//For .Jugglas

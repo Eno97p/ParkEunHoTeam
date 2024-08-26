@@ -86,7 +86,7 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 			_float4 SpawnPos;
 			XMStoreFloat4(&SpawnPos, vStartPosition - playerLook);
 			
-			SpawnPos.y += 10.f;
+			SpawnPos.y += 5.f;
 
 			EFFECTMGR->Generate_BlackHole(0, SpawnPos, LEVEL_GRASSLAND);
 

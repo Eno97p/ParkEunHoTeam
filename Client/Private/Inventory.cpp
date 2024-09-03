@@ -82,7 +82,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD, false); 
 
 	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD, false);
-	Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD, false);
+	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD, false);
 	//Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD, false);
 
 	CItemData::ITEMDATA_DESC pDesc{};
@@ -97,7 +97,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	// Skill
 	Add_Skill(CItemData::ITEMNAME_OPH, false);
-	Add_Skill(CItemData::ITEMNAME_AKSHA);
+	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
 	//Add_DropItem(CItem::ITEM_ESSENCE);
@@ -107,18 +107,18 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//Add_DropItem(CItem::ITEM_BUFF2);
 	//Add_DropItem(CItem::ITEM_BUFF3);
 	//Add_DropItem(CItem::ITEM_BUFF4);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	//Add_DropItem(CItem::ITEM_ESSENCE);
-	//Add_DropItem(CItem::ITEM_ETHER);
-	Add_DropItem(CItem::ITEM_UPGRADE2);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	////Add_DropItem(CItem::ITEM_ESSENCE);
+	////Add_DropItem(CItem::ITEM_ETHER);
+	//Add_DropItem(CItem::ITEM_UPGRADE2);
 	//
-	for(size_t i = 0; i < 5; ++i)
-		Add_Item(CItemData::ITEMNAME_CATALYST);
+	//for(size_t i = 0; i < 5; ++i)
+	//	Add_Item(CItemData::ITEMNAME_CATALYST);
 
 	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
-	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
-	Add_Item(CItemData::ITEMNAME_FIREFLY);
+	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
+	//Add_Item(CItemData::ITEMNAME_FIREFLY);
 
 	return S_OK;
 }

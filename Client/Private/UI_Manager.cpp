@@ -293,6 +293,9 @@ void CUI_Manager::Resset_Player()
 
 _bool CUI_Manager::Get_isUIOpen()
 {
+	// !!!!!!!!!!!!!!!!!!!! 여기서 Shop에 대한 처리도 해야 하지 않을 지 !!!!!!!!!!!!!!!!!!!!
+	
+
 	// UI가 켜져있는지 활성화에 대한 여부를 반환하는 함수
 	map<string, CUIGroup*>::iterator menu = m_mapUIGroup.find("Menu");
 	map<string, CUIGroup*>::iterator quick = m_mapUIGroup.find("Quick");

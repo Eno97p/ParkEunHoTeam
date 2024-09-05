@@ -1555,7 +1555,7 @@ NodeStates CPlayer::RChargeAttack(_float fTimeDelta)
 				vDir.m128_f32[1] = 0.f;
 				_float fLength = XMVectorGetX(XMVector3Length(vDir));
 
-				if (fLength > 20.f || fLength < 1.f || m_fRChargeAttack > 0.6f)
+				if (fLength > 20.f || fLength < 2.f || m_fRChargeAttack > 0.6f)
 				{
 					m_bChase = false;
 				}

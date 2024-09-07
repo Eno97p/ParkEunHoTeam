@@ -81,13 +81,14 @@
     <OutDir>..\Bin\</OutDir>
     <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
+    <TargetName>ShatteredCopyProject</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Bin\Release\</OutDir>
+    <OutDir>..\Bin\</OutDir>
     <IncludePath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Program Files (x86)\Visual Leak Detector\include;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.8\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -131,8 +132,7 @@
     </FxCompile>
     <PreBuildEvent>
       <Command>
-cd /d $(SolutionDir)
-call Copy_Client.bat</Command>
+      </Command>
     </PreBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
@@ -185,8 +185,7 @@ call Copy_Client.bat</Command>
     </FxCompile>
     <PreBuildEvent>
       <Command>
-cd /d $(SolutionDir)
-call Copy_Client.bat</Command>
+      </Command>
     </PreBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>

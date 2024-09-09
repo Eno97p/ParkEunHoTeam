@@ -101,7 +101,7 @@ void CGroundSlash::Late_Tick(_float fTimeDelta)
 
 	if (m_pColliderCom->Intersect(m_pPlayer->Get_Collider()) == CCollider::COLL_START)
 	{
-		m_pPlayer->PlayerHit(10);
+		m_pPlayer->PlayerHit(50);
 	}
 
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));

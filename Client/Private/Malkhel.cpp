@@ -76,6 +76,11 @@ HRESULT CMalkhel::Initialize(void* pArg)
 
 void CMalkhel::Priority_Tick(_float fTimeDelta)
 {
+
+	_vector vPp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//마켈 앰비언트 조명 포지션 업데이트
+	m_pGameInstance->Update_LightPos(2, (vPp));
+
 	if (m_fDeadDelay < 2.f)
 	{
 		m_fDeadDelay -= fTimeDelta;
@@ -109,6 +114,7 @@ void CMalkhel::Priority_Tick(_float fTimeDelta)
 			pDesc.TriggerType = CEventTrigger::TRIG_SCENE_CHANGE_FOR_ANDRASARENA;
 			m_pGameInstance->Add_CloneObject(LEVEL_GRASSLAND, TEXT("Layer_Trigger"), TEXT("Prototype_GameObject_EventTrigger"), &pDesc);
 
+			m_pGameInstance->LightOff(2);
 			m_pGameInstance->Erase(this);
 		}
 	}

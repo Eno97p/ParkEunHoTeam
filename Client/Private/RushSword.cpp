@@ -123,7 +123,7 @@ void CRushSword::Tick(_float fTimeDelta)
 		m_eColltype = m_pColliderCom->Intersect(m_pPlayer->Get_Collider());
 		if (m_eColltype == CCollider::COLL_START)
 		{
-			m_pPlayer->PlayerHit(10);
+			m_pPlayer->PlayerHit(15);
 		}
 	}
 }

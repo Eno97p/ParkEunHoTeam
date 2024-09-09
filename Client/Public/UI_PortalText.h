@@ -9,6 +9,7 @@ class CUI_PortalText final : public CUI
 public:
 	typedef struct UI_PortalText_Desc : public UI_DESC
 	{
+		_float	fDistance;
 		_vector vPos;
 		LEVEL	ePortalLevel;
 	}UI_PORTALTEXT_DESC;

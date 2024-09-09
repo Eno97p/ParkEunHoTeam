@@ -84,6 +84,8 @@ void CNpc_Valnir::Tick(_float fTimeDelta)
 			// 사라질 때 스르륵 하려면 추가 처리 필요함
 
 			CGameInstance::GetInstance()->Get_MainCamera()->Activate();
+
+			CUI_Manager::GetInstance()->Set_isShopOn(false);
 		}
 	}
 	else

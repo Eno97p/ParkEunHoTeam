@@ -13,6 +13,7 @@ public:
 		_bool		isPic;
 		_uint		iPicNum;
 		_float		fAngle;
+		_float		fDistance;
 		_float2		fScale;
 		_vector		vPos;
 		LEVEL		ePortalLevel;
@@ -45,7 +46,7 @@ private:
 	LEVEL					m_ePortalLevel = { LEVEL_END };
 
 private:
-	HRESULT					Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos, _float2 fScale);
+	HRESULT					Create_UI(void* pArg); // _bool isPic, _uint iPicNum, _float fAngle, _vector vPos, _float2 fScale
 
 public:
 	static CUIGroup_Portal* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

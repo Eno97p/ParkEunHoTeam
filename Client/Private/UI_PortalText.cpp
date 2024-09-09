@@ -35,6 +35,7 @@ HRESULT CUI_PortalText::Initialize(void* pArg)
 	m_fY = g_iWinSizeY - 150.f;
 	m_fSizeX = 512.f;
 	m_fSizeY = 512.f;
+	m_fDistance = pDesc->fDistance;
 
 	Setting_Position();
 
@@ -118,8 +119,6 @@ HRESULT CUI_PortalText::Bind_ShaderResources()
 
 void CUI_PortalText::Setting_Text(LEVEL ePortalLevel)
 {
-	m_fDistance = 15.f;
-
 	switch (ePortalLevel)
 	{
 	case Client::LEVEL_ACKBAR:
@@ -129,7 +128,6 @@ void CUI_PortalText::Setting_Text(LEVEL ePortalLevel)
 	case Client::LEVEL_JUGGLAS:
 		m_fFontX = 100.f;
 		m_fText = TEXT("Go To Shamra's Grotto");
-		m_fDistance = 50.f;
 		break;
 	case Client::LEVEL_GRASSLAND:
 		m_fFontX = 80.f;

@@ -81,8 +81,8 @@ HRESULT CInventory::Initialize_DefaultItem()
 	
 	Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD, false); 
 
-	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD, false);
-	Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD, false);
+	Add_Weapon(CItemData::ITEMNAME_DURGASWORD, false);
+	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD, false);
 	//Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD, false);
 
 	CItemData::ITEMDATA_DESC pDesc{};
@@ -97,7 +97,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 
 	// Skill
 	Add_Skill(CItemData::ITEMNAME_OPH, false);
-	Add_Skill(CItemData::ITEMNAME_AKSHA);
+	//Add_Skill(CItemData::ITEMNAME_AKSHA);
 
 	//test
 	//Add_DropItem(CItem::ITEM_ESSENCE);
@@ -107,18 +107,18 @@ HRESULT CInventory::Initialize_DefaultItem()
 	//Add_DropItem(CItem::ITEM_BUFF2);
 	//Add_DropItem(CItem::ITEM_BUFF3);
 	//Add_DropItem(CItem::ITEM_BUFF4);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	Add_DropItem(CItem::ITEM_UPGRADE1);
-	//Add_DropItem(CItem::ITEM_ESSENCE);
-	//Add_DropItem(CItem::ITEM_ETHER);
-	Add_DropItem(CItem::ITEM_UPGRADE2);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	//Add_DropItem(CItem::ITEM_UPGRADE1);
+	////Add_DropItem(CItem::ITEM_ESSENCE);
+	////Add_DropItem(CItem::ITEM_ETHER);
+	//Add_DropItem(CItem::ITEM_UPGRADE2);
 	//
 	for(size_t i = 0; i < 5; ++i)
-		Add_Item(CItemData::ITEMNAME_CATALYST);
+		Add_Item(CItemData::ITEMNAME_CATALYST, false);
 
 	//Add_Item(CItemData::ITEMNAME_HOVERBOARD);
-	Add_Item(CItemData::ITEMNAME_HOVERBOARD);
-	Add_Item(CItemData::ITEMNAME_FIREFLY);
+	////Add_Item(CItemData::ITEMNAME_HOVERBOARD);
+	//Add_Item(CItemData::ITEMNAME_FIREFLY);
 
 	return S_OK;
 }
@@ -170,7 +170,7 @@ HRESULT CInventory::Add_DropItem(CItem::ITEM_NAME eItemType)
 	return S_OK;
 }
 
-HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
+HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName, _bool isRend)
 {
 	if (eItemName == CItemData::ITEMNAME_CATALYST)
 	{
@@ -204,17 +204,20 @@ HRESULT CInventory::Add_Item(CItemData::ITEM_NAME eItemName)
 	pDesc.eItemName = eItemName;
 	m_vecItem.emplace_back(dynamic_cast<CItemData*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ItemData"), &pDesc)));
 
-	// UI 출력
-	CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
-	pUIDesc.eLevel = LEVEL_STATIC;
+	if (isRend)
+	{
+		// UI 출력
+		CUIGroup_DropItem::UIGROUP_DROPITEM_DESC pUIDesc{};
+		pUIDesc.eLevel = LEVEL_STATIC;
 
-	vector<CItemData*>::iterator item = m_vecItem.begin();
-	for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
-		++item;
-	pUIDesc.eItemName = (*item)->Get_ItemName();
-	pUIDesc.wszTextureName = (*item)->Get_TextureName();
-	pUIDesc.isItem = true;
-	m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+		vector<CItemData*>::iterator item = m_vecItem.begin();
+		for (size_t i = 0; i < m_vecItem.size() - 1; ++i)
+			++item;
+		pUIDesc.eItemName = (*item)->Get_ItemName();
+		pUIDesc.wszTextureName = (*item)->Get_TextureName();
+		pUIDesc.isItem = true;
+		m_pGameInstance->Add_CloneObject(LEVEL_STATIC, TEXT("Layer_UI"), TEXT("Prototype_GameObject_UIGroup_DropItem"), &pUIDesc);
+	}
 
 	// UI도
 	CUI_Manager::GetInstance()->Update_Inventory_Add(m_vecItem.size() - 1);
@@ -320,6 +323,15 @@ HRESULT CInventory::Add_EquipWeapon(CItemData* pItemData, _uint iEquipSlotIdx)
 
 	// HUD
 	dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Update_WeaponSlot(pItemData->Get_TextureName(), CUIGroup_WeaponSlot::SLOT_WEAPON);
+
+	// Player가 든 칼도 변경하기
+	list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));
+	if (PlayerList.empty())
+		return S_OK;
+
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(PlayerList.front());
+	// HUD의 Icon에 따라 Player가 실제로 들고 있는 Weapon 변경
+	pPlayer->Update_Weapon(pItemData->Get_TextureName());
 
 	return S_OK;
 }

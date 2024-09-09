@@ -99,12 +99,18 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(_float fTimeDelta)
 {
+	_vector vPp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	m_pGameInstance->Set_PlayerPos(vPp);
+
+	//플레이어 앰비언트 조명 포지션 업데이트
+	m_pGameInstance->Update_LightPos(1, (vPp));
+
 	if (CUI_Manager::GetInstance()->Get_isUIOpen())
 	{
 		return;
 	}
 
-	m_pGameInstance->Set_PlayerPos(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	if (m_pGameInstance->Get_DIKeyState(DIK_C) && m_fButtonCooltime == 0.f)
 	{
@@ -764,7 +770,11 @@ NodeStates CPlayer::Counter(_float fTimeDelta)
 
 	if (m_iState == STATE_COUNTER)
 	{
-		Move_Counter();
+		_vector vPos = XMVectorSet(m_pParriedMonsterFloat4x4->_41, m_pParriedMonsterFloat4x4->_42, m_pParriedMonsterFloat4x4->_43, 1.f);
+		if (XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPos)) > 2.f)
+		{
+			Move_Counter();
+		}
 		if (m_fSlowDelay <= 0.2f)
 		{
 			m_fSlowDelay += fTimeDelta;

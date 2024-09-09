@@ -79,11 +79,16 @@ HRESULT CAndras::Initialize(void* pArg)
 
 void CAndras::Priority_Tick(_float fTimeDelta)
 {
+	_vector vPp = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//마켈 앰비언트 조명 포지션 업데이트
+	m_pGameInstance->Update_LightPos(2, (vPp));
+
 	if (m_fDeadDelay < 5.f)
 	{
 		m_fDeadDelay -= fTimeDelta;
 		if (m_fDeadDelay < 0.f)
 		{
+			m_pGameInstance->LightOff(2);
 			m_pGameInstance->Erase(this);
 		}
 	}

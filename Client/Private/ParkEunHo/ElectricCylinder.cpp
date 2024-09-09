@@ -142,7 +142,7 @@ HRESULT CElectricCylinder::Render_Bloom()
 HRESULT CElectricCylinder::Add_Components()
 {
 	/* For.Com_Collider */
-	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::TYPE_OBB;
 	ColliderDesc.vExtents = _float3(0.1f, 0.1f, 1.f);

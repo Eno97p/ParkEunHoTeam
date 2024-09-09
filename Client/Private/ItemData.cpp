@@ -77,6 +77,8 @@ void CItemData::Use_Item(_uint iInvenIdx)
 		{
 			m_iCount -= 1;
 		}
+		else
+			break;
 
 		// 체력 회복
 		list<CGameObject*> PlayerList = m_pGameInstance->Get_GameObjects_Ref(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"));

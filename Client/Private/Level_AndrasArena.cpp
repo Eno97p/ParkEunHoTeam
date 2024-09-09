@@ -214,7 +214,46 @@ HRESULT CLevel_AndrasArena::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	//FireFly Light
+	LIGHT_DESC			LightDesc{};
+
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+	//Player Ambient Light
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(44.f / 255.f, 41.f / 255.f, 50.f / 255.f, 1.f);
+	LightDesc.vAmbient = _float4(155.f / 255.f, 155.f / 255.f, 155.f / 255.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+	m_pGameInstance->Add_Light(LightDesc);
+
+	//Andras Ambient Light
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(-1000.f, -1000.f, -1000.f, 1.f);
+	LightDesc.fRange = 35.f;
+	LightDesc.vDiffuse = _float4(1.f, 227.f / 255.f, 95.f / 255.f, 1.f);
+	//LightDesc.vAmbient = _float4(243.f / 255.f, 177.f / 255.f, 108.f / 255.f, 1.f);
+	LightDesc.vAmbient = _float4(243.f / 255.f, 177.f / 255.f, 108.f / 255.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
  	Load_Lights();
+
+	m_pGameInstance->LightOn(1);
+	m_pGameInstance->LightOn(2);
+
 
 	return S_OK;
 }

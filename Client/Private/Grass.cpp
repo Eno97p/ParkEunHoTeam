@@ -116,7 +116,7 @@ void CGrass::Tick(_float fTimeDelta)
 
 void CGrass::Late_Tick(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONBLEND, this);
+	m_pGameInstance->Add_RenderObject(CRenderer::RENDER_NONDECAL, this);
 }
 
 HRESULT CGrass::Render()

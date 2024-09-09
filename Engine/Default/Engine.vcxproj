@@ -193,7 +193,7 @@ call Copy.bat</Command>
     </FxCompile>
     <PostBuildEvent>
       <Command>cd /d $(SolutionDir)
-call Copy.bat</Command>
+call Copy_Release.bat</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>

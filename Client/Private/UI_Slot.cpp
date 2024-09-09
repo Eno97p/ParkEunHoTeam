@@ -164,9 +164,6 @@ void CUI_Slot::Late_Tick(_float fTimeDelta)
 
 	if (nullptr != m_pEquipSign && m_isEquip && Check_GroupRenderOnAnim())
 		m_pEquipSign->Late_Tick(fTimeDelta);
-
-	//if (nullptr != m_pRedDot)
-	//	m_pRedDot->Late_Tick(fTimeDelta);
 }
 
 HRESULT CUI_Slot::Render()
@@ -572,6 +569,12 @@ void CUI_Slot::Click_BtnEvent()
 
 			// Inventory에서 장착 여부 비활성화 해주기
 			CInventory::GetInstance()->Delete_QuickAccess(m_iInventoryIdx, m_iSlotIdx, m_wszItemName);
+
+			// 인덱스 갱신..?
+			dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotIdx(CUIGroup_WeaponSlot::SLOT_QUICK);
+
+			// HUD에서도 출력 제거 
+			dynamic_cast<CUIGroup_WeaponSlot*>(CUI_Manager::GetInstance()->Get_UIGroup("HUD_WeaponSlot"))->Reset_SlotTexture(CUIGroup_WeaponSlot::SLOT_QUICK);
 		}
 	}
 	else if (SLOT_QUICKINV == m_eSlotType) // Quick Acess의 InvSlot을 클릭한 경우

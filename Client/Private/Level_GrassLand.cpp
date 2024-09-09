@@ -54,7 +54,46 @@ HRESULT CLevel_GrassLand::Initialize()
 		//블러드문 세팅 1 : 라이트
 		m_pGameInstance->LightOff_All();
 
+		//FireFly Light
+		LIGHT_DESC			LightDesc{};
+
+		ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+		LightDesc.fRange = 15.f;
+		LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+		LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+		LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+		m_pGameInstance->Add_Light(LightDesc);
+		m_pGameInstance->LightOff(0);
+
+		//Player Ambient Light
+		ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = _float4(-1000.f, -1000.f, -1000.f, 1.f);
+		LightDesc.fRange = 15.f;
+		LightDesc.vDiffuse = _float4(44.f / 255.f, 41.f / 255.f, 50.f / 255.f, 1.f);
+		LightDesc.vAmbient = _float4(108.f / 255.f, 108.f / 255.f, 108.f / 255.f, 1.f);
+		LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+		m_pGameInstance->Add_Light(LightDesc);
+
+		//Malkhel Ambient Light
+		ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.vPosition = _float4(-1000.f, -1000.f, -1000.f, 1.f);
+		LightDesc.fRange = 30.f;
+		LightDesc.vDiffuse = _float4(218.f / 255.f, 160.f / 255.f, 160.f / 255.f, 1.f);
+		LightDesc.vAmbient = _float4(251.f / 255.f, 181.f / 255.f, 212.f / 255.f, 1.f);
+		LightDesc.vSpecular = _float4(150.f, 60.0f, 60.f, 1.f);
+		m_pGameInstance->Add_Light(LightDesc);
+
 		Load_Lights(L"../Bin/MapData/LightsData/BloodLand_Lights.dat");
+
+		m_pGameInstance->LightOn(1);
+		m_pGameInstance->LightOn(2);
+
 
 		//블러드문 세팅 2 : 포그
 		CRenderer::FOG_DESC fogDesc{};
@@ -128,7 +167,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 
 	Load_Data_Effects();
-	//Load_Data_Decals();
+	Load_Data_Decals();
 
 	m_pUI_Manager->Render_UIGroup(true, "HUD_State");
 	m_pUI_Manager->Render_UIGroup(true, "HUD_WeaponSlot");
@@ -253,7 +292,37 @@ HRESULT CLevel_GrassLand::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 	
+	//FireFly Light
+	LIGHT_DESC			LightDesc{};
+
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+	m_pGameInstance->LightOff(0);
+
+	//Player Ambient Light
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(-1000.f, -1000.f, -1000.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(44.f / 255.f, 41.f / 255.f, 50.f / 255.f, 1.f);
+	LightDesc.vAmbient = _float4(108.f / 255.f, 108.f / 255.f, 108.f / 255.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+	
+
+
  	Load_Lights(L"../Bin/MapData/LightsData/GrassLand_Lights.dat");
+
+	m_pGameInstance->LightOn(1);
 
 	return S_OK;
 }
@@ -409,6 +478,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 0;
 		pUIDesc.fAngle = 100.f; // 190
+		pUIDesc.fDistance = 15.f;
 		pUIDesc.vPos = XMVectorSet(189.9f, 355.7f, 638.f, 1.f); // 225.1f, 7.71f, -151.766f
 		pUIDesc.fScale = _float2(7.5f, 9.f);
 		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
@@ -433,6 +503,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 1; // 1
 		pUIDesc.fAngle = 190.f; // 140 > 150
+		pUIDesc.fDistance = 50.f;
 		pUIDesc.vPos = XMVectorSet(-1489.268f, 470.f, -180.f, 1.f); // -1489.268f, 446.0f, -180.f
 		pUIDesc.fScale = _float2(28.f, 35.f);
 		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);

@@ -184,21 +184,45 @@ HRESULT CLevel_Ackbar::Ready_Lights()
 {
 	m_pGameInstance->Light_Clear();
 
+	//FireFly Light
 	LIGHT_DESC			LightDesc{};
-	
+
 	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
 	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
 	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
-	LightDesc.fRange = 150.f;
+	LightDesc.fRange = 15.f;
 	LightDesc.vDiffuse = _float4(1.f, 1.0f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.7f, 0.7f, 0.7f, 1.f);
-	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
-	
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
 	m_pGameInstance->Add_Light(LightDesc);
 	m_pGameInstance->LightOff(0);
 
+	//Player Ambient Light
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 15.f;
+	LightDesc.vDiffuse = _float4(44.f / 255.f, 41.f / 255.f, 50.f / 255.f, 1.f);
+	LightDesc.vAmbient = _float4(108.f / 255.f, 108.f / 255.f, 108.f / 255.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+	m_pGameInstance->Add_Light(LightDesc);
+
+	//Yantari Ambient Light
+	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	LightDesc.vPosition = _float4(-1000.f, -1000.f, -1000.f, 1.f);
+	LightDesc.fRange = 20.f;
+	LightDesc.vDiffuse = _float4(138.f / 255.f, 138.f / 255.f, 138.f / 255.f, 1.f);
+	LightDesc.vAmbient = _float4(140.f / 255.f, 221.f / 255.f, 221.f / 255.f, 1.f);
+	LightDesc.vSpecular = _float4(0.f, 0.0f, 0.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
 	Load_Lights();
 
+	m_pGameInstance->LightOn(1);
+	m_pGameInstance->LightOn(2);
 
 	//LIGHT_DESC			LightDesc{};
 
@@ -383,6 +407,7 @@ HRESULT CLevel_Ackbar::Ready_Layer_Trigger()
 	pDesc.isPic = true;
 	pDesc.iPicNum = 3;
 	pDesc.fAngle = 230.f; // 190
+	pDesc.fDistance = 15.f;
 	pDesc.vPos = XMVectorSet(223.1f, 7.71f, -155.766f, 1.f); // 225.1f, 7.71f, -151.766f
 	pDesc.fScale = _float2(11.f, 19.f);
 	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);

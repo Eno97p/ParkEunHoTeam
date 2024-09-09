@@ -42,7 +42,7 @@ HRESULT CUIGroup_Portal::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Create_UI(pDesc->isPic, pDesc->iPicNum, pDesc->fAngle, pDesc->vPos, pDesc->fScale)))
+	if (FAILED(Create_UI(pDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -83,25 +83,28 @@ HRESULT CUIGroup_Portal::Render()
 	return S_OK;
 }
 
-HRESULT CUIGroup_Portal::Create_UI(_bool isPic, _uint iPicNum, _float fAngle, _vector vPos, _float2 fScale)
+HRESULT CUIGroup_Portal::Create_UI(void* pArg)
 {
+	UIGROUP_PORTAL_DESC* pDesc = static_cast<UIGROUP_PORTAL_DESC*>(pArg);
+
 	CUI_PortalText::UI_PORTALTEXT_DESC pTextDesc{};
 	pTextDesc.eLevel = LEVEL_STATIC;
-	pTextDesc.vPos = vPos;
+	pTextDesc.vPos = pDesc->vPos;
+	pTextDesc.fDistance = pDesc->fDistance;
 	pTextDesc.ePortalLevel = m_ePortalLevel;
 
 	m_pText = dynamic_cast<CUI_PortalText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalText"), &pTextDesc));
 	if (nullptr == m_pText)
 		return E_FAIL;
 
-	if (isPic) // Pic이 있는 경우
+	if (pDesc->isPic) // Pic이 있는 경우 
 	{
 		CUI_PortalPic::UI_PORTALPIC_DESC pPicDesc{};
 		pPicDesc.eLevel = LEVEL_STATIC;
-		pPicDesc.iPicNum = iPicNum;
-		pPicDesc.fAngle = fAngle;
-		pPicDesc.vPos = vPos;
-		pPicDesc.fScale = fScale;
+		pPicDesc.iPicNum = pDesc->iPicNum;
+		pPicDesc.fAngle = pDesc->fAngle;
+		pPicDesc.vPos = pDesc->vPos;
+		pPicDesc.fScale = pDesc->fScale;
 
 		m_pPic = dynamic_cast<CUI_PortalPic*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UI_PortalPic"), &pPicDesc));
 		if (nullptr == m_pPic)

@@ -400,7 +400,7 @@ void CUI_WPEquipSlot::Click_Event()
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Update_Slot_EquipSign(true); // Equip Sign 활성화
 		dynamic_cast<CUIGroup_Weapon*>(CUI_Manager::GetInstance()->Get_UIGroup("Weapon"))->Set_EquipMode(false); // AlphaBG 비활성화
 	}
-	else // 장착 해제
+	else // 장착 해제 >>>>>>> 이때도 Reset 해주야 하는 거 아님?
 	{
 		_uint iCount = { 0 };
 

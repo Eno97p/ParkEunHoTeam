@@ -409,6 +409,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 0;
 		pUIDesc.fAngle = 100.f; // 190
+		pUIDesc.fDistance = 15.f;
 		pUIDesc.vPos = XMVectorSet(189.9f, 355.7f, 638.f, 1.f); // 225.1f, 7.71f, -151.766f
 		pUIDesc.fScale = _float2(7.5f, 9.f);
 		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);
@@ -433,6 +434,7 @@ HRESULT CLevel_GrassLand::Ready_Layer_Trigger()
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 1; // 1
 		pUIDesc.fAngle = 190.f; // 140 > 150
+		pUIDesc.fDistance = 50.f;
 		pUIDesc.vPos = XMVectorSet(-1489.268f, 470.f, -180.f, 1.f); // -1489.268f, 446.0f, -180.f
 		pUIDesc.fScale = _float2(28.f, 35.f);
 		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);

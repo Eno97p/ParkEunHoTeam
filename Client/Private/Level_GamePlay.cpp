@@ -126,6 +126,7 @@ HRESULT CLevel_GamePlay::Initialize()
 	pDesc.isPic = true;
 	pDesc.iPicNum = 3;
 	pDesc.fAngle = 190.f;
+	pDesc.fDistance = 15.f;
 	pDesc.vPos = XMVectorSet(250.f, 523.f, 97.f, 1.f);
 	pDesc.fScale = _float2(3.7f, 6.f);
 	CUI_Manager::GetInstance()->Create_PortalUI(&pDesc);

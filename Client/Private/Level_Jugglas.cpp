@@ -360,10 +360,11 @@ HRESULT CLevel_Jugglas::Ready_Layer_Trigger()
 		// Portal UI
 		CUIGroup_Portal::UIGROUP_PORTAL_DESC pUIDesc{};
 		pUIDesc.eLevel = LEVEL_STATIC;
-		pUIDesc.ePortalLevel = LEVEL_ACKBAR;
+		pUIDesc.ePortalLevel = LEVEL_GRASSLAND;
 		pUIDesc.isPic = true;
 		pUIDesc.iPicNum = 3;
 		pUIDesc.fAngle = 110.f; // 100
+		pUIDesc.fDistance = 7.f;
 		pUIDesc.vPos = XMVectorSet(-256.922f, 25.179f, -185.385f, 1.f); // -256.922f, 22.179f, -185.385f
 		pUIDesc.fScale = _float2(5.5f, 9.f);
 		CUI_Manager::GetInstance()->Create_PortalUI(&pUIDesc);

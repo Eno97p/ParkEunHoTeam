@@ -278,6 +278,10 @@ void CUIGroup_WeaponSlot::Key_Input()
         {
             map<_uint, CItemData*>::iterator quickaccess = CInventory::GetInstance()->Get_QuickMap()->begin();
 
+            // 0 1 2 에서 1을 장착 해제 했으니 총 2개인데 m_iQuickIdx가 2로 접근하는 상황!
+            // > 그래서 없는 거에 접그을 하는 거쥬? 그래서 터지쥬~
+            // 음 그러면 이거는 m_iQuickIdx가 갱신되지 않아서 생기는 문제인 듯한데!
+
             for (size_t i = 0; i < m_iQuickIdx; ++i)
                 ++quickaccess;
 

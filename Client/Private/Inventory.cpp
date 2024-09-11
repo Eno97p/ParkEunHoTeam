@@ -81,7 +81,7 @@ HRESULT CInventory::Initialize_DefaultItem()
 	
 	Add_Weapon(CItemData::ITEMNAME_RADAMANTHESWORD, false); 
 
-	Add_Weapon(CItemData::ITEMNAME_DURGASWORD, false);
+	//Add_Weapon(CItemData::ITEMNAME_DURGASWORD, false);
 	//Add_Weapon(CItemData::ITEMNAME_PRETORIANSWORD, false);
 	//Add_Weapon(CItemData::ITEMNAME_WHISPERSWORD, false);
 

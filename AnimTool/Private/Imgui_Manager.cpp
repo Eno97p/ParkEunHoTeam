@@ -1226,7 +1226,7 @@ void CImgui_Manager::Play_Sound()
     _tchar wszSound[MAX_PATH] = L"";
     MultiByteToWideChar(CP_ACP, 0, (*iter), strlen((*iter)), wszSound, MAX_PATH);
 
-    CGameInstance::GetInstance()->PlaySound_Z(wszSound, SOUND_EFFECT, 1.f);
+    //CGameInstance::GetInstance()->PlaySound_Z(wszSound, SOUND_EFFECT, 1.f);
 }
 
 void CImgui_Manager::Free()

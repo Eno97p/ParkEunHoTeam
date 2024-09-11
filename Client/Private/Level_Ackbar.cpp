@@ -132,7 +132,7 @@ HRESULT CLevel_Ackbar::Initialize()
 
 	m_pGameInstance->StopAll();
 	m_pGameInstance->Disable_Echo();
-	m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
+	//m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
 
 	return S_OK;
 }

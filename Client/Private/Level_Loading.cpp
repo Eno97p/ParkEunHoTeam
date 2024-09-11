@@ -52,7 +52,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 
 	m_pGameInstance->StopAll();
 	m_pGameInstance->Disable_Echo();
-	m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
+	//m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
 
 	m_eNextLevel = eNextLevel;
 	CGameInstance::GetInstance()->Set_NextLevel(eNextLevel);

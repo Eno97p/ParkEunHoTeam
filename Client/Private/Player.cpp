@@ -530,11 +530,11 @@ NodeStates CPlayer::Revive(_float fTimeDelta)
 			case LEVEL_GAMEPLAY:
 				m_pGameInstance->StopAll();
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
+				//m_pGameInstance->PlayBGM(TEXT("BGM_Gameplay.mp3"), 0.1f);
 			case LEVEL_ACKBAR:
 				m_pGameInstance->StopAll();
 				m_pGameInstance->Disable_Echo();
-				m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
+				//m_pGameInstance->PlayBGM(TEXT("BGM_Ackbar.mp3"), 0.2f);
 			}
 
 			m_iState = STATE_IDLE;

@@ -374,7 +374,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Juggulus.mp3"));
+					//m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Juggulus.mp3"));
 
 					dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_Cameras()[CAM_CUTSCENE])->Set_CutSceneIdx(1);
 					dynamic_cast<CSideViewCamera*>(m_pGameInstance->Get_Cameras()[CAM_SIDEVIEW])->Set_BossScene(true);
@@ -444,7 +444,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 				{
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Malkhel.mp3"));
+					//m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Malkhel.mp3"));
 
 					//ÇÃ·¹ÀÌ¾î ÄÆ¾ÀÀ§Ä¡·Î
 					CPhysXComponent_Character* playerTrans = dynamic_cast<CPhysXComponent_Character*>(m_pGameInstance->Get_Component(LEVEL_GRASSLAND, TEXT("Layer_Player"), TEXT("Com_PhysX")));
@@ -519,7 +519,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Andras.mp3"), 0.3f);
+					////m_pGameInstance->PlayBGM(TEXT("BGM_Boss_Andras.mp3"), 0.3f);
 					//ºí·¢È¦ »ý¼º
 					_float4 vStartPosition = { 94.368f, 70.f, 343.791f, 1.f };
 					EFFECTMGR->Generate_BlackHole(1, vStartPosition, LEVEL_ANDRASARENA);
@@ -541,7 +541,7 @@ void CEventTrigger::Late_Tick(_float fTimeDelta)
 
 					m_pGameInstance->StopAll();
 					m_pGameInstance->Disable_Echo();
-					m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
+					//m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 					m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-1.wav"), SOUND_EFFECT);
 					//m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-2.wav"), SOUND_EFFECT);
 					//m_pGameInstance->Play_Effect_Sound(TEXT("fireworks-3.wav"), SOUND_EFFECT);

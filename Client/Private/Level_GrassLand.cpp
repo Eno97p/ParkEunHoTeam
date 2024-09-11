@@ -134,7 +134,7 @@ HRESULT CLevel_GrassLand::Initialize()
 
 		m_pGameInstance->StopAll();
 		m_pGameInstance->Disable_Echo();
-		m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
+		//m_pGameInstance->PlayBGM(TEXT("BGM_Grassland.mp3"));
 	}
 
 

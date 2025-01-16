@@ -14,10 +14,15 @@
   <h3>Part</h3>
   </br>
   <p>박은호 : 팀장, 이펙트, 프레임워크 보조</p>
-  <p>박세원 : 메인 프레임워크, physX</p>
+  <p>박세원 : 메인 프레임워크, PhysX</p>
   <p>이경로 : 셰이더,몬스터,플레이어</p>
-  <p>이민영 : 맵툴, 카메라, 컷씬</p>
+  <p>이민영 : 맵툴, 카메라, 기믹</p>
   <p>김보민 : UI</p>
+  
+  </br>
+  <p>아래 이미지 클릭 시 게임플레이 및 소개영상 유튜브 링크로 연결됩니다.</p>
+  <a href="https://youtu.be/j9FyS2sd900">
+        <img src="https://img.youtube.com/vi/j9FyS2sd900/maxresdefault.jpg" alt="YouTube Thumbnail" width="600">
 
 
 

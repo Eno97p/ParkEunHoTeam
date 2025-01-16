@@ -20,7 +20,7 @@
   <p>김보민 : UI</p>
   
   </br>
-  <p>아래 이미지 클릭 시 게임플레이 및 소개영상 유튜브 링크로 연결됩니다.</p>
+  <h3>아래 이미지 클릭 시 게임플레이 및 소개영상 유튜브 링크로 연결됩니다.</h3>
   <a href="https://youtu.be/j9FyS2sd900">
         <img src="https://img.youtube.com/vi/j9FyS2sd900/maxresdefault.jpg" alt="YouTube Thumbnail" width="600">
 

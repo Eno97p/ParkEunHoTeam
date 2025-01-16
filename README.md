@@ -2,7 +2,7 @@
   
   <h1>[ Shatterred : Tale of The forgotten king ]</h1>
   </br>
-  <img src="https://user-images.githubusercontent.com/12345678/123456789-abcdef.png" alt="Example Image">
+  <img src="https://user-images.githubusercontent.com/12345678/123456789-abcdef.png" alt="Example Image" width="600">
   </br>
   <p>3D_Project</p>
   <p>Shatterred : Tale of The forgotten king  모작</p>

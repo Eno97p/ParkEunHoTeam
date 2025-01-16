@@ -2,7 +2,8 @@
   
   <h1>[ Shatterred : Tale of The forgotten king ]</h1>
   </br>
-  ![Logo Image](https://user-images.githubusercontent.com/12345678/123456789-abcdef.png)
+
+  <img src="https://github.com/user-attachments/assets/3adfcf75-ec10-4a7e-86a1-8994835b6bf7" alt="YouTube Thumbnail" width="600">
   
   </br>
   <p>3D_Project</p>
